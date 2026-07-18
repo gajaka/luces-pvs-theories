@@ -1,0 +1,143 @@
+%%% fisher_voronoi.pvs
+%%% Fisher-Voronoi Partition of Spectral State Space
+%%%
+%%% The Fisher metric induces a nearest-centroid partition on the space
+%%% of spectral distributions. Each lighting regime (NIGHT, DAWN, DAY, DUSK)
+%%% occupies a cell defined by proximity to its centroid under Fisher distance.
+%%%
+%%% Proven (from metric axioms + centroid separation):
+%%%   T1: Generators belong to their own cells
+%%%   T2: Different regimes are metrically separated
+%%%   T3: Interior membership is unique
+%%%   T5: Boundaries are equidistant sets (bisectors)
+%%%
+%%% Assumed (requires path-connectedness, not derivable from metric alone):
+%%%   A_transition: regime change implies boundary crossing
+%%%
+%%% NOT formalized here (would require geodesic structure):
+%%%   - Cell convexity
+%%%   - Geodesic completeness
+%%%   - Boundary smoothness
+%%%
+%%% Author: Dragan Stosic, 2026
+
+fisher_voronoi: THEORY
+BEGIN
+
+  % Number of lighting regimes (Voronoi generators)
+  K: posnat = 4   % NIGHT, DAWN, DAY, DUSK
+
+  Regime: TYPE = below(K)
+  % 0 = NIGHT, 1 = DAWN, 2 = DAY, 3 = DUSK
+
+  % Abstract spectral state
+  State: TYPE+
+
+  % Fisher distance between states
+  d_F: [State, State -> nonneg_real]
+
+  % Regime centroids (Voronoi generators)
+  centroid: [Regime -> State]
+
+%% ═══════════════════════════════════════════════════════════
+%% Definitions
+%% ═══════════════════════════════════════════════════════════
+
+  IMPORTING structures@min_array[K, nonneg_real, <=]
+
+  % Voronoi cell membership: state belongs to regime with nearest centroid
+  % Uses imin from NASA PVS Library (structures@min_array)
+  nearest_regime(s: State): Regime =
+    imin(LAMBDA (r: Regime): d_F(s, centroid(r)))
+
+  % State is in the interior of a cell (strict inequality to all other centroids)
+  in_interior?(s: State, r: Regime): bool =
+    FORALL (q: Regime): q /= r IMPLIES d_F(s, centroid(r)) < d_F(s, centroid(q))
+
+  % State is on a boundary between two cells
+  on_boundary?(s: State, r1: Regime, r2: Regime): bool =
+    r1 /= r2 AND
+    d_F(s, centroid(r1)) = d_F(s, centroid(r2)) AND
+    FORALL (q: Regime): q /= r1 AND q /= r2 IMPLIES
+      d_F(s, centroid(q)) > d_F(s, centroid(r1))
+
+  % Centroids are distinct (regimes are separated)
+  centroids_distinct?: bool =
+    FORALL (r1, r2: Regime): r1 /= r2 IMPLIES centroid(r1) /= centroid(r2)
+
+  % A trajectory is a sequence of states
+  N_steps: posnat
+  Trajectory: TYPE = [below(N_steps) -> State]
+
+  % Number of boundary crossings in a trajectory
+  crossings(traj: Trajectory): nat
+
+  % Regime sequence from trajectory
+  regime_sequence(traj: Trajectory): [below(N_steps) -> Regime] =
+    LAMBDA (t: below(N_steps)): nearest_regime(traj(t))
+
+%% ═══════════════════════════════════════════════════════════
+%% Structural Axioms
+%% ═══════════════════════════════════════════════════════════
+
+  % A1: Fisher distance is a metric
+  ax_metric_pos: AXIOM
+    FORALL (s1, s2: State): d_F(s1, s2) >= 0
+
+  ax_metric_identity: AXIOM
+    FORALL (s1, s2: State): d_F(s1, s2) = 0 IFF s1 = s2
+
+  ax_metric_sym: AXIOM
+    FORALL (s1, s2: State): d_F(s1, s2) = d_F(s2, s1)
+
+  ax_metric_triangle: AXIOM
+    FORALL (s1, s2, s3: State):
+      d_F(s1, s3) <= d_F(s1, s2) + d_F(s2, s3)
+
+  % A2: Centroids are distinct (non-degenerate partition)
+  ax_centroids_distinct: AXIOM
+    centroids_distinct?
+
+  % A3: Each centroid is in the interior of its own cell
+  ax_centroid_in_own_cell: AXIOM
+    FORALL (r: Regime): in_interior?(centroid(r), r)
+
+%% ═══════════════════════════════════════════════════════════
+%% Theorems
+%% ═══════════════════════════════════════════════════════════
+
+  % T1: Each centroid is its own nearest regime
+  %     "Generators belong to their own cells"
+  thm_centroid_self_membership: THEOREM
+    FORALL (r: Regime): nearest_regime(centroid(r)) = r
+
+  % T2: Two distinct centroids have positive Fisher distance
+  %     "Different regimes are metrically separated"
+  thm_regimes_separated: THEOREM
+    FORALL (r1, r2: Regime):
+      r1 /= r2 IMPLIES d_F(centroid(r1), centroid(r2)) > 0
+
+  % T3: Interior points have unique cell membership
+  %     "Away from boundaries, regime classification is unambiguous"
+  thm_interior_unique: THEOREM
+    FORALL (s: State, r1, r2: Regime):
+      in_interior?(s, r1) AND in_interior?(s, r2) IMPLIES r1 = r2
+
+  % T4: A transition between regimes must cross a boundary
+  %     This requires path-connectedness / intermediate value property.
+  %     Cannot be derived from metric axioms alone — stated as structural axiom.
+  %     Empirical: all observed regime transitions cross exactly one boundary.
+  ax_transition_crosses_boundary: AXIOM
+    FORALL (s1, s2: State, r1, r2: Regime):
+      in_interior?(s1, r1) AND in_interior?(s2, r2) AND r1 /= r2
+      IMPLIES
+      EXISTS (s_mid: State): on_boundary?(s_mid, r1, r2)
+
+  % T5: Boundary is equidistant from both centroids
+  %     "The boundary is the Fisher-distance bisector"
+  thm_boundary_equidistant: THEOREM
+    FORALL (s: State, r1, r2: Regime):
+      on_boundary?(s, r1, r2) IMPLIES
+      d_F(s, centroid(r1)) = d_F(s, centroid(r2))
+
+END fisher_voronoi

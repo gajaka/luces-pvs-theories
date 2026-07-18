@@ -1,0 +1,114 @@
+%%% wasserstein_metric.pvs
+%%% Wasserstein-2 Metric Structure
+%%%
+%%% Villani (2003), Ch.7, Proposition 7.3:
+%%%   W₂ is a metric on the space of probability measures with finite
+%%%   second moment. This gives the space of spectral distributions
+%%%   a proper geometric structure.
+%%%
+%%% Consequences for LUCES certificates:
+%%%   - Triangle inequality → C8 (near-optimality bound)
+%%%   - Symmetry → time-reversal analysis (velocity_asymmetry)
+%%%   - Non-degeneracy → distinct regimes are metrically separated
+%%%
+%%% Villani Ch.7, Prop 7.29 (Displacement convexity):
+%%%   Entropy is convex along McCann geodesics in W₂ space.
+%%%   Consequence: the geodesic is "efficient" — no entropy explosion.
+%%%
+%%% Author: Dragan Stosic, 2026
+
+wasserstein_metric: THEORY
+BEGIN
+
+  % Abstract probability measures (represented by index)
+  Distr: TYPE+
+
+  % W2 distance function
+  W2: [Distr, Distr -> nonneg_real]
+
+  % Entropy functional along geodesic
+  H: [Distr -> real]
+
+  % McCann interpolation: μ_t between μ₀ and μ₁
+  mccann: [Distr, Distr, {t: real | t >= 0 AND t <= 1} -> Distr]
+
+%% ═══════════════════════════════════════════════════════════
+%% Metric Axioms (structural — define W₂ as a metric)
+%% ═══════════════════════════════════════════════════════════
+
+  % A1: Non-negativity
+  ax_nonneg: AXIOM
+    FORALL (mu, nu: Distr): W2(mu, nu) >= 0
+
+  % A2: Identity of indiscernibles
+  ax_identity: AXIOM
+    FORALL (mu, nu: Distr): W2(mu, nu) = 0 IFF mu = nu
+
+  % A3: Symmetry
+  ax_symmetry: AXIOM
+    FORALL (mu, nu: Distr): W2(mu, nu) = W2(nu, mu)
+
+  % A4: Triangle inequality
+  ax_triangle: AXIOM
+    FORALL (mu, nu, rho: Distr):
+      W2(mu, rho) <= W2(mu, nu) + W2(nu, rho)
+
+%% ═══════════════════════════════════════════════════════════
+%% Geodesic Axioms (McCann interpolation structure)
+%% ═══════════════════════════════════════════════════════════
+
+  % A5: McCann interpolation endpoints
+  ax_mccann_endpoints: AXIOM
+    FORALL (mu, nu: Distr):
+      mccann(mu, nu, 0) = mu AND mccann(mu, nu, 1) = nu
+
+  % A6: Full constant-speed geodesic (Villani Ch.7, Prop 7.27)
+  %     W₂(μ_s, μ_t) = |t-s| · W₂(μ₀, μ₁) for all s,t ∈ [0,1]
+  ax_constant_speed: AXIOM
+    FORALL (mu, nu: Distr,
+            s: {t: real | t >= 0 AND t <= 1},
+            t: {t: real | t >= 0 AND t <= 1}):
+      W2(mccann(mu, nu, s), mccann(mu, nu, t)) = abs(t - s) * W2(mu, nu)
+
+  % A7: Displacement convexity of entropy (Villani Prop 7.29)
+  %     H(μ_t) ≤ (1-t)·H(μ₀) + t·H(μ₁)
+  ax_displacement_convexity: AXIOM
+    FORALL (mu, nu: Distr, t: {t: real | t >= 0 AND t <= 1}):
+      H(mccann(mu, nu, t)) <= (1 - t) * H(mu) + t * H(nu)
+
+%% ═══════════════════════════════════════════════════════════
+%% Theorems
+%% ═══════════════════════════════════════════════════════════
+
+  % T1: Subpath cost is bounded by total path cost (triangle consequence)
+  %     "Any intermediate point cannot make the path shorter"
+  %     This is the structural basis for C8 (near-optimality)
+  thm_subpath_bound: THEOREM
+    FORALL (mu, nu, rho: Distr):
+      W2(mu, nu) <= W2(mu, rho) + W2(rho, nu)
+
+  % T2: Geodesic is the shortest path (by constant-speed property)
+  %     W₂(μ₀, μ₁) = W₂(μ₀, μ_t) + W₂(μ_t, μ₁) for all t ∈ [0,1]
+  thm_geodesic_additive: THEOREM
+    FORALL (mu, nu: Distr, t: {t: real | t >= 0 AND t <= 1}):
+      W2(mu, nu) = W2(mu, mccann(mu, nu, t)) + W2(mccann(mu, nu, t), nu)
+
+  % T3: Geodesic midpoint minimizes maximum distance to endpoints
+  %     W₂(μ₀, μ_{1/2}) = W₂(μ_{1/2}, μ₁) = ½ W₂(μ₀, μ₁)
+  thm_midpoint_equidistant: THEOREM
+    FORALL (mu, nu: Distr):
+      W2(mu, mccann(mu, nu, 1/2)) = W2(mu, nu) / 2
+
+  % T4: Displacement convexity prevents entropy explosion along geodesic
+  %     "Nature's path through spectral space does not create disorder"
+  thm_entropy_bounded_on_geodesic: THEOREM
+    FORALL (mu, nu: Distr, t: {t: real | t >= 0 AND t <= 1}):
+      H(mccann(mu, nu, t)) <= (1 - t) * H(mu) + t * H(nu)
+
+  % T5: Non-degeneracy — distinct measures are separated
+  %     "Different lighting regimes occupy different points in W₂ space"
+  thm_separation: THEOREM
+    FORALL (mu, nu: Distr):
+      mu /= nu IMPLIES W2(mu, nu) > 0
+
+END wasserstein_metric

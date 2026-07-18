@@ -1,0 +1,113 @@
+%%% fisher_boundary.pvs
+%%% Fisher Boundary Deformation Lemma
+%%%
+%%% Proves: non-conformal diagonal metric admits a two-center configuration
+%%% whose Voronoi boundary differs from the Euclidean boundary.
+%%%
+%%% Proof strategy: constructive. Choose two coordinates i,j where
+%%% F(i) /= F(j), place centers c1=0 and c2 along e_i+e_j, then
+%%% find x on the Euclidean bisector that falls on the OTHER side
+%%% of the Fisher bisector.
+%%%
+%%% Combined with:
+%%%   - Empirical: 20.6% boundary shift (boot293+boot296)
+%%%   - Paper 2: tangent rotation 25.1 degrees (F11/F00 = 4.8)
+%%%
+%%% Author: Dragan Stosic, 2026
+
+fisher_boundary: THEORY
+BEGIN
+
+  IMPORTING reals@sigma[below(2)]
+  IMPORTING reals@sq
+
+%% ═══════════════════════════════════════════════════════════
+%% Types (2D suffices for constructive proof)
+%% ═══════════════════════════════════════════════════════════
+
+  Point2: TYPE = [below(2) -> real]
+
+  % Diagonal metric weights (positive)
+  w1: posreal   % weight for coordinate 0
+  w2: posreal   % weight for coordinate 1
+
+  % Weighted squared distance
+  dist_w(x, y: Point2): nonneg_real =
+    w1 * sq(x(0) - y(0)) + w2 * sq(x(1) - y(1))
+
+  % Euclidean squared distance
+  dist_e(x, y: Point2): nonneg_real =
+    sq(x(0) - y(0)) + sq(x(1) - y(1))
+
+%% ═══════════════════════════════════════════════════════════
+%% Centers (fixed construction)
+%% ═══════════════════════════════════════════════════════════
+
+  % c1 = origin
+  c1: Point2 = LAMBDA (k: below(2)): 0
+
+  % c2 = (1, 1)
+  c2: Point2 = LAMBDA (k: below(2)): 1
+
+%% ═══════════════════════════════════════════════════════════
+%% Empirical Axiom
+%% ═══════════════════════════════════════════════════════════
+
+  % A1: Metric is non-conformal (weights differ)
+  %     Source: Paper 2 tangent rotation 25.1 deg, F11/F00 = 4.8
+  ax_non_conformal: AXIOM
+    w1 /= w2
+
+%% ═══════════════════════════════════════════════════════════
+%% Key construction
+%% ═══════════════════════════════════════════════════════════
+
+  % Euclidean bisector of c1=(0,0) and c2=(1,1) passes through (t, 1-t)
+  % for all t with t + (1-t) = 1, i.e. the line x(0) + x(1) = 1.
+  %
+  % A point x on the Euclidean bisector satisfies:
+  %   dist_e(x, c1) = dist_e(x, c2)
+  %
+  % Under weighted metric, the bisector is:
+  %   w1*x(0)^2 + w2*x(1)^2 = w1*(x(0)-1)^2 + w2*(x(1)-1)^2
+  %   simplifies to: w1*x(0) + w2*x(1) = (w1 + w2)/2
+  %
+  % Euclidean bisector: x(0) + x(1) = 1
+  % Fisher bisector: w1*x(0) + w2*x(1) = (w1+w2)/2
+  %
+  % These are DIFFERENT lines when w1 /= w2.
+  % Therefore a point on one bisector is NOT on the other,
+  % meaning it has different nearest-center assignment.
+
+  % Witness point: on Euclidean bisector but NOT on Fisher bisector
+  % Choose x = (0, 1): dist_e(x,c1) = 1, dist_e(x,c2) = 1 (on bisector)
+  % Fisher: dist_w(x,c1) = w2, dist_w(x,c2) = w1
+  % If w1 < w2: Fisher says c2 is closer. Euclidean says tied.
+  % Perturb slightly: x = (epsilon, 1-epsilon) for small epsilon > 0
+  % Then Euclidean prefers c1 (barely), Fisher prefers c2 (if w1 < w2).
+
+%% ═══════════════════════════════════════════════════════════
+%% Theorem
+%% ═══════════════════════════════════════════════════════════
+
+  % T1: Non-conformal metric admits boundary displacement
+  %     There exists a point where Euclidean nearest-center /= Fisher nearest-center
+  thm_boundary_displacement: THEOREM
+    EXISTS (x: Point2):
+      (dist_e(x, c1) <= dist_e(x, c2)) /= (dist_w(x, c1) <= dist_w(x, c2))
+
+  % T2: Strong boundary displacement — for ANY non-axis-aligned center pair
+  %     Generalizes T1: not just c1=(0,0), c2=(1,1) but all centers
+  %     with nonzero separation in both coordinates.
+  %     RESOLVED BY Z3 (NRA logic): fisher_boundary_strong.smt2 returns UNSAT,
+  %     confirming the negation is unsatisfiable, hence the theorem holds.
+  %     PVS proof infeasible due to 6-variable nonlinear arithmetic.
+  %
+  % thm_boundary_displacement_strong: THEOREM
+  %   FORALL (c1, c2: Point2):
+  %     (c1(0) /= c2(0) AND c1(1) /= c2(1))
+  %     IMPLIES
+  %     EXISTS (x: Point2):
+  %       (dist_e(x, c1) <= dist_e(x, c2)) /= (dist_w(x, c1) <= dist_w(x, c2))
+
+END fisher_boundary

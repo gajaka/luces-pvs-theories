@@ -1,0 +1,126 @@
+%%% cyclical_monotonicity.pvs
+%%% Cyclical Monotonicity of Optimal Transport Plans
+%%%
+%%% Villani (2003), Ch.5, Theorem 5.10:
+%%%   A coupling π is optimal for cost c IFF support(π) is c-cyclically monotone.
+%%%
+%%% Cyclical monotonicity means: for any finite cycle of pairs
+%%%   (x₁,y₁), (x₂,y₂), ..., (xₙ,yₙ) in support(π),
+%%%   Σᵢ c(xᵢ,yᵢ) ≤ Σᵢ c(xᵢ,y_{i+1 mod n})
+%%%
+%%% "You cannot improve the plan by cyclically reassigning targets."
+%%%
+%%% This strengthens C4 (duality): complementary slackness implies
+%%% cyclical monotonicity, which implies optimality without needing
+%%% dual potentials explicitly.
+%%%
+%%% It also connects to C1 (rank): on the real line with quadratic cost,
+%%% cyclical monotonicity implies the map is monotone (rank-preserving).
+%%%
+%%% Author: Dragan Stosic, 2026
+
+cyclical_monotonicity: THEORY
+BEGIN
+
+  N: posnat
+  Source: TYPE = below(N)
+  Target: TYPE = below(N)
+
+  % Cost function
+  c: [Source, Target -> nonneg_real]
+
+  % Transport plan
+  pi: [Source, Target -> nonneg_real]
+
+  % Support predicate: (i,j) is in support if π(i,j) > 0
+  in_support?(i: Source, j: Target): bool = pi(i, j) > 0
+
+%% ═══════════════════════════════════════════════════════════
+%% Definitions
+%% ═══════════════════════════════════════════════════════════
+
+  % Cycle of length k: sequence of source-target pairs in support
+  % Cyclical monotonicity for pairs (informal, formalized for k=2,3)
+
+  % 2-cyclical monotonicity (pairwise optimality):
+  % For any (i₁,j₁), (i₂,j₂) in support(π):
+  %   c(i₁,j₁) + c(i₂,j₂) ≤ c(i₁,j₂) + c(i₂,j₁)
+  two_cyclic_monotone?(p: [Source, Target -> nonneg_real]): bool =
+    FORALL (i1, i2: Source, j1, j2: Target):
+      (p(i1, j1) > 0 AND p(i2, j2) > 0) IMPLIES
+      c(i1, j1) + c(i2, j2) <= c(i1, j2) + c(i2, j1)
+
+  % 3-cyclical monotonicity:
+  % For any (i₁,j₁), (i₂,j₂), (i₃,j₃) in support(π):
+  %   c(i₁,j₁) + c(i₂,j₂) + c(i₃,j₃) ≤ c(i₁,j₂) + c(i₂,j₃) + c(i₃,j₁)
+  three_cyclic_monotone?(p: [Source, Target -> nonneg_real]): bool =
+    FORALL (i1, i2, i3: Source, j1, j2, j3: Target):
+      (p(i1, j1) > 0 AND p(i2, j2) > 0 AND p(i3, j3) > 0) IMPLIES
+      c(i1, j1) + c(i2, j2) + c(i3, j3) <=
+      c(i1, j2) + c(i2, j3) + c(i3, j1)
+
+  % Complementary slackness (from kantorovich_duality)
+  psi: [Source -> real]
+  phi: [Target -> real]
+
+  cs_holds?(p: [Source, Target -> nonneg_real]): bool =
+    FORALL (i: Source, j: Target):
+      p(i, j) > 0 IMPLIES phi(j) - psi(i) = c(i, j)
+
+  dual_feasible?: bool =
+    FORALL (i: Source, j: Target): phi(j) - psi(i) <= c(i, j)
+
+%% ═══════════════════════════════════════════════════════════
+%% Structural Axioms
+%% ═══════════════════════════════════════════════════════════
+
+  % A1: Dual potentials exist and are feasible
+  ax_dual_feasible: AXIOM
+    dual_feasible?
+
+  % A2: Complementary slackness holds on support(π)
+  ax_cs_holds: AXIOM
+    cs_holds?(pi)
+
+%% ═══════════════════════════════════════════════════════════
+%% Theorems
+%% ═══════════════════════════════════════════════════════════
+
+  % T1: Complementary slackness implies 2-cyclical monotonicity
+  %     Proof: For (i₁,j₁),(i₂,j₂) in support:
+  %       c(i₁,j₁) = φ(j₁)-ψ(i₁)  [CS]
+  %       c(i₂,j₂) = φ(j₂)-ψ(i₂)  [CS]
+  %       c(i₁,j₂) ≥ φ(j₂)-ψ(i₁)  [dual feasibility]
+  %       c(i₂,j₁) ≥ φ(j₁)-ψ(i₂)  [dual feasibility]
+  %     Sum: c(i₁,j₂)+c(i₂,j₁) ≥ (φ(j₂)-ψ(i₁))+(φ(j₁)-ψ(i₂))
+  %                                = c(i₁,j₁)+c(i₂,j₂)
+  thm_cs_implies_2cyclic: THEOREM
+    cs_holds?(pi) AND dual_feasible? IMPLIES
+    two_cyclic_monotone?(pi)
+
+  % T2: Complementary slackness implies 3-cyclical monotonicity
+  %     Same telescoping argument with 3 pairs
+  thm_cs_implies_3cyclic: THEOREM
+    cs_holds?(pi) AND dual_feasible? IMPLIES
+    three_cyclic_monotone?(pi)
+
+  % T3: 2-cyclical monotonicity with quadratic cost on 1D implies monotone map
+  %     "On the real line, optimal transport preserves order"
+  %     This connects cyclical monotonicity → rank preservation (C1)
+  %     Requires quadratic cost axiom below.
+
+  % Quadratic cost axiom: c(i,j) = (i-j)²
+  IMPORTING reals@sq
+
+  ax_quadratic_cost: AXIOM
+    FORALL (i: Source, j: Target): c(i, j) = sq(i - j)
+
+  % T3: Under quadratic cost, 2-CM implies monotone assignment
+  thm_2cyclic_quadratic_implies_monotone: THEOREM
+    FORALL (i1, i2: Source, j1, j2: Target):
+      (pi(i1, j1) > 0 AND pi(i2, j2) > 0 AND
+       two_cyclic_monotone?(pi))
+      IMPLIES
+      (i1 < i2 IMPLIES j1 <= j2)
+
+END cyclical_monotonicity

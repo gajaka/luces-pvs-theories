@@ -1,0 +1,125 @@
+%%% transport_structure_v2.pvs
+%%% Transport Structure Invariance — Structural (S-class) Version
+%%%
+%%% Promotes per-metric empirical axioms to universal class properties.
+%%% Original transport_structure.pvs had 12 per-metric axioms.
+%%% This version uses 3 universal axioms over MetricIndex.
+%%%
+%%% Structural question:
+%%%   "Which properties of optimal transport plans are INVARIANT
+%%%    under change of ground metric?"
+%%%
+%%% Answer (formalized):
+%%%   - Vertex sparsity: INVARIANT (all metrics produce vertex plans)
+%%%   - Near-Monge structure: INVARIANT (all metrics produce near-Monge plans)
+%%%   - Rank preservation: NOT INVARIANT (fails for control-space metrics)
+%%%
+%%% Empirical basis:
+%%%   4 ground metrics × 4 datasets = 16 tests
+%%%   Metrics: Euclidean-spectral, variance-weighted, Fisher-control, Euclidean-control
+%%%   ALL 16 are vertex. ALL 16 are near-Monge. Only spectral metrics preserve rank.
+%%%
+%%% Author: Dragan Stosic, 2026
+
+transport_structure_v2: THEORY
+BEGIN
+
+%% ═══════════════════════════════════════════════════════════
+%% Types
+%% ═══════════════════════════════════════════════════════════
+
+  N: posnat = 867   % source samples
+  M_dim: posnat = 205   % target samples
+
+  Source: TYPE = below(N)
+  Target: TYPE = below(M_dim)
+
+  Plan: TYPE = [Source, Target -> nonneg_real]
+
+  % Ground metrics tested
+  NumMetrics: posnat = 4
+  MetricIndex: TYPE = below(NumMetrics)
+  % 0 = Euclidean spectral
+  % 1 = Variance-weighted spectral
+  % 2 = Fisher control
+  % 3 = Euclidean control
+
+  % Spectral vs control classification
+  is_spectral?(m: MetricIndex): bool = (m = 0 OR m = 1)
+
+  % Optimal plan for each metric
+  optimal_plan: [MetricIndex -> Plan]
+
+%% ═══════════════════════════════════════════════════════════
+%% Structural Predicates
+%% ═══════════════════════════════════════════════════════════
+
+  % Vertex bound: nnz(P) ≤ N + M - 1 (Birkhoff polytope extreme point)
+  vertex_bound: nat = N + M_dim - 1
+
+  nnz(P: Plan): nat  % number of non-zero entries
+
+  is_vertex(P: Plan): bool = nnz(P) <= vertex_bound
+
+  % Near-Monge: most mass on single target per source row
+  monge_fraction(P: Plan): nonneg_real  % fraction of mass in argmax entries
+
+  near_monge(P: Plan): bool = monge_fraction(P) > 69/100
+
+  % Rank preservation: transport map preserves ordering
+  rank_preserving(P: Plan): bool  % Spearman ρ(T, identity) > 0.99
+
+%% ═══════════════════════════════════════════════════════════
+%% Structural Axioms (universal over MetricIndex)
+%% ═══════════════════════════════════════════════════════════
+
+  % A1: ALL optimal plans are vertex solutions (sparsity is metric-invariant)
+  ax_vertex_invariant: AXIOM
+    FORALL (m: MetricIndex): is_vertex(optimal_plan(m))
+
+  % A2: ALL optimal plans are near-Monge (deterministic structure is metric-invariant)
+  ax_monge_invariant: AXIOM
+    FORALL (m: MetricIndex): near_monge(optimal_plan(m))
+
+  % A3: Rank preservation holds for spectral metrics, fails for control metrics
+  ax_rank_spectral_only: AXIOM
+    FORALL (m: MetricIndex):
+      rank_preserving(optimal_plan(m)) IFF is_spectral?(m)
+
+%% ═══════════════════════════════════════════════════════════
+%% Theorems
+%% ═══════════════════════════════════════════════════════════
+
+  % T1: Vertex sparsity is a metric-invariant property
+  %     "No matter which ground metric, the plan is always sparse"
+  thm_vertex_is_invariant: THEOREM
+    FORALL (m: MetricIndex): is_vertex(optimal_plan(m))
+
+  % T2: Near-Monge structure is a metric-invariant property
+  %     "No matter which ground metric, the plan is always nearly deterministic"
+  thm_monge_is_invariant: THEOREM
+    FORALL (m: MetricIndex): near_monge(optimal_plan(m))
+
+  % T3: Rank preservation is NOT metric-invariant
+  %     "There exist metrics where rank is preserved and metrics where it fails"
+  thm_rank_not_invariant: THEOREM
+    (EXISTS (m: MetricIndex): rank_preserving(optimal_plan(m))) AND
+    (EXISTS (m: MetricIndex): NOT rank_preserving(optimal_plan(m)))
+
+  % T4: Separation theorem — vertex+Monge are strictly weaker than full structure
+  %     "You can have sparsity and Monge-likeness without rank preservation"
+  thm_structure_separation: THEOREM
+    EXISTS (m: MetricIndex):
+      is_vertex(optimal_plan(m)) AND
+      near_monge(optimal_plan(m)) AND
+      NOT rank_preserving(optimal_plan(m))
+
+  % T5: Spectral metrics give full structure (vertex + Monge + rank)
+  thm_spectral_full_structure: THEOREM
+    FORALL (m: MetricIndex):
+      is_spectral?(m) IMPLIES
+        is_vertex(optimal_plan(m)) AND
+        near_monge(optimal_plan(m)) AND
+        rank_preserving(optimal_plan(m))
+
+END transport_structure_v2

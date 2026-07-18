@@ -1,0 +1,78 @@
+%%% entropy_along_geodesic.pvs
+%%% Entropy Behavior Along Wasserstein Geodesics
+%%%
+%%% Villani (2003), Ch.9, Proposition 9.3:
+%%%   On Rⁿ (Ric = 0), the relative entropy functional
+%%%   H(ρ) = ∫ ρ log ρ is displacement convex:
+%%%     H(ρ_t) ≤ (1-t)·H(ρ₀) + t·H(ρ₁)
+%%%
+%%% Villani (2009), Ch.17:
+%%%   More generally, displacement convexity of H is equivalent to
+%%%   Ric ≥ 0 on the underlying manifold (Lott-Villani-Sturm theory).
+%%%
+%%% This theory provides finer bounds than wasserstein_metric.pvs:
+%%%   - Entropy is monotone if H(μ₀) ≤ H(μ₁)
+%%%   - Maximum entropy on geodesic is at most max(H(μ₀), H(μ₁))
+%%%   - Entropy variation along geodesic is bounded
+%%%
+%%% Connects to: C10 (displacement convexity diagnostic)
+%%%
+%%% Author: Dragan Stosic, 2026
+
+entropy_along_geodesic: THEORY
+BEGIN
+
+  Distr: TYPE+
+
+  H: [Distr -> real]
+
+  interp: [Distr, Distr, {t: real | t >= 0 AND t <= 1} -> Distr]
+
+%% ═══════════════════════════════════════════════════════════
+%% Structural Axioms (Villani Ch.9, Prop 9.3)
+%% ═══════════════════════════════════════════════════════════
+
+  % A1: Displacement convexity on flat space (Ric = 0)
+  ax_convexity: AXIOM
+    FORALL (mu0, mu1: Distr, t: {t: real | t >= 0 AND t <= 1}):
+      H(interp(mu0, mu1, t)) <= (1 - t) * H(mu0) + t * H(mu1)
+
+  % A2: Endpoint consistency
+  ax_endpoints: AXIOM
+    FORALL (mu0, mu1: Distr):
+      interp(mu0, mu1, 0) = mu0 AND interp(mu0, mu1, 1) = mu1
+
+%% ═══════════════════════════════════════════════════════════
+%% Theorems
+%% ═══════════════════════════════════════════════════════════
+
+  % T1: Entropy at endpoints equals itself (sanity, from A2)
+  thm_endpoint_entropy: THEOREM
+    FORALL (mu0, mu1: Distr):
+      H(interp(mu0, mu1, 0)) = H(mu0) AND H(interp(mu0, mu1, 1)) = H(mu1)
+
+  % T2: Maximum entropy along geodesic bounded by endpoint max
+  %     "Geodesic never exceeds the higher endpoint entropy"
+  thm_entropy_max_bound: THEOREM
+    FORALL (mu0, mu1: Distr, t: {t: real | t >= 0 AND t <= 1}):
+      H(interp(mu0, mu1, t)) <= max(H(mu0), H(mu1))
+
+  % T3: If endpoints have equal entropy, geodesic entropy ≤ that value
+  thm_equal_endpoint_bound: THEOREM
+    FORALL (mu0, mu1: Distr, t: {t: real | t >= 0 AND t <= 1}):
+      H(mu0) = H(mu1)
+      IMPLIES H(interp(mu0, mu1, t)) <= H(mu0)
+
+  % T4: Entropy at midpoint bounded by average of endpoints
+  thm_midpoint_bound: THEOREM
+    FORALL (mu0, mu1: Distr):
+      H(interp(mu0, mu1, 1/2)) <= (H(mu0) + H(mu1)) / 2
+
+  % T5: If H(μ₀) ≤ H(μ₁), then H(μ_t) ≤ H(μ₁) for all t
+  %     "Entropy along geodesic never exceeds the higher endpoint"
+  thm_monotone_bound: THEOREM
+    FORALL (mu0, mu1: Distr, t: {t: real | t >= 0 AND t <= 1}):
+      H(mu0) <= H(mu1)
+      IMPLIES H(interp(mu0, mu1, t)) <= H(mu1)
+
+END entropy_along_geodesic

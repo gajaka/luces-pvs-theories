@@ -1,0 +1,63 @@
+%%% rank_orientation.pvs
+%%% Rank Preservation with Orientation Reversal
+%%%
+%%% Proves: a coupling with negative Spearman correlation vs identity
+%%% can have positive correlation vs reversed identity.
+%%% Rank is preserved — only orientation changes.
+%%%
+%%% Empirical basis:
+%%%   Boot 293 (dawn): rho(T, identity) = +0.995
+%%%   Boot 298 (dusk): rho(T, identity) = -0.995, rho(T, reversed) = +0.995
+%%%
+%%% Author: Dragan Stosic, 2026
+
+rank_orientation: THEORY
+BEGIN
+
+  N: posnat = 20  % number of bins
+
+  Bin: TYPE = below(N)
+
+  Assignment: TYPE = [Bin -> Bin]
+
+  % Identity map
+  identity: Assignment = LAMBDA (b: Bin): b
+
+  % Reversed identity
+  reversed: Assignment = LAMBDA (b: Bin): N - 1 - b
+
+  % Monotone (no crossings vs reference)
+  monotone_wrt?(T: Assignment, ref: Assignment): bool =
+    FORALL (i, j: Bin): i < j IMPLIES ref(T(i)) <= ref(T(j))
+
+  % Anti-monotone (perfectly reversed)
+  anti_monotone?(T: Assignment): bool =
+    FORALL (i, j: Bin): i < j IMPLIES T(i) > T(j)
+
+%% ═══════════════════════════════════════════════════════════
+%% Empirical Axiom
+%% ═══════════════════════════════════════════════════════════
+
+  % A1: There exists an assignment that is anti-monotone vs identity
+  %     Source: Boot 298 DAY->DUSK, rho = -0.9946 vs identity
+  T_dusk: Assignment
+
+  ax_dusk_anti_monotone: AXIOM
+    anti_monotone?(T_dusk)
+
+%% ═══════════════════════════════════════════════════════════
+%% Theorem
+%% ═══════════════════════════════════════════════════════════
+
+  % T1: Anti-monotone assignment is monotone with respect to reversed identity
+  %     "Rank is preserved — only orientation changes"
+  thm_reversed_preserves_rank: THEOREM
+    anti_monotone?(T_dusk) IMPLIES
+    FORALL (i, j: Bin): i < j IMPLIES reversed(T_dusk(i)) < reversed(T_dusk(j))
+
+  % T2: Reversed is its own inverse (involution)
+  %     reversed(reversed(b)) = b for all bins
+  thm_reversed_involution: THEOREM
+    FORALL (b: Bin): reversed(reversed(b)) = b
+
+END rank_orientation

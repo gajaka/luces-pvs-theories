@@ -1,0 +1,89 @@
+%%% stability_of_maps.pvs
+%%% Stability of Optimal Transport Maps Under Perturbation
+%%%
+%%% Villani (2003), Ch.5, Theorem 5.20:
+%%%   If μₙ → μ and νₙ → ν weakly, and cost is continuous,
+%%%   then optimal plans πₙ converge to the optimal plan π for (μ,ν).
+%%%
+%%% Discrete analog (LUCES):
+%%%   If day-to-day spectral distributions are close (W₂ small),
+%%%   then their optimal transport maps are close (Spearman ρ high).
+%%%   "Small perturbation in data → small change in transport structure."
+%%%
+%%% This is the structural basis for C2 (stability) and C7 (persistence).
+%%%
+%%% Author: Dragan Stosic, 2026
+
+stability_of_maps: THEORY
+BEGIN
+
+  Distr: TYPE+
+
+  W2: [Distr, Distr -> nonneg_real]
+
+  % Transport map type
+  N: posnat = 10
+  Bin: TYPE = below(N)
+  TransportMap: TYPE = [Bin -> Bin]
+
+  % Optimal map for a pair of measures
+  optimal_map: [Distr, Distr -> TransportMap]
+
+  % Map distance (Spearman-like: 1 - |ρ|, so 0 = identical, 1 = unrelated)
+  map_distance: [TransportMap, TransportMap -> nonneg_real]
+
+%% ═══════════════════════════════════════════════════════════
+%% Structural Axioms
+%% ═══════════════════════════════════════════════════════════
+
+  % A1: Map distance is bounded [0, 1]
+  ax_map_dist_bounded: AXIOM
+    FORALL (T1, T2: TransportMap): map_distance(T1, T2) <= 1
+
+  % A2: Identical inputs give identical maps
+  ax_map_identity: AXIOM
+    FORALL (mu, nu: Distr):
+      map_distance(optimal_map(mu, nu), optimal_map(mu, nu)) = 0
+
+  % A3: Stability — close measures give close maps (Villani 5.20, discrete)
+  %     If source measures are close AND target measures are close,
+  %     then the maps are close.
+  %     δ = perturbation tolerance, Lipschitz-like bound
+  delta: posreal  % stability radius
+
+  ax_stability: AXIOM
+    FORALL (mu1, mu2, nu1, nu2: Distr):
+      W2(mu1, mu2) < delta AND W2(nu1, nu2) < delta
+      IMPLIES map_distance(optimal_map(mu1, nu1), optimal_map(mu2, nu2)) < delta
+
+  % A4: Map distance satisfies triangle inequality
+  ax_map_triangle: AXIOM
+    FORALL (T1, T2, T3: TransportMap):
+      map_distance(T1, T3) <= map_distance(T1, T2) + map_distance(T2, T3)
+
+%% ═══════════════════════════════════════════════════════════
+%% Theorems
+%% ═══════════════════════════════════════════════════════════
+
+  % T1: Same-day stability — if measures don't change, map doesn't change
+  %     "Within a single log, transport map is constant if spectrum is stable"
+  thm_self_stability: THEOREM
+    FORALL (mu, nu: Distr):
+      map_distance(optimal_map(mu, nu), optimal_map(mu, nu)) = 0
+
+  % T2: Cross-day persistence — similar days give similar maps
+  %     "Boot 291 and Boot 293 have similar maps because their spectra are similar"
+  thm_persistence: THEOREM
+    FORALL (mu1, mu2, nu1, nu2: Distr):
+      W2(mu1, mu2) < delta AND W2(nu1, nu2) < delta
+      IMPLIES map_distance(optimal_map(mu1, nu1), optimal_map(mu2, nu2)) < delta
+
+  % T3: Stability is transitive (via triangle inequality on map distance)
+  %     "If map A≈B and B≈C, then A≈C within 2δ"
+  thm_transitive_stability: THEOREM
+    FORALL (mu1, mu2, mu3, nu1, nu2, nu3: Distr):
+      W2(mu1, mu2) < delta AND W2(nu1, nu2) < delta AND
+      W2(mu2, mu3) < delta AND W2(nu2, nu3) < delta
+      IMPLIES map_distance(optimal_map(mu1, nu1), optimal_map(mu3, nu3)) < 2 * delta
+
+END stability_of_maps

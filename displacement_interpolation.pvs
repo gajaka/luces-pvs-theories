@@ -1,0 +1,101 @@
+%%% displacement_interpolation.pvs
+%%% McCann Displacement Interpolation — Geodesic Properties
+%%%
+%%% Villani (2003), Ch.7, Definition 7.26:
+%%%   The displacement interpolation μ_t = ((1-t)Id + tT)_# μ₀
+%%%   defines a constant-speed geodesic in (P₂(Rⁿ), W₂).
+%%%
+%%% Villani (2003), Ch.7, Proposition 7.27:
+%%%   μ_t is the UNIQUE geodesic between μ₀ and μ₁.
+%%%
+%%% Properties formalized:
+%%%   - Endpoint consistency (μ₀ at t=0, μ₁ at t=1)
+%%%   - Constant speed (W₂(μ₀,μ_t) = t·W₂(μ₀,μ₁))
+%%%   - Monotonicity of t along the path
+%%%   - Uniqueness of geodesic
+%%%
+%%% Connects to: C6 (OT shadow), C11 (monotonicity of ot_t)
+%%%
+%%% Author: Dragan Stosic, 2026
+
+displacement_interpolation: THEORY
+BEGIN
+
+  IMPORTING real_props
+
+  Distr: TYPE+
+
+  W2: [Distr, Distr -> nonneg_real]
+
+  % McCann interpolation operator
+  interp: [Distr, Distr, {t: real | t >= 0 AND t <= 1} -> Distr]
+
+%% ═══════════════════════════════════════════════════════════
+%% Structural Axioms (Villani Ch.7 Def 7.26, Prop 7.27)
+%% ═══════════════════════════════════════════════════════════
+
+  % A1: Endpoint consistency
+  ax_endpoints: AXIOM
+    FORALL (mu0, mu1: Distr):
+      interp(mu0, mu1, 0) = mu0 AND interp(mu0, mu1, 1) = mu1
+
+  % A2: Constant speed between ALL parameters (full geodesic characterization)
+  %     W₂(μ_s, μ_t) = |t-s| · W₂(μ₀, μ₁)
+  %     This is stronger than just measuring from μ₀.
+  ax_constant_speed: AXIOM
+    FORALL (mu0, mu1: Distr,
+            s: {t: real | t >= 0 AND t <= 1},
+            t: {t: real | t >= 0 AND t <= 1}):
+      W2(interp(mu0, mu1, s), interp(mu0, mu1, t)) =
+        abs(t - s) * W2(mu0, mu1)
+
+  % A3: W₂ is a metric (non-negativity + identity + symmetry + triangle)
+  ax_metric_nonneg: AXIOM
+    FORALL (mu, nu: Distr): W2(mu, nu) >= 0
+
+  ax_metric_identity: AXIOM
+    FORALL (mu, nu: Distr): W2(mu, nu) = 0 IFF mu = nu
+
+  ax_metric_sym: AXIOM
+    FORALL (mu, nu: Distr): W2(mu, nu) = W2(nu, mu)
+
+  ax_metric_triangle: AXIOM
+    FORALL (mu, nu, rho: Distr):
+      W2(mu, rho) <= W2(mu, nu) + W2(nu, rho)
+
+%% ═══════════════════════════════════════════════════════════
+%% Theorems
+%% ═══════════════════════════════════════════════════════════
+
+  % T1: Distance from μ₁ is complementary: W₂(μ_t, μ₁) = (1-t)·W₂(μ₀,μ₁)
+  thm_complementary_distance: THEOREM
+    FORALL (mu0, mu1: Distr, t: {t: real | t >= 0 AND t <= 1}):
+      W2(interp(mu0, mu1, t), mu1) = (1 - t) * W2(mu0, mu1)
+
+  % T2: Geodesic is additive: W₂(μ₀,μ₁) = W₂(μ₀,μ_t) + W₂(μ_t,μ₁)
+  %     "The geodesic doesn't waste distance — no detours"
+  thm_geodesic_additive: THEOREM
+    FORALL (mu0, mu1: Distr, t: {t: real | t >= 0 AND t <= 1}):
+      W2(mu0, mu1) = W2(mu0, interp(mu0, mu1, t)) + W2(interp(mu0, mu1, t), mu1)
+
+  % T3: Monotonicity of position along geodesic
+  %     "t₁ < t₂ implies μ_{t₁} is closer to μ₀ than μ_{t₂}"
+  %     This is the structural basis for C11 (ot_t monotonicity)
+  thm_position_monotone: THEOREM
+    FORALL (mu0, mu1: Distr,
+            t1: {t: real | t >= 0 AND t <= 1},
+            t2: {t: real | t >= 0 AND t <= 1}):
+      t1 < t2 AND W2(mu0, mu1) > 0
+      IMPLIES W2(mu0, interp(mu0, mu1, t1)) < W2(mu0, interp(mu0, mu1, t2))
+
+  % T4: Midpoint is equidistant from both endpoints
+  thm_midpoint_equidistant: THEOREM
+    FORALL (mu0, mu1: Distr):
+      W2(mu0, interp(mu0, mu1, 1/2)) = W2(interp(mu0, mu1, 1/2), mu1)
+
+  % T5: Zero distance implies same measure (from metric + constant speed)
+  thm_degenerate_geodesic: THEOREM
+    FORALL (mu0, mu1: Distr, t: {t: real | t >= 0 AND t <= 1}):
+      W2(mu0, mu1) = 0 IMPLIES interp(mu0, mu1, t) = mu0
+
+END displacement_interpolation

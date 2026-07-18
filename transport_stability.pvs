@@ -1,0 +1,166 @@
+%%% transport_stability.pvs
+%%% Transport Map Stability: Does T Persist Across Independent Dawn Events?
+%%%
+%%% Empirical basis:
+%%%   Boot 291: 867 NIGHT x 205 DAWN (May 2026)
+%%%   Boot 293: 564 NIGHT x 228 DAWN (June 13, 2026)
+%%%   22 dawn cycles from 5 independent boots (May 5 - June 13, 2026)
+%%%
+%%% Key empirical results:
+%%%   Spearman rho(T_291, T_293) = 0.9985
+%%%   Mean rho across 22 dawn cycles = 0.876
+%%%   All optimal plans are vertex solutions (~0.6% sparsity)
+%%%   Near-Monge structure (70-94%) survives across all tested boots
+%%%
+%%% Theoretical reference:
+%%%   Villani (2009), Chapter 5:
+%%%   - Theorem 5.20: Stability of optimal plans
+%%%   - Corollary 5.21: Compactness of the set of optimal plans
+%%%   - Corollary 5.23: Stability of transport maps
+%%%
+%%% Structure:
+%%%   6 empirical axioms -> 5 theorems
+%%%   Axioms encode observed properties across two boots.
+%%%   Theorems derive stability, learnability, and controller feasibility.
+%%%
+%%% Author: Dragan Stosic, 2026
+
+transport_stability: THEORY
+BEGIN
+
+%% ═══════════════════════════════════════════════════════════
+%% Types
+%% ═══════════════════════════════════════════════════════════
+
+  NumBoots: posnat = 2
+  BootIndex: TYPE = below(NumBoots)  % {0 = boot291, 1 = boot293}
+
+  NumBins: posnat = 20
+  Bin: TYPE = below(NumBins)
+
+  % Transport map: assigns each source bin to a target bin
+  TransportMap: TYPE = [Bin -> Bin]
+
+  % Spearman rank correlation
+  spearman_rho: [TransportMap, TransportMap -> real]
+
+  % Standard properties of Spearman rho (correlation coefficient)
+  ax_rho_reflexive: AXIOM
+    FORALL (T1: TransportMap): spearman_rho(T1, T1) > 99/100
+
+  ax_rho_symmetric: AXIOM
+    FORALL (T1, T2: TransportMap): spearman_rho(T1, T2) = spearman_rho(T2, T1)
+
+  % Structural properties
+  Plan: TYPE = [nat, nat -> nonneg_real]
+  nnz: [Plan -> nat]
+  monge_fraction: [Plan -> nonneg_real]
+
+%% ═══════════════════════════════════════════════════════════
+%% Given objects (from empirical computation)
+%% ═══════════════════════════════════════════════════════════
+
+  % Optimal transport map per boot (20-quantile assignment)
+  T: [BootIndex -> TransportMap]
+
+  % Optimal plan per boot (full Kantorovich)
+  optimal_plan: [BootIndex -> Plan]
+
+  % Vertex bound per boot
+  vertex_bound: [BootIndex -> nat]
+
+%% ═══════════════════════════════════════════════════════════
+%% Empirical Axioms
+%% ═══════════════════════════════════════════════════════════
+
+  % A1: Maps are highly correlated (rho = 0.9985)
+  ax_map_correlation: AXIOM
+    spearman_rho(T(0), T(1)) > 99/100
+
+  % A2: Both maps are near-identity (rank-preserving in spectral space)
+  ax_map_near_identity: AXIOM
+    FORALL (k: BootIndex):
+      spearman_rho(T(k), LAMBDA (b: Bin): b) > 99/100
+
+  % A3: Both plans are vertex solutions
+  ax_both_vertex: AXIOM
+    FORALL (k: BootIndex):
+      nnz(optimal_plan(k)) <= vertex_bound(k)
+
+  % A4: Both plans are near-Monge
+  ax_both_near_monge: AXIOM
+    FORALL (k: BootIndex):
+      monge_fraction(optimal_plan(k)) > 69/100
+
+  % A5: W2 costs are finite and bounded
+  W2: [BootIndex -> nonneg_real]
+  W2_max: nonneg_real = 2000
+
+  ax_bounded_cost: AXIOM
+    FORALL (k: BootIndex): W2(k) < W2_max
+
+  % A6: Combined structural axiom (convenience, follows from A3+A4)
+  ax_sparsity_invariant: AXIOM
+    FORALL (k: BootIndex):
+      nnz(optimal_plan(k)) <= vertex_bound(k)
+      AND monge_fraction(optimal_plan(k)) > 69/100
+
+%% ═══════════════════════════════════════════════════════════
+%% Derived Definitions
+%% ═══════════════════════════════════════════════════════════
+
+  % Map persistence: rho between any two boots exceeds threshold
+  map_persistent?(threshold: real): bool =
+    FORALL (k1, k2: BootIndex):
+      spearman_rho(T(k1), T(k2)) > threshold
+
+  % Structure preserved: vertex + near-Monge for all boots
+  structure_preserved?: bool =
+    FORALL (k: BootIndex):
+      nnz(optimal_plan(k)) <= vertex_bound(k)
+      AND monge_fraction(optimal_plan(k)) > 69/100
+
+  % Learnable: map is stable enough for a controller to use
+  learnable?(T_ref: TransportMap, tolerance: real): bool =
+    FORALL (k: BootIndex):
+      spearman_rho(T(k), T_ref) > 1 - tolerance
+
+%% ═══════════════════════════════════════════════════════════
+%% Theorems
+%% ═══════════════════════════════════════════════════════════
+
+  % T1: Transport map persistence (direct from A1)
+  thm_map_persistence: THEOREM
+    map_persistent?(99/100)
+
+  % T2: Structure preservation across boots (from A3 + A4)
+  thm_structure_preserved: THEOREM
+    structure_preserved?
+
+  % T3: Bounded variation — maps do not diverge (from A5 + A1)
+  thm_bounded_variation: THEOREM
+    FORALL (k1, k2: BootIndex):
+      W2(k1) < W2_max AND W2(k2) < W2_max
+      AND spearman_rho(T(k1), T(k2)) > 99/100
+
+  % T4: Learnability — identity map is a valid reference (from A2)
+  %     For the observed spectral NIGHT->DAWN coarse transport maps,
+  %     a controller initialized with identity T_ref(b)=b matches all
+  %     observed maps with rho > 0.99. The first embedded OT controller
+  %     does not need a full Kantorovich plan; it can start from a
+  %     rank-preserving lookup and update only deviations from identity.
+  %     NOTE: This holds for spectral-space maps. Control-space maps
+  %     do NOT preserve rank (see transport_structure.pvs).
+  thm_learnability: THEOREM
+    learnable?(LAMBDA (b: Bin): b, 1/100)
+
+  % T5: Combined stability certificate
+  %     Transport organization is: persistent, structurally preserved,
+  %     bounded in cost, and learnable from a fixed reference.
+  thm_stability_certificate: THEOREM
+    map_persistent?(99/100)
+    AND structure_preserved?
+    AND (FORALL (k: BootIndex): W2(k) < W2_max)
+    AND learnable?(LAMBDA (b: Bin): b, 1/100)
+
+END transport_stability

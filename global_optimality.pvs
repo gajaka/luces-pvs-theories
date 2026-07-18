@@ -1,0 +1,63 @@
+%%% global_optimality.pvs
+%%% Geodesic Segmentation Consistency
+%%%
+%%% Purpose: formal protection against misinterpretation.
+%%% Prevents the incorrect inference:
+%%%   "DAY->DUSK has 23% excess, therefore nature is not optimal."
+%%%
+%%% Correct reading:
+%%%   DAY->DUSK is an artificial segment cut.
+%%%   DAY->NIGHT (full path) is near-optimal (0% excess).
+%%%   Local segmentation excess does not falsify global geodesic optimality.
+%%%
+%%% Symmetric with dawn:
+%%%   DAWN is not a target — it is t=0.27 on NIGHT->DAY geodesic.
+%%%   DUSK is not a node — it is a coordinate cut on DAY->NIGHT geodesic.
+%%%
+%%% Paper-ready:
+%%%   "The apparent local inefficiency of the DAY->DUSK segment does not
+%%%   contradict the near-optimality of the full DAY->NIGHT trajectory.
+%%%   DUSK is better understood as a coordinate cut along a larger
+%%%   geodesic-like transition."
+%%%
+%%% Author: Dragan Stosic, 2026
+
+global_optimality: THEORY
+BEGIN
+
+  % Optimal transport costs
+  opt_day_dusk: posreal
+  opt_dusk_night: posreal
+  opt_day_night: posreal
+
+  % Physical (observed) costs
+  phys_day_dusk: posreal
+  phys_day_night: posreal
+
+%% ═══════════════════════════════════════════════════════════
+%% Axioms
+%% ═══════════════════════════════════════════════════════════
+
+  % A1: Metric triangle inequality
+  ax_triangle: AXIOM
+    opt_day_night <= opt_day_dusk + opt_dusk_night
+
+  % A2: Local segment is suboptimal (empirical: 23.4% excess)
+  ax_local_excess: AXIOM
+    phys_day_dusk > opt_day_dusk
+
+  % A3: Full path is near-optimal (empirical: ~0% excess)
+  ax_global_optimal: AXIOM
+    phys_day_night <= opt_day_night + 1
+
+%% ═══════════════════════════════════════════════════════════
+%% Lemma
+%% ═══════════════════════════════════════════════════════════
+
+  % Coexistence: local excess and global optimality are NOT contradictory
+  % (Prevents misreading local DAY->DUSK result as global failure)
+  lem_coexistence: LEMMA
+    phys_day_dusk > opt_day_dusk AND
+    phys_day_night <= opt_day_night + 1
+
+END global_optimality

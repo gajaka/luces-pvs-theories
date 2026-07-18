@@ -1,0 +1,118 @@
+%%% monge_kantorovich_equivalence.pvs
+%%% Monge-Kantorovich Relationship for Discrete Spectral Transport
+%%%
+%%% Villani (2003), Ch.2, Theorem 2.18:
+%%%   For absolutely continuous μ, Kantorovich = Monge (same value).
+%%%
+%%% IMPORTANT: In the DISCRETE case, full support does NOT guarantee
+%%% a pure Monge map. Discrete OT can split mass even with full support.
+%%%
+%%% What we CAN say (and certify):
+%%%   - A Monge map induces a valid plan (T1)
+%%%   - Kantorovich relaxation is at least as good as any map (T2)
+%%%   - Empirically, LUCES plans are near-Monge (monge_fraction > 0.69)
+%%%   - A pure Monge plan has at most N non-zeros (T3)
+%%%
+%%% This theory does NOT claim full equivalence for discrete case.
+%%% It formalizes the structural relationship between maps and plans.
+%%%
+%%% Author: Dragan Stosic, 2026
+
+monge_kantorovich_equivalence: THEORY
+BEGIN
+
+  N: posnat = 10
+  Bin: TYPE = below(N)
+
+  IMPORTING reals@sigma_below[N]
+
+  % Source and target distributions
+  Source_dist: TYPE = [Bin -> posreal]   % positive everywhere (full support)
+  Target_dist: TYPE = [Bin -> posreal]
+
+  % Transport plan (Kantorovich)
+  Plan: TYPE = [Bin, Bin -> nonneg_real]
+
+  % Transport map (Monge)
+  TransportMap: TYPE = [Bin -> Bin]
+
+  % Plan induced by a map: P[i,j] = μ(i) if j=T(i), else 0
+  induced_plan(mu: Source_dist, T: TransportMap): Plan =
+    LAMBDA (i: Bin, j: Bin): IF j = T(i) THEN mu(i) ELSE 0 ENDIF
+
+  % Cost function
+  c: [Bin, Bin -> nonneg_real]
+
+  % Monge cost: Σᵢ c(i, T(i)) · μ(i)
+  monge_cost(mu: Source_dist, T: TransportMap): real =
+    sigma[Bin](0, N-1, LAMBDA (i: Bin): c(i, T(i)) * mu(i))
+
+  % Kantorovich cost: Σᵢ Σⱼ c(i,j) · P[i,j]
+  kant_cost(P: Plan): real =
+    sigma[Bin](0, N-1, LAMBDA (i: Bin):
+      sigma[Bin](0, N-1, LAMBDA (j: Bin): c(i, j) * P(i, j)))
+
+  % A plan is Monge-type if all mass in each row goes to one target
+  is_monge_plan?(P: Plan): bool =
+    FORALL (i: Bin): EXISTS (j: Bin):
+      P(i, j) > 0 AND
+      FORALL (k: Bin): k /= j IMPLIES P(i, k) = 0
+
+  % Vertex: nnz ≤ 2N-1 (Birkhoff extreme point for N×N)
+  nnz(P: Plan): nat
+  is_vertex?(P: Plan): bool = nnz(P) <= 2 * N - 1
+
+  % Optimal plan and map
+  P_opt: Plan
+  T_opt: TransportMap
+  mu: Source_dist
+
+%% ═══════════════════════════════════════════════════════════
+%% Structural Axioms
+%% ═══════════════════════════════════════════════════════════
+
+  % A1: Source has full support (all bins positive)
+  %     This is the discrete analog of "μ absolutely continuous"
+  ax_full_support: AXIOM
+    FORALL (i: Bin): mu(i) > 0
+
+  % A2: Optimal Kantorovich plan exists and achieves minimum cost
+  ax_kantorovich_optimal: AXIOM
+    FORALL (P: Plan): kant_cost(P_opt) <= kant_cost(P)
+
+  % A3: Monge map achieves Monge minimum
+  ax_monge_optimal: AXIOM
+    FORALL (T: TransportMap): monge_cost(mu, T_opt) <= monge_cost(mu, T)
+
+  % A4: Kantorovich cost ≤ Monge cost (relaxation is always at least as good)
+  %     NOT claiming equality — discrete case may have strict inequality
+  ax_relaxation: AXIOM
+    kant_cost(P_opt) <= monge_cost(mu, T_opt)
+
+  % A5: Induced plan from a map has exactly N non-zeros
+  %     (one per row, since mu(i) > 0 for all i by A1)
+  ax_induced_nnz: AXIOM
+    FORALL (T: TransportMap): nnz(induced_plan(mu, T)) = N
+
+%% ═══════════════════════════════════════════════════════════
+%% Theorems
+%% ═══════════════════════════════════════════════════════════
+
+  % T1: Induced plan has same cost as the map
+  %     "A map IS a plan — just a deterministic one"
+  thm_induced_cost: THEOREM
+    kant_cost(induced_plan(mu, T_opt)) = monge_cost(mu, T_opt)
+
+  % T2: Optimal plan is at least as good as any induced plan
+  %     "Kantorovich relaxation never does worse than Monge"
+  thm_relaxation_tighter: THEOREM
+    FORALL (T: TransportMap):
+      kant_cost(P_opt) <= kant_cost(induced_plan(mu, T))
+
+  % T3: A Monge plan is a vertex (at most N non-zeros < 2N-1)
+  %     "Deterministic plans are extreme points of transport polytope"
+  thm_monge_is_vertex: THEOREM
+    FORALL (T: TransportMap):
+      is_vertex?(induced_plan(mu, T))
+
+END monge_kantorovich_equivalence

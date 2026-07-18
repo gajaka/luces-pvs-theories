@@ -1,0 +1,141 @@
+%%% transport_structure.pvs
+%%% Transport Structure Invariance: What Survives Metric Change?
+%%%
+%%% Empirical basis:
+%%%   Boot 291: 867 NIGHT × 205 DAWN, 4 ground metrics tested
+%%%
+%%% Design: Axioms state properties for INDIVIDUAL metrics.
+%%%   Theorems DERIVE universality (transport_invariant) or its negation.
+%%%   The proof work is in showing that individual facts compose into
+%%%   universal statements — or demonstrating that they don't.
+%%%
+%%% Author: Dragan Stosic, 2026
+
+transport_structure: THEORY
+BEGIN
+
+%% ═══════════════════════════════════════════════════════════
+%% Types
+%% ═══════════════════════════════════════════════════════════
+
+  N: posnat = 867
+  M: posnat = 205
+
+  Source: TYPE = below(N)
+  Target: TYPE = below(M)
+
+  Plan: TYPE = [Source, Target -> nonneg_real]
+
+  % Four tested ground metrics:
+  % 0 = Euclidean spectral, 1 = variance-weighted,
+  % 2 = Fisher control, 3 = Euclidean control
+  MetricIndex: TYPE = below(4)
+
+  spectral_metric?(k: MetricIndex): bool = (k = 0 OR k = 1)
+  control_metric?(k: MetricIndex): bool = (k = 2 OR k = 3)
+
+%% ═══════════════════════════════════════════════════════════
+%% Plan properties
+%% ═══════════════════════════════════════════════════════════
+
+  nnz(p: Plan): nat
+  monge_fraction(p: Plan): nonneg_real
+  rank_correlation(p: Plan): real
+
+  vertex_bound: nat = N + M - 1
+
+  is_vertex(p: Plan): bool = nnz(p) = vertex_bound
+  near_monge(p: Plan): bool = monge_fraction(p) > 93/100
+  rank_preserving(p: Plan): bool = rank_correlation(p) > 9/10
+
+%% ═══════════════════════════════════════════════════════════
+%% The optimal plan for each metric
+%% ═══════════════════════════════════════════════════════════
+
+  optimal_plan: [MetricIndex -> Plan]
+
+%% ═══════════════════════════════════════════════════════════
+%% Central definition: transport invariance
+%% ═══════════════════════════════════════════════════════════
+
+  transport_invariant(P: [Plan -> bool]): bool =
+    FORALL (k: MetricIndex): P(optimal_plan(k))
+
+%% ═══════════════════════════════════════════════════════════
+%% EMPIRICAL AXIOMS (per-metric, not universal)
+%% ═══════════════════════════════════════════════════════════
+
+  % Sparsity: stated per metric individually
+  ax_vertex_eucl_spec: AXIOM is_vertex(optimal_plan(0))
+  ax_vertex_var_weight: AXIOM is_vertex(optimal_plan(1))
+  ax_vertex_fisher_ctrl: AXIOM is_vertex(optimal_plan(2))
+  ax_vertex_eucl_ctrl: AXIOM is_vertex(optimal_plan(3))
+
+  % Near-Monge: stated per metric individually
+  ax_monge_eucl_spec: AXIOM near_monge(optimal_plan(0))
+  ax_monge_var_weight: AXIOM near_monge(optimal_plan(1))
+  ax_monge_fisher_ctrl: AXIOM near_monge(optimal_plan(2))
+  ax_monge_eucl_ctrl: AXIOM near_monge(optimal_plan(3))
+
+  % Rank: holds for spectral, fails for control
+  ax_rank_eucl_spec: AXIOM rank_preserving(optimal_plan(0))
+  ax_rank_var_weight: AXIOM rank_preserving(optimal_plan(1))
+  ax_rank_fisher_ctrl_fails: AXIOM NOT rank_preserving(optimal_plan(2))
+  ax_rank_eucl_ctrl_fails: AXIOM NOT rank_preserving(optimal_plan(3))
+
+%% ═══════════════════════════════════════════════════════════
+%% THEOREMS (require combining individual axioms)
+%% ═══════════════════════════════════════════════════════════
+
+  % T1: Vertex sparsity is transport-invariant
+  % Proof: case split on k ∈ {0,1,2,3}, apply corresponding axiom
+  thm_vertex_invariant: THEOREM
+    transport_invariant(is_vertex)
+
+  % T2: Near-Monge is transport-invariant
+  % Proof: case split on k ∈ {0,1,2,3}, apply corresponding axiom
+  thm_monge_invariant: THEOREM
+    transport_invariant(near_monge)
+
+  % T3: Rank-preservation is NOT transport-invariant
+  % Proof: exhibit k=2 (or k=3) as witness where it fails
+  thm_rank_not_invariant: THEOREM
+    NOT transport_invariant(rank_preserving)
+
+  % T4: Rank-preservation is spectral-metric-specific
+  % It holds on all spectral metrics but fails on all control metrics
+  thm_rank_spectral_only: THEOREM
+    (FORALL (k: MetricIndex): spectral_metric?(k) IMPLIES
+       rank_preserving(optimal_plan(k)))
+    AND
+    (FORALL (k: MetricIndex): control_metric?(k) IMPLIES
+       NOT rank_preserving(optimal_plan(k)))
+
+  % T5: The separation theorem
+  % Structural invariants (vertex + Monge) are strictly more general
+  % than rank-preservation: they hold WHERE rank holds AND where it fails
+  thm_separation: THEOREM
+    transport_invariant(is_vertex) AND
+    transport_invariant(near_monge) AND
+    NOT transport_invariant(rank_preserving)
+
+  % T6: Structural invariants hold even where rank collapses
+  % On control metrics: vertex + Monge persist despite rank failure
+  thm_structure_without_rank: THEOREM
+    FORALL (k: MetricIndex):
+      control_metric?(k) IMPLIES
+        (is_vertex(optimal_plan(k)) AND
+         near_monge(optimal_plan(k)) AND
+         NOT rank_preserving(optimal_plan(k)))
+
+  % T7: On spectral metrics, ALL three properties hold simultaneously
+  % This complements T6: spectral metrics have full structure,
+  % control metrics have partial structure (vertex + Monge only).
+  thm_spectral_full_structure: THEOREM
+    FORALL (k: MetricIndex):
+      spectral_metric?(k) IMPLIES
+        (is_vertex(optimal_plan(k)) AND
+         near_monge(optimal_plan(k)) AND
+         rank_preserving(optimal_plan(k)))
+
+END transport_structure

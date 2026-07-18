@@ -1,0 +1,104 @@
+%%% dual_observability.pvs
+%%% Dual Chart Observability in the Transition Overlap Zone
+%%%
+%%% Origin: Paper 2 (CPHS 2026), Theorem T12 (Atlas Continuity).
+%%% Promoted to S-class: confirmed on 4/4 independent boots (199/199 samples).
+%%%
+%%% Physical meaning:
+%%%   During the dawn/dusk transition, there exists an overlap zone where
+%%%   BOTH the intensity chart (lux > 0) and the spectral chart (Fisher
+%%%   geometry bounded) are simultaneously observable.
+%%%
+%%% Why this matters:
+%%%   - No observability gap during regime handoff
+%%%   - Controller never loses both signals simultaneously
+%%%   - Fisher geometry remains well-conditioned at boundaries
+%%%   - Connects Paper 2 (observability) to Paper 3 (transport geometry)
+%%%
+%%% Structural content:
+%%%   The overlap zone exists because spectral diversity (chi range > 0)
+%%%   persists even at low elevation where intensity is marginal.
+%%%   This is a property of the SYSTEM (lamp + sensor + solar geometry),
+%%%   not of a specific boot.
+%%%
+%%% Empirical evidence:
+%%%   boot293: 50/50 dual active, chi_range=0.403
+%%%   boot301: 49/49 dual active, chi_range=0.691
+%%%   boot303: 50/50 dual active, chi_range=0.708
+%%%   boot305: 50/50 dual active, chi_range=0.482
+%%%
+%%% Author: Dragan Stosic, 2026
+
+dual_observability: THEORY
+BEGIN
+
+  % Abstract state space
+  State: TYPE+
+
+  % Elevation parameter (continuous)
+  elevation: [State -> real]
+
+  % Observability predicates
+  intensity_observable?(s: State): bool
+  spectral_observable?(s: State): bool
+
+  % Fisher conditioning
+  kappa: [State -> nonneg_real]
+  kappa_bounded?(s: State): bool = kappa(s) < 100
+
+  % Overlap zone predicate: elevation between -4° and -2°
+  in_overlap?(s: State): bool =
+    elevation(s) > -4 AND elevation(s) < -2
+
+  % Dual observability: both charts active
+  dual_observable?(s: State): bool =
+    intensity_observable?(s) AND spectral_observable?(s)
+
+%% ═══════════════════════════════════════════════════════════
+%% Structural Axioms
+%% ═══════════════════════════════════════════════════════════
+
+  % A1: In the overlap zone, spectral chart is always observable
+  %     (spectral diversity persists at low elevation due to lamp excitation)
+  ax_spectral_in_overlap: AXIOM
+    FORALL (s: State): in_overlap?(s) IMPLIES spectral_observable?(s)
+
+  % A2: In the overlap zone, intensity chart is observable
+  %     (lux > 0 because either lamp or early solar contributes)
+  ax_intensity_in_overlap: AXIOM
+    FORALL (s: State): in_overlap?(s) IMPLIES intensity_observable?(s)
+
+  % A3: Spectral observability implies Fisher boundedness
+  %     (if spectral chart is active, Fisher geometry is not degenerate)
+  ax_spectral_implies_fisher: AXIOM
+    FORALL (s: State): spectral_observable?(s) IMPLIES kappa_bounded?(s)
+
+%% ═══════════════════════════════════════════════════════════
+%% Theorems
+%% ═══════════════════════════════════════════════════════════
+
+  % T1: Dual observability holds in entire overlap zone
+  %     Proof: A1 gives spectral, A2 gives intensity → dual by definition
+  thm_dual_in_overlap: THEOREM
+    FORALL (s: State): in_overlap?(s) IMPLIES dual_observable?(s)
+
+  % T2: No observability gap during transition
+  %     Proof: T1 gives dual → at least one chart active (both, in fact)
+  thm_no_gap: THEOREM
+    FORALL (s: State):
+      in_overlap?(s) IMPLIES NOT (NOT intensity_observable?(s) AND NOT spectral_observable?(s))
+
+  % T3: Fisher bounded throughout overlap
+  %     Proof: A1 (overlap → spectral) + A3 (spectral → Fisher bounded)
+  thm_fisher_stable_in_overlap: THEOREM
+    FORALL (s: State): in_overlap?(s) IMPLIES kappa_bounded?(s)
+
+  % T4: Dual observability implies full system health
+  %     Proof: dual_observable unfolds to intensity ∧ spectral;
+  %     A3 gives spectral → kappa_bounded
+  thm_dual_implies_full_health: THEOREM
+    FORALL (s: State):
+      dual_observable?(s) IMPLIES
+      (intensity_observable?(s) AND spectral_observable?(s) AND kappa_bounded?(s))
+
+END dual_observability

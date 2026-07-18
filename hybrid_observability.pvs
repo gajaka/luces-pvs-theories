@@ -1,0 +1,56 @@
+%%% hybrid_observability.pvs
+%%% Formalizes Empirical Intermediate Conditioning Under Mixed Excitation
+%%%
+%%% Purpose: document the empirical ordering of Fisher conditioning
+%%% across three observability regimes. NOT a derivation from a Fisher model.
+%%%
+%%% Important mathematical note:
+%%%   Fisher matrices mix linearly: F_hybrid = alpha*F_lamp + (1-alpha)*F_sun
+%%%   But kappa(F_hybrid) does NOT necessarily lie between kappa(F_lamp)
+%%%   and kappa(F_sun) without additional structural assumptions.
+%%%   The fact that it DOES in LUCES data is empirically significant.
+%%%
+%%% Empirical basis:
+%%%   DAY (passive, lamp OFF):  kappa = 28.7
+%%%   DUSK (hybrid, 71% lamp):  kappa = 6.5
+%%%   NIGHT (excited, lamp ON): kappa = 2.8
+%%%
+%%% Paper-ready:
+%%%   "DUSK is not merely a solar regime; it is a hybrid observability
+%%%   regime in which artificial excitation partially regularizes the
+%%%   otherwise anisotropic passive Fisher geometry."
+%%%
+%%% Author: Dragan Stosic, 2026
+
+hybrid_observability: THEORY
+BEGIN
+
+  % Conditioning values (posreal: strictly positive)
+  kappa_passive: posreal   % DAY, lamp OFF (empirical: 28.7)
+  kappa_hybrid: posreal    % DUSK, mixed (empirical: 6.5)
+  kappa_excited: posreal   % NIGHT, lamp ON (empirical: 2.8)
+
+%% ═══════════════════════════════════════════════════════════
+%% Empirical Axiom
+%% ═══════════════════════════════════════════════════════════
+
+  % A1: Empirical ordering of conditioning numbers
+  %     Source: boot298, kappa_vs_excitation.py
+  %     Note: this ordering is NOT guaranteed by linear Fisher mixing;
+  %     it is an empirical property of the LUCES system.
+  ax_conditioning_order: AXIOM
+    kappa_excited < kappa_hybrid AND kappa_hybrid < kappa_passive
+
+%% ═══════════════════════════════════════════════════════════
+%% Theorems (derived from ordering)
+%% ═══════════════════════════════════════════════════════════
+
+  % T1: Excitation improves conditioning (direct from ordering)
+  thm_excitation_improves: THEOREM
+    kappa_excited < kappa_passive
+
+  % T2: Hybrid is intermediate (restatement, for explicit documentation)
+  thm_hybrid_intermediate: THEOREM
+    kappa_excited < kappa_hybrid AND kappa_hybrid < kappa_passive
+
+END hybrid_observability
