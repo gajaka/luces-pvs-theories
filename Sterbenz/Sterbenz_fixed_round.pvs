@@ -1,0 +1,44 @@
+Sterbenz[beta:above(1)]: THEORY
+BEGIN
+
+IMPORTING RoundToSubset[beta]
+
+x,y: VAR real
+
+e,l,e1: VAR int
+
+valid_monotone?(f:[int-> int]): bool = FORALL e,e1: e <= e1 IMPLIES f(e) <= f(e1)
+
+monotone_fexp: TYPE = {f: [int -> int] | valid_monotone?(f) AND valid_fexp?(f)}
+
+fexp: VAR monotone_fexp
+
+generic_format_plus: LEMMA
+   generic_format?(fexp)(x) AND   
+      generic_format?(fexp)(y) AND
+     ( abs(x + y) < beta^(min(ln_beta(x),ln_beta(y))) 
+     ) IMPLIES
+      generic_format?(fexp)(x + y)
+
+generic_format_plus_1 : LEMMA
+   generic_format?(fexp)(x) AND
+      generic_format?(fexp)(y) AND
+      ( abs(x + y) <= min(abs(x), abs(y))
+      ) IMPLIES
+         generic_format?(fexp)(x + y)
+
+sterbenz_aux: LEMMA
+   generic_format?(fexp)(x) AND
+      generic_format?(fexp)(y) AND
+      ( y <= x AND x <= 2 * y
+      ) IMPLIES
+         generic_format?(fexp)(x - y)
+ 
+sterbenz: THEOREM
+   generic_format?(fexp)(x) AND
+      generic_format?(fexp)(y) AND
+     ( y / 2 <= x AND x <= 2 * y
+     ) IMPLIES
+        generic_format?(fexp)(x - y)
+
+END Sterbenz 
