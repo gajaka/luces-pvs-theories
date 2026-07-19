@@ -1,0 +1,129 @@
+ f_core_int_aux: THEORY
+
+BEGIN
+
+i, j: VAR int
+
+int_opp_le_cancel : LEMMA (-j <= -i) IMPLIES i <= j
+
+int_gt_not_eq :  LEMMA (j < i) IMPLIES NOT (i = j)
+
+int_le_or_lt: LEMMA (i <= j) OR (j < i)
+
+% Start Even Odd
+
+int_even_opp : LEMMA even?(-i) = even?(i)
+
+int_even_2xp1 : LEMMA even?(2* i + 1) = FALSE
+
+int_odd_2xp : LEMMA odd?(2* i) = FALSE
+
+int_antisym: LEMMA FORALL(e1,e2:int): e1<=e2 AND e2<=e1 IFF e1=e2
+	   
+even_impl_not_odd : LEMMA FORALL (i:int): even?(i) IFF NOT odd?(i)
+
+odd_impl_not_even : LEMMA FORALL (i:int): odd?(i) IFF NOT even?(i)
+
+aux_even(i:int):int = IF even?(i) THEN 0 ELSE 1 ENDIF
+
+aux_odd(i:int):int = IF odd?(i) THEN 1 ELSE 0 ENDIF
+
+% start aux_even to b2n
+
+aux_even_aux_odd : LEMMA aux_even(i) = aux_odd(i)
+
+aux_even_odd_b2n : LEMMA aux_odd(i) =  b2n(odd?(i))
+
+aux_even_not_b2n_even : LEMMA aux_odd(i) =  b2n(NOT even?(i))
+
+int_even_not_even_ext : LEMMA FORALL (i:int): 
+                           EXISTS (p : int):  i = (2 * p) + aux_even(i)
+
+int_even_not_odd_ext : LEMMA FORALL (i:int): 
+                           EXISTS (p : int):  i = (2 * p) + aux_odd(i)
+
+int_even_odd_b2n_ext : LEMMA FORALL (i:int): 
+                           EXISTS (p : int):  i = (2 * p) + b2n(NOT even?(i))
+
+int_even_odd_b2n_ext1 : LEMMA FORALL (i:int): 
+                           EXISTS (p : int):  i = (2 * p) + b2n(odd?(i))
+
+
+% end aux_even b2n
+                                          
+int_even_plus_eq : LEMMA even?(i + j) IFF (even?(i) IFF even?(j))
+
+int_even_mult : LEMMA  even?(i * j) IFF (even?(i) OR even?(j))
+
+int_odd_plus_eq : LEMMA  odd?(i + j) IFF ((odd?(i) AND even?(j)) OR (even?(i) AND odd?(j)))  
+
+int_odd_mult_eq : LEMMA  odd?(i * j) IFF (odd?(i) AND odd?(j))  
+
+
+% End Even Odd
+
+% Start Power
+
+int_power_plus : LEMMA FORALL (n:nzint),(k1,k2:int):
+                     (0 <= k1) IMPLIES (0 <= k2) 
+                                   IMPLIES expt(n,k1 + k2) = expt(n, k1) * expt(n, k2)
+
+int_power_plus_even : LEMMA FORALL (n:nzint),(k1,k2:int):
+                     (0 <= k1) IMPLIES (0 <= k2) 
+                                   IMPLIES even?(expt(n,k1 + k2)) 
+                                           = even?(expt(n, k1) * expt(n, k2))
+
+int_power_plus_nat : LEMMA FORALL (n:nat),(k1,k2:int):
+                     (0 <= k1) AND (0 <= k2) AND (0 < n) 
+                                   IMPLIES expt(n,k1 + k2) = expt(n, k1) * expt(n, k2)
+
+int_power_int_power_nat :LEMMA FORALL (n:nzint),(k1:int):
+                     (0 <= k1) IMPLIES expt(n,k1) = expt(n, abs(k1))
+
+int_power_int_power_nat_nat :LEMMA FORALL (n:nat),(k1:int):
+                     (0 <= k1) AND (0 < n)  IMPLIES expt(n,k1) = expt(n, abs(k1))
+
+
+int_power_nat_1 : LEMMA FORALL (n:nzint),(k1:int):
+                    (0 <= k1) IMPLIES expt (n,k1 + 1) = n * expt(n, k1)
+
+int_power_nat_nat_1 : LEMMA FORALL (n:nat),(k1:int):
+                    (0 <= k1) AND (0 < n) IMPLIES expt (n,k1 + 1) = n * expt(n, k1)
+
+
+int_power_pos_gt_0 : LEMMA FORALL (n:nat),(k1:int): 
+                    (0 <= k1) AND (0 < n) IMPLIES (0 < n^k1)
+
+int_even_impl_int_power : LEMMA FORALL  (n:nzint),(k1:posint):
+                                      even?(n) IMPLIES even?(expt(n, k1)) 
+
+int_even_impl_int_power_1 : LEMMA FORALL  (n:nzint),(k1:int):
+                     (0 < k1) IMPLIES  even?(n) IMPLIES even?(expt(n, k1)) 
+
+
+int_odd_impl_int_power : LEMMA FORALL  (n:nzint),(k1:posint):
+                                     odd?(n) IMPLIES odd?(expt(n, k1))
+
+int_odd_impl_int_power_1 : LEMMA FORALL  (n:nzint),(k1:int):
+                     (0 < k1) IMPLIES  odd?(n) IMPLIES odd?(expt(n, k1))
+
+
+int_even_int_power_odd : LEMMA FORALL (n:nzint),(k1:int): 
+                     (0 <= k1) IMPLIES  even?(n) = FALSE 
+                               IMPLIES even?(expt(n, k1)) = FALSE
+
+int_even_expt_impl_even_int_power : LEMMA FORALL  (n:nzint),(k1:posint):
+                                                even?(expt(n, k1)) IMPLIES even?(n)
+
+int_even_expt_impl_even_int_power_1 : LEMMA FORALL  (n:nzint),(k1:int):
+                     (0 < k1) IMPLIES  even?(expt(n, k1)) IMPLIES even?(n)
+
+
+int_even_expt_eq_even_int_power : THEOREM FORALL  (n:nzint),(k1:posint):
+                                                even?(expt(n, k1)) = even?(n)
+
+int_even_expt_eq_even_int_power_1 : THEOREM FORALL  (n:nzint),(k1:int):
+                     (0 < k1) IMPLIES  even?(expt(n, k1)) = even?(n)
+
+% End Power
+END f_core_int_aux

@@ -1,0 +1,298 @@
+RoundToSubset[beta:above(1)]: THEORY
+BEGIN
+
+IMPORTING float@round,radix_aux[beta]
+
+x,y: VAR real
+
+e,l,e1: VAR int
+ 
+monotonic?(f: [real -> int]): bool = FORALL x, y: x <= y IMPLIES f(x) <= f(y)
+
+fixed_int?(f: [real -> int]): bool = FORALL e: f(e) = e
+
+Round_type: TYPE = {f: [real -> int] | monotonic?(f) AND fixed_int?(f)}
+
+rnd: VAR Round_type
+
+valid_fexp?(fexp:[int-> int]): bool =
+  FORALL (k : int):
+   ( (fexp(k) < k) IMPLIES (fexp(k + 1) <= k) ) AND
+   ( (k <= fexp (k)) IMPLIES
+     (fexp(fexp(k) + 1) <= fexp(k)) AND
+        FORALL(r : int): (r <= fexp(k))
+            IMPLIES fexp(r) = fexp(k) )
+
+valid_fexp: TYPE = (valid_fexp?)
+
+fexp: VAR valid_fexp
+
+valid_exp : LEMMA NOT FORALL (fexp:[int-> int]),(k : int):
+   ( (fexp(k) < k) IMPLIES (fexp(k + 1) <= k) ) AND
+     ( (k <= fexp (k)) IMPLIES
+       (fexp(fexp(k) + 1) <= fexp(k)) AND
+          FORALL(r : int): (r <= fexp(k)) 
+              IMPLIES fexp(r) = fexp(k) )
+
+% float basic facts
+
+float: TYPE = [# Fnum:int, Fexp:int #]
+
+float_pair(fn:int,fexp:int): float = (# Fnum := fn, Fexp := fexp #)
+
+f,f1: VAR float
+
+Fplus(f,f1):float= (# Fnum:=Fnum(f)*beta^(Fexp(f)-min(Fexp(f),Fexp(f1))) 
+   + Fnum(f1)*beta^(Fexp(f1)-min(Fexp(f),Fexp(f1))), Fexp:=min(Fexp(f),Fexp(f1)) #)
+
+FtoR(f):real=Fnum(f)*beta^(Fexp(f))
+
+FtoRplus: LEMMA FtoR(Fplus(f,f1))=FtoR(f)+FtoR(f1)
+
+Fexp_Fplus: LEMMA Fexp(Fplus(f,f1))=min(Fexp(f),Fexp(f1))
+
+% int_rnd facts
+
+int_rnd_opp(rnd, x):int = -(rnd (-x));
+
+% lambda abstraction definition of int_rnd_opp
+int_rnd_opp_1(rnd):Round_type = LAMBDA x: -(rnd (-x)) 
+
+int_rnd_opp_rew: LEMMA int_rnd_opp(rnd,x) = int_rnd_opp_1(rnd)(x) 
+
+int_rnd_floor_or_ceiling: LEMMA rnd(x) = floor(x) OR rnd(x)=ceiling(x)
+
+valid_exp_large: LEMMA fexp(e) < e AND e <= l IMPLIES fexp(l) < l
+
+valid_exp_large1: LEMMA fexp(e) < e AND l <= e IMPLIES fexp(l) < e
+
+% ln_beta
+
+ln_beta(x:real):{e:int| (x /= 0) IMPLIES
+                       ( beta^(e - 1)<= abs(x) AND abs(x) < beta^e )}
+
+ln_beta_unique : LEMMA ((beta^(e - 1) <= abs(x)) AND 
+                        (abs(x) < beta^e)) IMPLIES ln_beta(x) = e
+
+ln_beta_le_bpow: LEMMA x /= 0 AND 
+                       (abs(x) < beta^e) IMPLIES ln_beta(x) <= e
+
+ln_beta_le_abs: LEMMA x /= 0 AND 
+                       (abs(x) <= abs(y)) IMPLIES ln_beta(x) <= ln_beta(y)
+ 
+ln_beta_ordered: LEMMA (ln_beta(x)-1)< ln_beta(y) IMPLIES ln_beta(x) <= ln_beta(y)
+
+ln_beta_opp: LEMMA ln_beta(-x) = ln_beta(x)
+ 
+ln_beta_abs: LEMMA ln_beta(abs(x)) = ln_beta(x) 
+
+ln_beta_bpow: LEMMA ln_beta(beta^e) = e + 1
+ 
+% canonic
+
+canonic_exp(fexp)(x):int=fexp(ln_beta(x))
+
+canonic_exp_opp: LEMMA canonic_exp(fexp)(-x) = canonic_exp(fexp)(x)
+
+canonic_exp_abs: LEMMA canonic_exp(fexp)(abs(x)) = canonic_exp(fexp)(x)
+
+canonic_exp_fexp: LEMMA (beta^(e - 1) <= abs(x) AND 
+   abs(x) < beta^e) IMPLIES canonic_exp(fexp)(x) = fexp(e)
+
+canonic_exp_fexp_pos: LEMMA (beta^(e - 1) <= x AND 
+   x < beta^e) IMPLIES canonic_exp(fexp)(x) = fexp(e)
+
+canonic?(fexp)(f):bool = Fexp(f) = canonic_exp(fexp)(FtoR(f))
+
+canonic_unicity: LEMMA canonic?(fexp)(float_pair(Fnum(f),Fexp(f))) AND 
+                       canonic?(fexp)(float_pair(Fnum(f1),Fexp(f1))) AND 
+                       FtoR(float_pair(Fnum(f),Fexp(f))) = 
+                       FtoR(float_pair(Fnum(f1),Fexp(f1)))
+                       IMPLIES 
+                       float_pair(Fnum(f),Fexp(f))=float_pair(Fnum(f1),Fexp(f1))
+% FtoR
+
+float_equals: LEMMA (Fnum(f) = Fnum(f1)) AND Fexp(f) = Fexp(f1) IFF
+                    float_pair(Fnum(f),Fexp(f)) = float_pair(Fnum(f1),Fexp(f1)) 
+                    
+FtoR_eq_reg : LEMMA FtoR( float_pair(Fnum(f),Fexp(f)))=
+                    FtoR( float_pair(Fnum(f1),Fexp(f))) 
+                    IFF Fnum(f) = Fnum(f1)
+
+FtoR_abs: LEMMA  FtoR(float_pair(abs(Fnum(f)),Fexp(f))) = 
+                     abs(FtoR(float_pair(Fnum(f),Fexp(f))))
+
+FtoR_le_compat: LEMMA Fnum(f) <= Fnum(f1) IMPLIES 
+           FtoR(float_pair(Fnum(f),Fexp(f))) <= FtoR(float_pair(Fnum(f1),Fexp(f)))
+
+
+F2R_lt_reg: LEMMA FtoR(float_pair(l,e)) < FtoR(float_pair(e1,e)) IMPLIES l < e1
+
+F2R_0: LEMMA FtoR(float_pair(0,e))= 0
+
+F2R_bpow: LEMMA FtoR(float_pair(1,e))= beta^e
+
+F2R_ge_0_compat: LEMMA 0 <= Fnum(f) IMPLIES 0 <= FtoR(float_pair(Fnum(f),Fexp(f)))
+
+F2R_gt_0: LEMMA 0 < FtoR(float_pair(l,e)) IMPLIES 0 < l 
+
+F2R_le_0_compat : LEMMA Fnum(f) <= 0 IMPLIES FtoR(float_pair(Fnum(f),Fexp(f))) <= 0
+
+F2R_change_exp : LEMMA (e1 <= e) IMPLIES
+   FtoR(float_pair(l,e)) = FtoR(float_pair(l*beta^(e - e1),e1))
+
+FtoR_int_opp :LEMMA FtoR(float_pair(-e,l)) = - FtoR(float_pair(e,l))
+
+bpow_le_F2R: LEMMA (0 < l) IMPLIES beta^e <= FtoR(float_pair(l,e))
+
+% scaled mantissa
+  
+scaled_mantissa(fexp)(x:real): real= x * beta^(-canonic_exp(fexp)(x))
+
+scaled_mantissa_0: LEMMA scaled_mantissa(fexp)(0) = 0
+
+scaled_mantissa_mult_bpow: LEMMA
+ scaled_mantissa(fexp)(x) * beta^canonic_exp(fexp)(x) = x
+
+scaled_mantissa_opp: LEMMA scaled_mantissa(fexp)(-x) = -scaled_mantissa(fexp)(x)
+
+scaled_mantissa_abs: LEMMA scaled_mantissa(fexp)(abs(x)) = abs(scaled_mantissa(fexp)(x))
+
+% precision denoted l
+abs_lt_bpow_prec: LEMMA (FORALL (e:int): e - l <= fexp(e)) IMPLIES
+        FORALL(x:real): abs(x) < beta^(l + canonic_exp(fexp)(x))
+
+% generic format
+
+generic_format?(fexp)(x : real): bool = 
+(x = FtoR (float_pair(trunc(scaled_mantissa(fexp)(x)),canonic_exp(fexp)(x))))
+
+generic_format_0 : LEMMA generic_format?(fexp)(0) 
+
+generic_format_bpow: LEMMA fexp (e + 1) <= e IMPLIES generic_format?(fexp)(beta^e)
+
+generic_format_bpow_1 : LEMMA fexp(e) <= e IMPLIES generic_format?(fexp)(beta^e)
+
+generic_format_F2R: LEMMA LET f2r=FtoR(float_pair(l,e)), 
+                                e1=canonic_exp(fexp)(f2r) IN 
+                                 (l /= 0 AND e1 <= e) IMPLIES generic_format?(fexp)(f2r)
+
+mantissa_small_pos :LEMMA (beta^(e - 1) <= x AND x < beta^e) 
+                      AND e <= fexp(e) IMPLIES 0 < x * beta^(- fexp(e)) AND 
+                        x * beta^(- fexp(e)) < 1
+
+scaled_mantissa_generic: LEMMA generic_format?(fexp)(x) IMPLIES
+  scaled_mantissa(fexp)(x) = trunc(scaled_mantissa(fexp)(x))
+
+generic_format_opp: LEMMA generic_format?(fexp)(x) IMPLIES  generic_format?(fexp)(-x)
+
+generic_format_abs: LEMMA generic_format?(fexp)(x) IMPLIES generic_format?(fexp)(abs(x))
+
+generic_format_abs_opp: LEMMA generic_format?(fexp)(abs(x)) IMPLIES generic_format?(fexp)(x)
+
+generic_format_rew: LEMMA generic_format?(fexp)(x) IFF generic_format?(fexp)(abs(x))
+
+% generic facts
+
+generic_format_discrete: LEMMA LET e = canonic_exp(fexp)(x) IN
+  ( FtoR(float_pair(l,e)) < x AND x  < FtoR(float_pair(l+1,e))) IMPLIES
+  NOT generic_format?(fexp)(x)
+
+generic_format_canonic: LEMMA LET f=float_pair(1,e) IN 
+    canonic?(fexp)(f) IMPLIES generic_format?(fexp)(FtoR(f))
+
+generic_format_ge_bpow: LEMMA ( FORALL (e:int):l <= fexp(e)) IMPLIES
+  FORALL (x:posreal): generic_format?(fexp)(x) IMPLIES beta^l <= x
+
+generic_format_bpow_inv_1: LEMMA 
+  generic_format?(fexp)(beta^e) IMPLIES fexp (e + 1) <= e
+
+generic_format_bpow_inv: LEMMA 
+  generic_format?(fexp)(beta^e) IMPLIES fexp(e) <= e
+
+% round definition
+
+round_r_to_subset(fexp)(rnd,x):real=
+  FtoR(float_pair(rnd(scaled_mantissa(fexp)(x)),canonic_exp(fexp)(x)))
+
+% round monotone
+
+round_0 : LEMMA round_r_to_subset(fexp)(rnd,0) = 0
+
+round_ext : LEMMA FORALL (rnd1,rnd2:Round_type): 
+        (rnd1 = rnd2 ) IMPLIES
+           round_r_to_subset(fexp)(rnd1,x) = round_r_to_subset(fexp)(rnd2,x)
+
+round_down_or_up : LEMMA round_r_to_subset(fexp)(rnd,x) = round_r_to_subset(fexp)(floor,x) OR
+        round_r_to_subset(fexp)(rnd,x) = round_r_to_subset(fexp)(ceiling,x)
+
+round_le_pos: LEMMA FORALL (x:posreal, y:posreal): x <= y IMPLIES 
+                       round_r_to_subset(fexp)(rnd,x) <= round_r_to_subset(fexp)(rnd,y)
+
+rnd_le_opp: LEMMA (x <= y) IMPLIES (int_rnd_opp(rnd,x) <= int_rnd_opp(rnd,y))
+
+int_rnd_int_to_r_opp: LEMMA int_rnd_opp(rnd,e) = e
+
+round_le: LEMMA x <= y IMPLIES round_r_to_subset(fexp)(rnd,x) <= round_r_to_subset(fexp)(rnd,y)
+
+round_bounded_small_pos: LEMMA e <= fexp(e)   AND
+          (beta^(e - 1) <= x  AND x < beta^e) IMPLIES
+              round_r_to_subset(fexp)(rnd,x) = 0    OR 
+                  round_r_to_subset(fexp)(rnd,x) = beta^fexp(e)
+
+round_bounded_large_pos: LEMMA LET round=round_r_to_subset(fexp)(rnd,x) IN 
+  fexp(e) < e  IMPLIES (beta^(e - 1) <= x AND x < beta^e) IMPLIES
+  (beta^(e - 1) <= round  AND round <= beta^e)
+
+exp_small_round_0_pos: LEMMA (beta^(e - 1) <= x AND 
+   x < beta^e) IMPLIES
+   round_r_to_subset(fexp)(rnd,x) = 0 IMPLIES e <= fexp(e)
+
+round_opp: LEMMA round_r_to_subset(fexp)(rnd,-x) = 
+                  -round_r_to_subset(fexp)(int_rnd_opp_1(rnd),x)
+
+% round generic monotone
+
+round_generic: LEMMA generic_format?(fexp)(x) IMPLIES round_r_to_subset(fexp)(rnd,x)=x
+
+generic_format_round_pos: LEMMA LET round=round_r_to_subset(fexp)(rnd,x) IN 
+                  (x > 0) IMPLIES  generic_format?(fexp)(round)
+
+round_ge_generic: LEMMA generic_format?(fexp)(x) AND 
+        x <= y IMPLIES x <= round_r_to_subset(fexp)(rnd,y)
+
+round_le_generic: LEMMA generic_format?(fexp)(y) AND
+       x <= y IMPLIES round_r_to_subset(fexp)(rnd,x) <=y
+
+% round floor ceiling trunc away
+  
+round_DN_opp: LEMMA round_r_to_subset(fexp)(floor,(-x)) = 
+                   -round_r_to_subset(fexp)(ceiling,x)
+
+round_UP_opp: LEMMA round_r_to_subset(fexp)(ceiling,(-x)) = 
+                   -round_r_to_subset(fexp)(floor,x)
+
+round_ZR_opp: LEMMA round_r_to_subset(fexp)(trunc,(-x)) = 
+                   -round_r_to_subset(fexp)(trunc,(x))
+
+round_ZR_abs: LEMMA round_r_to_subset(fexp)(trunc,abs(x)) = 
+                abs(round_r_to_subset(fexp)(trunc,x))
+
+round_AW_opp: LEMMA round_r_to_subset(fexp)(away,(-x)) = 
+                   -round_r_to_subset(fexp)(away,(x))
+
+% round abs abs
+
+round_abs_abs_1: LEMMA  FORALL (p:[[real,real]-> bool]):
+ 		 ( FORALL rnd:
+       		    FORALL (x:real): (0 <= x) IMPLIES 
+                         p(x, (round_r_to_subset(fexp)(rnd,x)))
+                 )
+                       IMPLIES  p(abs(x),abs (round_r_to_subset(fexp)(rnd,x)))
+
+% round generic format
+
+generic_format_round: LEMMA generic_format?(fexp)(round_r_to_subset(fexp)(rnd,x))
+
+
+End RoundToSubset

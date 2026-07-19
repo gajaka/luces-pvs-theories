@@ -1,0 +1,107 @@
+ radix_aux[radix:above(1)]: THEORY
+
+BEGIN
+IMPORTING  f_core_int_aux, lnexp_fnd@ln_exp;
+
+int_increasing_expt_aux_radix : LEMMA FORALL (p:posint): expt(radix, p +2) > radix
+
+int_power_gt_1_radix : LEMMA FORALL (p:posint): 1 < expt(radix,p)
+
+int_power_gt_0_radix : LEMMA FORALL (p:int): (0 <= p) IMPLIES (0 < expt(radix,p))
+
+int_power_ge_0_radix : LEMMA FORALL (p:int): 0 <= radix^p
+
+int_power_le_radix : LEMMA FORALL (p1,p2:int): (p1 <= p2) IFF radix^p1 <= radix^p2
+
+int_power_lt_radix : LEMMA FORALL (p1,p2:int): (p1 < p2) IFF radix^p1 < radix^p2
+
+int_power_expt_gt_radix : LEMMA FORALL (p1,p2:int): (p1 > p2) IFF radix^p1 > radix^p2
+
+int_power_expt_ge_radix: LEMMA FORALL (p1,p2:int): (p1 >= p2) IFF radix^p1 >= radix^p2
+
+int_power_lt_int_power : LEMMA FORALL (p1,p2:int): radix^(p1 - 1) < radix^p2 IMPLIES p1 <= p2
+
+int_power_pos_radix: LEMMA FORALL (p:posint): radix^p >= radix
+
+int_power_neg_radix: LEMMA FORALL (p:posint): radix^(-p) < 1
+
+int_power__nonpos_radix: LEMMA  FORALL (n:nat): radix^(-n) <= 1
+
+bpow_gt_0 : LEMMA FORALL (e : int): 0 < radix^e
+
+bpow_plus : LEMMA FORALL (e1,e2 : int): radix^(e1 + e2) = radix^e1 * radix^e2
+
+bpow_1 :  LEMMA radix^1 = radix
+ 
+bpow_plus1 : LEMMA FORALL (e : int):radix^(e + 1) = radix * (radix^e)
+
+bpow_opp : LEMMA FORALL (e : int):radix^(-e) = 1/radix^e
+
+bpow_inj_nzint :  LEMMA FORALL (e1,e2 : nzint): radix^e1 =radix^e2 IFF e1=e2 
+
+int_le_antisym: LEMMA  FORALL (e1,e2 : int): e1<=e2 AND e2<=e1 IFF e1=e2
+
+bpow_inj_int :  LEMMA FORALL (e1,e2 : int): radix^e1 =radix^e2 IFF e1=e2
+
+bpow_exp : LEMMA FORALL (e : int): radix^e = exp(e * ln (radix))
+
+bpow_unique : LEMMA FORALL(x:real),(e1,e2:int): (radix^(e1 - 1) <=x AND x < radix^e1) AND
+                                                (radix^(e2 - 1) <=x AND x < radix^e2) IMPLIES
+
+                                                 e1 = e2
+
+exp_lt_inv: LEMMA FORALL (x,y:real): exp(x) < exp (y) IMPLIES  x < y
+
+exp_lt_rewrite: LEMMA FORALL (x,y:real): exp(x) < exp (y) IFF  x < y
+
+% floor ceiling trunc away subsection
+
+int_floor_lub: LEMMA FORALL (n : int) (x : real):  n <= x IMPLIES  n <= floor(x)
+
+int_floor_imp : LEMMA FORALL(n : int) (x : real):  (n <= x AND  x < n + 1) IMPLIES floor(x) = n
+
+int_floor_le : LEMMA FORALL (x,y : real): (x <= y) IMPLIES floor(x) <= floor(y)
+
+int_ceiling_ub : LEMMA FORALL (x: real): x <= ceiling(x)
+
+int_ceiling_glb : LEMMA FORALL (n : int) (x : real): x <= n  IMPLIES ceiling(x) <= n
+
+int_ceiling_imp : LEMMA FORALL (n : int) (x : real): (n - 1  < x AND x <= n) IMPLIES ceiling(x) = n
+
+int_ceiling_le : LEMMA FORALL (x,y : real): (x <= y) IMPLIES ceiling(x) <= ceiling(y)
+
+int_ceiling_floor_neq : LEMMA FORALL (x:real): floor(x) /= x IMPLIES ceiling(x) = floor(x) + 1
+
+ceiling_floor_rew: LEMMA  FORALL (x:real): ceiling(x) = - floor(- x)
+
+trunc (x:real): real = IF ( x < 0 ) THEN ceiling(x) ELSE floor(x) ENDIF
+
+int_trunc: LEMMA FORALL (n:int): trunc(n) = n
+
+real_trunc_floor : LEMMA FORALL (n:real): 0 <= n IMPLIES trunc(n) = floor(n)
+ 
+real_trunc_ceiling : LEMMA FORALL (n:real): n <= 0 IMPLIES trunc(n) = ceiling(n)
+
+real_trunc_le : LEMMA FORALL (x,y : real): (x <= y) IMPLIES trunc(x) <= trunc(y)
+
+real_trunc_opp : LEMMA FORALL (x:real): trunc (-x) = -trunc(x)
+
+real_trunc_abs :  LEMMA FORALL (x:real): trunc(abs(x)) = abs(trunc(x))
+
+real_trunc_lub : LEMMA FORALL (n : int) (x : real):  n <= x IMPLIES n <= abs(trunc (x))
+
+away(x:real): real = IF ( x < 0 ) THEN floor(x) ELSE ceiling(x)  ENDIF
+
+int_away : LEMMA FORALL (n:int): away(n) = n
+
+real_away_ceiling : LEMMA FORALL (x:real): 0 <= x IMPLIES away(x) = ceiling(x)
+
+real_away_floor : LEMMA FORALL (x:real): x <= 0 IMPLIES away(x) = floor(x)
+
+real_away_le : LEMMA FORALL (x,y : real): (x <= y) IMPLIES away(x) <= away(y)
+
+real_away_opp : LEMMA FORALL (x:real): away(-x) = -away(x)
+
+real_away_abs :  LEMMA FORALL (x:real): away(abs(x)) = abs(away(x))
+
+END radix_aux
