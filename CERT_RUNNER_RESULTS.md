@@ -1,9 +1,123 @@
 # Certificate Runner — Paper 3 Final Dataset
 
-19 certificates evaluated on 6 independent experiments (4 dawn, 1 merged dawn, 1 dusk).
+19 certificates evaluated on 8 independent experiments (5 dawn, 3 dusk).
 Proof-preserving graph certificates (PPG, RES, DET) achieve 100% PASS on all logs.
 
 ---
+
+```
+═══════════════════════════════════════════════════════
+  LUCES CERTIFICATE RUNNER
+═══════════════════════════════════════════════════════
+  File:       boot298_dusk.csv
+  Samples:    1588
+  Duration:   7.6h
+  Elevation:  [-21.8, 22.4]
+  Transition: dusk
+
+  STRUCTURAL INVARIANTS
+  ---------------------
+  C2  Transport Stability:  PASS   coupling_ρ=1.0000
+  C4  Dual Consistency:     PASS   gap=2.08e-17 W2=0.1370
+  Cv  Vertex Sparsity:      PASS   nnz=19 ≤ 19
+  Cm  Monge Structure:      PASS   monge=0.828
+  C7  Map Persistence:      PASS   ρ(T1,T2)=0.9785
+  C9  Cyclical Monotone:    PASS   violations=0/171 support=19
+  C11 OT Monotonicity:      PASS   decreasing violations=0/252 (from elevation)
+  C13 Voronoi Partition:    PASS   min_W2=0.0176 (DAY_CLEAR↔DUSK) k=4
+
+  RANK + BOUNDARY
+  ---------------
+  C1  Rank Preservation:    PASS   ρ=0.9909 (identity)
+  C5  Fisher Boundary:      PASS   κ_max=28.7 κ_mean=15.2
+
+  DYNAMICS
+  --------
+  C3  Velocity (dusk):      PASS   v=[15862,3722,1038] ratio=15.3x
+  C6  OT Shadow:            N/A    No ot_error column (pre-OT-shadow firmware)
+  C14 Dual Observability:   PASS   dual=50/50 spec=50 κ_ok=50
+  C19 Stationarity:         PASS   cloud_std=0.0 mean=0% range=0%
+
+  GEODESIC STRUCTURE
+  ------------------
+  C8  Near-Optimality:      DIAG   excess=16.8% (expected for decelerating dusk)
+  C10 Displ. Convexity:     PASS   MIXED excess=+0.026 [-0.033..+0.072]
+  C12 Geodesic Additive:    PASS   ratio=1.168 (1.0=perfect geodesic)
+
+  PANARETOS (Wasserstein Statistics)
+  -----------------------------------
+  C15 Brenier Diff:         PASS   max_jump=3 mean_jump=1.00 (≤3=differentiable)
+  C16 Local Monotonicity:   PASS   inversions=0/9 (0=locally monotone)
+  C17 Tangent Bundle:       DIAG   gap=0.2800 (Monge vs Kantorovich midpoint)
+  C18 Barycenter Sep:       PASS   W2(N,D)=0.1027 W2(N,M)=0.0949 W2(M,D)=0.0292 min=0.0292 (>0.01=separated)
+
+  PROOF-PRESERVING GRAPH
+  ----------------------
+  PPG Graph Validity:       PASS   valid=11/11 (100%)
+  RES Resilience:           PASS   sub=11/11 full=11/11 mono=True
+  DET Deterministic:        PASS   det=11/11 mean_dom=0.903
+
+═══════════════════════════════════════════════════════
+  Summary: 21 PASS / 0 FAIL / 2 DIAG / 1 N/A
+═══════════════════════════════════════════════════════
+```
+
+```
+═══════════════════════════════════════════════════════
+  LUCES CERTIFICATE RUNNER
+═══════════════════════════════════════════════════════
+  File:       boot303_dusk.csv
+  Samples:    1296
+  Duration:   6.2h
+  Elevation:  [-18.6, 45.0]
+  Transition: dusk
+
+  STRUCTURAL INVARIANTS
+  ---------------------
+  C2  Transport Stability:  PASS   coupling_ρ=1.0000
+  C4  Dual Consistency:     PASS   gap=2.67e-16 W2=0.1365
+  Cv  Vertex Sparsity:      PASS   nnz=19 ≤ 19
+  Cm  Monge Structure:      PASS   monge=0.841
+  C7  Map Persistence:      PASS   ρ(T1,T2)=0.9909
+  C9  Cyclical Monotone:    PASS   violations=0/171 support=19
+  C11 OT Monotonicity:      PASS   decreasing violations=0/253 (recorded)
+  C13 Voronoi Partition:    PASS   min_W2=0.0167 (DAY_CLEAR↔DUSK) k=4
+
+  RANK + BOUNDARY
+  ---------------
+  C1  Rank Preservation:    PASS   ρ=0.9909 (identity)
+  C5  Fisher Boundary:      PASS   κ_max=3.3 κ_mean=1.1
+
+  DYNAMICS
+  --------
+  C3  Velocity (dusk):      PASS   v=[16787,4993,1065] ratio=15.8x
+  C6  OT Shadow:            PASS   err=0.0720 cv=0.09 t=dec
+  C14 Dual Observability:   PASS   dual=50/50 spec=50 κ_ok=50
+  C19 Stationarity:         PASS   cloud_std=3.0 mean=6% range=10%
+
+  GEODESIC STRUCTURE
+  ------------------
+  C8  Near-Optimality:      DIAG   excess=18.8% (expected for decelerating dusk)
+  C10 Displ. Convexity:     PASS   MIXED excess=+0.021 [-0.036..+0.063]
+  C12 Geodesic Additive:    PASS   ratio=1.188 (1.0=perfect geodesic)
+
+  PANARETOS (Wasserstein Statistics)
+  -----------------------------------
+  C15 Brenier Diff:         PASS   max_jump=3 mean_jump=1.00 (≤3=differentiable)
+  C16 Local Monotonicity:   PASS   inversions=0/9 (0=locally monotone)
+  C17 Tangent Bundle:       DIAG   gap=0.2726 (Monge vs Kantorovich midpoint)
+  C18 Barycenter Sep:       PASS   W2(N,D)=0.1032 W2(N,M)=0.0921 W2(M,D)=0.0361 min=0.0361 (>0.01=separated)
+
+  PROOF-PRESERVING GRAPH
+  ----------------------
+  PPG Graph Validity:       PASS   valid=11/11 (100%)
+  RES Resilience:           PASS   sub=10/10 full=11/11 mono=True
+  DET Deterministic:        PASS   det=11/11 mean_dom=0.891
+
+═══════════════════════════════════════════════════════
+  Summary: 22 PASS / 0 FAIL / 2 DIAG
+═══════════════════════════════════════════════════════
+```
 
 ```
 ═══════════════════════════════════════════════════════
