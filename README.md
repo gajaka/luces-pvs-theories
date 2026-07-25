@@ -1,10 +1,50 @@
-# LUCES — Formal PVS Theories for Optimal Transport on Embedded Spectral Data
+# Proof-Preserving Graph Theory + Optimal Transport Certificates
 
-**21 theories, 88 machine-checked theorems**
+**A formal mathematical framework for structural resilience, with applications to optimal transport verification and hardware root-of-trust.**
 
-Formal verification of optimal transport structure observed on a 4-node ESP32 mesh network performing real-time spectral adaptive lighting control.
+26 theories. 158 machine-checked theorems. All proved in PVS.
 
-## Theories
+---
+
+## Mathematical Framework: Proof-Preserving Graphs
+
+A proof-preserving graph is a graph where every edge satisfies a refinement relation AND both endpoints maintain their local invariants. The graph may evolve (add vertices, add edges) but can never violate these constraints.
+
+Built on:
+- NASA PVS Library `graphs@graphs` (Butler & Sjogren, 1998)
+- NASA PVS Library `sets_aux@rr_rel` (Stosic — refinement relations)
+
+| Theory | Theorems | Scope |
+|--------|----------|-------|
+| `proof_preserving_graphs.pvs` | 37 | Core framework: validity hierarchy, walks, paths, evolution, monotonicity, connectivity, separation, deterministic traversal, violation detection, certificate chains |
+| `pp_graphs_extended.pvs` | 21 | Extensions: temporal evolution, weighted/OT connection, algebraic automorphisms, fault tolerance, categorical morphisms |
+| `lowrisc_boot_verification.pvs` | 10 | Application: secure boot chain (layered DAG, failure isolation, lock-out) |
+
+### Key Results
+
+**Structural Resilience:**
+- Graph evolution forms a partial order (reflexive, transitive, antisymmetric)
+- Invariant sets grow monotonically under transformation
+- Paths persist once established
+
+**Deterministic Traversal:**
+- Inference function extraction without Axiom of Choice
+- Via parametric definite description from `relational_choice`
+
+**Fault Tolerance:**
+- Byzantine vertices are isolated in pp-valid graphs
+- Connected vertices are always honest
+
+**Secure Boot (applied):**
+- Boot chain is a DAG (layered acyclicity)
+- Failure at level k blocks all levels > k
+- No unsigned execution past verification
+
+---
+
+## Optimal Transport Certificates
+
+21 theories formalizing Kantorovich duality and optimal transport structure, validated on real spectral data from a 4-node ESP32 mesh network.
 
 | Theory | Theorems | Topic |
 |--------|----------|-------|
@@ -19,7 +59,7 @@ Formal verification of optimal transport structure observed on a 4-node ESP32 me
 | `transport_stability.pvs` | 5 | Stability of transport maps |
 | `stability_of_maps.pvs` | 3 | Map persistence under perturbation |
 | `monge_kantorovich_equivalence.pvs` | 3 | Monge-Kantorovich equivalence |
-| `lie_generator_structure.pvs` | 10 | Lie generator coherence (T10 key theorem) |
+| `lie_generator_structure.pvs` | 10 | Lie generator coherence (T10) |
 | `fisher_boundary.pvs` | 2 | Fisher information boundary |
 | `fisher_voronoi.pvs` | 4 | Fisher-Voronoi partition |
 | `dual_observability.pvs` | 4 | Dual observability certificates |
@@ -30,7 +70,7 @@ Formal verification of optimal transport structure observed on a 4-node ESP32 me
 | `rank_orientation.pvs` | 2 | Rank and orientation preservation |
 | `global_optimality.pvs` | 0 | Global optimality (axioms only) |
 
-## Key Theorem (T10)
+### Key Theorem (T10)
 
 ```pvs
 thm_coherence_iff: THEOREM
@@ -39,6 +79,23 @@ thm_coherence_iff: THEOREM
 ```
 
 Validated on 13 independent experiments.
+
+---
+
+## Z3/SMT2 Proofs
+
+| File | Solver | Result |
+|------|--------|--------|
+| `fisher_boundary_strong.smt2` | Z3 (NRA) | UNSAT — theorem holds |
+| `brenier_t3_surjective.smt2` | Z3 (QF_LIA, N=20) | UNSAT — theorem holds |
+
+---
+
+## Sterbenz Floating-Point Proof
+
+`Sterbenz/` — Correctness proof of Sterbenz's lemma via frama-c → Jessie → PVS pipeline.
+
+---
 
 ## Related Publications
 
@@ -54,7 +111,7 @@ Validated on 13 independent experiments.
 
 ## Author
 
-Dragan Stosic, MSc — [NASA PVS Libraries contributor](https://shemesh.larc.nasa.gov/fm/pvs/PVS-library/library.html#ds)
+Dragan Stosic, MSc — [NASA PVS Libraries contributor](https://github.com/nasa/pvslib/blob/master/sets_aux/rr_rel.pvs)
 
 ## License
 
