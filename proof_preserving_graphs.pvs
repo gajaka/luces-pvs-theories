@@ -1,0 +1,469 @@
+%------------------------------------------------------------------------------
+% Proof-Preserving Graph Theory
+%
+% Extension of NASA PVS graph library (Butler & Sjogren, 1998) with
+% structural resilience constraints based on refinement relations.
+%
+% Key idea: A proof-preserving graph is a graph where every edge
+% satisfies a refinement relation (rr_rel) AND both endpoints maintain
+% their local invariants. The graph may evolve (add vertices, add edges)
+% but can never violate these constraints.
+%
+% Connection to NASA pvslib:
+%   - graphs@graphs     : base graph type (vert, edges, doubleton)
+%   - graphs@paths      : walk, path definitions
+%   - graphs@subgraphs  : subgraph relation
+%   - sets_aux@rr_rel   : refinement relations (Stosic, NASA pvslib)
+%
+% Author: Dragan Stosic
+% Date: 2026-07-24
+%------------------------------------------------------------------------------
+
+proof_preserving_graphs[T: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING graphs@graphs[T]
+  IMPORTING graphs@paths[T]
+  IMPORTING graphs@subgraphs[T]
+  IMPORTING sets_aux@rr_rel[T, T]
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 1: Foundations
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Equivalence relation partitioning node space
+  le_T: equivalence[T]
+
+  % Abstraction and concretization (identity for homogeneous graph)
+  f_abs: [T -> T]
+  g_con: [T -> T]
+
+  % Refinement relation instantiated from sets_aux@rr_rel
+  rr_rel(x, y: T): bool = RR(le_T, le_T, f_abs, g_con)(x, y)
+
+  % Secondary refinement relation (inverse-extension based)
+  rr_rel2(x, y: T): bool = RR2(le_T, le_T, f_abs, g_con)(x, y)
+
+  % Local invariant that must hold for each active node
+  invariant_holds: PRED[T]
+
+  x, y, v, w: VAR T
+  i: VAR nat
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 2: Core Definitions
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % An edge is proof-preserving iff both endpoints satisfy their
+  % invariants AND are related by the refinement relation
+  pp_edge?(x, y): bool =
+    x /= y AND
+    invariant_holds(x) AND
+    invariant_holds(y) AND
+    rr_rel(x, y)
+
+  % Weak pp-edge: only requires refinement, not invariant
+  % (useful for structural analysis without invariant checking)
+  pp_edge_weak?(x, y): bool =
+    x /= y AND rr_rel(x, y)
+
+  % Strong pp-edge using RR2 (inverse-extension variant)
+  pp_edge_strong?(x, y): bool =
+    x /= y AND
+    invariant_holds(x) AND
+    invariant_holds(y) AND
+    rr_rel2(x, y)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 3: Graph Validity
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % A graph is proof-preserving if EVERY edge satisfies pp_edge?
+  pp_valid?(G: graph[T]): bool =
+    FORALL (x, y: T):
+      edge?(G)(x, y) IMPLIES pp_edge?(x, y)
+
+  % Weak validity: only structural refinement required
+  pp_valid_weak?(G: graph[T]): bool =
+    FORALL (x, y: T):
+      edge?(G)(x, y) IMPLIES pp_edge_weak?(x, y)
+
+  % Strong validity using RR2
+  pp_valid_strong?(G: graph[T]): bool =
+    FORALL (x, y: T):
+      edge?(G)(x, y) IMPLIES pp_edge_strong?(x, y)
+
+  PP_Graph: TYPE = {G: graph[T] | pp_valid?(G)}
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 4: Walks and Paths
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % A walk in G is proof-preserving if every consecutive pair
+  % satisfies pp_edge?
+  pp_walk?(G: graph[T], pw: prewalk): bool =
+    walk?(G, pw) AND
+    (FORALL (i: below(length(pw))): invariant_holds(seq(pw)(i))) AND
+    FORALL (i: below(length(pw) - 1)):
+      pp_edge?(seq(pw)(i), seq(pw)(i + 1))
+
+  % A path in G is proof-preserving
+  pp_path?(G: graph[T], pw: prewalk): bool =
+    path?(G, pw) AND
+    (FORALL (i: below(length(pw))): invariant_holds(seq(pw)(i))) AND
+    FORALL (i: below(length(pw) - 1)):
+      pp_edge?(seq(pw)(i), seq(pw)(i + 1))
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 5: Fundamental Theorems
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % T1: Hierarchy of validity levels
+  %     strong => standard => weak
+  thm_strong_implies_valid: THEOREM
+    FORALL (G: graph[T]):
+      pp_valid_strong?(G) AND
+        (FORALL (x, y: T): rr_rel2(x, y) IMPLIES rr_rel(x, y))
+          IMPLIES pp_valid?(G)
+
+  thm_valid_implies_weak: THEOREM
+    FORALL (G: graph[T]):
+      pp_valid?(G) IMPLIES pp_valid_weak?(G)
+
+  % T2: Invariant preservation along walks
+  %     If a walk is pp, all vertices satisfy their invariants
+  pp_walk_invariants: THEOREM
+    FORALL (G: graph[T], pw: prewalk):
+      pp_walk?(G, pw) IMPLIES
+        FORALL (i: below(length(pw))):
+          invariant_holds(seq(pw)(i))
+
+  % T3: Every pp-path is a pp-walk
+  pp_path_is_walk: THEOREM
+    FORALL (G: graph[T], pw: prewalk):
+      pp_path?(G, pw) IMPLIES pp_walk?(G, pw)
+
+  % T4: Invariant preservation along paths (corollary of T2+T3)
+  pp_path_invariants: THEOREM
+    FORALL (G: graph[T], pw: prewalk):
+      pp_path?(G, pw) IMPLIES
+        FORALL (i: below(length(pw))):
+          invariant_holds(seq(pw)(i))
+
+  % T5: Subgraph validity preservation
+  pp_subgraph_valid: THEOREM
+    FORALL (G: graph[T], S: Subgraph(G)):
+      pp_valid?(G) IMPLIES pp_valid?(S)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 6: Graph Evolution (Resilience)
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % A transformation is proof-preserving if:
+  % (1) vertices can only be added (monotone)
+  % (2) edges can only be added
+  % (3) validity is preserved
+  pp_transform?(G1: graph[T], G2: graph[T]): bool =
+    subset?(vert(G1), vert(G2)) AND
+    subset?(edges(G1), edges(G2)) AND
+    pp_valid?(G1) AND pp_valid?(G2)
+
+  % T6: Path resilience under transformation
+  path_resilience: THEOREM
+    FORALL (G1, G2: graph[T], pw: prewalk):
+      pp_transform?(G1, G2) AND pp_path?(G1, pw)
+        IMPLIES pp_path?(G2, pw)
+
+  % T7: Walk resilience under transformation
+  walk_resilience: THEOREM
+    FORALL (G1, G2: graph[T], pw: prewalk):
+      pp_transform?(G1, G2) AND pp_walk?(G1, pw)
+        IMPLIES pp_walk?(G2, pw)
+
+  % T8: Transformation is reflexive
+  pp_transform_reflexive: THEOREM
+    FORALL (G: graph[T]):
+      pp_valid?(G) IMPLIES pp_transform?(G, G)
+
+  % T9: Transformation is transitive
+  pp_transform_transitive: THEOREM
+    FORALL (G1, G2, G3: graph[T]):
+      pp_transform?(G1, G2) AND pp_transform?(G2, G3)
+        IMPLIES pp_transform?(G1, G3)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 7: Invariant Sets and Monotonicity
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % The set of invariant-satisfying vertices in G
+  invariant_set(G: graph[T]): set[T] =
+    {v: T | vert(G)(v) AND invariant_holds(v)}
+
+  % T10: Invariant set grows monotonically under transformation
+  invariant_monotone: THEOREM
+    FORALL (G1, G2: graph[T]):
+      pp_transform?(G1, G2) IMPLIES
+        subset?(invariant_set(G1), invariant_set(G2))
+
+  % The set of pp-valid edges
+  pp_edge_set(G: graph[T]): set[doubleton[T]] =
+    {e: doubleton[T] | edges(G)(e) AND
+      FORALL (x, y: T): e = dbl[T](x, y) AND x /= y
+        IMPLIES pp_edge?(x, y)}
+
+  % T11: In a pp-valid graph, all edges are pp-edges
+  pp_valid_all_edges: THEOREM
+    FORALL (G: graph[T]):
+      pp_valid?(G) IMPLIES pp_edge_set(G) = edges(G)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 8: Connectivity
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Two vertices are pp-connected if there exists a pp-path between them
+  pp_connected?(G: graph[T], x, y: T): bool =
+    EXISTS (pw: prewalk): pp_path?(G, pw) AND
+      seq(pw)(0) = x AND seq(pw)(length(pw) - 1) = y
+
+  % T12: Connectivity resilience
+  connectivity_resilience: THEOREM
+    FORALL (G1, G2: graph[T], x, y: T):
+      pp_transform?(G1, G2) AND pp_connected?(G1, x, y)
+        IMPLIES pp_connected?(G2, x, y)
+
+  % T13: pp-connected vertices satisfy invariants
+  pp_connected_invariants: THEOREM
+    FORALL (G: graph[T], x, y: T):
+      pp_connected?(G, x, y) IMPLIES
+        invariant_holds(x) AND invariant_holds(y)
+
+  % T14: pp-connectivity is symmetric (under symmetric rr_rel)
+  %      Requires rr_rel symmetry as explicit hypothesis since
+  %      RR(le_T, le_T, f_abs, g_con) is not symmetric in general.
+  pp_connected_symmetric: THEOREM
+    FORALL (G: graph[T], x, y: T):
+      (FORALL (a, b: T): rr_rel(a, b) IMPLIES rr_rel(b, a)) AND
+      pp_connected?(G, x, y) IMPLIES pp_connected?(G, y, x)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 9: Equivalence Classes and Quotient Structure
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Equivalence class of a vertex under le_T
+  equiv_class(x: T): set[T] = {y: T | le_T(x, y)}
+
+  % Two vertices are in the same equivalence class
+  same_class?(x, y: T): bool = le_T(x, y)
+
+  % A pp-edge connects vertices that are "compatible" under le_T
+  % (follows from rr_rel definition via rel_extension)
+  % T15: f_abs consistency — if f_abs maps x to y's class, then rr_rel holds
+  thm_f_consistent: THEOREM
+    FORALL (x, y: T):
+      le_T(y, f_abs(x)) IMPLIES rr_rel(x, y)
+
+  % T16: g_con consistency — if g_con maps y into x's class, then rr_rel holds
+  thm_g_consistent: THEOREM
+    FORALL (x, y: T):
+      le_T(x, g_con(y)) IMPLIES rr_rel(x, y)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 10: Deterministic Traversal
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % If each vertex has EXACTLY ONE pp-successor, we can extract
+  % a deterministic traversal function
+  deterministic?(G: graph[T]): bool =
+    FORALL (x: T):
+      vert(G)(x) IMPLIES
+        EXISTS (y: T):
+          edge?(G)(x, y) AND pp_edge?(x, y) AND
+            (FORALL (z: T):
+              edge?(G)(x, z) IMPLIES z = y)
+
+  % Helper lemma: in deterministic graph, successor set is nonempty
+  deterministic_successor_nonempty: LEMMA
+    FORALL (G: graph[T], x: T):
+      deterministic?(G) AND vert(G)(x) IMPLIES
+        nonempty?[T]({y: T | edge?(G)(x, y) AND pp_edge?(x, y)})
+
+  % T17: Deterministic inference function exists
+  inference_function_exists: THEOREM
+    FORALL (G: graph[T]):
+      deterministic?(G) IMPLIES
+        EXISTS (f: [T -> T]):
+          FORALL (x: T):
+            vert(G)(x) IMPLIES
+              edge?(G)(x, f(x)) AND pp_edge?(x, f(x))
+
+  % T18: Deterministic graph is pp-valid
+  deterministic_is_valid: THEOREM
+    FORALL (G: graph[T]):
+      deterministic?(G) IMPLIES pp_valid?(G)
+
+  % T19: Inference function preserves invariants
+  inference_preserves_invariant: THEOREM
+    FORALL (G: graph[T]):
+      deterministic?(G) IMPLIES
+        FORALL (x: T):
+          vert(G)(x) AND invariant_holds(x) IMPLIES
+            EXISTS (y: T):
+              edge?(G)(x, y) AND invariant_holds(y)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 11: Separation (Menger Connection)
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % A set S separates x from y in the pp-graph if every pp-path
+  % from x to y passes through S
+  pp_separates?(G: graph[T], S: set[T], x, y: T): bool =
+    FORALL (pw: prewalk):
+      pp_path?(G, pw) AND seq(pw)(0) = x AND seq(pw)(length(pw) - 1) = y
+        IMPLIES EXISTS (i: below(length(pw))): S(seq(pw)(i))
+
+  % T20: Empty set separates iff no pp-path exists
+  empty_separates_iff_disconnected: THEOREM
+    FORALL (G: graph[T], x, y: T):
+      pp_separates?(G, emptyset[T], x, y) IFF
+        NOT pp_connected?(G, x, y)
+
+  % T21: The full vertex set always separates (trivially)
+  full_set_separates: THEOREM
+    FORALL (G: graph[T], x, y: T):
+      pp_separates?(G, vert(G), x, y)
+
+  % T22: If S separates and S' contains S, then S' separates
+  separation_monotone: THEOREM
+    FORALL (G: graph[T], S1, S2: set[T], x, y: T):
+      pp_separates?(G, S1, x, y) AND subset?(S1, S2)
+        IMPLIES pp_separates?(G, S2, x, y)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 12: Violation Detection
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % A vertex violates its invariant
+  violating?(G: graph[T], x: T): bool =
+    vert(G)(x) AND NOT invariant_holds(x)
+
+  % The violation set of a graph
+  violation_set(G: graph[T]): set[T] =
+    {x: T | violating?(G, x)}
+
+  % T23: In a pp-valid graph, no edge touches a violating vertex
+  pp_valid_no_violating_edges: THEOREM
+    FORALL (G: graph[T], x, y: T):
+      pp_valid?(G) AND edge?(G)(x, y) IMPLIES
+        NOT violating?(G, x) AND NOT violating?(G, y)
+
+  % T24: Violating vertices are isolated in pp-valid graphs
+  violating_isolated: THEOREM
+    FORALL (G: graph[T], x: T):
+      pp_valid?(G) AND violating?(G, x) IMPLIES
+        FORALL (y: T): NOT edge?(G)(x, y)
+
+  % T25: pp-valid graph has empty violation set among edge-adjacent vertices
+  pp_valid_edge_invariants: THEOREM
+    FORALL (G: graph[T]):
+      pp_valid?(G) IMPLIES
+        FORALL (x, y: T):
+          edge?(G)(x, y) IMPLIES
+            invariant_holds(x) AND invariant_holds(y)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 13: Connection between RR and RR2
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % T26: RR evaluated at (g_con(y), f_abs(x)) gives RR2 at (x, y)
+  %      (Direct application of RR_functional_conditional_equal_RR2)
+  thm_rr_rr2_connection: THEOREM
+    FORALL (x, y: T):
+      rr_rel(g_con(y), f_abs(x)) IFF rr_rel2(x, y)
+
+  % T27: If pp_edge_strong holds, then weak pp_edge holds
+  %      (assuming RR2 => RR at the pair level)
+  strong_edge_implies_weak: THEOREM
+    FORALL (x, y: T):
+      pp_edge_strong?(x, y) AND rr_rel2(x, y) IMPLIES rr_rel(x, y)
+        IMPLIES pp_edge?(x, y)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 14: Certificate Chains
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % A certificate chain is a pp-path of length > 1
+  certificate_chain?(G: graph[T], pw: prewalk): bool =
+    pp_path?(G, pw) AND length(pw) > 1
+
+  % T28: Every certificate chain has all invariants satisfied
+  certificate_chain_sound: THEOREM
+    FORALL (G: graph[T], pw: prewalk):
+      certificate_chain?(G, pw) IMPLIES
+        FORALL (i: below(length(pw))):
+          invariant_holds(seq(pw)(i))
+
+  % T29: A certificate chain witnesses pp-connectivity
+  %      of its endpoints
+  certificate_chain_connects: THEOREM
+    FORALL (G: graph[T], pw: prewalk):
+      certificate_chain?(G, pw) IMPLIES
+        pp_connected?(G, seq(pw)(0), seq(pw)(length(pw) - 1))
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 15: Path Composition
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % T30: pp-valid graph with edge implies pp_edge
+  %      (Direct characterization: in pp-valid graph, every edge is pp)
+  pp_valid_characterization: THEOREM
+    FORALL (G: graph[T], x, y: T):
+      pp_valid?(G) AND edge?(G)(x, y)
+        IMPLIES pp_edge?(x, y) AND invariant_holds(x) AND invariant_holds(y)
+                AND rr_rel(x, y) AND x /= y
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 16: Partial Order on Graph Evolution
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % T31: pp_transform is antisymmetric (up to graph equality)
+  %      Together with reflexivity (T8) and transitivity (T9),
+  %      this gives a partial order on pp-valid graphs.
+  pp_transform_antisymmetric: THEOREM
+    FORALL (G1, G2: graph[T]):
+      pp_transform?(G1, G2) AND pp_transform?(G2, G1)
+        IMPLIES vert(G1) = vert(G2) AND edges(G1) = edges(G2)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 17: Violation/Invariant Complementarity
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % T32: violation_set and invariant_set partition the vertex set
+  violation_invariant_complement: THEOREM
+    FORALL (G: graph[T], x: T):
+      vert(G)(x) IMPLIES
+        (invariant_set(G)(x) IFF NOT violation_set(G)(x))
+
+  % T33: violation_set and invariant_set are disjoint
+  violation_invariant_disjoint: THEOREM
+    FORALL (G: graph[T], x: T):
+      NOT (invariant_set(G)(x) AND violation_set(G)(x))
+
+  % T34: every vertex is in exactly one of invariant_set or violation_set
+  vertex_partition: THEOREM
+    FORALL (G: graph[T], x: T):
+      vert(G)(x) IMPLIES
+        (invariant_set(G)(x) OR violation_set(G)(x))
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 18: Deterministic Graph Edge Count
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % T35: In a deterministic graph, every vertex has exactly one outgoing edge
+  deterministic_unique_edge: THEOREM
+    FORALL (G: graph[T], x: T):
+      deterministic?(G) AND vert(G)(x) IMPLIES
+        EXISTS (y: T):
+          edge?(G)(x, y) AND
+          FORALL (z: T): edge?(G)(x, z) IMPLIES z = y
+
+END proof_preserving_graphs

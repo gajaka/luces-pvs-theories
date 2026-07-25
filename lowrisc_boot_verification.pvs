@@ -1,0 +1,204 @@
+%------------------------------------------------------------------------------
+% Formal Verification of Secure Boot Chain
+%
+% A PVS formalization of layered proof-preserving graphs applied to
+% hardware root-of-trust boot sequences (ROM → ROM_EXT → BL0 → kernel).
+%
+% Key properties verified:
+%   - Boot chain is a DAG (no cycles)
+%   - Failure at level k blocks all levels > k
+%   - Every level > 0 requires verification from level below
+%   - Lock-out: edges only go forward (higher levels)
+%   - Invariant isolation: unsigned/tampered stages cannot participate
+%
+% Mathematical foundation:
+%   - Proof-preserving graphs (Stosic, 2026)
+%   - Refinement relations rr_rel (Stosic, NASA PVS Library)
+%   - NASA PVS graph library (Butler & Sjogren, 1998)
+%
+% Application:
+%   Secure boot verification for hardware root-of-trust architectures.
+%   Each vertex represents a boot stage, each edge represents a
+%   cryptographic verification step. The pp_edge? constraint ensures
+%   that both the verifier and verified stages satisfy their invariants
+%   AND are related by the refinement relation (abstraction-concretization
+%   correctness between specification and implementation).
+%
+% Author: Dragan Stosic
+% Date: 2026-07-25
+%------------------------------------------------------------------------------
+
+lowrisc_boot_verification[T: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING proof_preserving_graphs[T]
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 1: Layer Structure
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Level assignment: each vertex (boot stage) has a layer
+  % Example: ROM=0, ROM_EXT=1, BL0=2, kernel=3
+  level: [T -> nat]
+
+  % Layered graph: edges only go from lower to higher level
+  % This captures the forward-only nature of boot verification
+  layered?(G: graph[T]): bool =
+    pp_valid?(G) AND
+    FORALL (x, y: T):
+      edge?(G)(x, y) IMPLIES level(x) < level(y)
+
+  % Lock-out property: vertex at level k has no edges to levels below k
+  % Once you pass a boot stage, you cannot go back
+  locked_below?(G: graph[T], v: T): bool =
+    FORALL (w: T):
+      edge?(G)(v, w) IMPLIES level(w) >= level(v)
+
+  % Full lock-out: every vertex respects layer boundaries
+  full_lockout?(G: graph[T]): bool =
+    FORALL (v: T):
+      vert(G)(v) IMPLIES locked_below?(G, v)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 2: Boot Chain Definition
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Boot chain: layered graph + at most one node per level
+  % This models a linear boot sequence: ROM → ROM_EXT → BL0 → kernel
+  boot_chain?(G: graph[T]): bool =
+    layered?(G) AND
+    FORALL (x, y: T):
+      vert(G)(x) AND vert(G)(y) AND level(x) = level(y)
+        IMPLIES x = y
+
+  % Verification step: vertex x cryptographically verifies vertex y
+  % at the next level. Models: ROM verifies ROM_EXT, ROM_EXT verifies BL0, etc.
+  verifies?(G: graph[T], x, y: T): bool =
+    edge?(G)(x, y) AND pp_edge?(x, y) AND
+    level(x) + 1 = level(y)
+
+  % Security property: every stage past ROM requires verification
+  % from the stage below (no unsigned execution)
+  secure_boot?(G: graph[T]): bool =
+    boot_chain?(G) AND
+    FORALL (v: T):
+      vert(G)(v) AND level(v) > 0 IMPLIES
+        EXISTS (u: T): verifies?(G, u, v)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 3: Fundamental Theorems
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % T1: Layered implies full lock-out
+  %     Forward-only edges mean you can never access earlier stages
+  layered_implies_lockout: THEOREM
+    FORALL (G: graph[T]):
+      layered?(G) IMPLIES full_lockout?(G)
+
+  % T2: Layered graph is always pp-valid (by definition)
+  layered_is_valid: THEOREM
+    FORALL (G: graph[T]):
+      layered?(G) IMPLIES pp_valid?(G)
+
+  % T3: Layered pp-graph is acyclic (DAG)
+  %     No pp-path can return to its starting vertex, because
+  %     each step strictly increases the level
+  layered_acyclic: THEOREM
+    FORALL (G: graph[T], pw: prewalk):
+      layered?(G) AND pp_path?(G, pw) AND length(pw) > 1
+        IMPLIES seq(pw)(0) /= seq(pw)(length(pw) - 1)
+
+  % T4: In a boot chain, failure at level k blocks all levels > k
+  %     If a boot stage fails its invariant (e.g., signature invalid),
+  %     no higher stage can be pp-connected to it.
+  %     This is the formal statement of "boot halts on failure."
+  boot_failure_blocks: THEOREM
+    FORALL (G: graph[T], v: T):
+      boot_chain?(G) AND NOT invariant_holds(v)
+        IMPLIES FORALL (w: T):
+          level(w) > level(v) IMPLIES NOT pp_connected?(G, v, w)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 4: Verification Chain Properties
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % T5: Verification step implies both stages satisfy invariants
+  %     (follows from pp_edge? definition)
+  verification_implies_invariants: THEOREM
+    FORALL (G: graph[T], x, y: T):
+      verifies?(G, x, y) IMPLIES
+        invariant_holds(x) AND invariant_holds(y)
+
+  % T6: Verification step implies refinement relation holds
+  %     The verifier and verified are related by rr_rel
+  verification_implies_refinement: THEOREM
+    FORALL (G: graph[T], x, y: T):
+      verifies?(G, x, y) IMPLIES rr_rel(x, y)
+
+  % T7: In secure boot, every reachable stage satisfies its invariant
+  %     (no unsigned or tampered code can execute)
+  secure_boot_all_invariants: THEOREM
+    FORALL (G: graph[T], x, y: T):
+      secure_boot?(G) AND pp_connected?(G, x, y)
+        IMPLIES invariant_holds(x) AND invariant_holds(y)
+
+  % T8: Boot chain vertex with violated invariant is isolated
+  %     (cannot have any edges in or out in pp-valid graph)
+  failed_stage_isolated: THEOREM
+    FORALL (G: graph[T], v: T):
+      boot_chain?(G) AND NOT invariant_holds(v)
+        IMPLIES FORALL (w: T): NOT edge?(G)(v, w)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 5: Monotone Evolution
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Boot chain can evolve (e.g., firmware update adds new verified stage)
+  % but existing verification chain remains valid
+
+  % T9: Adding a new verified stage preserves existing paths
+  %     (specialization of path_resilience to boot chains)
+  boot_evolution_preserves: THEOREM
+    FORALL (G1, G2: graph[T], pw: prewalk):
+      boot_chain?(G1) AND boot_chain?(G2) AND
+      pp_transform?(G1, G2) AND pp_path?(G1, pw)
+        IMPLIES pp_path?(G2, pw)
+
+  % T10: Layered property is preserved if new edges respect levels
+  layered_evolution: THEOREM
+    FORALL (G1, G2: graph[T]):
+      layered?(G1) AND pp_transform?(G1, G2) AND
+      (FORALL (x, y: T):
+        edge?(G2)(x, y) IMPLIES level(x) < level(y))
+        IMPLIES layered?(G2)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Interpretation for hardware root-of-trust
+  %% ═══════════════════════════════════════════════════════════════════
+  %%
+  %% Boot stage    | Level | invariant_holds?        | Meaning
+  %% ─────────────┼───────┼─────────────────────────┼──────────────────
+  %% ROM          | 0     | Always TRUE (immutable)  | Hardware root
+  %% ROM_EXT      | 1     | Signature valid          | First mutable stage
+  %% BL0          | 2     | Hash matches manifest    | Bootloader
+  %% Kernel       | 3     | Secure boot policy OK    | OS kernel
+  %%
+  %% edge?(G)(ROM, ROM_EXT) = TRUE means ROM verifies ROM_EXT
+  %% pp_edge?(ROM, ROM_EXT) = TRUE means:
+  %%   - ROM satisfies its invariant (immutable, always true)
+  %%   - ROM_EXT satisfies its invariant (signature valid)
+  %%   - rr_rel(ROM, ROM_EXT) holds (refinement: ROM_EXT implements
+  %%     the specification that ROM expects)
+  %%
+  %% boot_failure_blocks guarantees:
+  %%   If ROM_EXT has invalid signature (NOT invariant_holds(ROM_EXT)),
+  %%   then BL0 and kernel CANNOT be pp-connected to ROM_EXT.
+  %%   The boot halts.
+  %%
+  %% secure_boot? guarantees:
+  %%   Every stage past ROM has been verified by the stage below.
+  %%   No unsigned code executes.
+  %%
+  %% ═══════════════════════════════════════════════════════════════════
+
+END lowrisc_boot_verification
