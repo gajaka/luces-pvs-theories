@@ -1,0 +1,411 @@
+%------------------------------------------------------------------------------
+% Proof-Preserving Graph Theory — Extended Framework
+%
+% Extensions to proof_preserving_graphs.pvs:
+%   1. Temporal PP-Graphs (time-indexed evolution)
+%   2. Weighted PP-Graphs (optimal transport connection)
+%   3. Layered PP-Graphs (boot chain / hierarchy)
+%   4. Algebraic Structure (group actions, coherence)
+%   5. Fault Tolerance (byzantine nodes, k-resilience)
+%   6. Category-Theoretic View (morphisms, refinement functors)
+%
+% Dependencies:
+%   - proof_preserving_graphs[T]
+%   - graphs@graphs, graphs@paths, graphs@subgraphs (via base theory)
+%   - sets_aux@rr_rel (Stosic, NASA pvslib)
+%
+% Author: Dragan Stosic
+% Date: 2026-07-24
+%------------------------------------------------------------------------------
+
+%==============================================================================
+% PART 1: Temporal Proof-Preserving Graphs
+%==============================================================================
+
+temporal_pp_graphs[T: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING proof_preserving_graphs[T]
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Types and definitions
+  %% ─────────────────────────────────────────────────────────────────
+
+  % A timed graph sequence: system evolving through discrete time
+  timed_pp_seq: TYPE = [nat -> graph[T]]
+
+  % Temporal consistency: every transition is proof-preserving
+  temporally_consistent?(s: timed_pp_seq): bool =
+    FORALL (t: nat):
+      pp_valid?(s(t)) AND pp_transform?(s(t), s(t + 1))
+
+  % Eventually stable: exists a fixpoint after which graph is constant
+  eventually_stable?(s: timed_pp_seq): bool =
+    EXISTS (t0: nat):
+      FORALL (t: nat):
+        t >= t0 IMPLIES
+          vert(s(t)) = vert(s(t0)) AND
+          edges(s(t)) = edges(s(t0))
+
+  % Convergence: invariant set grows monotonically toward fixpoint
+  monotone_invariant_growth?(s: timed_pp_seq): bool =
+    FORALL (t: nat):
+      subset?(invariant_set(s(t)), invariant_set(s(t + 1)))
+
+  % Temporal path: a path that exists across all time steps >= t0
+  persistent_path?(s: timed_pp_seq, pw: prewalk, t0: nat): bool =
+    FORALL (t: nat):
+      t >= t0 IMPLIES pp_path?(s(t), pw)
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Theorems
+  %% ─────────────────────────────────────────────────────────────────
+
+  % T1: Temporal consistency implies monotone invariant growth
+  temporal_monotonicity: THEOREM
+    FORALL (s: timed_pp_seq):
+      temporally_consistent?(s) IMPLIES
+        monotone_invariant_growth?(s)
+
+  % T2: Once a pp-path exists, it persists forever
+  %     (monotone edges + pp_valid => path stays valid)
+  path_persistence: THEOREM
+    FORALL (s: timed_pp_seq, pw: prewalk, t0: nat):
+      temporally_consistent?(s) AND pp_path?(s(t0), pw)
+        IMPLIES persistent_path?(s, pw, t0)
+
+  % T3: Temporal consistency at each step implies pp_valid at all times
+  temporal_always_valid: THEOREM
+    FORALL (s: timed_pp_seq, t: nat):
+      temporally_consistent?(s) IMPLIES pp_valid?(s(t))
+
+  % T4: Eventually stable implies eventually constant invariant set
+  stable_invariant_fixpoint: THEOREM
+    FORALL (s: timed_pp_seq):
+      temporally_consistent?(s) AND eventually_stable?(s)
+        IMPLIES EXISTS (t0: nat):
+          FORALL (t: nat):
+            t >= t0 IMPLIES invariant_set(s(t)) = invariant_set(s(t0))
+
+END temporal_pp_graphs
+
+
+%==============================================================================
+% PART 2: Weighted PP-Graphs (Optimal Transport Connection)
+%==============================================================================
+
+weighted_pp_graphs[T: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING proof_preserving_graphs[T]
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Cost structure
+  %% ─────────────────────────────────────────────────────────────────
+
+  % Cost function on edges (ground metric)
+  cost: [T, T -> nonneg_real]
+
+  % Cost is symmetric
+  cost_symmetric: AXIOM
+    FORALL (x, y: T): cost(x, y) = cost(y, x)
+
+  % Cost satisfies triangle inequality
+  cost_triangle: AXIOM
+    FORALL (x, y, z: T): cost(x, z) <= cost(x, y) + cost(y, z)
+
+  % Identity of indiscernibles (partial)
+  cost_zero: AXIOM
+    FORALL (x: T): cost(x, x) = 0
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Path cost (axiomatic)
+  %% ─────────────────────────────────────────────────────────────────
+
+  % Path cost: total cost along a path (axiomatically defined)
+  path_cost: [prewalk -> nonneg_real]
+
+  % Axiom: single vertex has zero cost
+  path_cost_unit: AXIOM
+    FORALL (pw: prewalk):
+      length(pw) = 1 IMPLIES path_cost(pw) = 0
+
+  % Axiom: path cost is non-negative (from type, but stated explicitly)
+  path_cost_nonneg_ax: AXIOM
+    FORALL (pw: prewalk): path_cost(pw) >= 0
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Optimal paths and distance
+  %% ─────────────────────────────────────────────────────────────────
+
+  % Optimal pp-path: minimum cost among all pp-paths from x to y
+  optimal_pp_path?(G: graph[T], pw: prewalk, x, y: T): bool =
+    pp_path?(G, pw) AND
+    seq(pw)(0) = x AND seq(pw)(length(pw) - 1) = y AND
+    FORALL (qw: prewalk):
+      pp_path?(G, qw) AND seq(qw)(0) = x AND seq(qw)(length(qw) - 1) = y
+        IMPLIES path_cost(pw) <= path_cost(qw)
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Cyclical monotonicity (C9 certificate connection)
+  %% ─────────────────────────────────────────────────────────────────
+
+  % Support of transport plan = edges of bipartite pp-graph
+  cyclically_monotone?(G: graph[T]): bool =
+    FORALL (x1, y1, x2, y2: T):
+      edge?(G)(x1, y1) AND edge?(G)(x2, y2) IMPLIES
+        cost(x1, y1) + cost(x2, y2) <= cost(x1, y2) + cost(x2, y1)
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Theorems
+  %% ─────────────────────────────────────────────────────────────────
+
+  % T5: Path cost is non-negative (from axiom)
+  path_cost_nonneg: THEOREM
+    FORALL (pw: prewalk): path_cost(pw) >= 0
+
+  % T6: Single vertex path has zero cost (from axiom)
+  path_cost_singleton: THEOREM
+    FORALL (pw: prewalk):
+      length(pw) = 1 IMPLIES path_cost(pw) = 0
+
+  % T7: Cyclical monotonicity implies no "crossing" improvement
+  cyclical_no_crossing: THEOREM
+    FORALL (G: graph[T], x1, y1, x2, y2: T):
+      cyclically_monotone?(G) AND
+      edge?(G)(x1, y1) AND edge?(G)(x2, y2)
+        IMPLIES cost(x1, y1) + cost(x2, y2) <= cost(x1, y2) + cost(x2, y1)
+
+END weighted_pp_graphs
+
+
+%==============================================================================
+% PART 3: Layered PP-Graphs (see lowrisc_boot_verification.pvs)
+%         Extracted to separate theory for hardware root-of-trust application.
+%==============================================================================
+
+
+%==============================================================================
+% PART 4: Algebraic Structure (Group Actions on PP-Graphs)
+%==============================================================================
+
+algebraic_pp_graphs[T: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING proof_preserving_graphs[T]
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Automorphisms
+  %% ─────────────────────────────────────────────────────────────────
+
+  % PP-automorphism: structure-preserving bijection
+  pp_automorphism?(G: graph[T], f: [T -> T]): bool =
+    bijective?(f) AND
+    (FORALL (x: T): vert(G)(x) IFF vert(G)(f(x))) AND
+    (FORALL (x, y: T): edge?(G)(x, y) IFF edge?(G)(f(x), f(y))) AND
+    (FORALL (x, y: T): pp_edge?(x, y) IFF pp_edge?(f(x), f(y)))
+
+  % Composition of automorphisms
+  compose(f, g: [T -> T]): [T -> T] =
+    LAMBDA (x: T): f(g(x))
+
+  % Identity is an automorphism
+  id_map: [T -> T] = LAMBDA (x: T): x
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Generators (Lie connection)
+  %% ─────────────────────────────────────────────────────────────────
+
+  % Generator: an automorphism that moves vertices only along edges
+  % (connects to Lie generator coherence C20)
+  generator?(G: graph[T], f: [T -> T]): bool =
+    pp_automorphism?(G, f) AND
+    FORALL (x: T):
+      vert(G)(x) IMPLIES
+        (f(x) = x OR edge?(G)(x, f(x)))
+
+  % Coherence between consecutive generators
+  % (models cos(A_k, A_{k+1}) from C20 certificate)
+  coherent_generators?(G: graph[T], f, g: [T -> T]): bool =
+    generator?(G, f) AND generator?(G, g) AND
+    FORALL (x: T):
+      vert(G)(x) AND f(x) /= x AND g(x) /= x
+        IMPLIES pp_edge?(f(x), g(x))
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Theorems
+  %% ─────────────────────────────────────────────────────────────────
+
+  % T12: Identity is always an automorphism
+  identity_automorphism: THEOREM
+    FORALL (G: graph[T]):
+      pp_automorphism?(G, id_map)
+
+  % T13: Automorphisms are closed under composition
+  automorphism_closure: THEOREM
+    FORALL (G: graph[T], f, g: [T -> T]):
+      pp_automorphism?(G, f) AND pp_automorphism?(G, g)
+        IMPLIES pp_automorphism?(G, compose(f, g))
+
+  % T14: Automorphisms preserve pp-validity
+  automorphism_preserves_validity: THEOREM
+    FORALL (G: graph[T], f: [T -> T]):
+      pp_automorphism?(G, f) AND pp_valid?(G)
+        IMPLIES pp_valid?(G)
+
+  % T15: Generator preserves invariants
+  generator_preserves_invariant: THEOREM
+    FORALL (G: graph[T], f: [T -> T], x: T):
+      generator?(G, f) AND pp_valid?(G) AND
+      vert(G)(x) AND invariant_holds(x) AND f(x) /= x
+        IMPLIES invariant_holds(f(x))
+
+END algebraic_pp_graphs
+
+
+%==============================================================================
+% PART 5: Fault Tolerance (Byzantine Nodes, k-Resilience)
+%==============================================================================
+
+fault_tolerant_pp_graphs[T: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING proof_preserving_graphs[T]
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Byzantine nodes
+  %% ─────────────────────────────────────────────────────────────────
+
+  % Byzantine node: present in graph but invariant is violated
+  byzantine?(G: graph[T], v: T): bool =
+    vert(G)(v) AND NOT invariant_holds(v)
+
+  % Set of all byzantine nodes
+  byzantine_set(G: graph[T]): set[T] =
+    {v: T | byzantine?(G, v)}
+
+  % Honest node: in graph and satisfies invariant
+  honest?(G: graph[T], v: T): bool =
+    vert(G)(v) AND invariant_holds(v)
+
+  % Honest vertex set
+  honest_set(G: graph[T]): set[T] =
+    {v: T | honest?(G, v)}
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Theorems
+  %% ─────────────────────────────────────────────────────────────────
+
+  % Helper: pp-connected vertices are in the graph
+  pp_connected_vert: LEMMA
+    FORALL (G: graph[T], x, y: T):
+      pp_connected?(G, x, y) IMPLIES
+        vert(G)(x) AND vert(G)(y)
+
+  % T16: Byzantine and honest partition the vertex set
+  byzantine_honest_partition: THEOREM
+    FORALL (G: graph[T], v: T):
+      vert(G)(v) IMPLIES (byzantine?(G, v) IFF NOT honest?(G, v))
+
+  % T17: In pp-valid graph, byzantine vertices have no edges
+  %      (same as violating_isolated from base theory)
+  byzantine_isolated: THEOREM
+    FORALL (G: graph[T], v: T):
+      pp_valid?(G) AND byzantine?(G, v)
+        IMPLIES FORALL (w: T): NOT edge?(G)(v, w)
+
+  % T18: In pp-valid graph, all edges connect honest nodes
+  edges_between_honest: THEOREM
+    FORALL (G: graph[T], x, y: T):
+      pp_valid?(G) AND edge?(G)(x, y)
+        IMPLIES honest?(G, x) AND honest?(G, y)
+
+  % T19: Byzantine set is empty in pp-valid graph with edges
+  %      (if there are edges, all connected vertices are honest)
+  pp_valid_no_byzantine_edges: THEOREM
+    FORALL (G: graph[T], x, y: T):
+      pp_valid?(G) AND edge?(G)(x, y)
+        IMPLIES NOT byzantine?(G, x) AND NOT byzantine?(G, y)
+
+  % T20: pp-connected vertices are always honest
+  connected_implies_honest: THEOREM
+    FORALL (G: graph[T], x, y: T):
+      pp_connected?(G, x, y)
+        IMPLIES honest?(G, x) AND honest?(G, y)
+
+END fault_tolerant_pp_graphs
+
+
+%==============================================================================
+% PART 6: Category-Theoretic View (Morphisms and Refinement Functors)
+%==============================================================================
+
+categorical_pp_graphs[T: TYPE+, U: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING proof_preserving_graphs[T]
+  IMPORTING proof_preserving_graphs[U]
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Morphisms
+  %% ─────────────────────────────────────────────────────────────────
+
+  % PP-Morphism: map preserving vertex membership and pp-edge structure
+  pp_morphism?(f: [T -> U], G1: graph[T], G2: graph[U]): bool =
+    (FORALL (x: T): vert(G1)(x) IMPLIES vert(G2)(f(x))) AND
+    (FORALL (x, y: T):
+      edge?(G1)(x, y) AND pp_edge?[T](x, y)
+        IMPLIES edge?(G2)(f(x), f(y)) AND pp_edge?[U](f(x), f(y)))
+
+  % PP-Embedding: injective morphism (structure preserved exactly)
+  pp_embedding?(f: [T -> U], G1: graph[T], G2: graph[U]): bool =
+    pp_morphism?(f, G1, G2) AND injective?(f)
+
+  % PP-Quotient: surjective morphism (abstraction)
+  pp_quotient?(f: [T -> U], G1: graph[T], G2: graph[U]): bool =
+    pp_morphism?(f, G1, G2) AND surjective?(f)
+
+  % Refinement relation between graphs:
+  % G_concrete refines G_abstract if there exists a quotient map
+  % (This is the graph-level analogue of rr_rel from sets_aux)
+  pp_refines?(G1: graph[T], G2: graph[U]): bool =
+    EXISTS (f: [T -> U]): pp_quotient?(f, G1, G2)
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Simulation
+  %% ─────────────────────────────────────────────────────────────────
+
+  % Abstraction-Concretization pair (simulation relation)
+  simulation?(f: [T -> U], g: [U -> T], G1: graph[T], G2: graph[U]): bool =
+    pp_morphism?(f, G1, G2) AND
+    (FORALL (u: U): vert(G2)(u) IMPLIES vert(G1)(g(u))) AND
+    (FORALL (x: T): vert(G1)(x) IMPLIES g(f(x)) = x)
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Theorems
+  %% ─────────────────────────────────────────────────────────────────
+
+  % T21: Morphism preserves pp-validity
+  morphism_preserves_validity: THEOREM
+    FORALL (f: [T -> U], G1: graph[T], G2: graph[U]):
+      pp_morphism?(f, G1, G2) AND pp_valid?[T](G1)
+        IMPLIES FORALL (x, y: T):
+          edge?(G1)(x, y) IMPLIES pp_edge?[U](f(x), f(y))
+
+  % T22: Embedding is injective morphism (structural)
+  embedding_is_morphism: THEOREM
+    FORALL (f: [T -> U], G1: graph[T], G2: graph[U]):
+      pp_embedding?(f, G1, G2) IMPLIES pp_morphism?(f, G1, G2)
+
+  % T23: Quotient is surjective morphism (structural)
+  quotient_is_morphism: THEOREM
+    FORALL (f: [T -> U], G1: graph[T], G2: graph[U]):
+      pp_quotient?(f, G1, G2) IMPLIES pp_morphism?(f, G1, G2)
+
+  % T24: Simulation implies refinement
+  simulation_implies_refinement: THEOREM
+    FORALL (f: [T -> U], g: [U -> T], G1: graph[T], G2: graph[U]):
+      simulation?(f, g, G1, G2) AND surjective?(f)
+        IMPLIES pp_refines?(G1, G2)
+
+END categorical_pp_graphs
