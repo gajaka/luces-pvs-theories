@@ -39,6 +39,13 @@ BEGIN
   % Low curvature = nearly constant tangent = close to exponential
   curvature: [graph[T], prewalk -> nonneg_real]
 
+  % Curvature depends only on the path geometry, not the surrounding graph
+  % (tangent field is computed from vertex sequence, not from edges)
+  curvature_graph_independent: AXIOM
+    FORALL (G1, G2: graph[T], pw: prewalk):
+      pp_path?(G1, pw) AND pp_path?(G2, pw)
+        IMPLIES curvature(G1, pw) = curvature(G2, pw)
+
   % Generator coherence of a pp-path: directional stability measure
   % Empirical: C20 cos_full value (cosine between first and last segments)
   % High coherence = stable generator direction
@@ -160,13 +167,13 @@ BEGIN
       shape_direction_reversal?(transport_of(pw))
         IMPLIES NOT coherent?(transport_of(pw))
 
-  % T6: Curvature monotonicity along pp-transform
-  %     If graph evolves and path persists, curvature cannot increase
-  %     (geometric stability is preserved under monotone evolution)
-  curvature_monotone_under_transform: AXIOM
+  % T6: Curvature is preserved along pp-transform
+  %     If path persists, curvature is unchanged (path geometry is the same)
+  %     Curvature depends on the sequence of vertices, not the surrounding graph
+  curvature_preserved_under_transform: THEOREM
     FORALL (G1, G2: graph[T], pw: prewalk):
       pp_transform?(G1, G2) AND pp_path?(G1, pw) AND pp_path?(G2, pw)
-        IMPLIES curvature(G2, pw) <= curvature(G1, pw)
+        IMPLIES curvature(G2, pw) = curvature(G1, pw)
 
   %% ═══════════════════════════════════════════════════════════════════
   %% Empirical verification summary

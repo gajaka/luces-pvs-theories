@@ -1,7 +1,7 @@
 # Certificate Runner — Paper 3 Final Dataset
 
-19 certificates evaluated on 8 independent experiments (5 dawn, 3 dusk).
-Proof-preserving graph certificates (PPG, RES, DET) achieve 100% PASS on all logs.
+20 certificates evaluated on 8 independent experiments (5 dawn, 3 dusk).
+Proof-preserving graph certificates (PPG, RES, DET, CCI) achieve 100% PASS on all logs.
 
 ---
 
@@ -56,9 +56,10 @@ Proof-preserving graph certificates (PPG, RES, DET) achieve 100% PASS on all log
   PPG Graph Validity:       PASS   valid=11/11 (100%)
   RES Resilience:           PASS   sub=11/11 full=11/11 mono=True
   DET Deterministic:        PASS   det=11/11 mean_dom=0.903
+  CCI Curv-Coh Inverse:     PASS   r=-0.718 n=10
 
 ═══════════════════════════════════════════════════════
-  Summary: 21 PASS / 0 FAIL / 2 DIAG / 1 N/A
+  Summary: 22 PASS / 0 FAIL / 2 DIAG / 1 N/A
 ═══════════════════════════════════════════════════════
 ```
 
@@ -113,9 +114,10 @@ Proof-preserving graph certificates (PPG, RES, DET) achieve 100% PASS on all log
   PPG Graph Validity:       PASS   valid=11/11 (100%)
   RES Resilience:           PASS   sub=10/10 full=11/11 mono=True
   DET Deterministic:        PASS   det=11/11 mean_dom=0.891
+  CCI Curv-Coh Inverse:     PASS   r=-0.858 n=10
 
 ═══════════════════════════════════════════════════════
-  Summary: 22 PASS / 0 FAIL / 2 DIAG
+  Summary: 23 PASS / 0 FAIL / 2 DIAG
 ═══════════════════════════════════════════════════════
 ```
 
@@ -170,9 +172,10 @@ Proof-preserving graph certificates (PPG, RES, DET) achieve 100% PASS on all log
   PPG Graph Validity:       PASS   valid=10/10 (100%)
   RES Resilience:           PASS   sub=9/9 full=10/10 mono=True
   DET Deterministic:        PASS   det=10/10 mean_dom=0.912
+  CCI Curv-Coh Inverse:     PASS   r=-0.896 n=9
 
 ═══════════════════════════════════════════════════════
-  Summary: 19 PASS / 2 FAIL / 1 BORDER / 1 DIAG / 1 INFO
+  Summary: 20 PASS / 2 FAIL / 1 BORDER / 1 DIAG / 1 INFO
 ═══════════════════════════════════════════════════════
 ```
 
@@ -227,9 +230,10 @@ Proof-preserving graph certificates (PPG, RES, DET) achieve 100% PASS on all log
   PPG Graph Validity:       PASS   valid=11/11 (100%)
   RES Resilience:           PASS   sub=11/11 full=11/11 mono=True
   DET Deterministic:        PASS   det=11/11 mean_dom=0.905
+  CCI Curv-Coh Inverse:     PASS   r=-0.884 n=10
 
 ═══════════════════════════════════════════════════════
-  Summary: 21 PASS / 1 FAIL / 2 DIAG
+  Summary: 22 PASS / 1 FAIL / 2 DIAG
 ═══════════════════════════════════════════════════════
 ```
 
@@ -284,9 +288,10 @@ Proof-preserving graph certificates (PPG, RES, DET) achieve 100% PASS on all log
   PPG Graph Validity:       PASS   valid=11/11 (100%)
   RES Resilience:           PASS   sub=11/11 full=11/11 mono=True
   DET Deterministic:        PASS   det=11/11 mean_dom=0.898
+  CCI Curv-Coh Inverse:     PASS   r=-0.570 n=10
 
 ═══════════════════════════════════════════════════════
-  Summary: 20 PASS / 1 FAIL / 1 BORDER / 1 DIAG / 1 INFO
+  Summary: 21 PASS / 1 FAIL / 1 BORDER / 1 DIAG / 1 INFO
 ═══════════════════════════════════════════════════════
 ```
 
@@ -341,9 +346,10 @@ Proof-preserving graph certificates (PPG, RES, DET) achieve 100% PASS on all log
   PPG Graph Validity:       PASS   valid=11/11 (100%)
   RES Resilience:           PASS   sub=9/9 full=11/11 mono=True
   DET Deterministic:        PASS   det=11/11 mean_dom=0.902
+  CCI Curv-Coh Inverse:     PASS   r=-0.571 n=10
 
 ═══════════════════════════════════════════════════════
-  Summary: 18 PASS / 3 FAIL / 1 BORDER / 1 DIAG / 1 INFO
+  Summary: 19 PASS / 3 FAIL / 1 BORDER / 1 DIAG / 1 INFO
 ═══════════════════════════════════════════════════════
 ```
 
@@ -398,9 +404,10 @@ Proof-preserving graph certificates (PPG, RES, DET) achieve 100% PASS on all log
   PPG Graph Validity:       PASS   valid=11/11 (100%)
   RES Resilience:           PASS   sub=10/10 full=11/11 mono=True
   DET Deterministic:        PASS   det=11/11 mean_dom=0.915
+  CCI Curv-Coh Inverse:     PASS   r=-0.824 n=10
 
 ═══════════════════════════════════════════════════════
-  Summary: 19 PASS / 2 FAIL / 1 BORDER / 1 DIAG / 1 INFO
+  Summary: 20 PASS / 2 FAIL / 1 BORDER / 1 DIAG / 1 INFO
 ═══════════════════════════════════════════════════════
 ```
 
@@ -455,8 +462,9 @@ Proof-preserving graph certificates (PPG, RES, DET) achieve 100% PASS on all log
   PPG Graph Validity:       PASS   valid=11/11 (100%)
   RES Resilience:           PASS   sub=10/10 full=11/11 mono=True
   DET Deterministic:        PASS   det=11/11 mean_dom=0.913
+  CCI Curv-Coh Inverse:     PASS   r=-0.793 n=10
 
 ═══════════════════════════════════════════════════════
-  Summary: 19 PASS / 2 FAIL / 1 BORDER / 1 DIAG / 1 INFO
+  Summary: 20 PASS / 2 FAIL / 1 BORDER / 1 DIAG / 1 INFO
 ═══════════════════════════════════════════════════════
 ```
