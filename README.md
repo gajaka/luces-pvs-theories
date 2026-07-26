@@ -2,7 +2,7 @@
 
 **A formal mathematical framework for structural resilience, with applications to optimal transport verification and hardware root-of-trust.**
 
-26 theories. 158 machine-checked theorems. All proved in PVS.
+26 theories. 177 machine-checked theorems. All proved in PVS.
 
 ---
 
