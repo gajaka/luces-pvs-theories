@@ -19,6 +19,8 @@ Built on:
 | `proof_preserving_graphs.pvs` | 37 | Core framework: validity hierarchy, walks, paths, evolution, monotonicity, connectivity, separation, deterministic traversal, violation detection, certificate chains |
 | `pp_graphs_extended.pvs` | 21 | Extensions: temporal evolution, weighted/OT connection, algebraic automorphisms, fault tolerance, categorical morphisms |
 | `lowrisc_boot_verification.pvs` | 10 | Application: secure boot chain (layered DAG, failure isolation, lock-out) |
+| `opentitan_boot_instance.pvs` | 8 | Concrete instantiation: OpenTitan ROM → ROM_EXT → BL0 → Kernel |
+| `lie_pp_connection.pvs` | 6 | Bridge: curvature-coherence inverse law, Lie generator ↔ PP-graph |
 
 ### Key Results
 
