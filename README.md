@@ -22,7 +22,7 @@ Built on:
 | `opentitan_boot_instance.pvs` | 8 | Concrete instantiation: OpenTitan ROM → ROM_EXT → BL0 → Kernel |
 | `lie_pp_connection.pvs` | 6 | Bridge: curvature-coherence inverse law, Lie generator ↔ PP-graph |
 
-**Lean 4 port:** [ppg-lean](https://github.com/gajaka/ppg-lean) — 74 theorems, zero sorry, verified with Mathlib.
+**Lean 4 port:** [ppg-lean](https://github.com/gajaka/ppg-lean) — 84 theorems, zero sorry, verified with Mathlib.
 
 ### Key Results
 
