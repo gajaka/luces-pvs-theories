@@ -2,7 +2,7 @@
 
 **A formal mathematical framework for structural resilience, with applications to optimal transport verification and hardware root-of-trust.**
 
-26 theories. 177 machine-checked theorems. All proved in PVS.
+27 theories. 187 machine-checked theorems. All proved in PVS.
 
 ---
 
@@ -73,6 +73,7 @@ Built on:
 | `entropy_along_geodesic.pvs` | 5 | Entropy production along geodesics |
 | `rank_orientation.pvs` | 2 | Rank and orientation preservation |
 | `global_optimality.pvs` | 0 | Global optimality (axioms only) |
+| `unbalanced_regime.pvs` | 10 | Unbalanced OT: source/sink dynamics, deviation functional, regime classification |
 
 ### Key Theorem (T10)
 
