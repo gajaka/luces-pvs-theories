@@ -2,7 +2,7 @@
 
 **A formal mathematical framework for structural resilience, with applications to optimal transport verification and hardware root-of-trust.**
 
-27 theories. 187 machine-checked theorems. All proved in PVS.
+28 theories. 197 machine-checked theorems. All proved in PVS.
 
 ---
 
@@ -74,6 +74,7 @@ Built on:
 | `rank_orientation.pvs` | 2 | Rank and orientation preservation |
 | `global_optimality.pvs` | 0 | Global optimality (axioms only) |
 | `unbalanced_regime.pvs` | 10 | Unbalanced OT: source/sink dynamics, deviation functional, regime classification |
+| `fisher_atlas.pvs` | 10 | Manifold atlas: charts, transition maps, Fisher metric, Fisher↔Wasserstein bridge |
 
 ### Key Theorem (T10)
 
