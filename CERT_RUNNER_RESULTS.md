@@ -1,7 +1,8 @@
 # Certificate Runner — Paper 3 Final Dataset
 
-20 certificates evaluated on 8 independent experiments (5 dawn, 3 dusk).
-Proof-preserving graph certificates (PPG, RES, DET, CCI) achieve 100% PASS on all logs.
+22 certificates evaluated on 8 independent experiments (5 dawn, 3 dusk).
+PPG certificates (PPG, RES, DET, CCI, ATL) achieve 100% PASS on all logs.
+DEV classifies each log into balanced/transitional/unbalanced regime.
 
 ---
 
@@ -57,9 +58,11 @@ Proof-preserving graph certificates (PPG, RES, DET, CCI) achieve 100% PASS on al
   RES Resilience:           PASS   sub=11/11 full=11/11 mono=True
   DET Deterministic:        PASS   det=11/11 mean_dom=0.903
   CCI Curv-Coh Inverse:     PASS   r=-0.718 n=10
+  DEV Deviation Regime:     DIAG   TRANSITIONAL Dev=1.01 κ=100.8 coh=0.737 rev=False exc=0.0000
+  ATL Atlas Consistency:    PASS   min_d=0.0289 (TRANS↔DAY) k=3
 
 ═══════════════════════════════════════════════════════
-  Summary: 22 PASS / 0 FAIL / 2 DIAG / 1 N/A
+  Summary: 23 PASS / 0 FAIL / 3 DIAG / 1 N/A
 ═══════════════════════════════════════════════════════
 ```
 
@@ -115,9 +118,11 @@ Proof-preserving graph certificates (PPG, RES, DET, CCI) achieve 100% PASS on al
   RES Resilience:           PASS   sub=10/10 full=11/11 mono=True
   DET Deterministic:        PASS   det=11/11 mean_dom=0.891
   CCI Curv-Coh Inverse:     PASS   r=-0.858 n=10
+  DEV Deviation Regime:     DIAG   TRANSITIONAL Dev=1.92 κ=92.3 coh=0.679 rev=False exc=0.0000
+  ATL Atlas Consistency:    PASS   min_d=0.0357 (TRANS↔DAY) k=3
 
 ═══════════════════════════════════════════════════════
-  Summary: 23 PASS / 0 FAIL / 2 DIAG
+  Summary: 24 PASS / 0 FAIL / 3 DIAG
 ═══════════════════════════════════════════════════════
 ```
 
@@ -173,9 +178,11 @@ Proof-preserving graph certificates (PPG, RES, DET, CCI) achieve 100% PASS on al
   RES Resilience:           PASS   sub=9/9 full=10/10 mono=True
   DET Deterministic:        PASS   det=10/10 mean_dom=0.912
   CCI Curv-Coh Inverse:     PASS   r=-0.896 n=9
+  DEV Deviation Regime:     DIAG   UNBALANCED Dev=3.91 κ=291.4 coh=0.679 rev=False exc=0.0000
+  ATL Atlas Consistency:    PASS   min_d=0.0532 (TRANS↔DAY) k=3
 
 ═══════════════════════════════════════════════════════
-  Summary: 20 PASS / 2 FAIL / 1 BORDER / 1 DIAG / 1 INFO
+  Summary: 21 PASS / 2 FAIL / 1 BORDER / 2 DIAG / 1 INFO
 ═══════════════════════════════════════════════════════
 ```
 
@@ -231,9 +238,11 @@ Proof-preserving graph certificates (PPG, RES, DET, CCI) achieve 100% PASS on al
   RES Resilience:           PASS   sub=11/11 full=11/11 mono=True
   DET Deterministic:        PASS   det=11/11 mean_dom=0.905
   CCI Curv-Coh Inverse:     PASS   r=-0.884 n=10
+  DEV Deviation Regime:     DIAG   TRANSITIONAL Dev=2.65 κ=164.5 coh=0.637 rev=False exc=0.0000
+  ATL Atlas Consistency:    PASS   min_d=0.0270 (TRANS↔DAY) k=3
 
 ═══════════════════════════════════════════════════════
-  Summary: 22 PASS / 1 FAIL / 2 DIAG
+  Summary: 23 PASS / 1 FAIL / 3 DIAG
 ═══════════════════════════════════════════════════════
 ```
 
@@ -289,9 +298,11 @@ Proof-preserving graph certificates (PPG, RES, DET, CCI) achieve 100% PASS on al
   RES Resilience:           PASS   sub=11/11 full=11/11 mono=True
   DET Deterministic:        PASS   det=11/11 mean_dom=0.898
   CCI Curv-Coh Inverse:     PASS   r=-0.570 n=10
+  DEV Deviation Regime:     DIAG   TRANSITIONAL Dev=1.76 κ=176.2 coh=0.782 rev=False exc=0.0000
+  ATL Atlas Consistency:    PASS   min_d=0.0467 (TRANS↔DAY) k=3
 
 ═══════════════════════════════════════════════════════
-  Summary: 21 PASS / 1 FAIL / 1 BORDER / 1 DIAG / 1 INFO
+  Summary: 22 PASS / 1 FAIL / 1 BORDER / 2 DIAG / 1 INFO
 ═══════════════════════════════════════════════════════
 ```
 
@@ -347,9 +358,11 @@ Proof-preserving graph certificates (PPG, RES, DET, CCI) achieve 100% PASS on al
   RES Resilience:           PASS   sub=9/9 full=11/11 mono=True
   DET Deterministic:        PASS   det=11/11 mean_dom=0.902
   CCI Curv-Coh Inverse:     PASS   r=-0.571 n=10
+  DEV Deviation Regime:     DIAG   TRANSITIONAL Dev=2.60 κ=259.9 coh=0.727 rev=False exc=0.0000
+  ATL Atlas Consistency:    PASS   min_d=0.0321 (TRANS↔DAY) k=3
 
 ═══════════════════════════════════════════════════════
-  Summary: 19 PASS / 3 FAIL / 1 BORDER / 1 DIAG / 1 INFO
+  Summary: 20 PASS / 3 FAIL / 1 BORDER / 2 DIAG / 1 INFO
 ═══════════════════════════════════════════════════════
 ```
 
@@ -405,9 +418,11 @@ Proof-preserving graph certificates (PPG, RES, DET, CCI) achieve 100% PASS on al
   RES Resilience:           PASS   sub=10/10 full=11/11 mono=True
   DET Deterministic:        PASS   det=11/11 mean_dom=0.915
   CCI Curv-Coh Inverse:     PASS   r=-0.824 n=10
+  DEV Deviation Regime:     DIAG   UNBALANCED Dev=4.22 κ=422.1 coh=0.722 rev=False exc=0.0000
+  ATL Atlas Consistency:    PASS   min_d=0.0460 (TRANS↔DAY) k=3
 
 ═══════════════════════════════════════════════════════
-  Summary: 20 PASS / 2 FAIL / 1 BORDER / 1 DIAG / 1 INFO
+  Summary: 21 PASS / 2 FAIL / 1 BORDER / 2 DIAG / 1 INFO
 ═══════════════════════════════════════════════════════
 ```
 
@@ -463,8 +478,10 @@ Proof-preserving graph certificates (PPG, RES, DET, CCI) achieve 100% PASS on al
   RES Resilience:           PASS   sub=10/10 full=11/11 mono=True
   DET Deterministic:        PASS   det=11/11 mean_dom=0.913
   CCI Curv-Coh Inverse:     PASS   r=-0.793 n=10
+  DEV Deviation Regime:     DIAG   TRANSITIONAL Dev=1.43 κ=142.7 coh=0.851 rev=False exc=0.0000
+  ATL Atlas Consistency:    PASS   min_d=0.0434 (TRANS↔DAY) k=3
 
 ═══════════════════════════════════════════════════════
-  Summary: 20 PASS / 2 FAIL / 1 BORDER / 1 DIAG / 1 INFO
+  Summary: 21 PASS / 2 FAIL / 1 BORDER / 2 DIAG / 1 INFO
 ═══════════════════════════════════════════════════════
 ```
