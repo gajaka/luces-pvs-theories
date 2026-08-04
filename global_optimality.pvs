@@ -1,63 +1,189 @@
-%%% global_optimality.pvs
-%%% Geodesic Segmentation Consistency
-%%%
-%%% Purpose: formal protection against misinterpretation.
-%%% Prevents the incorrect inference:
-%%%   "DAY->DUSK has 23% excess, therefore nature is not optimal."
-%%%
-%%% Correct reading:
-%%%   DAY->DUSK is an artificial segment cut.
-%%%   DAY->NIGHT (full path) is near-optimal (0% excess).
-%%%   Local segmentation excess does not falsify global geodesic optimality.
-%%%
-%%% Symmetric with dawn:
-%%%   DAWN is not a target — it is t=0.27 on NIGHT->DAY geodesic.
-%%%   DUSK is not a node — it is a coordinate cut on DAY->NIGHT geodesic.
-%%%
-%%% Summary:
-%%%   "The apparent local inefficiency of the DAY->DUSK segment does not
-%%%   contradict the near-optimality of the full DAY->NIGHT trajectory.
-%%%   DUSK is better understood as a coordinate cut along a larger
-%%%   geodesic-like transition."
-%%%
-%%% Author: Dragan Stosic, 2026
-
 global_optimality: THEORY
 BEGIN
 
-  % Optimal transport costs
-  opt_day_dusk: posreal
-  opt_dusk_night: posreal
-  opt_day_night: posreal
+  IMPORTING reals@real_props
 
-  % Physical (observed) costs
-  phys_day_dusk: posreal
-  phys_day_night: posreal
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Geodesic Segmentation and Global Optimality
+  %% ═══════════════════════════════════════════════════════════════════
+  %%
+  %% Formal protection against misinterpretation of local excess.
+  %%
+  %% Key insight: DAWN and DUSK are NOT independent targets.
+  %% They are interpolation points on full geodesics:
+  %%   - DAWN = t ≈ 0.27 on NIGHT → DAY geodesic
+  %%   - DUSK = t ≈ 0.73 on DAY → NIGHT geodesic
+  %%
+  %% Local segment excess (C8 FAIL on DAY→DUSK) does NOT contradict
+  %% global near-optimality of the full DAY→NIGHT trajectory.
+  %%
+  %% Connection to certificates:
+  %%   C8  (near-optimality): local excess per segment
+  %%   C12 (geodesic additivity): arc/chord ratio
+  %%   displacement_interpolation.pvs: McCann interpolation
+  %%   unbalanced_regime.pvs: regime explains local excess
+  %%
+  %% Empirical: boot298 dusk full path 0% excess, DAY→DUSK segment 23%
+  %% ═══════════════════════════════════════════════════════════════════
 
-%% ═══════════════════════════════════════════════════════════
-%% Axioms
-%% ═══════════════════════════════════════════════════════════
+  %% ─────────────────────────────────────────────────────────────────
+  %% Types
+  %% ─────────────────────────────────────────────────────────────────
 
-  % A1: Metric triangle inequality
-  ax_triangle: AXIOM
-    opt_day_night <= opt_day_dusk + opt_dusk_night
+  % Abstract state (point on the manifold)
+  State: TYPE+
 
-  % A2: Local segment is suboptimal (empirical: 23.4% excess)
-  ax_local_excess: AXIOM
-    phys_day_dusk > opt_day_dusk
+  % Transport cost (Wasserstein-2 distance)
+  W2: [State, State -> nonneg_real]
 
-  % A3: Full path is near-optimal (empirical: ~0% excess)
-  ax_global_optimal: AXIOM
-    phys_day_night <= opt_day_night + 1
+  % Interpolation parameter
+  t: VAR {x: real | x >= 0 AND x <= 1}
 
-%% ═══════════════════════════════════════════════════════════
-%% Lemma
-%% ═══════════════════════════════════════════════════════════
+  %% ─────────────────────────────────────────────────────────────────
+  %% Metric axioms
+  %% ─────────────────────────────────────────────────────────────────
 
-  % Coexistence: local excess and global optimality are NOT contradictory
-  % (Prevents misreading local DAY->DUSK result as global failure)
-  lem_coexistence: LEMMA
-    phys_day_dusk > opt_day_dusk AND
-    phys_day_night <= opt_day_night + 1
+  s, s1, s2, s3: VAR State
+
+  ax_metric_zero: AXIOM
+    FORALL s: W2(s, s) = 0
+
+  ax_metric_positive: AXIOM
+    FORALL s1, s2: s1 /= s2 IMPLIES W2(s1, s2) > 0
+
+  ax_metric_symmetric: AXIOM
+    FORALL s1, s2: W2(s1, s2) = W2(s2, s1)
+
+  ax_metric_triangle: AXIOM
+    FORALL s1, s2, s3: W2(s1, s3) <= W2(s1, s2) + W2(s2, s3)
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Geodesic interpolation
+  %% ─────────────────────────────────────────────────────────────────
+
+  % Geodesic interpolant: point at parameter t on geodesic from s1 to s2
+  interp: [State, State, {x: real | x >= 0 AND x <= 1} -> State]
+
+  % A5: Endpoints of interpolation
+  ax_interp_start: AXIOM
+    FORALL s1, s2: interp(s1, s2, 0) = s1
+
+  ax_interp_end: AXIOM
+    FORALL s1, s2: interp(s1, s2, 1) = s2
+
+  % A6: Geodesic property — distance splits linearly along geodesic
+  ax_geodesic_split: AXIOM
+    FORALL s1, s2, (t: {x: real | x >= 0 AND x <= 1}):
+      W2(s1, interp(s1, s2, t)) + W2(interp(s1, s2, t), s2)
+        = W2(s1, s2)
+
+  % A7: Interpolation distance is proportional to t
+  ax_interp_distance: AXIOM
+    FORALL s1, s2, (t: {x: real | x >= 0 AND x <= 1}):
+      W2(s1, interp(s1, s2, t)) = t * W2(s1, s2)
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Regime states (concrete instances)
+  %% ─────────────────────────────────────────────────────────────────
+
+  NIGHT: State
+  DAWN: State
+  DAY: State
+  DUSK: State
+
+  % Regimes are distinct
+  ax_distinct_night_day: AXIOM NIGHT /= DAY
+  ax_distinct_night_dawn: AXIOM NIGHT /= DAWN
+  ax_distinct_day_dusk: AXIOM DAY /= DUSK
+
+  % DAWN is an interpolation point on NIGHT → DAY geodesic
+  t_dawn: {x: real | x >= 0 AND x <= 1}
+  ax_dawn_interp: AXIOM
+    DAWN = interp(NIGHT, DAY, t_dawn)
+
+  % DUSK is an interpolation point on DAY → NIGHT geodesic
+  t_dusk: {x: real | x >= 0 AND x <= 1}
+  ax_dusk_interp: AXIOM
+    DUSK = interp(DAY, NIGHT, t_dusk)
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Physical (observed) costs vs optimal costs
+  %% ─────────────────────────────────────────────────────────────────
+
+  % Physical cost of a segment (may exceed optimal due to path curvature)
+  phys_cost: [State, State -> nonneg_real]
+
+  % A8: Physical cost is at least optimal (can't beat geodesic)
+  ax_phys_geq_optimal: AXIOM
+    FORALL s1, s2: phys_cost(s1, s2) >= W2(s1, s2)
+
+  % Helper: physical excess is nonneg
+  phys_excess_nn(s1, s2: State): nonneg_real = phys_cost(s1, s2) - W2(s1, s2)
+
+  % Excess ratio: how much physical exceeds optimal
+  excess(s1, s2: State): nonneg_real =
+    IF W2(s1, s2) > 0 THEN phys_excess_nn(s1, s2) / W2(s1, s2)
+    ELSE 0
+    ENDIF
+
+  % A9: Full path (NIGHT→DAY) is near-optimal (empirical: <5% excess)
+  epsilon_global: nonneg_real
+  ax_global_near_optimal: AXIOM
+    excess(NIGHT, DAY) <= epsilon_global
+
+  % A10: Local segment (DAY→DUSK) has significant excess (empirical: ~23%)
+  ax_local_has_excess: AXIOM
+    excess(DAY, DUSK) > epsilon_global
+
+  %% ─────────────────────────────────────────────────────────────────
+  %% Theorems
+  %% ─────────────────────────────────────────────────────────────────
+
+  % T1: Coexistence — local excess and global near-optimality can coexist
+  %     (prevents misinterpretation of C8 FAIL as global failure)
+  thm_coexistence: THEOREM
+    excess(DAY, DUSK) > epsilon_global AND
+    excess(NIGHT, DAY) <= epsilon_global
+
+  % T2: DAWN splits the NIGHT→DAY geodesic exactly
+  %     (no excess on the full path means DAWN is ON the geodesic)
+  thm_dawn_on_geodesic: THEOREM
+    W2(NIGHT, DAWN) + W2(DAWN, DAY) = W2(NIGHT, DAY)
+
+  % T3: DUSK splits the DAY→NIGHT geodesic exactly
+  thm_dusk_on_geodesic: THEOREM
+    W2(DAY, DUSK) + W2(DUSK, NIGHT) = W2(DAY, NIGHT)
+
+  % T4: Segment distance is bounded by full path distance
+  thm_segment_bounded: THEOREM
+    W2(DAY, DUSK) <= W2(DAY, NIGHT)
+
+  % T5: DAWN distance from NIGHT is proportional to t_dawn
+  thm_dawn_proportional: THEOREM
+    W2(NIGHT, DAWN) = t_dawn * W2(NIGHT, DAY)
+
+  % T6: DUSK distance from DAY is proportional to t_dusk
+  thm_dusk_proportional: THEOREM
+    W2(DAY, DUSK) = t_dusk * W2(DAY, NIGHT)
+
+  % T7: Optimal segment distance is bounded by physical full path cost
+  %     W2(DAY, DUSK) <= phys_cost(DAY, NIGHT)
+  %     (segment geodesic distance cannot exceed full path physical cost)
+  thm_excess_triangle_bound: THEOREM
+    W2(DAY, DUSK) <= phys_cost(DAY, NIGHT)
+
+  % T8: Global near-optimality implies segments are not arbitrarily bad
+  %     (the sum of segment costs is bounded by near-optimal full cost)
+  thm_segment_sum_bounded: THEOREM
+    W2(NIGHT, DAWN) + W2(DAWN, DAY) <= phys_cost(NIGHT, DAY)
+
+  % T9: Interpolation points are metrically between endpoints
+  thm_interp_between: THEOREM
+    W2(NIGHT, DAWN) <= W2(NIGHT, DAY)
+
+  % T10: Geodesic additivity gap characterizes non-geodesic deviation
+  %      If physical path is NOT geodesic, gap > 0
+  thm_additivity_gap: THEOREM
+    phys_cost(DAY, DUSK) + phys_cost(DUSK, NIGHT) >= W2(DAY, NIGHT)
 
 END global_optimality

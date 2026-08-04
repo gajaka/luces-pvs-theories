@@ -1,11 +1,392 @@
 (global_optimality
- (lem_coexistence 0
-  (lem_coexistence-1 nil 3990860824
-   ("" (split)
-    (("1" (lemma "ax_local_excess") (("1" (propax) nil nil)) nil)
-     ("2" (lemma "ax_global_optimal") (("2" (propax) nil nil)) nil))
+ (t_dawn_TCC1 0
+  (t_dawn_TCC1-1 nil 3994859857
+   ("" (existence-tcc) (("" (inst 1 "0") nil nil)) nil)
+   ((number nonempty-type-decl nil numbers nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (>= const-decl "bool" reals nil) (<= const-decl "bool" reals nil))
+   nil
+   (t_dawn existence ""
+    "{x: reals.real | booleans.AND(reals.>=(x, 0), reals.<=(x, 1))}")))
+ (phys_excess_nn_TCC1 0
+  (phys_excess_nn_TCC1-1 nil 3994861528
+   ("" (skosimp*)
+    (("" (lemma "ax_phys_geq_optimal")
+      (("" (inst -1 "s1!1" "s2!1") (("" (assert) nil nil)) nil)) nil))
     nil)
-   ((ax_global_optimal formula-decl nil global_optimality nil)
-    (ax_local_excess formula-decl nil global_optimality nil))
+   ((ax_phys_geq_optimal formula-decl nil global_optimality nil)
+    (real_minus_real_is_real application-judgement "real" reals nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (State nonempty-type-decl nil global_optimality nil))
+   nil
+   (phys_excess_nn subtype
+    "(number_fields.-)(global_optimality.phys_cost(global_optimality.s1, global_optimality.s2), global_optimality.W2(global_optimality.s1, global_optimality.s2))"
+    "nonneg_real")))
+ (excess_TCC1 0
+  (excess_TCC1-1 nil 3994859857 ("" (subtype-tcc) nil nil)
+   ((real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (/= const-decl "boolean" notequal nil))
+   nil
+   (excess subtype
+    "global_optimality.W2(global_optimality.s1, global_optimality.s2)"
+    "nznum")))
+ (excess_TCC2 0
+  (excess_TCC2-1 nil 3994859857
+   ("" (subtype-tcc)
+    (("" (typepred "phys_excess_nn(s1!1, s2!1)")
+      (("" (assert)
+        (("" (lemma "pos_div_ge")
+          ((""
+            (inst -1 "W2(s1!1, s2!1)"
+             "phys_cost(s1!1, s2!1) - W2(s1!1, s2!1)")
+            (("" (smash) nil nil)) nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (State nonempty-type-decl nil global_optimality nil)
+    (>= const-decl "bool" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number nonempty-type-decl nil numbers nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (pos_div_ge formula-decl nil real_props nil)
+    (/= const-decl "boolean" notequal nil)
+    (nonzero_real nonempty-type-eq-decl nil reals nil)
+    (W2 const-decl "[State, State -> nonneg_real]" global_optimality
+     nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (phys_cost const-decl "[State, State -> nonneg_real]"
+     global_optimality nil)
+    (real_div_nzreal_is_real application-judgement "real" reals nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_minus_real_is_real application-judgement "real" reals nil)
+    (phys_excess_nn const-decl "nonneg_real" global_optimality nil))
+   nil
+   (excess subtype
+    "number_fields./(global_optimality.phys_excess_nn(global_optimality.s1, global_optimality.s2), global_optimality.W2(global_optimality.s1, global_optimality.s2))"
+    "nonneg_real")))
+ (thm_coexistence 0
+  (thm_coexistence-1 nil 3994861841
+   ("" (lemma "ax_local_has_excess")
+    (("" (lemma "ax_global_near_optimal") (("" (prop) nil nil)) nil))
+    nil)
+   ((ax_global_near_optimal formula-decl nil global_optimality nil)
+    (ax_local_has_excess formula-decl nil global_optimality nil))
+   shostak))
+ (thm_dawn_on_geodesic 0
+  (thm_dawn_on_geodesic-1 nil 3994861871
+   ("" (lemma "ax_dawn_interp")
+    (("" (lemma "ax_geodesic_split")
+      (("" (inst -1 "NIGHT" "DAY" "t_dawn") (("" (smash) nil nil))
+        nil))
+      nil))
+    nil)
+   ((ax_geodesic_split formula-decl nil global_optimality nil)
+    (nnreal_plus_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (t_dawn const-decl "{x: real | x >= 0 AND x <= 1}"
+     global_optimality nil)
+    (<= const-decl "bool" reals nil) (>= const-decl "bool" reals nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (DAY const-decl "State" global_optimality nil)
+    (NIGHT const-decl "State" global_optimality nil)
+    (State nonempty-type-decl nil global_optimality nil)
+    (ax_dawn_interp formula-decl nil global_optimality nil))
+   shostak))
+ (thm_dusk_on_geodesic 0
+  (thm_dusk_on_geodesic-1 nil 3994861952
+   ("" (lemma "ax_dusk_interp")
+    (("" (lemma "ax_geodesic_split")
+      (("" (inst -1 "DAY" "NIGHT" "t_dusk")
+        (("" (replace -2) (("" (propax) nil nil)) nil)) nil))
+      nil))
+    nil)
+   ((ax_geodesic_split formula-decl nil global_optimality nil)
+    (t_dusk const-decl "{x: real | x >= 0 AND x <= 1}"
+     global_optimality nil)
+    (<= const-decl "bool" reals nil) (>= const-decl "bool" reals nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (NIGHT const-decl "State" global_optimality nil)
+    (DAY const-decl "State" global_optimality nil)
+    (State nonempty-type-decl nil global_optimality nil)
+    (ax_dusk_interp formula-decl nil global_optimality nil))
+   shostak))
+ (thm_segment_bounded 0
+  (thm_segment_bounded-1 nil 3994862041
+   ("" (lemma "ax_dusk_interp")
+    (("" (lemma "ax_interp_distance")
+      (("" (inst -1 "DAY" "NIGHT" "t_dusk")
+        (("" (replace -2)
+          (("" (lemma "both_sides_times_pos_le1_imp")
+            (("" (rewrite -2)
+              (("" (inst -1 "W2(DAY, NIGHT)" "t_dusk" "1")
+                (("" (typepred "t_dusk") (("" (smash) nil nil)) nil))
+                nil))
+              nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((ax_interp_distance formula-decl nil global_optimality nil)
+    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (W2 const-decl "[State, State -> nonneg_real]" global_optimality
+     nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (both_sides_times_pos_le1_imp formula-decl nil extra_real_props
+     nil)
+    (t_dusk const-decl "{x: real | x >= 0 AND x <= 1}"
+     global_optimality nil)
+    (<= const-decl "bool" reals nil) (>= const-decl "bool" reals nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (NIGHT const-decl "State" global_optimality nil)
+    (DAY const-decl "State" global_optimality nil)
+    (State nonempty-type-decl nil global_optimality nil)
+    (ax_dusk_interp formula-decl nil global_optimality nil))
+   shostak))
+ (thm_dawn_proportional 0
+  (thm_dawn_proportional-1 nil 3994862458
+   ("" (lemma "ax_dawn_interp")
+    (("" (lemma "ax_interp_distance")
+      (("" (inst -1 "NIGHT" "DAY" "t_dawn")
+        (("" (replace -2) (("" (propax) nil nil)) nil)) nil))
+      nil))
+    nil)
+   ((ax_interp_distance formula-decl nil global_optimality nil)
+    (t_dawn const-decl "{x: real | x >= 0 AND x <= 1}"
+     global_optimality nil)
+    (<= const-decl "bool" reals nil) (>= const-decl "bool" reals nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (DAY const-decl "State" global_optimality nil)
+    (NIGHT const-decl "State" global_optimality nil)
+    (State nonempty-type-decl nil global_optimality nil)
+    (ax_dawn_interp formula-decl nil global_optimality nil))
+   shostak))
+ (thm_dusk_proportional 0
+  (thm_dusk_proportional-1 nil 3994862596
+   ("" (lemma "ax_dusk_interp")
+    (("" (lemma "ax_interp_distance")
+      (("" (inst -1 "DAY" "NIGHT" "t_dusk")
+        (("" (replace -2) (("" (propax) nil nil)) nil)) nil))
+      nil))
+    nil)
+   ((ax_interp_distance formula-decl nil global_optimality nil)
+    (t_dusk const-decl "{x: real | x >= 0 AND x <= 1}"
+     global_optimality nil)
+    (<= const-decl "bool" reals nil) (>= const-decl "bool" reals nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (NIGHT const-decl "State" global_optimality nil)
+    (DAY const-decl "State" global_optimality nil)
+    (State nonempty-type-decl nil global_optimality nil)
+    (ax_dusk_interp formula-decl nil global_optimality nil))
+   shostak))
+ (thm_excess_triangle_bound 0
+  (thm_excess_triangle_bound-1 nil 3994862664
+   ("" (lemma "ax_dusk_interp")
+    (("" (lemma "ax_interp_distance")
+      (("" (inst -1 "DAY" "NIGHT" "t_dusk")
+        (("" (replace -2)
+          (("" (lemma "both_sides_times_pos_le1_imp")
+            (("" (inst -1 "W2(DAY, NIGHT)" "t_dusk" "1")
+              (("" (typepred "t_dusk")
+                (("" (lemma "ax_phys_geq_optimal")
+                  (("" (inst -1 "DAY" "NIGHT") (("" (smash) nil nil))
+                    nil))
+                  nil))
+                nil))
+              nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((ax_interp_distance formula-decl nil global_optimality nil)
+    (W2 const-decl "[State, State -> nonneg_real]" global_optimality
+     nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (ax_phys_geq_optimal formula-decl nil global_optimality nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (both_sides_times_pos_le1_imp formula-decl nil extra_real_props
+     nil)
+    (t_dusk const-decl "{x: real | x >= 0 AND x <= 1}"
+     global_optimality nil)
+    (<= const-decl "bool" reals nil) (>= const-decl "bool" reals nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (NIGHT const-decl "State" global_optimality nil)
+    (DAY const-decl "State" global_optimality nil)
+    (State nonempty-type-decl nil global_optimality nil)
+    (ax_dusk_interp formula-decl nil global_optimality nil))
+   shostak))
+ (thm_segment_sum_bounded 0
+  (thm_segment_sum_bounded-1 nil 3994862783
+   ("" (lemma "thm_dawn_on_geodesic")
+    (("" (lemma "ax_phys_geq_optimal")
+      (("" (inst -1 "NIGHT" "DAY") (("" (assert) nil nil)) nil)) nil))
+    nil)
+   ((thm_dawn_on_geodesic formula-decl nil global_optimality nil)
+    (State nonempty-type-decl nil global_optimality nil)
+    (NIGHT const-decl "State" global_optimality nil)
+    (DAY const-decl "State" global_optimality nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (nnreal_plus_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (ax_phys_geq_optimal formula-decl nil global_optimality nil))
+   shostak))
+ (thm_interp_between 0
+  (thm_interp_between-1 nil 3994862909
+   ("" (lemma "ax_dawn_interp")
+    (("" (lemma "ax_interp_distance")
+      (("" (inst -1 "NIGHT" "DAY" "t_dawn")
+        (("" (replace -2)
+          (("" (rewrite -1)
+            (("" (lemma "both_sides_times_pos_le1_imp")
+              (("" (inst -1 "W2(NIGHT, DAY)" "t_dawn" "1")
+                (("" (typepred "t_dawn") (("" (assert) nil nil)) nil))
+                nil))
+              nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((ax_interp_distance formula-decl nil global_optimality nil)
+    (both_sides_times_pos_le1_imp formula-decl nil extra_real_props
+     nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (W2 const-decl "[State, State -> nonneg_real]" global_optimality
+     nil)
+    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (t_dawn const-decl "{x: real | x >= 0 AND x <= 1}"
+     global_optimality nil)
+    (<= const-decl "bool" reals nil) (>= const-decl "bool" reals nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (DAY const-decl "State" global_optimality nil)
+    (NIGHT const-decl "State" global_optimality nil)
+    (State nonempty-type-decl nil global_optimality nil)
+    (ax_dawn_interp formula-decl nil global_optimality nil))
+   shostak))
+ (thm_additivity_gap 0
+  (thm_additivity_gap-1 nil 3994863139
+   ("" (lemma "ax_phys_geq_optimal")
+    (("" (inst -1 "DAY" "DUSK")
+      (("" (lemma "ax_phys_geq_optimal")
+        (("" (inst -1 "DUSK" "NIGHT")
+          (("" (lemma "ax_metric_triangle")
+            (("" (inst -1 "DAY" "DUSK" "NIGHT") (("" (smash) nil nil))
+              nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((State nonempty-type-decl nil global_optimality nil)
+    (DAY const-decl "State" global_optimality nil)
+    (DUSK const-decl "State" global_optimality nil)
+    (NIGHT const-decl "State" global_optimality nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (nnreal_plus_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (ax_metric_triangle formula-decl nil global_optimality nil)
+    (ax_phys_geq_optimal formula-decl nil global_optimality nil))
    shostak)))
 
