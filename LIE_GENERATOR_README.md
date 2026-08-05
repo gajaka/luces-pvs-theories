@@ -1,6 +1,5 @@
 # Lie Group Transport — Generator Analysis
 
-**Script**: `lie_group_transport_v2.py` (private, not in this repo)
 **PVS Formalization**: [lie_generator_structure.pvs](lie_generator_structure.pvs)
 **Method**: Full Kantorovich coupling --> continuous displacement field
 **Reference**: Hall (2015), *Lie Groups, Lie Algebras, and Representations*, GTM 222
