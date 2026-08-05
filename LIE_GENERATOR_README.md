@@ -79,15 +79,6 @@ The Lie generator v(i) describes the infinitesimal spectral flow:
 Dawn: predominantly negative v (blue-shift as sun rises, energy moves from NIR to visible).
 Dusk: initial negative v that reverses mid-transition (front-loaded, then rebounds).
 
-## Running
-
-```bash
-cd ~/Downloads/luces/paper3
-python3 scripts/lie_group_transport_v2.py
-```
-
-Requires: numpy, pandas, pot (Python Optimal Transport)
-
 ## Author
 
 Dragan Stosic, 2026
