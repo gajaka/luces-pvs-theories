@@ -66,7 +66,7 @@ where P is the optimal Kantorovich coupling (POT network simplex).
 | exponential?(p) | Theorem 2.14: one-parameter subgroup <--> exp(tX) |
 | coherent?(p) | Corollary 3.46: g = tangent space at identity |
 | ax_reversal_breaks_coherence | Theorem 2.14 contrapositive: reversal --> not exp |
-| ax_exponential_requires_smooth | Definition 3.18 + Theorem 2.14: constant X |
+| ax_exponential_requires_smooth_no_reversal | Definition 3.18 + Theorem 2.14: constant X |
 
 ### Physical Interpretation
 
