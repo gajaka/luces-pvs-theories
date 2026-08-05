@@ -58,8 +58,8 @@ where P is the optimal Kantorovich coupling (POT network simplex).
 
 ### PVS Formalization
 
-- `lie_generator_structure.pvs` — 10 theorems: hierarchy exponential --> strongly_coherent --> coherent
-- `lie_pp_connection.pvs` — 6 theorems: PPG + Lie connection
+- [`lie_generator_structure.pvs`](lie_generator_structure.pvs) — 10 theorems: hierarchy exponential --> strongly_coherent --> coherent
+- [`lie_pp_connection.pvs`](lie_pp_connection.pvs) — 6 theorems: PPG + Lie connection
 
 ### Hall (2015) References
 
