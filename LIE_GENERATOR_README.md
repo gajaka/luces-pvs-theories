@@ -54,6 +54,8 @@ where P is the optimal Kantorovich coupling (POT network simplex).
 
 5. **T10 validation**: PVS theorem T10 (coherent IFF observed AND NOT reversal) holds on all 13 logs with zero violations. C20 PASS/FAIL perfectly predicts C22 PASS/FAIL.
 
+6. **C20 vs C22 can differ in grade**: Boot347 has C20=PASS but C22=STRONG. C20 measures the mean alignment with the global generator (cos_full=0.711, above 0.7 but below 0.85). C22 measures the minimum cosine in the active zone (min_cos=0.903, above 0.85). The tangent field never reverses and has high local stability, but its average alignment with the full NIGHT-->DAY generator is only 0.711. The two certificates measure different aspects of coherence: C20 captures global direction alignment, C22 captures local tangent consistency.
+
 ### PVS Formalization
 
 - `lie_generator_structure.pvs` — 10 theorems: hierarchy exponential --> strongly_coherent --> coherent
