@@ -33,7 +33,8 @@ Built on:
 
 **Deterministic Traversal:**
 - Inference function extraction without Axiom of Choice
-- Via parametric definite description from `relational_choice`
+- Uniqueness (one successor per vertex) gives definite description
+- Constructive: computable traversal, not existential witness
 
 **Fault Tolerance:**
 - Byzantine vertices are isolated in pp-valid graphs
