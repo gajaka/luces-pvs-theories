@@ -1,7 +1,7 @@
 %%% wasserstein_metric.pvs
 %%% Wasserstein-2 Metric Structure
 %%%
-%%% Villani (2009), Ch.7, Proposition 7.3:
+%%% Villani (2009), Ch.6, Theorem 6.18:
 %%%   W₂ is a metric on the space of probability measures with finite
 %%%   second moment, giving the space of spectral distributions
 %%%   a proper geometric structure.
@@ -11,7 +11,7 @@
 %%%   - Symmetry --> time-reversal analysis (velocity_asymmetry)
 %%%   - Non-degeneracy --> distinct regimes are metrically separated
 %%%
-%%% Villani Ch.7, Prop 7.29 (Displacement convexity):
+%%% Villani (2009), Ch.17, Theorem 17.15 (Displacement convexity):
 %%%   Entropy is convex along McCann geodesics in W₂ space.
 %%%   Consequence: the geodesic is "efficient" — no entropy explosion.
 %%%
@@ -62,7 +62,7 @@ BEGIN
     FORALL (mu, nu: Distr):
       mccann(mu, nu, 0) = mu AND mccann(mu, nu, 1) = nu
 
-  % A6: Full constant-speed geodesic (Villani Ch.7, Prop 7.27)
+  % A6: Full constant-speed geodesic (Villani Ch.7, Theorem 7.21)
   %     W₂(μ_s, μ_t) = |t-s| · W₂(μ₀, μ₁) for all s,t ∈ [0,1]
   ax_constant_speed: AXIOM
     FORALL (mu, nu: Distr,
@@ -70,7 +70,7 @@ BEGIN
             t: {t: real | t >= 0 AND t <= 1}):
       W2(mccann(mu, nu, s), mccann(mu, nu, t)) = abs(t - s) * W2(mu, nu)
 
-  % A7: Displacement convexity of entropy (Villani Prop 7.29)
+  % A7: Displacement convexity of entropy (Villani Ch.17, Theorem 17.15)
   %     H(μ_t) ≤ (1-t)·H(μ₀) + t·H(μ₁)
   ax_displacement_convexity: AXIOM
     FORALL (mu, nu: Distr, t: {t: real | t >= 0 AND t <= 1}):
