@@ -2,7 +2,7 @@
 % Formal Verification of Secure Boot Chain
 %
 % A PVS formalization of layered proof-preserving graphs applied to
-% hardware root-of-trust boot sequences (ROM → ROM_EXT → BL0 → kernel).
+% hardware root-of-trust boot sequences (ROM --> ROM_EXT --> BL0 --> kernel).
 %
 % Key properties verified:
 %   - Boot chain is a DAG (no cycles)
@@ -63,7 +63,7 @@ BEGIN
   %% ═══════════════════════════════════════════════════════════════════
 
   % Boot chain: layered graph + at most one node per level
-  % This models a linear boot sequence: ROM → ROM_EXT → BL0 → kernel
+  % This models a linear boot sequence: ROM --> ROM_EXT --> BL0 --> kernel
   boot_chain?(G: graph[T]): bool =
     layered?(G) AND
     FORALL (x, y: T):

@@ -78,24 +78,24 @@ BEGIN
 %% ═══════════════════════════════════════════════════════════
 
   % T1: Dual observability holds in entire overlap zone
-  %     Proof: A1 gives spectral, A2 gives intensity → dual by definition
+  %     Proof: A1 gives spectral, A2 gives intensity --> dual by definition
   thm_dual_in_overlap: THEOREM
     FORALL (s: State): in_overlap?(s) IMPLIES dual_observable?(s)
 
   % T2: No observability gap during transition
-  %     Proof: T1 gives dual → at least one chart active (both, in fact)
+  %     Proof: T1 gives dual --> at least one chart active (both, in fact)
   thm_no_gap: THEOREM
     FORALL (s: State):
       in_overlap?(s) IMPLIES NOT (NOT intensity_observable?(s) AND NOT spectral_observable?(s))
 
   % T3: Fisher bounded throughout overlap
-  %     Proof: A1 (overlap → spectral) + A3 (spectral → Fisher bounded)
+  %     Proof: A1 (overlap --> spectral) + A3 (spectral --> Fisher bounded)
   thm_fisher_stable_in_overlap: THEOREM
     FORALL (s: State): in_overlap?(s) IMPLIES kappa_bounded?(s)
 
   % T4: Dual observability implies full system health
   %     Proof: dual_observable unfolds to intensity ∧ spectral;
-  %     A3 gives spectral → kappa_bounded
+  %     A3 gives spectral --> kappa_bounded
   thm_dual_implies_full_health: THEOREM
     FORALL (s: State):
       dual_observable?(s) IMPLIES

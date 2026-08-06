@@ -11,11 +11,11 @@ BEGIN
   %%
   %% Key insight: DAWN and DUSK are NOT independent targets.
   %% They are interpolation points on full geodesics:
-  %%   - DAWN = t ≈ 0.27 on NIGHT → DAY geodesic
-  %%   - DUSK = t ≈ 0.73 on DAY → NIGHT geodesic
+  %%   - DAWN = t ≈ 0.27 on NIGHT --> DAY geodesic
+  %%   - DUSK = t ≈ 0.73 on DAY --> NIGHT geodesic
   %%
-  %% Local segment excess (C8 FAIL on DAY→DUSK) does NOT contradict
-  %% global near-optimality of the full DAY→NIGHT trajectory.
+  %% Local segment excess (C8 FAIL on DAY-->DUSK) does NOT contradict
+  %% global near-optimality of the full DAY-->NIGHT trajectory.
   %%
   %% Connection to certificates:
   %%   C8  (near-optimality): local excess per segment
@@ -23,7 +23,7 @@ BEGIN
   %%   displacement_interpolation.pvs: McCann interpolation
   %%   unbalanced_regime.pvs: regime explains local excess
   %%
-  %% Empirical: boot298 dusk full path 0% excess, DAY→DUSK segment 23%
+  %% Empirical: boot298 dusk full path 0% excess, DAY-->DUSK segment 23%
   %% ═══════════════════════════════════════════════════════════════════
 
   %% ─────────────────────────────────────────────────────────────────
@@ -96,12 +96,12 @@ BEGIN
   ax_distinct_night_dawn: AXIOM NIGHT /= DAWN
   ax_distinct_day_dusk: AXIOM DAY /= DUSK
 
-  % DAWN is an interpolation point on NIGHT → DAY geodesic
+  % DAWN is an interpolation point on NIGHT --> DAY geodesic
   t_dawn: {x: real | x >= 0 AND x <= 1}
   ax_dawn_interp: AXIOM
     DAWN = interp(NIGHT, DAY, t_dawn)
 
-  % DUSK is an interpolation point on DAY → NIGHT geodesic
+  % DUSK is an interpolation point on DAY --> NIGHT geodesic
   t_dusk: {x: real | x >= 0 AND x <= 1}
   ax_dusk_interp: AXIOM
     DUSK = interp(DAY, NIGHT, t_dusk)
@@ -126,12 +126,12 @@ BEGIN
     ELSE 0
     ENDIF
 
-  % A9: Full path (NIGHT→DAY) is near-optimal (empirical: <5% excess)
+  % A9: Full path (NIGHT-->DAY) is near-optimal (empirical: <5% excess)
   epsilon_global: nonneg_real
   ax_global_near_optimal: AXIOM
     excess(NIGHT, DAY) <= epsilon_global
 
-  % A10: Local segment (DAY→DUSK) has significant excess (empirical: ~23%)
+  % A10: Local segment (DAY-->DUSK) has significant excess (empirical: ~23%)
   ax_local_has_excess: AXIOM
     excess(DAY, DUSK) > epsilon_global
 
@@ -145,12 +145,12 @@ BEGIN
     excess(DAY, DUSK) > epsilon_global AND
     excess(NIGHT, DAY) <= epsilon_global
 
-  % T2: DAWN splits the NIGHT→DAY geodesic exactly
+  % T2: DAWN splits the NIGHT-->DAY geodesic exactly
   %     (no excess on the full path means DAWN is ON the geodesic)
   thm_dawn_on_geodesic: THEOREM
     W2(NIGHT, DAWN) + W2(DAWN, DAY) = W2(NIGHT, DAY)
 
-  % T3: DUSK splits the DAY→NIGHT geodesic exactly
+  % T3: DUSK splits the DAY-->NIGHT geodesic exactly
   thm_dusk_on_geodesic: THEOREM
     W2(DAY, DUSK) + W2(DUSK, NIGHT) = W2(DAY, NIGHT)
 
