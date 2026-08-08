@@ -20,7 +20,7 @@ Built on:
 | `pp_graphs_extended.pvs` | 21 | Extensions: temporal evolution, weighted/OT connection, algebraic automorphisms, fault tolerance, categorical morphisms |
 | `lowrisc_boot_verification.pvs` | 10 | Application: secure boot chain (layered DAG, failure isolation, lock-out) |
 | `opentitan_boot_instance.pvs` | 8 | Concrete instantiation: OpenTitan ROM --> ROM_EXT --> BL0 --> Kernel |
-| `lie_pp_connection.pvs` | 6 | Bridge: curvature-coherence inverse law, Lie generator ↔ PP-graph |
+| `lie_pp_connection.pvs` | 6 | Bridge: curvature-coherence inverse law, Lie generator <--> PP-graph |
 | `pp_graph_repair.pvs` | 9 | Repair semantics: relational choice, isolation reversal, route bypass, convergence |
 
 **Lean 4 port:** [ppg-lean](https://github.com/gajaka/ppg-lean) — 94 theorems, zero sorry, verified with Mathlib.
@@ -76,7 +76,7 @@ Built on:
 | `rank_orientation.pvs` | 2 | Rank and orientation preservation |
 | `global_optimality.pvs` | 10 | Geodesic segmentation: local excess vs global optimality, interpolation, coexistence |
 | `unbalanced_regime.pvs` | 10 | Unbalanced OT: source/sink dynamics, deviation functional, regime classification |
-| `fisher_atlas.pvs` | 10 | Manifold atlas: charts, transition maps, Fisher metric, Fisher↔Wasserstein bridge |
+| `fisher_atlas.pvs` | 10 | Manifold atlas: charts, transition maps, Fisher metric, Fisher<-->Wasserstein bridge |
 
 ### Key Theorem (T10)
 
