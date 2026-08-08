@@ -2,7 +2,7 @@
 
 **A formal mathematical framework for structural resilience, with applications to optimal transport verification and hardware root-of-trust.**
 
-28 theories. 206 machine-checked theorems. All proved in PVS.
+29 theories. 215 machine-checked theorems. All proved in PVS.
 
 ---
 
@@ -21,6 +21,7 @@ Built on:
 | `lowrisc_boot_verification.pvs` | 10 | Application: secure boot chain (layered DAG, failure isolation, lock-out) |
 | `opentitan_boot_instance.pvs` | 8 | Concrete instantiation: OpenTitan ROM --> ROM_EXT --> BL0 --> Kernel |
 | `lie_pp_connection.pvs` | 6 | Bridge: curvature-coherence inverse law, Lie generator ↔ PP-graph |
+| `pp_graph_repair.pvs` | 9 | Repair semantics: relational choice, isolation reversal, route bypass, convergence |
 
 **Lean 4 port:** [ppg-lean](https://github.com/gajaka/ppg-lean) — 94 theorems, zero sorry, verified with Mathlib.
 
