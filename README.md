@@ -24,7 +24,7 @@ Built on:
 | `pp_graph_repair.pvs` | 9 | Repair semantics: relational choice, isolation reversal, route bypass, convergence |
 | `categorical_pp_graphs.pvs` | 6 | Categorical structure: morphisms, embeddings, quotients, refinement, simulation |
 
-**Lean 4 port:** [ppg-lean](https://github.com/gajaka/ppg-lean) — 94 theorems, zero sorry, verified with Mathlib.
+**Lean 4 port:** [ppg-lean](https://github.com/gajaka/ppg-lean) — 101 theorems, zero sorry, verified with Mathlib.
 
 ### Key Results
 
