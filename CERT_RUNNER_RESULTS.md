@@ -1,7 +1,8 @@
 # Certificate Runner — Paper 3 Final Dataset
 
-22 certificates evaluated on 8 independent experiments (5 dawn, 3 dusk).
+25 certificates evaluated on 8 independent experiments (5 dawn, 3 dusk).
 PPG certificates (PPG, RES, DET, CCI, ATL) achieve 100% PASS on all logs.
+Observability certificates (OBS, DATL, MRG) achieve 100% PASS on all logs.
 DEV classifies each log into balanced/transitional/unbalanced regime.
 
 ---
@@ -61,12 +62,16 @@ DEV classifies each log into balanced/transitional/unbalanced regime.
   DEV Deviation Regime:     DIAG   TRANSITIONAL Dev=1.01 κ=100.8 coh=0.737 rev=False exc=0.0000
   ATL Atlas Consistency:    PASS   min_d=0.0289 (TRANS↔DAY) k=3
 
-═══════════════════════════════════════════════════════
-  Summary: 23 PASS / 0 FAIL / 3 DIAG / 1 N/A
-═══════════════════════════════════════════════════════
-```
+  OBSERVABILITY (Paper 2)
+  -----------------------
+  OBS Spectral Persist:     PASS   responsive=9/10 max_std=50.0 (raw_F5_555)
+  DATL Dual Atlas:          PASS   intensity=96.9% spectral_std=121.2 n=98
+  MRG SNR Margin:           PASS   max_snr=37.52 (raw_F5_555) noise_floor=1.33
 
-```
+═══════════════════════════════════════════════════════
+  Summary: 26 PASS / 0 FAIL / 3 DIAG / 1 N/A
+═══════════════════════════════════════════════════════
+
 ═══════════════════════════════════════════════════════
   LUCES CERTIFICATE RUNNER
 ═══════════════════════════════════════════════════════
@@ -121,12 +126,16 @@ DEV classifies each log into balanced/transitional/unbalanced regime.
   DEV Deviation Regime:     DIAG   TRANSITIONAL Dev=1.92 κ=92.3 coh=0.679 rev=False exc=0.0000
   ATL Atlas Consistency:    PASS   min_d=0.0357 (TRANS↔DAY) k=3
 
-═══════════════════════════════════════════════════════
-  Summary: 24 PASS / 0 FAIL / 3 DIAG
-═══════════════════════════════════════════════════════
-```
+  OBSERVABILITY (Paper 2)
+  -----------------------
+  OBS Spectral Persist:     PASS   responsive=9/10 max_std=50.7 (raw_F5_555)
+  DATL Dual Atlas:          PASS   intensity=97.0% spectral_std=114.4 n=99
+  MRG SNR Margin:           PASS   max_snr=34.71 (raw_F5_555) noise_floor=1.46
 
-```
+═══════════════════════════════════════════════════════
+  Summary: 27 PASS / 0 FAIL / 3 DIAG
+═══════════════════════════════════════════════════════
+
 ═══════════════════════════════════════════════════════
   LUCES CERTIFICATE RUNNER
 ═══════════════════════════════════════════════════════
@@ -181,12 +190,16 @@ DEV classifies each log into balanced/transitional/unbalanced regime.
   DEV Deviation Regime:     DIAG   UNBALANCED Dev=3.91 κ=291.4 coh=0.679 rev=False exc=0.0000
   ATL Atlas Consistency:    PASS   min_d=0.0532 (TRANS↔DAY) k=3
 
-═══════════════════════════════════════════════════════
-  Summary: 21 PASS / 2 FAIL / 1 BORDER / 2 DIAG / 1 INFO
-═══════════════════════════════════════════════════════
-```
+  OBSERVABILITY (Paper 2)
+  -----------------------
+  OBS Spectral Persist:     PASS   responsive=8/10 max_std=23.0 (raw_F5_555)
+  DATL Dual Atlas:          PASS   intensity=100.0% spectral_std=15.0 n=34
+  MRG SNR Margin:           PASS   max_snr=27.08 (raw_F5_555) noise_floor=0.85
 
-```
+═══════════════════════════════════════════════════════
+  Summary: 24 PASS / 2 FAIL / 1 BORDER / 2 DIAG / 1 INFO
+═══════════════════════════════════════════════════════
+
 ═══════════════════════════════════════════════════════
   LUCES CERTIFICATE RUNNER
 ═══════════════════════════════════════════════════════
@@ -241,12 +254,16 @@ DEV classifies each log into balanced/transitional/unbalanced regime.
   DEV Deviation Regime:     DIAG   TRANSITIONAL Dev=2.65 κ=164.5 coh=0.637 rev=False exc=0.0000
   ATL Atlas Consistency:    PASS   min_d=0.0270 (TRANS↔DAY) k=3
 
-═══════════════════════════════════════════════════════
-  Summary: 23 PASS / 1 FAIL / 3 DIAG
-═══════════════════════════════════════════════════════
-```
+  OBSERVABILITY (Paper 2)
+  -----------------------
+  OBS Spectral Persist:     PASS   responsive=8/10 max_std=19.8 (raw_F5_555)
+  DATL Dual Atlas:          PASS   intensity=100.0% spectral_std=48.5 n=97
+  MRG SNR Margin:           PASS   max_snr=23.77 (raw_F5_555) noise_floor=0.83
 
-```
+═══════════════════════════════════════════════════════
+  Summary: 26 PASS / 1 FAIL / 3 DIAG
+═══════════════════════════════════════════════════════
+
 ═══════════════════════════════════════════════════════
   LUCES CERTIFICATE RUNNER
 ═══════════════════════════════════════════════════════
@@ -301,12 +318,16 @@ DEV classifies each log into balanced/transitional/unbalanced regime.
   DEV Deviation Regime:     DIAG   TRANSITIONAL Dev=1.76 κ=176.2 coh=0.782 rev=False exc=0.0000
   ATL Atlas Consistency:    PASS   min_d=0.0467 (TRANS↔DAY) k=3
 
-═══════════════════════════════════════════════════════
-  Summary: 22 PASS / 1 FAIL / 1 BORDER / 2 DIAG / 1 INFO
-═══════════════════════════════════════════════════════
-```
+  OBSERVABILITY (Paper 2)
+  -----------------------
+  OBS Spectral Persist:     PASS   responsive=7/10 max_std=15.1 (raw_F5_555)
+  DATL Dual Atlas:          PASS   intensity=100.0% spectral_std=64.4 n=97
+  MRG SNR Margin:           PASS   max_snr=22.96 (raw_F5_555) noise_floor=0.66
 
-```
+═══════════════════════════════════════════════════════
+  Summary: 25 PASS / 1 FAIL / 1 BORDER / 2 DIAG / 1 INFO
+═══════════════════════════════════════════════════════
+
 ═══════════════════════════════════════════════════════
   LUCES CERTIFICATE RUNNER
 ═══════════════════════════════════════════════════════
@@ -361,12 +382,16 @@ DEV classifies each log into balanced/transitional/unbalanced regime.
   DEV Deviation Regime:     DIAG   TRANSITIONAL Dev=2.60 κ=259.9 coh=0.727 rev=False exc=0.0000
   ATL Atlas Consistency:    PASS   min_d=0.0321 (TRANS↔DAY) k=3
 
-═══════════════════════════════════════════════════════
-  Summary: 20 PASS / 3 FAIL / 1 BORDER / 2 DIAG / 1 INFO
-═══════════════════════════════════════════════════════
-```
+  OBSERVABILITY (Paper 2)
+  -----------------------
+  OBS Spectral Persist:     PASS   responsive=7/10 max_std=14.1 (raw_F5_555)
+  DATL Dual Atlas:          PASS   intensity=100.0% spectral_std=91.8 n=97
+  MRG SNR Margin:           PASS   max_snr=22.97 (raw_F5_555) noise_floor=0.61
 
-```
+═══════════════════════════════════════════════════════
+  Summary: 23 PASS / 3 FAIL / 1 BORDER / 2 DIAG / 1 INFO
+═══════════════════════════════════════════════════════
+
 ═══════════════════════════════════════════════════════
   LUCES CERTIFICATE RUNNER
 ═══════════════════════════════════════════════════════
@@ -421,12 +446,16 @@ DEV classifies each log into balanced/transitional/unbalanced regime.
   DEV Deviation Regime:     DIAG   UNBALANCED Dev=4.22 κ=422.1 coh=0.722 rev=False exc=0.0000
   ATL Atlas Consistency:    PASS   min_d=0.0460 (TRANS↔DAY) k=3
 
-═══════════════════════════════════════════════════════
-  Summary: 21 PASS / 2 FAIL / 1 BORDER / 2 DIAG / 1 INFO
-═══════════════════════════════════════════════════════
-```
+  OBSERVABILITY (Paper 2)
+  -----------------------
+  OBS Spectral Persist:     PASS   responsive=9/10 max_std=23.2 (raw_F5_555)
+  DATL Dual Atlas:          PASS   intensity=100.0% spectral_std=46.0 n=95
+  MRG SNR Margin:           PASS   max_snr=25.42 (raw_F5_555) noise_floor=0.91
 
-```
+═══════════════════════════════════════════════════════
+  Summary: 24 PASS / 2 FAIL / 1 BORDER / 2 DIAG / 1 INFO
+═══════════════════════════════════════════════════════
+
 ═══════════════════════════════════════════════════════
   LUCES CERTIFICATE RUNNER
 ═══════════════════════════════════════════════════════
@@ -481,7 +510,14 @@ DEV classifies each log into balanced/transitional/unbalanced regime.
   DEV Deviation Regime:     DIAG   TRANSITIONAL Dev=1.43 κ=142.7 coh=0.851 rev=False exc=0.0000
   ATL Atlas Consistency:    PASS   min_d=0.0434 (TRANS↔DAY) k=3
 
+  OBSERVABILITY (Paper 2)
+  -----------------------
+  OBS Spectral Persist:     PASS   responsive=9/10 max_std=29.2 (raw_F5_555)
+  DATL Dual Atlas:          PASS   intensity=100.0% spectral_std=127.9 n=95
+  MRG SNR Margin:           PASS   max_snr=23.72 (raw_F5_555) noise_floor=1.23
+
 ═══════════════════════════════════════════════════════
-  Summary: 21 PASS / 2 FAIL / 1 BORDER / 2 DIAG / 1 INFO
+  Summary: 24 PASS / 2 FAIL / 1 BORDER / 2 DIAG / 1 INFO
 ═══════════════════════════════════════════════════════
+
 ```
