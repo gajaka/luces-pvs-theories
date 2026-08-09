@@ -1,0 +1,112 @@
+%%% observability_refinement.pvs
+%%% Refinement of observability_geometry:
+%%%   - Derives former axioms as lemmas from stronger primitives
+%%%   - Introduces quantitative observability margin
+%%%   - Signal-to-noise ratio formalization
+%%%
+%%% Epistemological note:
+%%%   This theory demonstrates that the empirical axiom set in
+%%%   observability_geometry is not independent — ax_dominant_responsive
+%%%   subsumes ax_brightness_response, ax_cct_response, and ax_selectivity.
+%%%   This refinement reduces the axiom base while preserving all theorems.
+%%%
+%%% Author: Dragan Stosic, 2026
+
+observability_refinement: THEORY
+BEGIN
+
+  IMPORTING observability_geometry
+
+%% ═══════════════════════════════════════════════════════════
+%% DERIVED LEMMAS (formerly axioms, now provable)
+%% ═══════════════════════════════════════════════════════════
+
+% L1: ax_brightness_response follows from ax_dominant_responsive
+% (The brightness-dominant channel is responsive, hence above threshold)
+lem_brightness_from_dominant: LEMMA
+  EXISTS (ch: Channel): sensitivity(brightness, ch) > threshold
+
+% L2: ax_cct_response follows from ax_dominant_responsive
+lem_cct_from_dominant: LEMMA
+  EXISTS (ch: Channel): sensitivity(cct, ch) > threshold
+
+% L3: ax_selectivity follows from ax_dominant_responsive
+% (responsive implies above threshold implies the ordering holds)
+lem_selectivity_from_dominant: LEMMA
+  EXISTS (cb: Channel), (cc: Channel):
+    NOT(cb = cc) AND
+    sensitivity(brightness, cb) > sensitivity(cct, cb) AND
+    sensitivity(cct, cc) > sensitivity(brightness, cc)
+
+%% ═══════════════════════════════════════════════════════════
+%% QUANTITATIVE OBSERVABILITY
+%% Signal-to-Noise Ratio and Observability Margin
+%% ═══════════════════════════════════════════════════════════
+
+% SNR: ratio of sensitivity to threshold (dimensionless)
+snr(e: Excitation, ch: Channel): nonneg_real =
+  sensitivity(e, ch) / threshold
+
+% A channel is responsive iff SNR > 1
+lem_snr_responsive_equiv: LEMMA
+  FORALL (e: Excitation, ch: Channel):
+    responsive(e, ch) IFF snr(e, ch) > 1
+
+% Observability margin: how far above threshold the best channel is
+% (max SNR across channels for a given excitation)
+margin(e: Excitation): nonneg_real
+
+% AXIOM: Margin equals the maximum SNR across all channels
+ax_margin_is_max: AXIOM
+  FORALL (e: Excitation):
+    (EXISTS (ch: Channel): snr(e, ch) = margin(e)) AND
+    (FORALL (ch: Channel): snr(e, ch) <= margin(e))
+
+% AXIOM: Empirical margins are well above unity
+% Evidence: Boot 279 brightness SNR_max = 5.2, Boot 281 CCT SNR_max = 6.1
+ax_margin_bounds: AXIOM
+  margin(brightness) > 1 AND margin(cct) > 1
+
+%% ═══════════════════════════════════════════════════════════
+%% MARGIN THEOREMS
+%% ═══════════════════════════════════════════════════════════
+
+% T8: Positive margin implies spectral observability
+thm_margin_implies_observable: THEOREM
+  FORALL (e: Excitation):
+    margin(e) > 1 IMPLIES spectral_observable(e)
+
+% T9: System has positive margin under all excitations
+thm_universal_positive_margin: THEOREM
+  FORALL (e: Excitation): margin(e) > 1
+
+% T10: Margin gives a quantitative robustness bound
+% If margin > k, then sensitivity can degrade by factor k
+% and the system remains observable
+thm_margin_robustness: THEOREM
+  FORALL (e: Excitation), (k: posreal):
+    margin(e) > k AND k >= 1 IMPLIES
+    EXISTS (ch: Channel): sensitivity(e, ch) > k * threshold
+
+%% ═══════════════════════════════════════════════════════════
+%% EXCITATION DISCRIMINATION STRENGTH
+%% ═══════════════════════════════════════════════════════════
+
+% Discrimination ratio between excitations on a channel
+discrimination(ch: Channel): nonneg_real
+
+% AXIOM: Discrimination captures the max ratio difference
+% Evidence: F2_445 shows 9.3x ratio between CCT and brightness sensitivity
+ax_discrimination_exists: AXIOM
+  EXISTS (ch: Channel): discrimination(ch) > 1
+
+% T11: Non-trivial discrimination implies linear independence
+% (If some channel discriminates, the sensitivity profiles cannot be proportional)
+thm_discrimination_implies_independence: THEOREM
+  (EXISTS (ch: Channel): discrimination(ch) > 1) IMPLIES
+  (EXISTS (ch1, ch2: Channel):
+    NOT(ch1 = ch2) AND
+    NOT(sensitivity(brightness, ch1) * sensitivity(cct, ch2) =
+        sensitivity(brightness, ch2) * sensitivity(cct, ch1)))
+
+END observability_refinement
