@@ -1,0 +1,183 @@
+%%% observability_geometry.pvs
+%%% Excitation-dependent observability on multi-chart CPS manifold
+%%% Formal verification: logical consequences of empirical premises
+%%%
+%%% Empirical basis:
+%%%   EXP-1 (Boot 279): brightness excitation, r=0.829, p<0.001, n=1028
+%%%   EXP-2 (Boot 281): CCT excitation, r=0.876, p<0.001, n=726
+%%%
+%%% Epistemological structure:
+%%%   EMPIRICAL LAYER: measured correlations, permutation tests, runtime logs
+%%%   LOGICAL LAYER: consequences under observability predicates (this file)
+%%%   PVS does not prove physics — it proves that measured premises
+%%%   logically entail the stated observability properties.
+%%%
+%%% Author: Dragan Stosic, 2026
+
+observability_geometry: THEORY
+BEGIN
+
+%% ═══════════════════════════════════════════════════════════
+%% Types
+%% ═══════════════════════════════════════════════════════════
+
+Channel: TYPE = subrange(0, 9)   % AS7341: F1..F8, Clear, NIR (10 of 11;
+% Flicker channel excluded — constant zero,
+% never responsive under any excitation)
+
+Excitation: TYPE = {brightness, cct}
+
+%% ═══════════════════════════════════════════════════════════
+%% Measurement model
+%% ═══════════════════════════════════════════════════════════
+
+% Sensitivity: how much channel i responds to excitation e
+sensitivity: [Excitation, Channel -> nonneg_real]
+
+% Detection threshold (99th percentile of permutation null)
+threshold: posreal
+
+% A channel is responsive to excitation if sensitivity > threshold
+responsive(e: Excitation, ch: Channel): bool =
+  sensitivity(e, ch) > threshold
+
+%% ═══════════════════════════════════════════════════════════
+%% Chart observability
+%% ═══════════════════════════════════════════════════════════
+
+% Intensity chart observable = lux sensor detects signal
+intensity_observable: bool
+
+% Spectral chart observable under excitation e
+spectral_observable(e: Excitation): bool =
+  EXISTS (ch: Channel): responsive(e, ch)
+
+% System is globally unobservable only if NO chart carries information
+globally_unobservable: bool =
+  NOT intensity_observable AND
+  NOT spectral_observable(brightness) AND
+  NOT spectral_observable(cct)
+
+%% ═══════════════════════════════════════════════════════════
+%% EMPIRICAL AXIOMS (premises from measured data)
+%% ═══════════════════════════════════════════════════════════
+
+% AXIOM 1: During night, intensity chart collapses (lux = 0)
+% Evidence: Boot 279, 1028 samples, TSL2591 = 0.00 lux
+ax_intensity_collapse: AXIOM
+  NOT intensity_observable
+
+% AXIOM 2: Under brightness excitation, spectral channels respond
+% Evidence: Boot 279, F8_680 r=0.829, permutation p=0.000
+ax_brightness_response: AXIOM
+  EXISTS (ch: Channel): sensitivity(brightness, ch) > threshold
+
+% AXIOM 3: Under CCT excitation, spectral channels respond
+% Evidence: Boot 281, F7_630 r=0.876, permutation p=0.000
+ax_cct_response: AXIOM
+  EXISTS (ch: Channel): sensitivity(cct, ch) > threshold
+
+% AXIOM 4: Brightness and CCT activate different dominant channels
+% Evidence: normalized sensitivity F2_445 is 9.3x more CCT-sensitive
+ax_selectivity: AXIOM
+  EXISTS (cb: Channel), (cc: Channel):
+    NOT(cb = cc) AND
+    sensitivity(brightness, cb) > sensitivity(cct, cb) AND
+    sensitivity(cct, cc) > sensitivity(brightness, cc)
+
+% AXIOM 7: Sensitivity profiles are not proportional
+% Evidence: F8_680/F2_445 ratio differs 9.3x between excitations
+ax_linear_independence: AXIOM
+  EXISTS (ch1, ch2: Channel):
+    NOT(ch1 = ch2) AND
+    NOT(sensitivity(brightness, ch1) * sensitivity(cct, ch2) =
+        sensitivity(brightness, ch2) * sensitivity(cct, ch1))
+
+% AXIOM 8: Dominant channels are above detection threshold
+% Evidence: F8_680 r=0.829 >> threshold, F2_445 r=0.712 >> threshold
+ax_dominant_responsive: AXIOM
+  EXISTS (cb, cc: Channel):
+    NOT(cb = cc) AND
+    responsive(brightness, cb) AND responsive(cct, cc) AND
+    sensitivity(brightness, cb) > sensitivity(cct, cb) AND
+    sensitivity(cct, cc) > sensitivity(brightness, cc)
+
+
+%% ═══════════════════════════════════════════════════════════
+%% THEOREMS (T1-T7)
+%% ═══════════════════════════════════════════════════════════
+
+% T1: Chart-local collapse does not imply manifold-level collapse
+thm_local_not_global: THEOREM
+  NOT intensity_observable AND spectral_observable(brightness)
+  IMPLIES NOT globally_unobservable
+
+% T2: System maintains observability despite intensity collapse
+thm_observability_persists: THEOREM
+  NOT globally_unobservable
+
+% T3: Different excitations activate different dominant channels
+thm_excitation_rotates: THEOREM
+  EXISTS (cb: Channel), (cc: Channel):
+    NOT(cb = cc) AND
+    sensitivity(brightness, cb) > sensitivity(cct, cb) AND
+    sensitivity(cct, cc) > sensitivity(brightness, cc)
+
+% T4: Spectral chart observable under every excitation type
+thm_universal_persistence: THEOREM
+  FORALL (e: Excitation): spectral_observable(e)
+
+% T6: Excitation profiles are linearly independent (rank ≥ 2)
+% The sensitivity matrix has a 2x2 submatrix with nonzero determinant,
+% proving that brightness and cct span a 2D excitation space.
+thm_rank_condition: THEOREM
+  EXISTS (ch1, ch2: Channel):
+    NOT(ch1 = ch2) AND
+    NOT(sensitivity(brightness, ch1) * sensitivity(cct, ch2) =
+        sensitivity(brightness, ch2) * sensitivity(cct, ch1))
+
+% T7: Excitations provide non-redundant spectral information
+% There exist channels where one excitation is responsive but
+% the relative ordering differs — the charts are not copies.
+thm_chart_non_redundancy: THEOREM
+  EXISTS (ch1, ch2: Channel):
+    NOT(ch1 = ch2) AND
+    responsive(brightness, ch1) AND
+    responsive(cct, ch2) AND
+    sensitivity(brightness, ch1) > sensitivity(cct, ch1) AND
+    sensitivity(cct, ch2) > sensitivity(brightness, ch2)
+
+
+
+%% ═══════════════════════════════════════════════════════════
+%% TEMPORAL STRATIFICATION (T5)
+%% Allen Interval Logic from NASA PVS Library
+%% (interval_arith development, to which the author contributed)
+%% ═══════════════════════════════════════════════════════════
+
+IMPORTING interval_arith@allen_interval
+
+% Regime intervals (uninterpreted constants with empirical meaning)
+night_regime: StrictInterval       % interval where lux=0
+spectral_active: StrictInterval    % interval where χ changes
+intensity_recovery: StrictInterval % interval where ρ becomes nonzero
+
+% AXIOM 5: Spectral activity occurs during night regime
+% Evidence: Boot 279, χ evolves (Δχ=0.32) while lux=0
+ax_spectral_during_night: AXIOM
+  during(spectral_active, night_regime)
+
+% AXIOM 6: Spectral activity precedes intensity recovery
+% Evidence: Boot 279, χ jumps -1.774-->-1.455 before first lux>0
+ax_spectral_before_intensity: AXIOM
+  spectral_active < intensity_recovery
+
+% T5: Temporal chart stratification (Allen interval formulation)
+% "The spectral chart becomes informative during the night regime
+%  and before the intensity chart recovers, establishing temporal
+%  stratification of the empirical atlas."
+thm_temporal_chart_stratification: THEOREM
+  during(spectral_active, night_regime) AND
+  spectral_active < intensity_recovery
+
+END observability_geometry
