@@ -2,7 +2,7 @@
 
 **A formal mathematical framework for structural resilience, with applications to optimal transport verification and hardware root-of-trust.**
 
-30 theories. 221 machine-checked theorems. All proved in PVS.
+32 theories. 239 machine-checked theorems. All proved in PVS.
 
 ---
 
@@ -78,6 +78,8 @@ Built on:
 | `global_optimality.pvs` | 10 | Geodesic segmentation: local excess vs global optimality, interpolation, coexistence |
 | `unbalanced_regime.pvs` | 10 | Unbalanced OT: source/sink dynamics, deviation functional, regime classification |
 | `fisher_atlas.pvs` | 10 | Manifold atlas: charts, transition maps, Fisher metric, Fisher<-->Wasserstein bridge |
+| `observability_geometry.pvs` | 8 | Paper 2: excitation-dependent observability, temporal chart stratification (Allen intervals) |
+| `observability_refinement.pvs` | 10 | Paper 2: axiom refinement, SNR margin, quantitative robustness bound |
 
 ### Key Theorem (T10)
 
