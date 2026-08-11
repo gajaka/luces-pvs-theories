@@ -533,8 +533,8 @@ of specification levels (S > A > B > C > D, strictest to weakest). The engine
 returns the canonical level (tightest satisfiable contract) and a diagnostic
 explaining why certification stops there.
 
-Backed by: `PPGraphParametric.lean` (master_refinement, certified_iff_above_canonical,
-canonical_no_blocking, stricter_has_blocking). 113 machine-checked theorems, zero sorry.
+Backed by formal theorems: master_refinement, certified_iff_above_canonical,
+canonical_no_blocking, stricter_has_blocking. 
 Full PVS formalization will be provided as supplementary material with the paper submission.
 
 ### Specification Levels
@@ -629,7 +629,7 @@ PASS = cos > 0 (direction preserved). FAIL = cos <= 0 (reversal).
 | boot349_dawn | PASS | +0.237 | weak but positive |
 
 S-class: 7/8 PASS. Only boot334 fails (genuine directional reversal).
-Backed by: threshold_cert from PPGraphParametric.lean (observable = cos, threshold = 0).
+Backed by formal theorem: threshold_cert_monotone (observable = cos, threshold = 0).
 
 ![C_GEN Generator Coherence](figure_c_gen_coherence.png)
 
