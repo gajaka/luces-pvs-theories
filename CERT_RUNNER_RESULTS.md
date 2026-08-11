@@ -533,7 +533,7 @@ explaining why certification stops there.
 
 Backed by: `PPGraphParametric.lean` (master_refinement, certified_iff_above_canonical,
 canonical_no_blocking, stricter_has_blocking). 113 machine-checked theorems, zero sorry.
-PVS formalization of the parametric certification theory will be published in this repository.
+Full PVS formalization will be provided as supplementary material with the paper submission.
 
 ### Specification Levels
 
