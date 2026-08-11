@@ -521,3 +521,108 @@ DEV classifies each log into balanced/transitional/unbalanced regime.
 ═══════════════════════════════════════════════════════
 
 ```
+
+---
+
+## Parametric Certification Engine
+
+Lattice-based runtime certification. Each log is evaluated against a hierarchy
+of specification levels (S > A > B > C > D, strictest to weakest). The engine
+returns the canonical level (tightest satisfiable contract) and a diagnostic
+explaining why certification stops there.
+
+Backed by: `PPGraphParametric.lean` (master_refinement, certified_iff_above_canonical,
+canonical_no_blocking, stricter_has_blocking). 113 machine-checked theorems, zero sorry.
+
+### Specification Levels
+
+| Level | rho_min | monge_min | dual_gap_max | coherence_min | sparsity_max |
+|-------|---------|-----------|--------------|---------------|--------------|
+| S     | 0.99    | 0.90      | 1e-8         | 0.85          | 0.02         |
+| A     | 0.95    | 0.80      | 1e-6         | 0.70          | 0.05         |
+| B     | 0.90    | 0.69      | 1e-4         | 0.50          | 0.10         |
+| C     | 0.80    | 0.50      | 1e-2         | 0.30          | 0.20         |
+| D     | 0.50    | 0.30      | 0.1          | 0.10          | 0.50         |
+
+### Results (8 logs, Final Dataset)
+
+```
+boot298_dusk.csv
+  Canonical: C
+  Diagnosis: moderate coherence (partial generator alignment)
+  Observables: rho=1.0000 monge=0.7931 gap=2.08e-17 coh=0.4360 sparsity=0.1900
+  Levels: S:FAIL A:FAIL B:FAIL C:PASS D:PASS
+
+boot303_dusk.csv
+  Canonical: C
+  Diagnosis: moderate coherence (partial generator alignment)
+  Observables: rho=1.0000 monge=0.8152 gap=2.67e-16 coh=0.4319 sparsity=0.1900
+  Levels: S:FAIL A:FAIL B:FAIL C:PASS D:PASS
+
+boot320_merged_dawn.csv
+  Canonical: C
+  Diagnosis: coherent generator, weak Monge concentration
+  Observables: rho=0.9970 monge=0.7399 gap=2.53e-16 coh=0.9988 sparsity=0.1900
+  Levels: S:FAIL A:FAIL B:FAIL C:PASS D:PASS
+
+boot322_dusk.csv
+  Canonical: C
+  Diagnosis: coherent generator, weak Monge concentration
+  Observables: rho=0.9970 monge=0.7706 gap=3.82e-16 coh=0.8555 sparsity=0.1900
+  Levels: S:FAIL A:FAIL B:FAIL C:PASS D:PASS
+
+boot330_dawn.csv
+  Canonical: C
+  Diagnosis: coherent generator, weak Monge concentration
+  Observables: rho=0.9970 monge=0.7688 gap=6.21e-16 coh=0.8740 sparsity=0.1900
+  Levels: S:FAIL A:FAIL B:FAIL C:PASS D:PASS
+
+boot334_dawn.csv
+  Canonical: FAIL
+  Diagnosis: generator reversal (cos = -0.74)
+  Observables: rho=1.0000 monge=0.7609 gap=5.45e-16 coh=0.0000 sparsity=0.1900
+  Levels: S:FAIL A:FAIL B:FAIL C:FAIL D:FAIL
+
+boot347_dawn.csv
+  Canonical: C
+  Diagnosis: coherent generator, weak Monge concentration
+  Observables: rho=0.9970 monge=0.7619 gap=1.35e-16 coh=0.9982 sparsity=0.1900
+  Levels: S:FAIL A:FAIL B:FAIL C:PASS D:PASS
+
+boot349_dawn.csv
+  Canonical: D
+  Diagnosis: weak coherence (near-orthogonal generators, cos = 0.24)
+  Observables: rho=1.0000 monge=0.7584 gap=2.12e-16 coh=0.2371 sparsity=0.1900
+  Levels: S:FAIL A:FAIL B:FAIL C:FAIL D:PASS
+```
+
+### Diagnostic Summary
+
+| Log | Canonical | Diagnosis |
+|-----|-----------|-----------|
+| boot298_dusk | C | moderate coherence (partial generator alignment) |
+| boot303_dusk | C | moderate coherence (partial generator alignment) |
+| boot320_dawn | C | coherent generator, weak Monge concentration |
+| boot322_dusk | C | coherent generator, weak Monge concentration |
+| boot330_dawn | C | coherent generator, weak Monge concentration |
+| boot334_dawn | FAIL | generator reversal (cos = -0.74) |
+| boot347_dawn | C | coherent generator, weak Monge concentration |
+| boot349_dawn | D | weak coherence (near-orthogonal generators, cos = 0.24) |
+
+### Interpretation
+
+The parametric framework discriminates three qualitative regimes without
+threshold tuning:
+
+1. Full coherence (cos > 0.85): generator direction preserved throughout transition.
+   Bottleneck is Monge concentration or sparsity, not dynamics.
+
+2. Partial/weak coherence (0 < cos < 0.50): generator direction partially maintained.
+   Dusk logs (298, 303) exhibit this pattern.
+
+3. Generator reversal (cos < 0): transport direction inverts mid-transition.
+   boot334 is the only log with this anomaly. Structure (Monge, rho) remains
+   acceptable, but dynamics are broken.
+
+Canonical level tells how far certification reaches.
+Bottleneck diagnosis tells why it stops there.
