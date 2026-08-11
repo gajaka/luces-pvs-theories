@@ -631,6 +631,8 @@ PASS = cos > 0 (direction preserved). FAIL = cos <= 0 (reversal).
 S-class: 7/8 PASS. Only boot334 fails (genuine directional reversal).
 Backed by: threshold_cert from PPGraphParametric.lean (observable = cos, threshold = 0).
 
+![C_GEN Generator Coherence](figure_c_gen_coherence.png)
+
 ### Interpretation
 
 The parametric framework discriminates three qualitative regimes without
