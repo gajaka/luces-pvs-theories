@@ -625,5 +625,25 @@ threshold tuning:
    boot334 is the only log with this anomaly. Structure (Monge, rho) remains
    acceptable, but dynamics are broken.
 
+### boot334 Failure Analysis
+
+boot334_dawn fails at ALL levels (including D) because coherence = 0.00.
+The underlying cosine similarity is -0.74, capped to zero by the engine.
+
+Root cause: the Lie generator reverses direction during transition.
+In the first third of the transition zone, F6_590nm intensity increases
+(+0.046) while Clear/NIR channels decrease (-0.043, -0.026). In the
+second third, F6_590nm DECREASES (-0.014) while Clear/NIR channels
+INCREASE (+0.006, +0.003). The spectral flow changes sign mid-transition.
+
+This is not a threshold calibration issue. The log genuinely lacks a
+coherent transport generator: instead of monotone spectral evolution
+from NIGHT toward DAY, the profile moves toward an intermediate state
+and then partially reverses.
+
+Structural certificates remain acceptable (monge = 0.76, rho = 1.0,
+dual_gap < 1e-15), confirming the Paper 3 finding that structure and
+dynamics are independent certification axes.
+
 Canonical level tells how far certification reaches.
 Bottleneck diagnosis tells why it stops there.
