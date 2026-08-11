@@ -1,8 +1,10 @@
 # Certificate Runner — Paper 3 Final Dataset
 
-25 certificates evaluated on 8 independent experiments (5 dawn, 3 dusk).
-PPG certificates (PPG, RES, DET, CCI, ATL) achieve 100% PASS on all logs.
+26 certificates evaluated on 8 independent experiments (5 dawn, 3 dusk).
+PPG certificates (PPG, RES, DET, CCI, ATL, GEN) achieve S-class on 7/8 logs.
+GEN (Generator Coherence) detects boot334 directional reversal (cos = -0.74).
 Observability certificates (OBS, DATL, MRG) achieve 100% PASS on all logs.
+DEV classifies each log into balanced/transitional/unbalanced regime.
 DEV classifies each log into balanced/transitional/unbalanced regime.
 
 ---
@@ -609,6 +611,25 @@ boot349_dawn.csv
 | boot334_dawn | FAIL | generator reversal (cos = -0.74) |
 | boot347_dawn | C | coherent generator, weak Monge concentration |
 | boot349_dawn | D | weak coherence (near-orthogonal generators, cos = 0.24) |
+
+### C_GEN — Generator Coherence (S-class, certificate #26)
+
+Measures cosine similarity between consecutive transport generators in transition zone.
+PASS = cos > 0 (direction preserved). FAIL = cos <= 0 (reversal).
+
+| Log | C_GEN | cos | Note |
+|-----|-------|-----|------|
+| boot298_dusk | PASS | +0.436 | moderate alignment |
+| boot303_dusk | PASS | +0.432 | moderate alignment |
+| boot320_dawn | PASS | +0.999 | near-perfect coherence |
+| boot322_dusk | PASS | +0.856 | strong alignment |
+| boot330_dawn | PASS | +0.874 | strong alignment |
+| boot334_dawn | FAIL | -0.742 | generator reversal |
+| boot347_dawn | PASS | +0.998 | near-perfect coherence |
+| boot349_dawn | PASS | +0.237 | weak but positive |
+
+S-class: 7/8 PASS. Only boot334 fails (genuine directional reversal).
+Backed by: threshold_cert from PPGraphParametric.lean (observable = cos, threshold = 0).
 
 ### Interpretation
 
