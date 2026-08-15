@@ -535,7 +535,8 @@ explaining why certification stops there.
 
 Backed by formal theorems: master_refinement, certified_iff_above_canonical,
 canonical_no_blocking, stricter_has_blocking. 
-Full PVS formalization will be provided as supplementary material with the paper submission.
+PVS: 6 theories, 107 theorems (parametric_certification, cert_quotient, cert_selection, cert_blocking, cert_quotient_bridge, directed_pp_graph).
+Lean 4: 153 theorems, zero sorry (includes complementary slackness for LP duality, proved only in Lean).
 
 ### Specification Levels
 
