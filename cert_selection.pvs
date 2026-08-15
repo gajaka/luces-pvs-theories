@@ -1,0 +1,299 @@
+%------------------------------------------------------------------------------
+% Hierarchical Representative Selection via Family of Morphism Pairs
+%
+% Given a family of morphism pairs, each inducing an equivalence on U via
+% pullback along its concretization map, the finest equivalence
+% (intersection of all) gives the canonical representative selection:
+%   ~* = INTERSECTION_i ~_i
+% An element canonical w.r.t. ~* survives all views.
+%
+% Design notes:
+%   - MorphFamily is a nonempty pred[MorphPair], not a List — no
+%     proof anywhere depends on order or duplicates, only membership.
+%   - FinestQuotient(F) uses the same coset-style quotient pattern as
+%     SpecQuotient(F) in cert_quotient.pvs (a quotient element IS its
+%     equivalence class, a set[U]).
+%   - finest_graph is a bespoke local record (matching
+%     directed_pp_graph.pvs's field names but not literally typed via
+%     that theory's Graph subtype).
+%   - finset_le uses REVERSED-inclusion on finite_set[MorphPair],
+%     supplied directly as the <= parameter to parametric_certification.
+%
+% Dependencies: directed_pp_graph[U] (Graph, pp_edge, pp_valid over the
+% fixed type U); parametric_certification[U, finite_set[MorphPair],
+% finset_le] (Certificate, CertFamily, fully_certified, master_refinement,
+% instantiated for the lens-family bridge); PVS prelude finite_sets[T].
+%
+% Author: Dragan Stosic, 2026.
+%------------------------------------------------------------------------------
+
+cert_selection[T: TYPE, U: TYPE]: THEORY
+BEGIN
+
+  IMPORTING directed_pp_graph[U]
+
+  t, t1, t2: VAR T
+  u, u1, u2, u1p, u2p, target: VAR U
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 1: Single Morphism Pair Induces Equivalence (via pullback)
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % A morphism pair: f abstracts (T->U), g concretizes (U->T), eq_T is
+  % an equivalence on the concrete domain T. The induced equivalence on
+  % U is the pullback of eq_T along g.
+  MorphPair: TYPE = [# f: [T -> U], g: [U -> T], eq_T: (equivalence?[T]) #]
+
+  mp: VAR MorphPair
+
+  % Pullback of eq_T along g: two abstract elements are equivalent if
+  % their concretizations are equivalent in T
+  induced_equiv(mp)(u1, u2): bool = mp`eq_T(mp`g(u1), mp`g(u2))
+
+  % Pullback of an equivalence is an equivalence
+  induced_equiv_is_equiv: JUDGEMENT induced_equiv(mp) HAS_TYPE (equivalence?[U])
+
+  % f-g consistency: round-trip g(f(t)) is equivalent to t
+  fg_consistent(mp): bool = FORALL (t: T): mp`eq_T(t, mp`g(mp`f(t)))
+
+  % Under fg_consistent, f preserves eq_T-equivalence into induced_equiv
+  f_preserves_equiv: THEOREM
+    FORALL (mp: MorphPair, t1, t2: T):
+      fg_consistent(mp) AND mp`eq_T(t1, t2)
+        IMPLIES induced_equiv(mp)(mp`f(t1), mp`f(t2))
+
+  % Under fg_consistent, g is a section of f up to equivalence
+  g_section: THEOREM
+    FORALL (mp: MorphPair, u: U):
+      fg_consistent(mp) IMPLIES induced_equiv(mp)(mp`f(mp`g(u)), u)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 2: Family of Morphism Pairs
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % A family of morphism pairs: nonempty, membership-only (no order/
+  % duplicates needed anywhere below — same reasoning as CertFamily)
+  MorphFamily: TYPE = {pairs: pred[MorphPair] | nonempty?(pairs)}
+
+  F: VAR MorphFamily
+
+  % The finest equivalence: intersection of all induced equivalences
+  finest_equiv(F)(u1, u2): bool = FORALL (mp: (F)): induced_equiv(mp)(u1, u2)
+
+  finest_equiv_is_equivalence: JUDGEMENT finest_equiv(F) HAS_TYPE (equivalence?[U])
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 3: Finest Equivalence Is the Meet of the Family;
+  %%            Quotient Type (coset-style, matching cert_quotient.pvs)
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % finest_equiv refines each individual equivalence
+  finest_refines_each: THEOREM
+    FORALL (F: MorphFamily, mp: (F), u1, u2: U):
+      finest_equiv(F)(u1, u2) IMPLIES induced_equiv(mp)(u1, u2)
+
+  % finest_equiv is the coarsest equivalence that refines all
+  finest_is_coarsest_refinement: THEOREM
+    FORALL (F: MorphFamily, eq_R: [U, U -> bool]):
+      (FORALL (mp: (F), u1, u2: U): eq_R(u1, u2) IMPLIES induced_equiv(mp)(u1, u2))
+        IMPLIES (FORALL (u1, u2: U): eq_R(u1, u2) IMPLIES finest_equiv(F)(u1, u2))
+
+  % The finest-equivalence class of u
+  FinestClass(F)(u): set[U] = { u2: U | finest_equiv(F)(u, u2) }
+
+  % The quotient type: the set of all finest-equivalence classes
+  FinestQuotient(F: MorphFamily): TYPE = {S: set[U] | EXISTS (u: U): S = FinestClass(F)(u)}
+
+  % Projection from U to the quotient
+  finest_mk(F)(u): FinestQuotient(F) = FinestClass(F)(u)
+
+  % The projection is surjective (immediate from FinestQuotient's definition)
+  proj_mk_surjective: THEOREM
+    FORALL (F: MorphFamily, Q: FinestQuotient(F)): EXISTS (u: U): finest_mk(F)(u) = Q
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 4: Canonical Representative (survives all views)
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % A property on U
+  Property: TYPE = [U -> bool]
+
+  % An element is canonical in the finest class if it satisfies a
+  % selection property that is unique within its finest class
+  is_finest_canonical(F)(sel: Property, u): bool =
+    sel(u) AND (FORALL (u2: U): finest_equiv(F)(u, u2) AND sel(u2) IMPLIES u = u2)
+
+  finest_canonical_unique: THEOREM
+    FORALL (F: MorphFamily, sel: Property, u1, u2: U):
+      is_finest_canonical(F)(sel, u1) AND is_finest_canonical(F)(sel, u2) AND
+      finest_equiv(F)(u1, u2)
+        IMPLIES u1 = u2
+
+END cert_selection
+
+
+%==============================================================================
+% PART 2: Lens CertFamily Instance and PPG Bridge
+%==============================================================================
+
+cert_selection_lens[T: TYPE, U: TYPE]: THEORY
+BEGIN
+
+  IMPORTING cert_selection[T, U]
+  IMPORTING finite_sets[MorphPair]
+
+  MF: VAR MorphFamily
+  mp: VAR MorphPair
+  u, u1, u2, u1p, u2p, target: VAR U
+
+  % Each lens defines a predicate on U: "equivalent to target"
+  lens_pred(mp)(target, u): bool = induced_equiv(mp)(u, target)
+
+  % Reversed inclusion on finite sets of lenses: S1 <= S2 iff S2 subset
+  % S1, i.e. S1 is the stricter (bigger) requirement. No OrderDual
+  % wrapper type needed — this relation is just passed directly below.
+  finset_le(S1, S2: finite_set[MorphPair]): bool = subset?(S2, S1)
+
+  finset_le_reflexive: LEMMA reflexive?[finite_set[MorphPair]](finset_le)
+  finset_le_transitive: LEMMA transitive?[finite_set[MorphPair]](finset_le)
+  finset_le_antisymmetric: LEMMA antisymmetric?[finite_set[MorphPair]](finset_le)
+
+  finset_le_partial_order: JUDGEMENT finset_le HAS_TYPE (partial_order?[finite_set[MorphPair]])
+
+  IMPORTING parametric_certification[U, finite_set[MorphPair], finset_le]
+
+  % Certificate over a set of lenses: u passes ALL lenses in S
+  lens_certificate(target)(u: U, S: finite_set[MorphPair]): bool =
+    FORALL (mp: (S)): lens_pred(mp)(target, u)
+
+  % The lens certificate is monotone w.r.t. reversed inclusion
+  lens_certificate_monotone: THEOREM
+    FORALL (target: U): monotone_cert(lens_certificate(target))
+
+  % The lens CertFamily: one certificate, monotone over reverse-ordered
+  % finite sets of lenses
+  lensCertFamily(target): CertFamily = singleton(lens_certificate(target))
+
+  % master_refinement applied to the lens CertFamily — a direct
+  % corollary, not a re-proof (mirrors the Lean original's
+  % lens_master_refinement)
+  lens_master_refinement: THEOREM
+    FORALL (target, u: U, S1, S2: finite_set[MorphPair]):
+      finset_le(S1, S2) AND fully_certified(lensCertFamily(target))(u, S1)
+        IMPLIES fully_certified(lensCertFamily(target))(u, S2)
+
+  % Conjunction of all lenses in the family = finest_equiv
+  all_lenses_iff_finest: THEOREM
+    FORALL (F: MorphFamily, target, u: U):
+      (FORALL (mp: (F)): lens_pred(mp)(target, u)) IFF finest_equiv(F)(u, target)
+
+  % Each lens predicate is reflexive at target
+  lens_pred_refl: THEOREM FORALL (mp: MorphPair, target: U): lens_pred(mp)(target, target)
+
+  % If u passes all lenses in F and u2 is finest-equivalent to u, then
+  % u2 also passes all lenses (certification propagates)
+  lens_propagates: THEOREM
+    FORALL (F: MorphFamily, target, u, u2: U):
+      finest_equiv(F)(u, u2) AND (FORALL (mp: (F)): lens_pred(mp)(target, u))
+        IMPLIES (FORALL (mp: (F)): lens_pred(mp)(target, u2))
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 6: PPG Validity on Finest Quotient
+  %% ═══════════════════════════════════════════════════════════════════
+
+  G: VAR Graph
+  rr_rel: VAR [U, U -> bool]
+  inv: VAR [U -> bool]
+
+  % The finest quotient graph: all classes as vertices, edges lifted
+  % from edge_rel via existence of representatives. This is a bespoke
+  % local record (see file header) — not routed through directed_pp_
+  % graph's shared Graph subtype, since nothing here needs that.
+  finest_graph(F: MorphFamily, edge_rel: [U, U -> bool]):
+      [# vertices: [FinestQuotient(F) -> bool], edges: [FinestQuotient(F), FinestQuotient(F) -> bool] #] =
+    (# vertices := (LAMBDA (Q: FinestQuotient(F)): TRUE),
+       edges := (LAMBDA (Q1, Q2: FinestQuotient(F)):
+         Q1 /= Q2 AND
+         EXISTS (u1, u2: U): finest_mk(F)(u1) = Q1 AND finest_mk(F)(u2) = Q2 AND edge_rel(u1, u2)) #)
+
+  % An invariant respecting finest_equiv, evaluated via "holds for every
+  % representative" (well-typed for any class directly, same pattern as
+  % quotient_certified in cert_quotient_bridge.pvs)
+  quotient_invariant(F: MorphFamily)(inv: [U -> bool])(Q: FinestQuotient(F)): bool = FORALL (u: (Q)): inv(u)
+
+  % If invariant is respected by finest_equiv and pp_valid holds on the
+  % representative level, it holds on the quotient (weak form: does not
+  % need FinestQuotient/finest_graph at all, only the original Graph U)
+  finest_quotient_pp_valid: THEOREM
+    FORALL (F: MorphFamily, G: Graph, rr_rel: [U, U -> bool], inv: [U -> bool], u1, u2: U):
+      pp_valid(G, rr_rel, inv) AND
+      (FORALL (u1, u2: U): finest_equiv(F)(u1, u2) IMPLIES (inv(u1) IFF inv(u2))) AND
+      G`edges(u1, u2)
+        IMPLIES inv(u1) AND inv(u2)
+
+  % Stronger: an edge in the finest quotient graph lifts back to a
+  % pp_edge between some pair of representatives
+  finest_quotient_inherits_pp_valid: THEOREM
+    FORALL (F: MorphFamily, G: Graph, rr_rel: [U, U -> bool], inv: [U -> bool]):
+      pp_valid(G, rr_rel, inv) AND
+      (FORALL (u1, u2: U): finest_equiv(F)(u1, u2) IMPLIES (inv(u1) IFF inv(u2))) AND
+      (FORALL (u1, u1p, u2, u2p: U):
+        finest_equiv(F)(u1, u1p) AND finest_equiv(F)(u2, u2p) AND rr_rel(u1, u2)
+          IMPLIES rr_rel(u1p, u2p))
+        IMPLIES
+      (FORALL (Q1, Q2: FinestQuotient(F)):
+        finest_graph(F, G`edges)`edges(Q1, Q2)
+          IMPLIES EXISTS (u1, u2: U):
+            finest_mk(F)(u1) = Q1 AND finest_mk(F)(u2) = Q2 AND pp_edge(rr_rel, inv, u1, u2))
+
+  % Selection preserves invariant: if the canonical representative
+  % satisfies inv, all elements in its finest class also satisfy inv
+  canonical_preserves_invariant: THEOREM
+    FORALL (F: MorphFamily, inv: [U -> bool], u_can, u2: U):
+      (FORALL (u1, u2: U): finest_equiv(F)(u1, u2) IMPLIES (inv(u1) IFF inv(u2))) AND
+      finest_equiv(F)(u_can, u2) AND inv(u_can)
+        IMPLIES inv(u2)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 7: Bridge to pp_quotient (PPGraphCategorical)
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Edges separate classes: if there is an edge between x and y, they
+  % are NOT in the same finest class. This is the condition under which
+  % the projection behaves like a pp_morphism.
+  edges_separate_classes(F: MorphFamily, G: Graph): bool =
+    FORALL (u1, u2: U): G`edges(u1, u2) IMPLIES NOT finest_equiv(F)(u1, u2)
+
+  % If classes are equal, the generators are finest-equivalent
+  finest_mk_injective: LEMMA
+    FORALL (F: MorphFamily, u1, u2: U):
+      finest_mk(F)(u1) = finest_mk(F)(u2) IMPLIES finest_equiv(F)(u1, u2)
+
+  % Under edges_separate_classes, the projection preserves edges
+  proj_preserves_edges_sep: THEOREM
+    FORALL (F: MorphFamily, G: Graph, u1, u2: U):
+      edges_separate_classes(F, G) AND G`edges(u1, u2)
+        IMPLIES finest_graph(F, G`edges)`edges(finest_mk(F)(u1), finest_mk(F)(u2))
+
+  % Under edges_sep
+  proj_is_pp_morphism: THEOREM
+    FORALL (F: MorphFamily, G: Graph, rr_rel: [U, U -> bool], inv: [U -> bool]):
+      pp_valid(G, rr_rel, inv) AND edges_separate_classes(F, G) AND
+      (FORALL (u1, u2: U): finest_equiv(F)(u1, u2) IMPLIES (inv(u1) IFF inv(u2)))
+        IMPLIES
+      (FORALL (u1, u2: U):
+        G`edges(u1, u2) AND pp_edge(rr_rel, inv, u1, u2)
+          IMPLIES finest_graph(F, G`edges)`edges(finest_mk(F)(u1), finest_mk(F)(u2)))
+
+  % The projection gives a pp_quotient in the categorical sense:
+  % surjective, edge-structure preserving
+  proj_is_pp_quotient: THEOREM
+    FORALL (F: MorphFamily, G: Graph, rr_rel: [U, U -> bool], inv: [U -> bool]):
+      pp_valid(G, rr_rel, inv) AND edges_separate_classes(F, G)
+        IMPLIES
+      (FORALL (Q: FinestQuotient(F)): EXISTS (u: U): finest_mk(F)(u) = Q) AND
+      (FORALL (u1, u2: U):
+        G`edges(u1, u2)
+          IMPLIES finest_graph(F, G`edges)`edges(finest_mk(F)(u1), finest_mk(F)(u2)))
+
+END cert_selection_lens

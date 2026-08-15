@@ -1,0 +1,328 @@
+%------------------------------------------------------------------------------
+% Quotient Structure on Specification Space
+%
+% Two specifications are certification-equivalent if they certify exactly
+% the same data. The quotient Th/~ gives the effective specification space.
+%
+% Design note: PVS has no built-in Quotient/Setoid type. Following
+% pvslib's quotient precedent (algebra/quotient_rings.pvs), a quotient
+% element IS its equivalence class (a set[Th]):
+%   SpecQuotient(F): TYPE = {S: set[Th] | EXISTS t: S = SpecClass(F)(t)}
+%
+% quotient_le is defined as "cert_le holds between every representative
+% pair" — well-typed for any two sets with no separate lifting step.
+% The MEET operation (Section 7) uses `choose` (Hilbert-choice epsilon)
+% plus an explicit well-definedness theorem.
+%
+% Dependencies: parametric_certification[D,Th,<=] (Part 1).
+% Section 7 additionally needs lattice?[Th]; Section 8 needs total_order?[Th]
+% (both split into separate THEORY blocks below).
+%
+% Author: Dragan Stosic, 2026.
+%------------------------------------------------------------------------------
+
+%==============================================================================
+% PART 1: Certification Equivalence, Quotient Type, Induced Order
+%==============================================================================
+
+cert_quotient[D: TYPE, Th: TYPE, <=: (partial_order?[Th])]: THEORY
+BEGIN
+
+  IMPORTING parametric_certification[D, Th, <=]
+  IMPORTING parametric_certification_ppg_bridge[D, Th, <=]
+
+  d: VAR D
+  t, t1, t2, t3, t1p, t2p, t_c1, t_c2: VAR Th
+  F: VAR CertFamily
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 1: Certification Equivalence
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Two specifications are certification-equivalent if they certify
+  % exactly the same data
+  cert_equiv(F)(t1, t2): bool =
+    FORALL (d: D): fully_certified(F)(d, t1) IFF fully_certified(F)(d, t2)
+
+  cert_equiv_refl: LEMMA
+    FORALL (F: CertFamily, t: Th): cert_equiv(F)(t, t)
+
+  cert_equiv_symm: LEMMA
+    FORALL (F: CertFamily, t1, t2: Th):
+      cert_equiv(F)(t1, t2) IMPLIES cert_equiv(F)(t2, t1)
+
+  cert_equiv_trans: LEMMA
+    FORALL (F: CertFamily, t1, t2, t3: Th):
+      cert_equiv(F)(t1, t2) AND cert_equiv(F)(t2, t3) IMPLIES cert_equiv(F)(t1, t3)
+
+  cert_equiv_is_equivalence: JUDGEMENT cert_equiv(F) HAS_TYPE (equivalence?[Th])
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 2: Order Compatibility
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Canonical level is unique up to certification equivalence
+  canonical_unique_up_to_equiv: THEOREM
+    FORALL (F: CertFamily, d: D, t_c1, t_c2: Th):
+      is_canonical(F)(d, t_c1) AND is_canonical(F)(d, t_c2)
+        IMPLIES cert_equiv(F)(t_c1, t_c2)
+
+  % In a partial order, canonical is actually unique (not just up to
+  % equivalence) — via antisymmetry, no quotient machinery needed
+  canonical_unique: THEOREM
+    FORALL (F: CertFamily, d: D, t_c1, t_c2: Th):
+      is_canonical(F)(d, t_c1) AND is_canonical(F)(d, t_c2)
+        IMPLIES t_c1 = t_c2
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 3: Equivalence Classes and Quotient Type
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % The cert_equiv-class of t
+  SpecClass(F)(t): set[Th] = { t2: Th | cert_equiv(F)(t, t2) }
+
+  % The quotient type: the set of all cert_equiv-classes (coset-style,
+  % following algebra/quotient_rings.pvs)
+  SpecQuotient(F: CertFamily): TYPE = {S: set[Th] | EXISTS (t: Th): S = SpecClass(F)(t)}
+
+  % Every quotient element is, by construction, a nonempty set (it
+  % always contains its own generator) — needed so `choose` applies to
+  % it directly in Section 7 below.
+  spec_quotient_nonempty: THEOREM
+    FORALL (F: CertFamily, Q: SpecQuotient(F)): nonempty?[Th](Q)
+
+  % Equal classes iff equivalent generators (standard equivalence-class
+  % fact; needed for antisymmetry of the induced order below and for
+  % separating_quotient_trivial in Section 8)
+  spec_class_eq_of_equiv: LEMMA
+    FORALL (F: CertFamily, t1, t2: Th):
+      cert_equiv(F)(t1, t2) IMPLIES SpecClass(F)(t1) = SpecClass(F)(t2)
+
+  spec_class_equal_implies_equiv: LEMMA
+    FORALL (F: CertFamily, t1, t2: Th):
+      SpecClass(F)(t1) = SpecClass(F)(t2) IMPLIES cert_equiv(F)(t1, t2)
+
+  % Projection from Th to the quotient
+  quotient_mk(F)(t): SpecQuotient(F) = SpecClass(F)(t)
+
+  % Certification is well-defined on the quotient by construction
+  % (fully_certified(F) is constant on any cert_equiv-class)
+  cert_respects_equiv: THEOREM
+    FORALL (F: CertFamily, d: D, t1, t2: Th):
+      cert_equiv(F)(t1, t2) IMPLIES
+        (fully_certified(F)(d, t1) IFF fully_certified(F)(d, t2))
+
+  % The projection is surjective (immediate from SpecQuotient's definition)
+  quotient_projection_surjective: THEOREM
+    FORALL (F: CertFamily, Q: SpecQuotient(F)): EXISTS (t: Th): quotient_mk(F)(t) = Q
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 4: PPG Quotient Bridge
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Spec edge respects certification: certification at t1 propagates to
+  % t2 along a spec_edge. This is exactly certification_propagates from
+  % parametric_certification_ppg_bridge.pvs, restated under this file's
+  % name for fidelity with the Lean original (which literally calls
+  % certification_propagates here) — not a new proof obligation.
+  spec_edge_respects_equiv: THEOREM
+    FORALL (F: CertFamily, t1, t2: Th, d: D):
+      spec_edge(t1, t2) AND fully_certified(F)(d, t1) IMPLIES fully_certified(F)(d, t2)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 5: Collapse Theorem
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % If two specs are equivalent AND ordered, they must certify the same
+  % data (no distinct equivalent specs behave differently in a chain)
+  equiv_chain_collapses: THEOREM
+    FORALL (F: CertFamily, t1, t2: Th, d: D):
+      t1 <= t2 AND cert_equiv(F)(t1, t2) AND fully_certified(F)(d, t2)
+        IMPLIES fully_certified(F)(d, t1)
+
+  % Within one equivalence class, all specs agree on every data point
+  equiv_class_uniform: THEOREM
+    FORALL (F: CertFamily, t1, t2: Th, d: D):
+      cert_equiv(F)(t1, t2) IMPLIES
+        fully_certified(F)(d, t1) = fully_certified(F)(d, t2)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 6: Induced Order on Th and on the Quotient
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Induced order on representatives: t1 is "cert_le" t2 if every datum
+  % certified at t1 is also certified at t2
+  cert_le(F)(t1, t2): bool =
+    FORALL (d: D): fully_certified(F)(d, t1) IMPLIES fully_certified(F)(d, t2)
+
+  cert_le_refl: LEMMA FORALL (F: CertFamily, t: Th): cert_le(F)(t, t)
+
+  cert_le_trans: LEMMA
+    FORALL (F: CertFamily, t1, t2, t3: Th):
+      cert_le(F)(t1, t2) AND cert_le(F)(t2, t3) IMPLIES cert_le(F)(t1, t3)
+
+  % The induced order is compatible with certification equivalence
+  cert_le_respects_equiv: THEOREM
+    FORALL (F: CertFamily, t1, t1p, t2, t2p: Th):
+      cert_equiv(F)(t1, t1p) AND cert_equiv(F)(t2, t2p)
+        IMPLIES (cert_le(F)(t1, t2) IFF cert_le(F)(t1p, t2p))
+
+  % Order on the quotient: holds between two classes iff cert_le holds
+  % between EVERY pair of representatives drawn from them. This is
+  % well-typed for any two sets directly — no lifting step required.
+  quotient_le(F)(Q1, Q2: SpecQuotient(F)): bool =
+    FORALL (t1: (Q1), t2: (Q2)): cert_le(F)(t1, t2)
+
+  % Characterization: quotient_le agrees with cert_le at the
+  % representative level (the fact a Quotient.lift would give for free
+  % in Lean; here it is a theorem about the definition above)
+  quotient_le_char: THEOREM
+    FORALL (F: CertFamily, t1, t2: Th):
+      quotient_le(F)(quotient_mk(F)(t1), quotient_mk(F)(t2)) IFF cert_le(F)(t1, t2)
+
+  quotient_le_refl: THEOREM
+    FORALL (F: CertFamily, Q: SpecQuotient(F)): quotient_le(F)(Q, Q)
+
+  quotient_le_trans: THEOREM
+    FORALL (F: CertFamily, Q1, Q2, Q3: SpecQuotient(F)):
+      quotient_le(F)(Q1, Q2) AND quotient_le(F)(Q2, Q3) IMPLIES quotient_le(F)(Q1, Q3)
+
+  % Antisymmetry on the quotient (because quotient elements already ARE
+  % the equivalence classes, distinctness of classes is set inequality)
+  quotient_le_antisymm: THEOREM
+    FORALL (F: CertFamily, Q1, Q2: SpecQuotient(F)):
+      quotient_le(F)(Q1, Q2) AND quotient_le(F)(Q2, Q1) IMPLIES Q1 = Q2
+
+END cert_quotient
+
+
+%==============================================================================
+% PART 2: Lattice on the Quotient (under CertInfClosed)
+%==============================================================================
+
+cert_quotient_lattice[D: TYPE, Th: TYPE,
+  (IMPORTING orders@bounded_orders[Th]) <=: (lattice?[Th])]: THEORY
+BEGIN
+
+  IMPORTING cert_quotient[D, Th, <=]
+  IMPORTING orders@lower_semilattices[Th, <=]
+  IMPORTING orders@upper_semilattices[Th, <=]
+
+  d: VAR D
+  t1, t2, t1p, t2p: VAR Th
+  F: VAR CertFamily
+  C: VAR Certificate
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 7: Lattice on Quotient (under CertInfClosed assumption)
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % CertInfClosed: every certificate in the family is closed under meet
+  CertInfClosed(F): bool =
+    FORALL (C: (F), d: D, t1, t2: Th): C(d, t1) AND C(d, t2) IMPLIES C(d, glb(t1, t2))
+
+  % Under CertInfClosed, fully_certified is closed under meet
+  certified_inf_closed_prime: THEOREM
+    FORALL (F: CertFamily, d: D, t1, t2: Th):
+      CertInfClosed(F) AND fully_certified(F)(d, t1) AND fully_certified(F)(d, t2)
+        IMPLIES fully_certified(F)(d, glb(t1, t2))
+
+  % Under CertInfClosed, cert_equiv respects meet
+  cert_inf_respects_equiv_prime: THEOREM
+    FORALL (F: CertFamily, t1, t1p, t2, t2p: Th):
+      CertInfClosed(F) AND cert_equiv(F)(t1, t1p) AND cert_equiv(F)(t2, t2p)
+        IMPLIES cert_equiv(F)(glb(t1, t2), glb(t1p, t2p))
+
+  % Well-defined meet on the quotient (under CertInfClosed): pick any
+  % representatives via `choose` and take their glb's class. This is
+  % PVS's analogue of Lean's Quotient.lift2 for the meet operation —
+  % well-definedness (independence from the representatives choose picks)
+  % is proved separately below rather than built into the definition.
+  quotient_meet(F)(Q1, Q2: SpecQuotient(F)): SpecQuotient(F) =
+    quotient_mk(F)(glb(choose(Q1), choose(Q2)))
+
+  quotient_meet_char: THEOREM
+    FORALL (F: CertFamily, t1, t2: Th):
+      CertInfClosed(F) IMPLIES
+        quotient_meet(F)(quotient_mk(F)(t1), quotient_mk(F)(t2)) = quotient_mk(F)(glb(t1, t2))
+
+  % For monotone certificates, certified at t implies certified at t
+  % joined with anything — this direction needs NO extra hypothesis
+  certified_sup_left: THEOREM
+    FORALL (F: CertFamily, d: D, t1, t2: Th):
+      fully_certified(F)(d, t1) IMPLIES fully_certified(F)(d, lub(t1, t2))
+
+  certified_sup_right: THEOREM
+    FORALL (F: CertFamily, d: D, t1, t2: Th):
+      fully_certified(F)(d, t2) IMPLIES fully_certified(F)(d, lub(t1, t2))
+
+  % Note (matches the Lean original exactly): join does NOT respect
+  % cert_equiv in general. Satisfying sets are upward-closed and closed
+  % under meets (under CertInfClosed), but not under joins — this
+  % asymmetry is fundamental, not an oversight, so no quotient_join is
+  % defined here. A JoinCompat-style extra axiom would be needed first.
+
+END cert_quotient_lattice
+
+
+%==============================================================================
+% PART 3: Finite Total Order — Separating Families Collapse the Quotient
+%==============================================================================
+
+cert_quotient_linear[D: TYPE, Th: TYPE,
+  (IMPORTING orders@bounded_orders[Th]) <=: (total_order?[Th])]: THEORY
+BEGIN
+
+  % total_order? SUBTYPE_OF lattice? SUBTYPE_OF partial_order? via the
+  % same judgement chain used for the Threshold instance in
+  % parametric_certification.pvs (see total_lattices.pvs) — <= should
+  % typecheck directly against both parameter constraints below.
+  IMPORTING cert_quotient[D, Th, <=]
+  IMPORTING orders@minmax_orders[Th]
+  IMPORTING orders@upper_semilattices[Th, <=]
+
+  d: VAR D
+  t1, t2, t3: VAR Th
+  F: VAR CertFamily
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 8: Finite Total Order (LinearOrder)
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % In a linear order with monotone certs, if t1 < t2 (t1 <= t2, t1 /= t2)
+  % and some datum is certified at t2 but not t1, they are NOT equivalent
+  linear_strict_not_equiv: THEOREM
+    FORALL (F: CertFamily, t1, t2: Th, d: D):
+      t1 <= t2 AND t1 /= t2 AND
+      fully_certified(F)(d, t2) AND NOT fully_certified(F)(d, t1)
+        IMPLIES NOT cert_equiv(F)(t1, t2)
+
+  % In a linear order, cert_equiv classes are convex intervals
+  equiv_convex: THEOREM
+    FORALL (F: CertFamily, t1, t2, t3: Th):
+      cert_equiv(F)(t1, t3) AND t1 <= t2 AND t2 <= t3
+        IMPLIES cert_equiv(F)(t1, t2)
+
+  % In a linear order, the quotient order agrees with the original
+  linear_cert_le_iff_le: THEOREM
+    FORALL (F: CertFamily, t1, t2: Th): t1 <= t2 IMPLIES cert_le(F)(t1, t2)
+
+  % A certificate family separates points: for any t1 < t2, some datum
+  % distinguishes them
+  separating(F): bool =
+    FORALL (t1, t2: Th):
+      t1 <= t2 AND t1 /= t2 IMPLIES
+        EXISTS (d: D): fully_certified(F)(d, t2) AND NOT fully_certified(F)(d, t1)
+
+  % Under separating, cert_equiv implies equality
+  separating_equiv_eq: THEOREM
+    FORALL (F: CertFamily, t1, t2: Th):
+      separating(F) AND cert_equiv(F)(t1, t2) IMPLIES t1 = t2
+
+  % Under separating, the quotient is isomorphic to Th itself — distinct
+  % representatives always land in distinct classes
+  separating_quotient_trivial: THEOREM
+    FORALL (F: CertFamily, t1, t2: Th):
+      separating(F) AND quotient_mk(F)(t1) = quotient_mk(F)(t2) IMPLIES t1 = t2
+
+END cert_quotient_linear

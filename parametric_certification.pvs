@@ -1,0 +1,402 @@
+%------------------------------------------------------------------------------
+% Parametric Certificate Lattice
+%
+% Formalizes a parametric certification framework over an abstract
+% partially ordered parameter space. Proves monotonicity of full
+% certification (Master Theorem), canonical level characterization,
+% relaxation vs repair trade-offs, lattice operations on certification,
+% canonical existence in complete lattices, a concrete real-valued
+% threshold instance, and a proof-preserving graph bridge.
+%
+% Section 4 (spec_graph / certified_subgraph / certified_subgraph_pp_valid
+% — the bridge to proof-preserving graphs) uses directed_pp_graph.pvs
+% for a bespoke directed record representation (NOT graphs@graphs's
+% undirected doubleton edges).
+%
+% Design notes:
+%   - CertFamily is a predicate-subtype of pred[Certificate] constrained
+%     by monotone_cert — no finiteness restriction is imposed.
+%   - THEOREM/LEMMA statements re-bind all variables explicitly via
+%     FORALL; DEFINITIONS use the pre-declared VARs as implicit args.
+%
+% Dependencies:
+%   - PVS prelude: orders[T] (partial_order?, reflexive?, transitive?,
+%     antisymmetric?, dichotomous?, total_order?)
+%   - NASA pvslib orders@: bounded_orders, lower_semilattices,
+%     upper_semilattices, lattices, complete_lower_semilattices,
+%     minmax_orders
+%
+% Author: Dragan Stosic, 2026.
+%------------------------------------------------------------------------------
+
+%==============================================================================
+% PART 1: Abstract Framework, Master Theorem, Canonical Level,
+%         Relaxation vs Repair  (needs only: partial_order?)
+%==============================================================================
+
+parametric_certification[D: TYPE, Th: TYPE, <=: (partial_order?[Th])]: THEORY
+BEGIN
+
+  IMPORTING orders[Th]
+  IMPORTING orders@bounded_orders[Th]
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 1: Abstract Framework
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % A certificate is a predicate over data and parameter level
+  Certificate: TYPE = [D, Th -> bool]
+
+  C: VAR Certificate
+
+  % A certificate is monotone: passing at a stricter level (t1 <= t2,
+  % i.e. t1 at least as strict as t2) implies passing at the weaker t2
+  monotone_cert(C): bool =
+    FORALL (d: D, t1, t2: Th): t1 <= t2 AND C(d, t1) IMPLIES C(d, t2)
+
+  % A certificate family: every certificate in it is monotone.
+  % (No finiteness restriction — nothing in these proofs depends on
+  % the family being finite.)
+  CertFamily: TYPE = {certs: pred[Certificate] | FORALL (C: (certs)): monotone_cert(C)}
+
+  d: VAR D
+  t, t1, t2, t_c, t_target, t_relax: VAR Th
+  F: VAR CertFamily
+
+  % Full certification: every certificate in the family passes
+  fully_certified(F)(d, t): bool = FORALL (C: (F)): C(d, t)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 2: Master Theorem
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Master refinement: full certification is monotone
+  master_refinement: THEOREM
+    FORALL (F: CertFamily, d: D, t1, t2: Th):
+      t1 <= t2 AND fully_certified(F)(d, t1) IMPLIES fully_certified(F)(d, t2)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 3: Canonical Level
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Canonical theta: the tightest level the data satisfies
+  is_canonical(F)(d, t_c): bool =
+    fully_certified(F)(d, t_c) AND
+      (FORALL t: fully_certified(F)(d, t) IMPLIES t_c <= t)
+
+  % Certified iff canonical <= theta (principal upper set characterization)
+  certified_iff_above_canonical: THEOREM
+    FORALL (F: CertFamily, d: D, t_c, t: Th):
+      is_canonical(F)(d, t_c) IMPLIES
+        (fully_certified(F)(d, t) IFF t_c <= t)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 5: Relaxation vs Repair
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Relaxation: moving to a weaker (strictly different, >=) spec
+  relaxation(t_old, t_new: Th): bool = t_old <= t_new AND t_old /= t_new
+
+  % Repair: data changes so the original spec is satisfied again
+  repair(F)(d_old, d_new: D, t: Th): bool =
+    NOT fully_certified(F)(d_old, t) AND fully_certified(F)(d_new, t)
+
+  % Relaxation preserves certification
+  relaxation_preserves: THEOREM
+    FORALL (F: CertFamily, d: D, t_old, t_new: Th):
+      relaxation(t_old, t_new) AND fully_certified(F)(d, t_old)
+        IMPLIES fully_certified(F)(d, t_new)
+
+  % Repair raises or maintains the canonical level: if d_new is certified
+  % at the original spec t, and d_new has canonical level t_c_new,
+  % then t_c_new <= t (new canonical is at least as strict as t)
+  repair_raises_canonical: THEOREM
+    FORALL (F: CertFamily, d_old, d_new: D, t, t_c_new: Th):
+      repair(F)(d_old, d_new, t) AND is_canonical(F)(d_new, t_c_new)
+        IMPLIES t_c_new <= t
+
+  % Repair strictly improves over relaxation: relaxation weakens the
+  % contract (moves to a weaker level), repair restores certification
+  % at the ORIGINAL level
+  repair_vs_relaxation: THEOREM
+    FORALL (F: CertFamily, d_old, d_new: D, t_target, t_relax: Th):
+      repair(F)(d_old, d_new, t_target) AND relaxation(t_target, t_relax) AND
+      fully_certified(F)(d_old, t_relax)
+        IMPLIES fully_certified(F)(d_new, t_target) AND
+                fully_certified(F)(d_new, t_relax)
+
+  % After repair, the new canonical is at least as strict as the
+  % repaired spec
+  repair_canonical_below_target: THEOREM
+    FORALL (F: CertFamily, d_old, d_new: D, t, t_c_new: Th):
+      repair(F)(d_old, d_new, t) AND is_canonical(F)(d_new, t_c_new)
+        IMPLIES fully_certified(F)(d_new, t) AND t_c_new <= t
+
+  % Repair is impossible at levels stricter than canonical
+  no_repair_below_canonical: THEOREM
+    FORALL (F: CertFamily, d_new: D, t, t_c_new: Th):
+      is_canonical(F)(d_new, t_c_new) AND NOT (t_c_new <= t)
+        IMPLIES NOT fully_certified(F)(d_new, t)
+
+END parametric_certification
+
+
+%==============================================================================
+% PART 2: Lattice Operations  (needs: lattice? — meet/join for pairs)
+%==============================================================================
+
+parametric_certification_lattice[D: TYPE, Th: TYPE,
+  (IMPORTING orders@bounded_orders[Th]) <=: (lattice?[Th])]: THEORY
+BEGIN
+
+  IMPORTING parametric_certification[D, Th, <=]
+  IMPORTING orders@lattices[Th, <=]
+  IMPORTING orders@lower_semilattices[Th, <=]
+  IMPORTING orders@upper_semilattices[Th, <=]
+
+  d: VAR D
+  t1, t2: VAR Th
+  F: VAR CertFamily
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 6: Lattice Operations
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Meet certification: certified at meet(t1,t2) implies certified at both
+  % (uses glb_le_1/glb_le_2 with reflexivity for the two directions,
+  % then master_refinement)
+  certified_meet_implies_both: THEOREM
+    FORALL (F: CertFamily, d: D, t1, t2: Th):
+      fully_certified(F)(d, glb(t1, t2)) IMPLIES
+        fully_certified(F)(d, t1) AND fully_certified(F)(d, t2)
+
+  % Join certification: certified at either implies certified at join
+  % (uses le_lub_1/le_lub_2, then master_refinement)
+  certified_either_implies_join_left: THEOREM
+    FORALL (F: CertFamily, d: D, t1, t2: Th):
+      fully_certified(F)(d, t1) IMPLIES fully_certified(F)(d, lub(t1, t2))
+
+  certified_either_implies_join_right: THEOREM
+    FORALL (F: CertFamily, d: D, t1, t2: Th):
+      fully_certified(F)(d, t2) IMPLIES fully_certified(F)(d, lub(t1, t2))
+
+  % Inf-closed certificates: certified at both implies certified at meet.
+  % (Not automatic from monotone_cert alone — needs the extra downward-
+  % closure hypothesis.)
+  certified_both_implies_meet: THEOREM
+    FORALL (F: CertFamily, d: D, t1, t2: Th):
+      fully_certified(F)(d, t1) AND fully_certified(F)(d, t2) AND
+      (FORALL (C: (F), a, b: Th): C(d, a) AND C(d, b) IMPLIES C(d, glb(a, b)))
+        IMPLIES fully_certified(F)(d, glb(t1, t2))
+
+  % Canonical level is the infimum of all satisfying levels:
+  % glb(t_c, t) = t_c whenever t_c is canonical and t is certified
+  canonical_is_inf: THEOREM
+    FORALL (F: CertFamily, d: D, t_c, t: Th):
+      is_canonical(F)(d, t_c) AND fully_certified(F)(d, t)
+        IMPLIES glb(t_c, t) = t_c
+
+END parametric_certification_lattice
+
+
+%==============================================================================
+% PART 3: Canonical Existence (Complete Lattice)
+%==============================================================================
+
+parametric_certification_complete[D: TYPE, Th: TYPE,
+  (IMPORTING orders@bounded_orders[Th]) <=: (complete_lattice?[Th])]: THEORY
+BEGIN
+
+  IMPORTING parametric_certification_lattice[D, Th, <=]
+  IMPORTING orders@complete_lower_semilattices[Th, <=]
+
+  d: VAR D
+  t: VAR Th
+  F: VAR CertFamily
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 6b: Canonical Existence (CompleteLattice)
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % In a complete lattice, every SET of Th has a glb (JUDGEMENT
+  % every_set_is_greatest_bounded_below from complete_lower_semilattices),
+  % so this application of glb is well-typed for any predicate on Th,
+  % including the empty and infinite cases.
+  canonical_spec(F: CertFamily, d: D): Th =
+    glb(<=)({t: Th | fully_certified(F)(d, t)})
+
+  % Canonical spec is below (i.e. <=, at least as strict as) every
+  % satisfying level
+  canonical_spec_le: THEOREM
+    FORALL (F: CertFamily, d: D, t: Th):
+      fully_certified(F)(d, t) IMPLIES canonical_spec(F, d) <= t
+
+  % If certification is closed under arbitrary infima (not automatic —
+  % requires the satisfying set to be nonempty since in a complete
+  % lattice, glb of the empty set is the top element, which need not
+  % be certified).
+  canonical_spec_certified: THEOREM
+    FORALL (F: CertFamily, d: D):
+      (EXISTS (t: Th): fully_certified(F)(d, t)) AND
+      (FORALL (S: (nonempty?[Th])):
+        (FORALL (t: (S)): fully_certified(F)(d, t))
+          IMPLIES fully_certified(F)(d, glb(<=)(S)))
+        IMPLIES fully_certified(F)(d, canonical_spec(F, d))
+
+  % Under the same hypotheses, canonical_spec is truly canonical
+  canonical_spec_is_canonical: THEOREM
+    FORALL (F: CertFamily, d: D):
+      (EXISTS (t: Th): fully_certified(F)(d, t)) AND
+      (FORALL (S: (nonempty?[Th])):
+        (FORALL (t: (S)): fully_certified(F)(d, t))
+          IMPLIES fully_certified(F)(d, glb(<=)(S)))
+        IMPLIES is_canonical(F)(d, canonical_spec(F, d))
+
+END parametric_certification_complete
+
+
+%==============================================================================
+% PART 4: Concrete Instance — Real-Valued Threshold
+%==============================================================================
+
+threshold_certification: THEORY
+BEGIN
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 7: Threshold / Observable
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Concrete threshold parameter: one real value; higher = stricter
+  Threshold: TYPE = [# val: real #]
+
+  % Observable: one measured real value
+  Observable: TYPE = [# val: real #]
+
+  t, t1, t2: VAR Threshold
+  o: VAR Observable
+
+  % Ordering: t1 <= t2 means t1 is at least as strict as t2,
+  % i.e. t1.val >= t2.val
+  le_thresh(t1, t2): bool = t2`val <= t1`val
+
+  % le_thresh is a total order: reflexive, transitive, antisymmetric,
+  % and dichotomous (real <= is total), all inherited directly from
+  % the real number order.
+  le_thresh_reflexive: LEMMA reflexive?[Threshold](le_thresh)
+  le_thresh_transitive: LEMMA transitive?[Threshold](le_thresh)
+  le_thresh_antisymmetric: LEMMA antisymmetric?[Threshold](le_thresh)
+  le_thresh_dichotomous: LEMMA dichotomous?[Threshold](le_thresh)
+
+  le_thresh_total_order: JUDGEMENT le_thresh HAS_TYPE (total_order?[Threshold])
+
+  % The standard threshold certificate: observable value meets threshold
+  threshold_cert(o, t): bool = o`val >= t`val
+
+  % Threshold certificate is monotone in the sense of Section 1
+  % (t1 stricter than t2, i.e. le_thresh(t1,t2), means t2.val <= t1.val;
+  % passing the stricter t1 implies passing the weaker t2)
+  threshold_cert_monotone: THEOREM
+    FORALL (o: Observable, t1, t2: Threshold):
+      le_thresh(t1, t2) AND threshold_cert(o, t1) IMPLIES threshold_cert(o, t2)
+
+  % Canonical threshold for an observable: exactly its own value
+  canonical_threshold(o): Threshold = (# val := o`val #)
+
+  % Canonical threshold is self-certifying
+  canonical_threshold_self_cert: THEOREM
+    FORALL (o: Observable): threshold_cert(o, canonical_threshold(o))
+
+  % Canonical threshold is the tightest satisfiable level
+  canonical_threshold_tightest: THEOREM
+    FORALL (o: Observable, t: Threshold):
+      threshold_cert(o, t) IMPLIES le_thresh(canonical_threshold(o), t)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 8: Lattice Instance for Threshold
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Since le_thresh is a total_order?, it is automatically a lattice?
+  % via the orders@ judgement chain demonstrated in total_lattices.pvs
+  % (total_order? SUBTYPE_OF lattice?) — no separate proof should be
+  % needed here beyond le_thresh_total_order above.
+
+  IMPORTING orders@minmax_orders[Threshold]
+  IMPORTING orders@lattices[Threshold, le_thresh]
+  IMPORTING orders@lower_semilattices[Threshold, le_thresh]
+  IMPORTING orders@upper_semilattices[Threshold, le_thresh]
+
+  % Meet of thresholds is the stricter contract: val = max of the two
+  threshold_meet_val: THEOREM
+    FORALL (t1, t2: Threshold): glb(t1, t2)`val = max(t1`val, t2`val)
+
+  % Join of thresholds is the weaker contract: val = min of the two
+  threshold_join_val: THEOREM
+    FORALL (t1, t2: Threshold): lub(t1, t2)`val = min(t1`val, t2`val)
+
+  % Threshold cert is inf-closed: certified at both implies certified
+  % at the meet (directly, from the max-of-vals characterization above)
+  threshold_cert_inf_closed: THEOREM
+    FORALL (o: Observable, t1, t2: Threshold):
+      threshold_cert(o, t1) AND threshold_cert(o, t2)
+        IMPLIES threshold_cert(o, glb(t1, t2))
+
+  IMPORTING parametric_certification_lattice[Observable, Threshold, le_thresh]
+
+END threshold_certification
+
+
+%==============================================================================
+% PART 5: Spec Graph and PPG Bridge
+%==============================================================================
+
+parametric_certification_ppg_bridge[D: TYPE, Th: TYPE, <=: (partial_order?[Th])]: THEORY
+BEGIN
+
+  IMPORTING parametric_certification[D, Th, <=]
+  IMPORTING directed_pp_graph[Th]
+
+  d: VAR D
+  t1, t2: VAR Th
+  F: VAR CertFamily
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 4: Spec Graph and PPG Bridge
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % Spec edge: strict refinement between parameter levels
+  spec_edge(t1, t2): bool = t1 <= t2 AND t1 /= t2
+
+  % Certification propagates along spec edges
+  certification_propagates: THEOREM
+    FORALL (F: CertFamily, d: D, t1, t2: Th):
+      spec_edge(t1, t2) AND fully_certified(F)(d, t1) IMPLIES fully_certified(F)(d, t2)
+
+  % The spec graph: vertices = all of Th, edges = spec_edge.
+  % vertices is trivially TRUE everywhere, so the Graph well-formedness
+  % TCC (edges IMPLIES both endpoints are vertices) is automatic.
+  spec_graph: Graph =
+    (# vertices := (LAMBDA (t: Th): TRUE),
+       edges := spec_edge #)
+
+  % The refinement relation for the spec PPG: t1 refines t2 iff t1 <= t2
+  spec_rr(t1, t2): bool = t1 <= t2
+
+  % If source is certified, the spec edge is a pp_edge
+  spec_edge_is_pp: THEOREM
+    FORALL (F: CertFamily, d: D, t1, t2: Th):
+      spec_edge(t1, t2) AND fully_certified(F)(d, t1)
+        IMPLIES pp_edge(spec_rr, (LAMBDA (t: Th): fully_certified(F)(d, t)), t1, t2)
+
+  % The certified subgraph: only vertices where d is certified.
+  % The Graph well-formedness TCC requires certification_propagates
+  % to discharge.
+  certified_subgraph(F: CertFamily, d: D): Graph =
+    (# vertices := (LAMBDA (t: Th): fully_certified(F)(d, t)),
+       edges := (LAMBDA (t1, t2: Th): spec_edge(t1, t2) AND fully_certified(F)(d, t1)) #)
+
+  % The certified subgraph is pp_valid
+  certified_subgraph_pp_valid: THEOREM
+    FORALL (F: CertFamily, d: D):
+      pp_valid(certified_subgraph(F, d), spec_rr, (LAMBDA (t: Th): fully_certified(F)(d, t)))
+
+END parametric_certification_ppg_bridge

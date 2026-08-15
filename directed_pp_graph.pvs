@@ -1,0 +1,56 @@
+%------------------------------------------------------------------------------
+% Directed Proof-Preserving Graph — Minimal Core
+%
+% A directed graph representation: vertices and edges are arbitrary
+% predicates (no symmetry required). Deliberately NOT built on
+% graphs@graphs (which uses undirected doubleton-based edges) since
+% order-derived edges like spec_edge(t1,t2) := t1 <= t2 AND t1 /= t2
+% are asymmetric in general.
+%
+% Scope: Graph, pp_edge, pp_valid and their weak variants — the
+% minimal core needed by parametric_certification.pvs and
+% cert_quotient_bridge.pvs. Extend if additional graph theorems
+% (walks, paths, connectivity, etc.) are needed later.
+%
+% Author: Dragan Stosic, 2026.
+%------------------------------------------------------------------------------
+
+directed_pp_graph[V: TYPE]: THEORY
+BEGIN
+
+  x, y: VAR V
+  rr_rel: VAR [V, V -> bool]
+  invariant_holds: VAR [V -> bool]
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Graph Structure
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % A directed graph: an edges relation restricted to actual vertices
+  Graph: TYPE =
+    {g: [# vertices: [V -> bool], edges: [V, V -> bool] #] |
+       FORALL (x, y: V): g`edges(x, y) IMPLIES g`vertices(x) AND g`vertices(y)}
+
+  G: VAR Graph
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Core Definitions
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % An edge is proof-preserving iff both endpoints satisfy their
+  % invariants AND are related by the refinement relation
+  pp_edge(rr_rel, invariant_holds, x, y): bool =
+    x /= y AND invariant_holds(x) AND invariant_holds(y) AND rr_rel(x, y)
+
+  % Weak pp-edge: only requires refinement, not invariant
+  pp_edge_weak(rr_rel, x, y): bool = x /= y AND rr_rel(x, y)
+
+  % A graph is proof-preserving if EVERY edge satisfies pp_edge
+  pp_valid(G, rr_rel, invariant_holds): bool =
+    FORALL (x, y: V): G`edges(x, y) IMPLIES pp_edge(rr_rel, invariant_holds, x, y)
+
+  % Weak validity: only structural refinement required
+  pp_valid_weak(G, rr_rel): bool =
+    FORALL (x, y: V): G`edges(x, y) IMPLIES pp_edge_weak(rr_rel, x, y)
+
+END directed_pp_graph

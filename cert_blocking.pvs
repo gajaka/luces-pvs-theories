@@ -1,0 +1,95 @@
+%------------------------------------------------------------------------------
+% Blocking Certificates — Diagnostic Layer
+%
+% Port of PPGraphBlocking.lean (Stosic, 2026).
+% Defines the set of certificates that prevent certification at a given
+% level. Canonical level has no blocking; stricter levels do.
+%
+% Key insight: (t_c, blocking_set(d)) = (canonical level, blocking certs)
+%   Canonical tells how far certification reaches.
+%   Blocking tells why it stops there.
+%
+% Depends only on parametric_certification[D,Th,<=] (Part 1) — no graph,
+% no quotient, no new pvslib dependency beyond what that theory already
+% imports.
+%
+% Note: the Lean original's `stricter_has_blocking` carries an extra
+% hypothesis `F.certs /= []` that its own Lean proof never actually uses
+% — omitted here as genuinely unnecessary (dropping it makes the PVS
+% statement strictly more general, and it is still true).
+%
+% Note: the Lean original also declares a `CertState` record with a
+% single field `canonical: Th` that is never constructed or consumed
+% anywhere in the file — inert scaffolding, not ported here. Flag to
+% Dragan same as the earlier dead MorphPair fields; add it back if a
+% concrete use turns up.
+%
+% Author: Dragan Stosic (Lean original, 2026).
+% PVS port drafted 2026-08-12 — UNVERIFIED, see parametric_certification.pvs
+% header for the same caveat (this machine cannot run PVS).
+%------------------------------------------------------------------------------
+
+cert_blocking[D: TYPE, Th: TYPE, <=: (partial_order?[Th])]: THEORY
+BEGIN
+
+  IMPORTING parametric_certification[D, Th, <=]
+
+  d: VAR D
+  t, t_c: VAR Th
+  F: VAR CertFamily
+  C: VAR Certificate
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 1: Blocking Certificates
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % A certificate blocks at level t if it is in the family but fails
+  blocks(F)(C, d, t): bool = F(C) AND NOT C(d, t)
+
+  % The blocking set: all certificates that fail at level t
+  blocking_set(F)(d, t): pred[Certificate] = LAMBDA (C: Certificate): blocks(F)(C, d, t)
+
+  % If nothing blocks, the level is certified
+  empty_blocking_means_certified: THEOREM
+    FORALL (F: CertFamily, d: D, t: Th):
+      blocking_set(F)(d, t) = emptyset[Certificate]
+        IMPLIES fully_certified(F)(d, t)
+
+  % If something blocks, the level is NOT certified
+  nonempty_blocking_means_not_certified: THEOREM
+    FORALL (F: CertFamily, d: D, t: Th, C: Certificate):
+      blocks(F)(C, d, t) IMPLIES NOT fully_certified(F)(d, t)
+
+  % Blocking set at canonical is empty
+  canonical_blocking_empty: THEOREM
+    FORALL (F: CertFamily, d: D, t_c: Th):
+      is_canonical(F)(d, t_c)
+        IMPLIES blocking_set(F)(d, t_c) = emptyset[Certificate]
+
+  % At any level stricter than canonical, certification fails
+  stricter_than_canonical_fails: THEOREM
+    FORALL (F: CertFamily, d: D, t_c, t: Th):
+      is_canonical(F)(d, t_c) AND NOT (t_c <= t)
+        IMPLIES NOT fully_certified(F)(d, t)
+
+  % At any level stricter than canonical, blocking is nonempty
+  stricter_has_blocking: THEOREM
+    FORALL (F: CertFamily, d: D, t_c, t: Th):
+      is_canonical(F)(d, t_c) AND NOT (t_c <= t)
+        IMPLIES blocking_set(F)(d, t) /= emptyset[Certificate]
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 2: Certification State
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % At canonical, everything passes
+  at_canonical_all_pass: THEOREM
+    FORALL (F: CertFamily, d: D, t_c: Th, C: (F)):
+      is_canonical(F)(d, t_c) IMPLIES C(d, t_c)
+
+  % Above canonical (weaker), everything still passes
+  above_canonical_all_pass: THEOREM
+    FORALL (F: CertFamily, d: D, t_c, t: Th, C: (F)):
+      is_canonical(F)(d, t_c) AND t_c <= t IMPLIES C(d, t)
+
+END cert_blocking

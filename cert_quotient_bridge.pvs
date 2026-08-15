@@ -1,0 +1,88 @@
+%------------------------------------------------------------------------------
+% Bridge: Spec Graph -> Quotient via PP-Quotient Morphism
+%
+% The projection from the specification graph (Th, spec_edge) to the
+% quotient (Th/~, induced order) preserves edge structure and is
+% surjective; certification descends to and propagates along the
+% quotient graph.
+%
+% Design note: F is a fixed THEORY PARAMETER (not a VAR) because
+% quotient_graph's vertex type is SpecQuotient(F), which requires a
+% concrete type at theory-elaboration time. Re-instantiate this theory
+% once per concrete F needed.
+%
+% Dependencies: parametric_certification[D,Th,<=],
+% parametric_certification_ppg_bridge[D,Th,<=] (for spec_edge),
+% cert_quotient[D,Th,<=] (for SpecQuotient, quotient_mk, quotient_le),
+% directed_pp_graph[SpecQuotient(F)] (for Graph).
+%
+% Author: Dragan Stosic, 2026.
+%------------------------------------------------------------------------------
+
+cert_quotient_bridge[D: TYPE, Th: TYPE, <=: (partial_order?[Th]),
+                      (IMPORTING parametric_certification[D, Th, <=])
+                      F: CertFamily]: THEORY
+BEGIN
+
+  IMPORTING parametric_certification_ppg_bridge[D, Th, <=]
+  IMPORTING cert_quotient[D, Th, <=]
+  IMPORTING directed_pp_graph[SpecQuotient(F)]
+
+  d: VAR D
+  t, t1, t2: VAR Th
+  Q, Q1, Q2: VAR SpecQuotient(F)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 1: Quotient Graph Construction
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % The quotient graph: all classes as vertices, quotient_le (strict,
+  % i.e. distinct classes) as edges. vertices is trivially TRUE
+  % everywhere, so the Graph well-formedness TCC is automatic.
+  quotient_graph: directed_pp_graph[SpecQuotient(F)].Graph =
+    (# vertices := (LAMBDA (Q: SpecQuotient(F)): TRUE),
+       edges := (LAMBDA (Q1, Q2: SpecQuotient(F)): quotient_le(F)(Q1, Q2) AND Q1 /= Q2) #)
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 2: Projection Preserves Edges and Is Surjective
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % The projection preserves edge structure: a spec_edge between t1, t2
+  % gives a quotient edge between their classes, UNLESS the classes have
+  % already collapsed into one (cert_equiv(F)(t1,t2) held all along)
+  proj_preserves_edges: THEOREM
+    FORALL (t1, t2: Th):
+      spec_edge(t1, t2) IMPLIES
+        (quotient_graph`edges(quotient_mk(F)(t1), quotient_mk(F)(t2)) OR
+         quotient_mk(F)(t1) = quotient_mk(F)(t2))
+
+  % The projection is surjective (restated here from cert_quotient.pvs
+  % for this file's self-containment)
+  proj_surjective: THEOREM
+    FORALL (Q: SpecQuotient(F)): EXISTS (t: Th): quotient_mk(F)(t) = Q
+
+  %% ═══════════════════════════════════════════════════════════════════
+  %% Section 3: Certification Descends to the Quotient
+  %% ═══════════════════════════════════════════════════════════════════
+
+  % A class is quotient-certified iff every representative in it is
+  % certified. Since fully_certified(F)(d,-) is constant on any
+  % cert_equiv-class (cert_respects_equiv, cert_quotient.pvs), this is
+  % equivalent to "some representative is certified" too — stated here
+  % via FORALL directly, matching the pattern used for quotient_le,
+  % rather than through a separate lifting step.
+  quotient_certified(d)(Q): bool = FORALL (t: (Q)): fully_certified(F)(d, t)
+
+  % Quotient certification at a class equals certification at any
+  % representative
+  quotient_certified_iff: THEOREM
+    FORALL (d: D, t: Th):
+      quotient_certified(d)(quotient_mk(F)(t)) IFF fully_certified(F)(d, t)
+
+  % Quotient certification propagates along quotient edges
+  quotient_cert_propagates: THEOREM
+    FORALL (d: D, Q1, Q2: SpecQuotient(F)):
+      quotient_graph`edges(Q1, Q2) AND quotient_certified(d)(Q1)
+        IMPLIES quotient_certified(d)(Q2)
+
+END cert_quotient_bridge
