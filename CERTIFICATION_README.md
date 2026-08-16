@@ -8,6 +8,8 @@ Consequences: if a vertex is connected to the certified core, it holds its invar
 
 Built on NASA PVS Library: graphs@graphs (Butler and Sjogren, 1998) and sets_aux@rr_rel (Stosic, refinement relations).
 
+The core theory extends in two directions. First, pp_graphs_extended adds time, weight, and fault tolerance. Temporal PP-graphs index the graph by discrete time: invariant sets grow monotonically, paths persist once established, and eventually the system reaches a fixpoint. Weighted PP-graphs connect to optimal transport by assigning costs to edges, with cyclical monotonicity preventing crossing. Byzantine fault tolerance follows from pp-validity: any vertex that violates its invariant is automatically isolated from the honest core, and connected vertices are always honest. Second, categorical_pp_graphs lifts refinement from the element level (rr_rel on vertices) to the graph level. A PP-morphism preserves vertices and pp-edge structure. An embedding is an injective morphism. A quotient is a surjective morphism. A concrete graph refines an abstract graph via a quotient morphism, and simulation (abstraction-concretization round-trip) implies refinement. This is the structural backbone that lets the certification framework project the specification graph onto its quotient via a surjective pp-morphism (cert_quotient_bridge).
+
 ## The Certification Problem
 
 You have a system producing data. You have certificates that check whether the data meets certain standards. The usual question is: does it pass or fail?
@@ -48,6 +50,7 @@ Two specifications that certify exactly the same data are certification-equivale
 |------|----------|
 | proof_preserving_graphs.pvs | 40 |
 | pp_graphs_extended.pvs | 26 |
+| categorical_pp_graphs.pvs | 7 |
 | pp_graph_repair.pvs | 10 |
 | parametric_certification.pvs | 35 |
 | cert_quotient.pvs | 35 |
@@ -56,7 +59,7 @@ Two specifications that certify exactly the same data are certification-equivale
 | cert_quotient_bridge.pvs | 4 |
 | directed_pp_graph.pvs | 1 |
 
-183 theorems (PPG + certification). Full repo: 435 theorems, 39 theories.
+190 theorems (PPG + certification). Full repo: 435 theorems, 39 theories.
 Lean 4: 153 theorems, zero sorry.
 
 ## Related
