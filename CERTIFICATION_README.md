@@ -48,16 +48,16 @@ Two specifications that certify exactly the same data are certification-equivale
 
 | File | Theorems |
 |------|----------|
-| proof_preserving_graphs.pvs | 40 |
-| pp_graphs_extended.pvs | 26 |
-| categorical_pp_graphs.pvs | 7 |
-| pp_graph_repair.pvs | 10 |
-| parametric_certification.pvs | 35 |
-| cert_quotient.pvs | 35 |
-| cert_selection.pvs | 25 |
-| cert_blocking.pvs | 7 |
-| cert_quotient_bridge.pvs | 4 |
-| directed_pp_graph.pvs | 1 |
+| [proof_preserving_graphs.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/proof_preserving_graphs.pvs) | 40 |
+| [pp_graphs_extended.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/pp_graphs_extended.pvs) | 26 |
+| [categorical_pp_graphs.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/categorical_pp_graphs.pvs) | 7 |
+| [pp_graph_repair.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/pp_graph_repair.pvs) | 10 |
+| [parametric_certification.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/parametric_certification.pvs) | 35 |
+| [cert_quotient.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/cert_quotient.pvs) | 35 |
+| [cert_selection.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/cert_selection.pvs) | 25 |
+| [cert_blocking.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/cert_blocking.pvs) | 7 |
+| [cert_quotient_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/cert_quotient_bridge.pvs) | 4 |
+| [directed_pp_graph.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/directed_pp_graph.pvs) | 1 |
 
 190 theorems (PPG + certification). Full repo: 435 theorems, 39 theories.
 Lean 4: 153 theorems, zero sorry.
