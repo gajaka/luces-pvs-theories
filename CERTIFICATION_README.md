@@ -63,3 +63,4 @@ Lean 4: 153 theorems, zero sorry.
 
 - Lean 4 port: [ppg-lean](https://github.com/gajaka/ppg-lean)
 - Paper 3: [DOI 10.5281/zenodo.21956336](https://zenodo.org/records/21956336)
+- Paper (in preparation): "Parameterized Proof-Preserving Certification"
