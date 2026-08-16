@@ -68,7 +68,29 @@ refinement --> monotone certification --> canonical level --> blocking set --> P
 | [directed_pp_graph.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/directed_pp_graph.pvs) | 1 |
 
 190 theorems (PPG + certification). Full repo: 435 theorems, 39 theories.
-Lean 4: 153 theorems, zero sorry.
+Lean 4: 164 theorems, zero sorry.
+
+## Future Work: Self-Assessment Theory
+
+A proof-preserving graph does not promise that failures will not occur. It promises something stronger: a failure cannot remain structurally connected to the certified graph. The violating vertex is automatically isolated, no edge reaches it in either direction, and no evolution of the graph can silently reclassify it as certified without restoring its invariant.
+
+This gives a formal notion of self-assessment without anthropomorphism. The graph carries its own admissibility conditions. It can detect when a component no longer belongs to the certified core, isolate that component without invalidating the rest, and admit it again after repair.
+
+Three evolution modes are formally distinct:
+
+```
+PP evolution: G --> G', Spec fixed (graph grows, invariant unchanged)
+Relaxation:   theta --> theta', State fixed (weaken the contract)
+Repair:       s --> s', Spec fixed (restore the system to the bar)
+```
+
+Relaxation changes what is demanded. Repair changes what the system does. The type system enforces this separation: repair is a function on states (S --> V --> S) with no access to the specification as a mutable object.
+
+A repair operator is valid (proof-preserving) if it satisfies two proof obligations: target restoration (the broken vertex becomes certified) and core preservation (no previously certified vertex loses its status). Monotone recovery is then a derived theorem, not a definitional truth.
+
+The theory is proved in Lean 4 (11 theorems, zero sorry): [PPGraphSelfAssessment.lean](https://github.com/gajaka/ppg-lean/blob/main/PPGraphSelfAssessment.lean)
+
+PVS formalization in progress: ppg_self_assessment.pvs (11 theorems, awaiting typecheck).
 
 ## Related
 
