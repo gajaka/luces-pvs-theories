@@ -44,6 +44,12 @@ Two specifications that certify exactly the same data are certification-equivale
 
 27 certificates on an embedded spectral sensing system (4-node ESP32 mesh, AS7341 sensor, 10 channels). Five levels: S > A > B > C > D. The engine finds canonical level C for most logs (structure sound, Monge concentration too weak for B). boot334 fails at all levels because generator coherence is negative (spectral flow reverses mid-transition). C_CS (structural) passes everywhere. C_GEN (dynamical) fails only on boot334. Independent axes, no threshold tuning.
 
+## Theory Flow
+
+```
+refinement --> monotone certification --> canonical level --> blocking set --> PP-graph --> relaxation/repair --> quotient
+```
+
 ## Files
 
 | File | Theorems |
