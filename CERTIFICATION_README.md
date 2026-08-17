@@ -90,7 +90,7 @@ Relaxation changes what is demanded. Repair changes what the system does. The ty
 
 A repair operator is valid (proof-preserving) if it satisfies two proof obligations: target restoration (the broken vertex becomes certified) and core preservation (no previously certified vertex loses its status). Monotone recovery is then a derived theorem, not a definitional truth.
 
-The theory is proved in Lean 4 (12 theorems, zero sorry): [PPGraphSelfAssessment.lean](https://github.com/gajaka/ppg-lean/blob/main/PPGraphSelfAssessment.lean)
+The theory is proved in PVS (12 theorems, all proved): [ppg_self_assessment.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_self_assessment.pvs)
 
 The formal pipeline has five components:
 
@@ -104,7 +104,7 @@ Recover --> repair_strict_growth    (Certified(s) ⊊ Certified(R(s,v)))
 
 ## Assessment Bridge (complete)
 
-Parametric certification is an instance of the self-assessment repair model. The bridge ([PPGraphAssessmentBridge.lean](https://github.com/gajaka/ppg-lean/blob/main/PPGraphAssessmentBridge.lean), 8 theorems, zero sorry) sets S := D, V := Θ, Spec := fully_certified F, and applies the repair operator directly over the specification space.
+Parametric certification is an instance of the self-assessment repair model. The bridge ([ppg_assessment_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_assessment_bridge.pvs), 8 theorems, all proved) sets S := D, V := Θ, Spec := fully_certified F, and applies the repair operator directly over the specification space.
 
 The complete formal cycle:
 
