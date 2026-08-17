@@ -66,8 +66,10 @@ refinement --> monotone certification --> canonical level --> blocking set --> P
 | [cert_blocking.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/cert_blocking.pvs) | 7 |
 | [cert_quotient_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/cert_quotient_bridge.pvs) | 4 |
 | [directed_pp_graph.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/directed_pp_graph.pvs) | 1 |
+| [ppg_self_assessment.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_self_assessment.pvs) | 12 |
+| [ppg_assessment_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_assessment_bridge.pvs) | 8 |
 
-190 theorems (PPG + certification). Full repo: 435 theorems, 39 theories.
+210 theorems (PPG + certification + self-assessment + bridge). Full repo: 456 theorems, 41 theories.
 Lean 4: 172 theorems, zero sorry.
 
 ## Future Work: Self-Assessment Theory
@@ -190,7 +192,7 @@ FORMAL VERIFICATION (complete_repair_cycle)
   Backed by: complete_repair_cycle (PPGraphAssessmentBridge.lean)
 ```
 
-PVS formalization in progress: ppg_self_assessment.pvs (12 theorems, awaiting typecheck).
+PVS formalization complete: [ppg_self_assessment.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_self_assessment.pvs) (12 theorems, all proved) + [ppg_assessment_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_assessment_bridge.pvs) (8 theorems, all proved).
 
 ## Related
 

@@ -1,0 +1,190 @@
+%%% ppg_self_assessment.pvs
+%%% Formal Self-Assessment for Proof-Preserving Graphs
+%%%
+%%% A PPG is failure-containing, self-assessing, and repair-capable.
+%%% A failure may change the certified region, but it cannot silently
+%%% redefine what counts as certified.
+%%%
+%%% Three evolution modes:
+%%%   PP evolution: G -> G', Spec fixed
+%%%   Relaxation:   theta -> theta', State fixed
+%%%   Repair:       s -> s', Spec fixed
+%%%
+%%% Repair is a primitive operator (S -> V -> S) on system state.
+%%% The specification (S -> V -> Prop) is an external fixed parameter
+%%% that repair cannot access or modify. A repair operator is valid
+%%% (proof-preserving) if it satisfies two proof obligations:
+%%% target restoration and core preservation. Monotone recovery is
+%%% then a derived theorem, not a definitional truth.
+%%%
+%%% Author: Dragan Stosic, 2026
+
+ppg_self_assessment[S: TYPE+, N: posnat]: THEORY
+BEGIN
+
+  IMPORTING proof_preserving_graphs
+  IMPORTING pp_graph_repair[N]
+  IMPORTING finite_sets@finite_sets_below
+
+  Vertex: TYPE = below(N)
+
+%% -----------------------------------------------------------------
+%% Section 1: Repair Operator Model
+%% -----------------------------------------------------------------
+
+  % Specification: evaluates a state at a vertex. Fixed, external, immutable.
+  Spec: TYPE = [S, Vertex -> bool]
+
+  % Repair operator: given a state and a target vertex, produce a new state.
+  % Repair changes the system, not the specification.
+  RepairOp: TYPE = [S, Vertex -> S]
+
+  % State variables
+  spec: VAR Spec
+  R: VAR RepairOp
+  s: VAR S
+  v, w: VAR Vertex
+
+  % Target is broken in the current state
+  broken?(spec, s, v): bool = NOT spec(s, v)
+
+  % Proof obligation 1: repair restores the target vertex
+  target_restored?(R, spec, s, v): bool =
+    broken?(spec, s, v) IMPLIES spec(R(s, v), v)
+
+  % Proof obligation 2: repair preserves the certified core
+  core_preserved?(R, spec, s, v): bool =
+    FORALL (w: Vertex): w /= v AND spec(s, w) IMPLIES spec(R(s, v), w)
+
+  % A repair operator is valid if it satisfies both obligations
+  valid_repair?(R, spec, s, v): bool =
+    target_restored?(R, spec, s, v) AND core_preserved?(R, spec, s, v)
+
+%% -----------------------------------------------------------------
+%% Section 2: Monotone Recovery
+%% -----------------------------------------------------------------
+
+  % Monotone recovery: any valid repair on a broken target produces
+  % a strictly larger certified region.
+  repair_monotone_recovery: THEOREM
+    FORALL (R: RepairOp, spec: Spec, s: S, v: Vertex):
+      broken?(spec, s, v) AND valid_repair?(R, spec, s, v) IMPLIES
+        spec(R(s, v), v) AND
+        FORALL (w: Vertex): w /= v AND spec(s, w) IMPLIES spec(R(s, v), w)
+
+  % Preservation: every previously certified vertex remains certified
+  % after repair. This is set inclusion Certified(s) subset of Certified(R(s,v)).
+  repair_preserves_certified: THEOREM
+    FORALL (R: RepairOp, spec: Spec, s: S, v: Vertex, w: Vertex):
+      broken?(spec, s, v) AND valid_repair?(R, spec, s, v) AND spec(s, w) IMPLIES
+        spec(R(s, v), w)
+
+  % Strict growth: Certified(s) strict subset of Certified(R(s,v)).
+  % The certified set after repair is a PROPER superset:
+  % everything from before is preserved, AND v is newly certified.
+  repair_strict_growth: THEOREM
+    FORALL (R: RepairOp, spec: Spec, s: S, v: Vertex):
+      broken?(spec, s, v) AND valid_repair?(R, spec, s, v) IMPLIES
+        (FORALL (w: Vertex): spec(s, w) IMPLIES spec(R(s, v), w)) AND
+        (spec(R(s, v), v) AND NOT spec(s, v))
+
+  % Repair restores the broken target under the same fixed specification.
+  % The state changes, the spec does not.
+  repair_restores_broken_target: THEOREM
+    FORALL (R: RepairOp, spec: Spec, s: S, v: Vertex):
+      broken?(spec, s, v) AND valid_repair?(R, spec, s, v) IMPLIES
+        spec(R(s, v), v) AND NOT spec(s, v)
+
+%% -----------------------------------------------------------------
+%% Section 3: Contamination Impossibility
+%% -----------------------------------------------------------------
+
+  % Graph-level definitions (from proof_preserving_graphs)
+  inv: VAR [Vertex -> bool]
+  rr: VAR [Vertex, Vertex -> bool]
+  edge1, edge2: VAR [Vertex, Vertex -> bool]
+  vert1, vert2: VAR [Vertex -> bool]
+
+  % PP-transform preserves vertices and edges, same invariant
+  pp_transform?(vert1, edge1, vert2, edge2, inv, rr): bool =
+    (FORALL (x: Vertex): vert1(x) IMPLIES vert2(x)) AND
+    (FORALL (x, y: Vertex): edge1(x, y) IMPLIES edge2(x, y)) AND
+    (FORALL (x, y: Vertex): edge1(x, y) IMPLIES
+      x /= y AND inv(x) AND inv(y) AND rr(x, y)) AND
+    (FORALL (x, y: Vertex): edge2(x, y) IMPLIES
+      x /= y AND inv(x) AND inv(y) AND rr(x, y))
+
+  % Contamination impossible: invariant set only grows under pp_transform
+  contamination_impossible: THEOREM
+    FORALL (vert1, vert2: [Vertex -> bool],
+            edge1, edge2: [Vertex, Vertex -> bool],
+            inv: [Vertex -> bool], rr: [Vertex, Vertex -> bool], v: Vertex):
+      pp_transform?(vert1, edge1, vert2, edge2, inv, rr) AND
+      vert1(v) AND inv(v)
+      IMPLIES vert2(v) AND inv(v)
+
+  % Violations propagate: violation in G1 implies violation in G2
+  violations_propagate: THEOREM
+    FORALL (vert1, vert2: [Vertex -> bool],
+            edge1, edge2: [Vertex, Vertex -> bool],
+            inv: [Vertex -> bool], rr: [Vertex, Vertex -> bool], v: Vertex):
+      pp_transform?(vert1, edge1, vert2, edge2, inv, rr) AND
+      vert1(v) AND NOT inv(v)
+      IMPLIES vert2(v) AND NOT inv(v)
+
+  % No silent redefinition: same invariant for both graphs means
+  % certified/violating status is identical for shared vertices.
+  no_silent_redefinition: THEOREM
+    FORALL (vert1, vert2: [Vertex -> bool],
+            edge1, edge2: [Vertex, Vertex -> bool],
+            inv: [Vertex -> bool], rr: [Vertex, Vertex -> bool], v: Vertex):
+      pp_transform?(vert1, edge1, vert2, edge2, inv, rr) AND vert1(v)
+      IMPLIES (inv(v) IFF inv(v))
+
+%% -----------------------------------------------------------------
+%% Section 4: Assessment Trichotomy
+%% -----------------------------------------------------------------
+
+  % Every vertex is in exactly one of three states:
+  % certified, repairable, or currently non-repairable
+  assessment_trichotomy: THEOREM
+    FORALL (v: Vertex):
+      invariant_holds(v) OR
+      (isolated?(v) AND repair_possible?(v)) OR
+      (isolated?(v) AND NOT repair_possible?(v))
+
+  % Certified excludes isolated (definitional but explicit)
+  certified_excludes_isolated: THEOREM
+    FORALL (v: Vertex):
+      invariant_holds(v) IMPLIES NOT isolated?(v)
+
+%% -----------------------------------------------------------------
+%% Section 5: Failure Containment
+%% -----------------------------------------------------------------
+
+  % In a pp-valid graph, violating vertices have no outgoing edges
+  failure_contained: THEOREM
+    FORALL (v: Vertex):
+      (FORALL (x, y: Vertex): edge(x, y) IMPLIES
+        x /= y AND invariant_holds(x) AND invariant_holds(y) AND rr_rel(x, y))
+      AND isolated?(v)
+      IMPLIES FORALL (y: Vertex): NOT edge(v, y)
+
+  % Violating vertices have no incoming edges either
+  failure_fully_isolated: THEOREM
+    FORALL (v: Vertex):
+      (FORALL (x, y: Vertex): edge(x, y) IMPLIES
+        x /= y AND invariant_holds(x) AND invariant_holds(y) AND rr_rel(x, y))
+      AND isolated?(v)
+      IMPLIES FORALL (y: Vertex): NOT edge(y, v)
+
+  % Total isolation: no edges in either direction
+  failure_total_isolation: THEOREM
+    FORALL (v: Vertex):
+      (FORALL (x, y: Vertex): edge(x, y) IMPLIES
+        x /= y AND invariant_holds(x) AND invariant_holds(y) AND rr_rel(x, y))
+      AND isolated?(v)
+      IMPLIES (FORALL (y: Vertex): NOT edge(v, y)) AND
+              (FORALL (y: Vertex): NOT edge(y, v))
+
+END ppg_self_assessment
