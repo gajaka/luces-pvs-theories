@@ -66,8 +66,10 @@ refinement --> monotone certification --> canonical level --> blocking set --> P
 | [cert_blocking.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/cert_blocking.pvs) | 7 |
 | [cert_quotient_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/cert_quotient_bridge.pvs) | 4 |
 | [directed_pp_graph.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/directed_pp_graph.pvs) | 1 |
+| [ppg_self_assessment.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_self_assessment.pvs) | 12 |
+| [ppg_assessment_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_assessment_bridge.pvs) | 8 |
 
-190 theorems (PPG + certification). Full repo: 435 theorems, 39 theories.
+210 theorems (PPG + certification + self-assessment + bridge). Full repo: 456 theorems, 41 theories.
 Lean 4: 172 theorems, zero sorry.
 
 ## Future Work: Self-Assessment Theory
@@ -88,7 +90,7 @@ Relaxation changes what is demanded. Repair changes what the system does. The ty
 
 A repair operator is valid (proof-preserving) if it satisfies two proof obligations: target restoration (the broken vertex becomes certified) and core preservation (no previously certified vertex loses its status). Monotone recovery is then a derived theorem, not a definitional truth.
 
-The theory is proved in Lean 4 (12 theorems, zero sorry): [PPGraphSelfAssessment.lean](https://github.com/gajaka/ppg-lean/blob/main/PPGraphSelfAssessment.lean)
+The theory is proved in PVS (12 theorems, all proved): [ppg_self_assessment.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_self_assessment.pvs)
 
 The formal pipeline has five components:
 
@@ -102,7 +104,7 @@ Recover --> repair_strict_growth    (Certified(s) ⊊ Certified(R(s,v)))
 
 ## Assessment Bridge (complete)
 
-Parametric certification is an instance of the self-assessment repair model. The bridge ([PPGraphAssessmentBridge.lean](https://github.com/gajaka/ppg-lean/blob/main/PPGraphAssessmentBridge.lean), 8 theorems, zero sorry) sets S := D, V := Θ, Spec := fully_certified F, and applies the repair operator directly over the specification space.
+Parametric certification is an instance of the self-assessment repair model. The bridge ([ppg_assessment_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_assessment_bridge.pvs), 8 theorems, all proved) sets S := D, V := Θ, Spec := fully_certified F, and applies the repair operator directly over the specification space.
 
 The complete formal cycle:
 
@@ -187,10 +189,10 @@ FORMAL VERIFICATION (complete_repair_cycle)
   region strictly grew, all blockers at level C were removed, and
   the canonical frontier advanced from FAIL to C.
 
-  Backed by: complete_repair_cycle (PPGraphAssessmentBridge.lean)
+  Backed by: complete_repair_cycle (ppg_assessment_bridge.pvs)
 ```
 
-PVS formalization in progress: ppg_self_assessment.pvs (12 theorems, awaiting typecheck).
+PVS formalization complete: [ppg_self_assessment.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_self_assessment.pvs) (12 theorems, all proved) + [ppg_assessment_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_assessment_bridge.pvs) (8 theorems, all proved).
 
 ## Related
 
