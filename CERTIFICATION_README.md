@@ -189,7 +189,7 @@ FORMAL VERIFICATION (complete_repair_cycle)
   region strictly grew, all blockers at level C were removed, and
   the canonical frontier advanced from FAIL to C.
 
-  Backed by: complete_repair_cycle (PPGraphAssessmentBridge.lean)
+  Backed by: complete_repair_cycle (ppg_assessment_bridge.pvs)
 ```
 
 PVS formalization complete: [ppg_self_assessment.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_self_assessment.pvs) (12 theorems, all proved) + [ppg_assessment_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_assessment_bridge.pvs) (8 theorems, all proved).
