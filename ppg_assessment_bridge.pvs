@@ -1,0 +1,122 @@
+%%% ppg_assessment_bridge.pvs
+%%% Bridge: Self-Assessment / Parametric Certification
+%%%
+%%% Parametric certification IS an instance of the self-assessment
+%%% repair model. We set:
+%%%   S := D        (system state = datum)
+%%%   V := Th       (vertex = specification level)
+%%%   Spec := fully_certified F
+%%%   RepairOp := R : D, Th -> D
+%%%
+%%% Then valid_repair gives target_restored + core_preserved,
+%%% and the complete cycle follows:
+%%%   canonical, blocking, repair, strict growth, blocking cleared,
+%%%   canonical frontier advances
+%%%
+%%% Author: Dragan Stosic, 2026
+
+ppg_assessment_bridge[D: TYPE, Th: TYPE, <=: (partial_order?[Th])]: THEORY
+BEGIN
+
+  IMPORTING parametric_certification[D, Th, <=]
+  IMPORTING cert_blocking[D, Th, <=]
+
+%% -----------------------------------------------------------------
+%% Section 1: Type-Level Bridge
+%% -----------------------------------------------------------------
+
+  % Repair operator in the parametric world: D, Th -> D
+  % Given a datum and a target level, produce a repaired datum.
+  ParametricRepairOp: TYPE = [D, Th -> D]
+
+  R: VAR ParametricRepairOp
+  F: VAR CertFamily
+  d: VAR D
+  t, t_c_old, t_c_new: VAR Th
+  theta: VAR Th
+
+  % Broken in certification sense = not fully certified
+  certSpec_broken(F, d, t): bool = NOT fully_certified(F)(d, t)
+
+  % Valid cert repair: target restoration + core preservation
+  valid_cert_repair(F, R, d, t): bool =
+    (certSpec_broken(F, d, t) IMPLIES fully_certified(F)(R(d, t), t)) AND
+    (FORALL (theta: Th): theta /= t AND fully_certified(F)(d, theta)
+      IMPLIES fully_certified(F)(R(d, t), theta))
+
+%% -----------------------------------------------------------------
+%% Section 2: Strict Growth of Certified Levels
+%% -----------------------------------------------------------------
+
+  % Preservation: every level certified before repair remains certified after.
+  % CertifiedLevels(d) subset of CertifiedLevels(R(d,t))
+  cert_repair_preserves: THEOREM
+    FORALL (F: CertFamily, R: ParametricRepairOp, d: D, t, theta: Th):
+      certSpec_broken(F, d, t) AND valid_cert_repair(F, R, d, t) AND
+      fully_certified(F)(d, theta)
+      IMPLIES fully_certified(F)(R(d, t), theta)
+
+  % Strict growth: CertifiedLevels(d) strict subset of CertifiedLevels(R(d,t))
+  cert_repair_strict_growth: THEOREM
+    FORALL (F: CertFamily, R: ParametricRepairOp, d: D, t: Th):
+      certSpec_broken(F, d, t) AND valid_cert_repair(F, R, d, t)
+      IMPLIES
+        (FORALL (theta: Th): fully_certified(F)(d, theta)
+          IMPLIES fully_certified(F)(R(d, t), theta))
+        AND
+        (fully_certified(F)(R(d, t), t) AND NOT fully_certified(F)(d, t))
+
+%% -----------------------------------------------------------------
+%% Section 3: Canonical Level After Repair
+%% -----------------------------------------------------------------
+
+  % After valid repair at level t, new canonical is at most t.
+  canonical_after_repair: THEOREM
+    FORALL (F: CertFamily, R: ParametricRepairOp, d: D, t, t_c_new: Th):
+      certSpec_broken(F, d, t) AND valid_cert_repair(F, R, d, t) AND
+      is_canonical(F)(R(d, t), t_c_new)
+      IMPLIES t_c_new <= t
+
+  % If repair target t is stricter than old canonical (t <= t_c_old),
+  % then canonical frontier advances: t_c_new <= t <= t_c_old.
+  canonical_frontier_advances: THEOREM
+    FORALL (F: CertFamily, R: ParametricRepairOp, d: D, t, t_c_old, t_c_new: Th):
+      certSpec_broken(F, d, t) AND valid_cert_repair(F, R, d, t) AND
+      t <= t_c_old AND
+      is_canonical(F)(d, t_c_old) AND
+      is_canonical(F)(R(d, t), t_c_new)
+      IMPLIES t_c_new <= t AND t <= t_c_old
+
+%% -----------------------------------------------------------------
+%% Section 4: Blocking Set Clears After Repair
+%% -----------------------------------------------------------------
+
+  % At repaired level t, no certificate blocks anymore.
+  repair_clears_blocking: THEOREM
+    FORALL (F: CertFamily, R: ParametricRepairOp, d: D, t: Th, C: Certificate):
+      certSpec_broken(F, d, t) AND valid_cert_repair(F, R, d, t) AND F(C)
+      IMPLIES NOT blocks(F)(C, R(d, t), t)
+
+  % Blocking set at t becomes empty after repair.
+  repair_removes_all_blockers: THEOREM
+    FORALL (F: CertFamily, R: ParametricRepairOp, d: D, t: Th):
+      certSpec_broken(F, d, t) AND valid_cert_repair(F, R, d, t)
+      IMPLIES blocking_set(F)(R(d, t), t) = emptyset[Certificate]
+
+%% -----------------------------------------------------------------
+%% Section 5: Complete Cycle Theorem
+%% -----------------------------------------------------------------
+
+  % The complete assess, repair, re-certify cycle.
+  complete_repair_cycle: THEOREM
+    FORALL (F: CertFamily, R: ParametricRepairOp, d: D, t, t_c_new: Th):
+      certSpec_broken(F, d, t) AND valid_cert_repair(F, R, d, t) AND
+      is_canonical(F)(R(d, t), t_c_new)
+      IMPLIES
+        fully_certified(F)(R(d, t), t) AND
+        (FORALL (theta: Th): fully_certified(F)(d, theta)
+          IMPLIES fully_certified(F)(R(d, t), theta)) AND
+        blocking_set(F)(R(d, t), t) = emptyset[Certificate] AND
+        t_c_new <= t
+
+END ppg_assessment_bridge

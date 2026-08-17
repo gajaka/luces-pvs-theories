@@ -14,17 +14,16 @@
 %%%
 %%% Author: Dragan Stosic, 2026
 
-pp_graph_repair: THEORY
+pp_graph_repair[N: posnat]: THEORY
 BEGIN
 
   IMPORTING proof_preserving_graphs
   IMPORTING finite_sets@finite_sets_below
 
-%% ═══════════════════════════════════════════════════════════════════
+%% -----------------------------------------------------------------
 %% Types
-%% ═══════════════════════════════════════════════════════════════════
+%% -----------------------------------------------------------------
 
-  N: posnat
   Vertex: TYPE = below(N)
 
   % Refinement relation (communication condition)
@@ -36,9 +35,9 @@ BEGIN
   % Graph edges (active communication)
   edge: [Vertex, Vertex -> bool]
 
-%% ═══════════════════════════════════════════════════════════════════
+%% -----------------------------------------------------------------
 %% Isolation (from proof_preserving_graphs)
-%% ═══════════════════════════════════════════════════════════════════
+%% -----------------------------------------------------------------
 
   % A vertex is isolated if its invariant fails
   isolated?(v: Vertex): bool = NOT invariant_holds(v)
@@ -47,9 +46,9 @@ BEGIN
   active_edge?(x, y: Vertex): bool =
     edge(x, y) AND invariant_holds(x) AND invariant_holds(y)
 
-%% ═══════════════════════════════════════════════════════════════════
+%% -----------------------------------------------------------------
 %% Repair Definitions
-%% ═══════════════════════════════════════════════════════════════════
+%% -----------------------------------------------------------------
 
   % Repair is possible if there exists a valid rr_rel neighbor
   repair_possible?(v: Vertex): bool =
@@ -97,9 +96,9 @@ BEGIN
   ax_rr_reflexive: AXIOM
     FORALL (v: Vertex): invariant_holds(v) IMPLIES rr_rel(v, v)
 
-%% ═══════════════════════════════════════════════════════════════════
+%% -----------------------------------------------------------------
 %% Route Repair
-%% ═══════════════════════════════════════════════════════════════════
+%% -----------------------------------------------------------------
 
   % Route repair: bypass isolated vertex through a valid neighbor
   route_repairable?(x, v, y: Vertex): bool =
@@ -109,9 +108,9 @@ BEGIN
       invariant_holds(w) AND rr_rel(v, w) AND
       edge(x, w) AND edge(w, y)
 
-%% ═══════════════════════════════════════════════════════════════════
+%% -----------------------------------------------------------------
 %% Theorems
-%% ═══════════════════════════════════════════════════════════════════
+%% -----------------------------------------------------------------
 
   % T1: If repair is possible, isolation is reversible
   thm_isolation_reversible: THEOREM
