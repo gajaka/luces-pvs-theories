@@ -1,4 +1,4 @@
-# Proof-Preserving Graph Theory + Optimal Transport Certificates
+# Proof-Preserving Graphs: Formal Certification, Self-Assessment, and Repair
 
 **A formal mathematical framework for structural resilience, with applications to optimal transport verification and hardware root-of-trust.**
 
