@@ -72,7 +72,7 @@ refinement --> monotone certification --> canonical level --> blocking set --> P
 210 theorems (PPG + certification + self-assessment + bridge). Full repo: 456 theorems, 41 theories.
 Lean 4: 172 theorems, zero sorry.
 
-## Future Work: Self-Assessment Theory
+## Self-Assessment Theory
 
 A proof-preserving graph does not promise that failures will not occur. It promises something stronger: a failure cannot remain structurally connected to the certified graph. The violating vertex is automatically isolated, no edge reaches it in either direction, and no evolution of the graph can silently reclassify it as certified without restoring its invariant.
 
