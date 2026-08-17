@@ -120,6 +120,44 @@ Key theorem (complete_repair_cycle): given a broken target and a valid repair op
 
 Planned cleanup: make valid_cert_repair definitionally equal to valid_repair applied to certSpec F (type-level identity, not just semantic equivalence).
 
+## Empirical Verification (complete_repair_cycle on real data)
+
+Repair operator: firmware tau recalibration. Specification: fixed (S/A/B/C/D thresholds unchanged).
+
+```
+PRE-FIX (boot334, before repair):
+  Canonical: FAIL
+  Certified levels: NONE
+  Blocking at C: {coherence_min: 0.0000 vs 0.3}
+  Blocking at D: {coherence_min: 0.0000 vs 0.1}
+
+POST-FIX (boot347, after repair):
+  Canonical: C
+  Certified levels: {C, D}
+  Blocking at C: {}
+```
+
+Three machine-checked properties verified on real data:
+
+```
+[1] repair_strict_growth:
+    CertifiedLevels(before) = {}
+    CertifiedLevels(after)  = {C, D}
+    VERDICT: PASS (CertifiedLevels(before) ⊊ CertifiedLevels(after))
+
+[2] repair_removes_all_blockers (target=C):
+    BlockingSet(before, C) = {coherence_min: 0.0000 vs 0.3}
+    BlockingSet(after, C)  = {}
+    VERDICT: PASS (blockers cleared)
+
+[3] canonical_frontier_advances:
+    Canonical(before) = FAIL
+    Canonical(after)  = C
+    VERDICT: PASS (frontier advanced: FAIL --> C)
+```
+
+The firmware update changed system state while the specification remained fixed. The certified region strictly grew, all blockers at level C were removed, and the canonical frontier advanced from FAIL to C.
+
 PVS formalization in progress: ppg_self_assessment.pvs (12 theorems, awaiting typecheck).
 
 ## Related
