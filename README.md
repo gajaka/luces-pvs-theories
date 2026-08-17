@@ -4,6 +4,8 @@
 
 41 theories. 456 machine-checked theorems. All proved in PVS.
 
+**Core is closed.** Four questions, each with a machine-checked answer: How far does certification reach? What stops it from going further? Can the failure be safely contained and repaired? Did repair provably advance certification?
+
 ---
 
 ## Mathematical Framework: Proof-Preserving Graphs
