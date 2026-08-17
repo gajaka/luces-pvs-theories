@@ -88,7 +88,17 @@ Relaxation changes what is demanded. Repair changes what the system does. The ty
 
 A repair operator is valid (proof-preserving) if it satisfies two proof obligations: target restoration (the broken vertex becomes certified) and core preservation (no previously certified vertex loses its status). Monotone recovery is then a derived theorem, not a definitional truth.
 
-The theory is proved in Lean 4 (11 theorems, zero sorry): [PPGraphSelfAssessment.lean](https://github.com/gajaka/ppg-lean/blob/main/PPGraphSelfAssessment.lean)
+The theory is proved in Lean 4 (12 theorems, zero sorry): [PPGraphSelfAssessment.lean](https://github.com/gajaka/ppg-lean/blob/main/PPGraphSelfAssessment.lean)
+
+The formal pipeline has five components:
+
+```
+Detect  --> violation                (vertex breaks invariant)
+Contain --> failure_total_isolation  (no edges in either direction)
+Assess  --> assessment_trichotomy   (certified / repairable / non-repairable)
+Repair  --> valid_repair            (proof obligations: target restored + core preserved)
+Recover --> repair_strict_growth    (Certified(s) ⊊ Certified(R(s,v)))
+```
 
 PVS formalization in progress: ppg_self_assessment.pvs (11 theorems, awaiting typecheck).
 
