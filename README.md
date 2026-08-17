@@ -30,7 +30,7 @@ Built on:
 | `cert_quotient_bridge.pvs` | 4 | Bridge: spec graph projects to quotient PPG via surjective morphism |
 | `directed_pp_graph.pvs` | 1 | Directed PPG definitions: structural foundation for parametric theories |
 
-**Lean 4 port:** [ppg-lean](https://github.com/gajaka/ppg-lean) — 153 theorems, zero sorry, verified with Mathlib. Includes complementary slackness (LP duality for Monge OT), proved only in Lean.
+**Lean 4 port:** [ppg-lean](https://github.com/gajaka/ppg-lean) — 172 theorems, zero sorry, verified with Mathlib. Includes complementary slackness, self-assessment, and assessment bridge (parametric certification as instance of repair semantics).
 
 ### Key Results
 

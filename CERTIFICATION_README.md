@@ -68,7 +68,7 @@ refinement --> monotone certification --> canonical level --> blocking set --> P
 | [directed_pp_graph.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/directed_pp_graph.pvs) | 1 |
 
 190 theorems (PPG + certification). Full repo: 435 theorems, 39 theories.
-Lean 4: 164 theorems, zero sorry.
+Lean 4: 172 theorems, zero sorry.
 
 ## Future Work: Self-Assessment Theory
 
@@ -100,7 +100,27 @@ Repair  --> valid_repair            (proof obligations: target restored + core p
 Recover --> repair_strict_growth    (Certified(s) ⊊ Certified(R(s,v)))
 ```
 
-PVS formalization in progress: ppg_self_assessment.pvs (11 theorems, awaiting typecheck).
+## Assessment Bridge (complete)
+
+Parametric certification is an instance of the self-assessment repair model. The bridge ([PPGraphAssessmentBridge.lean](https://github.com/gajaka/ppg-lean/blob/main/PPGraphAssessmentBridge.lean), 8 theorems, zero sorry) sets S := D, V := Θ, Spec := fully_certified F, and applies the repair operator directly over the specification space.
+
+The complete formal cycle:
+
+```
+canonical(d)              --> where you are
+blocking(d, t)            --> what blocks you
+failure_total_isolation   --> failure contained
+valid_cert_repair(R,d,t)  --> proof obligations met
+cert_repair_strict_growth --> CertifiedLevels(d) ⊊ CertifiedLevels(R(d,t))
+repair_removes_blockers   --> blocking_set(R(d,t), t) = ∅
+canonical_frontier_advances --> t_c_new ≤ t ≤ t_c_old
+```
+
+Key theorem (complete_repair_cycle): given a broken target and a valid repair operator, the repaired datum is certified at t, all previously certified levels are preserved, blocking set is empty, and new canonical is at most t.
+
+Planned cleanup: make valid_cert_repair definitionally equal to valid_repair applied to certSpec F (type-level identity, not just semantic equivalence).
+
+PVS formalization in progress: ppg_self_assessment.pvs (12 theorems, awaiting typecheck).
 
 ## Related
 
