@@ -125,38 +125,70 @@ Planned cleanup: make valid_cert_repair definitionally equal to valid_repair app
 Repair operator: firmware tau recalibration. Specification: fixed (S/A/B/C/D thresholds unchanged).
 
 ```
-PRE-FIX (boot334, before repair):
-  Canonical: FAIL
-  Certified levels: NONE
-  Blocking at C: {coherence_min: 0.0000 vs 0.3}
-  Blocking at D: {coherence_min: 0.0000 vs 0.1}
+PRE-FIX (state BEFORE repair)
 
-POST-FIX (boot347, after repair):
-  Canonical: C
-  Certified levels: {C, D}
-  Blocking at C: {}
+  boot334:
+    Canonical level: FAIL
+    Certified levels: NONE
+    Observables: rho=1.0000 monge=0.7609 gap=5.45e-16 coh=0.0000 sparsity=0.1900
+    Blocking at S: {monge_min: 0.7609 vs 0.9, sparsity_max: 0.1900 vs 0.02, coherence_min: 0.0000 vs 0.85}
+    Blocking at A: {coherence_min: 0.0000 vs 0.7, monge_min: 0.7609 vs 0.8, sparsity_max: 0.1900 vs 0.05}
+    Blocking at B: {sparsity_max: 0.1900 vs 0.1, coherence_min: 0.0000 vs 0.5}
+    Blocking at C: {coherence_min: 0.0000 vs 0.3}
+    Blocking at D: {coherence_min: 0.0000 vs 0.1}
+
+POST-FIX (state AFTER repair)
+
+  boot347:
+    Canonical level: C
+    Certified levels: {C, D}
+    Observables: rho=0.9970 monge=0.7619 gap=1.35e-16 coh=0.9982 sparsity=0.1900
+
+  boot349:
+    Canonical level: D
+    Certified levels: {D}
+    Observables: rho=1.0000 monge=0.7584 gap=2.12e-16 coh=0.2371 sparsity=0.1900
+
+  boot330:
+    Canonical level: C
+    Certified levels: {C, D}
+    Observables: rho=0.9970 monge=0.7688 gap=6.21e-16 coh=0.8740 sparsity=0.1900
+
+  boot320:
+    Canonical level: C
+    Certified levels: {C, D}
+    Observables: rho=0.9970 monge=0.7399 gap=2.53e-16 coh=0.9988 sparsity=0.1900
+
+FORMAL VERIFICATION (complete_repair_cycle)
+
+  Before (boot334): canonical=FAIL, certified=NONE
+  After  (boot347): canonical=C, certified={C, D}
+
+  [1] repair_strict_growth:
+      CertifiedLevels(before) = {}
+      CertifiedLevels(after)  = {C, D}
+      Subset: True, Proper: True
+      VERDICT: PASS (CertifiedLevels(before) ⊊ CertifiedLevels(after))
+
+  [2] repair_removes_all_blockers (target=C):
+      BlockingSet(before, C) = {coherence_min: 0.0000 vs 0.3}
+      BlockingSet(after, C)  = {}
+      VERDICT: PASS (blockers cleared at C)
+
+  [3] canonical_frontier_advances:
+      Canonical(before) = FAIL (index 5)
+      Canonical(after)  = C (index 3)
+      VERDICT: PASS (canonical frontier advanced: FAIL --> C)
+
+  COMPLETE REPAIR CYCLE: ALL PROPERTIES VERIFIED
+
+  The firmware tau recalibration (repair operator R) changed the
+  system state while the specification remained fixed. The certified
+  region strictly grew, all blockers at level C were removed, and
+  the canonical frontier advanced from FAIL to C.
+
+  Backed by: complete_repair_cycle (PPGraphAssessmentBridge.lean)
 ```
-
-Three machine-checked properties verified on real data:
-
-```
-[1] repair_strict_growth:
-    CertifiedLevels(before) = {}
-    CertifiedLevels(after)  = {C, D}
-    VERDICT: PASS (CertifiedLevels(before) ⊊ CertifiedLevels(after))
-
-[2] repair_removes_all_blockers (target=C):
-    BlockingSet(before, C) = {coherence_min: 0.0000 vs 0.3}
-    BlockingSet(after, C)  = {}
-    VERDICT: PASS (blockers cleared)
-
-[3] canonical_frontier_advances:
-    Canonical(before) = FAIL
-    Canonical(after)  = C
-    VERDICT: PASS (frontier advanced: FAIL --> C)
-```
-
-The firmware update changed system state while the specification remained fixed. The certified region strictly grew, all blockers at level C were removed, and the canonical frontier advanced from FAIL to C.
 
 PVS formalization in progress: ppg_self_assessment.pvs (12 theorems, awaiting typecheck).
 
