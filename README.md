@@ -129,6 +129,10 @@ Validated on 13 independent experiments.
 - Runtime: <2W total, no cloud dependency, FreeRTOS, real-time 7s control loop
 - Verification: PVS (Prototype Verification System), NASA Langley
 
+## Availability
+
+The core theory is closed. I am available for formal verification, runtime verification, or theorem proving positions (remote, B2B contract from Belgrade, Serbia). Contact: dragan.stosic@gmail.com
+
 ## Author
 
 Dragan Stosic, MSc — [NASA PVS Libraries contributor](https://github.com/nasa/pvslib/blob/master/sets_aux/rr_rel.pvs)
