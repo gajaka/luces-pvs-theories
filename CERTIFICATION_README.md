@@ -194,6 +194,14 @@ FORMAL VERIFICATION (complete_repair_cycle)
 
 PVS formalization complete: [ppg_self_assessment.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_self_assessment.pvs) (12 theorems, all proved) + [ppg_assessment_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_assessment_bridge.pvs) (8 theorems, all proved).
 
+## Open Problem: Probabilistic Repair Convergence
+
+The blocking dependency decomposition reveals that some certificate components are locally repairable while others are genuinely coupled (negative discriminant proves infeasibility of the General LLL condition for certain pairs). This raises the question: can we formally guarantee that a randomized repair operator converges to a good state?
+
+The natural framework is the Lovász Local Lemma (Alon and Spencer, "The Probabilistic Method", 4th ed., Wiley 2016, Lemma 5.1.1): given bad events with bounded dependency and probabilities satisfying the General LLL condition, a configuration where no bad event occurs exists with positive probability. The algorithmic version (Moser-Tardos, 2010) gives a constructive randomized repair procedure with expected polynomial convergence.
+
+This is active ongoing work.
+
 ## Related
 
 - Lean 4 port: [ppg-lean](https://github.com/gajaka/ppg-lean)
