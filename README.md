@@ -2,7 +2,7 @@
 
 **A formal mathematical framework for structural resilience, with applications to optimal transport verification and hardware root-of-trust.**
 
-41 theories. 456 machine-checked theorems. All proved in PVS.
+43 theories. 496 machine-checked theorems. All proved in PVS.
 
 **Core is closed.** Four questions, each with a machine-checked answer: How far does certification reach? What stops it from going further? Can the failure be safely contained and repaired? Did repair provably advance certification?
 
@@ -31,6 +31,8 @@ Built on:
 | `cert_blocking.pvs` | 7 | Blocking certificates: diagnostic layer, canonical emptiness, stricter nonemptiness |
 | `cert_quotient_bridge.pvs` | 4 | Bridge: spec graph projects to quotient PPG via surjective morphism |
 | `directed_pp_graph.pvs` | 1 | Directed PPG definitions: structural foundation for parametric theories |
+| `ppg_probabilistic.pvs` | 10 | Blocking dependency decomposition: dependency graph, LLL feasibility, pair infeasibility (quadratic discriminant), repair classification |
+| `ppg_lll.pvs` | 30 | Lovász Local Lemma (Alon-Spencer 5.1.1): key inductive bound, denominator telescope, good-event lower bound, positive probability, good state exists |
 
 **Lean 4 port:** [ppg-lean](https://github.com/gajaka/ppg-lean) — 172 theorems, zero sorry, verified with Mathlib. Includes complementary slackness, self-assessment, and assessment bridge (parametric certification as instance of repair semantics).
 
@@ -54,6 +56,12 @@ Built on:
 - Boot chain is a DAG (layered acyclicity)
 - Failure at level k blocks all levels > k
 - No unsigned execution past verification
+
+**Lovász Local Lemma (Alon-Spencer 5.1.1):**
+- General LLL fully formalized: if every bad event's probability is bounded by its budget times the product of neighbor slacks, the good event has positive probability
+- Division-free proof (multiplicative bound, no conditional probability), so measure-zero conditioning never blocks the argument
+- Blocking decomposition: a coupled pair is infeasible exactly when its quadratic discriminant is negative (genuine coupling, not a heuristic artifact)
+- Companion to the same proof in Lean 4 (ppg-lean)
 
 ---
 
