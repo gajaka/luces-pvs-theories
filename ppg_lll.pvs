@@ -1,0 +1,380 @@
+%------------------------------------------------------------------------------
+% ppg_lll.pvs
+% Lovász Local Lemma for PPG Blocking Sets
+%
+% PVS port of PPGraphLLL.lean (Stosic, 2026).
+% Proof follows Alon-Spencer, Lemma 5.1.1, pp.70-71.
+% Structure: base case -> denominator bound -> inductive step -> main theorem.
+%
+% Uses NASA PVSLib:
+%   probability@probability_measure (probability type, P_subset_le, etc.)
+%   probability@probability_space (independent?, measurable events)
+%
+% Running example (same as Lean version and ppg_probabilistic.pvs):
+%   B = {c1, c2, c3, c5, c6}
+%   vars(c1) = {v1,v2}, vars(c2) = {v2,v3}, vars(c5) = {v1,v6},
+%   vars(c6) = {v2,v7}, vars(c3) = {v4}.
+%   neighbors(c1) = {c2, c5, c6}, c3 independent of c1.
+%
+%   S = {c2, c3, c5} (arbitrary subset of B \ {c1}).
+%   S1 = intersection(S, Gamma(c1)) = {c2, c5} (neighbors of c1 inside S).
+%   S2 = S \ S1 = {c3} (non-neighbors of c1 inside S).
+%
+% The proof is division-free: instead of conditional probability
+% Pr[A|B] = Pr[A and B] / Pr[B], we use the multiplicative form
+% Pr[A and B] <= x * Pr[B]. This avoids division-by-zero issues
+% when Pr[B] = 0 (which PVS would require explicit handling for).
+%
+% Author: Dragan Stosic, 2026.
+%------------------------------------------------------------------------------
+
+ppg_lll[T: TYPE+,
+        (IMPORTING measure_integration@subset_algebra_def[T])
+        S: sigma_algebra,
+        (IMPORTING probability@probability_measure[T,S])
+        P: probability_measure,
+        C: TYPE+, V: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING probability@probability_measure[T, S],
+            ppg_probabilistic[C, V]
+
+  %% Types
+
+  % Events as measurable sets (members of sigma-algebra S)
+  Event: TYPE = (S)
+
+  % Bad event assignment: each certificate maps to a measurable set
+  BadEvents: TYPE = [C -> Event]
+
+  A: VAR BadEvents
+  B_set: VAR finite_set[C]
+  vars: VAR CertVars
+  x: VAR LLLAssignment
+  i, j, c: VAR C
+
+  %% Section 1: Pass Events and Good Event
+
+  % Pass event = complement of bad event
+  pass_event(A, c): Event = complement(A(c))
+
+  % Probability of bad event (matches Lean's event_prob)
+  event_prob(A)(c): real = P(A(c))
+
+  % all_pass: intersection of complements over B.
+  % all_pass(A, B) = {t : T | FORALL c in B: t not in A(c)}
+  all_pass(A, B_set)(t: T): bool =
+    FORALL (c: (B_set)): NOT A(c)(t)
+
+  % Good event = all certificates in B pass simultaneously
+  good_event(A, B_set): set[T] = all_pass(A, B_set)
+
+  %% Section 2: Properties of all_pass (derived from definition)
+
+  % all_pass of empty set is fullset
+  all_pass_empty: LEMMA
+    FORALL (A: BadEvents):
+      all_pass(A, emptyset[C]) = fullset[T]
+
+  % all_pass is monotone: larger B gives smaller (or equal) set
+  all_pass_monotone: LEMMA
+    FORALL (A: BadEvents, B1, B2: finite_set[C]):
+      subset?(B1, B2) IMPLIES subset?(all_pass(A, B2), all_pass(A, B1))
+
+  % all_pass of union splits
+  all_pass_union: LEMMA
+    FORALL (A: BadEvents, B1, B2: finite_set[C]):
+      all_pass(A, union(B1, B2)) = intersection(all_pass(A, B1), all_pass(A, B2))
+
+  % all_pass of insert: all_pass(A, add(c, S)) = intersection(complement(A(c)), all_pass(A, S))
+  % Used in inductive step of all_pass_measurable.
+  all_pass_insert: LEMMA
+    FORALL (A: BadEvents, B_set: finite_set[C], c: C):
+      NOT B_set(c) IMPLIES
+        all_pass(A, add(c, B_set)) = intersection(complement(A(c)), all_pass(A, B_set))
+
+  %% Section 3: LLL Independence
+
+  % all_pass is measurable (in sigma algebra S) for finite sets.
+  % Follows from sigma_algebra_intersection and sigma_algebra_complement
+  % applied inductively over B_set using all_pass_insert.
+  all_pass_measurable: LEMMA
+    FORALL (A: BadEvents, B_set: finite_set[C]):
+      S(all_pass(A, B_set))
+
+  % A_i is independent of non-neighbors: for S2 containing only
+  % certificates independent of i,
+  % P(intersection(A(i), all_pass(S2))) = P(A(i)) * P(all_pass(S2)).
+  %
+  % In the running example: A(c1) is independent of all_pass({c3})
+  % because c3 shares no variable with c1.
+  lll_independence?(A, vars, B_set): bool =
+    FORALL (c: C, S2: finite_set[C]):
+      B_set(c) AND
+      (FORALL (s: C): S2(s) IMPLIES B_set(s) AND s /= c AND
+                                    independent?(vars)(c, s))
+        IMPLIES
+          P(intersection(A(c), all_pass(A, S2))) = P(A(c)) * P(all_pass(A, S2))
+
+  %% Section 4: Base Case (s = 0)
+  %
+  % [Alon-Spencer, p.70]: "This is certainly true for s = 0."
+  % S = empty, so Pr[Ai | nothing] = Pr[Ai] <= xi * prod(1-xj) <= xi.
+  % In the running example: Pr[c1 fails] <= x(c1), before any
+  % conditioning on c2, c3, c5, c6.
+
+  lll_base_case: THEOREM
+    FORALL (A: BadEvents, vars: CertVars, B_set: finite_set[C], x: LLLAssignment):
+      lll_feasible?(event_prob(A), x, vars, B_set) IMPLIES
+        FORALL (i: C): B_set(i) IMPLIES P(A(i)) <= x(i)
+
+  %% Section 5: Key Inductive Bound (5.1)-(5.4)
+  %
+  % Helper lemmas for measure-theoretic reasoning in lll_key_bound.
+
+  % S1: neighbors of i within S
+  S1(vars: CertVars, B_set: finite_set[C], S_set: finite_set[C], i: C): finite_set[C] =
+    {c: C | S_set(c) AND B_set(c) AND c /= i AND dependent?(vars)(i, c)}
+
+  % S2: non-neighbors of i within S
+  S2(vars: CertVars, B_set: finite_set[C], S_set: finite_set[C], i: C): finite_set[C] =
+    {c: C | S_set(c) AND NOT (B_set(c) AND c /= i AND dependent?(vars)(i, c))}
+
+  % S1 subset of neighbors
+  S1_subset_neighbors: LEMMA
+    FORALL (vars: CertVars, B_set: finite_set[C], S_set: finite_set[C], i: C):
+      subset?(S1(vars, B_set, S_set, i), neighbors(vars, B_set, i))
+
+  % S2 subset of S
+  S2_subset_S: LEMMA
+    FORALL (vars: CertVars, B_set: finite_set[C], S_set: finite_set[C], i: C):
+      subset?(S2(vars, B_set, S_set, i), S_set)
+
+  % Product of (1-x) factors is nonneg when all x in [0,1) and set subset of B
+  product_nonneg_factors: LEMMA
+    FORALL (x: LLLAssignment, vars: CertVars, B_set: finite_set[C],
+            S_f: finite_set[C]):
+      (FORALL (c: (B_set)): 0 <= x(c) AND x(c) < 1) AND
+      subset?(S_f, B_set)
+        IMPLIES product(S_f, LAMBDA (j: C): 1 - x(j)) >= 0
+
+  % Product over larger set <= product over smaller set when factors in (0,1]
+  product_subset_le: LEMMA
+    FORALL (A_set, B_set2: finite_set[C], f: [C -> real]):
+      subset?(A_set, B_set2) AND
+      (FORALL (t: (B_set2)): f(t) >= 0 AND f(t) <= 1)
+        IMPLIES product(B_set2, f) <= product(A_set, f)
+
+  % S splits into S1 union S2
+  S_split: LEMMA
+    FORALL (A: BadEvents, vars: CertVars, B_set: finite_set[C],
+            S_set: finite_set[C], i: C):
+      all_pass(A, S_set) = intersection(all_pass(A, S1(vars, B_set, S_set, i)),
+                                         all_pass(A, S2(vars, B_set, S_set, i)))
+
+  % Numerator bound (5.3):
+  %   P(intersection(A(i), all_pass(S))) <= P(A(i)) * P(all_pass(S2))
+  % From monotonicity (dropping S1 makes set bigger) + independence on S2.
+  numerator_bound: LEMMA
+    FORALL (A: BadEvents, vars: CertVars, B_set: finite_set[C],
+            x: LLLAssignment, S_set: finite_set[C], i: C):
+      lll_feasible?(event_prob(A), x, vars, B_set) AND
+      lll_independence?(A, vars, B_set) AND
+      subset?(S_set, B_set) AND B_set(i) AND NOT S_set(i)
+        IMPLIES
+          P(intersection(A(i), all_pass(A, S_set))) <=
+            P(A(i)) * P(all_pass(A, S2(vars, B_set, S_set, i)))
+
+  % Measure-theoretic helpers for denominator bound
+
+  % P is nonneg for all measurable sets
+  P_nonneg: LEMMA
+    FORALL (X: (S)): P(X) >= 0
+
+  % Measure additivity: P(X) = P(X /\ A) + P(X \ A)
+  P_split: LEMMA
+    FORALL (X: (S), A_ev: (S)):
+      P(X) = P(intersection(X, A_ev)) + P(difference(X, A_ev))
+
+  % Pass event bound: from P(X /\ A) <= xj * P(X), get P(X \ A) >= (1-xj) * P(X)
+  pass_event_bound: LEMMA
+    FORALL (X: (S), A_ev: (S), xj: real):
+      P(intersection(X, A_ev)) <= xj * P(X) AND P(X) >= 0
+        IMPLIES P(difference(X, A_ev)) >= (1 - xj) * P(X)
+
+  % Complement intersect all_pass = all_pass of add
+  pass_intersect_all_pass: LEMMA
+    FORALL (A: BadEvents, B_set: finite_set[C], j: C):
+      NOT B_set(j) IMPLIES
+        intersection(complement(A(j)), all_pass(A, B_set)) =
+          all_pass(A, add(j, B_set))
+
+  % difference(X, A) = intersection(complement(A), X) as sets
+  difference_is_complement_inter: LEMMA
+    FORALL (X: set[T], A_ev: set[T]):
+      difference(X, A_ev) = intersection(complement(A_ev), X)
+
+  % Telescope step arithmetic: a*(1-x) <= c when a <= b and c >= b*(1-x)
+  % Used in the inductive step of denominator_bound.
+  telescope_step: LEMMA
+    FORALL (a, b, c, xj: real):
+      a >= 0 AND a <= b AND
+      c >= b - b * xj AND 1 - xj >= 0
+        IMPLIES a - a * xj <= c
+
+  % Members of S1 lie in B_set (immediate from the definition of S1).
+  S1_member_in_B: LEMMA
+    FORALL (vars: CertVars, B_set: finite_set[C], S_set: finite_set[C],
+            i: C, c: C):
+      S1(vars, B_set, S_set, i)(c) IMPLIES B_set(c)
+
+  % The set fed to the inductive hypothesis in the telescope step,
+  % union(T_f, S2), stays inside B_set.
+  telescope_union_subset: LEMMA
+    FORALL (vars: CertVars, B_set: finite_set[C], S_set: finite_set[C],
+            i: C, T_f: finite_set[C]):
+      subset?(S_set, B_set) AND subset?(T_f, S1(vars, B_set, S_set, i))
+        IMPLIES subset?(union(T_f, S2(vars, B_set, S_set, i)), B_set)
+
+  % An element of S1 is never in S2 (S1 and S2 partition S_set w.r.t. i),
+  % so the peeled element e stays outside union(T_f, S2).
+  telescope_union_excludes: LEMMA
+    FORALL (vars: CertVars, B_set: finite_set[C], S_set: finite_set[C],
+            i: C, T_f: finite_set[C], e: C):
+      subset?(add(e, T_f), S1(vars, B_set, S_set, i)) AND NOT T_f(e)
+        IMPLIES NOT union(T_f, S2(vars, B_set, S_set, i))(e)
+
+  % Counting for the telescope step: union(T_f, S2) misses e but sits
+  % inside S_set, so its cardinality is strictly smaller than card(S_set).
+  % This is what licenses the use of the inductive hypothesis at index e.
+  telescope_union_card: LEMMA
+    FORALL (vars: CertVars, B_set: finite_set[C], S_set: finite_set[C],
+            i: C, T_f: finite_set[C], e: C):
+      subset?(add(e, T_f), S1(vars, B_set, S_set, i)) AND NOT T_f(e)
+        IMPLIES card(union(T_f, S2(vars, B_set, S_set, i))) < card(S_set)
+
+  % Telescope induction for denominator bound:
+  % For T subset of S1 subset of B_set:
+  %   product(T, 1-x) * P(all_pass(S2))
+  %     <= P(intersection(all_pass(T), all_pass(S2)))
+  % The inductive hypothesis is quantified over the index k, not fixed at i:
+  % the step peels an element e of S1 and needs the conditional bound at e.
+  denominator_telescope: LEMMA
+    FORALL (A: BadEvents, vars: CertVars, B_set: finite_set[C],
+            x: LLLAssignment, S_set: finite_set[C], i: C,
+            T_set: finite_set[C]):
+      lll_feasible?(event_prob(A), x, vars, B_set) AND
+      lll_independence?(A, vars, B_set) AND
+      subset?(S_set, B_set) AND B_set(i) AND NOT S_set(i) AND
+      subset?(T_set, S1(vars, B_set, S_set, i)) AND
+      (FORALL (k: C, S2f: finite_set[C]):
+        B_set(k) AND card(S2f) < card(S_set) AND
+        subset?(S2f, B_set) AND NOT S2f(k)
+          IMPLIES P(intersection(A(k), all_pass(A, S2f))) <=
+                    x(k) * P(all_pass(A, S2f)))
+        IMPLIES
+          product(T_set, LAMBDA (j: C): 1 - x(j)) *
+            P(all_pass(A, S2(vars, B_set, S_set, i))) <=
+              P(intersection(all_pass(A, T_set), all_pass(A, S2(vars, B_set, S_set, i))))
+
+  % Denominator bound (5.4): prod_{j in S1}(1-x(j)) * P(all_pass(S2)) <= P(all_pass(S))
+  % From telescoping using IH on strictly smaller sets.
+  denominator_bound: LEMMA
+    FORALL (A: BadEvents, vars: CertVars, B_set: finite_set[C],
+            x: LLLAssignment, S_set: finite_set[C], i: C):
+      lll_feasible?(event_prob(A), x, vars, B_set) AND
+      lll_independence?(A, vars, B_set) AND
+      subset?(S_set, B_set) AND B_set(i) AND NOT S_set(i) AND
+      (FORALL (k: C, S2f: finite_set[C]):
+        B_set(k) AND card(S2f) < card(S_set) AND
+        subset?(S2f, B_set) AND NOT S2f(k)
+          IMPLIES P(intersection(A(k), all_pass(A, S2f))) <=
+                    x(k) * P(all_pass(A, S2f)))
+        IMPLIES
+          product(S1(vars, B_set, S_set, i), LAMBDA (j: C): 1 - x(j)) *
+            P(all_pass(A, S2(vars, B_set, S_set, i))) <=
+              P(all_pass(A, S_set))
+
+  % Product monotonicity: prod_neighbors <= prod_S1 (since S1 is a subset
+  % of neighbors)
+  product_mono_S1: LEMMA
+    FORALL (vars: CertVars, B_set: finite_set[C],
+            x: LLLAssignment, S_set: finite_set[C], i: C):
+      lll_feasible?(event_prob(A), x, vars, B_set) AND
+      subset?(S_set, B_set)
+        IMPLIES
+          product_over_neighbors(x, vars, B_set, i) <=
+            product(S1(vars, B_set, S_set, i), LAMBDA (j: C): 1 - x(j))
+
+  % Main theorem
+  lll_key_bound: THEOREM
+    FORALL (A: BadEvents, vars: CertVars, B_set: finite_set[C],
+            x: LLLAssignment, S_set: finite_set[C], i: C):
+      lll_feasible?(event_prob(A), x, vars, B_set) AND
+      lll_independence?(A, vars, B_set) AND
+      subset?(S_set, B_set) AND B_set(i) AND NOT S_set(i)
+        IMPLIES
+          P(intersection(A(i), all_pass(A, S_set))) <=
+            x(i) * P(all_pass(A, S_set))
+
+  %% Section 6: Lower Bound on Good Event
+  %
+  % [Alon-Spencer, p.71, final assertion]:
+  % P(good_event) >= prod_{i in B} (1 - x(i)).
+  %
+  % Book: "Pr[AND_i not-Ai] = (1-Pr[A1])*(1-Pr[A2|A1])*...*(1-Pr[An|AND_{j<n} Aj])
+  %         >= prod(1-xi)."
+  %
+  % In the running example: P(c1,c2,c3,c5,c6 all pass) >=
+  %   (1-x(c1))*(1-x(c2))*(1-x(c3))*(1-x(c5))*(1-x(c6)).
+  %
+  % Proof peels B one certificate at a time, applying lll_key_bound
+  % to each new factor - same telescoping structure as the book.
+
+  % Concrete product over B: finite product of (1-x(c)) for c in B.
+  % Uses finite_sets_product_real.
+  product_one_minus_x(x: LLLAssignment, B_set: finite_set[C]): real =
+    product(B_set, LAMBDA (c: C): 1 - x(c))
+
+  % Product is positive when all x in [0,1)
+  product_one_minus_pos: LEMMA
+    FORALL (x: LLLAssignment, B_set: finite_set[C]):
+      (FORALL (c: (B_set)): 0 <= x(c) AND x(c) < 1)
+        IMPLIES product_one_minus_x(x, B_set) > 0
+
+  lll_good_event_lower_bound: THEOREM
+    FORALL (A: BadEvents, vars: CertVars, B_set: finite_set[C], x: LLLAssignment):
+      lll_feasible?(event_prob(A), x, vars, B_set) AND
+      lll_independence?(A, vars, B_set)
+        IMPLIES
+          P(good_event(A, B_set)) >= product_one_minus_x(x, B_set)
+
+  %% Section 7: General LLL - Positive Probability
+  %
+  % [Alon-Spencer, Lemma 5.1.1, p.70]: "In particular, with positive
+  % probability, no event Ai holds."
+  %
+  % For the running example: P(c1,c2,c3,c5,c6 all pass) > 0,
+  % since every factor (1-x(c)) > 0 (x(c) < 1 from h_feasible).
+
+  lll_positive_probability: THEOREM
+    FORALL (A: BadEvents, vars: CertVars, B_set: finite_set[C], x: LLLAssignment):
+      lll_feasible?(event_prob(A), x, vars, B_set) AND
+      lll_independence?(A, vars, B_set)
+        IMPLIES
+          P(good_event(A, B_set)) > 0
+
+  %% Section 8: Good State Exists
+  %
+  % The book stops at "positive probability" [p.70]. This pushes one
+  % step further: P(X) > 0 implies X is nonempty. Somewhere there is
+  % a real outcome where c1,c2,c3,c5,c6 all pass at once.
+
+  lll_good_state_exists: THEOREM
+    FORALL (A: BadEvents, vars: CertVars, B_set: finite_set[C], x: LLLAssignment):
+      lll_feasible?(event_prob(A), x, vars, B_set) AND
+      lll_independence?(A, vars, B_set)
+        IMPLIES
+          nonempty?(good_event(A, B_set))
+
+END ppg_lll

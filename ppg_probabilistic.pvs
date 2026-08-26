@@ -1,0 +1,153 @@
+%------------------------------------------------------------------------------
+% ppg_probabilistic.pvs
+% Blocking Dependency Decomposition and LLL Feasibility (Axiom-Free)
+%
+% PVS port of PPGraphProbabilistic.lean (Stosic, 2026).
+% Uses finite_set[C] and finite_sets_product_real for product over
+% neighbors. Eliminates axiom by using PVS finite_set infrastructure
+% matching Lean's Finset approach directly.
+%
+% Author: Dragan Stosic, 2026.
+%------------------------------------------------------------------------------
+
+ppg_probabilistic[C: TYPE+, V: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING finite_sets@finite_sets_product_real[C]
+  IMPORTING finite_sets@finite_sets_inductions[C]
+  IMPORTING reals@sq
+  IMPORTING reals@quadratic
+
+  % Variable assignment: each certificate depends on a set of variables.
+  CertVars: TYPE = [C -> finite_set[V]]
+
+  vars: VAR CertVars
+  c, c1, c2: VAR C
+  v: VAR V
+
+  %% Section 1: Dependency Graph
+
+  % C_i ~ C_j iff Vars(C_i) /\ Vars(C_j) /= empty
+  dependent?(vars)(c1, c2): bool =
+    EXISTS (v: V): vars(c1)(v) AND vars(c2)(v)
+
+  % C_i _|_ C_j iff Vars(C_i) /\ Vars(C_j) = empty
+  independent?(vars)(c1, c2): bool =
+    NOT dependent?(vars)(c1, c2)
+
+  % Dependent iff not independent
+  dep_iff_not_indep: LEMMA
+    FORALL (vars: CertVars, c1, c2: C):
+      dependent?(vars)(c1, c2) IFF NOT independent?(vars)(c1, c2)
+
+  % Dependency is symmetric
+  dependent_symm: LEMMA
+    FORALL (vars: CertVars, c1, c2: C):
+      dependent?(vars)(c1, c2) IMPLIES dependent?(vars)(c2, c1)
+
+  %% Section 2: Blocking Set Topology
+
+  B: VAR finite_set[C]
+
+  blocking_edge?(vars, B)(c1, c2): bool =
+    B(c1) AND B(c2) AND c1 /= c2 AND dependent?(vars)(c1, c2)
+
+  % Shared support
+  in_shared_support?(vars)(S: finite_set[C], v: V): bool =
+    FORALL (c: (S)): vars(c)(v)
+
+  shared_support_mem: LEMMA
+    FORALL (vars: CertVars, S: finite_set[C], v: V, c: (S)):
+      in_shared_support?(vars)(S, v) IMPLIES vars(c)(v)
+
+  %% Section 3: General LLL (Alon-Spencer, Lemma 5.1.1)
+
+  LLLAssignment: TYPE = [C -> real]
+
+  x: VAR LLLAssignment
+  p: VAR [C -> real]
+
+  % Neighbor set: finite set of neighbors of c in B
+  neighbors(vars: CertVars, B: finite_set[C], c: C): finite_set[C] =
+    {c2: C | B(c2) AND c2 /= c AND dependent?(vars)(c, c2)}
+
+  % Product over neighbors using finite_sets_product_real.
+  % prod_{j in neighbors(c)} (1 - x(j))
+  product_over_neighbors(x: LLLAssignment, vars: CertVars,
+                         B: finite_set[C], c: C): real =
+    product(neighbors(vars, B, c), LAMBDA (j: C): 1 - x(j))
+
+  % Product bounds: product > 0 when all x in [0,1).
+  % Uses product_pos from finite_sets_product_real.
+  product_bounds_pos: THEOREM
+    FORALL (x: LLLAssignment, vars: CertVars, B: finite_set[C], c: C):
+      (FORALL (c2: (B)): 0 <= x(c2) AND x(c2) < 1)
+        IMPLIES product_over_neighbors(x, vars, B, c) > 0
+
+  % Helper: product of two factors in [0,1] is <= 1.
+  % From a <= 1 and b <= 1 and both nonneg: a*b <= a <= 1.
+  nonneg_le_one_product: LEMMA
+    FORALL (a, b: real):
+      0 <= a AND a <= 1 AND 0 <= b AND b <= 1 IMPLIES a * b <= 1
+
+  % Helper: product of factors in [0, 1] over finite set is <= 1.
+  product_le_one: LEMMA
+    FORALL (S: finite_set[C], f: [C -> real]):
+      (FORALL (t: (S)): f(t) >= 0 AND f(t) <= 1)
+        IMPLIES product(S, f) <= 1
+
+  % Product bounds: product <= 1 when all x in [0,1).
+  product_bounds_le_one: THEOREM
+    FORALL (x: LLLAssignment, vars: CertVars, B: finite_set[C], c: C):
+      (FORALL (c2: (B)): 0 <= x(c2) AND x(c2) < 1)
+        IMPLIES product_over_neighbors(x, vars, B, c) <= 1
+
+  % LLL condition at a single certificate
+  lll_condition_at?(p, x, vars, B)(c): bool =
+    B(c) IMPLIES
+      p(c) <= x(c) * product_over_neighbors(x, vars, B, c)
+
+  % LLL feasible: all x in [0,1) and all conditions hold
+  lll_feasible?(p, x, vars, B): bool =
+    (FORALL (c: (B)): 0 <= x(c) AND x(c) < 1) AND
+    (FORALL (c: (B)):
+       p(c) <= x(c) * product_over_neighbors(x, vars, B, c))
+
+  % If a feasible assignment exists, witness it
+  feasible_witness_exists: THEOREM
+    FORALL (p: [C -> real], x: LLLAssignment, vars: CertVars,
+            B: finite_set[C]):
+      lll_feasible?(p, x, vars, B) IMPLIES
+        EXISTS (y: LLLAssignment): lll_feasible?(p, y, vars, B)
+
+  %% Section 4: Pair Infeasibility (Quadratic Discriminant)
+
+  rp1, rp2, rx1, rx2: VAR real
+
+  pair_discriminant(rp1, rp2): real = sq(1 - rp1 + rp2) - 4 * rp2
+
+  negative_disc_infeasible: THEOREM
+    FORALL (rp1, rp2: real):
+      0 < rp1 AND 0 < rp2 AND rp1 < 1 AND rp2 < 1 AND
+      pair_discriminant(rp1, rp2) < 0
+        IMPLIES
+          NOT EXISTS (rx1, rx2: real):
+            0 <= rx1 AND rx1 < 1 AND 0 <= rx2 AND rx2 < 1 AND
+            rp1 <= rx1 * (1 - rx2) AND rp2 <= rx2 * (1 - rx1)
+
+  %% Section 5: Repair Classification
+
+  component: VAR finite_set[C]
+
+  locally_repairable?(p, vars, component): bool =
+    EXISTS (x: LLLAssignment): lll_feasible?(p, x, vars, component)
+
+  coupled_obstruction?(p, vars, component): bool =
+    NOT locally_repairable?(p, vars, component)
+
+  repairable_or_coupled: THEOREM
+    FORALL (p: [C -> real], vars: CertVars, component: finite_set[C]):
+      locally_repairable?(p, vars, component) OR
+      coupled_obstruction?(p, vars, component)
+
+END ppg_probabilistic
