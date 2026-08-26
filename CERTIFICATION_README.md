@@ -68,8 +68,10 @@ refinement --> monotone certification --> canonical level --> blocking set --> P
 | [directed_pp_graph.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/directed_pp_graph.pvs) | 1 |
 | [ppg_self_assessment.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_self_assessment.pvs) | 12 |
 | [ppg_assessment_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_assessment_bridge.pvs) | 8 |
+| [ppg_probabilistic.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_probabilistic.pvs) | 10 |
+| [ppg_lll.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_lll.pvs) | 30 |
 
-210 theorems (PPG + certification + self-assessment + bridge). Full repo: 456 theorems, 41 theories.
+250 theorems (PPG + certification + self-assessment + bridge + LLL). Full repo: 496 theorems, 43 theories.
 Lean 4: 172 theorems, zero sorry.
 
 ## Self-Assessment Theory
