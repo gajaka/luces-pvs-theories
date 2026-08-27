@@ -200,7 +200,7 @@ PVS formalization complete: [ppg_self_assessment.pvs](https://github.com/gajaka/
 
 The blocking dependency decomposition reveals that some certificate components are locally repairable while others are genuinely coupled (negative discriminant proves infeasibility of the General LLL condition for certain pairs). This raises the question: can we formally guarantee that a randomized repair operator converges to a good state?
 
-The framework is the Lovász Local Lemma (Alon and Spencer, "The Probabilistic Method", 4th ed., Wiley 2016, Lemma 5.1.1): given bad events with bounded dependency and probabilities satisfying the General LLL condition, a configuration where no bad event occurs exists with positive probability. This existence result is now machine-checked (`ppg_lll.pvs`, 30 theorems; companion Lean 4 proof in ppg-lean), with the blocking decomposition and pair infeasibility formalized in `ppg_probabilistic.pvs` (10 theorems). The proof is division-free, so it never requires nonzero conditioning measure.
+The framework is the Lovász Local Lemma (Alon and Spencer, "The Probabilistic Method", 4th ed., Wiley 2016, Lemma 5.1.1): given bad events with bounded dependency and probabilities satisfying the General LLL condition, a configuration where no bad event occurs exists with positive probability. This existence result is now machine-checked (`ppg_lll.pvs`, 30 theorems), with the blocking decomposition and pair infeasibility formalized in `ppg_probabilistic.pvs` (10 theorems). The proof is division-free, so it never requires nonzero conditioning measure.
 
 The algorithmic version (Moser-Tardos, 2010), which upgrades this existence guarantee to a constructive randomized repair procedure with expected polynomial convergence, remains in progress.
 

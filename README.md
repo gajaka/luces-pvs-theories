@@ -61,7 +61,6 @@ Built on:
 - General LLL fully formalized: if every bad event's probability is bounded by its budget times the product of neighbor slacks, the good event has positive probability
 - Division-free proof (multiplicative bound, no conditional probability), so measure-zero conditioning never blocks the argument
 - Blocking decomposition: a coupled pair is infeasible exactly when its quadratic discriminant is negative (genuine coupling, not a heuristic artifact)
-- Companion to the same proof in Lean 4 (ppg-lean)
 
 ---
 

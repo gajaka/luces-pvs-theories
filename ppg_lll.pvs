@@ -2,15 +2,14 @@
 % ppg_lll.pvs
 % Lovász Local Lemma for PPG Blocking Sets
 %
-% PVS port of PPGraphLLL.lean (Stosic, 2026).
-% Proof follows Alon-Spencer, Lemma 5.1.1, pp.70-71.
+% Formalization of Alon-Spencer, Lemma 5.1.1, pp.70-71 (Stosic, 2026).
 % Structure: base case -> denominator bound -> inductive step -> main theorem.
 %
 % Uses NASA PVSLib:
 %   probability@probability_measure (probability type, P_subset_le, etc.)
 %   probability@probability_space (independent?, measurable events)
 %
-% Running example (same as Lean version and ppg_probabilistic.pvs):
+% Running example (same as ppg_probabilistic.pvs):
 %   B = {c1, c2, c3, c5, c6}
 %   vars(c1) = {v1,v2}, vars(c2) = {v2,v3}, vars(c5) = {v1,v6},
 %   vars(c6) = {v2,v7}, vars(c3) = {v4}.
@@ -58,7 +57,7 @@ BEGIN
   % Pass event = complement of bad event
   pass_event(A, c): Event = complement(A(c))
 
-  % Probability of bad event (matches Lean's event_prob)
+  % Probability of bad event
   event_prob(A)(c): real = P(A(c))
 
   % all_pass: intersection of complements over B.
