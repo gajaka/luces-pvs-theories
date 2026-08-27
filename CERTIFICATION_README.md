@@ -56,22 +56,22 @@ refinement --> monotone certification --> canonical level --> blocking set --> P
 
 | File | Theorems |
 |------|----------|
-| [proof_preserving_graphs.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/proof_preserving_graphs.pvs) | 40 |
-| [pp_graphs_extended.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/pp_graphs_extended.pvs) | 26 |
-| [categorical_pp_graphs.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/categorical_pp_graphs.pvs) | 7 |
-| [pp_graph_repair.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/pp_graph_repair.pvs) | 10 |
-| [parametric_certification.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/parametric_certification.pvs) | 35 |
-| [cert_quotient.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/cert_quotient.pvs) | 35 |
-| [cert_selection.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/cert_selection.pvs) | 25 |
+| [proof_preserving_graphs.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/proof_preserving_graphs.pvs) | 37 |
+| [pp_graphs_extended.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/pp_graphs_extended.pvs) | 21 |
+| [categorical_pp_graphs.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/categorical_pp_graphs.pvs) | 6 |
+| [pp_graph_repair.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/pp_graph_repair.pvs) | 9 |
+| [parametric_certification.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/parametric_certification.pvs) | 28 |
+| [cert_quotient.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/cert_quotient.pvs) | 30 |
+| [cert_selection.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/cert_selection.pvs) | 21 |
 | [cert_blocking.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/cert_blocking.pvs) | 7 |
 | [cert_quotient_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/cert_quotient_bridge.pvs) | 4 |
-| [directed_pp_graph.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/directed_pp_graph.pvs) | 1 |
+| [directed_pp_graph.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/directed_pp_graph.pvs) | 0 |
 | [ppg_self_assessment.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_self_assessment.pvs) | 12 |
-| [ppg_assessment_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_assessment_bridge.pvs) | 8 |
+| [ppg_assessment_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_assessment_bridge.pvs) | 7 |
 | [ppg_probabilistic.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_probabilistic.pvs) | 10 |
 | [ppg_lll.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_lll.pvs) | 30 |
 
-250 theorems (PPG + certification + self-assessment + bridge + LLL). Full repo: 496 theorems, 43 theories.
+222 theorems and lemmas (PPG + certification + self-assessment + bridge + LLL). Full repo: 393 machine-checked results (336 theorems + 57 lemmas), 43 theories.
 Lean 4: 172 theorems, zero sorry.
 
 ## Self-Assessment Theory
@@ -106,7 +106,7 @@ Recover --> repair_strict_growth    (Certified(s) ⊊ Certified(R(s,v)))
 
 ## Assessment Bridge (complete)
 
-Parametric certification is an instance of the self-assessment repair model. The bridge ([ppg_assessment_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_assessment_bridge.pvs), 8 theorems, all proved) sets S := D, V := Θ, Spec := fully_certified F, and applies the repair operator directly over the specification space.
+Parametric certification is an instance of the self-assessment repair model. The bridge ([ppg_assessment_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_assessment_bridge.pvs), 7 theorems, all proved) sets S := D, V := Θ, Spec := fully_certified F, and applies the repair operator directly over the specification space.
 
 The complete formal cycle:
 
@@ -194,7 +194,7 @@ FORMAL VERIFICATION (complete_repair_cycle)
   Backed by: complete_repair_cycle (ppg_assessment_bridge.pvs)
 ```
 
-PVS formalization complete: [ppg_self_assessment.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_self_assessment.pvs) (12 theorems, all proved) + [ppg_assessment_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_assessment_bridge.pvs) (8 theorems, all proved).
+PVS formalization complete: [ppg_self_assessment.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_self_assessment.pvs) (12 theorems, all proved) + [ppg_assessment_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_assessment_bridge.pvs) (7 theorems, all proved).
 
 ## Probabilistic Repair Convergence
 
