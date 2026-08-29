@@ -49,8 +49,16 @@ Full results: [CERT_RUNNER_RESULTS.md](https://github.com/gajaka/luces-pvs-theor
 ## Theory Flow
 
 ```
-refinement --> monotone certification --> canonical level --> blocking set --> PP-graph --> relaxation/repair --> quotient
+refinement --> monotone certification --> canonical level --> blocking set
+  --> dependency decomposition --> LLL feasibility --> relaxation/repair --> quotient
 ```
+
+The blocking set is not atomic: it decomposes into dependency components
+by shared variable support. Each component is either locally repairable
+(the General LLL condition is satisfiable) or a coupled obstruction (a
+negative pairwise discriminant proves no assignment exists). This is what
+decides whether repair can succeed on a component, formalized in
+`ppg_probabilistic.pvs` and `ppg_lll.pvs`.
 
 ## Files
 
