@@ -34,7 +34,7 @@ Built on:
 | `ppg_probabilistic.pvs` | 10 | Blocking dependency decomposition: dependency graph, LLL feasibility, pair infeasibility (quadratic discriminant), repair classification |
 | `ppg_lll.pvs` | 30 | Lovász Local Lemma (Alon-Spencer 5.1.1): key inductive bound, denominator telescope, good-event lower bound, positive probability, good state exists |
 
-**Lean 4 port:** [ppg-lean](https://github.com/gajaka/ppg-lean) — 172 theorems, zero sorry, verified with Mathlib. Includes complementary slackness, self-assessment, and assessment bridge (parametric certification as instance of repair semantics).
+**Lean 4 port:** [ppg-lean](https://github.com/gajaka/ppg-lean) — zero sorry, verified with Mathlib. Includes the General Lovász Local Lemma (now formalized in both provers), complementary slackness, self-assessment, and assessment bridge (parametric certification as instance of repair semantics).
 
 ### Key Results
 
