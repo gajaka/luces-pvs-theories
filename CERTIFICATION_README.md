@@ -78,9 +78,16 @@ decides whether repair can succeed on a component, formalized in
 | [ppg_assessment_bridge.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_assessment_bridge.pvs) | 7 |
 | [ppg_probabilistic.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_probabilistic.pvs) | 10 |
 | [ppg_lll.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_lll.pvs) | 30 |
+| [ppg_mt.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_mt.pvs) | 5 |
+| [ppg_mt_process.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_mt_process.pvs) | 5 |
+| [ppg_mt_growing.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_mt_growing.pvs) | 18 |
+| [ppg_mt_witness.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_mt_witness.pvs) | 6 |
+| [ppg_mt_injectivity.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_mt_injectivity.pvs) | 22 |
+| [ppg_mt_convergence.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_mt_convergence.pvs) | 8 |
+| [ppg_mt_weight.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_mt_weight.pvs) | 4 |
 
-222 theorems and lemmas (PPG + certification + self-assessment + bridge + LLL). Full repo: 393 machine-checked results (336 theorems + 57 lemmas), 43 theories.
-Lean 4: 172 theorems, zero sorry.
+PPG + certification + self-assessment + bridge + LLL + Moser-Tardos, all machine-checked. Full repo: 460 machine-checked results (340 theorems + 120 lemmas), 52 theories.
+Lean 4: 209 theorems, zero sorry.
 
 ## Self-Assessment Theory
 

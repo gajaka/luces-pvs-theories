@@ -2,7 +2,7 @@
 
 **A formal mathematical framework for structural resilience, with applications to optimal transport verification and hardware root-of-trust.**
 
-43 theories. 393 machine-checked results (336 theorems + 57 lemmas). All proved in PVS.
+52 theories. 460 machine-checked results (340 theorems + 120 lemmas). All proved in PVS.
 
 **Core is closed.** Four questions, each with a machine-checked answer: How far does certification reach? What stops it from going further? Can the failure be safely contained and repaired? Did repair provably advance certification?
 
