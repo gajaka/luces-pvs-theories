@@ -63,6 +63,20 @@ the Moser-Tardos procedure (`ppg_mt*.pvs`) is the constructive side: it
 resamples the coupled variables until the component is satisfied, with the
 witness-tree machinery and an algebraic convergence bound.
 
+The repair path is three steps:
+
+```
+decomposition --> decision --> construction
+```
+
+Decomposition splits the blocking set into dependency components
+(`ppg_probabilistic.pvs`). Decision is the existence question, answered by the
+General Lovász Local Lemma (`ppg_lll.pvs`): a good state exists, or the
+component is a coupled obstruction. Construction is the constructive
+algorithm, Moser-Tardos (`ppg_mt*.pvs`): when a good state exists, resampling
+reaches it. So the two halves of the Local Lemma are both machine-checked:
+existence (LLL) and the constructive algorithm (Moser-Tardos).
+
 ## Files
 
 | File | Theorems |
