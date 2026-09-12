@@ -157,3 +157,5 @@ Dragan Stosic, MSc — [NASA PVS Libraries contributor](https://github.com/nasa/
 ## License
 
 © 2026 Dragan Stosic. All rights reserved.
+
+This work (theories, proofs, and source) is made available for reading, academic study, and non-commercial research use, with attribution. Redistribution, modification, derivative works, or any commercial use require prior written permission. If you are interested in using this work, including in a commercial or product setting, please get in touch: dragan.stosic@gmail.com
