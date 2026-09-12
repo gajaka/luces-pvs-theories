@@ -41,7 +41,7 @@ Built on:
 | `ppg_mt_convergence.pvs` | 8 | Theorem 5.7.3 algebraic weight bound (w(D,c) ≤ x(c)) |
 | `ppg_mt_weight.pvs` | 4 | Witness-tree weight and monotonicity |
 
-The Moser-Tardos development (`ppg_mt*.pvs`) is the algorithmic side of the Local Lemma: the resampling infrastructure, witness tree, injectivity, and the algebraic convergence bound. This is the formal core of a larger framework; its application to a running certificate system, with empirical results, will be available with a forthcoming paper. The expected-time (E[T_LOG]) probabilistic bound is left open here, as flagged in the file headers.
+The Moser-Tardos development (`ppg_mt*.pvs`) is the algorithmic side of the Local Lemma: the resampling infrastructure, witness tree, injectivity, and the algebraic convergence bound. This is the formal core of a larger framework; its application to a running certificate system, with empirical results, will be available with a forthcoming paper. The expected-time (E[T_LOG]) probabilistic bound is left open here, as flagged in the file headers. A Lean 4 version is forthcoming.
 
 **Lean 4 port:** [ppg-lean](https://github.com/gajaka/ppg-lean) — zero sorry, verified with Mathlib. Includes the General Lovász Local Lemma (now formalized in both provers), complementary slackness, self-assessment, and assessment bridge (parametric certification as instance of repair semantics).
 
