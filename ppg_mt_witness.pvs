@@ -1,0 +1,111 @@
+%------------------------------------------------------------------------------
+% ppg_mt_witness.pvs
+% Algorithmic Lovasz Local Lemma (Moser-Tardos)
+%
+% Layer 3, Part A: the witness tree conditions.
+%
+% PVS port of PPGraphMoserTardosWitness.lean (Stosic, 2026), apart from
+% its dependency-graph section, which ppg_mt_process already covers:
+% Lean's neighbor is dependent?(vars), its neighbor_symm is
+% dependent_symm, and its mt_new_violation_neighbor is the lemma of the
+% same name there.
+%
+% Moser & Tardos, arXiv:0903.0544v3, Section 2. Children draw labels from
+% the inclusive neighborhood Gamma+(s_T(u)), so a child may repeat its
+% parent's own label; that is wf? below. Properness is a sibling
+% condition, "if distinct children of the same vertex always receive
+% distinct labels we call the witness tree proper", and says nothing
+% about non-sibling vertices sharing a label; that is proper? below.
+%
+% Recursion over the tree goes through REDUCE and reduce_nat from the
+% generated ppg_wtree_adt rather than through MEASURE. A definition
+% written directly, with the recursive call inside a lambda passed to
+% every, does not typecheck: the termination argument cannot see that the
+% argument of that call is a child of the current node. REDUCE instead
+% hands the recursive values of the children over as a list, and its third
+% argument gives access to the node itself, which wf? needs to look at the
+% children's labels.
+%
+% Author: Dragan Stosic, 2026.
+%------------------------------------------------------------------------------
+
+ppg_mt_witness[C: TYPE+, V: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING ppg_probabilistic[C, V]
+  IMPORTING ppg_wtree[C]
+  IMPORTING ppg_wtree_adt_reduce[C, bool]
+  IMPORTING ppg_wtree_adt_reduce[C, nat]
+
+  WTree: TYPE = ppg_wtree[C]
+
+  t, u: VAR WTree
+  cs: VAR list[WTree]
+  i: VAR C
+  vars: VAR CertVars
+
+  %% Section 1: Size
+
+  sum_list(l: list[nat]): RECURSIVE nat =
+    CASES l OF
+      null: 0,
+      cons(h, r): h + sum_list(r)
+    ENDCASES
+  MEASURE length(l)
+
+  size: [WTree -> nat] =
+    reduce_nat(LAMBDA (i: C, l: list[nat]): 1 + sum_list(l))
+
+  size_node: LEMMA
+    FORALL (i: C, cs: list[WTree]):
+      size(node(i, cs)) = 1 + sum_list(map(size)(cs))
+
+  size_pos: LEMMA FORALL (t: WTree): size(t) > 0
+
+  %% Section 2: Well-formedness with respect to the dependency graph
+  %
+  % Every child's label lies in Gamma+ of its parent's label: the child
+  % either repeats the parent's own label or depends on it. Only siblings
+  % are constrained further, by proper? below.
+
+  wf_node(vars)(i: C, l: list[bool], u: WTree): bool =
+    every(LAMBDA (b: bool): b)(l) AND
+    every(LAMBDA (c: WTree): lab(c) = i OR dependent?(vars)(i, lab(c)))
+         (children(u))
+
+  wf?(vars): [WTree -> bool] = REDUCE(wf_node(vars))
+
+  wf_node_eq: LEMMA
+    FORALL (vars: CertVars, i: C, cs: list[WTree]):
+      wf?(vars)(node(i, cs)) =
+        (every(LAMBDA (b: bool): b)(map(wf?(vars))(cs)) AND
+         every(LAMBDA (c: WTree): lab(c) = i OR dependent?(vars)(i, lab(c)))
+              (cs))
+
+  % A single node with no children is well formed.
+  wf_singleton: LEMMA
+    FORALL (vars: CertVars, i: C): wf?(vars)(node(i, null))
+
+  %% Section 3: Properness
+  %
+  % At every vertex the children carry pairwise distinct labels.
+
+  distinct_labels?(cs): bool =
+    FORALL (m, n: below(length(cs))):
+      m /= n IMPLIES lab(nth(cs, m)) /= lab(nth(cs, n))
+
+  proper_node(i: C, l: list[bool], u: WTree): bool =
+    every(LAMBDA (b: bool): b)(l) AND distinct_labels?(children(u))
+
+  proper?: [WTree -> bool] = REDUCE(proper_node)
+
+  proper_node_eq: LEMMA
+    FORALL (i: C, cs: list[WTree]):
+      proper?(node(i, cs)) =
+        (every(LAMBDA (b: bool): b)(map(proper?)(cs)) AND distinct_labels?(cs))
+
+  % A single node with no children is proper.
+  proper_singleton: LEMMA
+    FORALL (i: C): proper?(node(i, null))
+
+END ppg_mt_witness

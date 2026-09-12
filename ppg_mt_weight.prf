@@ -1,0 +1,201 @@
+(ppg_mt_weight
+ (prod_list_TCC1 0
+  (prod_list_TCC1-1 nil 3996917951 ("" (termination-tcc) nil nil)
+   ((length def-decl "nat" list_props nil)
+    (nnint_plus_posint_is_posint application-judgement "posint"
+     integers nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (>= const-decl "bool" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (every adt-def-decl "boolean" list_adt nil)
+    (list type-decl nil list_adt nil)
+    (PRED type-eq-decl nil defined_types nil)
+    (number nonempty-type-decl nil numbers nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil))
+   nil
+   (prod_list termination "ppg_mt_weight.prod_list(ppg_mt_weight.r)"
+    "nil")))
+ (weight_children 0
+  (weight_children-1 nil 3996918624
+   ("" (skosimp*)
+    (("" (expand "weight" 1 1)
+      (("" (assert)
+        (("" (expand "weight")
+          (("" (expand "reduce" 1 1) (("" (propax) nil nil)) nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (reduce adt-def-decl "[ppg_wtree[I] -> range]"
+      ppg_wtree_adt_reduce nil)
+    (weight const-decl "[WTree -> nonneg_real]" ppg_mt_weight nil))
+   shostak))
+ (weight_singleton 0
+  (weight_singleton-1 nil 3996918698
+   ("" (skosimp*)
+    (("" (rewrite "weight_children")
+      (("" (expand "map")
+        (("" (expand "prod_list") (("" (propax) nil nil)) nil)) nil))
+      nil))
+    nil)
+   ((map adt-def-decl "list[T1]" list_adt_map nil)
+    (prod_list def-decl "nonneg_real" ppg_mt_weight nil)
+    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (null adt-constructor-decl "(null?)" list_adt nil)
+    (null? adt-recognizer-decl "[list -> boolean]" list_adt nil)
+    (list type-decl nil list_adt nil)
+    (ppg_wtree type-decl nil ppg_wtree_adt nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (>= const-decl "bool" reals nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (C formal-nonempty-type-decl nil ppg_mt_weight nil)
+    (weight_children formula-decl nil ppg_mt_weight nil))
+   shostak))
+ (prod_list_map_mono 0
+  (prod_list_map_mono-1 nil 3996918088
+   ("" (skolem 1 ("p!1" "q!1" "_"))
+    (("" (induct "cs")
+      (("1" (skosimp*)
+        (("1" (assert)
+          (("1" (expand "map")
+            (("1" (expand "prod_list") (("1" (assert) nil nil)) nil))
+            nil))
+          nil))
+        nil)
+       ("2" (skosimp*)
+        (("2" (split -1)
+          (("1" (expand "map" 1)
+            (("1" (expand "prod_list" 1)
+              (("1" (expand "every" -2)
+                (("1" (flatten)
+                  (("1"
+                    (use "le_times_le_pos" :subst
+                         ("nnx" "weight(p!1)(cons1_var!1)" "y"
+                          "weight(q!1)(cons1_var!1)" "nnz"
+                          "prod_list(map(weight(p!1))(cons2_var!1))"
+                          "w"
+                          "prod_list(map(weight(q!1))(cons2_var!1))"))
+                    (("1" (assert) nil nil)) nil))
+                  nil))
+                nil))
+              nil))
+            nil)
+           ("2" (expand "every" -1) (("2" (flatten) nil nil)) nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((le_times_le_pos formula-decl nil real_props nil)
+    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (list_induction formula-decl nil list_adt nil)
+    (C formal-nonempty-type-decl nil ppg_mt_weight nil)
+    (ppg_wtree type-decl nil ppg_wtree_adt nil)
+    (map adt-def-decl "list[T1]" list_adt_map nil)
+    (prod_list def-decl "nonneg_real" ppg_mt_weight nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (weight const-decl "[WTree -> nonneg_real]" ppg_mt_weight nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (>= const-decl "bool" reals nil) (<= const-decl "bool" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number nonempty-type-decl nil numbers nil)
+    (every adt-def-decl "boolean" list_adt nil)
+    (PRED type-eq-decl nil defined_types nil)
+    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (list type-decl nil list_adt nil))
+   shostak))
+ (weight_mono 0
+  (weight_mono-1 nil 3996918739
+   ("" (skosimp*)
+    (("" (lemma "ppg_wtree_induction")
+      ((""
+        (inst -1 "LAMBDA (t: WTree): weight(p!1)(t) <= weight(q!1)(t)")
+        (("" (split -1)
+          (("1" (inst -1 "t!1") nil nil)
+           ("2" (skosimp*)
+            (("2" (rewrite "weight_children")
+              (("2" (rewrite "weight_children")
+                (("2" (lemma "prod_list_map_mono")
+                  (("2" (inst -1 "p!1" "q!1" "node2_var!1")
+                    (("2" (assert)
+                      (("2" (inst -3 "node1_var!1")
+                        (("2"
+                          (use "le_times_le_pos" :subst
+                               ("nnx"
+                                "p!1(node1_var!1)"
+                                "y"
+                                "q!1(node1_var!1)"
+                                "nnz"
+                                "prod_list(map(weight(p!1))(node2_var!1))"
+                                "w"
+                                "prod_list(map(weight(q!1))(node2_var!1))"))
+                          (("2" (assert) nil nil)) nil))
+                        nil))
+                      nil))
+                    nil))
+                  nil))
+                nil))
+              nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((ppg_wtree type-decl nil ppg_wtree_adt nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (<= const-decl "bool" reals nil) (>= const-decl "bool" reals nil)
+    (nonneg_real nonempty-type-eq-decl nil real_types nil)
+    (weight const-decl "[WTree -> nonneg_real]" ppg_mt_weight nil)
+    (list type-decl nil list_adt nil)
+    (weight_children formula-decl nil ppg_mt_weight nil)
+    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (prod_list_map_mono formula-decl nil ppg_mt_weight nil)
+    (map adt-def-decl "list[T1]" list_adt_map nil)
+    (prod_list def-decl "nonneg_real" ppg_mt_weight nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (every adt-def-decl "boolean" list_adt nil)
+    (PRED type-eq-decl nil defined_types nil)
+    (le_times_le_pos formula-decl nil real_props nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (ppg_wtree_induction formula-decl nil ppg_wtree_adt nil)
+    (C formal-nonempty-type-decl nil ppg_mt_weight nil))
+   shostak)))
+

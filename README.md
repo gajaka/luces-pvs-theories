@@ -33,6 +33,15 @@ Built on:
 | `directed_pp_graph.pvs` | 0 | Directed PPG definitions: structural foundation for parametric theories (definitions only) |
 | `ppg_probabilistic.pvs` | 10 | Blocking dependency decomposition: dependency graph, LLL feasibility, pair infeasibility (quadratic discriminant), repair classification |
 | `ppg_lll.pvs` | 30 | Lovász Local Lemma (Alon-Spencer 5.1.1): key inductive bound, denominator telescope, good-event lower bound, positive probability, good state exists |
+| `ppg_mt.pvs` | 5 | Moser-Tardos (algorithmic LLL) Layer 1: product state space, resample operator, footprint-to-dependency bridge |
+| `ppg_mt_process.pvs` | 5 | MT execution: trajectory, faithful log, resample preserves unrelated components |
+| `ppg_mt_growing.pvs` | 18 | Address-indexed growing witness tree |
+| `ppg_mt_witness.pvs` | 6 | Witness tree: well-formedness, properness, size |
+| `ppg_mt_injectivity.pvs` | 22 | Injective encoding of occurrences (ingredient of the convergence argument) |
+| `ppg_mt_convergence.pvs` | 8 | Theorem 5.7.3 algebraic weight bound (w(D,c) ≤ x(c)) |
+| `ppg_mt_weight.pvs` | 4 | Witness-tree weight and monotonicity |
+
+The Moser-Tardos development (`ppg_mt*.pvs`) is the algorithmic side of the Local Lemma: the resampling infrastructure, witness tree, injectivity, and the algebraic convergence bound. This is the formal core of a larger framework; its application to a running certificate system, with empirical results, will be available with a forthcoming paper. The expected-time (E[T_LOG]) probabilistic bound is left open here, as flagged in the file headers.
 
 **Lean 4 port:** [ppg-lean](https://github.com/gajaka/ppg-lean) — zero sorry, verified with Mathlib. Includes the General Lovász Local Lemma (now formalized in both provers), complementary slackness, self-assessment, and assessment bridge (parametric certification as instance of repair semantics).
 

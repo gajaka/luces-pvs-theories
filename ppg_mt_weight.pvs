@@ -1,0 +1,80 @@
+%------------------------------------------------------------------------------
+% ppg_mt_weight.pvs
+% Algorithmic Lovasz Local Lemma (Moser-Tardos)
+%
+% Layer 4: the tree weight p[T].
+%
+% Alon-Spencer, The Probabilistic Method, 4th ed., section 5.7, used in
+% Theorems 5.7.1 and 5.7.3. "Weak Moser Tree" in the book's terminology is
+% wf? and proper? of ppg_mt_witness taken together: the book relaxes its
+% stronger "Moser Tree", which asks for distinctness at equal depth, to
+% the sibling-only notion for the summation argument.
+%
+% PVS port of PPGraphMoserTardosWeight.lean (Stosic, 2026).
+%
+% p[T] is the product of p over all node labels with multiplicity, as in
+% the book: "the product of the p[a], where a ranges over the labels of
+% the nodes... when a appears u times, the factor p[a] appears u times."
+%
+% Lean works in NNReal; here p and q range over nonneg_real, so the weight
+% is nonneg by typing and no separate nonnegativity lemma is needed. The
+% recursion goes through reduce from the generated ppg_wtree_adt_reduce,
+% for the reason given in ppg_mt_witness.
+%
+% The recursive w(D, a) sum of (5.9) is not built from these weights. It
+% is defined directly by its recursion in ppg_mt_convergence, which is how
+% the book's own proof of 5.7.3 proceeds, so enumerating weak Moser trees
+% of bounded depth is never needed.
+%
+% Author: Dragan Stosic, 2026.
+%------------------------------------------------------------------------------
+
+ppg_mt_weight[C: TYPE+, V: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING ppg_mt_witness[C, V]
+  IMPORTING ppg_wtree_adt_reduce[C, nonneg_real]
+
+  t: VAR WTree
+  cs: VAR list[WTree]
+  i: VAR C
+  p, q: VAR [C -> nonneg_real]
+
+  %% Section 1: Weight
+
+  prod_list(l: list[nonneg_real]): RECURSIVE nonneg_real =
+    CASES l OF
+      null: 1,
+      cons(h, r): h * prod_list(r)
+    ENDCASES
+  MEASURE length(l)
+
+  weight(p): [WTree -> nonneg_real] =
+    reduce(LAMBDA (i: C, l: list[nonneg_real]): p(i) * prod_list(l))
+
+  weight_children: LEMMA
+    FORALL (p: [C -> nonneg_real], i: C, cs: list[WTree]):
+      weight(p)(node(i, cs)) = p(i) * prod_list(map(weight(p))(cs))
+
+  weight_singleton: LEMMA
+    FORALL (p: [C -> nonneg_real], i: C):
+      weight(p)(node(i, null)) = p(i)
+
+  %% Section 2: Monotonicity in p
+  %
+  % The structural fact behind substituting a bound x >= p into the weight
+  % and still getting an upper bound. That is the use Theorem 5.7.3 makes
+  % of its hypothesis x[a] >= p[a].
+
+  prod_list_map_mono: LEMMA
+    FORALL (p, q: [C -> nonneg_real], cs: list[WTree]):
+      every(LAMBDA (c: WTree): weight(p)(c) <= weight(q)(c))(cs)
+        IMPLIES
+          prod_list(map(weight(p))(cs)) <= prod_list(map(weight(q))(cs))
+
+  weight_mono: LEMMA
+    FORALL (p, q: [C -> nonneg_real]):
+      (FORALL (i: C): p(i) <= q(i))
+        IMPLIES FORALL (t: WTree): weight(p)(t) <= weight(q)(t)
+
+END ppg_mt_weight

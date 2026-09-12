@@ -1,0 +1,148 @@
+%------------------------------------------------------------------------------
+% ppg_mt_convergence.pvs
+% Convergence bound for the Fix-It / Moser-Tardos algorithm.
+%
+% Alon-Spencer, The Probabilistic Method, 4th ed., section 5.7 ("Moser's
+% Fix-It Algorithm"), Theorem 5.7.3 (pp. 84-85; equation (5.9), which
+% defines the recursion, is on p. 83).
+%
+% PVS port of PPGraphMoserTardosConvergence.lean (Stosic, 2026).
+%
+% This is the algebraic core of the convergence bound: w(D, c) <= x(c),
+% assuming x bounds the failure probabilities p and satisfies the
+% self-consistency condition of (5.9)-(5.10). As in the Lean version,
+% w(D, c) is defined by the recursion (5.9) rather than as a sum over an
+% enumerated set of weak Moser trees. The book's own proof of 5.7.3 works
+% from the recursion, so tree enumeration is not needed and no finiteness
+% assumption on C is required.
+%
+% The theory depends only on the dependency graph, not on the state space
+% or the resample operator, so it imports ppg_probabilistic and takes
+% parameters [C, V]. Lean's neighbor P is dependent?(vars), and its
+% plusNeighbors is plus_neighbors below.
+%
+% Gamma+ is taken relative to a blocking set B, as in the rest of this
+% library, rather than over all of C; Lean quantifies over Finset.univ
+% and so needs [Fintype ind], which relativizing removes.
+% plus_neighbors adds c unconditionally rather than relying on
+% dependent?(vars)(c, c), whose reflexivity would need vars(c) nonempty,
+% the side condition the Lean file flags as never established.
+%
+% Lean works in NNReal; here p and x range over nonneg_real, and
+% nonnegativity of the weight is proved as mt_weight_nonneg.
+%
+% product_le_pointwise has no counterpart in the PVS finite_sets
+% libraries, which supply product_nonneg and product_pos but no pointwise
+% monotonicity. It stands in for Mathlib's Finset.prod_le_prod' and is
+% proved here by finite-set induction.
+%
+% Still missing, as in the Lean version: the probabilistic half, the link
+% between w(D, c) and the expected number of resamplings. The book gets
+% it from Theorems 5.7.1 and 5.7.2, which need a probability model for
+% the log. No such model exists here yet, so the bound below is the
+% inequality that "E[TLOG] <= sum of x" reduces to once one is supplied.
+%
+% Author: Dragan Stosic, 2026.
+%------------------------------------------------------------------------------
+
+ppg_mt_convergence[C: TYPE+, V: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING ppg_probabilistic[C, V]
+  IMPORTING finite_sets@finite_sets_sum_real[C]
+
+  vars: VAR CertVars
+  B, S_f: VAR finite_set[C]
+  c: VAR C
+  D: VAR nat
+  f, g: VAR [C -> real]
+  p, x: VAR [C -> nonneg_real]
+
+  %% Section 0: Pointwise monotonicity of finite products
+  %
+  % Stands in for Mathlib's Finset.prod_le_prod'.
+
+  product_le_pointwise: LEMMA
+    FORALL (S_f: finite_set[C], f, g: [C -> real]):
+      (FORALL (t: (S_f)): 0 <= f(t) AND f(t) <= g(t))
+        IMPLIES product(S_f, f) <= product(S_f, g)
+
+  %% Section 1: Gamma+, the inclusive neighborhood (5.9) ranges over
+  %
+  % The book's ~ is reflexive by construction (p.81, "Note that a ~ a"),
+  % which is why the product in (5.9) already includes the b = c factor
+  % without a separate case.
+
+  plus_neighbors(vars, B, c): finite_set[C] = add(c, neighbors(vars, B, c))
+
+  plus_neighbors_contains_self: LEMMA
+    FORALL (vars: CertVars, B: finite_set[C], c: C):
+      plus_neighbors(vars, B, c)(c)
+
+  %% Section 2: w(D, c), the recursion (5.9) (book p.83)
+  %
+  % w(0, c) = p(c): the only depth-0 tree is the bare root.
+  % w(D+1, c) = p(c) * prod over b in Gamma+(c) of (1 + w(D, b)):
+  % one factor per candidate child label, the "1" standing for "no child
+  % with that label" and the "w(D, b)" for "one child labelled b, summed
+  % over its own subtrees of depth at most D".
+
+  mt_weight(p, vars, B, D, c): RECURSIVE real =
+    IF D = 0 THEN p(c)
+    ELSE p(c) * product(plus_neighbors(vars, B, c),
+                        LAMBDA (b: C): 1 + mt_weight(p, vars, B, D - 1, b))
+    ENDIF
+  MEASURE D
+
+  mt_weight_zero: LEMMA
+    FORALL (p: [C -> nonneg_real], vars: CertVars, B: finite_set[C], c: C):
+      mt_weight(p, vars, B, 0, c) = p(c)
+
+  mt_weight_step: LEMMA
+    FORALL (p: [C -> nonneg_real], vars: CertVars, B: finite_set[C],
+            D: nat, c: C):
+      mt_weight(p, vars, B, D + 1, c) =
+        p(c) * product(plus_neighbors(vars, B, c),
+                       LAMBDA (b: C): 1 + mt_weight(p, vars, B, D, b))
+
+  mt_weight_nonneg: LEMMA
+    FORALL (D: nat, p: [C -> nonneg_real], vars: CertVars,
+            B: finite_set[C], c: C):
+      mt_weight(p, vars, B, D, c) >= 0
+
+  %% Section 3: Theorem 5.7.3 (book pp.84-85)
+  %
+  % If x dominates p pointwise (the standing hypothesis of (5.10)) and x
+  % satisfies the same self-consistency inequality that (5.9) turns into
+  % an equality for w, then w(D, c) <= x(c) at every depth D.
+  %
+  % The proof is induction on D mirroring the book's own two-line
+  % argument: the base case is the domination hypothesis, and the
+  % inductive step substitutes w(D, b) <= x(b) into every factor of the
+  % defining product, then closes with the (5.10) hypothesis on x.
+
+  mt_weight_le: THEOREM
+    FORALL (D: nat, p, x: [C -> nonneg_real], vars: CertVars,
+            B: finite_set[C]):
+      (FORALL (c: C): p(c) <= x(c)) AND
+      (FORALL (c: C):
+         p(c) * product(plus_neighbors(vars, B, c), LAMBDA (b: C): 1 + x(b))
+           <= x(c))
+        IMPLIES
+          FORALL (c: C): mt_weight(p, vars, B, D, c) <= x(c)
+
+  % Algebraic shadow of the closing clause "E[TLOG] <= sum of x(c)":
+  % summing the pointwise bound over the blocking set. No E[TLOG] appears
+  % on the left because no probability model for the log exists in this
+  % development yet.
+  sum_mt_weight_le: THEOREM
+    FORALL (D: nat, p, x: [C -> nonneg_real], vars: CertVars,
+            B: finite_set[C]):
+      (FORALL (c: C): p(c) <= x(c)) AND
+      (FORALL (c: C):
+         p(c) * product(plus_neighbors(vars, B, c), LAMBDA (b: C): 1 + x(b))
+           <= x(c))
+        IMPLIES
+          sum(B, LAMBDA (c: C): mt_weight(p, vars, B, D, c)) <= sum(B, x)
+
+END ppg_mt_convergence

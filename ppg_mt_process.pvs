@@ -1,0 +1,148 @@
+%------------------------------------------------------------------------------
+% ppg_mt_process.pvs
+% Algorithmic Lovasz Local Lemma (Moser-Tardos)
+%
+% Layer 2: the resample-until-fixed algorithm as a process.
+%
+% PVS port of PPGraphMoserTardosProcess.lean (Stosic, 2026), together
+% with the dependency-graph restatement that the Lean development puts
+% at the top of PPGraphMoserTardosWitness.lean.
+%
+% Builds on ppg_mt (MTState, resample, depends_only_on,
+% resample_preserves_independent) and hence on ppg_probabilistic
+% (CertVars, dependent?, independent?, neighbors).
+%
+% Lean's MTProcess is a structure bundling the bad events, their
+% footprints, and a proof that each event depends only on its own
+% footprint. Here the data are ordinary arguments and the bundled proof
+% becomes the hypothesis mt_wf?(bad, vars), the style ppg_lll already
+% uses for lll_feasible? and lll_independence?. A RECORD with a predicate
+% subtype was tried first: PVS does not allow field selection through a
+% predicate subtype of a record type.
+%
+% The separate footprint field is dropped, since CertVars already gives
+% vars(c) as the variables c reads. The dependency graph of the process
+% is then the graph of ppg_probabilistic rather than a parallel copy of
+% it; Lean's neighbor is dependent?(vars), and its neighbor_symm is
+% dependent_symm, proved there.
+%
+% The log is a record-valued sequence recording, at each step, which
+% event index was chosen (idx) and which fresh state supplied the new
+% coordinate values (fresh). All randomness of the real algorithm lives
+% in the log, and the trajectory is a deterministic function of it. A
+% probability measure on logs belongs to a later layer.
+%
+% Author: Dragan Stosic, 2026.
+%------------------------------------------------------------------------------
+
+ppg_mt_process[C: TYPE+, V: TYPE+, D: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING ppg_mt[C, V, D]
+
+  %% Section 1: Moser-Tardos instances
+
+  % A family of bad events, one per certificate.
+  BadEventsMT: TYPE = [C -> set[MTState]]
+
+  bad: VAR BadEventsMT
+  vars: VAR CertVars
+  om, om0: VAR MTState
+  t, T: VAR nat
+  j: VAR C
+  B: VAR finite_set[C]
+
+  % Well-formedness: each event depends only on the variables it reads.
+  % This is what makes "resample what c reads" a meaningful operation
+  % with respect to the event at c.
+  mt_wf?(bad, vars): bool =
+    FORALL (c: C): depends_only_on(bad(c), vars(c))
+
+  %% Section 2: Violated events and the log
+
+  % The events violated at a state. The algorithm's job is to drive this
+  % set to the empty set.
+  violated(bad, om): set[C] = {c: C | bad(c)(om)}
+
+  % A log entry: the index chosen for resampling, and the fresh state
+  % that supplies the new coordinate values.
+  MTLogEntry: TYPE = [# idx: C, fresh: MTState #]
+  MTLog: TYPE = [nat -> MTLogEntry]
+
+  log: VAR MTLog
+
+  %% Section 3: The trajectory produced by a log
+  %
+  % Note that the trajectory depends on vars but not on bad: which
+  % coordinates get overwritten is determined by the footprints alone.
+
+  trajectory(vars, log, om0, t): RECURSIVE MTState =
+    IF t = 0 THEN om0
+    ELSE resample(vars(idx(log(t - 1))),
+                  trajectory(vars, log, om0, t - 1),
+                  fresh(log(t - 1)))
+    ENDIF
+  MEASURE t
+
+  % Unfolding lemmas, so later layers never have to expand the recursive
+  % definition in place.
+  trajectory_zero: LEMMA
+    FORALL (vars: CertVars, log: MTLog, om0: MTState):
+      trajectory(vars, log, om0, 0) = om0
+
+  trajectory_step: LEMMA
+    FORALL (vars: CertVars, log: MTLog, om0: MTState, t: nat):
+      trajectory(vars, log, om0, t + 1) =
+        resample(vars(idx(log(t))),
+                 trajectory(vars, log, om0, t),
+                 fresh(log(t)))
+
+  % A log is faithful if it only ever resamples an event that is actually
+  % violated at the time. This is what distinguishes a real execution of
+  % the algorithm from an arbitrary sequence of resamples.
+  faithful(bad, vars, log, om0): bool =
+    FORALL (t: nat):
+      violated(bad, trajectory(vars, log, om0, t))(idx(log(t)))
+
+  % The process has converged by time T once no event is violated there.
+  mt_converged(bad, vars, log, om0, T): bool =
+    violated(bad, trajectory(vars, log, om0, T)) = emptyset[C]
+
+  %% Section 4: A step cannot disturb an independent event
+  %
+  % This is the structural fact the witness-tree argument is built on:
+  % resampling one event cannot change whether an event independent of it
+  % is violated.
+
+  mt_step_preserves_unrelated: LEMMA
+    FORALL (bad: BadEventsMT, vars: CertVars, log: MTLog, om0: MTState,
+            t: nat, j: C):
+      mt_wf?(bad, vars) AND independent?(vars)(idx(log(t)), j)
+        IMPLIES (bad(j)(trajectory(vars, log, om0, t))
+                   IFF bad(j)(trajectory(vars, log, om0, t + 1)))
+
+  % Contrapositive, phrased the way the witness-tree argument uses it:
+  % if j was not violated before a step but is violated right after, then
+  % j depends on whatever was just resampled. New violations only ever
+  % appear next to the last resample.
+  mt_new_violation_dependent: LEMMA
+    FORALL (bad: BadEventsMT, vars: CertVars, log: MTLog, om0: MTState,
+            t: nat, j: C):
+      mt_wf?(bad, vars) AND
+      NOT bad(j)(trajectory(vars, log, om0, t)) AND
+      bad(j)(trajectory(vars, log, om0, t + 1))
+        IMPLIES dependent?(vars)(idx(log(t)), j)
+
+  % The same conclusion as membership in the neighbor set of
+  % ppg_probabilistic, which is the form the witness-tree construction
+  % consumes: a newly violated event of the blocking set is a neighbor of
+  % the event just resampled.
+  mt_new_violation_neighbor: LEMMA
+    FORALL (bad: BadEventsMT, vars: CertVars, log: MTLog, om0: MTState,
+            t: nat, j: C, B: finite_set[C]):
+      mt_wf?(bad, vars) AND B(j) AND j /= idx(log(t)) AND
+      NOT bad(j)(trajectory(vars, log, om0, t)) AND
+      bad(j)(trajectory(vars, log, om0, t + 1))
+        IMPLIES neighbors(vars, B, idx(log(t)))(j)
+
+END ppg_mt_process

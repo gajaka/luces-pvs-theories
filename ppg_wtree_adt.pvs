@@ -1,0 +1,198 @@
+%%% ADT file generated from ppg_wtree
+
+ppg_wtree_adt[I: TYPE+]: THEORY
+ BEGIN
+  ASSUMING
+   I_TCC1: ASSUMPTION EXISTS (x: I): TRUE;
+  ENDASSUMING
+
+  ppg_wtree: TYPE
+
+  node?: [ppg_wtree -> boolean]
+
+  lab: [ppg_wtree -> I]
+
+  children: [ppg_wtree -> list[ppg_wtree]]
+
+  node: [[I, list[ppg_wtree]] -> (node?)]
+
+  ppg_wtree_ord: [ppg_wtree -> upto(0)]
+
+  ppg_wtree_ord_defaxiom: AXIOM
+    FORALL (lab: I, children: list[ppg_wtree]):
+      ppg_wtree_ord(node(lab, children)) = 0;
+
+  ord(x: ppg_wtree): upto(0) =
+      CASES x OF node(node1_var, node2_var): 0 ENDCASES
+
+  ppg_wtree_node_extensionality: AXIOM
+    FORALL (node?_var: (node?), node?_var2: (node?)):
+      lab(node?_var) = lab(node?_var2) AND
+       children(node?_var) = children(node?_var2)
+       IMPLIES node?_var = node?_var2;
+
+  ppg_wtree_node_eta: AXIOM
+    FORALL (node?_var: (node?)):
+      node(lab(node?_var), children(node?_var)) = node?_var;
+
+  ppg_wtree_lab_node: AXIOM
+    FORALL (node1_var: I, node2_var: list[ppg_wtree]):
+      lab(node(node1_var, node2_var)) = node1_var;
+
+  ppg_wtree_children_node: AXIOM
+    FORALL (node1_var: I, node2_var: list[ppg_wtree]):
+      children(node(node1_var, node2_var)) = node2_var;
+
+  ppg_wtree_inclusive: AXIOM
+    FORALL (ppg_wtree_var: ppg_wtree): node?(ppg_wtree_var);
+
+  ppg_wtree_induction: AXIOM
+    FORALL (p: [ppg_wtree -> boolean]):
+      (FORALL (node1_var: I, node2_var: list[ppg_wtree]):
+         every(p)(node2_var) IMPLIES p(node(node1_var, node2_var)))
+       IMPLIES FORALL (ppg_wtree_var: ppg_wtree): p(ppg_wtree_var);
+
+  every(p: PRED[I])(a: ppg_wtree):  boolean =
+      CASES a
+        OF node(node1_var, node2_var):
+             p(node1_var) AND every[ppg_wtree](every(p))(node2_var)
+        ENDCASES;
+
+  every(p: PRED[I], a: ppg_wtree):  boolean =
+      CASES a
+        OF node(node1_var, node2_var):
+             p(node1_var) AND every[ppg_wtree](every(p), node2_var)
+        ENDCASES;
+
+  some(p: PRED[I])(a: ppg_wtree):  boolean =
+      CASES a
+        OF node(node1_var, node2_var):
+             p(node1_var) OR some[ppg_wtree](some(p))(node2_var)
+        ENDCASES;
+
+  some(p: PRED[I], a: ppg_wtree):  boolean =
+      CASES a
+        OF node(node1_var, node2_var):
+             p(node1_var) OR some[ppg_wtree](some(p), node2_var)
+        ENDCASES;
+
+  subterm(x: ppg_wtree, y: ppg_wtree):  boolean =
+      x = y OR
+       CASES y
+         OF node(node1_var, node2_var):
+              some[ppg_wtree]
+                  ((LAMBDA (z: ppg_wtree): subterm(x, z)))(node2_var)
+         ENDCASES;
+
+  <<:  (strict_well_founded?[ppg_wtree]) =
+      LAMBDA (x, y: ppg_wtree):
+        CASES y
+          OF node(node1_var, node2_var):
+               some[ppg_wtree]
+                   (LAMBDA (z: ppg_wtree): (x = z OR x << z))(node2_var)
+          ENDCASES;
+
+  ppg_wtree_well_founded: AXIOM strict_well_founded?[ppg_wtree](<<);
+
+  reduce_nat(node?_fun: [[I, list[nat]] -> nat]):  [ppg_wtree -> nat] =
+      LAMBDA (ppg_wtree_adtvar: ppg_wtree):
+        LET red: [ppg_wtree -> nat] = reduce_nat(node?_fun) IN
+          CASES ppg_wtree_adtvar
+            OF node(node1_var, node2_var):
+                 node?_fun(node1_var, map[ppg_wtree, nat](red)(node2_var))
+            ENDCASES;
+
+  REDUCE_nat(node?_fun: [[I, list[nat], ppg_wtree] -> nat]):
+        [ppg_wtree -> nat] =
+      LAMBDA (ppg_wtree_adtvar: ppg_wtree):
+        LET red: [ppg_wtree -> nat] = REDUCE_nat(node?_fun) IN
+          CASES ppg_wtree_adtvar
+            OF node(node1_var, node2_var):
+                 node?_fun(node1_var, map[ppg_wtree, nat](red)(node2_var),
+                           ppg_wtree_adtvar)
+            ENDCASES;
+
+  reduce_ordinal(node?_fun: [[I, list[ordinal]] -> ordinal]):
+        [ppg_wtree -> ordinal] =
+      LAMBDA (ppg_wtree_adtvar: ppg_wtree):
+        LET red: [ppg_wtree -> ordinal] = reduce_ordinal(node?_fun) IN
+          CASES ppg_wtree_adtvar
+            OF node(node1_var, node2_var):
+                 node?_fun(node1_var,
+                           map[ppg_wtree, ordinal](red)(node2_var))
+            ENDCASES;
+
+  REDUCE_ordinal(node?_fun: [[I, list[ordinal], ppg_wtree] -> ordinal]):
+        [ppg_wtree -> ordinal] =
+      LAMBDA (ppg_wtree_adtvar: ppg_wtree):
+        LET red: [ppg_wtree -> ordinal] = REDUCE_ordinal(node?_fun) IN
+          CASES ppg_wtree_adtvar
+            OF node(node1_var, node2_var):
+                 node?_fun(node1_var,
+                           map[ppg_wtree, ordinal](red)(node2_var),
+                           ppg_wtree_adtvar)
+            ENDCASES;
+ END ppg_wtree_adt
+
+ppg_wtree_adt_map[I: TYPE+, I1: TYPE+]: THEORY
+ BEGIN
+  ASSUMING
+   I_TCC1: ASSUMPTION EXISTS (x: I): TRUE;
+
+   I1_TCC1: ASSUMPTION EXISTS (x: I1): TRUE;
+  ENDASSUMING
+
+  IMPORTING ppg_wtree_adt
+
+  map(f: [I -> I1])(a: ppg_wtree[I]):  ppg_wtree[I1] =
+      CASES a
+        OF node(node1_var, node2_var):
+             node(f(node1_var),
+                  map[ppg_wtree[I], ppg_wtree[I1]](map(f))(node2_var))
+        ENDCASES;
+
+  map(f: [I -> I1], a: ppg_wtree[I]):  ppg_wtree[I1] =
+      CASES a
+        OF node(node1_var, node2_var):
+             node(f(node1_var),
+                  map[ppg_wtree[I], ppg_wtree[I1]](map(f), node2_var))
+        ENDCASES;
+
+  every(R: [[I, I1] -> boolean])(x: ppg_wtree[I], y: ppg_wtree[I1]):
+        boolean =
+      node?(x) AND
+       node?(y) AND
+        R(lab(x), lab(y)) AND
+         every(LAMBDA (u: ppg_wtree[I], v: ppg_wtree[I1]): every(R)(u, v))
+              (children(x), children(y));
+ END ppg_wtree_adt_map
+
+ppg_wtree_adt_reduce[I: TYPE+, range: TYPE]: THEORY
+ BEGIN
+  ASSUMING
+   I_TCC1: ASSUMPTION EXISTS (x: I): TRUE;
+  ENDASSUMING
+
+  IMPORTING ppg_wtree_adt[I]
+
+  reduce(node?_fun: [[I, list[range]] -> range]):
+        [ppg_wtree[I] -> range] =
+      LAMBDA (ppg_wtree_adtvar: ppg_wtree[I]):
+        LET red: [ppg_wtree[I] -> range] = reduce(node?_fun) IN
+          CASES ppg_wtree_adtvar
+            OF node(node1_var, node2_var):
+                 node?_fun(node1_var,
+                           map[ppg_wtree[I], range](red)(node2_var))
+            ENDCASES;
+
+  REDUCE(node?_fun: [[I, list[range], ppg_wtree[I]] -> range]):
+        [ppg_wtree[I] -> range] =
+      LAMBDA (ppg_wtree_adtvar: ppg_wtree[I]):
+        LET red: [ppg_wtree[I] -> range] = REDUCE(node?_fun) IN
+          CASES ppg_wtree_adtvar
+            OF node(node1_var, node2_var):
+                 node?_fun(node1_var,
+                           map[ppg_wtree[I], range](red)(node2_var),
+                           ppg_wtree_adtvar)
+            ENDCASES;
+ END ppg_wtree_adt_reduce

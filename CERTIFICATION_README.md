@@ -210,7 +210,7 @@ The blocking dependency decomposition reveals that some certificate components a
 
 The framework is the Lovász Local Lemma (Alon and Spencer, "The Probabilistic Method", 4th ed., Wiley 2016, Lemma 5.1.1): given bad events with bounded dependency and probabilities satisfying the General LLL condition, a configuration where no bad event occurs exists with positive probability. This existence result is now machine-checked (`ppg_lll.pvs`, 30 theorems), with the blocking decomposition and pair infeasibility formalized in `ppg_probabilistic.pvs` (10 theorems). The proof is division-free, so it never requires nonzero conditioning measure.
 
-The algorithmic version (Moser-Tardos, 2010), which upgrades this existence guarantee to a constructive randomized repair procedure with expected polynomial convergence, remains in progress.
+The algorithmic version (Moser-Tardos) upgrades this existence guarantee to a constructive randomized repair procedure. Its resampling infrastructure, witness tree, injectivity, and algebraic convergence bound are now formalized (`ppg_mt*.pvs`). The expected-time probabilistic bound (E[T_LOG]) remains open.
 
 ## Related
 

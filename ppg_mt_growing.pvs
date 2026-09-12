@@ -1,0 +1,256 @@
+%------------------------------------------------------------------------------
+% ppg_mt_growing.pvs
+% Algorithmic Lovasz Local Lemma (Moser-Tardos)
+%
+% Layer 3, Part B: the address-indexed growing witness tree, and the
+% backward construction of tau_C(t) from a log.
+%
+% Moser & Tardos, "A constructive proof of the general Lovasz Local
+% Lemma", arXiv:0903.0544v3, Section 2.
+%
+% PVS port of PPGraphMoserTardosGrowing.lean (Stosic, 2026).
+%
+% Builds on ppg_probabilistic (CertVars, dependent?). The Lean file's
+% neighbor P is dependent?(vars) here, so this theory needs neither the
+% state space nor the resample operator, and takes parameters [C, V].
+%
+% A vertex is named by a list of naturals: null is the root and
+% snoc(v, k) is the (k+1)-th child of v. dom is the finite set of
+% addresses built so far, lab labels them (meaningless outside dom).
+% Addressing is what lets a new child be attached at an arbitrary
+% existing vertex, which a plain rose tree cannot express.
+%
+% Two places where PVS needs more than Lean:
+%
+%  msub is truncating subtraction on nat, since Lean's t - 1 - n
+%  truncates at zero while PVS subtraction on nat lands in int. The
+%  backward scan must visit the same indices, because the injectivity
+%  argument of the next layer counts them.
+%
+%  exists_fresh_index comes from injection_and_cardinal in
+%  finite_sets@finite_sets_card_eq, not from Lean's
+%  Set.infinite_range_of_injective, which PVS has no counterpart for. If
+%  every snoc(v, k) with k < card(dom) + 1 were present, that many
+%  distinct addresses would inject into dom, forcing
+%  card(dom) + 1 <= card(dom).
+%
+% Choice: Lean's Classical.choose for the fresh child index and for the
+% tie-break among maximum-depth candidates becomes choose applied to a
+% set that the preceding existence lemma shows to be nonempty.
+%
+% Not attempted here, as in the Lean file: injectivity of the map from
+% time to tree (next layer), and any link to a rose-tree representation.
+%
+% Author: Dragan Stosic, 2026.
+%------------------------------------------------------------------------------
+
+ppg_mt_growing[C: TYPE+, V: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING ppg_probabilistic[C, V]
+  IMPORTING finite_sets@finite_sets_card_eq[nat, list[nat]]
+  IMPORTING finite_sets@finite_sets_inductions[list[nat]]
+  IMPORTING finite_sets@finite_sets_nat
+
+  Addr: TYPE = list[nat]
+
+  v, w, v1, v2: VAR Addr
+  k, k1, k2, n, t: VAR nat
+  vars: VAR CertVars
+  a, i0: VAR C
+
+  %% Section 0: Addresses
+
+  % snoc(v, k) is the child of v at slot k.
+  snoc(v, k): Addr = append(v, cons(k, null))
+
+  % Reading the equality off the reversed lists turns it into a cons
+  % equation. This is the Lean file's list_concat_inj, same proof.
+  snoc_inj: LEMMA
+    FORALL (v1, v2: Addr, k1, k2: nat):
+      snoc(v1, k1) = snoc(v2, k2) IMPLIES v1 = v2 AND k1 = k2
+
+  % Truncating subtraction on nat, matching Lean's subtraction there.
+  msub(t, n): nat = IF t <= n THEN 0 ELSE t - n ENDIF
+
+  %% Section 1: Growing trees
+
+  GTree: TYPE = [# dom: finite_set[Addr], lab: [Addr -> C] #]
+
+  T: VAR GTree
+
+  % Well-formedness of the address structure alone, saying nothing about
+  % labels: the root is present, and every address's parent is present.
+  % Kept as a predicate rather than a field, so it is established by
+  % induction on the construction rather than assumed.
+  gt_valid?(T): bool =
+    T`dom(null) AND
+    (FORALL (v: Addr, k: nat): T`dom(snoc(v, k)) IMPLIES T`dom(v))
+
+  % The starting tree for tau_C(t): a single root labelled i0.
+  gt_singleton(i0): GTree =
+    (# dom := add(null, emptyset[Addr]),
+       lab := LAMBDA (w: Addr): i0 #)
+
+  gt_singleton_valid: LEMMA
+    FORALL (i0: C): gt_valid?(gt_singleton(i0))
+
+  %% Section 2: Fresh child slots
+
+  exists_fresh_index: LEMMA
+    FORALL (T: GTree, v: Addr): EXISTS (k: nat): NOT T`dom(snoc(v, k))
+
+  fresh_index(T, v): nat = choose({k: nat | NOT T`dom(snoc(v, k))})
+
+  fresh_index_spec: LEMMA
+    FORALL (T: GTree, v: Addr): NOT T`dom(snoc(v, fresh_index(T, v)))
+
+  %% Section 3: Attaching a child
+
+  % Attach a fresh child labelled a to the vertex at address v.
+  attach_child(T, v, a): GTree =
+    (# dom := add(snoc(v, fresh_index(T, v)), T`dom),
+       lab := LAMBDA (w: Addr):
+                IF w = snoc(v, fresh_index(T, v)) THEN a ELSE T`lab(w) ENDIF #)
+
+  attach_child_preserves_root: LEMMA
+    FORALL (T: GTree, v: Addr, a: C):
+      T`dom(null) IMPLIES attach_child(T, v, a)`dom(null)
+
+  attach_child_preserves_prefix_closed: LEMMA
+    FORALL (T: GTree, v: Addr, a: C):
+      T`dom(v) AND
+      (FORALL (w: Addr, k: nat): T`dom(snoc(w, k)) IMPLIES T`dom(w))
+        IMPLIES
+          FORALL (w: Addr, k: nat):
+            attach_child(T, v, a)`dom(snoc(w, k))
+              IMPLIES attach_child(T, v, a)`dom(w)
+
+  attach_child_preserves_valid: LEMMA
+    FORALL (T: GTree, v: Addr, a: C):
+      T`dom(v) AND gt_valid?(T) IMPLIES gt_valid?(attach_child(T, v, a))
+
+  % The root keeps its label: the new address snoc(v, k) is never null.
+  attach_child_preserves_lab_root: LEMMA
+    FORALL (T: GTree, v: Addr, a: C):
+      attach_child(T, v, a)`lab(null) = T`lab(null)
+
+  %% Section 4: Attachment candidates and the maximum-depth pick
+  %
+  % The vertices currently in the tree whose inclusive neighborhood
+  % contains a: either a repeats that vertex's own label, or a depends on
+  % it. These are the legal attachment points for a new child labelled a.
+
+  candidates(vars, T, a): finite_set[Addr] =
+    {v: Addr | T`dom(v) AND
+               (T`lab(v) = a OR dependent?(vars)(T`lab(v), a))}
+
+  candidates_subset_dom: LEMMA
+    FORALL (vars: CertVars, T: GTree, a: C):
+      subset?(candidates(vars, T, a), T`dom)
+
+  % A vertex already labelled a is always a candidate. This drives the
+  % injectivity argument of the next layer: the root of tau_C(t) carries
+  % label C(t), so every earlier occurrence of that label finds an
+  % attachment point and does add a node.
+  candidates_nonempty_of_label: LEMMA
+    FORALL (vars: CertVars, T: GTree, a: C, v: Addr):
+      T`dom(v) AND T`lab(v) = a IMPLIES nonempty?(candidates(vars, T, a))
+
+  % A nonempty finite set of addresses has one of maximal depth.
+  exists_max_depth_candidate: LEMMA
+    FORALL (S: finite_set[Addr]):
+      nonempty?(S)
+        IMPLIES EXISTS (v: Addr):
+                  S(v) AND FORALL (w: Addr): S(w) IMPLIES length(w) <= length(v)
+
+  max_depth_set(S: finite_set[Addr]): set[Addr] =
+    {v: Addr | S(v) AND FORALL (w: Addr): S(w) IMPLIES length(w) <= length(v)}
+
+  NEAddrSet: TYPE = {S: finite_set[Addr] | nonempty?(S)}
+
+  max_depth_pick(S: NEAddrSet): Addr = choose(max_depth_set(S))
+
+  max_depth_pick_in: LEMMA
+    FORALL (S: NEAddrSet): S(max_depth_pick(S))
+
+  % One backward step: if some existing vertex can take a as a child,
+  % attach it to one at maximum distance from the root among the
+  % candidates, ties broken arbitrarily as the paper allows; otherwise
+  % leave the tree unchanged, i.e. skip the time step.
+  attach_at(vars, T, a): GTree =
+    IF nonempty?(candidates(vars, T, a))
+      THEN attach_child(T, max_depth_pick(candidates(vars, T, a)), a)
+      ELSE T
+    ENDIF
+
+  %% Section 5: The tau_C(t) construction
+  %
+  % tau_build(vars, Clog, t, n) is the tree after n backward steps from
+  % the isolated root labelled Clog(t): step n = 0 is that root, and step
+  % n + 1 processes log index msub(msub(t, 1), n), so the first backward
+  % step handles t - 1, the second t - 2, and so on.
+
+  Clog: VAR [nat -> C]
+
+  tau_build(vars, Clog, t, n): RECURSIVE GTree =
+    IF n = 0 THEN gt_singleton(Clog(t))
+    ELSE attach_at(vars,
+                   tau_build(vars, Clog, t, n - 1),
+                   Clog(msub(msub(t, 1), n - 1)))
+    ENDIF
+  MEASURE n
+
+  tau_build_zero: LEMMA
+    FORALL (vars: CertVars, Clog: [nat -> C], t: nat):
+      tau_build(vars, Clog, t, 0) = gt_singleton(Clog(t))
+
+  tau_build_step: LEMMA
+    FORALL (vars: CertVars, Clog: [nat -> C], t: nat, n: nat):
+      tau_build(vars, Clog, t, n + 1) =
+        attach_at(vars, tau_build(vars, Clog, t, n), Clog(msub(msub(t, 1), n)))
+
+  % tau_C(t): run all t - 1 backward steps. If t = 0 there is nothing to
+  % scan and the tree is the isolated root.
+  tau_C(vars, Clog, t): GTree = tau_build(vars, Clog, t, msub(t, 1))
+
+  %% Section 6: The construction stays valid
+
+  tau_build_valid: LEMMA
+    FORALL (vars: CertVars, Clog: [nat -> C], t: nat, n: nat):
+      gt_valid?(tau_build(vars, Clog, t, n))
+
+  %% Section 7: The construction respects the dependency graph
+  %
+  % Every child's label lies in Gamma+ of its parent's label. This is what
+  % makes the tree a witness, and it holds because attach_at only ever
+  % attaches at a candidate, while the candidates at a are the vertices
+  % whose inclusive neighborhood contains a.
+  %
+  % Stated on the address representation. The rose-tree condition wf? of
+  % ppg_mt_witness says the same thing about that representation; the two
+  % are not connected here, matching the Lean development, which leaves
+  % the bridge between its GrowingTree and WTree open.
+
+  gt_child_ok?(vars, T): bool =
+    FORALL (v: Addr, k: nat):
+      T`dom(snoc(v, k))
+        IMPLIES T`lab(snoc(v, k)) = T`lab(v)
+             OR dependent?(vars)(T`lab(v), T`lab(snoc(v, k)))
+
+  attach_child_child_ok: LEMMA
+    FORALL (vars: CertVars, T: GTree, v: Addr, a: C):
+      gt_valid?(T) AND gt_child_ok?(vars, T) AND
+      T`dom(v) AND (T`lab(v) = a OR dependent?(vars)(T`lab(v), a))
+        IMPLIES gt_child_ok?(vars, attach_child(T, v, a))
+
+  attach_at_child_ok: LEMMA
+    FORALL (vars: CertVars, T: GTree, a: C):
+      gt_valid?(T) AND gt_child_ok?(vars, T)
+        IMPLIES gt_child_ok?(vars, attach_at(vars, T, a))
+
+  tau_build_child_ok: LEMMA
+    FORALL (vars: CertVars, Clog: [nat -> C], t: nat, n: nat):
+      gt_child_ok?(vars, tau_build(vars, Clog, t, n))
+
+END ppg_mt_growing

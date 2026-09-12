@@ -1,0 +1,197 @@
+%------------------------------------------------------------------------------
+% ppg_mt_injectivity.pvs
+% Algorithmic Lovasz Local Lemma (Moser-Tardos)
+%
+% Layer 3, Part C: distinct occurrence times of the same event give
+% distinct witness trees.
+%
+% Moser & Tardos, "A constructive proof of the general Lovasz Local
+% Lemma", arXiv:0903.0544v3, end of Section 2 / start of Section 3: "if
+% t_i is the i-th time step with C(t_i) = A, then obviously the tree
+% tau_C(t_i) contains exactly i vertices labelled A, thus
+% tau_C(t_i) /= tau_C(t_j) unless i = j."
+%
+% PVS port of PPGraphMoserTardosInjectivity.lean (Stosic, 2026).
+% Builds on ppg_mt_growing (GTree, attach_child, attach_at, tau_build,
+% tau_C, fresh_index_spec, candidates_nonempty_of_label).
+%
+% The mechanism the paper calls obvious but does not spell out: the root
+% of tau_C(t) carries label Clog(t), and the inclusive neighborhood of a
+% label contains that label, so every earlier occurrence of Clog(t) in the
+% backward scan has an attachment point available and therefore adds one
+% new vertex with that label. tau_build_root_and_count below is that
+% mechanism, and the counting claim follows from it.
+%
+% steps_covered records which log indices the backward scan has already
+% processed. Its four arithmetic lemmas are where the truncating
+% subtraction msub of ppg_mt_growing has to be handled: each carries the
+% hypothesis (n < t or 0 < t) under which msub agrees with ordinary
+% subtraction, matching the Lean statements.
+%
+% Author: Dragan Stosic, 2026.
+%------------------------------------------------------------------------------
+
+ppg_mt_injectivity[C: TYPE+, V: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING ppg_mt_growing[C, V]
+
+  T: VAR GTree
+  v, w: VAR Addr
+  a, A: VAR C
+  vars: VAR CertVars
+  Clog: VAR [nat -> C]
+  t, t1, t2, n, k, s: VAR nat
+
+  %% Section 1: Counting vertices by label
+
+  labelled(T, A): finite_set[Addr] = {v: Addr | T`dom(v) AND T`lab(v) = A}
+
+  labelled_subset_dom: LEMMA
+    FORALL (T: GTree, A: C): subset?(labelled(T, A), T`dom)
+
+  count_label(T, A): nat = card(labelled(T, A))
+
+  %% Section 2: The log indices already scanned
+  %
+  % After n backward steps from time t the covered indices are
+  % t - 1, t - 2, ..., t - n.
+
+  steps_covered(t, n): RECURSIVE finite_set[nat] =
+    IF n = 0 THEN emptyset[nat]
+    ELSE add(msub(msub(t, 1), n - 1), steps_covered(t, n - 1))
+    ENDIF
+  MEASURE n
+
+  steps_covered_zero: LEMMA
+    FORALL (t: nat): steps_covered(t, 0) = emptyset[nat]
+
+  steps_covered_step: LEMMA
+    FORALL (t: nat, n: nat):
+      steps_covered(t, n + 1) = add(msub(msub(t, 1), n), steps_covered(t, n))
+
+  % Everything already covered lies strictly above the index about to be
+  % processed.
+  steps_covered_lt: LEMMA
+    FORALL (t: nat, n: nat):
+      n < t IMPLIES
+        FORALL (k: nat): steps_covered(t, n)(k) IMPLIES msub(msub(t, 1), n) < k
+
+  % Hence the index about to be processed is fresh.
+  steps_covered_fresh: LEMMA
+    FORALL (t: nat, n: nat):
+      n < t IMPLIES NOT steps_covered(t, n)(msub(msub(t, 1), n))
+
+  steps_covered_le: LEMMA
+    FORALL (t: nat, n: nat):
+      0 < t IMPLIES
+        FORALL (k: nat): steps_covered(t, n)(k) IMPLIES k <= msub(t, 1)
+
+  steps_covered_mem_of_lt: LEMMA
+    FORALL (t: nat, n: nat, s: nat):
+      msub(t, n) <= s AND s < t IMPLIES steps_covered(t, n)(s)
+
+  %% Section 3: Attaching a label that already occurs adds one more of it
+
+  attach_child_labelled: LEMMA
+    FORALL (T: GTree, v: Addr, a: C):
+      labelled(attach_child(T, v, a), a) =
+        add(snoc(v, fresh_index(T, v)), labelled(T, a))
+
+  attach_child_count_label: LEMMA
+    FORALL (T: GTree, v: Addr, a: C):
+      count_label(attach_child(T, v, a), a) = count_label(T, a) + 1
+
+  attach_child_count_label_ne: LEMMA
+    FORALL (T: GTree, v: Addr, a: C, A: C):
+      a /= A IMPLIES
+        count_label(attach_child(T, v, a), A) = count_label(T, A)
+
+  % When a already labels some existing vertex, attach_at cannot skip: the
+  % candidate set is nonempty, so a node is added.
+  attach_at_count_label_of_label: LEMMA
+    FORALL (vars: CertVars, T: GTree, a: C, v: Addr):
+      T`dom(v) AND T`lab(v) = a
+        IMPLIES count_label(attach_at(vars, T, a), a) = count_label(T, a) + 1
+
+  attach_at_count_label_of_ne: LEMMA
+    FORALL (vars: CertVars, T: GTree, a: C, A: C):
+      a /= A
+        IMPLIES count_label(attach_at(vars, T, a), A) = count_label(T, A)
+
+  attach_at_preserves_root: LEMMA
+    FORALL (vars: CertVars, T: GTree, a: C):
+      T`dom(null) IMPLIES attach_at(vars, T, a)`dom(null)
+
+  attach_at_preserves_lab_root: LEMMA
+    FORALL (vars: CertVars, T: GTree, a: C):
+      attach_at(vars, T, a)`lab(null) = T`lab(null)
+
+  %% Section 4: The invariant
+  %
+  % The root survives with its label, and the number of vertices carrying
+  % that label tracks how often it recurs among the scanned indices.
+
+  matching_steps(Clog, t, n): finite_set[nat] =
+    {s: nat | steps_covered(t, n)(s) AND Clog(s) = Clog(t)}
+
+  matching_steps_subset: LEMMA
+    FORALL (Clog: [nat -> C], t: nat, n: nat):
+      subset?(matching_steps(Clog, t, n), steps_covered(t, n))
+
+  % How the matching-step set changes at one backward step. These stand
+  % in for the Finset.filter_insert and card_insert_of_notMem steps that
+  % the Lean proof performs inline.
+  matching_steps_step_eq: LEMMA
+    FORALL (Clog: [nat -> C], t: nat, n: nat):
+      Clog(msub(msub(t, 1), n)) = Clog(t)
+        IMPLIES matching_steps(Clog, t, n + 1) =
+                  add(msub(msub(t, 1), n), matching_steps(Clog, t, n))
+
+  matching_steps_step_ne: LEMMA
+    FORALL (Clog: [nat -> C], t: nat, n: nat):
+      Clog(msub(msub(t, 1), n)) /= Clog(t)
+        IMPLIES matching_steps(Clog, t, n + 1) = matching_steps(Clog, t, n)
+
+  matching_steps_card_step_eq: LEMMA
+    FORALL (Clog: [nat -> C], t: nat, n: nat):
+      n < t AND Clog(msub(msub(t, 1), n)) = Clog(t)
+        IMPLIES card(matching_steps(Clog, t, n + 1)) =
+                  card(matching_steps(Clog, t, n)) + 1
+
+  tau_build_root_and_count: LEMMA
+    FORALL (vars: CertVars, Clog: [nat -> C], t: nat, n: nat):
+      n < t IMPLIES
+        tau_build(vars, Clog, t, n)`dom(null) AND
+        tau_build(vars, Clog, t, n)`lab(null) = Clog(t) AND
+        count_label(tau_build(vars, Clog, t, n), Clog(t)) =
+          1 + card(matching_steps(Clog, t, n))
+
+  %% Section 5: Injectivity
+
+  % t1 is scanned by the construction at t2 but not by the one at t1, so
+  % the two matching-step sets are distinct.
+  matching_steps_strict: LEMMA
+    FORALL (Clog: [nat -> C], t1: nat, t2: nat):
+      0 < t1 AND 0 < t2 AND t1 < t2 AND Clog(t1) = Clog(t2)
+        IMPLIES
+          strict_subset?(matching_steps(Clog, t1, msub(t1, 1)),
+                         matching_steps(Clog, t2, msub(t2, 1)))
+
+  tau_C_injective_on_occurrences: THEOREM
+    FORALL (vars: CertVars, Clog: [nat -> C], t1: nat, t2: nat):
+      0 < t1 AND 0 < t2 AND t1 < t2 AND Clog(t1) = Clog(t2)
+        IMPLIES tau_C(vars, Clog, t1) /= tau_C(vars, Clog, t2)
+
+  % The paper's own formulation, that the number of vertices carrying the
+  % label differs. It does not depend on how the tree is represented,
+  % whereas the inequality above is between records whose lab field is a
+  % total function and so carries meaningless values outside dom. The
+  % inequality of trees follows from this, not the other way round.
+  tau_C_count_differs: THEOREM
+    FORALL (vars: CertVars, Clog: [nat -> C], t1: nat, t2: nat):
+      0 < t1 AND 0 < t2 AND t1 < t2 AND Clog(t1) = Clog(t2)
+        IMPLIES count_label(tau_C(vars, Clog, t1), Clog(t1)) /=
+                count_label(tau_C(vars, Clog, t2), Clog(t2))
+
+END ppg_mt_injectivity

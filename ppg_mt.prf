@@ -1,0 +1,44 @@
+(ppg_mt
+ (resample_agrees_on 0
+  (resample_agrees_on-1 nil 3996800000
+   ("" (grind) nil nil)
+   nil nil))
+ (resample_fixes_outside 0
+  (resample_fixes_outside-1 nil 3996800000
+   ("" (grind) nil nil)
+   nil nil))
+ (disjoint_iff_independent 0
+  (disjoint_iff_independent-1 nil 3996800000
+   ("" (then (skosimp*)
+             (expand "disjoint?")
+             (expand "independent?")
+             (expand "dependent?")
+             (expand "empty?")
+             (expand "intersection")
+             (expand "member")
+             (grind))
+    nil nil)
+   nil nil))
+ (resample_preserves_disjoint 0
+  (resample_preserves_disjoint-1 nil 3996800000
+   ("" (then (skosimp*)
+             (expand "depends_only_on")
+             (inst -1 "om!1" "resample(F!1, om!1, om2!1)")
+             (expand "resample")
+             (expand "disjoint?")
+             (expand "empty?")
+             (expand "intersection")
+             (expand "member")
+             (grind))
+    nil nil)
+   nil nil))
+ (resample_preserves_independent 0
+  (resample_preserves_independent-1 nil 3996800000
+   ("" (then (skosimp*)
+             (lemma "resample_preserves_disjoint")
+             (inst -1 "A_ev!1" "vars!1(c1!1)" "vars!1(c2!1)" "om!1" "om2!1")
+             (lemma "disjoint_iff_independent")
+             (inst -1 "vars!1" "c1!1" "c2!1")
+             (assert))
+    nil nil)
+   nil nil)))

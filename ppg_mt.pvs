@@ -1,0 +1,113 @@
+%------------------------------------------------------------------------------
+% ppg_mt.pvs
+% Algorithmic Lovasz Local Lemma (Moser-Tardos)
+%
+% Layer 1: product state space, the resample operator, and the bridge
+% from footprint disjointness to the dependency graph of
+% ppg_probabilistic.
+%
+% PVS port of PPGraphMoserTardos.lean (Stosic, 2026).
+%
+% The footprint of a certificate is not new data: ppg_probabilistic
+% already carries CertVars = [C -> finite_set[V]], and vars(c) is the set
+% of variables c reads. So "the footprints of c1 and c2 overlap" is
+% dependent?(vars)(c1, c2), the same dependency graph ppg_lll is stated
+% over. That identity is recorded as disjoint_iff_independent, and is why
+% no separate neighbor relation is introduced.
+%
+% Lean carries a per-variable family of domains (VarSpaces.space :
+% V -> Type, with a measure on each). PVS has no term-indexed type
+% families, so this port fixes one shared domain D and takes the state
+% space to be [V -> D]. Nothing proved in the Lean layer is lost: its
+% three theorems concern the resample function alone and carry no
+% measure-theoretic content.
+%
+% Events are plain sets of states, not members of a sigma-algebra.
+% Connecting this layer to ppg_lll would mean instantiating that theory
+% at T := MTState with a product measure on [V -> D]. That probability
+% model is the part the Lean development leaves open, so it is not
+% assumed here either.
+%
+% Author: Dragan Stosic, 2026.
+%------------------------------------------------------------------------------
+
+ppg_mt[C: TYPE+, V: TYPE+, D: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING ppg_probabilistic[C, V]
+
+  % A state assigns a value to every underlying random variable.
+  MTState: TYPE = [V -> D]
+
+  A_ev: VAR set[MTState]
+  om, om2: VAR MTState
+  F, Fc: VAR finite_set[V]
+  vars: VAR CertVars
+  c1, c2: VAR C
+  v: VAR V
+
+  %% Section 1: The resample operator
+
+  % Take fresh values from om2 on the footprint F, keep om elsewhere.
+  % This is the one operation the Moser-Tardos algorithm performs at
+  % every step.
+  resample(F, om, om2): MTState =
+    LAMBDA (v: V): IF F(v) THEN om2(v) ELSE om(v) ENDIF
+
+  % An event depends only on the footprint F: two states that agree on F
+  % are indistinguishable to the event. Changing coordinates outside F
+  % cannot change membership.
+  depends_only_on(A_ev, F): bool =
+    FORALL (om, om2: MTState):
+      (FORALL (v: V): F(v) IMPLIES om(v) = om2(v))
+        IMPLIES (A_ev(om) IFF A_ev(om2))
+
+  %% Section 2: Basic properties of resample
+
+  % On F, resample agrees with the fresh state.
+  resample_agrees_on: LEMMA
+    FORALL (F: finite_set[V], om, om2: MTState, v: V):
+      F(v) IMPLIES resample(F, om, om2)(v) = om2(v)
+
+  % Outside F, resample leaves everything as om had it.
+  resample_fixes_outside: LEMMA
+    FORALL (F: finite_set[V], om, om2: MTState, v: V):
+      NOT F(v) IMPLIES resample(F, om, om2)(v) = om(v)
+
+  %% Section 3: Footprint disjointness is dependency-graph independence
+  %
+  % dependent?(vars)(c1, c2) is defined in ppg_probabilistic as
+  %   EXISTS (v: V): vars(c1)(v) AND vars(c2)(v),
+  % i.e. as overlap of the two footprints. So the operational notion used
+  % by the resample argument and the graph-theoretic notion used by the
+  % LLL argument coincide. Everything the Lean development states in
+  % terms of its own `neighbor` relation is therefore available here in
+  % terms of dependent? / independent?, and the symmetry of that relation
+  % is already proved as dependent_symm.
+
+  disjoint_iff_independent: LEMMA
+    FORALL (vars: CertVars, c1, c2: C):
+      disjoint?(vars(c1), vars(c2)) IFF independent?(vars)(c1, c2)
+
+  %% Section 4: Resampling cannot disturb an independent event
+  %
+  % This is the operational seed of "resampling a violated event does not
+  % disturb non-neighbors", the same fact that lll_independence? in
+  % ppg_lll assumes probabilistically, here stated at the level of the
+  % resample function itself.
+
+  resample_preserves_disjoint: LEMMA
+    FORALL (A_ev: set[MTState], F, Fc: finite_set[V], om, om2: MTState):
+      depends_only_on(A_ev, Fc) AND disjoint?(F, Fc)
+        IMPLIES (A_ev(om) IFF A_ev(resample(F, om, om2)))
+
+  % The same statement with the footprints named by certificates, in the
+  % dependency-graph language of ppg_probabilistic: resampling what c1
+  % reads cannot change an event that depends only on what c2 reads,
+  % whenever c1 and c2 are independent.
+  resample_preserves_independent: LEMMA
+    FORALL (A_ev: set[MTState], vars: CertVars, c1, c2: C, om, om2: MTState):
+      depends_only_on(A_ev, vars(c2)) AND independent?(vars)(c1, c2)
+        IMPLIES (A_ev(om) IFF A_ev(resample(vars(c1), om, om2)))
+
+END ppg_mt
