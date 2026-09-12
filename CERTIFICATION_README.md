@@ -58,7 +58,10 @@ by shared variable support. Each component is either locally repairable
 (the General LLL condition is satisfiable) or a coupled obstruction (a
 negative pairwise discriminant proves no assignment exists). This is what
 decides whether repair can succeed on a component, formalized in
-`ppg_probabilistic.pvs` and `ppg_lll.pvs`.
+`ppg_probabilistic.pvs` and `ppg_lll.pvs`. When a component is repairable,
+the Moser-Tardos procedure (`ppg_mt*.pvs`) is the constructive side: it
+resamples the coupled variables until the component is satisfied, with the
+witness-tree machinery and an algebraic convergence bound.
 
 ## Files
 
