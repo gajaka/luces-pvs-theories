@@ -6,11 +6,11 @@
 % Fix-It Algorithm"), Theorem 5.7.3 (pp. 84-85; equation (5.9), which
 % defines the recursion, is on p. 83).
 %
-% PVS port of PPGraphMoserTardosConvergence.lean (Stosic, 2026).
+% PVS development (Stosic, 2026).
 %
 % This is the algebraic core of the convergence bound: w(D, c) <= x(c),
 % assuming x bounds the failure probabilities p and satisfies the
-% self-consistency condition of (5.9)-(5.10). As in the Lean version,
+% self-consistency condition of (5.9)-(5.10). Here
 % w(D, c) is defined by the recursion (5.9) rather than as a sum over an
 % enumerated set of weak Moser trees. The book's own proof of 5.7.3 works
 % from the recursion, so tree enumeration is not needed and no finiteness
@@ -18,25 +18,24 @@
 %
 % The theory depends only on the dependency graph, not on the state space
 % or the resample operator, so it imports ppg_probabilistic and takes
-% parameters [C, V]. Lean's neighbor P is dependent?(vars), and its
-% plusNeighbors is plus_neighbors below.
+% parameters [C, V]. The neighbor relation is dependent?(vars), and
+% Gamma+ is plus_neighbors below.
 %
 % Gamma+ is taken relative to a blocking set B, as in the rest of this
-% library, rather than over all of C; Lean quantifies over Finset.univ
-% and so needs [Fintype ind], which relativizing removes.
+% library, rather than over all of C; relativizing to B removes any
+% need for a finiteness assumption on C.
 % plus_neighbors adds c unconditionally rather than relying on
 % dependent?(vars)(c, c), whose reflexivity would need vars(c) nonempty,
-% the side condition the Lean file flags as never established.
+% the side condition that would otherwise remain unestablished.
 %
-% Lean works in NNReal; here p and x range over nonneg_real, and
-% nonnegativity of the weight is proved as mt_weight_nonneg.
+% Here p and x range over nonneg_real, and nonnegativity of the weight
+% is proved as mt_weight_nonneg.
 %
 % product_le_pointwise has no counterpart in the PVS finite_sets
 % libraries, which supply product_nonneg and product_pos but no pointwise
-% monotonicity. It stands in for Mathlib's Finset.prod_le_prod' and is
-% proved here by finite-set induction.
+% monotonicity, so it is proved here by finite-set induction.
 %
-% Still missing, as in the Lean version: the probabilistic half, the link
+% Still missing: the probabilistic half, the link
 % between w(D, c) and the expected number of resamplings. The book gets
 % it from Theorems 5.7.1 and 5.7.2, which need a probability model for
 % the log. No such model exists here yet, so the bound below is the
@@ -60,7 +59,7 @@ BEGIN
 
   %% Section 0: Pointwise monotonicity of finite products
   %
-  % Stands in for Mathlib's Finset.prod_le_prod'.
+  % Pointwise product monotonicity, proved by finite-set induction.
 
   product_le_pointwise: LEMMA
     FORALL (S_f: finite_set[C], f, g: [C -> real]):

@@ -6,8 +6,6 @@
 % from footprint disjointness to the dependency graph of
 % ppg_probabilistic.
 %
-% PVS port of PPGraphMoserTardos.lean (Stosic, 2026).
-%
 % The footprint of a certificate is not new data: ppg_probabilistic
 % already carries CertVars = [C -> finite_set[V]], and vars(c) is the set
 % of variables c reads. So "the footprints of c1 and c2 overlap" is
@@ -15,18 +13,15 @@
 % over. That identity is recorded as disjoint_iff_independent, and is why
 % no separate neighbor relation is introduced.
 %
-% Lean carries a per-variable family of domains (VarSpaces.space :
-% V -> Type, with a measure on each). PVS has no term-indexed type
-% families, so this port fixes one shared domain D and takes the state
-% space to be [V -> D]. Nothing proved in the Lean layer is lost: its
-% three theorems concern the resample function alone and carry no
-% measure-theoretic content.
+% This layer fixes one shared domain D and takes the state space to be
+% [V -> D], rather than a per-variable family of domains. The three
+% theorems here concern the resample function alone and carry no
+% measure-theoretic content, so nothing is lost by this choice.
 %
 % Events are plain sets of states, not members of a sigma-algebra.
 % Connecting this layer to ppg_lll would mean instantiating that theory
 % at T := MTState with a product measure on [V -> D]. That probability
-% model is the part the Lean development leaves open, so it is not
-% assumed here either.
+% model is left open here.
 %
 % Author: Dragan Stosic, 2026.
 %------------------------------------------------------------------------------
@@ -80,9 +75,8 @@ BEGIN
   %   EXISTS (v: V): vars(c1)(v) AND vars(c2)(v),
   % i.e. as overlap of the two footprints. So the operational notion used
   % by the resample argument and the graph-theoretic notion used by the
-  % LLL argument coincide. Everything the Lean development states in
-  % terms of its own `neighbor` relation is therefore available here in
-  % terms of dependent? / independent?, and the symmetry of that relation
+  % LLL argument coincide. Everything is stated directly in terms of
+  % dependent? / independent?, and the symmetry of that relation
   % is already proved as dependent_symm.
 
   disjoint_iff_independent: LEMMA

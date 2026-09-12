@@ -8,10 +8,10 @@
 % Moser & Tardos, "A constructive proof of the general Lovasz Local
 % Lemma", arXiv:0903.0544v3, Section 2.
 %
-% PVS port of PPGraphMoserTardosGrowing.lean (Stosic, 2026).
+% PVS development (Stosic, 2026).
 %
-% Builds on ppg_probabilistic (CertVars, dependent?). The Lean file's
-% neighbor P is dependent?(vars) here, so this theory needs neither the
+% Builds on ppg_probabilistic (CertVars, dependent?). The neighbor
+% relation is dependent?(vars) here, so this theory needs neither the
 % state space nor the resample operator, and takes parameters [C, V].
 %
 % A vertex is named by a list of naturals: null is the root and
@@ -20,26 +20,23 @@
 % Addressing is what lets a new child be attached at an arbitrary
 % existing vertex, which a plain rose tree cannot express.
 %
-% Two places where PVS needs more than Lean:
+% Two implementation notes:
 %
-%  msub is truncating subtraction on nat, since Lean's t - 1 - n
-%  truncates at zero while PVS subtraction on nat lands in int. The
-%  backward scan must visit the same indices, because the injectivity
-%  argument of the next layer counts them.
+%  msub is truncating subtraction on nat (truncating at zero), since PVS
+%  subtraction on nat lands in int. The backward scan must visit the same
+%  indices, because the injectivity argument of the next layer counts them.
 %
 %  exists_fresh_index comes from injection_and_cardinal in
-%  finite_sets@finite_sets_card_eq, not from Lean's
-%  Set.infinite_range_of_injective, which PVS has no counterpart for. If
-%  every snoc(v, k) with k < card(dom) + 1 were present, that many
-%  distinct addresses would inject into dom, forcing
-%  card(dom) + 1 <= card(dom).
+%  finite_sets@finite_sets_card_eq. If every snoc(v, k) with
+%  k < card(dom) + 1 were present, that many distinct addresses would
+%  inject into dom, forcing card(dom) + 1 <= card(dom).
 %
-% Choice: Lean's Classical.choose for the fresh child index and for the
-% tie-break among maximum-depth candidates becomes choose applied to a
-% set that the preceding existence lemma shows to be nonempty.
+% Choice: the fresh child index and the tie-break among maximum-depth
+% candidates use choose applied to a set that the preceding existence
+% lemma shows to be nonempty.
 %
-% Not attempted here, as in the Lean file: injectivity of the map from
-% time to tree (next layer), and any link to a rose-tree representation.
+% Not attempted here: injectivity of the map from time to tree (next
+% layer), and any link to a rose-tree representation.
 %
 % Author: Dragan Stosic, 2026.
 %------------------------------------------------------------------------------
@@ -65,12 +62,12 @@ BEGIN
   snoc(v, k): Addr = append(v, cons(k, null))
 
   % Reading the equality off the reversed lists turns it into a cons
-  % equation. This is the Lean file's list_concat_inj, same proof.
+  % equation. This is list_concat_inj, proved by induction on the list.
   snoc_inj: LEMMA
     FORALL (v1, v2: Addr, k1, k2: nat):
       snoc(v1, k1) = snoc(v2, k2) IMPLIES v1 = v2 AND k1 = k2
 
-  % Truncating subtraction on nat, matching Lean's subtraction there.
+  % Truncating subtraction on nat (truncating at zero).
   msub(t, n): nat = IF t <= n THEN 0 ELSE t - n ENDIF
 
   %% Section 1: Growing trees
@@ -229,7 +226,7 @@ BEGIN
   %
   % Stated on the address representation. The rose-tree condition wf? of
   % ppg_mt_witness says the same thing about that representation; the two
-  % are not connected here, matching the Lean development, which leaves
+  % are not connected here; this development leaves
   % the bridge between its GrowingTree and WTree open.
 
   gt_child_ok?(vars, T): bool =

@@ -11,7 +11,7 @@
 % tau_C(t_i) contains exactly i vertices labelled A, thus
 % tau_C(t_i) /= tau_C(t_j) unless i = j."
 %
-% PVS port of PPGraphMoserTardosInjectivity.lean (Stosic, 2026).
+% PVS development (Stosic, 2026).
 % Builds on ppg_mt_growing (GTree, attach_child, attach_at, tau_build,
 % tau_C, fresh_index_spec, candidates_nonempty_of_label).
 %
@@ -26,7 +26,7 @@
 % processed. Its four arithmetic lemmas are where the truncating
 % subtraction msub of ppg_mt_growing has to be handled: each carries the
 % hypothesis (n < t or 0 < t) under which msub agrees with ordinary
-% subtraction, matching the Lean statements.
+% subtraction.
 %
 % Author: Dragan Stosic, 2026.
 %------------------------------------------------------------------------------
@@ -140,8 +140,8 @@ BEGIN
       subset?(matching_steps(Clog, t, n), steps_covered(t, n))
 
   % How the matching-step set changes at one backward step. These stand
-  % in for the Finset.filter_insert and card_insert_of_notMem steps that
-  % the Lean proof performs inline.
+  % in for the filter-insert and card-insert-of-not-member steps, proved
+  % inline here.
   matching_steps_step_eq: LEMMA
     FORALL (Clog: [nat -> C], t: nat, n: nat):
       Clog(msub(msub(t, 1), n)) = Clog(t)

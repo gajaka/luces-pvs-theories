@@ -4,15 +4,14 @@
 %
 % Layer 2: the resample-until-fixed algorithm as a process.
 %
-% PVS port of PPGraphMoserTardosProcess.lean (Stosic, 2026), together
-% with the dependency-graph restatement that the Lean development puts
-% at the top of PPGraphMoserTardosWitness.lean.
+% PVS development (Stosic, 2026), including the dependency-graph
+% restatement used by the witness-tree layer.
 %
 % Builds on ppg_mt (MTState, resample, depends_only_on,
 % resample_preserves_independent) and hence on ppg_probabilistic
 % (CertVars, dependent?, independent?, neighbors).
 %
-% Lean's MTProcess is a structure bundling the bad events, their
+% The process is described by the bad events, their
 % footprints, and a proof that each event depends only on its own
 % footprint. Here the data are ordinary arguments and the bundled proof
 % becomes the hypothesis mt_wf?(bad, vars), the style ppg_lll already
@@ -23,7 +22,7 @@
 % The separate footprint field is dropped, since CertVars already gives
 % vars(c) as the variables c reads. The dependency graph of the process
 % is then the graph of ppg_probabilistic rather than a parallel copy of
-% it; Lean's neighbor is dependent?(vars), and its neighbor_symm is
+% it; the neighbor relation is dependent?(vars), and neighbor_symm is
 % dependent_symm, proved there.
 %
 % The log is a record-valued sequence recording, at each step, which
