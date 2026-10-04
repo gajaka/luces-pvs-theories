@@ -104,7 +104,7 @@ existence (LLL) and the constructive algorithm (Moser-Tardos).
 | [ppg_mt_weight.pvs](https://github.com/gajaka/luces-pvs-theories/blob/main/ppg_mt_weight.pvs) | 4 |
 
 PPG + certification + self-assessment + bridge + LLL + Moser-Tardos, all machine-checked. Full repo: 460 machine-checked results (340 theorems + 120 lemmas), 52 theories.
-Lean 4: 209 theorems, zero sorry.
+Lean 4: 575 theorems, zero sorry. The Lean development now carries the full arc, including the Moser-Tardos expected-work bound E[T_LOG] and the repair bridge; the corresponding PVS port of that final arc is forthcoming.
 
 ## Self-Assessment Theory
 
@@ -234,7 +234,7 @@ The blocking dependency decomposition reveals that some certificate components a
 
 The framework is the Lovász Local Lemma (Alon and Spencer, "The Probabilistic Method", 4th ed., Wiley 2016, Lemma 5.1.1): given bad events with bounded dependency and probabilities satisfying the General LLL condition, a configuration where no bad event occurs exists with positive probability. This existence result is now machine-checked (`ppg_lll.pvs`, 30 theorems), with the blocking decomposition and pair infeasibility formalized in `ppg_probabilistic.pvs` (10 theorems). The proof is division-free, so it never requires nonzero conditioning measure.
 
-The algorithmic version (Moser-Tardos) upgrades this existence guarantee to a constructive randomized repair procedure. Its resampling infrastructure, witness tree, injectivity, and algebraic convergence bound are now formalized (`ppg_mt*.pvs`). The expected-time probabilistic bound (E[T_LOG]) remains open.
+The algorithmic version (Moser-Tardos) upgrades this existence guarantee to a constructive randomized repair procedure. Its resampling infrastructure, witness tree, injectivity, and algebraic convergence bound are now formalized (`ppg_mt*.pvs`). The expected-time probabilistic bound (E[T_LOG] ≤ Σ x(α)) has since been completed in the Lean 4 development ([ppg-lean](https://github.com/gajaka/ppg-lean)), by witness-tree counting and with no termination assumption, together with a repair bridge that instantiates the abstract repair relation with Moser-Tardos reachability. The PVS port of that final bound is forthcoming.
 
 ## Related
 
