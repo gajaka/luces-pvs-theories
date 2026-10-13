@@ -1,0 +1,36 @@
+% Semantic regions for an arbitrary state space.
+ppg_repair_regions[State: TYPE, C: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_infeasibility[State, C]
+  allowed: VAR set[State]
+  sat: VAR [C, State -> bool]
+  B: VAR finite_set[C]
+  certified, first, second, criterion: VAR bool
+  Gap(allowed, sat, B, certified): bool =
+    Satisfiable(allowed, sat, B) AND NOT certified
+
+  refutation_excludes_certification: THEOREM
+    (certified IMPLIES Satisfiable(allowed, sat, B)) AND Infeasible(allowed, sat, B)
+    IMPLIES NOT certified
+  certified_or_gap_iff_satisfiable: THEOREM
+    (certified IMPLIES Satisfiable(allowed, sat, B)) IMPLIES
+      ((certified OR Gap(allowed, sat, B, certified)) IFF Satisfiable(allowed, sat, B))
+  uncertified_iff_gap_or_impossible: THEOREM
+    (certified IMPLIES Satisfiable(allowed, sat, B)) IMPLIES
+      (NOT certified IFF (Gap(allowed, sat, B, certified) OR Infeasible(allowed, sat, B)))
+  three_regions_exhaustive: THEOREM
+    certified OR Gap(allowed, sat, B, certified) OR Infeasible(allowed, sat, B)
+  gap_excludes_certification: THEOREM Gap(allowed, sat, B, certified) IMPLIES NOT certified
+  gap_excludes_impossibility: THEOREM
+    Gap(allowed, sat, B, certified) IMPLIES NOT Infeasible(allowed, sat, B)
+  extended_certification_sound: THEOREM
+    (first IMPLIES Satisfiable(allowed, sat, B)) AND
+    (second IMPLIES Satisfiable(allowed, sat, B)) IMPLIES
+      ((first OR second) IMPLIES Satisfiable(allowed, sat, B))
+  gap_after_extension_iff: THEOREM
+    Gap(allowed, sat, B, first OR second) IFF (Gap(allowed, sat, B, first) AND NOT second)
+  gap_shrinks_under_extension: THEOREM
+    Gap(allowed, sat, B, first OR second) IMPLIES Gap(allowed, sat, B, first)
+
+  RepairRegion: TYPE = {region_certified, region_gap, region_impossible}
+END ppg_repair_regions

@@ -1,0 +1,21 @@
+% Resampling within one dependency component leaves other components unchanged.
+ppg_bdd_moser_tardos[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_semantics[C, V, Value, domain]
+  vars: VAR CertVars
+  bad: VAR [C, MTState -> bool]
+  log: VAR MTLog
+  initial: VAR MTState
+  B: VAR finite_set[C]
+  c, j: VAR C
+  t: VAR nat
+  StaysWithinComponent(vars, B, log, c): bool =
+    FORALL t: compOf(vars, B, c)(log(t)`1)
+  stays_within_step_disjoint: THEOREM
+    StaysWithinComponent(vars, B, log, c) AND B(j) AND
+    NOT SameComponent(vars, B)(c, j) IMPLIES disjoint?(vars(log(t)`1), vars(j))
+  mt_trajectory_localizes: THEOREM
+    mt_wf(vars, bad) AND StaysWithinComponent(vars, B, log, c) AND B(j) AND
+    NOT SameComponent(vars, B)(c, j) IMPLIES
+      (bad(j, trajectory(vars, log, initial, t)) IFF bad(j, trajectory(vars, log, initial, 0)))
+END ppg_bdd_moser_tardos

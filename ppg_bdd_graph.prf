@@ -1,0 +1,294 @@
+(|ppg_bdd_graph|
+ (|bddGraph_adj_iff| 0
+  (|bddGraph_adj_iff-1| NIL 4000882712
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL NIL)
+   ((|bddAdj| CONST-DECL "bool" |ppg_bdd_graph| NIL)
+    (|dependent| CONST-DECL "bool" |ppg_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|adj_imp_dependent| 0
+  (|adj_imp_dependent-1| NIL 4000882712
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL NIL)
+   ((|bddAdj| CONST-DECL "bool" |ppg_bdd_graph| NIL)
+    (|dependent| CONST-DECL "bool" |ppg_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|bddAdj_symmetric| 0
+  (|bddAdj_symmetric-1| NIL 4000882712
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL NIL)
+   ((|symmetric?| CONST-DECL "bool" |relations| NIL)
+    (|bddAdj| CONST-DECL "bool" |ppg_bdd_graph| NIL)
+    (|dependent| CONST-DECL "bool" |ppg_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|dependent_imp_reflTransGen_adj| 0
+  (|dependent_imp_reflTransGen_adj-1| NIL 4000882712
+   ("" (SKOSIMP*)
+    (("" (LEMMA "reach_refl" ("step" "bddAdj(vars!1, B!1)" "v" "c!1"))
+      ((""
+        (LEMMA "reach_single"
+         ("step" "bddAdj(vars!1, B!1)" "v" "c!1" "w" "d!1"))
+        (("" (GRIND :IF-MATCH ALL :EXCLUDE ("Reach" "dependent" "is_finite"))
+          NIL))))))
+    NIL)
+   ((|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (|bddAdj| CONST-DECL "bool" |ppg_bdd_graph| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (|reach_refl| FORMULA-DECL NIL |ppg_reachability_refutation| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|reach_single| FORMULA-DECL NIL |ppg_reach_algebra| NIL))
+   SHOSTAK))
+ (|reflTransGen_adj_eq_reflTransGen_dependent| 0
+  (|reflTransGen_adj_eq_reflTransGen_dependent-1| NIL 4000882712
+   ("" (SKOSIMP*)
+    (("" (APPLY-EXTENSIONALITY)
+      ((""
+        (LEMMA "reach_mono"
+         ("step" "bddAdj(vars!1, B!1)" "other" "CoupledIn(vars!1, B!1)"))
+        ((""
+          (LEMMA "reach_closed"
+           ("step" "CoupledIn(vars!1, B!1)" "other" "bddAdj(vars!1, B!1)"))
+          ((""
+            (LEMMA "dependent_imp_reflTransGen_adj"
+             ("vars" "vars!1" "B" "B!1"))
+            ((""
+              (GRIND :IF-MATCH ALL :EXCLUDE ("Reach" "dependent" "is_finite"))
+              NIL))))))))))
+    NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|CoupledIn| CONST-DECL "bool" |ppg_bdd| NIL)
+    (|bddAdj| CONST-DECL "bool" |ppg_bdd_graph| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (|Reach| INDUCTIVE-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|reach_closed| FORMULA-DECL NIL |ppg_reach_algebra| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|dependent_imp_reflTransGen_adj| FORMULA-DECL NIL |ppg_bdd_graph| NIL)
+    (|reach_mono| FORMULA-DECL NIL |ppg_reach_algebra| NIL))
+   SHOSTAK))
+ (|reachable_imp_sameComponent| 0
+  (|reachable_imp_sameComponent-1| NIL 4000882712
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "inductiveSet_reachable"
+       ("step" "bddAdj(vars!1, B!1)" "v" "c!1" "w" "d!1" "I"
+        "LAMBDA (z:C): SameComponent(vars!1, B!1)(c!1, z)"))
+      (("" (LEMMA "sameComponent_refl" ("vars" "vars!1" "B" "B!1" "c" "c!1"))
+        ((""
+          (LEMMA "sameComponent_trans" ("vars" "vars!1" "B" "B!1" "c" "c!1"))
+          (("" (LEMMA "sameComponent_of_coupled" ("vars" "vars!1" "B" "B!1"))
+            ((""
+              (GRIND :IF-MATCH NIL :EXCLUDE
+               ("Reach" "SameComponent" "dependent" "is_finite"))
+              (("" (INST -2 "u!1" "w!1")
+                (("" (INST -1 "u!1" "w!1") (("" (GROUND) NIL))))))))))))))))
+    NIL)
+   ((|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (|bddAdj| CONST-DECL "bool" |ppg_bdd_graph| NIL)
+    (|SameComponent| CONST-DECL "equivalence[C]" |ppg_bdd| NIL)
+    (|equivalence| TYPE-EQ-DECL NIL |relations| NIL)
+    (|equivalence?| CONST-DECL "bool" |relations| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|inductiveSet_reachable| FORMULA-DECL NIL |ppg_reachability_refutation|
+     NIL)
+    (|sameComponent_trans| FORMULA-DECL NIL |ppg_bdd| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|InductiveSet| CONST-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|CoupledIn| CONST-DECL "bool" |ppg_bdd| NIL)
+    (|sameComponent_of_coupled| FORMULA-DECL NIL |ppg_bdd| NIL)
+    (|sameComponent_refl| FORMULA-DECL NIL |ppg_bdd| NIL))
+   SHOSTAK))
+ (|sameComponent_mem_or_eq| 0
+  (|sameComponent_mem_or_eq-1| NIL 4000882712
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "EquivClosLeast[C]"
+       ("R" "CoupledIn(vars!1, B!1)" "S"
+        "LAMBDA (a,b:C): (B!1(a) AND B!1(b)) OR a=b"))
+      (("" (GRIND :IF-MATCH NIL :EXCLUDE ("EquivClos" "dependent" "is_finite"))
+        (("1" (INST -1 "(c!1, d!1)") (("1" (GROUND) NIL NIL)) NIL)
+         ("2" (INST -1 "(c!1, d!1)") (("2" (GROUND) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (OR CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|CoupledIn| CONST-DECL "bool" |ppg_bdd| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|EquivClosLeast| FORMULA-DECL NIL |EquivalenceClosure| NIL)
+    (|SameComponent| CONST-DECL "equivalence[C]" |ppg_bdd| NIL)
+    (|equivalence?| CONST-DECL "bool" |relations| NIL)
+    (|transitive?| CONST-DECL "bool" |relations| NIL)
+    (|symmetric?| CONST-DECL "bool" |relations| NIL)
+    (|reflexive?| CONST-DECL "bool" |relations| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL))
+   SHOSTAK))
+ (|sameComponent_imp_reachable| 0
+  (|sameComponent_imp_reachable-1| NIL 4000882712
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "EquivClosLeast[C]"
+       ("R" "CoupledIn(vars!1, B!1)" "S" "Reach(bddAdj(vars!1, B!1))"))
+      (("" (LEMMA "reach_equivalence" ("step" "bddAdj(vars!1, B!1)"))
+        (("" (LEMMA "bddAdj_symmetric" ("vars" "vars!1" "B" "B!1"))
+          ((""
+            (LEMMA "dependent_imp_reflTransGen_adj"
+             ("vars" "vars!1" "B" "B!1"))
+            ((""
+              (GRIND :IF-MATCH ALL :EXCLUDE
+               ("Reach" "EquivClos" "bddAdj" "dependent" "is_finite"))
+              NIL))))))))))
+    NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (|bddAdj| CONST-DECL "bool" |ppg_bdd_graph| NIL)
+    (|Reach| INDUCTIVE-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|CoupledIn| CONST-DECL "bool" |ppg_bdd| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|EquivClosLeast| FORMULA-DECL NIL |EquivalenceClosure| NIL)
+    (|bddAdj_symmetric| FORMULA-DECL NIL |ppg_bdd_graph| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|SameComponent| CONST-DECL "equivalence[C]" |ppg_bdd| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|equivalence?| CONST-DECL "bool" |relations| NIL)
+    (|transitive?| CONST-DECL "bool" |relations| NIL)
+    (|reflexive?| CONST-DECL "bool" |relations| NIL)
+    (|symmetric?| CONST-DECL "bool" |relations| NIL)
+    (|dependent_imp_reflTransGen_adj| FORMULA-DECL NIL |ppg_bdd_graph| NIL)
+    (|reach_equivalence| FORMULA-DECL NIL |ppg_reach_algebra| NIL))
+   SHOSTAK))
+ (|reachable_iff_sameComponent| 0
+  (|reachable_iff_sameComponent-1| NIL 4000882712
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "sameComponent_imp_reachable"
+       ("vars" "vars!1" "B" "B!1" "c" "c!1" "d" "d!1"))
+      ((""
+        (LEMMA "reachable_imp_sameComponent"
+         ("vars" "vars!1" "B" "B!1" "c" "c!1" "d" "d!1"))
+        (("" (ASSERT) (("" (GROUND) NIL))))))))
+    NIL)
+   ((|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (|sameComponent_imp_reachable| FORMULA-DECL NIL |ppg_bdd_graph| NIL)
+    (|reachable_imp_sameComponent| FORMULA-DECL NIL |ppg_bdd_graph| NIL))
+   SHOSTAK))
+ (|graphClass_eq_compOf| 0
+  (|graphClass_eq_compOf-1| NIL 4000882712
+   ("" (SKOSIMP*)
+    (("" (EXPAND "graphClass")
+      (("" (EXPAND "compOf")
+        (("" (APPLY-EXTENSIONALITY)
+          ((""
+            (LEMMA "reachable_iff_sameComponent"
+             ("vars" "vars!1" "B" "B!1" "c" "c!1" "d" "x!1"))
+            ((""
+              (GRIND :IF-MATCH NIL :EXCLUDE
+               ("Reach" "SameComponent" "is_finite"))
+              NIL))))))))))
+    NIL)
+   ((|graphClass| CONST-DECL "finite_set[C]" |ppg_bdd_graph| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Reach| INDUCTIVE-DECL "bool" |ppg_reachability_refutation| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|bddAdj| CONST-DECL "bool" |ppg_bdd_graph| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|equivalence?| CONST-DECL "bool" |relations| NIL)
+    (|equivalence| TYPE-EQ-DECL NIL |relations| NIL)
+    (|SameComponent| CONST-DECL "equivalence[C]" |ppg_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_graph| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|reachable_iff_sameComponent| FORMULA-DECL NIL |ppg_bdd_graph| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL))
+   SHOSTAK))
+ (|connectedComponents_eq_groups| 0
+  (|connectedComponents_eq_groups-1| NIL 4000882712
+   ("" (SKOSIMP*)
+    (("" (AUTO-REWRITE "graphClass_eq_compOf")
+      (("" (EXPAND "connectedComponents")
+        (("" (EXPAND "groups") (("" (ASSERT) NIL))))))))
+    NIL)
+   ((|groups| CONST-DECL "finite_set[finite_set[C]]" |ppg_bdd_partition| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|graphClass_eq_compOf| FORMULA-DECL NIL |ppg_bdd_graph| NIL)
+    (|connectedComponents| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_bdd_graph| NIL))
+   SHOSTAK)))
+

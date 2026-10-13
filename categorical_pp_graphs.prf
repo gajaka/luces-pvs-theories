@@ -1,68 +1,93 @@
-(categorical_pp_graphs
- (thm_embedding_is_morphism 0
-  (thm_embedding_is_morphism-1 nil 3995183012
-   ("" (skosimp*)
-    (("" (expand "pp_embedding?") (("" (prop) nil nil)) nil)) nil)
-   ((pp_embedding? const-decl "bool" categorical_pp_graphs nil))
-   shostak))
- (thm_quotient_is_morphism 0
-  (thm_quotient_is_morphism-1 nil 3995183193
-   ("" (skosimp*)
-    (("" (expand "pp_quotient?") (("" (prop) nil nil)) nil)) nil)
-   ((pp_quotient? const-decl "bool" categorical_pp_graphs nil))
-   shostak))
- (thm_morphism_preserves_pp_edges 0
-  (thm_morphism_preserves_pp_edges-1 nil 3995183253
-   ("" (skosimp*)
-    (("" (expand "pp_morphism?")
-      (("" (flatten)
-        (("" (expand "pp_valid_T")
-          (("" (inst -3 "x!1" "y!1")
-            (("" (smash)
-              (("" (inst -2 "x!1" "y!1") (("" (prop) nil nil)) nil))
-              nil))
-            nil))
-          nil))
-        nil))
-      nil))
-    nil)
-   ((pp_morphism? const-decl "bool" categorical_pp_graphs nil)
-    (pp_valid_T const-decl "bool" categorical_pp_graphs nil)
-    (T formal-type-decl nil categorical_pp_graphs nil))
-   shostak))
- (thm_simulation_is_morphism 0
-  (thm_simulation_is_morphism-1 nil 3995183520
-   ("" (skosimp*)
-    (("" (expand "simulation?") (("" (prop) nil nil)) nil)) nil)
-   ((simulation? const-decl "bool" categorical_pp_graphs nil))
-   shostak))
- (thm_simulation_implies_refinement 0
-  (thm_simulation_implies_refinement-1 nil 3995183637
-   ("" (skosimp*)
-    (("" (expand "pp_refines?")
-      (("" (expand "simulation?")
-        (("" (expand "pp_quotient?")
-          (("" (flatten)
-            (("" (inst 1 "f!1") (("" (prop) nil nil)) nil)) nil))
-          nil))
-        nil))
-      nil))
-    nil)
-   ((pp_refines? const-decl "bool" categorical_pp_graphs nil)
-    (pp_quotient? const-decl "bool" categorical_pp_graphs nil)
-    (U formal-type-decl nil categorical_pp_graphs nil)
-    (T formal-type-decl nil categorical_pp_graphs nil)
-    (simulation? const-decl "bool" categorical_pp_graphs nil))
-   shostak))
- (thm_simulation_roundtrip 0
-  (thm_simulation_roundtrip-1 nil 3995184042
-   ("" (skosimp*)
-    (("" (expand "simulation?")
-      (("" (flatten) (("" (inst -3 "x!1") (("" (smash) nil nil)) nil))
-        nil))
-      nil))
-    nil)
-   ((simulation? const-decl "bool" categorical_pp_graphs nil)
-    (T formal-type-decl nil categorical_pp_graphs nil))
-   shostak)))
+(|categorical_pp_graphs|
+ (G1_TCC1 0
+  (G1_TCC1-1 NIL 4000876045
+   (""
+    (INST +
+     "(# vertices := LAMBDA (x: T): FALSE, edges := LAMBDA (x, y: T): FALSE #)")
+    (("" (GRIND) NIL)) NIL)
+   ((FALSE CONST-DECL "bool" |booleans| NIL)
+    (|Graph_T| TYPE-EQ-DECL NIL |categorical_pp_graphs| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |categorical_pp_graphs| NIL))
+   NIL (G1 EXISTENCE "" "Graph_T" (32 2 32 13))))
+ (G2_TCC1 0
+  (G2_TCC1-1 NIL 4000876045
+   (""
+    (INST +
+     "(# vertices := LAMBDA (x: U): FALSE, edges := LAMBDA (x, y: U): FALSE #)")
+    (("" (GRIND) NIL)) NIL)
+   ((FALSE CONST-DECL "bool" |booleans| NIL)
+    (|Graph_U| TYPE-EQ-DECL NIL |categorical_pp_graphs| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (U FORMAL-TYPE-DECL NIL |categorical_pp_graphs| NIL))
+   NIL (G2 EXISTENCE "" "Graph_U" (33 2 33 13))))
+ (|thm_embedding_is_morphism| 0
+  (|thm_embedding_is_morphism-1| |nil| 3995183012
+   ("" (SKOSIMP*) (("" (EXPAND "pp_embedding?") (("" (PROP) NIL NIL)) NIL))
+    NIL)
+   ((|pp_embedding?| CONST-DECL "bool" |categorical_pp_graphs| NIL)) SHOSTAK))
+ (|thm_quotient_is_morphism| 0
+  (|thm_quotient_is_morphism-1| |nil| 3995183193
+   ("" (SKOSIMP*) (("" (EXPAND "pp_quotient?") (("" (PROP) NIL NIL)) NIL)) NIL)
+   ((|pp_quotient?| CONST-DECL "bool" |categorical_pp_graphs| NIL)) SHOSTAK))
+ (|thm_morphism_preserves_pp_edges| 0
+  (|thm_morphism_preserves_pp_edges-1| |nil| 3995183253 ("" (GRIND) NIL NIL)
+   ((/= CONST-DECL "boolean" |notequal| NIL)
+    (T FORMAL-TYPE-DECL NIL |categorical_pp_graphs| NIL)
+    (|pp_edge| CONST-DECL "bool" |directed_pp_graph| NIL)
+    (U FORMAL-TYPE-DECL NIL |categorical_pp_graphs| NIL)
+    (|morphism| CONST-DECL "bool" |categorical_pp_graphs| NIL)
+    (|pp_morphism?| CONST-DECL "bool" |categorical_pp_graphs| NIL)
+    (|pp_edge_T| CONST-DECL "bool" |categorical_pp_graphs| NIL)
+    (|pp_valid_T| CONST-DECL "bool" |categorical_pp_graphs| NIL)
+    (|pp_edge_U| CONST-DECL "bool" |categorical_pp_graphs| NIL))
+   SHOSTAK))
+ (|thm_simulation_is_morphism| 0
+  (|thm_simulation_is_morphism-1| |nil| 3995183520
+   ("" (SKOSIMP*) (("" (EXPAND "simulation?") (("" (PROP) NIL NIL)) NIL)) NIL)
+   ((|simulation?| CONST-DECL "bool" |categorical_pp_graphs| NIL)) SHOSTAK))
+ (|thm_simulation_implies_refinement| 0
+  (|thm_simulation_implies_refinement-1| |nil| 3995183637
+   ("" (SKOSIMP*)
+    (("" (EXPAND "pp_refines?")
+      (("" (EXPAND "simulation?")
+        (("" (EXPAND "pp_quotient?")
+          (("" (FLATTEN) (("" (INST 1 "f!1") (("" (PROP) NIL NIL)) NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|pp_refines?| CONST-DECL "bool" |categorical_pp_graphs| NIL)
+    (|pp_quotient?| CONST-DECL "bool" |categorical_pp_graphs| NIL)
+    (U FORMAL-TYPE-DECL NIL |categorical_pp_graphs| NIL)
+    (T FORMAL-TYPE-DECL NIL |categorical_pp_graphs| NIL)
+    (|simulation?| CONST-DECL "bool" |categorical_pp_graphs| NIL))
+   SHOSTAK))
+ (|thm_simulation_roundtrip| 0
+  (|thm_simulation_roundtrip-1| |nil| 3995184042
+   ("" (SKOSIMP*)
+    (("" (EXPAND "simulation?")
+      (("" (FLATTEN) (("" (INST -3 "x!1") (("" (SMASH) NIL NIL)) NIL)) NIL))
+      NIL))
+    NIL)
+   ((|simulation?| CONST-DECL "bool" |categorical_pp_graphs| NIL)
+    (T FORMAL-TYPE-DECL NIL |categorical_pp_graphs| NIL))
+   SHOSTAK))
+ (|embedding_agrees| 0
+  (|embedding_agrees-1| NIL 4000876045 ("" (GRIND) NIL NIL)
+   ((/= CONST-DECL "boolean" |notequal| NIL)
+    (T FORMAL-TYPE-DECL NIL |categorical_pp_graphs| NIL)
+    (|pp_edge| CONST-DECL "bool" |directed_pp_graph| NIL)
+    (U FORMAL-TYPE-DECL NIL |categorical_pp_graphs| NIL)
+    (|morphism| CONST-DECL "bool" |categorical_pp_graphs| NIL)
+    (|pp_morphism?| CONST-DECL "bool" |categorical_pp_graphs| NIL)
+    (|pp_embedding?| CONST-DECL "bool" |categorical_pp_graphs| NIL)
+    (|embedding| CONST-DECL "bool" |categorical_pp_graphs| NIL))
+   SHOSTAK)))
 

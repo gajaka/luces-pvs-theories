@@ -1,0 +1,117 @@
+Directed PPG core translation
+Source: ppg-lean d69fd93b9a990d1bbe0ed1630170e44fcbe45982
+
+The first package covers PPGraph.lean (22 results), PPGraphCategorical.lean
+(10 results), and PPGraphRR.lean (9 results). Per-result mappings are in
+proofs.tsv. The mapping below records the representation and assumptions;
+PVS checks the target proofs, not a mechanically verified Lean-to-PVS compiler.
+
+PPGraph.lean
+
+directed_pp_graph.Graph retains the same vertices and directed edges, with
+the endpoint-membership condition as a record subtype. No symmetry or
+nonemptiness of the vertex type is assumed. The earlier PVS definitions
+of pp_edge, pp_edge_weak, pp_valid and pp_valid_weak are unchanged.
+
+Prewalk packages a positive length and a function from below(length) to V.
+This represents a Lean pair of n and Prewalk V n: the n = 0 case has no
+inhabitant in Lean because len_pos requires n >= 1. All walk vertices,
+consecutive edges, invariant conditions and injectivity requirements are
+preserved. In particular, a singleton path must satisfy its invariant even
+though it has no consecutive edge. Connectivity quantifies over these
+packed finite paths; separation and certificate chains use the same paths.
+
+is_subgraph, pp_transform, invariant_set, violation_set, violating,
+deterministic and certificate_chain preserve the Lean definitions.
+pp_transform uses is_subgraph as a definitional abbreviation for the two
+membership-preservation conditions. Its antisymmetry theorem concludes
+pointwise equivalence of vertex and edge predicates, as in Lean.
+
+inference_step is a total witness for inference_function_exists. It selects
+a valid successor when one exists and otherwise returns its argument.
+The choice uses the PVS prelude; no project axiom is introduced. The Lean
+proof also uses classical choice. This is not a claim of executable code
+extraction or a finite search procedure.
+
+All 22 Lean results keep their names in directed_pp_graph. The additional
+is_walk_monotone lemma factors the vertex/edge preservation proof. Three
+TCCs establish the endpoint indices and the nonempty set passed to choose.
+
+PPGraphCategorical.lean
+
+categorical_pp_graphs.Graph_T and Graph_U now alias the common directed
+Graph type, including endpoint membership. The old unconstrained raw
+record types did not record that condition. Existing callers retain the
+G1/G2, rr_T/rr_U and inv_T/inv_U interface; these are arbitrary theory
+constants corresponding to the explicit Lean graph and predicate arguments.
+
+morphism and embedding expose those arguments explicitly for composition.
+pp_morphism? is their fixed-data instance; embedding_agrees proves the
+correspondence for pp_embedding?. The definitions of quotient, refinement
+and simulation retain the same surjectivity, vertex and round-trip clauses.
+Six existing theorem statements remain, and their saved proofs replay.
+
+categorical_pp_closure supplies morphism_compose, id_morphism,
+id_embedding and embedding_compose. Its three carrier types are TYPE,
+not TYPE+. The two new existence TCCs for the original G1/G2 constants are
+proved by the graph with empty vertex and edge predicates, including when
+the underlying carrier is empty.
+
+PPGraphRR.lean
+
+ppg_refinement defines rel_extension and RR for arbitrary relations on
+possibly empty types. rel_extension_is_equivalence uses both equivalence
+hypotheses. g_consistent_with_RR requires only symmetry on T and reflexivity
+on U; f_consistent_with_RR requires only reflexivity on T and symmetry on U.
+These are the weaker hypotheses of the corresponding Lean results.
+
+ppg_config defines rr_rel_hom and PPGConfig. The is_equiv proof field is
+represented by the subtype equivalence[V] of the le_eq field. The field
+functions and invariant remain arbitrary. The configuration operations map
+as follows:
+  PPGConfig.rr_rel           -> config_rr
+  PPGConfig.valid            -> config_valid
+  PPGConfig.pp_edge_concrete -> pp_edge_concrete
+The six remaining Lean results are in ppg_config, with their namespace
+prefix omitted from the local PVS formula name. rr_rel_id and
+config_id_reduces retain the Lean implication; their names do not assert
+an additional converse.
+
+ppg_refinement_nasa proves that rel_extension and RR equal the existing
+NASA definitions on the NASA theory's domain (TYPE+ carriers and
+equivalence relations). The main translation does not inherit these
+stronger requirements. The NASA files are not modified.
+
+Validation and reproduction
+
+Run from the repository root after loading the installed environment:
+  source ~/.zprofile
+  python3 translation/check_core.py
+
+The script copies the current .pvs/.prf files to a new context, omits PVS
+caches, disables oracles and replays the saved .prf scripts. It checks
+individual formula statuses, expected declarations, totals and errors;
+a successful process exit alone does not count as a proof. It leaves
+the working-tree source and proof files untouched and records their hashes.
+
+The first clean replay is stored under:
+  ~/.local/state/pvs-checks/directed-core-20261013-final/
+All 61 formulas are proved-complete: 50 in the six core/bridge theories,
+including 41 mapped Lean results, and 11 in two concrete check theories.
+The concrete checks cover asymmetric edges, healthy and unhealthy singleton
+walks, graph extension, and an explicitly empty carrier.
+
+Existing certification consumers are checked separately against the saved
+pre-change snapshot. Their preexisting incomplete dependencies must not be
+counted as closed merely because their scripts finish. Regression results
+are recorded under directed-core-20261013-121542/regression-comparison.json
+in the same local pvs-checks directory.
+
+The six files are parametric_certification, cert_blocking, cert_quotient,
+cert_selection, cert_quotient_bridge and ppg_assessment_bridge. All 110
+formula statuses and process results agree before and after the change:
+94 proved-complete and 16 proved-incomplete. No new failure was introduced.
+
+There are no new project AXIOM or ASSUMING declarations in this package.
+This package does not translate the remaining 188 Lean modules or settle
+the unrelated legacy Sterbenz/application proof obligations.

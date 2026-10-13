@@ -1,0 +1,16 @@
+% Distinct dependency components form a finite partition of the event family.
+ppg_bdd_partition[C: TYPE, V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_bdd[C, V], ppg_finite_union[C]
+  vars: VAR CertVars
+  B: VAR finite_set[C]
+  c, a: VAR C
+  K, L: VAR finite_set[C]
+  groups(vars, B): finite_set[finite_set[C]] =
+    image[C, finite_set[C]](LAMBDA (c: C): compOf(vars, B, c), B)
+  compOf_eq_of_mem_compOf: THEOREM
+    compOf(vars, B, c)(a) IMPLIES compOf(vars, B, a) = compOf(vars, B, c)
+  compOf_groups_biUnion: THEOREM familyUnion(groups(vars, B)) = B
+  compOf_groups_pairwise_disjoint: THEOREM
+    groups(vars, B)(K) AND groups(vars, B)(L) AND K /= L IMPLIES disjoint?(K, L)
+END ppg_bdd_partition

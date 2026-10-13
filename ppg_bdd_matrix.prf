@@ -1,0 +1,131 @@
+(|ppg_bdd_matrix|
+ (|universe_intersection| 0
+  (|universe_intersection-1| NIL 4000879331
+   ("" (SKOLEM!)
+    (("" (TYPEPRED "universe")
+      (("" (APPLY-EXTENSIONALITY)
+        (("" (GRIND :EXCLUDE ("is_finite")) NIL)))))))
+   ((|universe| FORMAL-CONST-DECL "{s: finite_set[V] | FORALL (v: V): s(v)}"
+     |ppg_bdd_matrix| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_matrix| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL))
+   SHOSTAK))
+ (|incidenceMatrix_entry_mul| 0
+  (|incidenceMatrix_entry_mul-1| NIL 4000879331
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL)
+   ((|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|incidenceMatrix| CONST-DECL "real" |ppg_bdd_matrix| NIL)
+    (|odd_times_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|times_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK))
+ (|incidence_mul_transpose_apply| 0
+  (|incidence_mul_transpose_apply-1| NIL 4000879331
+   ("" (SKOLEM!)
+    (("" (EXPAND "incidenceGram")
+      ((""
+        (LEMMA "fsum_congr[V]"
+         ("S" "universe" "f"
+          "LAMBDA(v:V): incidenceMatrix(vars!1,c!1,v)*incidenceMatrix(vars!1,d!1,v)"
+          "g"
+          "LAMBDA(v:V): IF intersection(vars!1(c!1),vars!1(d!1))(v) THEN 1 ELSE 0 ENDIF"))
+        ((""
+          (LEMMA "fsum_indicator[V]"
+           ("S" "universe" "P" "intersection(vars!1(c!1),vars!1(d!1))"))
+          ((""
+            (AUTO-REWRITE "universe_intersection" "incidenceMatrix_entry_mul")
+            (("" (GRIND :EXCLUDE ("fsum" "card" "is_finite")) NIL)))))))))))
+   ((|incidenceGram| CONST-DECL "real" |ppg_bdd_matrix| NIL)
+    (|fsum_indicator| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|odd_times_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|times_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|finite_intersection1| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|universe_intersection| FORMULA-DECL NIL |ppg_bdd_matrix| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_matrix| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|incidenceMatrix| CONST-DECL "real" |ppg_bdd_matrix| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_matrix| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|universe| FORMAL-CONST-DECL "{s: finite_set[V] | FORALL (v: V): s(v)}"
+     |ppg_bdd_matrix| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|fsum_congr| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL))
+   SHOSTAK))
+ (|dependent_iff_incidence_pos| 0
+  (|dependent_iff_incidence_pos-1| NIL 4000879331
+   ("" (SKOLEM!)
+    (("" (REWRITE "incidence_mul_transpose_apply")
+      ((""
+        (LEMMA "nonempty_card[V]"
+         ("S" "intersection(vars!1(c!1), vars!1(d!1))"))
+        (("" (GRIND :EXCLUDE ("card" "is_finite")) NIL)))))))
+   ((|incidence_mul_transpose_apply| FORMULA-DECL NIL |ppg_bdd_matrix| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_matrix| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_matrix| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_intersection1| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|dependent| CONST-DECL "bool" |ppg_bdd| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|nonempty_card| FORMULA-DECL NIL |finite_sets| NIL))
+   SHOSTAK)))
+

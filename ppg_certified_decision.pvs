@@ -1,0 +1,50 @@
+% Proof-carrying results use predicate subtypes; witnesses retain their states.
+ppg_certified_decision[State: TYPE, C: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_feasibility[State, C], ppg_repair_regions[State, C]
+  allowed: VAR set[State]
+  sat: VAR [C, State -> bool]
+  B: VAR finite_set[C]
+  criterion: VAR bool
+  FeasibilityResult(allowed, sat, B): TYPE =
+    {r: SearchResult | CASES r OF
+       none: Infeasible(allowed, sat, B),
+       some(z): goodTest(allowed, sat, B, z) ENDCASES}
+  solve(allowed, sat, B)
+    (states: {ss: list[State] | FORALL (z: State): allowed(z) IMPLIES member(z, ss)}):
+      FeasibilityResult(allowed, sat, B) = search(allowed, sat, B, states)
+
+  feasibilityResult_isWitness_iff: THEOREM
+    FORALL (r: FeasibilityResult(allowed, sat, B)):
+      some?(r) IFF Satisfiable(allowed, sat, B)
+  solve_isWitness_iff: THEOREM
+    FORALL (states: {ss: list[State] | FORALL (z: State): allowed(z) IMPLIES member(z, ss)}):
+      some?(solve(allowed, sat, B)(states)) IFF Satisfiable(allowed, sat, B)
+  solve_isRefuted_iff: THEOREM
+    FORALL (states: {ss: list[State] | FORALL (z: State): allowed(z) IMPLIES member(z, ss)}):
+      NOT some?(solve(allowed, sat, B)(states)) IFF Infeasible(allowed, sat, B)
+
+  AssessmentResult(allowed, sat, B, criterion): TYPE =
+    {r: [# region: RepairRegion, outcome: SearchResult #] |
+      IF r`region = region_impossible THEN
+        none?(r`outcome) AND Infeasible(allowed, sat, B)
+      ELSE some?(r`outcome) AND goodTest(allowed, sat, B, value(r`outcome)) AND
+        (criterion IFF r`region = region_certified) ENDIF}
+  assess(allowed, sat, B, criterion)
+    (states: {ss: list[State] | FORALL (z: State): allowed(z) IMPLIES member(z, ss)}):
+      AssessmentResult(allowed, sat, B, criterion) =
+    LET result = solve(allowed, sat, B)(states) IN
+      (# region := IF none?(result) THEN region_impossible
+                   ELSIF criterion THEN region_certified ELSE region_gap ENDIF,
+         outcome := result #)
+
+  assessmentResult_gap_sound: THEOREM
+    FORALL (r: AssessmentResult(allowed, sat, B, criterion)):
+      r`region = region_gap IMPLIES Gap(allowed, sat, B, criterion)
+  assessmentResult_impossible_sound: THEOREM
+    FORALL (r: AssessmentResult(allowed, sat, B, criterion)):
+      r`region = region_impossible IMPLIES Infeasible(allowed, sat, B)
+  assessmentResult_certified_sound: THEOREM
+    FORALL (r: AssessmentResult(allowed, sat, B, criterion)):
+      r`region = region_certified IMPLIES criterion AND Satisfiable(allowed, sat, B)
+END ppg_certified_decision

@@ -1,0 +1,41 @@
+% Breadth-bounded path enumeration preserves the supplied state-list order.
+ppg_path_search[State: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_good_path[State]
+  step: VAR [State, State -> bool]
+  good: VAR set[State]
+  enumeration, trace, rest: VAR list[State]
+  paths, more: VAR list[list[State]]
+  next: VAR [State -> list[list[State]]]
+  v, w: VAR State
+  budget: VAR nat
+  first_candidate_member: LEMMA NOT null?(paths) IMPLIES member(car(paths), paths)
+  prepend(w, paths): RECURSIVE list[list[State]] = CASES paths OF
+    null: null,
+    cons(trace, more): cons(cons(w, trace), prepend(w, more))
+  ENDCASES MEASURE length(paths)
+  extensions(step, next, v, enumeration): RECURSIVE list[list[State]] = CASES enumeration OF
+    null: null,
+    cons(w, rest): append(IF step(v, w) THEN prepend(w, next(w)) ELSE null ENDIF,
+                         extensions(step, next, v, rest))
+  ENDCASES MEASURE length(enumeration)
+  boundedPaths(step, good, enumeration, budget, v): RECURSIVE list[list[State]] =
+    LET base = IF good(v) THEN cons(null[State], null[list[State]]) ELSE null[list[State]] ENDIF IN
+      IF budget = 0 THEN base ELSE append(base,
+        extensions(step, LAMBDA (w: State): boundedPaths(step, good, enumeration, budget - 1, w), v, enumeration)) ENDIF
+    MEASURE budget
+  member_append_paths: LEMMA member(trace, append(paths, more)) IFF member(trace, paths) OR member(trace, more)
+  member_prepend: LEMMA member(trace, prepend(w, paths)) IFF
+    EXISTS rest: trace = cons(w, rest) AND member(rest, paths)
+  member_extensions: LEMMA member(trace, extensions(step, next, v, enumeration)) IFF
+    EXISTS w, rest: member(w, enumeration) AND step(v, w) AND trace = cons(w, rest) AND member(rest, next(w))
+  boundedPaths_nil: LEMMA member(null[State], boundedPaths(step, good, enumeration, budget, v)) IFF good(v)
+  boundedPaths_cons: LEMMA member(cons(w, rest), boundedPaths(step, good, enumeration, budget + 1, v)) IFF
+    member(w, enumeration) AND step(v, w) AND member(rest, boundedPaths(step, good, enumeration, budget, w))
+  mem_boundedPaths_iff: THEOREM (FORALL w: member(w, enumeration)) IMPLIES
+    (member(trace, boundedPaths(step, good, enumeration, budget, v)) IFF
+      GoodPath(step, good, v, trace) AND length(trace) <= budget)
+  boundedPaths_eventually_nonempty: THEOREM (FORALL w: member(w, enumeration)) AND
+    (EXISTS w: Reach(step)(v, w) AND good(w)) IMPLIES
+      EXISTS budget: NOT null?(boundedPaths(step, good, enumeration, budget, v))
+END ppg_path_search

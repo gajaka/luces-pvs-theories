@@ -1,0 +1,23 @@
+% An empty carrier is permitted by the directed core and categorical laws.
+directed_pp_empty: THEORY
+BEGIN
+  Empty: TYPE = {n: nat | FALSE}
+  IMPORTING directed_pp_graph[Empty], ppg_config[Empty],
+            categorical_pp_closure[Empty, Empty, Empty]
+
+  empty_graph: directed_pp_graph[Empty].Graph =
+    (# vertices := LAMBDA (x: Empty): FALSE,
+       edges := LAMBDA (x, y: Empty): FALSE #)
+  no_relation(x, y: Empty): bool = FALSE
+  no_invariant(x: Empty): bool = FALSE
+
+  empty_graph_valid: THEOREM
+    pp_valid(empty_graph, no_relation, no_invariant)
+  empty_identity_embedding: THEOREM
+    categorical_pp_graphs[Empty, Empty].embedding(
+      LAMBDA (x: Empty): x, empty_graph, empty_graph,
+      no_relation, no_invariant, no_relation, no_invariant)
+  empty_inference_exists: THEOREM
+    EXISTS (f: [Empty -> Empty]): FORALL (x: Empty):
+      empty_graph`vertices(x) IMPLIES empty_graph`edges(x, f(x))
+END directed_pp_empty

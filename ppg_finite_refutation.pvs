@@ -1,0 +1,27 @@
+% Finite invariant certificates can be checked and exhaustively enumerated.
+ppg_finite_refutation[State: TYPE, C: TYPE,
+  universe: {s: finite_set[State] | FORALL (z: State): s(z)}]: THEORY
+BEGIN
+  IMPORTING ppg_reachability_refutation[State, C]
+  step: VAR [State, State -> bool]
+  good: VAR set[State]
+  v: VAR State
+  K: VAR finite_set[State]
+  invariantCheck(step, good, v, K): bool =
+    K(v) AND (FORALL (u, w: State): K(u) AND step(u, w) IMPLIES K(w)) AND
+      FORALL (w: State): K(w) IMPLIES NOT good(w)
+  refutingInvariants(step, good, v): finite_set[finite_set[State]] =
+    intersection(powerset(universe), {K: finite_set[State] | invariantCheck(step, good, v, K)})
+  unreachableTest(step, good, v): bool = nonempty?(refutingInvariants(step, good, v))
+  invariantCheck_eq_true_iff: THEOREM
+    invariantCheck(step, good, v, K) IFF InvariantRefutation(step, good, v, K)
+  invariantCheck_sound: THEOREM
+    invariantCheck(step, good, v, K) IMPLIES NOT EXISTS (w: State): Reach(step)(v, w) AND good(w)
+  invariantCheck_complete: THEOREM
+    (NOT EXISTS (w: State): Reach(step)(v, w) AND good(w)) IMPLIES
+      EXISTS K: invariantCheck(step, good, v, K)
+  refutingInvariants_nonempty_iff: THEOREM
+    nonempty?(refutingInvariants(step, good, v)) IFF NOT EXISTS (w: State): Reach(step)(v, w) AND good(w)
+  unreachableTest_eq_true_iff: THEOREM
+    unreachableTest(step, good, v) IFF NOT EXISTS (w: State): Reach(step)(v, w) AND good(w)
+END ppg_finite_refutation

@@ -1,0 +1,55 @@
+% Local obligations can be solved componentwise and assembled with a fixed frame.
+ppg_bdd_infeasibility[C, V, Value: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_bdd_locality[C, V, Value], ppg_unsatisfiable_core[[V -> Value], C]
+  vars: VAR CertVars
+  B, K: VAR finite_set[C]
+  c: VAR C
+  v: VAR V
+  sat: VAR [C, [V -> Value] -> bool]
+  base, z: VAR [V -> Value]
+  InFamilyFootprint(vars, B, v): bool = EXISTS c: B(c) AND vars(c)(v)
+  variableOwner(vars, B, v): finite_set[C] =
+    IF InFamilyFootprint(vars, B, v) THEN
+      compOf(vars, B, choose({c: C | B(c) AND vars(c)(v)}))
+    ELSE emptyset[C] ENDIF
+  componentSolution(sat, base, K): [V -> Value] =
+    IF EXISTS z: FORALL c: K(c) IMPLIES sat(c, z) THEN
+      choose({z: [V -> Value] | FORALL c: K(c) IMPLIES sat(c, z)})
+    ELSE base ENDIF
+  assembleComponents(vars, B, sat, base)(v): Value =
+    IF InFamilyFootprint(vars, B, v) THEN
+      componentSolution(sat, base, variableOwner(vars, B, v))(v)
+    ELSE base(v) ENDIF
+  FrameAllowed(vars, B, base)(z): bool =
+    FORALL v: NOT InFamilyFootprint(vars, B, v) IMPLIES z(v) = base(v)
+
+  variableOwner_eq_component: THEOREM
+    B(c) AND vars(c)(v) IMPLIES variableOwner(vars, B, v) = compOf(vars, B, c)
+  componentSolution_spec: THEOREM
+    Satisfiable(LAMBDA z: TRUE, sat, K) IMPLIES
+      FORALL c: K(c) IMPLIES sat(c, componentSolution(sat, base, K))
+  assemble_agrees_on_obligation: THEOREM B(c) IMPLIES
+    FORALL v: vars(c)(v) IMPLIES
+      assembleComponents(vars, B, sat, base)(v) = componentSolution(sat, base, compOf(vars, B, c))(v)
+  assemble_satisfies: THEOREM Local(vars, sat) AND
+    (FORALL c: B(c) IMPLIES Satisfiable(LAMBDA z: TRUE, sat, compOf(vars, B, c)))
+    IMPLIES FORALL c: B(c) IMPLIES sat(c, assembleComponents(vars, B, sat, base))
+  assemble_preserves_frame: THEOREM
+    FrameAllowed(vars, B, base)(assembleComponents(vars, B, sat, base))
+  frame_satisfiable_iff_components: THEOREM Local(vars, sat) IMPLIES
+    (Satisfiable(FrameAllowed(vars, B, base), sat, B) IFF
+      FORALL c: B(c) IMPLIES Satisfiable(LAMBDA z: TRUE, sat, compOf(vars, B, c)))
+  satisfiable_iff_components: THEOREM FORALL (base: [V -> Value]): Local(vars, sat) IMPLIES
+    (Satisfiable(LAMBDA z: TRUE, sat, B) IFF
+      FORALL c: B(c) IMPLIES Satisfiable(LAMBDA z: TRUE, sat, compOf(vars, B, c)))
+  infeasible_iff_component_infeasible: THEOREM FORALL (base: [V -> Value]): Local(vars, sat) IMPLIES
+    (Infeasible(LAMBDA z: TRUE, sat, B) IFF
+      EXISTS c: B(c) AND Infeasible(LAMBDA z: TRUE, sat, compOf(vars, B, c)))
+  frame_infeasible_iff_component_infeasible: THEOREM Local(vars, sat) IMPLIES
+    (Infeasible(FrameAllowed(vars, B, base), sat, B) IFF
+      EXISTS c: B(c) AND Infeasible(LAMBDA z: TRUE, sat, compOf(vars, B, c)))
+  minimalCore_is_one_component: THEOREM FORALL (base: [V -> Value]):
+    Local(vars, sat) AND MinimalCore(LAMBDA z: TRUE, sat, K) IMPLIES
+      EXISTS c: K(c) AND compOf(vars, K, c) = K
+END ppg_bdd_infeasibility

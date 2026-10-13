@@ -1,0 +1,21 @@
+% A sound linear relaxation turns a Farkas certificate into a graph refutation.
+ppg_farkas_refutation[State, C, V: TYPE,
+  rowUniverse: {B: finite_set[C] | FORALL (c: C): B(c)},
+  colUniverse: {U: finite_set[V] | FORALL (v: V): U(v)}]: THEORY
+BEGIN
+  IMPORTING ppg_farkas_certificate[C, V, rowUniverse, colUniverse],
+    ppg_infeasibility[State, C]
+  G: VAR RepairGraph
+  v, z: VAR State
+  coordinates: VAR [State -> [V -> real]]
+  A: VAR [C, V -> real]
+  b, y: VAR [C -> real]
+  Q: VAR [C, V -> rat]
+  d, w: VAR [C -> rat]
+  farkasCertificate_noReachableGood: THEOREM
+    (FORALL z: G`invariant_holds(z) IMPLIES LinearFeasible(A, b, coordinates(z))) AND
+    FarkasCertificate(A, b, y) IMPLIES NoReachableGood(G, v)
+  farkasCheck_noReachableGood: THEOREM
+    (FORALL z: G`invariant_holds(z) IMPLIES LinearFeasible(Q, d, coordinates(z))) AND
+    farkasCheck(Q, d, w) IMPLIES NoReachableGood(G, v)
+END ppg_farkas_refutation

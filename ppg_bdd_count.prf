@@ -1,0 +1,251 @@
+(|ppg_bdd_count|
+ (|sameComponent_of_compOf_eq| 0
+  (|sameComponent_of_compOf_eq-1| NIL 4000882858
+   ("" (SKOSIMP*)
+    (("" (LEMMA "mem_compOf_self" ("vars" "vars!1" "B" "B!1" "c" "c!1"))
+      ((""
+        (LEMMA "sameComponent_symm"
+         ("vars" "vars!1" "B" "B!1" "c" "d!1" "d" "c!1"))
+        (("" (DECOMPOSE-EQUALITY -4)
+          (("" (INST -4 "c!1")
+            (("" (GRIND :IF-MATCH NIL :EXCLUDE ("SameComponent" "is_finite"))
+              (("" (INST -1 "c!1") (("" (GROUND) NIL))))))))))))))
+    NIL)
+   ((V FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|mem_compOf_self| FORMULA-DECL NIL |ppg_bdd| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|sameComponent_symm| FORMULA-DECL NIL |ppg_bdd| NIL))
+   SHOSTAK))
+ (|connectedComponent_nonempty| 0
+  (|connectedComponent_nonempty-1| NIL 4000882858
+   ("" (SKOSIMP*)
+    (("" (REWRITE "connectedComponents_eq_groups")
+      (("" (LEMMA "mem_compOf_self" ("vars" "vars!1" "B" "B!1"))
+        ((""
+          (GRIND :IF-MATCH NIL :EXCLUDE ("compOf" "SameComponent" "is_finite"))
+          (("" (INST -2 "x!1")
+            (("" (INST -4 "x!1") (("" (GROUND) NIL))))))))))))
+    NIL)
+   ((|connectedComponents_eq_groups| FORMULA-DECL NIL |ppg_bdd_graph| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|groups| CONST-DECL "finite_set[finite_set[C]]" |ppg_bdd_partition| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|mem_compOf_self| FORMULA-DECL NIL |ppg_bdd| NIL))
+   SHOSTAK))
+ (|compGroup_TCC1| 0
+  (|compGroup_TCC1-1| NIL 4000882857
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "connectedComponent_nonempty"
+       ("vars" "vars!1" "B" "B!1" "K" "K!1"))
+      (("" (ASSERT) NIL))))
+    NIL)
+   ((|connectedComponents| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_bdd_graph| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (|connectedComponent_nonempty| FORMULA-DECL NIL |ppg_bdd_count| NIL))
+   NIL
+   (|compGroup| SUBTYPE "K" "(sets[ppg_bdd_count.C].nonempty?)"
+    (13 27 13 28))))
+ (|compGroup_TCC2| 0
+  (|compGroup_TCC2-1| NIL 4000882857
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "connectedComponent_nonempty"
+       ("vars" "vars!1" "B" "B!1" "K" "K!1"))
+      (("" (TYPEPRED "choose(K!1)")
+        (("" (TYPEPRED "K!1")
+          (("" (REWRITE "connectedComponents_eq_groups")
+            ((""
+              (LEMMA "compOf_eq_of_mem_compOf"
+               ("vars" "vars!1" "B" "B!1" "a" "choose(K!1)"))
+              ((""
+                (GRIND :IF-MATCH NIL :EXCLUDE
+                 ("compOf" "SameComponent" "is_finite"))
+                (("" (INST -2 "x!1")
+                  (("" (INST 1 "x!1") (("" (GROUND) NIL))))))))))))))))))
+    NIL)
+   ((|connectedComponents| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_bdd_graph| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (|connectedComponent_nonempty| FORMULA-DECL NIL |ppg_bdd_count| NIL)
+    (|compOf_eq_of_mem_compOf| FORMULA-DECL NIL |ppg_bdd_partition| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|groups| CONST-DECL "finite_set[finite_set[C]]" |ppg_bdd_partition| NIL)
+    (|connectedComponents_eq_groups| FORMULA-DECL NIL |ppg_bdd_graph| NIL)
+    (|choose| CONST-DECL "(p)" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL))
+   NIL
+   (|compGroup| SUBTYPE "compOf[C, V](vars, B, choose[C](K))"
+    "(ppg_bdd_partition[ppg_bdd_count.C, ppg_bdd_count.V].groups(ppg_bdd_count.vars, ppg_bdd_count.B))"
+    (13 4 13 30))))
+ (|compGroup_identity| 0
+  (|compGroup_identity-1| NIL 4000882858
+   ("" (SKOSIMP*)
+    (("" (EXPAND "compGroup")
+      ((""
+        (LEMMA "connectedComponent_nonempty"
+         ("vars" "vars!1" "B" "B!1" "K" "K!1"))
+        (("" (TYPEPRED "choose(K!1)")
+          (("" (TYPEPRED "K!1")
+            (("" (REWRITE "connectedComponents_eq_groups")
+              ((""
+                (LEMMA "compOf_eq_of_mem_compOf"
+                 ("vars" "vars!1" "B" "B!1" "a" "choose(K!1)"))
+                ((""
+                  (GRIND :IF-MATCH NIL :EXCLUDE
+                   ("compOf" "SameComponent" "is_finite"))
+                  (("" (INST -2 "x!1") (("" (GROUND) NIL))))))))))))))))))
+    NIL)
+   ((|compGroup| CONST-DECL "(groups(vars, B))" |ppg_bdd_count| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|choose| CONST-DECL "(p)" |sets| NIL)
+    (|connectedComponents_eq_groups| FORMULA-DECL NIL |ppg_bdd_graph| NIL)
+    (|groups| CONST-DECL "finite_set[finite_set[C]]" |ppg_bdd_partition| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|compOf_eq_of_mem_compOf| FORMULA-DECL NIL |ppg_bdd_partition| NIL)
+    (|connectedComponents| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_bdd_graph| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (|connectedComponent_nonempty| FORMULA-DECL NIL |ppg_bdd_count| NIL))
+   SHOSTAK))
+ (|compGroup_injective| 0
+  (|compGroup_injective-1| NIL 4000882858
+   ("" (SKOSIMP*)
+    (("" (AUTO-REWRITE "compGroup_identity")
+      (("" (EXPAND "injective?")
+        ((""
+          (GRIND :IF-MATCH NIL :EXCLUDE
+           ("compGroup" "connectedComponents" "groups" "is_finite"))
+          NIL))))))
+    NIL)
+   ((|compGroup_identity| FORMULA-DECL NIL |ppg_bdd_count| NIL)
+    (|connectedComponents| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_bdd_graph| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL))
+   SHOSTAK))
+ (|compGroup_surjective| 0
+  (|compGroup_surjective-1| NIL 4000882858
+   ("" (SKOSIMP*)
+    (("" (LEMMA "connectedComponents_eq_groups" ("vars" "vars!1" "B" "B!1"))
+      (("" (LEMMA "compGroup_identity" ("vars" "vars!1" "B" "B!1"))
+        ((""
+          (GRIND :IF-MATCH NIL :EXCLUDE
+           ("compGroup" "connectedComponents" "groups" "is_finite"))
+          (("" (INST 1 "y!1")
+            (("" (INST -3 "y!1") (("" (GROUND) NIL))))))))))))
+    NIL)
+   ((V FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|connectedComponents_eq_groups| FORMULA-DECL NIL |ppg_bdd_graph| NIL)
+    (|groups| CONST-DECL "finite_set[finite_set[C]]" |ppg_bdd_partition| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|surjective?| CONST-DECL "bool" |functions| NIL)
+    (|connectedComponents| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_bdd_graph| NIL)
+    (|compGroup_identity| FORMULA-DECL NIL |ppg_bdd_count| NIL))
+   SHOSTAK))
+ (|compGroup_bijective| 0
+  (|compGroup_bijective-1| NIL 4000882858
+   ("" (SKOSIMP*)
+    (("" (LEMMA "compGroup_injective" ("vars" "vars!1" "B" "B!1"))
+      (("" (LEMMA "compGroup_surjective" ("vars" "vars!1" "B" "B!1"))
+        (("" (EXPAND "bijective?") (("" (GROUND) NIL))))))))
+    NIL)
+   ((|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (|compGroup_injective| FORMULA-DECL NIL |ppg_bdd_count| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|compGroup_surjective| FORMULA-DECL NIL |ppg_bdd_count| NIL))
+   SHOSTAK))
+ (|card_bddComponents_eq_card_compOf_image| 0
+  (|card_bddComponents_eq_card_compOf_image-1| NIL 4000882858
+   ("" (SKOSIMP*) (("" (REWRITE "connectedComponents_eq_groups") NIL)) NIL)
+   ((|connectedComponents_eq_groups| FORMULA-DECL NIL |ppg_bdd_graph| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_count| NIL))
+   SHOSTAK)))
+

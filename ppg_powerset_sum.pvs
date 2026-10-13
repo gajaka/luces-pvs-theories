@@ -1,0 +1,19 @@
+% Split subsets according to whether they contain a newly inserted element.
+ppg_powerset_sum[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_sum_image[finite_set[T], finite_set[T]], ppg_real_sum[finite_set[T]]
+  S: VAR finite_set[T]
+  e: VAR T
+  F: VAR [finite_set[T] -> real]
+  subsets(S): finite_set[finite_set[T]] = powerset(S)
+  inserted(e, S): finite_set[finite_set[T]] =
+    image[finite_set[T], finite_set[T]](LAMBDA (K: finite_set[T]): add(e, K), subsets(S))
+  subsets_empty: LEMMA subsets(emptyset[T]) = singleton(emptyset[T])
+  subsets_add: LEMMA subsets(add(e, S)) = union(subsets(S), inserted(e, S))
+  subsets_inserted_disjoint: LEMMA NOT S(e) IMPLIES disjoint?(subsets(S), inserted(e, S))
+  insert_injective: LEMMA NOT S(e) IMPLIES FORALL (A, B: finite_set[T]):
+    subsets(S)(A) AND subsets(S)(B) AND add(e, A) = add(e, B) IMPLIES A = B
+  sum_subsets_empty: LEMMA fsum(subsets(emptyset[T]), F) = F(emptyset[T])
+  sum_subsets_add: THEOREM NOT S(e) IMPLIES
+    fsum(subsets(add(e, S)), F) = fsum(subsets(S), F) + fsum(subsets(S), LAMBDA (K: finite_set[T]): F(add(e, K)))
+END ppg_powerset_sum

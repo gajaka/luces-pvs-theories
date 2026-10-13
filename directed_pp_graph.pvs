@@ -1,5 +1,5 @@
 %------------------------------------------------------------------------------
-% Directed Proof-Preserving Graph — Minimal Core
+% Directed Proof-Preserving Graphs
 %
 % A directed graph representation: vertices and edges are arbitrary
 % predicates (no symmetry required). Deliberately NOT built on
@@ -7,10 +7,9 @@
 % order-derived edges like spec_edge(t1,t2) := t1 <= t2 AND t1 /= t2
 % are asymmetric in general.
 %
-% Scope: Graph, pp_edge, pp_valid and their weak variants — the
-% minimal core needed by parametric_certification.pvs and
-% cert_quotient_bridge.pvs. Extend if additional graph theorems
-% (walks, paths, connectivity, etc.) are needed later.
+% Directed counterpart of PPGraph.lean. Walks use nonempty finite
+% sequences; graph transformations preserve vertices and edges.
+% The vertex type may be empty.
 %
 % Author: Dragan Stosic, 2026.
 %------------------------------------------------------------------------------
@@ -52,5 +51,165 @@ BEGIN
   % Weak validity: only structural refinement required
   pp_valid_weak(G, rr_rel): bool =
     FORALL (x, y: V): G`edges(x, y) IMPLIES pp_edge_weak(rr_rel, x, y)
+
+
+  % A dependent record packages the positive length and its finite sequence.
+  Prewalk: TYPE = [# length: posnat, seq: [below(length) -> V] #]
+  pw: VAR Prewalk
+  G1, G2, G3, S: VAR Graph
+
+  is_walk(G, pw): bool =
+    (FORALL (i: below(pw`length)): G`vertices(pw`seq(i))) AND
+    (FORALL (i: below(pw`length)): i + 1 < pw`length IMPLIES
+      G`edges(pw`seq(i), pw`seq(i + 1)))
+
+  pp_walk(G, rr_rel, invariant_holds, pw): bool =
+    is_walk(G, pw) AND
+    (FORALL (i: below(pw`length)): invariant_holds(pw`seq(i))) AND
+    (FORALL (i: below(pw`length)): i + 1 < pw`length IMPLIES
+      pp_edge(rr_rel, invariant_holds, pw`seq(i), pw`seq(i + 1)))
+
+  pp_path(G, rr_rel, invariant_holds, pw): bool =
+    pp_walk(G, rr_rel, invariant_holds, pw) AND
+    (FORALL (i, j: below(pw`length)): pw`seq(i) = pw`seq(j) IMPLIES i = j)
+
+  pw_start(pw): V = pw`seq(0)
+  pw_end(pw): V = pw`seq(pw`length - 1)
+
+  is_subgraph(S, G): bool =
+    (FORALL (x: V): S`vertices(x) IMPLIES G`vertices(x)) AND
+    (FORALL (x, y: V): S`edges(x, y) IMPLIES G`edges(x, y))
+
+  pp_transform(G1, G2, rr_rel, invariant_holds): bool =
+    is_subgraph(G1, G2) AND pp_valid(G1, rr_rel, invariant_holds) AND
+    pp_valid(G2, rr_rel, invariant_holds)
+
+  invariant_set(G, invariant_holds)(x): bool =
+    G`vertices(x) AND invariant_holds(x)
+
+  violation_set(G, invariant_holds)(x): bool =
+    G`vertices(x) AND NOT invariant_holds(x)
+
+  pp_connected(G, rr_rel, invariant_holds, x, y): bool =
+    EXISTS (pw: Prewalk): pp_path(G, rr_rel, invariant_holds, pw) AND
+      pw_start(pw) = x AND pw_end(pw) = y
+
+  violating(G, invariant_holds, x): bool =
+    G`vertices(x) AND NOT invariant_holds(x)
+
+  deterministic(G, rr_rel, invariant_holds): bool =
+    FORALL (x: V): G`vertices(x) IMPLIES
+      EXISTS (y: V): G`edges(x, y) AND pp_edge(rr_rel, invariant_holds, x, y) AND
+        (FORALL (z: V): G`edges(x, z) IMPLIES z = y)
+
+  % The fallback makes this a total function, including outside the graph.
+  inference_step(G, rr_rel, invariant_holds, x): V =
+    IF EXISTS (y: V): G`edges(x, y) AND pp_edge(rr_rel, invariant_holds, x, y)
+    THEN choose({y: V | G`edges(x, y) AND pp_edge(rr_rel, invariant_holds, x, y)})
+    ELSE x ENDIF
+
+  pp_separates(G: Graph, rr_rel: [V, V -> bool],
+    invariant_holds, cut: [V -> bool], x, y: V): bool =
+    FORALL (pw: Prewalk):
+      pp_path(G, rr_rel, invariant_holds, pw) AND
+      pw_start(pw) = x AND pw_end(pw) = y IMPLIES
+        EXISTS (i: below(pw`length)): cut(pw`seq(i))
+
+  certificate_chain(G, rr_rel, invariant_holds, pw): bool =
+    pp_path(G, rr_rel, invariant_holds, pw) AND pw`length > 1
+
+  valid_implies_weak: THEOREM
+    pp_valid(G, rr_rel, invariant_holds) IMPLIES pp_valid_weak(G, rr_rel)
+
+  pp_valid_implies_invariants: THEOREM
+    pp_valid(G, rr_rel, invariant_holds) AND G`edges(x, y) IMPLIES
+      invariant_holds(x) AND invariant_holds(y)
+
+  pp_path_is_walk: THEOREM
+    pp_path(G, rr_rel, invariant_holds, pw) IMPLIES
+      pp_walk(G, rr_rel, invariant_holds, pw)
+
+  pp_walk_invariants: THEOREM
+    FORALL (i: below(pw`length)):
+      pp_walk(G, rr_rel, invariant_holds, pw) IMPLIES invariant_holds(pw`seq(i))
+
+  pp_path_endpoints_invariant: THEOREM
+    pp_path(G, rr_rel, invariant_holds, pw) IMPLIES
+      invariant_holds(pw_start(pw)) AND invariant_holds(pw_end(pw))
+
+  subgraph_valid: THEOREM
+    is_subgraph(S, G) AND pp_valid(G, rr_rel, invariant_holds) IMPLIES
+      pp_valid(S, rr_rel, invariant_holds)
+
+  pp_transform_reflexive: THEOREM
+    pp_valid(G, rr_rel, invariant_holds) IMPLIES
+      pp_transform(G, G, rr_rel, invariant_holds)
+
+  pp_transform_transitive: THEOREM
+    pp_transform(G1, G2, rr_rel, invariant_holds) AND
+    pp_transform(G2, G3, rr_rel, invariant_holds) IMPLIES
+      pp_transform(G1, G3, rr_rel, invariant_holds)
+
+  pp_transform_antisymmetric: THEOREM
+    pp_transform(G1, G2, rr_rel, invariant_holds) AND
+    pp_transform(G2, G1, rr_rel, invariant_holds) IMPLIES
+      (FORALL (x: V): G1`vertices(x) IFF G2`vertices(x)) AND
+      (FORALL (x, y: V): G1`edges(x, y) IFF G2`edges(x, y))
+
+  invariant_monotone: THEOREM
+    pp_transform(G1, G2, rr_rel, invariant_holds) AND
+    invariant_set(G1, invariant_holds)(x) IMPLIES invariant_set(G2, invariant_holds)(x)
+
+  vertex_partition: THEOREM
+    G`vertices(x) IMPLIES
+      invariant_set(G, invariant_holds)(x) OR violation_set(G, invariant_holds)(x)
+
+  invariant_violation_disjoint: THEOREM
+    NOT (invariant_set(G, invariant_holds)(x) AND violation_set(G, invariant_holds)(x))
+
+  pp_connected_invariants: THEOREM
+    pp_connected(G, rr_rel, invariant_holds, x, y) IMPLIES
+      invariant_holds(x) AND invariant_holds(y)
+
+  violating_isolated: THEOREM
+    pp_valid(G, rr_rel, invariant_holds) AND violating(G, invariant_holds, x)
+      IMPLIES FORALL (y: V): NOT G`edges(x, y)
+
+  violating_no_incoming: THEOREM
+    pp_valid(G, rr_rel, invariant_holds) AND violating(G, invariant_holds, x)
+      IMPLIES FORALL (y: V): NOT G`edges(y, x)
+
+  deterministic_is_valid: THEOREM
+    deterministic(G, rr_rel, invariant_holds) IMPLIES pp_valid(G, rr_rel, invariant_holds)
+
+  inference_function_exists: THEOREM
+    deterministic(G, rr_rel, invariant_holds) IMPLIES
+      EXISTS (f: [V -> V]): FORALL (x: V): G`vertices(x) IMPLIES
+        G`edges(x, f(x)) AND pp_edge(rr_rel, invariant_holds, x, f(x))
+
+  empty_separates_iff_disconnected: THEOREM
+    pp_separates(G, rr_rel, invariant_holds, LAMBDA (v: V): FALSE, x, y)
+      IFF NOT pp_connected(G, rr_rel, invariant_holds, x, y)
+
+  certificate_chain_sound: THEOREM
+    FORALL (i: below(pw`length)):
+      certificate_chain(G, rr_rel, invariant_holds, pw) IMPLIES invariant_holds(pw`seq(i))
+
+  certificate_chain_connects: THEOREM
+    certificate_chain(G, rr_rel, invariant_holds, pw) IMPLIES
+      pp_connected(G, rr_rel, invariant_holds, pw_start(pw), pw_end(pw))
+
+  is_walk_monotone: LEMMA
+    is_subgraph(G1, G2) AND is_walk(G1, pw) IMPLIES is_walk(G2, pw)
+
+  walk_resilience: THEOREM
+    pp_transform(G1, G2, rr_rel, invariant_holds) AND
+    pp_walk(G1, rr_rel, invariant_holds, pw) IMPLIES
+      pp_walk(G2, rr_rel, invariant_holds, pw)
+
+  connectivity_resilience: THEOREM
+    pp_transform(G1, G2, rr_rel, invariant_holds) AND
+    pp_connected(G1, rr_rel, invariant_holds, x, y) IMPLIES
+      pp_connected(G2, rr_rel, invariant_holds, x, y)
 
 END directed_pp_graph

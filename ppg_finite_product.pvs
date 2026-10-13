@@ -1,0 +1,8 @@
+% Real finite product, using the choose/rest fold of PVS finite_sets_product.
+% Termination is checked here so the port has an independently replayed TCC.
+ppg_finite_product[T: TYPE]: THEORY
+BEGIN
+  product(S: finite_set[T], f: [T -> real]): RECURSIVE real =
+    IF empty?(S) THEN 1 ELSE f(choose(S)) * product(rest(S), f) ENDIF
+    MEASURE card(S)
+END ppg_finite_product

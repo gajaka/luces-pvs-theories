@@ -1,0 +1,12 @@
+% Pointwise nonnegative finite sums vanish exactly when all terms vanish.
+ppg_sum_order[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_sum[T]
+  S: VAR finite_set[T]
+  f: VAR [T -> real]
+  x: VAR T
+  sum_zero_terms: THEOREM
+    (FORALL x: S(x) IMPLIES f(x) >= 0) AND fsum(S, f) = 0 IMPLIES
+      FORALL x: S(x) IMPLIES f(x) = 0
+  sum_positive: THEOREM NOT empty?(S) AND (FORALL x: S(x) IMPLIES f(x) > 0) IMPLIES fsum(S, f) > 0
+END ppg_sum_order

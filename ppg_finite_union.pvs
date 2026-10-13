@@ -1,0 +1,20 @@
+% Finite unions keep their member sets finite without implicit coercions.
+ppg_finite_union[T: TYPE]: THEORY
+BEGIN
+  F: VAR finite_set[finite_set[T]]
+  K, L: VAR finite_set[T]
+  x: VAR T
+  familyUnion(F): finite_set[T] =
+    Union(image[finite_set[T], set[T]](LAMBDA (K: finite_set[T]): K, F))
+  familyUnion_member: LEMMA
+    familyUnion(F)(x) IFF EXISTS K: F(K) AND K(x)
+  familyUnion_empty: LEMMA familyUnion(emptyset[finite_set[T]]) = emptyset[T]
+  familyUnion_add: LEMMA familyUnion(add(K, F)) = union(K, familyUnion(F))
+  familyUnion_rest: LEMMA NOT empty?(F) IMPLIES
+    familyUnion(F) = union(choose(F), familyUnion(rest(F)))
+  pairwise_disjoint(F): bool =
+    FORALL K, L: F(K) AND F(L) AND K /= L IMPLIES disjoint?(K, L)
+  disjoint_choose_rest: LEMMA NOT empty?(F) AND pairwise_disjoint(F) IMPLIES
+    disjoint?(choose(F), familyUnion(rest(F)))
+  pairwise_disjoint_rest: LEMMA pairwise_disjoint(F) IMPLIES pairwise_disjoint(rest(F))
+END ppg_finite_union

@@ -1,0 +1,103 @@
+(|ppg_finite_core|
+ (|coreCheck_eq_true_iff| 0
+  (|coreCheck_eq_true_iff-1| NIL 4000878919
+   ("" (SKOLEM!)
+    (("" (EXPAND "coreCheck")
+      (("" (EXPAND "MinimalCore")
+        (("" (AUTO-REWRITE "goodCount_zero_iff" "goodCount_pos_iff")
+          ((""
+            (GRIND :EXCLUDE
+             ("goodCount" "Satisfiable" "Infeasible" "is_finite"))
+            NIL)))))))))
+   ((|coreCheck| CONST-DECL "bool" |ppg_finite_core| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|goodCount_pos_iff| FORMULA-DECL NIL |ppg_finite_count| NIL)
+    (|goodCount_zero_iff| FORMULA-DECL NIL |ppg_finite_count| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_core| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_finite_core| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{s: finite_set[State] | FORALL (z: State): s(z)}" |ppg_finite_core| NIL)
+    (|MinimalCore| CONST-DECL "bool" |ppg_unsatisfiable_core| NIL))
+   SHOSTAK))
+ (|mem_minimalCores_iff| 0
+  (|mem_minimalCores_iff-1| NIL 4000878919
+   ("" (SKOLEM!)
+    (("" (EXPAND "minimalCores")
+      (("" (AUTO-REWRITE "coreCheck_eq_true_iff")
+        (("" (GRIND :EXCLUDE ("MinimalCore" "coreCheck" "is_finite"))
+          NIL)))))))
+   ((|minimalCores| CONST-DECL "finite_set[finite_set[C]]" |ppg_finite_core|
+     NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|powerset_finite2| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|powerset_finite| APPLICATION-JUDGEMENT "finite_set[set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|nonempty_powerset| APPLICATION-JUDGEMENT "(nonempty?[set[T]])"
+     |sets_lemmas| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|finite_restrict| APPLICATION-JUDGEMENT "finite_set[S]"
+     |restrict_set_props| NIL)
+    (|coreCheck_eq_true_iff| FORMULA-DECL NIL |ppg_finite_core| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|powerset| CONST-DECL "setofsets" |sets| NIL)
+    (|extend| CONST-DECL "R" |extend| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|restrict| CONST-DECL "R" |restrict| NIL))
+   SHOSTAK))
+ (|minimalCores_nonempty_iff| 0
+  (|minimalCores_nonempty_iff-1| NIL 4000878919
+   ("" (SKOLEM!)
+    ((""
+      (LEMMA "minimalCore_exists"
+       ("allowed" "allowed!1" "sat" "sat!1" "B" "B!1"))
+      ((""
+        (LEMMA "minimalCore_blocks_superset"
+         ("allowed" "allowed!1" "sat" "sat!1" "B" "B!1"))
+        (("" (AUTO-REWRITE "coreCheck_eq_true_iff")
+          ((""
+            (GRIND :IF-MATCH ALL :EXCLUDE
+             ("MinimalCore" "Infeasible" "coreCheck" "is_finite"))
+            NIL)))))))))
+   ((C FORMAL-TYPE-DECL NIL |ppg_finite_core| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_core| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|minimalCore_exists| FORMULA-DECL NIL |ppg_unsatisfiable_core| NIL)
+    (|coreCheck_eq_true_iff| FORMULA-DECL NIL |ppg_finite_core| NIL)
+    (|minimalCores| CONST-DECL "finite_set[finite_set[C]]" |ppg_finite_core|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|powerset| CONST-DECL "setofsets" |sets| NIL)
+    (|extend| CONST-DECL "R" |extend| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|restrict| CONST-DECL "R" |restrict| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|finite_restrict| APPLICATION-JUDGEMENT "finite_set[S]"
+     |restrict_set_props| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|nonempty_powerset| APPLICATION-JUDGEMENT "(nonempty?[set[T]])"
+     |sets_lemmas| NIL)
+    (|powerset_finite| APPLICATION-JUDGEMENT "finite_set[set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|powerset_finite2| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |finite_sets_of_sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|minimalCore_blocks_superset| FORMULA-DECL NIL |ppg_unsatisfiable_core|
+     NIL))
+   SHOSTAK)))
+

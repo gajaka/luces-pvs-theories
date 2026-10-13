@@ -1,0 +1,281 @@
+Plan prenosa ppg-lean u PVS
+Datum: 2026-10-13
+
+Cilj je preneti definicije i rezultate iz ppg-lean/main u PVS, sa istim
+matematičkim značenjem i pretpostavkama, i ponovljivim dokazima svih lema,
+teorema i generisanih tipskih obaveza (TCC). U svim novim .pvs fajlovima
+komentari, zaglavlja, dokumentacija i nazivi deklaracija pišu se isključivo
+na engleskom, prema izričitom zahtevu korisnika. Komentari ostaju kratki,
+konkretni i vezani za matematiku. Razgovor i ovaj radni plan mogu biti
+na srpskom; to ne menja pravilo za PVS izvore.
+
+Izvor: ppg-lean, commit d69fd93b9a990d1bbe0ed1630170e44fcbe45982.
+Cilj: luces-pvs-theories, grana lean-translate-pvs, osnovni commit
+1cebe2b5b2480e92a4d28320eb0cdef7d758c4ad, sa lokalnom repair ispravkom.
+
+Obuhvat je 191 Lean modul i 1.824 eksplicitne theorem/lemma deklaracije.
+Na početku je za 20 modula postojala PVS osnova za proveru i dopunu;
+171 modul je zahtevao novi prenos ili zasebnu dopunu. To nije broj PVS fajlova:
+više Lean modula može deliti PVS teoriju, a nedostajuća bibliotečka podrška
+može zahtevati dodatne teorije. Definicije, instance i pomoćne deklaracije
+potrebne tim rezultatima takođe su deo prenosa, iako nisu u broju 1.824.
+
+Plan je vezan za ovaj snapshot. Svih 191 SHA256 vrednosti odgovara Lean
+auditu od 2026-10-08. Promena izvora zahteva dopunu inventara i zavisnosti.
+Dodatni LUCES/NFER moduli iz zasebnog ppg-parametric nisu deo ovog obuhvata.
+
+Uz plan su dva radna fajla:
+- modules.tsv: svih 191 modula, faza, redosled, izvorni hash, direktni
+  projektni i Mathlib importi, postojeći PVS oslonci i obaveza prenosa.
+- proofs.tsv: svih 1.824 eksplicitnih lema/teorema, sa poljima za PVS
+  iskaz, mapiranje, proveru pretpostavki, TCC i replay. Polja se popunjavaju
+  tek posle stvarnog prenosa i uspešnog ponavljanja dokaza.
+
+Status POSTOJI_OSNOVA_ZA_PROVERU znači da pandan treba proveriti.
+Status PLANIRANO znači da posao još nije izvršen. Nijedan red nije
+označen kao završen samo zato što već postoji sličan PVS naziv.
+
+Stanje 2026-10-13: prvi paket i faza 2 su završeni. PPGraph,
+PPGraphCategorical i PPGraphRR imaju 41 mapiran rezultat; njihova čista
+provera svih pratećih teorija i primera ima 61/61 proved-complete.
+Faza 2 ima svih 20 modula i 179 mapiranih Lean rezultata. Svih 56 novih
+PVS teorija i primera prošlo je replay sa celim lancima importa i bez
+orakula: 395/395 proved-complete (346 lema/teorema i 49 TCC-ova).
+modules.tsv sada ima 23 ZAVRSENO modula, a proofs.tsv 220 DOKAZANO
+rezultata. Ostaje 168 modula i 1.604 eksplicitna rezultata. Preostali
+moduli faze 1 nisu ovim proglašeni završenim.
+Mapiranje i pretpostavke: CORE_MAPPING.txt i PHASE2_MAPPING.txt.
+Ponovljiva provera iz korena repozitorijuma:
+  source ~/.zprofile
+  python3 translation/check_core.py
+  python3 translation/check_phase2.py
+
+Izveštaj faze 2: ~/.local/state/pvs-checks/phase2-20261013-final/.
+results.json čuva pojedinačne statuse, totals.json zbir bez duplih
+importa, a manifest.json hash vrednosti izvora i dokaza i verziju alata.
+
+Faza 0. Utvrditi polazno stanje i pripremiti proveru
+
+1. Sačuvati polazni diff i radnu kopiju izvora i dokaza. PVS replay
+   osvežava .prf i generisane fajlove; trenutne lokalne izmene sačuvati.
+   Dalje provere izvršavati na izdvojenoj kopiji projekta, sa svežim
+   kontekstom, bez kopiranja .pvscontext, pvsbin i rezervnih .prf~ fajlova.
+2. Evidentirati PVS, NASALib i proveravani Git/source snapshot. Ne tretirati
+   zbir succeeded ili exit 0 kao potvrdu zatvorenosti dokaza.
+3. Pročitati poslednje pojedinačne summary/log rezultate, proveriti
+   nezatvorene projektne TCC i bibliotečke zavisnosti i ponoviti pogođene
+   provere. U logu manual-20261013-114703 ima proved-incomplete statusa
+   i u osnovnim PPG, sertifikacionim i MT teorijama; raniji nalazi dve
+   transport_ppg formule nisu potpun spisak. Uzrok svakog statusa utvrditi
+   zasebno, bez pretpostavke da je u pitanju samo format metapodataka.
+4. Napraviti skriptu za proveru pojedinačnog fajla, njegovih zavisnosti,
+   pogođenih korisnika i celog prenosa. Čitati svaki summary i log;
+   neuspeh učitavanja, nedostajući izveštaj, timeout, unfinished, untried
+   ili proved-incomplete daju neuspeh provere. Za teorije sa definicijama
+   razlikovati očekivanih nula formula od izostale obrade fajla.
+5. Pregledati postojeću NASALib podršku i zapisati tačne pandane Mathlib
+   rezultatima: mere i proizvodi, nezavisnost, nenegativni beskonačni
+   zbirovi i integrali, uslovno očekivanje, konačne matrice, prebrojiva
+   stabla i izračunljivost. Nedostajuće rezultate dodati kao dokazne
+   zadatke. Ne uvoditi aksiom koji samo pretpostavlja rezultat prenosa.
+
+Izlaz: proverljiv baseline i spisak nezatvorenih obaveza. Pre nego što se
+novi modul osloni na neku teoriju, zatvoriti njene potrebne obaveze.
+Nezavisni moduli mogu napredovati dok se drugi lanac zavisnosti sređuje.
+Četiri Sterbenz importa i sedam unfinished dokaza iz f_core_int_aux u
+poslednjem logu vode se odvojeno: nisu deo Lean PPG prenosa. Završetak
+prenosa zato nije tvrdnja da je ceo istorijski PVS repozitorijum zatvoren.
+
+Faza 1. Uskladiti postojeću osnovu i male dopune
+23 modula: 20 postojećih osnova + 3 nova; 246 Lean deklaracija.
+
+Prvi matematički paket je PPGraph, PPGraphCategorical i PPGraphRR:
+- Dopuniti directed_pp_graph.pvs dokazima za proizvoljnu usmerenu relaciju:
+  walks/paths, validnost, transformacije, izolaciju i sertifikacione lance.
+- Preneti morphism_compose, id_morphism, id_embedding i embedding_compose.
+- Dokazati potrebne veze sa postojećim NASA neusmerenim grafovima i RR;
+  sačuvati postojeće aplikacije preko eksplicitnih instanci/adaptera.
+
+Zatim PPGraphRepair, SelfAssessment, Parametric, ParametricQuotient,
+Blocking, Selection, QuotientBridge i AssessmentBridge. Opšti tip čvorova
+ne svoditi prećutno na below(N); self-assessment instancirati sa stvarnim
+tipom specifikacija. Sačuvati uslove nepraznosti, poretka i potpunosti.
+Proveriti i slučajeve praznih tipova/skupova koje Lean dopušta.
+
+Dodati Meta, EquivBridge i ComplementarySlackness. Postojeći OT aksiomi
+nisu dokaz opštih Lean lema i ne treba ih poistovećivati sa njima.
+
+Uskladiti Probabilistic, LLL i osam postojećih MT modula. Predvideti
+različit domen i meru po promenljivoj, lokalne brojače, tačno indeksiranje
+logova i stabala. Algebrajska granica težina ostaje jasno odvojena od
+probabilističke granice očekivanja koja dolazi u fazi 3.
+
+Izlaz: proveren zajednički interfejs grafova, sertifikacije i MT osnove,
+sa dokazanim vezama prema postojećim PVS teorijama.
+
+Faza 2. BDD i konačno odlučivanje
+20 novih modula; 179 Lean deklaracija.
+
+ZAVRŠENO 2026-10-13: svih 179 rezultata mapirano je u proofs.tsv i
+dokazano. PVS bibliotečka podrška i primeri uključeni su u proveru
+395/395 obaveza. PHASE2_MAPPING.txt opisuje definicije, pretpostavke i
+reprezentaciju dimenzije preko dokazane linearne koordinatne izomorfije.
+
+Preneti osam BDD modula: komponente zavisnosti, particije, lokalnost,
+troškove, incidence/Gram matrice, Laplacian, broj komponenti i MT vezu.
+BDD znači blocking dependency decomposition.
+
+Preneti Infeasibility, FiniteFeasibility, InfeasibilityCounting,
+UnsatisfiableCore, FiniteCore, CorrectionDuality, FarkasCertificate,
+ReachabilityRefutation, RepairDecision, CertifiedDecision,
+FiniteAbstraction i FiniteAbstractionRepair.
+UnsatisfiableCore ide pre BDDInfeasibility, prema imports u modules.tsv.
+
+Izlaz: proverljivi konačni svedoci i refutacije, lokalizacija na komponente,
+tačna apstrakcija i podizanje apstraktne putanje na konkretne korake.
+Neuspeh LLL kriterijuma sam po sebi nije dokaz nepostojanja dobrog stanja.
+
+Faza 3. Dovršiti probabilistički Moser-Tardos
+34 nova modula; 267 Lean deklaracija.
+
+3a. LogSpace, RandomTrajectory, RandomInitialization i PastIndependence:
+    beskonačna tabela uzoraka, merljivost, lokalni brojači i nezavisnost.
+    Lean LogSpace koristi proizvod nad Nat x V; konačan proizvod ili
+    konačan vremenski horizont nisu zamena za opšti iskaz. Ako NASALib
+    nema potrebnu konstrukciju, dokazati je pre zatvaranja ovog paketa.
+3b. CheckOrder/Check/CheckBirth, RealTree, Canonical, InjectivityBridge,
+    CheckInvariance/Shape/Bridge i konverzije stabala: povezati formalni
+    tau-check sa stvarnim izvršenjem, uz prebrojivost i injektivnost.
+3c. Probability/ProbabilityGeneral, Counting, Correspondence, Expectation,
+    ResamplingCount i Occurrence porodica: dokazati produktne procene,
+    broj pojavljivanja i zamenu nenegativnih zbirova i očekivanja.
+3d. WeightSum, WitnessFamily, RandomInitExpectation i OccurrenceExpectation
+    povezati prema stvarnim importima, do randomInitETLog_le_sum.
+    Zatim Termination, ConstantLog, RepairBridge i MTInfeasibility.
+
+Podpaketi opisuju sadržaj; tačan redosled svakog fajla određuje modules.tsv.
+Granica E[T_LOG] <= sum x mora se odnositi na stvarni proces. Očuvati
+slučajnu inicijalizaciju iz slota 0 i sve pretpostavke merljivosti i budžeta.
+Egzistencijalna putanja iz ConstantLog nije probabilistička garancija iz
+proizvoljnog fiksiranog početnog stanja.
+
+Izlaz: kompletan dokazni lanac od tabele uzoraka do očekivanog broja
+resamplovanja, skoro-sigurnog završetka i PPG popravke.
+
+Faza 4. Dodatni LLL kriterijumi i Shearer
+21 novi modul; 265 Lean deklaracija.
+
+Preneti LopsidedLLL, VariableLLL, MoserTardosPegden i svih 16 Shearer modula:
+polinom, indukciju, kriterijum, stabilne sekvence, budžete, occurrence,
+verovatnoću, očekivanje, slack i BDD faktorizaciju.
+
+U ovoj fazi preneti i HLSParameters i HLSMatching. To su dve male HLS
+osnove koje uvozi MoserTardosDriftRegion; time faza 5 ne mora čekati ceo HLS.
+
+Izlaz: dodatni provereni kriterijumi i njihove veze sa MT očekivanjem,
+uz razliku između dovoljnih uslova i stvarne neizvodljivosti.
+
+Faza 5. Drift i konačni stohastički modeli
+23 nova modula; 362 Lean deklaracije.
+
+Preneti AdditiveDrift, MoserTardosDrift, DriftCost, FullResampling i
+DriftRegion, zatim 18 Finite modula prema njihovim zavisnostima:
+drift/proces, update/IID, resampling/table/law, MT drift, potencijale,
+očekivanje, refutacije, repove, sertifikate i lumping/update.
+
+Dokazati uslovni očekivani pad nenegativnog integrabilnog potencijala,
+tačno očekivanje pod datim uslovima, granice repova i očuvanje tranzicija
+i good testa pri smanjenju modela. Sačuvati razliku između racionalnog
+izvršivog checkera i apstraktnog postojanja potencijala.
+
+Izlaz: proverljivi sertifikati trajanja i troška na konačnim modelima.
+Granice se odnose na korake/resamplovanja, ne na hardverski WCET.
+
+Faza 6. Glavni He-Li-Sun razvoj
+64 nova modula; 425 Lean deklaracija.
+
+Ovo su preostali HLS moduli i MoserTardosIntersection, bez dva modula
+iz faze 4 i tri HLSPolicy modula iz faze 7. Prenos deliti na zatvorene
+pakete po importima, ne pokušavati celu grupu u jednoj izmeni:
+- preseci događaja, parametri, obrtanje grana i witness DAG-ovi;
+- slojevi, kodiranje, rangovi, normalizacija i stvarni DAG izvršavanja;
+- izbor matching grana, ekspanzije, dekoder i oporavak izbora;
+- težine, zbir po izborima, diskontovani budžeti;
+- upiti nad disjunktnim blokovima, pomoćni novčići i prošireni prostor;
+- probability, root-union, expectation, repair i decision veze.
+
+Izlaz: HLS granica očekivanja i skoro-sigurna popravka pod stvarnim donjim
+granicama preseka i strogim Shearer uslovom za p - delta^2/17.
+Dekoder, injektivnost i nezavisnost upita moraju biti dokazani, ne postulati.
+
+Faza 7. Politike izbora događaja
+5 novih modula; 66 Lean deklaracija.
+
+Redosled: MoserTardosPolicy, zatim HistoryPolicy i HLSPolicyDAG/Counting
+po importima, pa HLSPolicyExpectation. Policy u Lean-u zavisi od
+HLSRealDAGCounts, zato nije nezavisna rana osnova ovog izvornog rasporeda.
+
+Izlaz: očekivanje i završetak za dozvoljene merljive politike, uključujući
+istoriju i pomoćnu randomizaciju kada su ispunjeni uslovi nezavisnosti
+i zajedničke merljivosti. Ne širiti rezultat na proizvoljan selektor.
+
+Faza 8. Granice odlučivanja i završni pregled
+1 novi modul, RepairUndecidability; 14 Lean deklaracija.
+
+Preneti kodiranje programa, ograničenu evaluaciju, efektivnost checkera,
+halting redukciju i rezultate o nepostojanju potpunog odlučivača/refutatora.
+Modul uvozi Mathlib.Computability.Halting: odgovarajuću proverenu PVS
+bibliotečku osnovu ili njen novi dokaz obezbediti, a ne preuzeti halting
+tvrdnju kao novi aksiom. Konačni algoritmi iz faze 2 ostaju odlučivi;
+ova granica se odnosi na kodiranu beskonačnu porodicu problema.
+
+Izlaz: završen inventar svih 191 modula, sa svim dodatnim PVS pomoćnim
+obavezama zatvorenim. Nezavisnost ovog modula dopušta raniji prenos ako
+je njegova bibliotečka podrška već proverena.
+
+Pravilo završetka svakog modula
+
+1. Za definicije, tipove i svaku Lean teoremu upisati tačan PVS pandan
+   i kratko obrazloženje očuvanja značenja. Ako su reprezentacije različite,
+   dati dokazanu vezu. Specijalni slučaj ne označavati kao potpuni prenos.
+2. Uporediti sve pretpostavke: kvantifikatore, prazne/neprazne tipove,
+   konačnost, izbor, merljivost, nezavisnost, integrabilnost, inicijalizaciju
+   i stroge/slabe nejednakosti. Ne dodavati jače pretpostavke bez označavanja
+   da opšti prenos ostaje otvoren. Izvorne hipoteze eksplicitno modelovati;
+   nijedan nedokazani zaključak ne sakrivati u AXIOM/ASSUMING.
+3. Sačuvati .pvs i .prf; typecheck, sve generisane TCC i replay moraju proći
+   sa statusom proved-complete, bez oracles, skip/admit prečica.
+4. Proveriti tranzitivne dokazne zavisnosti i spisak aksioma, uključujući
+   korišćene NASALib rezultate. Otvorena uvezena obaveza drži modul otvorenim.
+5. Kod novih apstraktnih interfejsa i uslova dati smislen konkretan model
+   kada je potreban da se proveri da pretpostavke dopuštaju predviđeni slučaj;
+   naročito popravku neispravnog čvora, a ne samo trivijalni zdrav sistem.
+6. Pokrenuti proveru pogođenih zavisnih teorija. Na kraju faze proveriti
+   celu dotad prenetu celinu u svežem kontekstu i sačuvati rezultate vezane
+   za tačne hash vrednosti izvora i dokaza. Prolazak stare verzije ne prenosi
+   se automatski na izmenjeni izvor.
+7. U proofs.tsv upisati status DOKAZANO tek uz proverene iskaze, TCC,
+   zavisnosti i log. U modules.tsv staviti ZAVRSENO tek kada su obrađene
+   i ne-teoremske deklaracije i zatvorene sve potrebne obaveze modula.
+
+Raditi u malim paketima zavisnih teorija. Posle svakog paketa zapisati šta
+je dodato, šta je provereno i koje bibliotečke obaveze ostaju. Commit/push
+raditi prema korisnikovom nalogu, sa identitetom dogovorenim u sesiji.
+
+Završna provera treba da pokrije:
+- svih 1.824 eksplicitnih Lean rezultata sa tačnim PVS pandanom;
+- definicije, pomoćne konstrukcije i sve nove PVS TCC i leme;
+- pun replay prenosa i potrebnih uvezenih dokaza u čistom kontekstu;
+- regresiju postojećih PPG korisnika, uz odvojeno prikazane istorijske
+  probleme aplikacija koje nisu deo prenosa;
+- dokumentaciju sa stvarnim brojevima dokaza i navedenim pretpostavkama.
+
+Najveće neizvesnosti su beskonačni proizvod mera, Mathlib/NASALib razlike
+u integraciji i uslovnom očekivanju, efektivna računska teorija i obim HLS
+infrastrukture. Ne procenjivati trajanje samo brojem fajlova. Posle faze 0
+i prvog zatvorenog probabilističkog paketa proceniti obim preostale podrške.
+
+Implementiran je prvi paket iz faze 1, sa stanjem navedenim iznad.
+Ostatak dokumenta opisuje naredne zadatke, ne već završene dokaze.
+Ranije urađena repair ispravka ostaje zasebna lokalna promena sa već
+zabeleženim proverama.

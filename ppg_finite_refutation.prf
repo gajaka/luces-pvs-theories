@@ -1,0 +1,145 @@
+(|ppg_finite_refutation|
+ (|invariantCheck_eq_true_iff| 0
+  (|invariantCheck_eq_true_iff-1| NIL 4000879326
+   ("" (GRIND :EXCLUDE ("Reach")) NIL NIL)
+   ((|invariantCheck| CONST-DECL "bool" |ppg_finite_refutation| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_finite_refutation| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_refutation| NIL)
+    (|InductiveSet| CONST-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|InvariantRefutation| CONST-DECL "bool" |ppg_reachability_refutation|
+     NIL))
+   SHOSTAK))
+ (|invariantCheck_sound| 0
+  (|invariantCheck_sound-1| NIL 4000879326
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "invariantRefutation_sound"
+       ("step" "step!1" "good" "good!1" "v" "v!1" "I" "K!1"))
+      (("" (GRIND :EXCLUDE ("Reach")) NIL))))
+    NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_finite_refutation| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_refutation| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|invariantRefutation_sound| FORMULA-DECL NIL |ppg_reachability_refutation|
+     NIL)
+    (|invariantCheck| CONST-DECL "bool" |ppg_finite_refutation| NIL)
+    (|InductiveSet| CONST-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|InvariantRefutation| CONST-DECL "bool" |ppg_reachability_refutation|
+     NIL))
+   SHOSTAK))
+ (|invariantCheck_complete| 0
+  (|invariantCheck_complete-1| NIL 4000879326
+   ("" (SKOSIMP*)
+    (("" (TYPEPRED "universe")
+      ((""
+        (INST 2
+         "intersection(universe, LAMBDA(w:State): Reach(step!1)(v!1,w))")
+        (("" (LEMMA "reach_refl" ("step" "step!1" "v" "v!1"))
+          (("" (LEMMA "reach_tail" ("step" "step!1" "v" "v!1"))
+            (("" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach" "is_finite"))
+              (("1" (INST 1 "w!1") (("1" (ASSERT) NIL NIL)) NIL)
+               ("2" (INST -1 "u!1" "w!1") (("2" (ASSERT) NIL NIL)) NIL)
+               ("3" (INST -4 "w!1") NIL NIL) ("4" (INST -4 "v!1") NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|universe| FORMAL-CONST-DECL
+     "{s: finite_set[State] | FORALL (z: State): s(z)}" |ppg_finite_refutation|
+     NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_refutation| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|reach_refl| FORMULA-DECL NIL |ppg_reachability_refutation| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|invariantCheck| CONST-DECL "bool" |ppg_finite_refutation| NIL)
+    (|reach_tail| FORMULA-DECL NIL |ppg_reachability_refutation| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|Reach| INDUCTIVE-DECL "bool" |ppg_reachability_refutation| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_finite_refutation| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL))
+   SHOSTAK))
+ (|refutingInvariants_nonempty_iff| 0
+  (|refutingInvariants_nonempty_iff-1| NIL 4000879326
+   ("" (SKOLEM!)
+    (("" (TYPEPRED "universe")
+      ((""
+        (LEMMA "invariantCheck_complete"
+         ("step" "step!1" "good" "good!1" "v" "v!1"))
+        ((""
+          (LEMMA "invariantCheck_sound"
+           ("step" "step!1" "good" "good!1" "v" "v!1"))
+          ((""
+            (GRIND :IF-MATCH NIL :EXCLUDE
+             ("Reach" "invariantCheck" "is_finite"))
+            (("1" (INST -2 "x!1") NIL NIL)
+             ("2" (INST -6 "K!1")
+              (("2"
+                (GRIND :IF-MATCH ALL :EXCLUDE
+                 ("Reach" "invariantCheck" "is_finite"))
+                NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|universe| FORMAL-CONST-DECL
+     "{s: finite_set[State] | FORALL (z: State): s(z)}" |ppg_finite_refutation|
+     NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_refutation| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|invariantCheck_sound| FORMULA-DECL NIL |ppg_finite_refutation| NIL)
+    (|powerset_finite2| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|powerset_finite| APPLICATION-JUDGEMENT "finite_set[set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|nonempty_powerset| APPLICATION-JUDGEMENT "(nonempty?[set[T]])"
+     |sets_lemmas| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|finite_restrict| APPLICATION-JUDGEMENT "finite_set[S]"
+     |restrict_set_props| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|restrict| CONST-DECL "R" |restrict| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|extend| CONST-DECL "R" |extend| NIL)
+    (|powerset| CONST-DECL "setofsets" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|refutingInvariants| CONST-DECL "finite_set[finite_set[State]]"
+     |ppg_finite_refutation| NIL)
+    (|invariantCheck_complete| FORMULA-DECL NIL |ppg_finite_refutation| NIL))
+   SHOSTAK))
+ (|unreachableTest_eq_true_iff| 0
+  (|unreachableTest_eq_true_iff-1| NIL 4000879326
+   ("" (SKOLEM!)
+    (("" (EXPAND "unreachableTest")
+      (("" (REWRITE "refutingInvariants_nonempty_iff") NIL))))
+    NIL)
+   ((|unreachableTest| CONST-DECL "bool" |ppg_finite_refutation| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_refutation| NIL)
+    (|refutingInvariants_nonempty_iff| FORMULA-DECL NIL |ppg_finite_refutation|
+     NIL))
+   SHOSTAK)))
+

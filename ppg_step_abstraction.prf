@@ -1,0 +1,265 @@
+(|ppg_step_abstraction|
+ (|simulation_maps_reachable| 0
+  (|simulation_maps_reachable-1| NIL 4000881548
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "concrete.inductiveSet_reachable"
+       ("step" "step!1" "I"
+        "LAMBDA (z:State): abstract.Reach(astep!1)(project!1(v!1), project!1(z))"
+        "v" "v!1" "w" "w!1"))
+      ((""
+        (LEMMA "abstract.reach_refl" ("step" "astep!1" "v" "project!1(v!1)"))
+        ((""
+          (LEMMA "abstract.reach_tail" ("step" "astep!1" "v" "project!1(v!1)"))
+          (("" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach" "is_finite"))
+            (("" (INST -6 "u!1" "w!2")
+              (("" (INST -1 "project!1(u!1)" "project!1(w!2)")
+                (("" (ASSERT) NIL))))))))))))))
+    NIL)
+   ((|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|Reach| INDUCTIVE-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|inductiveSet_reachable| FORMULA-DECL NIL |ppg_reachability_refutation|
+     NIL)
+    (|reach_tail| FORMULA-DECL NIL |ppg_reachability_refutation| NIL)
+    (|StepSimulation| CONST-DECL "bool" |ppg_step_abstraction| NIL)
+    (|InductiveSet| CONST-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|reach_refl| FORMULA-DECL NIL |ppg_reachability_refutation| NIL))
+   SHOSTAK))
+ (|simulation_maps_reachable_good| 0
+  (|simulation_maps_reachable_good-1| NIL 4000881548
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "simulation_maps_reachable"
+       ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+        "project" "project!1" "v" "v!1" "w" "w!1"))
+      (("" (INST + "project!1(w!1)")
+        (("" (GRIND :IF-MATCH ALL :EXCLUDE ("Reach" "is_finite")) NIL))))))
+    NIL)
+   ((|State| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|simulation_maps_reachable| FORMULA-DECL NIL |ppg_step_abstraction| NIL)
+    (|StepSimulation| CONST-DECL "bool" |ppg_step_abstraction| NIL))
+   SHOSTAK))
+ (|simulation_pulls_back_refutation| 0
+  (|simulation_pulls_back_refutation-1| NIL 4000881548
+   ("" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach" "is_finite"))
+    (("1" (INST -2 "w!1")
+      (("1" (INST -5 "project!1(w!1)") (("1" (ASSERT) NIL NIL)) NIL)) NIL)
+     ("2" (INST -1 "u!1" "w!1")
+      (("2" (INST -4 "project!1(u!1)" "project!1(w!1)")
+        (("2" (ASSERT) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   ((|State| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|InvariantRefutation| CONST-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|InductiveSet| CONST-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|StepSimulation| CONST-DECL "bool" |ppg_step_abstraction| NIL))
+   SHOSTAK))
+ (|simulation_refutes_concrete| 0
+  (|simulation_refutes_concrete-1| NIL 4000881548
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "simulation_maps_reachable_good"
+       ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+        "project" "project!1" "v" "v!1"))
+      (("" (GRIND :EXCLUDE ("StepSimulation" "Reach")) NIL))))
+    NIL)
+   ((|State| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|simulation_maps_reachable_good| FORMULA-DECL NIL |ppg_step_abstraction|
+     NIL))
+   SHOSTAK))
+ (|exactAbstraction_good_iff| 0
+  (|exactAbstraction_good_iff-1| NIL 4000881548
+   ("" (GRIND :EXCLUDE ("Reach")) NIL NIL)
+   ((|Abstract| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|StepSimulation| CONST-DECL "bool" |ppg_step_abstraction| NIL)
+    (|ExactAbstraction| CONST-DECL "bool" |ppg_step_abstraction| NIL))
+   SHOSTAK))
+ (|exactAbstraction_good_constant_on_fibers| 0
+  (|exactAbstraction_good_constant_on_fibers-1| NIL 4000881548
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "exactAbstraction_good_iff"
+       ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+        "project" "project!1" "w" "u!1"))
+      ((""
+        (LEMMA "exactAbstraction_good_iff"
+         ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+          "project" "project!1" "w" "w!1"))
+        (("" (ASSERT) (("" (GROUND) NIL))))))))
+    NIL)
+   ((|State| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|exactAbstraction_good_iff| FORMULA-DECL NIL |ppg_step_abstraction| NIL))
+   SHOSTAK))
+ (|exactAbstraction_lifts_reachable| 0
+  (|exactAbstraction_lifts_reachable-1| NIL 4000881548
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "abstract.inductiveSet_reachable"
+       ("step" "astep!1" "I"
+        "LAMBDA (b:Abstract): EXISTS (w:State): concrete.Reach(step!1)(v!1, w) AND project!1(w)=b"
+        "v" "project!1(v!1)" "w" "a!1"))
+      (("" (LEMMA "concrete.reach_refl" ("step" "step!1" "v" "v!1"))
+        (("" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach" "is_finite"))
+          (("1" (INST 1 "v!1") NIL NIL)
+           ("2" (INST -8 "w!2" "w!1")
+            (("2" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach" "is_finite"))
+              (("2" (INST 1 "w!3")
+                (("2"
+                  (LEMMA "concrete.reach_tail"
+                   ("step" "step!1" "v" "v!1" "u" "w!2" "w" "w!3"))
+                  (("2" (ASSERT) NIL NIL)) NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|Reach| INDUCTIVE-DECL "bool" |ppg_reachability_refutation| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|inductiveSet_reachable| FORMULA-DECL NIL |ppg_reachability_refutation|
+     NIL)
+    (|InductiveSet| CONST-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|StepSimulation| CONST-DECL "bool" |ppg_step_abstraction| NIL)
+    (|ExactAbstraction| CONST-DECL "bool" |ppg_step_abstraction| NIL)
+    (|reach_tail| FORMULA-DECL NIL |ppg_reachability_refutation| NIL)
+    (|reach_refl| FORMULA-DECL NIL |ppg_reachability_refutation| NIL))
+   SHOSTAK))
+ (|exactAbstraction_reachable_good_iff| 0
+  (|exactAbstraction_reachable_good_iff-1| NIL 4000881548
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "simulation_maps_reachable_good"
+       ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+        "project" "project!1" "v" "v!1"))
+      ((""
+        (LEMMA "exactAbstraction_lifts_reachable"
+         ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+          "project" "project!1" "v" "v!1"))
+        (("" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach" "is_finite"))
+          (("" (INST -1 "a!1")
+            (("" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach" "is_finite"))
+              (("" (INST 1 "w!1")
+                (("" (GRIND :EXCLUDE ("Reach" "is_finite")) NIL))))))))))))))
+    NIL)
+   ((|State| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|simulation_maps_reachable_good| FORMULA-DECL NIL |ppg_step_abstraction|
+     NIL)
+    (|StepSimulation| CONST-DECL "bool" |ppg_step_abstraction| NIL)
+    (|ExactAbstraction| CONST-DECL "bool" |ppg_step_abstraction| NIL)
+    (|exactAbstraction_lifts_reachable| FORMULA-DECL NIL |ppg_step_abstraction|
+     NIL))
+   SHOSTAK))
+ (|exactAbstraction_unreachable_iff| 0
+  (|exactAbstraction_unreachable_iff-1| NIL 4000881548
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "exactAbstraction_reachable_good_iff"
+       ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+        "project" "project!1" "v" "v!1"))
+      (("" (GRIND :EXCLUDE ("ExactAbstraction" "Reach")) NIL))))
+    NIL)
+   ((|State| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|exactAbstraction_reachable_good_iff| FORMULA-DECL NIL
+     |ppg_step_abstraction| NIL))
+   SHOSTAK))
+ (|exactAbstraction_noReachableGood_iff| 0
+  (|exactAbstraction_noReachableGood_iff-1| NIL 4000881548
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "exactAbstraction_unreachable_iff"
+       ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+        "project" "project!1" "v" "v!1"))
+      (("" (GRIND :EXCLUDE ("ExactAbstraction" "Reach")) NIL))))
+    NIL)
+   ((|State| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|exactAbstraction_unreachable_iff| FORMULA-DECL NIL |ppg_step_abstraction|
+     NIL)
+    (|abstractGraph| CONST-DECL "ppg_repair_semantics[Abstract].RepairGraph"
+     |ppg_step_abstraction| NIL)
+    (|NoReachableGood| CONST-DECL "bool" |ppg_infeasibility| NIL)
+    (|concreteGraph| CONST-DECL "ppg_repair_semantics[State].RepairGraph"
+     |ppg_step_abstraction| NIL))
+   SHOSTAK))
+ (|exactAbstraction_repair_possible_iff| 0
+  (|exactAbstraction_repair_possible_iff-1| NIL 4000881548
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "exactAbstraction_reachable_good_iff"
+       ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+        "project" "project!1" "v" "v!1"))
+      ((""
+        (LEMMA "exactAbstraction_good_iff"
+         ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+          "project" "project!1" "w" "v!1"))
+        ((""
+          (LEMMA
+           "ppg_infeasibility[State, bool].reachable_good_iff_repair_possible"
+           ("G" "concreteGraph(step!1, good!1)" "v" "v!1"))
+          ((""
+            (LEMMA
+             "ppg_infeasibility[Abstract, bool].reachable_good_iff_repair_possible"
+             ("G" "abstractGraph(astep!1, agood!1)" "v" "project!1(v!1)"))
+            (("" (EXPAND "ppg_repair_semantics[State].isolated")
+              (("" (EXPAND "ppg_repair_semantics[Abstract].isolated")
+                ((""
+                  (GRIND :EXCLUDE
+                   ("ExactAbstraction" "Reach" "repair_possible"))
+                  NIL))))))))))))))
+    NIL)
+   ((|State| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_step_abstraction| NIL)
+    (|exactAbstraction_reachable_good_iff| FORMULA-DECL NIL
+     |ppg_step_abstraction| NIL)
+    (|reachable_good_iff_repair_possible| FORMULA-DECL NIL |ppg_infeasibility|
+     NIL)
+    (|RepairGraph| TYPE-EQ-DECL NIL |ppg_repair_semantics| NIL)
+    (|concreteGraph| CONST-DECL "ppg_repair_semantics[State].RepairGraph"
+     |ppg_step_abstraction| NIL)
+    (|isolated| CONST-DECL "bool" |ppg_repair_semantics| NIL)
+    (|abstractGraph| CONST-DECL "ppg_repair_semantics[Abstract].RepairGraph"
+     |ppg_step_abstraction| NIL)
+    (|exactAbstraction_good_iff| FORMULA-DECL NIL |ppg_step_abstraction| NIL))
+   SHOSTAK)))
+

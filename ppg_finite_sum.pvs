@@ -1,0 +1,39 @@
+% Real finite sums with termination and algebraic laws replayed in this project.
+ppg_finite_sum[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_induction[T]
+  S, A, B: VAR finite_set[T]
+  f, g: VAR [T -> real]
+  x: VAR T
+  r: VAR real
+  fsum(S, f): RECURSIVE real =
+    IF empty?(S) THEN 0 ELSE f(choose(S)) + fsum(rest(S), f) ENDIF
+    MEASURE card(S)
+  fsum_empty: LEMMA fsum(emptyset[T], f) = 0
+  fsum_step: LEMMA NOT empty?(S) IMPLIES
+    fsum(S, f) = f(choose(S)) + fsum(rest(S), f)
+  fsum_congr: LEMMA
+    (FORALL (x: T): S(x) IMPLIES f(x) = g(x)) IMPLIES fsum(S, f) = fsum(S, g)
+  fsum_one: LEMMA fsum(S, LAMBDA (x: T): 1) = card(S)
+  fsum_add_functions: LEMMA
+    fsum(S, LAMBDA (x: T): f(x) + g(x)) = fsum(S, f) + fsum(S, g)
+  fsum_scale: LEMMA fsum(S, LAMBDA (x: T): r * f(x)) = r * fsum(S, f)
+  fsum_scale_right: LEMMA fsum(S, LAMBDA (x: T): f(x) * r) = fsum(S, f) * r
+  fsum_scale_product: LEMMA
+    fsum(S, LAMBDA (x: T): f(x) * (g(x) * r)) =
+      fsum(S, LAMBDA (x: T): f(x) * g(x)) * r
+  fsum_nonnegative: LEMMA
+    (FORALL (x: T): S(x) IMPLIES f(x) >= 0) IMPLIES fsum(S, f) >= 0
+  fsum_zero: LEMMA fsum(S, LAMBDA (x: T): 0) = 0
+  fsum_mono: LEMMA
+    (FORALL (x: T): S(x) IMPLIES f(x) <= g(x)) IMPLIES fsum(S, f) <= fsum(S, g)
+  filter_remove: LEMMA
+    FORALL (P: set[T]): intersection(remove(x, S), P) = remove(x, intersection(S, P))
+  filter_rest_card: LEMMA
+    FORALL (SS: non_empty_finite_set[T], P: set[T]):
+      card(intersection(SS, P)) = card(intersection(rest(SS), P)) +
+        IF P(choose(SS)) THEN 1 ELSE 0 ENDIF
+  fsum_indicator: LEMMA
+    FORALL (P: set[T]):
+      fsum(S, LAMBDA (x: T): IF P(x) THEN 1 ELSE 0 ENDIF) = card(intersection(S, P))
+END ppg_finite_sum

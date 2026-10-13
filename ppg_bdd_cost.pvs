@@ -1,0 +1,36 @@
+% Finite optimization over all assignments splits across independent components.
+ppg_bdd_cost[C, V: TYPE, Value: TYPE+,
+  assignments: {S: non_empty_finite_set[[V -> Value]] | FORALL (i: [V -> Value]): S(i)}]: THEORY
+BEGIN
+  IMPORTING ppg_bdd[C, V], ppg_real_sum[C], ppg_real_minimum[[V -> Value]]
+  vars: VAR CertVars
+  cost: VAR [C, [V -> Value] -> real]
+  B: VAR finite_set[C]
+  c, d: VAR C
+  i, j: VAR [V -> Value]
+  LocalCost(vars, cost): bool = FORALL c, i, j:
+    (FORALL (v: V): vars(c)(v) IMPLIES i(v) = j(v)) IMPLIES cost(c, i) = cost(c, j)
+  totalCost(cost, B, i): real = fsum(B, LAMBDA (c: C): cost(c, i))
+  optCost(cost, B): real = minimum(assignments, LAMBDA (i: [V -> Value]): totalCost(cost, B, i))
+  glue(vars, B, c, i, j): [V -> Value] =
+    LAMBDA (v: V): IF componentFootprint(vars, B, c)(v) THEN i(v) ELSE j(v) ENDIF
+  rest_eq_filter_not: THEOREM difference(B, compOf(vars, B, c)) =
+    intersection(B, {d: C | NOT SameComponent(vars, B)(c, d)})
+  totalCost_split: THEOREM totalCost(cost, B, i) =
+    totalCost(cost, compOf(vars, B, c), i) + totalCost(cost, difference(B, compOf(vars, B, c)), i)
+  optCost_le_totalCost: LEMMA optCost(cost, B) <= totalCost(cost, B, i)
+  optCost_attained: LEMMA EXISTS i: optCost(cost, B) = totalCost(cost, B, i)
+  optCost_ge_component_split: THEOREM
+    optCost(cost, compOf(vars, B, c)) + optCost(cost, difference(B, compOf(vars, B, c))) <= optCost(cost, B)
+  glue_component_cost: LEMMA LocalCost(vars, cost) AND compOf(vars, B, c)(d) IMPLIES
+    cost(d, glue(vars, B, c, i, j)) = cost(d, i)
+  glue_remainder_cost: LEMMA LocalCost(vars, cost) AND difference(B, compOf(vars, B, c))(d) IMPLIES
+    cost(d, glue(vars, B, c, i, j)) = cost(d, j)
+  glue_totalCost: LEMMA LocalCost(vars, cost) IMPLIES
+    totalCost(cost, B, glue(vars, B, c, i, j)) =
+      totalCost(cost, compOf(vars, B, c), i) + totalCost(cost, difference(B, compOf(vars, B, c)), j)
+  optCost_le_component_split: THEOREM LocalCost(vars, cost) IMPLIES
+    optCost(cost, B) <= optCost(cost, compOf(vars, B, c)) + optCost(cost, difference(B, compOf(vars, B, c)))
+  optCost_component_split: THEOREM LocalCost(vars, cost) IMPLIES
+    optCost(cost, B) = optCost(cost, compOf(vars, B, c)) + optCost(cost, difference(B, compOf(vars, B, c)))
+END ppg_bdd_cost

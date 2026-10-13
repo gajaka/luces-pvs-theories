@@ -1,0 +1,23 @@
+% A sufficient criterion and exact finite feasibility define three regions.
+ppg_repair_decision[State: TYPE, C: TYPE,
+  universe: {s: finite_set[State] | FORALL (z: State): s(z)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_count[State, C, universe]
+  IMPORTING ppg_repair_regions[State, C]
+  allowed: VAR set[State]
+  sat: VAR [C, State -> bool]
+  B: VAR finite_set[C]
+  criterion: VAR bool
+  classify(allowed, sat, B, criterion): RepairRegion =
+    IF criterion THEN region_certified
+    ELSIF goodCount(allowed, sat, B) = 0 THEN region_impossible ELSE region_gap ENDIF
+  classify_certified_iff: THEOREM classify(allowed, sat, B, criterion) = region_certified IFF criterion
+  classify_gap_iff: THEOREM
+    classify(allowed, sat, B, criterion) = region_gap IFF Gap(allowed, sat, B, criterion)
+  classify_impossible_iff: THEOREM
+    (criterion IMPLIES Satisfiable(allowed, sat, B)) IMPLIES
+      (classify(allowed, sat, B, criterion) = region_impossible IFF Infeasible(allowed, sat, B))
+  classify_certified_sound: THEOREM
+    (criterion IMPLIES Satisfiable(allowed, sat, B)) AND
+    classify(allowed, sat, B, criterion) = region_certified IMPLIES Satisfiable(allowed, sat, B)
+END ppg_repair_decision

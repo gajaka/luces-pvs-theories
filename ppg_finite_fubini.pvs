@@ -1,0 +1,11 @@
+% Interchanging two finite real sums requires no nonempty-domain assumption.
+ppg_finite_fubini[C, V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_sum[C] AS rows, ppg_finite_sum[V] AS cols
+  B: VAR finite_set[C]
+  U: VAR finite_set[V]
+  f: VAR [C, V -> real]
+  fsum_comm: LEMMA
+    rows.fsum(B, LAMBDA (c: C): cols.fsum(U, LAMBDA (v: V): f(c, v))) =
+      cols.fsum(U, LAMBDA (v: V): rows.fsum(B, LAMBDA (c: C): f(c, v)))
+END ppg_finite_fubini

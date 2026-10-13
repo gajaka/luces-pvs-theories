@@ -1,0 +1,33 @@
+% The reverse minimal-core / minimal-correction hitting-set correspondence.
+ppg_correction_duality[State: TYPE, C: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_unsatisfiable_core[State, C]
+  allowed: VAR set[State]
+  sat: VAR [C, State -> bool]
+  B, K, R, T, M: VAR finite_set[C]
+  HitsAllMinimalCorrections(allowed, sat, B, K): bool =
+    FORALL M: MinimalCorrectionSet(allowed, sat, B, M) IMPLIES nonempty?(intersection(K, M))
+  MinimalCorrectionHittingSet(allowed, sat, B, K): bool =
+    HitsAllMinimalCorrections(allowed, sat, B, K) AND
+      FORALL (c: C): K(c) IMPLIES NOT HitsAllMinimalCorrections(allowed, sat, B, remove(c, K))
+
+  correctionSet_mono: THEOREM
+    subset?(R, T) AND subset?(T, B) AND CorrectionSet(allowed, sat, B, R)
+    IMPLIES CorrectionSet(allowed, sat, B, T)
+  minimalCorrection_exists: THEOREM
+    CorrectionSet(allowed, sat, B, R) IMPLIES
+      EXISTS M: subset?(M, R) AND MinimalCorrectionSet(allowed, sat, B, M)
+  infeasible_hits_correction: THEOREM
+    subset?(K, B) AND Infeasible(allowed, sat, K) AND CorrectionSet(allowed, sat, B, R)
+    IMPLIES nonempty?(intersection(K, R))
+  infeasible_iff_hitsAllMinimalCorrections: THEOREM
+    subset?(K, B) IMPLIES
+      (Infeasible(allowed, sat, K) IFF HitsAllMinimalCorrections(allowed, sat, B, K))
+  infeasible_erase_iff: LEMMA
+    FORALL (c: C): subset?(K, B) IMPLIES
+      (Infeasible(allowed, sat, remove(c, K)) IFF
+        HitsAllMinimalCorrections(allowed, sat, B, remove(c, K)))
+  minimalCore_iff_minimalCorrectionHittingSet: THEOREM
+    subset?(K, B) IMPLIES
+      (MinimalCore(allowed, sat, K) IFF MinimalCorrectionHittingSet(allowed, sat, B, K))
+END ppg_correction_duality

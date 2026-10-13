@@ -1,0 +1,37 @@
+% Identity and composition laws for the shared directed graph representation.
+categorical_pp_closure[T, U, W: TYPE]: THEORY
+BEGIN
+  IMPORTING categorical_pp_graphs[T, U], categorical_pp_graphs[U, W],
+            categorical_pp_graphs[T, W], categorical_pp_graphs[T, T]
+
+  A: VAR directed_pp_graph[T].Graph
+  B: VAR directed_pp_graph[U].Graph
+  C: VAR directed_pp_graph[W].Graph
+  rT: VAR [T, T -> bool]
+  rU: VAR [U, U -> bool]
+  rW: VAR [W, W -> bool]
+  iT: VAR [T -> bool]
+  iU: VAR [U -> bool]
+  iW: VAR [W -> bool]
+  f: VAR [T -> U]
+  g: VAR [U -> W]
+
+  morphism_compose: THEOREM
+    categorical_pp_graphs[T, U].morphism(f, A, B, rT, iT, rU, iU) AND
+    categorical_pp_graphs[U, W].morphism(g, B, C, rU, iU, rW, iW) IMPLIES
+      categorical_pp_graphs[T, W].morphism(
+        LAMBDA (x: T): g(f(x)), A, C, rT, iT, rW, iW)
+
+  id_morphism: THEOREM
+    categorical_pp_graphs[T, T].morphism(LAMBDA (x: T): x, A, A, rT, iT, rT, iT)
+
+  id_embedding: THEOREM
+    categorical_pp_graphs[T, T].embedding(LAMBDA (x: T): x, A, A, rT, iT, rT, iT)
+
+  embedding_compose: THEOREM
+    categorical_pp_graphs[T, U].embedding(f, A, B, rT, iT, rU, iU) AND
+    categorical_pp_graphs[U, W].embedding(g, B, C, rU, iU, rW, iW) IMPLIES
+      categorical_pp_graphs[T, W].embedding(
+        LAMBDA (x: T): g(f(x)), A, C, rT, iT, rW, iW)
+
+END categorical_pp_closure

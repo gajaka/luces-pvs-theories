@@ -1,0 +1,35 @@
+% Reflexive transitive reachability and inductive refutations.
+ppg_reachability_refutation[State: TYPE, C: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_infeasibility[State, C]
+  step: VAR [State, State -> bool]
+  I, good: VAR set[State]
+  u, v, w: VAR State
+  G: VAR RepairGraph
+  Reach(step)(v, w): INDUCTIVE bool =
+    v = w OR EXISTS (u: State): Reach(step)(v, u) AND step(u, w)
+  InductiveSet(step, I): bool = FORALL u, w: I(u) AND step(u, w) IMPLIES I(w)
+  InvariantRefutation(step, good, v, I): bool =
+    I(v) AND InductiveSet(step, I) AND FORALL w: I(w) IMPLIES NOT good(w)
+  reach_refl: LEMMA Reach(step)(v, v)
+  reach_tail: LEMMA Reach(step)(v, u) AND step(u, w) IMPLIES Reach(step)(v, w)
+  inductiveSet_reachable: THEOREM
+    InductiveSet(step, I) AND I(v) AND Reach(step)(v, w) IMPLIES I(w)
+  invariantRefutation_sound: THEOREM
+    InvariantRefutation(step, good, v, I) IMPLIES NOT EXISTS w: Reach(step)(v, w) AND good(w)
+  no_reachable_good_iff_invariantRefutation: THEOREM
+    (NOT EXISTS w: Reach(step)(v, w) AND good(w)) IFF EXISTS I: InvariantRefutation(step, good, v, I)
+  invariantRefutation_noReachableGood: THEOREM
+    (FORALL u, w: G`reach_rel(u, w) IMPLIES Reach(step)(u, w)) AND
+    InvariantRefutation(step, G`invariant_holds, v, I) IMPLIES NoReachableGood(G, v)
+  nonincreasing_barrier_refutes: THEOREM
+    FORALL (barrier: [State -> real], bound: real):
+      (FORALL u, w: step(u, w) IMPLIES barrier(w) <= barrier(u)) AND
+      (FORALL w: good(w) IMPLIES bound < barrier(w)) AND barrier(v) <= bound
+      IMPLIES NOT EXISTS w: Reach(step)(v, w) AND good(w)
+  barrier_sublevel_refutes: THEOREM
+    FORALL (barrier: [State -> real], bound: real):
+      (FORALL u, w: barrier(u) <= bound AND step(u, w) IMPLIES barrier(w) <= bound) AND
+      (FORALL w: good(w) IMPLIES bound < barrier(w)) AND barrier(v) <= bound
+      IMPLIES NOT EXISTS w: Reach(step)(v, w) AND good(w)
+END ppg_reachability_refutation

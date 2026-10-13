@@ -65,9 +65,7 @@ BEGIN
       repair_possible?(v) IMPLIES
         nonempty?[Vertex](repair_candidates(v))
 
-  % Relational choice: extract a concrete repair target
-  % Uses PVS choose (Hilbert epsilon) on the nonempty candidate set.
-  % No Axiom of Choice needed: finite type below(N) is decidable.
+  % Choose a valid neighbor from the nonempty candidate set.
   repair_target(v: (repair_possible?)): Vertex =
     choose({w: Vertex | w /= v AND rr_rel(v, w) AND invariant_holds(w)})
 
@@ -77,22 +75,24 @@ BEGIN
       repair_possible?(v) IMPLIES
         repair_candidates(v)(repair_target(v))
 
-  % State after repair: invariant restored
-  % (abstract: we assert that repair restores invariant)
-  repaired_invariant: [Vertex -> bool]
+  % After repairing v, only v takes the chosen neighbor's invariant value.
+  % If no repair is available, every vertex keeps its current value.
+  repaired_invariant(v, w: Vertex): bool =
+    IF w = v AND repair_possible?(v)
+      THEN invariant_holds(repair_target(v))
+      ELSE invariant_holds(w)
+    ENDIF
 
-  % A1: Repair restores invariant for the target vertex
-  ax_repair_restores: AXIOM
+  repair_restores: LEMMA
     FORALL (v: Vertex):
-      repair_possible?(v) IMPLIES repaired_invariant(v)
+      repair_possible?(v) IMPLIES repaired_invariant(v, v)
 
-  % A2: Repair does not disturb other vertices (locality)
-  ax_repair_local: AXIOM
+  repair_local: LEMMA
     FORALL (v, w: Vertex):
       v /= w IMPLIES
-        (repaired_invariant(w) = invariant_holds(w))
+        (repaired_invariant(v, w) = invariant_holds(w))
 
-  % A3: rr_rel is reflexive (every healthy vertex can maintain itself)
+  % Every healthy vertex is related to itself.
   ax_rr_reflexive: AXIOM
     FORALL (v: Vertex): invariant_holds(v) IMPLIES rr_rel(v, v)
 
@@ -115,13 +115,13 @@ BEGIN
   % T1: If repair is possible, isolation is reversible
   thm_isolation_reversible: THEOREM
     FORALL (v: Vertex):
-      repair_possible?(v) IMPLIES repaired_invariant(v)
+      repair_possible?(v) IMPLIES repaired_invariant(v, v)
 
   % T2: Repaired vertex does not break others (locality)
   thm_repair_locality: THEOREM
     FORALL (v, w: Vertex):
       repair_possible?(v) AND v /= w IMPLIES
-        repaired_invariant(w) = invariant_holds(w)
+        repaired_invariant(v, w) = invariant_holds(w)
 
   % T3: A healthy vertex is always self-repairable (trivially)
   thm_healthy_self_repair: THEOREM
@@ -136,7 +136,7 @@ BEGIN
 
   thm_global_repair_means_no_permanent_isolation: THEOREM
     globally_repairable? IMPLIES
-      FORALL (v: Vertex): isolated?(v) IMPLIES repaired_invariant(v)
+      FORALL (v: Vertex): isolated?(v) IMPLIES repaired_invariant(v, v)
 
   % T5: Route repair preserves communication between x and y
   %     (requires x and y to be healthy)
@@ -152,14 +152,12 @@ BEGIN
       repair_possible?(v) IMPLIES
         EXISTS (w: Vertex): repair_candidates(v)(w)
 
-  % T7: Sequential repair converges (finite graph, each step restores one)
-  %     If we repair one vertex at a time and repair does not break others,
-  %     the number of isolated vertices strictly decreases.
+  % One repair restores its target and preserves every other vertex.
   thm_sequential_convergence: THEOREM
     FORALL (v: Vertex):
       repair_possible?(v) IMPLIES
-        repaired_invariant(v) AND
+        repaired_invariant(v, v) AND
         FORALL (w: Vertex): w /= v IMPLIES
-          repaired_invariant(w) = invariant_holds(w)
+          repaired_invariant(v, w) = invariant_holds(w)
 
 END pp_graph_repair

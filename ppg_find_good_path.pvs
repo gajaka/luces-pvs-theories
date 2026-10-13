@@ -1,0 +1,20 @@
+% Search increases the depth bound and returns the first enumerated trace.
+ppg_find_good_path[State: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_path_search[State], ppg_nat_search
+  step: VAR [State, State -> bool]
+  good: VAR set[State]
+  enumeration: VAR list[State]
+  v: VAR State
+  findGoodPath(step, good)
+    (enumeration: {es: list[State] | FORALL (w: State): member(w, es)},
+     v: {z: State | EXISTS (w: State): Reach(step)(z, w) AND good(w)}):
+      {trace: list[State] | GoodPath(step, good, v, trace)} =
+    LET budget = findFirst(LAMBDA (n: nat): NOT null?(boundedPaths(step, good, enumeration, n, v))),
+        candidates = boundedPaths(step, good, enumeration, budget, v)
+    IN car(candidates)
+  findGoodPath_valid: THEOREM FORALL
+    (enumeration: {es: list[State] | FORALL (w: State): member(w, es)},
+     v: {z: State | EXISTS (w: State): Reach(step)(z, w) AND good(w)}):
+      GoodPath(step, good, v, findGoodPath(step, good)(enumeration, v))
+END ppg_find_good_path

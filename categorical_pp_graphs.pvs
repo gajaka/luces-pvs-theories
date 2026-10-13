@@ -19,11 +19,10 @@ BEGIN
 %% Types
 %% ═══════════════════════════════════════════════════════════════════
 
-  Graph_T: TYPE = [# vertices: [T -> bool],
-                     edges: [T, T -> bool] #]
+  IMPORTING directed_pp_graph[T], directed_pp_graph[U]
 
-  Graph_U: TYPE = [# vertices: [U -> bool],
-                     edges: [U, U -> bool] #]
+  Graph_T: TYPE = directed_pp_graph[T].Graph
+  Graph_U: TYPE = directed_pp_graph[U].Graph
 
   rr_T: [T, T -> bool]
   rr_U: [U, U -> bool]
@@ -51,11 +50,25 @@ BEGIN
   pp_valid_U(G: Graph_U): bool =
     FORALL (x, y: U): G`edges(x, y) IMPLIES pp_edge_U(x, y)
 
-  % PP-Morphism: map preserving vertices AND pp-edge structure
+  % Explicit graph and predicate arguments allow composition across types.
+  morphism(f: [T -> U], source: Graph_T, target: Graph_U,
+           rel_T: [T, T -> bool], pred_T: [T -> bool],
+           rel_U: [U, U -> bool], pred_U: [U -> bool]): bool =
+    (FORALL (x: T): source`vertices(x) IMPLIES target`vertices(f(x))) AND
+    (FORALL (x, y: T): source`edges(x, y) AND
+      directed_pp_graph[T].pp_edge(rel_T, pred_T, x, y) IMPLIES
+        target`edges(f(x), f(y)) AND
+        directed_pp_graph[U].pp_edge(rel_U, pred_U, f(x), f(y)))
+
+  embedding(f: [T -> U], source: Graph_T, target: Graph_U,
+            rel_T: [T, T -> bool], pred_T: [T -> bool],
+            rel_U: [U, U -> bool], pred_U: [U -> bool]): bool =
+    morphism(f, source, target, rel_T, pred_T, rel_U, pred_U) AND
+    (FORALL (x, y: T): f(x) = f(y) IMPLIES x = y)
+
+  % The original interface remains an instance with fixed graph data.
   pp_morphism?(f: [T -> U]): bool =
-    (FORALL (x: T): G1`vertices(x) IMPLIES G2`vertices(f(x))) AND
-    (FORALL (x, y: T): G1`edges(x, y) AND pp_edge_T(x, y) IMPLIES
-      G2`edges(f(x), f(y)) AND pp_edge_U(f(x), f(y)))
+    morphism(f, G1, G2, rr_T, inv_T, rr_U, inv_U)
 
   % PP-Embedding: injective morphism
   pp_embedding?(f: [T -> U]): bool =
@@ -114,5 +127,9 @@ BEGIN
     FORALL (f: [T -> U], g: [U -> T], x: T):
       simulation?(f, g) AND G1`vertices(x)
       IMPLIES g(f(x)) = x
+
+  embedding_agrees: LEMMA
+    FORALL (f: [T -> U]): pp_embedding?(f) =
+      embedding(f, G1, G2, rr_T, inv_T, rr_U, inv_U)
 
 END categorical_pp_graphs

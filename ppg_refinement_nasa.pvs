@@ -1,0 +1,18 @@
+% The general relation agrees with NASA's relation on its declared domain.
+ppg_refinement_nasa[T, U: TYPE+]: THEORY
+BEGIN
+  IMPORTING ppg_refinement[T, U], sets_aux@rr_rel[T, U]
+  le_T: VAR equivalence[T]
+  le_U: VAR equivalence[U]
+  f: VAR [T -> U]
+  g: VAR [U -> T]
+  m, n: VAR [T, U]
+
+  rel_extension_agrees: THEOREM
+    ppg_refinement[T, U].rel_extension(le_T, le_U)(m, n) =
+      relation_extension[T, U].rel_extension(le_T, le_U)(m, n)
+
+  RR_agrees: THEOREM
+    ppg_refinement[T, U].RR(le_T, le_U, f, g)(n) =
+      rr_rel[T, U].RR(le_T, le_U, f, g)(n)
+END ppg_refinement_nasa

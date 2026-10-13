@@ -1,0 +1,162 @@
+(|ppg_reachability_refutation|
+ (|reach_refl| 0
+  (|reach_refl-1| NIL 4000879022
+   ("" (SKOLEM!) (("" (EXPAND "Reach") (("" (ASSERT) NIL)))) NIL)
+   ((|Reach| INDUCTIVE-DECL "bool" |ppg_reachability_refutation| NIL))
+   SHOSTAK))
+ (|reach_tail| 0
+  (|reach_tail-1| NIL 4000879022
+   ("" (SKOSIMP*)
+    (("" (EXPAND "Reach" +)
+      (("" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach"))
+        (("" (INST 2 "u!1") (("" (ASSERT) NIL))))))))
+    NIL)
+   ((|Reach| INDUCTIVE-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_reachability_refutation| NIL))
+   SHOSTAK))
+ (|inductiveSet_reachable| 0
+  (|inductiveSet_reachable-1| NIL 4000879022
+   ("" (SKOSIMP*)
+    (("" (LEMMA "Reach_induction" ("step" "step!1" "v" "v!1" "P" "I!1"))
+      (("" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach"))
+        (("1" (INST -1 "w!1") (("1" (ASSERT) NIL NIL)) NIL)
+         ("2" (INST -4 "u!1" "w!2") (("2" (ASSERT) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_reachability_refutation| NIL)
+    (|Reach_induction| FORMULA-DECL NIL |ppg_reachability_refutation| NIL)
+    (|InductiveSet| CONST-DECL "bool" |ppg_reachability_refutation| NIL))
+   SHOSTAK))
+ (|invariantRefutation_sound| 0
+  (|invariantRefutation_sound-1| NIL 4000879022
+   ("" (SKOSIMP*)
+    (("" (LEMMA "inductiveSet_reachable" ("step" "step!1" "I" "I!1" "v" "v!1"))
+      (("" (GRIND :IF-MATCH ALL :EXCLUDE ("Reach")) NIL))))
+    NIL)
+   ((|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_reachability_refutation| NIL)
+    (|inductiveSet_reachable| FORMULA-DECL NIL |ppg_reachability_refutation|
+     NIL)
+    (|InductiveSet| CONST-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|InvariantRefutation| CONST-DECL "bool" |ppg_reachability_refutation|
+     NIL))
+   SHOSTAK))
+ (|no_reachable_good_iff_invariantRefutation| 0
+  (|no_reachable_good_iff_invariantRefutation-1| NIL 4000879022
+   ("" (SKOLEM!)
+    ((""
+      (LEMMA "invariantRefutation_sound"
+       ("step" "step!1" "good" "good!1" "v" "v!1"))
+      (("" (LEMMA "reach_refl" ("step" "step!1" "v" "v!1"))
+        (("" (LEMMA "reach_tail" ("step" "step!1" "v" "v!1"))
+          (("" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach" "InvariantRefutation"))
+            (("1" (INST -3 "I!1") NIL NIL)
+             ("2" (INST 2 "LAMBDA(w:State): Reach(step!1)(v!1,w)")
+              (("2" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach"))
+                (("2" (INST 1 "w!1") (("2" (ASSERT) NIL NIL)) NIL)) NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_reachability_refutation| NIL)
+    (|invariantRefutation_sound| FORMULA-DECL NIL |ppg_reachability_refutation|
+     NIL)
+    (|reach_tail| FORMULA-DECL NIL |ppg_reachability_refutation| NIL)
+    (|Reach| INDUCTIVE-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|InvariantRefutation| CONST-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|InductiveSet| CONST-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|reach_refl| FORMULA-DECL NIL |ppg_reachability_refutation| NIL))
+   SHOSTAK))
+ (|invariantRefutation_noReachableGood| 0
+  (|invariantRefutation_noReachableGood-1| NIL 4000879022
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "invariantRefutation_sound"
+       ("step" "step!1" "good" "G!1`invariant_holds" "v" "v!1" "I" "I!1"))
+      (("" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach" "InvariantRefutation"))
+        (("" (INST -2 "v!1" "w!1")
+          (("" (INST 1 "w!1") (("" (ASSERT) NIL))))))))))
+    NIL)
+   ((|RepairGraph| TYPE-EQ-DECL NIL |ppg_repair_semantics| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_reachability_refutation| NIL)
+    (|invariantRefutation_sound| FORMULA-DECL NIL |ppg_reachability_refutation|
+     NIL)
+    (|NoReachableGood| CONST-DECL "bool" |ppg_infeasibility| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_reachability_refutation| NIL))
+   SHOSTAK))
+ (|nonincreasing_barrier_refutes| 0
+  (|nonincreasing_barrier_refutes-1| NIL 4000879022
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "invariantRefutation_sound"
+       ("step" "step!1" "good" "good!1" "v" "v!1" "I"
+        "LAMBDA(z:State): barrier!1(z) <= bound!1"))
+      (("" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach"))
+        (("1" (INST 1 "w!1") (("1" (ASSERT) NIL NIL)) NIL)
+         ("2" (INST -4 "w!2") (("2" (ASSERT) NIL NIL)) NIL)
+         ("3" (INST -3 "u!1" "w!2") (("3" (ASSERT) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((<= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_reachability_refutation| NIL)
+    (|invariantRefutation_sound| FORMULA-DECL NIL |ppg_reachability_refutation|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|InvariantRefutation| CONST-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|InductiveSet| CONST-DECL "bool" |ppg_reachability_refutation| NIL))
+   SHOSTAK))
+ (|barrier_sublevel_refutes| 0
+  (|barrier_sublevel_refutes-1| NIL 4000879022
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "invariantRefutation_sound"
+       ("step" "step!1" "good" "good!1" "v" "v!1" "I"
+        "LAMBDA(z:State): barrier!1(z) <= bound!1"))
+      (("" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach"))
+        (("1" (INST 1 "w!1") (("1" (ASSERT) NIL NIL)) NIL)
+         ("2" (INST -4 "w!2") (("2" (ASSERT) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((<= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_reachability_refutation| NIL)
+    (|invariantRefutation_sound| FORMULA-DECL NIL |ppg_reachability_refutation|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|InvariantRefutation| CONST-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|InductiveSet| CONST-DECL "bool" |ppg_reachability_refutation| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,298 @@
+(|ppg_finite_abstraction_repair|
+ (|repairByFiniteAbstraction_TCC1| 0
+  (|repairByFiniteAbstraction_TCC1-1| NIL 4000883507
+   ("" (SKOSIMP*)
+    (("" (TYPEPRED "realize!1")
+      ((""
+        (LEMMA "executable_to_exact"
+         ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+          "project" "project!1" "realize" "realize!1"))
+        ((""
+          (LEMMA "abstractRefutationSearch_none_iff_reachable_good"
+           ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+            "project" "project!1" "v" "v!1"))
+          ((""
+            (LEMMA "exactAbstraction_reachable_good_iff"
+             ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood"
+              "agood!1" "project" "project!1" "v" "v!1"))
+            (("" (GROUND) NIL))))))))))
+    NIL)
+   ((|ExecutableAbstraction| CONST-DECL "bool" |ppg_executable_abstraction|
+     NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|abstractRefutationSearch_none_iff_reachable_good| FORMULA-DECL NIL
+     |ppg_finite_abstraction| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_abstraction_repair| NIL)
+    (|exactAbstraction_reachable_good_iff| FORMULA-DECL NIL
+     |ppg_step_abstraction| NIL)
+    (|executable_to_exact| FORMULA-DECL NIL |ppg_executable_abstraction| NIL))
+   NIL
+   (|repairByFiniteAbstraction| SUBTYPE "project(v)"
+    "{z: ppg_finite_abstraction_repair.Abstract | EXISTS (w: ppg_finite_abstraction_repair.Abstract): booleans.AND(ppg_reachability_refutation[ppg_finite_abstraction_repair.Abstract, bool].Reach(ppg_finite_abstraction_repair.astep)(z, w), ppg_finite_abstraction_repair.agood(w))}"
+    (31 48 31 58))))
+ (|repairByFiniteAbstraction_TCC2| 0
+  (|repairByFiniteAbstraction_TCC2-1| NIL 4000883507
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "realize!1")
+     (LEMMA "repairByFiniteAbstraction_TCC1"
+      ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+       "project" "project!1" "v" "v!1" "realize" "realize!1" "enumeration"
+       "enumeration!1"))
+     (ASSERT)
+     (LEMMA "findGoodPath_valid"
+      ("step" "astep!1" "good" "agood!1" "v" "project!1(v!1)" "enumeration"
+       "enumeration!1"))
+     (LEMMA "executeAbstractPath_valid"
+      ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+       "project" "project!1" "v" "v!1" "realize" "realize!1" "trace"
+       "findGoodPath(astep!1, agood!1)(enumeration!1, project!1(v!1))"))
+     (GROUND))
+    NIL NIL)
+   ((|repairByFiniteAbstraction_TCC1| SUBTYPE-TCC NIL
+     |ppg_finite_abstraction_repair| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|findGoodPath_valid| FORMULA-DECL NIL |ppg_find_good_path| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|Reach| INDUCTIVE-DECL "bool" |ppg_reachability_refutation| NIL)
+    (|findGoodPath| CONST-DECL
+     "{trace: list[State] | GoodPath(step, good, v, trace)}"
+     |ppg_find_good_path| NIL)
+    (|GoodPath| DEF-DECL "bool" |ppg_good_path| NIL)
+    (|executeAbstractPath_valid| FORMULA-DECL NIL |ppg_executable_abstraction|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (|ExecutableAbstraction| CONST-DECL "bool" |ppg_executable_abstraction|
+     NIL))
+   NIL
+   (|repairByFiniteAbstraction| SUBTYPE
+    "repaired(executeAbstractPath[State, Abstract](realize, v, findGoodPath[Abstract](astep, agood)(enumeration, project(v))))"
+    "ConstructiveRepairDecision(ppg_finite_abstraction_repair.step, ppg_finite_abstraction_repair.good, ppg_finite_abstraction_repair.astep, ppg_finite_abstraction_repair.agood, ppg_finite_abstraction_repair.project, ppg_finite_abstraction_repair.v)"
+    (30 20 31 61))))
+ (|repairByFiniteAbstraction_TCC3| 0
+  (|repairByFiniteAbstraction_TCC3-1| NIL 4000883507
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "abstractRefutationSearch_some_checked"
+       ("astep" "astep!1" "agood" "agood!1" "project" "project!1" "v" "v!1" "K"
+        "K!1"))
+      (("" (GROUND) NIL))))
+    NIL)
+   ((|universe| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_abstraction_repair| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (|abstractRefutationSearch_some_checked| FORMULA-DECL NIL
+     |ppg_finite_abstraction| NIL))
+   NIL
+   (|repairByFiniteAbstraction| SUBTYPE "impossible(K)"
+    "ConstructiveRepairDecision(ppg_finite_abstraction_repair.step, ppg_finite_abstraction_repair.good, ppg_finite_abstraction_repair.astep, ppg_finite_abstraction_repair.agood, ppg_finite_abstraction_repair.project, ppg_finite_abstraction_repair.v)"
+    (32 21 32 34))))
+ (|constructiveDecision_impossible_sound| 0
+  (|constructiveDecision_impossible_sound-1| NIL 4000883508
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "abstractDecision_impossible_sound"
+       ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+        "project" "project!1" "v" "v!1" "K" "K!1"))
+      (("" (EXPAND "ExecutableAbstraction") (("" (GROUND) NIL))))))
+    NIL)
+   ((|universe| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_abstraction_repair| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (|abstractDecision_impossible_sound| FORMULA-DECL NIL
+     |ppg_finite_abstraction| NIL)
+    (|ExecutableAbstraction| CONST-DECL "bool" |ppg_executable_abstraction|
+     NIL))
+   SHOSTAK))
+ (|constructiveDecision_isRepaired_iff| 0
+  (|constructiveDecision_isRepaired_iff-1| NIL 4000883508
+   ("" (SKOSIMP*)
+    (("" (TYPEPRED "result!1")
+      (("" (CASE "repaired?(result!1)")
+        (("1"
+          (LEMMA "ppg_good_path[State].goodPath_target"
+           ("step" "step!1" "good" "good!1" "v" "v!1" "trace"
+            "trace(result!1)"))
+          (("1"
+            (GRIND :IF-MATCH NIL :EXCLUDE
+             ("GoodPath" "Reach" "ExecutableAbstraction" "pathTarget"))
+            (("1" (INST 1 "pathTarget(v!1, trace(result!1))")
+              (("1" (GROUND) NIL NIL)) NIL))
+            NIL)
+           ("2" (PROPAX) NIL NIL))
+          NIL)
+         ("2"
+          (LEMMA "constructiveDecision_impossible_sound"
+           ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+            "project" "project!1" "v" "v!1" "realize" "realize!1" "K"
+            "certificate(result!1)"))
+          (("1"
+            (GRIND :IF-MATCH NIL :EXCLUDE
+             ("GoodPath" "Reach" "ExecutableAbstraction" "pathTarget"))
+            NIL NIL)
+           ("2"
+            (GRIND :IF-MATCH NIL :EXCLUDE
+             ("GoodPath" "Reach" "ExecutableAbstraction" "pathTarget"))
+            NIL NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|certificate| ADT-ACCESSOR-DECL "[(impossible?) -> finite_set[Abstract]]"
+     |ppg_finite_abstraction_repair| NIL)
+    (|trace| ADT-ACCESSOR-DECL "[(repaired?) -> list[State]]"
+     |ppg_finite_abstraction_repair| NIL)
+    (|ConstructiveRepairDecision| TYPE-EQ-DECL NIL
+     |ppg_finite_abstraction_repair| NIL)
+    (|invariantCheck| CONST-DECL "bool" |ppg_finite_refutation| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_abstraction_repair| NIL)
+    (|impossible| ADT-CONSTRUCTOR-DECL
+     "[finite_set[Abstract] -> (impossible?)]" |ppg_finite_abstraction_repair|
+     NIL)
+    (|impossible?| ADT-RECOGNIZER-DECL "[RepairResult -> boolean]"
+     |ppg_finite_abstraction_repair| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (|GoodPath| DEF-DECL "bool" |ppg_good_path| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|repaired| ADT-CONSTRUCTOR-DECL "[list[State] -> (repaired?)]"
+     |ppg_finite_abstraction_repair| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (|repaired?| ADT-RECOGNIZER-DECL "[RepairResult -> boolean]"
+     |ppg_finite_abstraction_repair| NIL)
+    (|RepairResult| TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|constructiveDecision_impossible_sound| FORMULA-DECL NIL
+     |ppg_finite_abstraction_repair| NIL)
+    (|concreteGraph| CONST-DECL "ppg_repair_semantics[State].RepairGraph"
+     |ppg_step_abstraction| NIL)
+    (|NoReachableGood| CONST-DECL "bool" |ppg_infeasibility| NIL)
+    (|goodPath_target| FORMULA-DECL NIL |ppg_good_path| NIL)
+    (|pathTarget| DEF-DECL "State" |ppg_good_path| NIL))
+   SHOSTAK))
+ (|constructiveDecision_isImpossible_iff| 0
+  (|constructiveDecision_isImpossible_iff-1| NIL 4000883508
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "constructiveDecision_isRepaired_iff"
+       ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+        "project" "project!1" "v" "v!1" "realize" "realize!1" "result"
+        "result!1"))
+      ((""
+        (GRIND :IF-MATCH NIL :EXCLUDE
+         ("GoodPath" "Reach" "ExecutableAbstraction" "pathTarget"))
+        NIL))))
+    NIL)
+   ((|ConstructiveRepairDecision| TYPE-EQ-DECL NIL
+     |ppg_finite_abstraction_repair| NIL)
+    (|invariantCheck| CONST-DECL "bool" |ppg_finite_refutation| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_abstraction_repair| NIL)
+    (|impossible| ADT-CONSTRUCTOR-DECL
+     "[finite_set[Abstract] -> (impossible?)]" |ppg_finite_abstraction_repair|
+     NIL)
+    (|impossible?| ADT-RECOGNIZER-DECL "[RepairResult -> boolean]"
+     |ppg_finite_abstraction_repair| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|GoodPath| DEF-DECL "bool" |ppg_good_path| NIL)
+    (|repaired| ADT-CONSTRUCTOR-DECL "[list[State] -> (repaired?)]"
+     |ppg_finite_abstraction_repair| NIL)
+    (|repaired?| ADT-RECOGNIZER-DECL "[RepairResult -> boolean]"
+     |ppg_finite_abstraction_repair| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|RepairResult| TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (|constructiveDecision_isRepaired_iff| FORMULA-DECL NIL
+     |ppg_finite_abstraction_repair| NIL)
+    (|concreteGraph| CONST-DECL "ppg_repair_semantics[State].RepairGraph"
+     |ppg_step_abstraction| NIL)
+    (|NoReachableGood| CONST-DECL "bool" |ppg_infeasibility| NIL))
+   SHOSTAK))
+ (|repairByFiniteAbstraction_spec| 0
+  (|repairByFiniteAbstraction_spec-1| NIL 4000883508
+   ("" (SKOSIMP*)
+    (("" (TYPEPRED "realize!1")
+      ((""
+        (LEMMA "constructiveDecision_isRepaired_iff"
+         ("step" "step!1" "good" "good!1" "astep" "astep!1" "agood" "agood!1"
+          "project" "project!1" "v" "v!1" "realize" "realize!1" "result"
+          "repairByFiniteAbstraction(step!1, good!1, astep!1, agood!1)(project!1, realize!1, enumeration!1, v!1)"))
+        (("" (GROUND) NIL))))))
+    NIL)
+   ((|ExecutableAbstraction| CONST-DECL "bool" |ppg_executable_abstraction|
+     NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|repairByFiniteAbstraction| CONST-DECL
+     "ConstructiveRepairDecision(step, good, astep, agood, project, v)"
+     |ppg_finite_abstraction_repair| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|ConstructiveRepairDecision| TYPE-EQ-DECL NIL
+     |ppg_finite_abstraction_repair| NIL)
+    (|invariantCheck| CONST-DECL "bool" |ppg_finite_refutation| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_abstraction_repair| NIL)
+    (|impossible| ADT-CONSTRUCTOR-DECL
+     "[finite_set[Abstract] -> (impossible?)]" |ppg_finite_abstraction_repair|
+     NIL)
+    (|impossible?| ADT-RECOGNIZER-DECL "[RepairResult -> boolean]"
+     |ppg_finite_abstraction_repair| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|GoodPath| DEF-DECL "bool" |ppg_good_path| NIL)
+    (|repaired| ADT-CONSTRUCTOR-DECL "[list[State] -> (repaired?)]"
+     |ppg_finite_abstraction_repair| NIL)
+    (|repaired?| ADT-RECOGNIZER-DECL "[RepairResult -> boolean]"
+     |ppg_finite_abstraction_repair| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|RepairResult| TYPE-DECL NIL |ppg_finite_abstraction_repair| NIL)
+    (|constructiveDecision_isRepaired_iff| FORMULA-DECL NIL
+     |ppg_finite_abstraction_repair| NIL))
+   SHOSTAK)))
+

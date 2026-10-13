@@ -1,0 +1,51 @@
+% The decision carries either an executed trace or a checked finite invariant.
+ppg_finite_abstraction_repair[State, Abstract: TYPE,
+  universe: {U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_abstraction[State, Abstract, universe],
+    ppg_executable_abstraction[State, Abstract], ppg_find_good_path[Abstract]
+  step: VAR [State, State -> bool]
+  good: VAR set[State]
+  astep: VAR [Abstract, Abstract -> bool]
+  agood: VAR set[Abstract]
+  project: VAR [State -> Abstract]
+  realize: VAR [State, Abstract -> State]
+  v, w: VAR State
+  K: VAR finite_set[Abstract]
+  RepairResult: DATATYPE
+  BEGIN
+    repaired(trace: list[State]): repaired?
+    impossible(certificate: finite_set[Abstract]): impossible?
+  END RepairResult
+  ConstructiveRepairDecision(step, good, astep, agood, project, v): TYPE =
+    {r: RepairResult | CASES r OF
+      repaired(path): GoodPath(step, good, v, path),
+      impossible(K): checker.invariantCheck(astep, agood, project(v), K)
+    ENDCASES}
+  repairByFiniteAbstraction(step, good, astep, agood)(project: [State -> Abstract],
+    realize: {f: [State, Abstract -> State] | ExecutableAbstraction(step, good, astep, agood, project, f)},
+    enumeration: {es: list[Abstract] | FORALL (a: Abstract): member(a, es)}, v):
+      ConstructiveRepairDecision(step, good, astep, agood, project, v) =
+    CASES abstractRefutationSearch(astep, agood, project, v) OF
+      noRefutation: repaired(executeAbstractPath(realize, v,
+        findGoodPath(astep, agood)(enumeration, project(v)))),
+      refutation(K): impossible(K)
+    ENDCASES
+  constructiveDecision_impossible_sound: THEOREM
+    ExecutableAbstraction(step, good, astep, agood, project, realize) AND
+    checker.invariantCheck(astep, agood, project(v), K) IMPLIES
+      ppg_infeasibility[State, bool].NoReachableGood(concreteGraph(step, good), v)
+  constructiveDecision_isRepaired_iff: THEOREM FORALL
+    (result: ConstructiveRepairDecision(step, good, astep, agood, project, v)):
+      ExecutableAbstraction(step, good, astep, agood, project, realize) IMPLIES
+        (repaired?(result) IFF EXISTS w: concrete.Reach(step)(v, w) AND good(w))
+  constructiveDecision_isImpossible_iff: THEOREM FORALL
+    (result: ConstructiveRepairDecision(step, good, astep, agood, project, v)):
+      ExecutableAbstraction(step, good, astep, agood, project, realize) IMPLIES
+        (NOT repaired?(result) IFF ppg_infeasibility[State, bool].NoReachableGood(concreteGraph(step, good), v))
+  repairByFiniteAbstraction_spec: THEOREM FORALL
+    (realize: {f: [State, Abstract -> State] | ExecutableAbstraction(step, good, astep, agood, project, f)},
+     enumeration: {es: list[Abstract] | FORALL (a: Abstract): member(a, es)}):
+      repaired?(repairByFiniteAbstraction(step, good, astep, agood)(project, realize, enumeration, v)) IFF
+        EXISTS w: concrete.Reach(step)(v, w) AND good(w)
+END ppg_finite_abstraction_repair

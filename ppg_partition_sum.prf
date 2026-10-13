@@ -1,0 +1,76 @@
+(|ppg_partition_sum|
+ (|sum_familyUnion| 0
+  (|sum_familyUnion-1| NIL 4000880380
+   (""
+    (INDUCT "F" :NAME
+     "ppg_finite_induction[finite_set[T]].finite_set_induction_rest")
+    (("1" (SKOSIMP*)
+      (("1" (REWRITE "familyUnion_empty")
+        (("1" (REWRITE "families.sum_emptyset")
+          (("1" (REWRITE "elements.sum_emptyset") NIL NIL)) NIL))
+        NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (LEMMA "pairwise_disjoint_rest" ("F" "SS!1"))
+        (("2" (LEMMA "disjoint_choose_rest" ("F" "SS!1"))
+          (("2" (LEMMA "familyUnion_rest" ("F" "SS!1"))
+            (("2"
+              (LEMMA "elements.sum_disj_union"
+               ("A" "choose(SS!1)" "B" "familyUnion(rest(SS!1))" "f" "f!1"))
+              (("2"
+                (LEMMA "families.sum_rest"
+                 ("S" "SS!1" "f"
+                  "LAMBDA (K: finite_set[T]): elements.sum(K, f!1)"))
+                (("2"
+                  (GRIND :EXCLUDE
+                   ("sum" "elements.sum" "families.sum" "familyUnion"
+                    "pairwise_disjoint" "disjoint?" "is_finite" "rest"))
+                  NIL NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|disjoint_choose_rest| FORMULA-DECL NIL |ppg_finite_union| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set" |ppg_partition_sum| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL) (|choose| CONST-DECL "(p)" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|sum_disj_union| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set" |ppg_partition_sum| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|sum_rest| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|familyUnion_rest| FORMULA-DECL NIL |ppg_finite_union| NIL)
+    (|pairwise_disjoint_rest| FORMULA-DECL NIL |ppg_finite_union| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|sum_emptyset| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|familyUnion_empty| FORMULA-DECL NIL |ppg_finite_union| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |ppg_partition_sum| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_set_induction_rest| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_partition_sum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|familyUnion| CONST-DECL "finite_set[T]" |ppg_finite_union| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|plus| FORMAL-CONST-DECL "{op: [R, R -> R] |
+   identity?[R](op)(zero) AND associative?[R](op) AND commutative?[R](op)}"
+     |ppg_partition_sum| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|zero| FORMAL-CONST-DECL "R" |ppg_partition_sum| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|pairwise_disjoint| CONST-DECL "bool" |ppg_finite_union| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_partition_sum| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL))
+   SHOSTAK)))
+

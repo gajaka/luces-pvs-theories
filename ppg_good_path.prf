@@ -1,0 +1,204 @@
+(|ppg_good_path|
+ (|list_cases| 0
+  (|list_cases-1| NIL 4000883329
+   (""
+    (THEN (INDUCT "trace") (SKOSIMP*) (INST 2 "cons1_var!1" "cons2_var!1")
+     (ASSERT))
+    NIL NIL)
+   ((|list| TYPE-DECL NIL |list_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (OR CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|null?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|null| ADT-CONSTRUCTOR-DECL "(null?)" |list_adt| NIL)
+    (|cons?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|cons| ADT-CONSTRUCTOR-DECL "[[T, list] -> (cons?)]" |list_adt| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_good_path| NIL)
+    (|list_induction| FORMULA-DECL NIL |list_adt| NIL))
+   SHOSTAK))
+ (|GoodPath_TCC1| 0
+  (|GoodPath_TCC1-1| NIL 4000882848 ("" (TERMINATION-TCC) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|length| DEF-DECL "nat" |list_props| NIL))
+   NIL
+   (|GoodPath| TERMINATION "GoodPath(step, good, w, rest)"
+    #A((3) BASE-CHAR . "NIL") (12 34 12 63))))
+ (|pathTarget_TCC1| 0
+  (|pathTarget_TCC1-1| NIL 4000882848 ("" (TERMINATION-TCC) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|length| DEF-DECL "nat" |list_props| NIL))
+   NIL
+   (|pathTarget| TERMINATION "pathTarget(w, rest)" #A((3) BASE-CHAR . "NIL")
+    (16 19 16 38))))
+ (|pathTarget_cons| 0
+  (|pathTarget_cons-1| NIL 4000883047
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL NIL)
+   ((|pathTarget| DEF-DECL "State" |ppg_good_path| NIL)) SHOSTAK))
+ (|goodPath_target| 0
+  (|goodPath_target-1| NIL 4000882849
+   ("" (INDUCT "trace")
+    (("1" (SKOSIMP*)
+      (("1" (LEMMA "reach_refl" ("step" "step!1" "v" "v!1"))
+        (("1" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach")) NIL NIL)) NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (EXPAND "GoodPath" -2 1)
+        (("2" (AUTO-REWRITE "pathTarget_cons")
+          (("2" (ASSERT)
+            (("2" (INST -1 "good!1" "step!1" "cons1_var!1")
+              (("2"
+                (LEMMA "reach_head"
+                 ("step" "step!1" "v" "v!1" "u" "cons1_var!1" "w"
+                  "pathTarget(cons1_var!1, cons2_var!1)"))
+                (("2" (GROUND) NIL NIL)) NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|reach_head| FORMULA-DECL NIL |ppg_reach_algebra| NIL)
+    (|pathTarget_cons| FORMULA-DECL NIL |ppg_good_path| NIL)
+    (|reach_refl| FORMULA-DECL NIL |ppg_reachability_refutation| NIL)
+    (|list_induction| FORMULA-DECL NIL |list_adt| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_good_path| NIL)
+    (|pathTarget| DEF-DECL "State" |ppg_good_path| NIL)
+    (|Reach| INDUCTIVE-DECL "bool" |ppg_reachability_refutation| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|GoodPath| DEF-DECL "bool" |ppg_good_path| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL))
+   SHOSTAK))
+ (|goodPath_single| 0
+  (|goodPath_single-1| NIL 4000882975
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL NIL)
+   ((|GoodPath| DEF-DECL "bool" |ppg_good_path| NIL)) SHOSTAK))
+ (|goodPath_append| 0
+  (|goodPath_append-1| NIL 4000882849
+   ("" (INDUCT "trace")
+    (("1" (SKOSIMP*) (("1" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach")) NIL NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (INST -1 "good!1" "rest!1" "step!1" "cons1_var!1" "w!1")
+        (("2" (EXPAND "append" 1 1)
+          (("2" (EXPAND "GoodPath" -2 1)
+            (("2" (EXPAND "GoodPath" 1 1) (("2" (GROUND) NIL NIL)) NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|list_induction| FORMULA-DECL NIL |list_adt| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_good_path| NIL)
+    (|append| DEF-DECL "list[T]" |list_props| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|GoodPath| DEF-DECL "bool" |ppg_good_path| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL))
+   SHOSTAK))
+ (|reach_has_path| 0
+  (|reach_has_path-1| NIL 4000882849
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "inductiveSet_reachable"
+       ("step" "step!1" "v" "v!1" "w" "w!1" "I"
+        "LAMBDA (z: State): EXISTS (tr: list[State]): GoodPath(step!1, LAMBDA (t: State): t = z, v!1, tr)"))
+      (("" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach" "GoodPath"))
+        (("1" (INST 1 "null[State]")
+          (("1" (EXPAND "GoodPath") (("1" (PROPAX) NIL NIL)) NIL)) NIL)
+         ("2" (INST 1 "append(tr!1, cons(w!2, null[State]))")
+          (("2"
+            (LEMMA "goodPath_append"
+             ("step" "step!1" "good" "LAMBDA (t:State): t=w!2" "v" "v!1" "w"
+              "u!1" "trace" "tr!1" "rest" "cons(w!2, null[State])"))
+            (("2"
+              (LEMMA "goodPath_single"
+               ("step" "step!1" "good" "LAMBDA (t:State): t=w!2" "v" "u!1" "w"
+                "w!2"))
+              (("2" (ASSERT) NIL NIL)) NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_good_path| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|GoodPath| DEF-DECL "bool" |ppg_good_path| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|inductiveSet_reachable| FORMULA-DECL NIL |ppg_reachability_refutation|
+     NIL)
+    (|cons| ADT-CONSTRUCTOR-DECL "[[T, list] -> (cons?)]" |list_adt| NIL)
+    (|cons?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|append| DEF-DECL "list[T]" |list_props| NIL)
+    (|goodPath_single| FORMULA-DECL NIL |ppg_good_path| NIL)
+    (|goodPath_append| FORMULA-DECL NIL |ppg_good_path| NIL)
+    (|null| ADT-CONSTRUCTOR-DECL "(null?)" |list_adt| NIL)
+    (|null?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|InductiveSet| CONST-DECL "bool" |ppg_reachability_refutation| NIL))
+   SHOSTAK))
+ (|reachable_good_iff_goodPath| 0
+  (|reachable_good_iff_goodPath-1| NIL 4000882849
+   ("" (SKOSIMP*)
+    (("" (LEMMA "reach_has_path" ("step" "step!1" "v" "v!1"))
+      ((""
+        (LEMMA "goodPath_target" ("step" "step!1" "good" "good!1" "v" "v!1"))
+        ((""
+          (LEMMA "goodPath_append"
+           ("step" "step!1" "good" "good!1" "v" "v!1" "rest" "null[State]"))
+          (("" (GRIND :IF-MATCH NIL :EXCLUDE ("Reach" "GoodPath"))
+            (("1" (INST -3 "w!1")
+              (("1" (ASSERT)
+                (("1" (SKOSIMP*)
+                  (("1" (INST 1 "trace!1")
+                    (("1"
+                      (LEMMA "goodPath_append"
+                       ("step" "step!1" "good" "good!1" "v" "v!1" "w" "w!1"
+                        "trace" "trace!1" "rest" "null[State]"))
+                      (("1" (REWRITE "append_null")
+                        (("1" (EXPAND "GoodPath" -1 2) (("1" (GROUND) NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("2" (INST -2 "trace!1")
+              (("2" (INST 1 "pathTarget(v!1, trace!1)")
+                (("2" (GROUND) NIL NIL)) NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_good_path| NIL)
+    (|reach_has_path| FORMULA-DECL NIL |ppg_good_path| NIL)
+    (|goodPath_append| FORMULA-DECL NIL |ppg_good_path| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|null?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|null| ADT-CONSTRUCTOR-DECL "(null?)" |list_adt| NIL)
+    (|pathTarget| DEF-DECL "State" |ppg_good_path| NIL)
+    (|GoodPath| DEF-DECL "bool" |ppg_good_path| NIL)
+    (|append_null| FORMULA-DECL NIL |list_props| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|goodPath_target| FORMULA-DECL NIL |ppg_good_path| NIL))
+   SHOSTAK)))
+

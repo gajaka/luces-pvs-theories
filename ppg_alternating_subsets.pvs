@@ -1,0 +1,21 @@
+% The alternating sum cancels whenever at least one selected event occurs.
+ppg_alternating_subsets[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_powerset_sum[T], ppg_finite_induction[T]
+  n: VAR nat
+  S, K: VAR finite_set[T]
+  P: VAR set[T]
+  e: VAR T
+  paritySign(n): RECURSIVE int = IF n = 0 THEN 1 ELSE -paritySign(n - 1) ENDIF MEASURE n
+  paritySign_zero: LEMMA paritySign(0) = 1
+  paritySign_succ: LEMMA paritySign(n + 1) = -paritySign(n)
+  alternatingTerm(P, K): real = IF subset?(K, P) THEN paritySign(card(K)) ELSE 0 ENDIF
+  alternatingSum(P, S): real = fsum(subsets(S), LAMBDA (K: finite_set[T]): alternatingTerm(P, K))
+  term_empty: LEMMA alternatingTerm(P, emptyset[T]) = 1
+  term_add: LEMMA NOT S(e) AND subsets(S)(K) IMPLIES
+    alternatingTerm(P, add(e, K)) = IF P(e) THEN -alternatingTerm(P, K) ELSE 0 ENDIF
+  sum_step: LEMMA NOT S(e) IMPLIES alternatingSum(P, add(e, S)) =
+    IF P(e) THEN 0 ELSE alternatingSum(P, S) ENDIF
+  alternatingSum_boolean: THEOREM alternatingSum(P, S) =
+    IF nonempty?(intersection(S, P)) THEN 0 ELSE 1 ENDIF
+END ppg_alternating_subsets

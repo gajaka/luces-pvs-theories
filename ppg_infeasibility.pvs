@@ -1,0 +1,52 @@
+% Semantic infeasibility relative to explicitly admissible states.
+ppg_infeasibility[State: TYPE, C: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_repair_semantics[State]
+  allowed, a, b: VAR set[State]
+  sat: VAR [C, State -> bool]
+  A, B: VAR finite_set[C]
+  G: VAR RepairGraph
+  v, w, z: VAR State
+
+  Satisfiable(allowed, sat, B): bool =
+    EXISTS z: allowed(z) AND FORALL (c: C): B(c) IMPLIES sat(c, z)
+  Infeasible(allowed, sat, B): bool = NOT Satisfiable(allowed, sat, B)
+  Unavoidable(allowed, sat, B): bool =
+    FORALL z: allowed(z) IMPLIES EXISTS (c: C): B(c) AND NOT sat(c, z)
+  badCover(sat, B): set[State] =
+    {z: State | EXISTS (c: C): B(c) AND NOT sat(c, z)}
+  NoReachableGood(G, v): bool =
+    NOT EXISTS w: G`reach_rel(v, w) AND G`invariant_holds(w)
+
+  satisfiable_mono_obligations: THEOREM
+    subset?(A, B) AND Satisfiable(allowed, sat, B) IMPLIES Satisfiable(allowed, sat, A)
+  infeasible_mono_obligations: THEOREM
+    subset?(A, B) AND Infeasible(allowed, sat, A) IMPLIES Infeasible(allowed, sat, B)
+  satisfiable_mono_allowed: THEOREM
+    subset?(a, b) AND Satisfiable(a, sat, B) IMPLIES Satisfiable(b, sat, B)
+  infeasible_of_allowed_subset: THEOREM
+    subset?(a, b) AND Infeasible(b, sat, B) IMPLIES Infeasible(a, sat, B)
+  infeasible_iff_unavoidable: THEOREM
+    Infeasible(allowed, sat, B) IFF Unavoidable(allowed, sat, B)
+  infeasible_iff_bad_cover: THEOREM
+    Infeasible(allowed, sat, B) IFF subset?(allowed, badCover(sat, B))
+  satisfiable_empty_iff: THEOREM
+    Satisfiable(allowed, sat, emptyset[C]) IFF EXISTS z: allowed(z)
+  infeasible_nonempty: THEOREM
+    (EXISTS z: allowed(z)) AND Infeasible(allowed, sat, B) IMPLIES nonempty?(B)
+  satisfiable_not_infeasible: THEOREM
+    Satisfiable(allowed, sat, B) IMPLIES NOT Infeasible(allowed, sat, B)
+  noReachableGood_iff: THEOREM
+    NoReachableGood(G, v) IFF FORALL w: G`reach_rel(v, w) IMPLIES NOT G`invariant_holds(w)
+  reachable_good_iff_repair_possible: THEOREM
+    isolated(G, v) IMPLIES
+      ((EXISTS w: G`reach_rel(v, w) AND G`invariant_holds(w)) IFF repair_possible(G, v))
+  noReachableGood_iff_no_repair: THEOREM
+    isolated(G, v) IMPLIES (NoReachableGood(G, v) IFF NOT repair_possible(G, v))
+  infeasible_reachable_iff: THEOREM
+    (FORALL w: G`invariant_holds(w) IFF FORALL (c: C): B(c) IMPLIES sat(c, w))
+    IMPLIES (Infeasible(LAMBDA w: G`reach_rel(v, w), sat, B) IFF NoReachableGood(G, v))
+  global_infeasible_implies_noReachableGood: THEOREM
+    (FORALL w: G`invariant_holds(w) IFF FORALL (c: C): B(c) IMPLIES sat(c, w))
+    AND Infeasible(fullset[State], sat, B) IMPLIES NoReachableGood(G, v)
+END ppg_infeasibility

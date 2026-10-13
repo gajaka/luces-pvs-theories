@@ -1,0 +1,183 @@
+(|ppg_phase2_examples|
+ (|IMP_ppg_infeasibility_counting_TCC1| 0
+  (|IMP_ppg_infeasibility_counting_TCC1-1| NIL 4000885076
+   ("" (SUBTYPE-TCC) NIL NIL)
+   ((|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (BOOL_U CONST-DECL "finite_set[bool]" |ppg_phase2_examples| NIL))
+   NIL
+   (|IMP_ppg_infeasibility_counting| SUBTYPE "BOOL_U"
+    "{U: finite_sets[bool].finite_set | FORALL (z: bool): U(z)}" (5 51 5 57))))
+ (|conflicting_obligations| 0
+  (|conflicting_obligations-1| NIL 4000885078
+   ("" (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite"))
+    (("" (INST-CP -1 "TRUE") (("" (INST -1 "FALSE") (("" (GROUND) NIL)))))))
+   ((TRUE CONST-DECL "bool" |booleans| NIL)
+    (FALSE CONST-DECL "bool" |booleans| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|allowAll| CONST-DECL "set[bool]" |ppg_phase2_examples| NIL)
+    (BOOL_U CONST-DECL "finite_set[bool]" |ppg_phase2_examples| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|requireValue| CONST-DECL "[bool, bool -> bool]" |ppg_phase2_examples|
+     NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Satisfiable| CONST-DECL "bool" |ppg_infeasibility| NIL)
+    (|Infeasible| CONST-DECL "bool" |ppg_infeasibility| NIL))
+   SHOSTAK))
+ (|conflicting_count_zero| 0
+  (|conflicting_count_zero-1| NIL 4000885078
+   ("" (LEMMA "conflicting_obligations")
+    ((""
+      (LEMMA "exactGoodCount_zero_iff"
+       ("allowed" "allowAll" "sat" "requireValue" "B" "BOOL_U"))
+      (("" (GROUND) NIL)))))
+   ((|exactGoodCount_zero_iff| FORMULA-DECL NIL |ppg_infeasibility_counting|
+     NIL)
+    (|allowAll| CONST-DECL "set[bool]" |ppg_phase2_examples| NIL)
+    (|requireValue| CONST-DECL "[bool, bool -> bool]" |ppg_phase2_examples|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (BOOL_U CONST-DECL "finite_set[bool]" |ppg_phase2_examples| NIL)
+    (|conflicting_obligations| FORMULA-DECL NIL |ppg_phase2_examples| NIL))
+   SHOSTAK))
+ (|one_obligation_feasible| 0
+  (|one_obligation_feasible-1| NIL 4000885078
+   ("" (EXPAND "Satisfiable")
+    (("" (INST 1 "TRUE")
+      (("" (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite")) NIL)))))
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL)
+    (|allowAll| CONST-DECL "set[bool]" |ppg_phase2_examples| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|requireValue| CONST-DECL "[bool, bool -> bool]" |ppg_phase2_examples|
+     NIL)
+    (|Satisfiable| CONST-DECL "bool" |ppg_infeasibility| NIL))
+   SHOSTAK))
+ (|zero_weight_feasible| 0
+  (|zero_weight_feasible-1| NIL 4000885078
+   ("" (LEMMA "one_obligation_feasible")
+    ((""
+      (LEMMA "ppg_finite_sum[bool].fsum_zero"
+       ("S" "goodStates(allowAll, requireValue, singleton(TRUE))"))
+      (("1" (EXPAND "goodMass")
+        (("1"
+          (GRIND :IF-MATCH NIL :EXCLUDE
+           ("goodStates" "Satisfiable" "fsum" "is_finite"))
+          NIL NIL))
+        NIL)
+       ("2" (EXPAND "goodMass")
+        (("2"
+          (GRIND :IF-MATCH NIL :EXCLUDE
+           ("goodStates" "Satisfiable" "fsum" "is_finite"))
+          NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|one_obligation_feasible| FORMULA-DECL NIL |ppg_phase2_examples| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|goodMass| CONST-DECL "real" |ppg_infeasibility_counting| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|requireValue| CONST-DECL "[bool, bool -> bool]" |ppg_phase2_examples|
+     NIL)
+    (|allowAll| CONST-DECL "set[bool]" |ppg_phase2_examples| NIL)
+    (|goodStates| CONST-DECL "finite_set[State]" |ppg_finite_count| NIL)
+    (BOOL_U CONST-DECL "finite_set[bool]" |ppg_phase2_examples| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|fsum_zero| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL))
+   SHOSTAK))
+ (|duplicate_enumeration_search| 0
+  (|duplicate_enumeration_search-1| NIL 4000885078
+   ("" (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite")) NIL)
+   ((|accept| CONST-DECL "set[bool]" |ppg_phase2_examples| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|requireValue| CONST-DECL "[bool, bool -> bool]" |ppg_phase2_examples|
+     NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|goodTest| CONST-DECL "bool" |ppg_finite_feasibility| NIL)
+    (|search| DEF-DECL "SearchResult" |ppg_finite_feasibility| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL))
+   SHOSTAK))
+ (|partial_enumeration_is_insufficient| 0
+  (|partial_enumeration_is_insufficient-1| NIL 4000885078
+   ("" (EXPAND "search")
+    (("" (EXPAND "Satisfiable")
+      (("" (GROUND)
+        (("" (INST 1 "TRUE")
+          (("" (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite")) NIL)))))))))
+   ((|Satisfiable| CONST-DECL "bool" |ppg_infeasibility| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL)
+    (|accept| CONST-DECL "set[bool]" |ppg_phase2_examples| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|requireValue| CONST-DECL "[bool, bool -> bool]" |ppg_phase2_examples|
+     NIL)
+    (|search| DEF-DECL "SearchResult" |ppg_finite_feasibility| NIL))
+   SHOSTAK))
+ (|one_step_executable_abstraction| 0
+  (|one_step_executable_abstraction-1| NIL 4000885078
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL)
+   ((|advance| CONST-DECL "[bool, bool -> bool]" |ppg_phase2_examples| NIL)
+    (|projectState| CONST-DECL "[bool -> bool]" |ppg_phase2_examples| NIL)
+    (|accept| CONST-DECL "set[bool]" |ppg_phase2_examples| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|StepSimulation| CONST-DECL "bool" |ppg_step_abstraction| NIL)
+    (|realizeStep| CONST-DECL "[bool, bool -> bool]" |ppg_phase2_examples| NIL)
+    (|ExecutableAbstraction| CONST-DECL "bool" |ppg_executable_abstraction|
+     NIL))
+   SHOSTAK))
+ (|returned_trace_reaches_good| 0
+  (|returned_trace_reaches_good-1| NIL 4000885078
+   ("" (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite")) NIL)
+   ((|GoodPath| DEF-DECL "bool" |ppg_good_path| NIL)
+    (|accept| CONST-DECL "set[bool]" |ppg_phase2_examples| NIL)
+    (|advance| CONST-DECL "[bool, bool -> bool]" |ppg_phase2_examples| NIL)
+    (|pathTarget| DEF-DECL "State" |ppg_good_path| NIL)
+    (|executeAbstractPath| DEF-DECL "list[State]" |ppg_executable_abstraction|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|realizeStep| CONST-DECL "[bool, bool -> bool]" |ppg_phase2_examples|
+     NIL))
+   SHOSTAK))
+ (|stationary_state_refuted| 0
+  (|stationary_state_refuted-1| NIL 4000885078
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL)
+   ((|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|accept| CONST-DECL "set[bool]" |ppg_phase2_examples| NIL)
+    (BOOL_U CONST-DECL "finite_set[bool]" |ppg_phase2_examples| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|invariantCheck| CONST-DECL "bool" |ppg_finite_refutation| NIL))
+   SHOSTAK)))
+

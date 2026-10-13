@@ -1,0 +1,127 @@
+(|ppg_bdd_moser_tardos|
+ (|stays_within_step_disjoint| 0
+  (|stays_within_step_disjoint-1| NIL 4000880973
+   ("" (SKOSIMP*)
+    (("" (EXPAND "StaysWithinComponent")
+      (("" (INST -1 "t!1")
+        ((""
+          (LEMMA "sameComponent_of_coupled"
+           ("vars" "vars!1" "B" "B!1" "c" "log!1(t!1)`1" "d" "j!1"))
+          ((""
+            (LEMMA "sameComponent_trans"
+             ("vars" "vars!1" "B" "B!1" "c" "c!1" "d" "log!1(t!1)`1" "e"
+              "j!1"))
+            (("" (GRIND :EXCLUDE ("SameComponent" "is_finite")) NIL))))))))))
+    NIL)
+   ((|StaysWithinComponent| CONST-DECL "bool" |ppg_bdd_moser_tardos| NIL)
+    (|sameComponent_of_coupled| FORMULA-DECL NIL |ppg_bdd| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_bdd_moser_tardos| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_bdd_moser_tardos| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|MTLog| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_moser_tardos| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_moser_tardos| NIL)
+    (|finite_intersection1| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|CoupledIn| CONST-DECL "bool" |ppg_bdd| NIL)
+    (|dependent| CONST-DECL "bool" |ppg_bdd| NIL)
+    (|sameComponent_trans| FORMULA-DECL NIL |ppg_bdd| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|mt_trajectory_localizes| 0
+  (|mt_trajectory_localizes-1| NIL 4000880973
+   ("" (INDUCT "t")
+    (("1"
+      (GRIND :EXCLUDE
+       ("mt_wf" "StaysWithinComponent" "SameComponent" "trajectory"
+        "is_finite"))
+      NIL NIL)
+     ("2" (SKOSIMP*)
+      (("2"
+        (LEMMA "stays_within_step_disjoint"
+         ("vars" "vars!1" "B" "B!1" "log" "log!1" "c" "c!1" "j" "j!2" "t"
+          "j!1"))
+        (("2"
+          (LEMMA "mt_step_preserves_unrelated"
+           ("vars" "vars!1" "bad" "bad!1" "log" "log!1" "initial" "initial!1"
+            "t" "j!1" "j" "j!2"))
+          (("2"
+            (GRIND :EXCLUDE
+             ("mt_wf" "StaysWithinComponent" "SameComponent" "trajectory"
+              "disjoint?" "is_finite"))
+            NIL NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|mt_step_preserves_unrelated| FORMULA-DECL NIL |ppg_mt_semantics| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_u8_u8| APPLICATION-JUDGEMENT "int16" |integertypes| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|even_minus_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|stays_within_step_disjoint| FORMULA-DECL NIL |ppg_bdd_moser_tardos| NIL)
+    (|nat_induction| FORMULA-DECL NIL |naturalnumbers| NIL)
+    (|trajectory| DEF-DECL "MTState" |ppg_mt_semantics| NIL)
+    (IFF CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|SameComponent| CONST-DECL "equivalence[C]" |ppg_bdd| NIL)
+    (|equivalence| TYPE-EQ-DECL NIL |relations| NIL)
+    (|equivalence?| CONST-DECL "bool" |relations| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|StaysWithinComponent| CONST-DECL "bool" |ppg_bdd_moser_tardos| NIL)
+    (|mt_wf| CONST-DECL "bool" |ppg_mt_semantics| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|MTLog| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_bdd_moser_tardos| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_bdd_moser_tardos| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_moser_tardos| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_moser_tardos| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK)))
+

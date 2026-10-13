@@ -1,0 +1,31 @@
+% Refinement relations with the hypotheses used by PPGraphRR.lean.
+% The domains may be empty; each consistency lemma states only what it needs.
+ppg_refinement[T, U: TYPE]: THEORY
+BEGIN
+  le_T: VAR [T, T -> bool]
+  le_U: VAR [U, U -> bool]
+  f: VAR [T -> U]
+  g: VAR [U -> T]
+  m, n: VAR [T, U]
+
+  rel_extension(le_T, le_U)(m, n): bool =
+    le_T(m`1, n`1) AND le_U(m`2, n`2)
+
+  RR(le_T, le_U, f, g)(n): bool =
+    LET Fn = (n`1, f(n`1)), Gn = (g(n`2), n`2), GFn = (g(n`2), f(n`1)) IN
+      rel_extension(le_T, le_U)(Fn, Gn) OR
+      rel_extension(le_T, le_U)(GFn, Fn) OR
+      rel_extension(le_T, le_U)(GFn, Gn)
+
+  rel_extension_is_equivalence: THEOREM
+    equivalence?(le_T) AND equivalence?(le_U) IMPLIES
+      equivalence?(rel_extension(le_T, le_U))
+
+  g_consistent_with_RR: THEOREM
+    symmetric?(le_T) AND reflexive?(le_U) AND le_T(n`1, g(n`2)) IMPLIES
+      RR(le_T, le_U, f, g)(n)
+
+  f_consistent_with_RR: THEOREM
+    reflexive?(le_T) AND symmetric?(le_U) AND le_U(n`2, f(n`1)) IMPLIES
+      RR(le_T, le_U, f, g)(n)
+END ppg_refinement

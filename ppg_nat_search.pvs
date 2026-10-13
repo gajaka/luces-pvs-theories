@@ -1,0 +1,10 @@
+% The least witness is used only to justify termination of increasing search.
+ppg_nat_search: THEORY
+BEGIN
+  firstIndex(P: (nonempty?[nat]))(n: {k: nat | k <= min_nat[nat].min(P)}):
+      RECURSIVE {k: nat | P(k) AND n <= k AND k <= min_nat[nat].min(P)} =
+    IF P(n) THEN n ELSE firstIndex(P)(n + 1) ENDIF
+    MEASURE min_nat[nat].min(P) - n
+  findFirst(P: (nonempty?[nat])): {k: nat | P(k) AND FORALL (j: nat): P(j) IMPLIES k <= j} =
+    firstIndex(P)(0)
+END ppg_nat_search

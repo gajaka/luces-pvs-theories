@@ -1,0 +1,15 @@
+% Every nonempty finite search domain attains the minimum of a real objective.
+ppg_real_minimum[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_induction[T]
+  S: VAR finite_set[T]
+  SS: VAR non_empty_finite_set[T]
+  f: VAR [T -> real]
+  minimum_exists: THEOREM NOT empty?(S) IMPLIES
+    EXISTS (m: T): S(m) AND FORALL (x: T): S(x) IMPLIES f(m) <= f(x)
+  argmin(SS, f): {m: T | SS(m) AND FORALL (x: T): SS(x) IMPLIES f(m) <= f(x)} =
+    choose({m: T | SS(m) AND FORALL (x: T): SS(x) IMPLIES f(m) <= f(x)})
+  minimum(SS, f): real = f(argmin(SS, f))
+  minimum_le: THEOREM FORALL (x: T): SS(x) IMPLIES minimum(SS, f) <= f(x)
+  minimum_attained: THEOREM EXISTS (x: T): SS(x) AND minimum(SS, f) = f(x)
+END ppg_real_minimum

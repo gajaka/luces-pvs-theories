@@ -1,0 +1,19 @@
+% Cardinality induction for finite sets, derived from natural-number induction.
+ppg_finite_induction[T: TYPE]: THEORY
+BEGIN
+  finite_set_induction_rest: THEOREM
+    FORALL (P: pred[finite_set[T]]):
+      P(emptyset[T]) AND
+      (FORALL (SS: non_empty_finite_set[T]): P(rest(SS)) IMPLIES P(SS))
+      IMPLIES FORALL (S: finite_set[T]): P(S)
+  finite_set_induction_gen: THEOREM
+    FORALL (P: pred[finite_set[T]]):
+      (FORALL (S: finite_set[T]):
+        (FORALL (R: finite_set[T]): card(R) < card(S) IMPLIES P(R)) IMPLIES P(S))
+      IMPLIES FORALL (S: finite_set[T]): P(S)
+  finite_set_ind_modified: THEOREM
+    FORALL (P: pred[finite_set[T]]):
+      P(emptyset[T]) AND
+      (FORALL (e: T, S: finite_set[T]): NOT S(e) AND P(S) IMPLIES P(add(e, S)))
+      IMPLIES FORALL (S: finite_set[T]): P(S)
+END ppg_finite_induction

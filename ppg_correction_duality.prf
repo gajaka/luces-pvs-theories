@@ -1,0 +1,233 @@
+(|ppg_correction_duality|
+ (|correctionSet_mono| 0
+  (|correctionSet_mono-1| NIL 4000878819
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL)
+   ((|CorrectionSet| CONST-DECL "bool" |ppg_unsatisfiable_core| NIL)
+    (|Satisfiable| CONST-DECL "bool" |ppg_infeasibility| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_correction_duality| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_correction_duality| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|minimalCorrection_exists| 0
+  (|minimalCorrection_exists-1| NIL 4000878819
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "minimum_card_witness[C]"
+       ("P"
+        "LAMBDA (M: finite_set[C]): subset?(M, R!1) AND CorrectionSet(allowed!1, sat!1, B!1, M)"
+        "B" "R!1"))
+      ((""
+        (GRIND :IF-MATCH NIL :EXCLUDE
+         ("CorrectionSet" "MinimalCorrectionSet" "is_finite" "card"))
+        (("" (INST 1 "K!1")
+          (("" (EXPAND "MinimalCorrectionSet")
+            ((""
+              (GRIND :IF-MATCH NIL :EXCLUDE
+               ("CorrectionSet" "card" "is_finite"))
+              (("" (INST -4 "remove(c!1, K!1)")
+                (("" (LEMMA "card_remove[C]" ("S" "K!1" "x" "c!1"))
+                  ((""
+                    (GRIND :IF-MATCH NIL :EXCLUDE
+                     ("CorrectionSet" "card" "is_finite"))
+                    (("" (INST -3 "x!1") (("" (ASSERT) NIL)))))))))))))))))))))
+   ((C FORMAL-TYPE-DECL NIL |ppg_correction_duality| NIL)
+    (|CorrectionSet| CONST-DECL "bool" |ppg_unsatisfiable_core| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_correction_duality| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|minimum_card_witness| FORMULA-DECL NIL |ppg_finite_minimum| NIL)
+    (|card_remove| FORMULA-DECL NIL |finite_sets| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|MinimalCorrectionSet| CONST-DECL "bool" |ppg_unsatisfiable_core| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL))
+   SHOSTAK))
+ (|infeasible_hits_correction| 0
+  (|infeasible_hits_correction-1| NIL 4000878819
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL)
+   ((|finite_intersection1| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_correction_duality| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_correction_duality| NIL)
+    (|Satisfiable| CONST-DECL "bool" |ppg_infeasibility| NIL)
+    (|Infeasible| CONST-DECL "bool" |ppg_infeasibility| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|CorrectionSet| CONST-DECL "bool" |ppg_unsatisfiable_core| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|infeasible_iff_hitsAllMinimalCorrections| 0
+  (|infeasible_iff_hitsAllMinimalCorrections-1| NIL 4000878819
+   ("" (SKOSIMP*)
+    (("" (EXPAND "HitsAllMinimalCorrections")
+      (("" (GROUND)
+        (("1" (SKOSIMP*)
+          (("1"
+            (LEMMA "infeasible_hits_correction"
+             ("allowed" "allowed!1" "sat" "sat!1" "B" "B!1" "K" "K!1" "R"
+              "M!1"))
+            (("1" (GRIND :EXCLUDE ("Satisfiable" "Infeasible" "is_finite")) NIL
+              NIL))
+            NIL))
+          NIL)
+         ("2" (EXPAND "Infeasible")
+          (("2" (LEMMA "relative_complement_twice[C]" ("A" "K!1" "B" "B!1"))
+            (("2" (ASSERT)
+              (("2"
+                (LEMMA "minimalCorrection_exists"
+                 ("allowed" "allowed!1" "sat" "sat!1" "B" "B!1" "R"
+                  "difference(B!1, K!1)"))
+                (("2"
+                  (GRIND :IF-MATCH NIL :EXCLUDE
+                   ("MinimalCorrectionSet" "Satisfiable" "is_finite"))
+                  (("2" (INST -5 "M!1")
+                    (("2"
+                      (GRIND :IF-MATCH ALL :EXCLUDE
+                       ("MinimalCorrectionSet" "Satisfiable" "is_finite"))
+                      NIL NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|finite_intersection1| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|HitsAllMinimalCorrections| CONST-DECL "bool" |ppg_correction_duality|
+     NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|infeasible_hits_correction| FORMULA-DECL NIL |ppg_correction_duality|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_correction_duality| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_correction_duality| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|CorrectionSet| CONST-DECL "bool" |ppg_unsatisfiable_core| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|MinimalCorrectionSet| CONST-DECL "bool" |ppg_unsatisfiable_core| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|relative_complement_twice| FORMULA-DECL NIL |ppg_finite_minimum| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|minimalCorrection_exists| FORMULA-DECL NIL |ppg_correction_duality| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|Infeasible| CONST-DECL "bool" |ppg_infeasibility| NIL))
+   SHOSTAK))
+ (|infeasible_erase_iff| 0
+  (|infeasible_erase_iff-1| NIL 4000879402
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "infeasible_iff_hitsAllMinimalCorrections"
+       ("allowed" "allowed!1" "sat" "sat!1" "B" "B!1" "K" "remove(c!1, K!1)"))
+      (("" (LEMMA "subset_remove[C]" ("a" "K!1" "x" "c!1"))
+        ((""
+          (LEMMA "subset_transitive[C]"
+           ("a" "remove(c!1, K!1)" "b" "K!1" "c" "B!1"))
+          ((""
+            (GRIND :EXCLUDE
+             ("Infeasible" "HitsAllMinimalCorrections" "subset?" "is_finite"))
+            NIL)))))))))
+   ((|finite_remove| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|infeasible_iff_hitsAllMinimalCorrections| FORMULA-DECL NIL
+     |ppg_correction_duality| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_correction_duality| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_correction_duality| NIL)
+    (|subset_transitive| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|subset_remove| FORMULA-DECL NIL |sets_lemmas| NIL))
+   SHOSTAK))
+ (|minimalCore_iff_minimalCorrectionHittingSet| 0
+  (|minimalCore_iff_minimalCorrectionHittingSet-1| NIL 4000878819
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "infeasible_iff_hitsAllMinimalCorrections"
+       ("allowed" "allowed!1" "sat" "sat!1" "B" "B!1" "K" "K!1"))
+      ((""
+        (LEMMA "infeasible_erase_iff"
+         ("allowed" "allowed!1" "sat" "sat!1" "B" "B!1" "K" "K!1"))
+        ((""
+          (GRIND :IF-MATCH NIL :EXCLUDE
+           ("Infeasible" "HitsAllMinimalCorrections" "Satisfiable"
+            "is_finite"))
+          (("1" (INST -1 "c!1")
+            (("1"
+              (GRIND :IF-MATCH ALL :EXCLUDE
+               ("HitsAllMinimalCorrections" "Satisfiable" "is_finite"))
+              NIL NIL))
+            NIL)
+           ("2" (INST -1 "c!1")
+            (("2"
+              (GRIND :IF-MATCH ALL :EXCLUDE
+               ("HitsAllMinimalCorrections" "Satisfiable" "is_finite"))
+              NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|infeasible_erase_iff| FORMULA-DECL NIL |ppg_correction_duality| NIL)
+    (|Infeasible| CONST-DECL "bool" |ppg_infeasibility| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|MinimalCorrectionHittingSet| CONST-DECL "bool" |ppg_correction_duality|
+     NIL)
+    (|MinimalCore| CONST-DECL "bool" |ppg_unsatisfiable_core| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|infeasible_iff_hitsAllMinimalCorrections| FORMULA-DECL NIL
+     |ppg_correction_duality| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_correction_duality| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_correction_duality| NIL))
+   SHOSTAK)))
+

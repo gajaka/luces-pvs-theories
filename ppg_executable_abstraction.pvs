@@ -1,0 +1,34 @@
+% The supplied realization function turns abstract edges into concrete steps.
+ppg_executable_abstraction[State, Abstract: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_step_abstraction[State, Abstract], ppg_good_path[State], ppg_good_path[Abstract]
+  step: VAR [State, State -> bool]
+  good: VAR set[State]
+  astep: VAR [Abstract, Abstract -> bool]
+  agood: VAR set[Abstract]
+  project: VAR [State -> Abstract]
+  realize: VAR [State, Abstract -> State]
+  v, w: VAR State
+  a: VAR Abstract
+  trace: VAR list[Abstract]
+  path: VAR list[State]
+  ExecutableAbstraction(step, good, astep, agood, project, realize): bool =
+    StepSimulation(step, good, astep, agood, project) AND
+    (FORALL v, a: astep(project(v), a) IMPLIES
+      step(v, realize(v, a)) AND project(realize(v, a)) = a) AND
+    (FORALL w: agood(project(w)) IMPLIES good(w))
+  executable_to_exact: LEMMA ExecutableAbstraction(step, good, astep, agood, project, realize) IMPLIES
+    ExactAbstraction(step, good, astep, agood, project)
+  executeAbstractPath(realize, v, trace): RECURSIVE list[State] = CASES trace OF
+    null: null,
+    cons(a, rest): cons(realize(v, a), executeAbstractPath(realize, realize(v, a), rest))
+  ENDCASES MEASURE length(trace)
+  executeAbstractPath_valid: THEOREM
+    ExecutableAbstraction(step, good, astep, agood, project, realize) AND
+    GoodPath(astep, agood, project(v), trace) IMPLIES
+      GoodPath(step, good, v, executeAbstractPath(realize, v, trace))
+  executeAbstractPath_length: THEOREM length(executeAbstractPath(realize, v, trace)) = length(trace)
+  goodPath_repair_candidates: THEOREM GoodPath(step, good, v, path) AND
+    ppg_repair_semantics[State].isolated(concreteGraph(step, good), v) IMPLIES
+      ppg_repair_semantics[State].repair_candidates(concreteGraph(step, good), v, pathTarget(v, path))
+END ppg_executable_abstraction

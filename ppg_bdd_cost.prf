@@ -1,0 +1,401 @@
+(|ppg_bdd_cost|
+ (|rest_eq_filter_not| 0
+  (|rest_eq_filter_not-1| NIL 4000881203
+   ("" (SKOLEM!)
+    (("" (APPLY-EXTENSIONALITY)
+      (("" (GRIND :EXCLUDE ("SameComponent" "is_finite")) NIL))))
+    NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|SameComponent| CONST-DECL "equivalence[C]" |ppg_bdd| NIL)
+    (|equivalence| TYPE-EQ-DECL NIL |relations| NIL)
+    (|equivalence?| CONST-DECL "bool" |relations| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |ppg_bdd_cost|
+     NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[C]" |ppg_bdd_cost|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL))
+   SHOSTAK))
+ (|totalCost_split| 0
+  (|totalCost_split-1| NIL 4000881203
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "fsum_diff_subset"
+       ("A" "compOf(vars!1, B!1, c!1)" "B" "B!1" "f"
+        "LAMBDA (d:C): cost!1(d, i!1)"))
+      (("" (LEMMA "compOf_subset" ("vars" "vars!1" "B" "B!1" "c" "c!1"))
+        (("" (GRIND :EXCLUDE ("fsum" "compOf" "subset?" "is_finite")) NIL))))))
+    NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|Value| FORMAL-NONEMPTY-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|fsum_diff_subset| FORMULA-DECL NIL |ppg_real_sum| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |ppg_bdd_cost| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[C]" |ppg_bdd_cost|
+     NIL)
+    (|real_plus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|totalCost| CONST-DECL "real" |ppg_bdd_cost| NIL)
+    (|compOf_subset| FORMULA-DECL NIL |ppg_bdd| NIL))
+   SHOSTAK))
+ (|optCost_le_totalCost| 0
+  (|optCost_le_totalCost-1| NIL 4000881203
+   ("" (SKOSIMP*)
+    (("" (TYPEPRED "assignments")
+      ((""
+        (LEMMA "minimum_le"
+         ("SS" "assignments" "f"
+          "LAMBDA (i:[V -> Value]): totalCost(cost!1, B!1, i)" "x" "i!1"))
+        (("" (GRIND :EXCLUDE ("minimum" "totalCost" "is_finite")) NIL))))))
+    NIL)
+   ((|assignments| FORMAL-CONST-DECL
+     "{S: non_empty_finite_set[[V -> Value]] | FORALL (i: [V -> Value]): S(i)}"
+     |ppg_bdd_cost| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Value| FORMAL-NONEMPTY-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|optCost| CONST-DECL "real" |ppg_bdd_cost| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|totalCost| CONST-DECL "real" |ppg_bdd_cost| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|minimum_le| FORMULA-DECL NIL |ppg_real_minimum| NIL))
+   SHOSTAK))
+ (|optCost_attained| 0
+  (|optCost_attained-1| NIL 4000881203
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "minimum_attained"
+       ("SS" "assignments" "f"
+        "LAMBDA (i:[V -> Value]): totalCost(cost!1, B!1, i)"))
+      (("" (GRIND :IF-MATCH ALL :EXCLUDE ("minimum" "totalCost" "is_finite"))
+        NIL))))
+    NIL)
+   ((|Value| FORMAL-NONEMPTY-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|totalCost| CONST-DECL "real" |ppg_bdd_cost| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|assignments| FORMAL-CONST-DECL
+     "{S: non_empty_finite_set[[V -> Value]] | FORALL (i: [V -> Value]): S(i)}"
+     |ppg_bdd_cost| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|minimum_attained| FORMULA-DECL NIL |ppg_real_minimum| NIL)
+    (|optCost| CONST-DECL "real" |ppg_bdd_cost| NIL))
+   SHOSTAK))
+ (|optCost_ge_component_split| 0
+  (|optCost_ge_component_split-1| NIL 4000881203
+   ("" (SKOSIMP*)
+    (("" (LEMMA "optCost_attained" ("cost" "cost!1" "B" "B!1"))
+      (("" (SKOSIMP*)
+        ((""
+          (LEMMA "optCost_le_totalCost"
+           ("cost" "cost!1" "B" "compOf(vars!1, B!1, c!1)" "i" "i!1"))
+          ((""
+            (LEMMA "optCost_le_totalCost"
+             ("cost" "cost!1" "B" "difference(B!1, compOf(vars!1, B!1, c!1))"
+              "i" "i!1"))
+            ((""
+              (LEMMA "totalCost_split"
+               ("vars" "vars!1" "cost" "cost!1" "B" "B!1" "c" "c!1" "i" "i!1"))
+              (("" (ASSERT) NIL))))))))))))
+    NIL)
+   ((|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|Value| FORMAL-NONEMPTY-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|optCost_attained| FORMULA-DECL NIL |ppg_bdd_cost| NIL)
+    (|optCost_le_totalCost| FORMULA-DECL NIL |ppg_bdd_cost| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|totalCost_split| FORMULA-DECL NIL |ppg_bdd_cost| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_plus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[C]" |ppg_bdd_cost|
+     NIL)
+    (|difference| CONST-DECL "set" |sets| NIL))
+   SHOSTAK))
+ (|glue_component_cost| 0
+  (|glue_component_cost-1| NIL 4000881203
+   ("" (SKOSIMP*)
+    (("" (EXPAND "LocalCost")
+      (("" (INST -1 "d!1" "glue(vars!1, B!1, c!1, i!1, j!1)" "i!1")
+        ((""
+          (LEMMA "componentFootprint_eq_of_sameComponent"
+           ("vars" "vars!1" "B" "B!1" "c" "c!1" "d" "d!1"))
+          ((""
+            (LEMMA "vars_subset_own_footprint"
+             ("vars" "vars!1" "B" "B!1" "c" "d!1"))
+            ((""
+              (GRIND :EXCLUDE
+               ("SameComponent" "componentFootprint" "is_finite"))
+              NIL))))))))))
+    NIL)
+   ((|LocalCost| CONST-DECL "bool" |ppg_bdd_cost| NIL)
+    (|componentFootprint_eq_of_sameComponent| FORMULA-DECL NIL |ppg_bdd| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |ppg_bdd_cost|
+     NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|vars_subset_own_footprint| FORMULA-DECL NIL |ppg_bdd| NIL)
+    (|glue| CONST-DECL "[V -> Value]" |ppg_bdd_cost| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-NONEMPTY-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL))
+   SHOSTAK))
+ (|glue_remainder_cost| 0
+  (|glue_remainder_cost-1| NIL 4000881203
+   ("" (SKOSIMP*)
+    (("" (EXPAND "LocalCost")
+      (("" (INST -1 "d!1" "glue(vars!1, B!1, c!1, i!1, j!1)" "j!1")
+        ((""
+          (LEMMA "footprint_disjoint_of_diff_component"
+           ("vars" "vars!1" "B" "B!1" "c" "c!1" "d" "d!1"))
+          ((""
+            (LEMMA "vars_subset_own_footprint"
+             ("vars" "vars!1" "B" "B!1" "c" "d!1"))
+            ((""
+              (GRIND :EXCLUDE
+               ("SameComponent" "componentFootprint" "is_finite"))
+              (("" (DECOMPOSE-EQUALITY -2)
+                (("" (INST -1 "v!1")
+                  ((""
+                    (GRIND :EXCLUDE
+                     ("SameComponent" "componentFootprint" "is_finite"))
+                    NIL))))))))))))))))
+    NIL)
+   ((|LocalCost| CONST-DECL "bool" |ppg_bdd_cost| NIL)
+    (|footprint_disjoint_of_diff_component| FORMULA-DECL NIL |ppg_bdd| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[C]" |ppg_bdd_cost|
+     NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |ppg_bdd_cost|
+     NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|componentFootprint| CONST-DECL "set[V]" |ppg_bdd| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|vars_subset_own_footprint| FORMULA-DECL NIL |ppg_bdd| NIL)
+    (|glue| CONST-DECL "[V -> Value]" |ppg_bdd_cost| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-NONEMPTY-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL))
+   SHOSTAK))
+ (|glue_totalCost| 0
+  (|glue_totalCost-1| NIL 4000881203
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "totalCost_split"
+       ("vars" "vars!1" "cost" "cost!1" "B" "B!1" "c" "c!1" "i"
+        "glue(vars!1, B!1, c!1, i!1, j!1)"))
+      ((""
+        (LEMMA "glue_component_cost"
+         ("vars" "vars!1" "cost" "cost!1" "B" "B!1" "c" "c!1" "i" "i!1" "j"
+          "j!1"))
+        ((""
+          (LEMMA "glue_remainder_cost"
+           ("vars" "vars!1" "cost" "cost!1" "B" "B!1" "c" "c!1" "i" "i!1" "j"
+            "j!1"))
+          ((""
+            (LEMMA "fsum_congr"
+             ("S" "compOf(vars!1, B!1, c!1)" "f"
+              "LAMBDA (d:C): cost!1(d, glue(vars!1, B!1, c!1, i!1, j!1))" "g"
+              "LAMBDA (d:C): cost!1(d, i!1)"))
+            ((""
+              (LEMMA "fsum_congr"
+               ("S" "difference(B!1, compOf(vars!1, B!1, c!1))" "f"
+                "LAMBDA (d:C): cost!1(d, glue(vars!1, B!1, c!1, i!1, j!1))" "g"
+                "LAMBDA (d:C): cost!1(d, j!1)"))
+              ((""
+                (GRIND :IF-MATCH ALL :EXCLUDE
+                 ("fsum" "glue" "LocalCost" "compOf" "difference" "is_finite"))
+                NIL))))))))))))
+    NIL)
+   ((|glue| CONST-DECL "[V -> Value]" |ppg_bdd_cost| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|Value| FORMAL-NONEMPTY-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|totalCost_split| FORMULA-DECL NIL |ppg_bdd_cost| NIL)
+    (|glue_remainder_cost| FORMULA-DECL NIL |ppg_bdd_cost| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[C]" |ppg_bdd_cost|
+     NIL)
+    (|totalCost| CONST-DECL "real" |ppg_bdd_cost| NIL)
+    (|real_plus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|fsum_congr| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|glue_component_cost| FORMULA-DECL NIL |ppg_bdd_cost| NIL))
+   SHOSTAK))
+ (|optCost_le_component_split| 0
+  (|optCost_le_component_split-1| NIL 4000881203
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "optCost_attained"
+       ("cost" "cost!1" "B" "compOf(vars!1, B!1, c!1)"))
+      (("" (SKOSIMP*)
+        ((""
+          (LEMMA "optCost_attained"
+           ("cost" "cost!1" "B" "difference(B!1, compOf(vars!1, B!1, c!1))"))
+          (("" (SKOSIMP*)
+            ((""
+              (LEMMA "glue_totalCost"
+               ("vars" "vars!1" "cost" "cost!1" "B" "B!1" "c" "c!1" "i" "i!1"
+                "j" "i!2"))
+              ((""
+                (LEMMA "optCost_le_totalCost"
+                 ("cost" "cost!1" "B" "B!1" "i"
+                  "glue(vars!1, B!1, c!1, i!1, i!2)"))
+                (("" (ASSERT) NIL))))))))))))))
+    NIL)
+   ((|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|Value| FORMAL-NONEMPTY-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|optCost_attained| FORMULA-DECL NIL |ppg_bdd_cost| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[C]" |ppg_bdd_cost|
+     NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|glue_totalCost| FORMULA-DECL NIL |ppg_bdd_cost| NIL)
+    (|real_plus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|optCost_le_totalCost| FORMULA-DECL NIL |ppg_bdd_cost| NIL)
+    (|glue| CONST-DECL "[V -> Value]" |ppg_bdd_cost| NIL))
+   SHOSTAK))
+ (|optCost_component_split| 0
+  (|optCost_component_split-1| NIL 4000881203
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "optCost_ge_component_split"
+       ("vars" "vars!1" "cost" "cost!1" "B" "B!1" "c" "c!1"))
+      ((""
+        (LEMMA "optCost_le_component_split"
+         ("vars" "vars!1" "cost" "cost!1" "B" "B!1" "c" "c!1"))
+        (("" (ASSERT) NIL))))))
+    NIL)
+   ((|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|Value| FORMAL-NONEMPTY-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_bdd_cost| NIL)
+    (|optCost_ge_component_split| FORMULA-DECL NIL |ppg_bdd_cost| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[C]" |ppg_bdd_cost|
+     NIL)
+    (|real_plus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|optCost_le_component_split| FORMULA-DECL NIL |ppg_bdd_cost| NIL))
+   SHOSTAK)))
+
