@@ -1,0 +1,28 @@
+% Every time coordinate uses the probability law of its variable.
+ppg_mt_coordinate_laws[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_random_process[C, V, Value, domain],
+            ppg_probability_coordinates[V, Value, domain]
+  VariableSpaces: TYPE = ppg_probability_coordinates[V, Value, domain].CoordinateSpaces
+  spaces: VAR VariableSpaces
+  VariableLaws(spaces): TYPE =
+    ppg_probability_coordinates[V, Value, domain].ProbabilityFamily(spaces)
+  TableSpaces(spaces)(p: [nat, V]):
+    ppg_measurable_space[(domain(p`2))].MeasurableSpace = spaces(p`2)
+  coinLaw(spaces: VariableSpaces, laws: VariableLaws(spaces))(p: [nat, V]):
+    ppg_probability_measure[(domain(p`2)), spaces(p`2)].Probability =
+      laws(p`2)
+  baseState(spaces: VariableSpaces, laws: VariableLaws(spaces)): MTState =
+    ppg_probability_coordinates[V, Value, domain].basePoint(spaces, laws)
+  baseLog(spaces: VariableSpaces, laws: VariableLaws(spaces)): LogSpace =
+    constantLog(baseState(spaces, laws))
+  coinLaw_time_invariant: LEMMA FORALL (spaces: VariableSpaces, laws: VariableLaws(spaces)): FORALL (n, m: nat, v: V):
+    coinLaw(spaces, laws)((n, v)) = coinLaw(spaces, laws)((m, v))
+  baseLog_coordinate: LEMMA FORALL (spaces: VariableSpaces, laws: VariableLaws(spaces)): FORALL (n: nat, v: V):
+    baseLog(spaces, laws)((n, v)) = baseState(spaces, laws)(v)
+  baseLog_freshState: LEMMA FORALL (spaces: VariableSpaces, laws: VariableLaws(spaces)): FORALL (n: nat):
+    freshState(baseLog(spaces, laws), n) = baseState(spaces, laws)
+  baseLog_initialState: LEMMA FORALL (spaces: VariableSpaces, laws: VariableLaws(spaces)):
+    initialStateFromLog(baseLog(spaces, laws)) = baseState(spaces, laws)
+  probability_log_inhabited: LEMMA FORALL (spaces: VariableSpaces, laws: VariableLaws(spaces)): EXISTS (omega: LogSpace): omega = baseLog(spaces, laws)
+END ppg_mt_coordinate_laws

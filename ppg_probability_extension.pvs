@@ -1,0 +1,25 @@
+% Extend a coordinate block using points supplied by its probability laws.
+ppg_probability_extension[I, Value: TYPE, domain: [I -> set[Value]],
+                          F: set[I]]: THEORY
+BEGIN
+  IMPORTING ppg_probability_coordinates[I, Value, domain],
+            ppg_product_restriction[I, Value, domain, F]
+  Assignment: TYPE = [i: I -> (domain(i))]
+  spaces: VAR CoordinateSpaces
+  coordinates: VAR [I -> ppg_measurable_space[Value].MeasurableSpace]
+  y: VAR Partial
+  A: VAR set[Assignment]
+  canonicalExtension(spaces: CoordinateSpaces, laws: ProbabilityFamily(spaces), y: Partial): Assignment =
+    extendDefault(basePoint(spaces, laws), y)
+  canonical_restrict: LEMMA FORALL (spaces: CoordinateSpaces, laws: ProbabilityFamily(spaces)): restrict(canonicalExtension(spaces, laws, y)) = y
+  canonical_outside: LEMMA FORALL (spaces: CoordinateSpaces, laws: ProbabilityFamily(spaces)): FORALL (i: I): NOT F(i) IMPLIES
+    canonicalExtension(spaces, laws, y)(i) = basePoint(spaces, laws)(i)
+  canonical_measurable: LEMMA FORALL (spaces: CoordinateSpaces, laws: ProbabilityFamily(spaces)): measurable(blockSigma(coordinates),
+    productSigma[Partial, I, Value, domain](coordinates),
+    LAMBDA (y: Partial): canonicalExtension(spaces, laws, y))
+  canonical_factorization: LEMMA FORALL (spaces: CoordinateSpaces, laws: ProbabilityFamily(spaces)): dependsOn(A) IMPLIES
+    A = {x: Assignment | A(canonicalExtension(spaces, laws, restrict(x)))}
+  canonical_event_measurable: LEMMA FORALL (spaces: CoordinateSpaces, laws: ProbabilityFamily(spaces)):
+    productSigma[Partial, I, Value, domain](coordinates)(A) IMPLIES
+      blockSigma(coordinates)({y: Partial | A(canonicalExtension(spaces, laws, y))})
+END ppg_probability_extension

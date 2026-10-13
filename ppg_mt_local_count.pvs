@@ -1,0 +1,33 @@
+% Birth times give a bijection between deeper dependent vertices and prior uses.
+ppg_mt_local_count[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_check_birth[C, V, Value, domain], ppg_nat_range,
+            ppg_finite_bijection[Addr, nat]
+  vars: VAR CertVars
+  Clog: VAR [nat -> C]
+  t, s: VAR nat
+  w, u, u1, u2: VAR Addr
+  v: VAR V
+  localIndex(vars, Clog, t, u): nat = msub(birthTime(vars, Clog, t, u), 1)
+  priorUses(vars, Clog, t, w, v): finite_set[nat] =
+    filteredRange(LAMBDA (s: nat): vars(Clog(s + 1))(v), localIndex(vars, Clog, t, w))
+  birthTime_positive: LEMMA 1 <= t AND tau_C(vars, Clog, t)`dom(w) IMPLIES
+    1 <= birthTime(vars, Clog, t, w)
+  birthTime_le_time: LEMMA birthTime(vars, Clog, t, w) <= t
+  localIndex_spec: LEMMA 1 <= t AND tau_C(vars, Clog, t)`dom(w) IMPLIES
+    localIndex(vars, Clog, t, w) < t AND
+      birthTime(vars, Clog, t, w) = localIndex(vars, Clog, t, w) + 1
+  localIndex_maps: LEMMA 1 <= t AND tau_C(vars, Clog, t)`dom(w) AND
+    vars(tau_C(vars, Clog, t)`lab(w))(v) AND localSet(vars, tau_C(vars, Clog, t), w, v)(u)
+    IMPLIES priorUses(vars, Clog, t, w, v)(localIndex(vars, Clog, t, u))
+  localIndex_inj: LEMMA 1 <= t AND tau_C(vars, Clog, t)`dom(u1) AND
+    tau_C(vars, Clog, t)`dom(u2) AND localIndex(vars, Clog, t, u1) = localIndex(vars, Clog, t, u2)
+    IMPLIES u1 = u2
+  localIndex_surj: LEMMA 1 <= t AND tau_C(vars, Clog, t)`dom(w) AND
+    vars(tau_C(vars, Clog, t)`lab(w))(v) AND priorUses(vars, Clog, t, w, v)(s)
+    IMPLIES EXISTS (u: Addr): localSet(vars, tau_C(vars, Clog, t), w, v)(u) AND
+      localIndex(vars, Clog, t, u) = s
+  localCount_eq_prior_card: LEMMA 1 <= t AND tau_C(vars, Clog, t)`dom(w) AND
+    vars(tau_C(vars, Clog, t)`lab(w))(v) IMPLIES
+      localCount(vars, tau_C(vars, Clog, t), w, v) = card(priorUses(vars, Clog, t, w, v))
+END ppg_mt_local_count

@@ -1,0 +1,21 @@
+% Fixed per-variable table reads make each vertex check a measurable event.
+ppg_mt_check_measurable[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_check[C, V, Value, domain],
+    ppg_mt_policy_measurable[C, V, Value, domain],
+    ppg_mt_measurable_state[LogSpace, C, V, Value, domain]
+  coordinates: VAR [V -> ppg_measurable_space[Value].MeasurableSpace]
+  vars: VAR CertVars
+  bad: VAR [C, MTState -> bool]
+  T: VAR GTree
+  w: VAR Addr
+  n: VAR Counter
+  readAt(n)(omega: LogSpace): MTState = LAMBDA (v: V): atIdx(omega, v, n(v))
+  measurable_readAt: THEOREM
+    measurable(TableSigma(coordinates), StateSigma(coordinates), readAt(n))
+  measurable_checkState: LEMMA
+    measurable(TableSigma(coordinates), StateSigma(coordinates),
+      LAMBDA (omega: LogSpace): checkState(vars, T, omega, w))
+  measurableSet_checkState_event: THEOREM measurableBad(coordinates, bad) IMPLIES
+    TableSigma(coordinates)({omega: LogSpace | bad(T`lab(w), checkState(vars, T, omega, w))})
+END ppg_mt_check_measurable

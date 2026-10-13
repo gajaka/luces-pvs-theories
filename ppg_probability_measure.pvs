@@ -1,0 +1,17 @@
+% A normalized NASALib finite measure, without a nonempty carrier assumption.
+ppg_probability_measure[X: TYPE,
+  (IMPORTING ppg_measurable_space[X]) S: MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING measure_integration@generalized_measure_def[X, S]
+  Mass: TYPE = [(S) -> nnreal]
+  probability?(mu: Mass): bool = finite_measure?(mu) AND mu(fullset[X]) = 1
+  Probability: TYPE = (probability?)
+  mu: VAR Probability
+  probability_empty: LEMMA mu(emptyset[X]) = 0
+  probability_full: LEMMA mu(fullset[X]) = 1
+  probability_additive: LEMMA FORALL (E: disjoint_indexed_measurable):
+    S(IUnion(E)) IMPLIES convergence(series(mu o E), mu(IUnion(E)))
+  probability_carrier_nonempty: LEMMA FORALL (mu: Probability): nonempty?(fullset[X])
+  basePoint(mu): X = choose(fullset[X])
+  probability_has_point: LEMMA EXISTS (x: X): x = basePoint(mu)
+END ppg_probability_measure

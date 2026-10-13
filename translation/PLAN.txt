@@ -34,6 +34,9 @@ Uz plan su dva radna fajla:
 Status POSTOJI_OSNOVA_ZA_PROVERU znači da pandan treba proveriti.
 Status PLANIRANO znači da posao još nije izvršen. Nijedan red nije
 označen kao završen samo zato što već postoji sličan PVS naziv.
+Status DELIMICNO označava započet modul sa preostalim rezultatima ili
+definicijama. Broj eksplicitnih teorema sam po sebi ne potvrđuje da su
+prenete sve potrebne definicije i instance.
 
 Stanje 2026-10-13: prvi paket i faza 2 su završeni. PPGraph,
 PPGraphCategorical i PPGraphRR imaju 41 mapiran rezultat; njihova čista
@@ -41,18 +44,36 @@ provera svih pratećih teorija i primera ima 61/61 proved-complete.
 Faza 2 ima svih 20 modula i 179 mapiranih Lean rezultata. Svih 56 novih
 PVS teorija i primera prošlo je replay sa celim lancima importa i bez
 orakula: 395/395 proved-complete (346 lema/teorema i 49 TCC-ova).
-modules.tsv sada ima 23 ZAVRSENO modula, a proofs.tsv 220 DOKAZANO
-rezultata. Ostaje 168 modula i 1.604 eksplicitna rezultata. Preostali
-moduli faze 1 nisu ovim proglašeni završenim.
-Mapiranje i pretpostavke: CORE_MAPPING.txt i PHASE2_MAPPING.txt.
+Faza 3 je započeta: dokazano je 98/267 eksplicitnih Lean rezultata.
+Devet modula je završeno, pet je delimično preneto, a 20 još nije
+započeto. Dodate su 42 teorije i primeri, sa 342 novim dokaznim obavezama
+(283 leme/teoreme i 59 TCC-ova). Čist replay sa svim potrebnim importima
+i bez orakula ima 431/431 proved-complete (357 lema/teorema i 74 TCC-ova).
+Dodatno prolazi 10/10 NASALib pomoćnih obaveza za sigma-algebre, konačne
+zbirove i tip disjunktnih merljivih nizova. Poslednji paket daje 42 pomoćne
+leme i 23 TCC-a; broj eksplicitno prenetih Lean rezultata ostaje 98/267.
+Beskonačna proizvodna mera, probabilističke granice i očekivanja ostaju
+otvoreni; faza 3 nije završena. LogSpace ostaje DELIMICNO iako mu je
+jedina eksplicitna teorema dokazana: nedostaju definicija mere i instanca.
+
+modules.tsv sada ima 32 ZAVRSENO modula, a proofs.tsv 318 DOKAZANO
+rezultata. Ostaje 159 nezavršenih modula i 1.506 eksplicitnih rezultata,
+od toga 169 u fazi 3. Preostali moduli faze 1 nisu ovim proglašeni završenim.
+Mapiranje i pretpostavke: CORE_MAPPING.txt, PHASE2_MAPPING.txt i
+PHASE3_MAPPING.txt.
 Ponovljiva provera iz korena repozitorijuma:
   source ~/.zprofile
   python3 translation/check_core.py
   python3 translation/check_phase2.py
+  python3 translation/check_phase3.py
 
 Izveštaj faze 2: ~/.local/state/pvs-checks/phase2-20261013-final/.
+Izveštaj završenog dela faze 3:
+  ~/.local/state/pvs-checks/phase3-probability-20261013-verified/.
 results.json čuva pojedinačne statuse, totals.json zbir bez duplih
 importa, a manifest.json hash vrednosti izvora i dokaza i verziju alata.
+Provera faze 3 pokriva teorije iz phase3-theories.txt i njihove importe;
+complete_phase3_scope ostaje false jer ceo plan te faze još nije prenet.
 
 Faza 0. Utvrditi polazno stanje i pripremiti proveru
 
@@ -137,6 +158,29 @@ Neuspeh LLL kriterijuma sam po sebi nije dokaz nepostojanja dobrog stanja.
 
 Faza 3. Dovršiti probabilistički Moser-Tardos
 34 nova modula; 267 Lean deklaracija.
+
+DELIMIČNO 2026-10-13: 98 rezultata dokazano. Završeni su CheckOrder,
+Check, CheckBirth, Correspondence, PastIndependence, ConstantLog,
+Infeasibility, RandomTrajectory i RandomInitialization. Prenet je deo
+LogSpace, Counting, Probability, ProbabilityGeneral i RepairBridge.
+Merljivost stvarnog izbora, zajedničkog resamplovanja, stanja i svakog
+lokalnog brojača sada je dokazana, uključujući proizvoljnu merljivu
+inicijalizaciju iz tabele. Dokazane su restrikcija bloka, proširenje dodele,
+faktorizacija zavisnih događaja i merljivost proširenja. Dokazana je ekvivalencija
+naše sigma-algebre sa NASALib sigma_algebra? i konverzija u oba smera.
+Sada su konstruisane normalizovane NASALib konačne mere, Dirakova mera,
+koordinatni basePoint, kanonsko proširenje i prenos mere kroz merljivo
+preslikavanje. Dokazana je puna prebrojiva aditivnost ovih konstrukcija.
+Zakon na (n,v) jeste zakon promenljive v, za neograničen n. Proizvodna mera
+još nedostaje, kao i veza sigma-algebri koordinatnih podtipova sa postojećim
+productSigma nad zajedničkim Value tipom. Masa na nemerljivim skupovima
+nije još konstruisana; novi interfejs daje masu merljivim događajima.
+Detalji i preostale definicije: PHASE3_MAPPING.txt. Konačni primeri
+proveravaju različite domene, lokalne brojače, slot 0, prazne tipove i
+merljivu inicijalizaciju koja čita kasniji slot.
+Sledeći dokazni paket: veza koordinatnih sigma-algebri, konstrukcija beskonačne
+proizvodne mere i nezavisnost upita; drugi matematički preduslov su
+konverzije i prebrojivost witness stabala.
 
 3a. LogSpace, RandomTrajectory, RandomInitialization i PastIndependence:
     beskonačna tabela uzoraka, merljivost, lokalni brojači i nezavisnost.

@@ -1,0 +1,21 @@
+% A satisfying target supplies a concrete repair trajectory from every state.
+ppg_mt_repair_target[C, V, Value: TYPE, domain: [V -> set[Value]],
+  universe: {U: finite_set[V] | FORALL (v: V): U(v)}]: THEORY
+BEGIN
+  IMPORTING ppg_mt_constant_log[C, V, Value, domain, universe], ppg_mt_reach[C, V, Value, domain]
+  vars: VAR CertVars
+  bad: VAR [C, MTState -> bool]
+  fallback: VAR C
+  enumeration: VAR list[C]
+  s, z: VAR MTState
+  edges: VAR [MTState, MTState -> bool]
+  exists_mtReach_good_of_good_target: THEOREM mt_wf(vars, bad) AND MTGood(bad, z) AND
+    completeEnumeration(enumeration) IMPLIES EXISTS (w: MTState):
+      mtReach(vars, bad, fallback, enumeration)(s, w) AND MTGood(bad, w)
+  mtRepairGraph_repair_possible_of_good_target: THEOREM mt_wf(vars, bad) AND MTGood(bad, z) AND
+    completeEnumeration(enumeration) AND isolated(mtRepairGraph(vars, bad, fallback, enumeration, edges), s)
+    IMPLIES repair_possible(mtRepairGraph(vars, bad, fallback, enumeration, edges), s)
+  mtRepairGraph_globally_repairable_of_good_target: THEOREM mt_wf(vars, bad) AND MTGood(bad, z) AND
+    completeEnumeration(enumeration) IMPLIES
+      globally_repairable(mtRepairGraph(vars, bad, fallback, enumeration, edges))
+END ppg_mt_repair_target

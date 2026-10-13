@@ -1,0 +1,31 @@
+% Point laws, dependent coordinate domains, and the empty carrier case.
+ppg_probability_examples: THEORY
+BEGIN
+  IMPORTING ppg_probability_dirac, ppg_probability_map
+  discreteNat: ppg_measurable_space[nat].MeasurableSpace = fullset[set[nat]]
+  discreteBool: ppg_measurable_space[bool].MeasurableSpace = fullset[set[bool]]
+  atSeven: ppg_probability_measure[nat, discreteNat].Probability =
+    ppg_probability_dirac[nat, discreteNat].dirac(7)
+  seven_mass_one: LEMMA atSeven({n: nat | n = 7}) = 1
+  zero_mass_zero: LEMMA atSeven({n: nat | n = 0}) = 0
+  isSeven(n: nat): bool = n = 7
+  isSeven_measurable: LEMMA
+    ppg_measurable_map[nat, bool].measurable(discreteNat, discreteBool, isSeven)
+  pushedSeven: ppg_probability_measure[bool, discreteBool].Probability =
+    ppg_probability_map[nat, bool, discreteNat, discreteBool].pushforward(atSeven, isSeven)
+  pushed_true_mass_one: LEMMA pushedSeven({b: bool | b}) = 1
+  pushed_false_mass_zero: LEMMA pushedSeven({b: bool | NOT b}) = 0
+  domain(v: bool): set[nat] = {n: nat | n = IF v THEN 0 ELSE 1 ENDIF}
+  IMPORTING ppg_probability_coordinates[bool, nat, domain]
+  discrete(v: bool): ppg_measurable_space[(domain(v))].MeasurableSpace =
+    fullset[set[(domain(v))]]
+  seed(v: bool): (domain(v)) = IF v THEN 0 ELSE 1 ENDIF
+  pointLaw(v: bool): ppg_probability_measure[(domain(v)), discrete(v)].Probability =
+    ppg_probability_dirac[(domain(v)), discrete(v)].dirac(seed(v))
+  heterogeneous_base: LEMMA
+    basePoint(discrete, pointLaw)(TRUE) = 0 AND basePoint(discrete, pointLaw)(FALSE) = 1
+  Empty: TYPE = {b: bool | FALSE}
+  emptySigma: ppg_measurable_space[Empty].MeasurableSpace = fullset[set[Empty]]
+  empty_carrier_has_no_probability: LEMMA
+    NOT EXISTS (mu: ppg_probability_measure[Empty, emptySigma].Probability): TRUE
+END ppg_probability_examples

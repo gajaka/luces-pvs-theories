@@ -1,0 +1,72 @@
+% A vertex is born at its first appearance in the backward tree construction.
+ppg_mt_birth[C, V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_mt_check_order[C, V], ppg_nat_search
+  vars: VAR CertVars
+  Clog: VAR [nat -> C]
+  T: VAR GTree
+  t, n, m: VAR nat
+  w, w1, w2: VAR Addr
+  a, b: VAR C
+  v: VAR V
+  birthTimes(vars, Clog, t, w): set[nat] =
+    {n: nat | tau_build(vars, Clog, t, n)`dom(w)}
+  birthTimes_nonempty: LEMMA tau_C(vars, Clog, t)`dom(w) IMPLIES
+    nonempty?(birthTimes(vars, Clog, t, w))
+  birthStep(vars, Clog, t, w): nat =
+    IF tau_C(vars, Clog, t)`dom(w) THEN findFirst(birthTimes(vars, Clog, t, w)) ELSE 0 ENDIF
+  birthStep_mem: THEOREM tau_C(vars, Clog, t)`dom(w) IMPLIES
+    tau_build(vars, Clog, t, birthStep(vars, Clog, t, w))`dom(w)
+  birthStep_not_mem_before: THEOREM tau_C(vars, Clog, t)`dom(w) AND
+    m < birthStep(vars, Clog, t, w) IMPLIES NOT tau_build(vars, Clog, t, m)`dom(w)
+  mem_tauBuild_of_birthStep_le: THEOREM tau_C(vars, Clog, t)`dom(w) AND
+    birthStep(vars, Clog, t, w) <= m IMPLIES tau_build(vars, Clog, t, m)`dom(w)
+  birthStep_root: THEOREM tau_C(vars, Clog, t)`dom(null) IMPLIES
+    birthStep(vars, Clog, t, null) = 0
+  birthTime(vars, Clog, t, w): nat = msub(t, birthStep(vars, Clog, t, w))
+  attachAt_old_label: LEMMA T`dom(w) IMPLIES attach_at(vars, T, a)`lab(w) = T`lab(w)
+  tauBuild_lab_stable: THEOREM tau_build(vars, Clog, t, n)`dom(w) AND n <= m IMPLIES
+    tau_build(vars, Clog, t, m)`lab(w) = tau_build(vars, Clog, t, n)`lab(w)
+  birthStep_le_pred: THEOREM tau_C(vars, Clog, t)`dom(w) IMPLIES
+    birthStep(vars, Clog, t, w) <= msub(t, 1)
+  birthStep_eq_zero_iff: THEOREM tau_C(vars, Clog, t)`dom(w) IMPLIES
+    (birthStep(vars, Clog, t, w) = 0 IFF w = null)
+  candidates_nonempty_of_birthStep_eq_succ: THEOREM tau_C(vars, Clog, t)`dom(w) AND
+    birthStep(vars, Clog, t, w) = m + 1 IMPLIES
+      nonempty?(candidates(vars, tau_build(vars, Clog, t, m), Clog(msub(msub(t, 1), m))))
+  eq_newAttachAddr_of_birthStep_eq_succ: THEOREM tau_C(vars, Clog, t)`dom(w) AND
+    birthStep(vars, Clog, t, w) = m + 1 AND
+    nonempty?(candidates(vars, tau_build(vars, Clog, t, m), Clog(msub(msub(t, 1), m)))) IMPLIES
+      w = newAttachAddr(vars, tau_build(vars, Clog, t, m), Clog(msub(msub(t, 1), m)))
+  birthStep_inj: THEOREM tau_C(vars, Clog, t)`dom(w1) AND tau_C(vars, Clog, t)`dom(w2) AND
+    birthStep(vars, Clog, t, w1) = birthStep(vars, Clog, t, w2) IMPLIES w1 = w2
+  birthTime_inj: THEOREM tau_C(vars, Clog, t)`dom(w1) AND tau_C(vars, Clog, t)`dom(w2) AND
+    birthTime(vars, Clog, t, w1) = birthTime(vars, Clog, t, w2) IMPLIES w1 = w2
+  tauBuild_lab_eq_final: THEOREM tau_C(vars, Clog, t)`dom(w) AND
+    tau_build(vars, Clog, t, n)`dom(w) IMPLIES
+      tau_build(vars, Clog, t, n)`lab(w) = tau_C(vars, Clog, t)`lab(w)
+  birth_label: THEOREM tau_C(vars, Clog, t)`dom(w) IMPLIES
+    tau_C(vars, Clog, t)`lab(w) = Clog(birthTime(vars, Clog, t, w))
+  footprint_common_var_same_or_neighbor: THEOREM vars(a)(v) AND vars(b)(v) IMPLIES
+    a = b OR dependent?(vars)(a, b)
+  candidates_nonempty_of_var_used: THEOREM vars(a)(v) AND T`dom(w) AND vars(T`lab(w))(v)
+    IMPLIES nonempty?(candidates(vars, T, a))
+  birthStep_eq_succ_of_new_attach: THEOREM
+    nonempty?(candidates(vars, tau_build(vars, Clog, t, n), Clog(msub(msub(t, 1), n)))) AND
+    w = newAttachAddr(vars, tau_build(vars, Clog, t, n), Clog(msub(msub(t, 1), n))) AND
+    tau_C(vars, Clog, t)`dom(w) IMPLIES birthStep(vars, Clog, t, w) = n + 1
+  birthStep_lt_imp_length_lt: THEOREM tau_C(vars, Clog, t)`dom(w1) AND
+    tau_C(vars, Clog, t)`dom(w2) AND vars(tau_C(vars, Clog, t)`lab(w1))(v) AND
+    vars(tau_C(vars, Clog, t)`lab(w2))(v) AND
+    birthStep(vars, Clog, t, w1) < birthStep(vars, Clog, t, w2) IMPLIES length(w1) < length(w2)
+  birthStep_lt_iff_length_lt: THEOREM tau_C(vars, Clog, t)`dom(w1) AND
+    tau_C(vars, Clog, t)`dom(w2) AND w1 /= w2 AND
+    vars(tau_C(vars, Clog, t)`lab(w1))(v) AND vars(tau_C(vars, Clog, t)`lab(w2))(v) IMPLIES
+    (birthStep(vars, Clog, t, w1) < birthStep(vars, Clog, t, w2) IFF length(w1) < length(w2))
+  exists_birth_of_earlier_real_time: THEOREM tau_C(vars, Clog, t)`dom(w) AND
+    vars(tau_C(vars, Clog, t)`lab(w))(v) AND 1 <= n AND
+    n < birthTime(vars, Clog, t, w) AND vars(Clog(n))(v) IMPLIES
+      EXISTS (u: Addr): tau_C(vars, Clog, t)`dom(u) AND
+        tau_C(vars, Clog, t)`lab(u) = Clog(n) AND birthTime(vars, Clog, t, u) = n AND
+        length(w) < length(u)
+END ppg_mt_birth

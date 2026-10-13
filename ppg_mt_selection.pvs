@@ -1,0 +1,34 @@
+% A complete event enumeration makes the concrete selection policy faithful.
+ppg_mt_selection[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_random_process[C, V, Value, domain]
+  vars: VAR CertVars
+  bad: VAR [C, MTState -> bool]
+  fallback: VAR C
+  enumeration: VAR list[C]
+  om, initial: VAR MTState
+  omega: VAR LogSpace
+  t: VAR nat
+  completeEnumeration(enumeration): bool = FORALL (c: C): member(c, enumeration)
+  MTGood(bad, om): bool = FORALL (c: C): NOT bad(c, om)
+  pickFromList_spec: THEOREM
+    (EXISTS (c: C): member(c, enumeration) AND bad(c, om)) IMPLIES
+      bad(pickFromList(bad, fallback, enumeration, om), om)
+  pickFromList_notMem_bad_iff: THEOREM
+    NOT bad(pickFromList(bad, fallback, enumeration, om), om) IFF
+      (FORALL (c: C): member(c, enumeration) IMPLIES NOT bad(c, om)) AND NOT bad(fallback, om)
+  pickFirstViolated_notMem_bad_iff: THEOREM completeEnumeration(enumeration) IMPLIES
+    (NOT bad(pickFirstViolated(bad, fallback, enumeration, om), om) IFF MTGood(bad, om))
+  pickFirstViolated_mem_violated: THEOREM completeEnumeration(enumeration) AND NOT MTGood(bad, om)
+    IMPLIES bad(pickFirstViolated(bad, fallback, enumeration, om), om)
+  realC(vars, bad, fallback, enumeration, initial, omega, t): C =
+    pickFirstViolated(bad, fallback, enumeration,
+      randStep(vars, bad, fallback, enumeration, initial, omega, t)`1)
+  realC_def: THEOREM realC(vars, bad, fallback, enumeration, initial, omega, t) =
+    pickFirstViolated(bad, fallback, enumeration,
+      randStep(vars, bad, fallback, enumeration, initial, omega, t)`1)
+  randStep_notMem_bad_realC_iff: THEOREM completeEnumeration(enumeration) IMPLIES
+    (NOT bad(realC(vars, bad, fallback, enumeration, initial, omega, t),
+      randStep(vars, bad, fallback, enumeration, initial, omega, t)`1) IFF
+      MTGood(bad, randStep(vars, bad, fallback, enumeration, initial, omega, t)`1))
+END ppg_mt_selection

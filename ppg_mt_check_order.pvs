@@ -1,0 +1,57 @@
+% Maximum-depth attachment separates overlapping labels at equal depths.
+ppg_mt_check_order[C, V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_mt_tree[C, V]
+  vars: VAR CertVars
+  T: VAR GTree
+  a: VAR C
+  u, v, w: VAR Addr
+  Clog: VAR [nat -> C]
+  t, n, m: VAR nat
+  candidate_length_le_chosen: THEOREM
+    nonempty?(candidates(vars, T, a)) AND candidates(vars, T, a)(v) IMPLIES
+      length(v) <= length(max_depth_pick(candidates(vars, T, a)))
+  % The fallback only totalizes the proof-indexed Lean definition.
+  newAttachAddr(vars, T, a): Addr =
+    IF nonempty?(candidates(vars, T, a)) THEN
+      snoc(max_depth_pick(candidates(vars, T, a)),
+           fresh_index(T, max_depth_pick(candidates(vars, T, a))))
+    ELSE null ENDIF
+  newAttachAddr_mem_attachAt_dom: THEOREM
+    nonempty?(candidates(vars, T, a)) IMPLIES
+      attach_at(vars, T, a)`dom(newAttachAddr(vars, T, a))
+  attachAt_lab_new_addr: THEOREM nonempty?(candidates(vars, T, a)) IMPLIES
+    attach_at(vars, T, a)`lab(newAttachAddr(vars, T, a)) = a
+  attachAt_new_vertex_deeper_than_any_candidate: THEOREM
+    nonempty?(candidates(vars, T, a)) AND candidates(vars, T, a)(v) IMPLIES
+      length(v) < length(newAttachAddr(vars, T, a))
+  mem_candidates_iff: THEOREM candidates(vars, T, a)(v) IFF
+    T`dom(v) AND (T`lab(v) = a OR dependent?(vars)(T`lab(v), a))
+  newAttachAddr_not_mem: THEOREM nonempty?(candidates(vars, T, a)) IMPLIES
+    NOT T`dom(newAttachAddr(vars, T, a))
+  attachAt_dom_eq_insert: THEOREM nonempty?(candidates(vars, T, a)) IMPLIES
+    attach_at(vars, T, a)`dom = add(newAttachAddr(vars, T, a), T`dom)
+  attachAt_lab_old: THEOREM nonempty?(candidates(vars, T, a)) AND
+    w /= newAttachAddr(vars, T, a) IMPLIES attach_at(vars, T, a)`lab(w) = T`lab(w)
+  dom_subset_attachAt: THEOREM subset?(T`dom, attach_at(vars, T, a)`dom)
+  dom_subset_tauBuild_succ: THEOREM
+    subset?(tau_build(vars, Clog, t, n)`dom, tau_build(vars, Clog, t, n + 1)`dom)
+  dom_subset_tauBuild_of_le: THEOREM n <= m IMPLIES
+    subset?(tau_build(vars, Clog, t, n)`dom, tau_build(vars, Clog, t, m)`dom)
+  tauBuild_attach_deeper_than_prior: THEOREM
+    LET Tn = tau_build(vars, Clog, t, n), a = Clog(msub(msub(t, 1), n)) IN
+    nonempty?(candidates(vars, Tn, a)) AND m <= n AND
+      tau_build(vars, Clog, t, m)`dom(v) AND
+      (Tn`lab(v) = a OR dependent?(vars)(Tn`lab(v), a)) IMPLIES
+        length(v) < length(newAttachAddr(vars, Tn, a))
+  SameDepthIndependent(vars, T): bool = FORALL (u, v: Addr):
+    T`dom(u) AND T`dom(v) AND length(u) = length(v) AND u /= v IMPLIES
+      T`lab(u) /= T`lab(v) AND NOT dependent?(vars)(T`lab(u), T`lab(v))
+  attachAt_new_old_sameDepth_indep: THEOREM
+    nonempty?(candidates(vars, T, a)) AND T`dom(u) AND
+    length(u) = length(newAttachAddr(vars, T, a)) IMPLIES
+      T`lab(u) /= a AND NOT dependent?(vars)(T`lab(u), a)
+  attachAt_preserves_sameDepthIndependent: LEMMA
+    SameDepthIndependent(vars, T) IMPLIES SameDepthIndependent(vars, attach_at(vars, T, a))
+  tauBuild_sameDepthIndependent: THEOREM SameDepthIndependent(vars, tau_build(vars, Clog, t, n))
+END ppg_mt_check_order

@@ -1,0 +1,11 @@
+% A natural-valued function is bounded on every finite domain.
+ppg_finite_nat_bound[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_induction[T]
+  S: VAR finite_set[T]
+  f: VAR [T -> nat]
+  finite_nat_bound: LEMMA
+    EXISTS (n: nat): FORALL (x: T): S(x) IMPLIES f(x) < n
+  bound(S, f): {n: nat | FORALL (x: T): S(x) IMPLIES f(x) < n} =
+    choose({n: nat | FORALL (x: T): S(x) IMPLIES f(x) < n})
+END ppg_finite_nat_bound

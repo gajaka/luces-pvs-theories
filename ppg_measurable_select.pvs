@@ -1,0 +1,20 @@
+% A measurable natural-number index selects a measurable member of a sequence.
+ppg_measurable_select[X, Y: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_map[X, Y], ppg_measurable_map[X, nat]
+  SX: VAR ppg_measurable_space[X].MeasurableSpace
+  SY: VAR ppg_measurable_space[Y].MeasurableSpace
+  idx: VAR [X -> nat]
+  fs: VAR [nat -> [X -> Y]]
+  B: VAR set[Y]
+  n: VAR nat
+  select(idx, fs)(x: X): Y = fs(idx(x))(x)
+  part(idx, fs, B)(n): set[X] =
+    intersection(inverseImage(idx, singleton(n)), inverseImage(fs(n), B))
+  select_preimage: LEMMA inverseImage(select(idx, fs), B) =
+    ppg_measurable_space[X].countableUnion(part(idx, fs, B))
+  measurable_part: LEMMA measurable(SX, fullset[set[nat]], idx) AND
+    measurable(SX, SY, fs(n)) AND SY(B) IMPLIES SX(part(idx, fs, B)(n))
+  measurable_select: LEMMA measurable(SX, fullset[set[nat]], idx) AND
+    (FORALL (n: nat): measurable(SX, SY, fs(n))) IMPLIES measurable(SX, SY, select(idx, fs))
+END ppg_measurable_select

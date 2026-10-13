@@ -1,0 +1,13 @@
+% Empty variable and value carriers remain valid instances of the table model.
+ppg_phase3_empty: THEORY
+BEGIN
+  Empty: TYPE = {b: bool | FALSE}
+  domain(v: Empty): set[Empty] = emptyset[Empty]
+  IMPORTING ppg_mt_log_measurable[bool, Empty, Empty, domain],
+            ppg_mt_check_order[Empty, Empty],
+            ppg_product_restriction[Empty, Empty, domain, emptyset[Empty]]
+  empty_sample_table_exists: THEOREM EXISTS (omega: LogSpace): TRUE
+  empty_state_unique: THEOREM FORALL (s, z: MTState): s = z
+  empty_extension_identity: THEOREM FORALL (s: MTState):
+    extendDefault(s, restrict(s)) = s
+END ppg_phase3_empty

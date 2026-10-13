@@ -1,0 +1,12 @@
+% Elementary finite-support series used to construct point measures.
+ppg_probability_series: THEORY
+BEGIN
+  IMPORTING series@series
+  n, k: VAR nat
+  a: VAR real
+  spike(k, a)(n): real = IF n = k THEN a ELSE 0 ENDIF
+  spike_partial_sum: LEMMA sigma(0, n, spike(k, a)) =
+    IF k <= n THEN a ELSE 0 ENDIF
+  spike_series: LEMMA convergence(series(spike(k, a)), a)
+  zero_series: LEMMA convergence(series(LAMBDA (n: nat): 0), 0)
+END ppg_probability_series

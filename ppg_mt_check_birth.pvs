@@ -1,0 +1,25 @@
+% Checks on a generated tree inherit the separation of overlapping vertices.
+ppg_mt_check_birth[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_birth[C, V], ppg_mt_check[C, V, Value, domain]
+  vars: VAR CertVars
+  Clog: VAR [nat -> C]
+  t: VAR nat
+  w1, w2: VAR Addr
+  v, v1, v2: VAR V
+  tauC_sameDepthIndependent: LEMMA SameDepthIndependent(vars, tau_C(vars, Clog, t))
+  localCount_ne_of_ne: THEOREM
+    tau_C(vars, Clog, t)`dom(w1) AND tau_C(vars, Clog, t)`dom(w2) AND w1 /= w2 AND
+    vars(tau_C(vars, Clog, t)`lab(w1))(v) AND vars(tau_C(vars, Clog, t)`lab(w2))(v)
+    IMPLIES localCount(vars, tau_C(vars, Clog, t), w1, v) /=
+            localCount(vars, tau_C(vars, Clog, t), w2, v)
+  checkState_indices_injective: THEOREM
+    tau_C(vars, Clog, t)`dom(w1) AND tau_C(vars, Clog, t)`dom(w2) AND
+    vars(tau_C(vars, Clog, t)`lab(w1))(v1) AND vars(tau_C(vars, Clog, t)`lab(w2))(v2) AND
+    v1 = v2 AND localCount(vars, tau_C(vars, Clog, t), w1, v1) =
+                localCount(vars, tau_C(vars, Clog, t), w2, v2) IMPLIES w1 = w2
+  vertexIdx_disjoint: THEOREM
+    tau_C(vars, Clog, t)`dom(w1) AND tau_C(vars, Clog, t)`dom(w2) AND w1 /= w2
+    IMPLIES disjoint?(vertexIdx(vars, tau_C(vars, Clog, t), w1),
+                      vertexIdx(vars, tau_C(vars, Clog, t), w2))
+END ppg_mt_check_birth

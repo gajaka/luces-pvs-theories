@@ -1,0 +1,234 @@
+(|ppg_mt_infeasibility|
+ (|mt_satisfiable_iff_good_exists| 0
+  (|mt_satisfiable_iff_good_exists-1| NIL 4000890650
+   ("" (SKOSIMP*)
+    (("" (TYPEPRED "events")
+      (("" (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite"))
+        (("1" (INST + "z!1")
+          (("1" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL NIL)) NIL)
+         ("2" (INST + "z!1")
+          (("2" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|events| FORMAL-CONST-DECL "{E: finite_set[C] | FORALL (c: C): E(c)}"
+     |ppg_mt_infeasibility| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|mtSat| CONST-DECL "bool" |ppg_mt_infeasibility| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_infeasibility| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (|Satisfiable| CONST-DECL "bool" |ppg_infeasibility| NIL)
+    (|MTGood| CONST-DECL "bool" |ppg_mt_selection| NIL))
+   SHOSTAK))
+ (|mt_reachable_good_iff_good_exists| 0
+  (|mt_reachable_good_iff_good_exists-1| NIL 4000890650
+   ("" (SKOSIMP*)
+    (("" (SPLIT +)
+      (("1" (SKOSIMP*) (("1" (INST + "w!1") NIL NIL)) NIL)
+       ("2" (SKOSIMP*)
+        (("2"
+          (LEMMA "exists_mtReach_good_of_good_target"
+           ("vars" "vars!1" "bad" "bad!1" "fallback" "fallback!1" "enumeration"
+            "enumeration!1" "s" "s!1" "z" "z!1"))
+          (("2" (ASSERT) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((V FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_infeasibility| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_mt_infeasibility| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|exists_mtReach_good_of_good_target| FORMULA-DECL NIL
+     |ppg_mt_repair_target| NIL))
+   SHOSTAK))
+ (|mt_noReachableGood_iff_infeasible| 0
+  (|mt_noReachableGood_iff_infeasible-1| NIL 4000890650
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "mt_reachable_good_iff_good_exists"
+      ("vars" "vars!1" "bad" "bad!1" "fallback" "fallback!1" "enumeration"
+       "enumeration!1" "s" "s!1"))
+     (LEMMA "mt_satisfiable_iff_good_exists" ("bad" "bad!1"))
+     (EXPAND "NoReachableGood") (EXPAND "Infeasible") (EXPAND "mtRepairGraph")
+     (GROUND))
+    NIL NIL)
+   ((|mt_satisfiable_iff_good_exists| FORMULA-DECL NIL |ppg_mt_infeasibility|
+     NIL)
+    (|Infeasible| CONST-DECL "bool" |ppg_infeasibility| NIL)
+    (|mtRepairGraph| CONST-DECL "RepairGraph" |ppg_mt_reach| NIL)
+    (|NoReachableGood| CONST-DECL "bool" |ppg_infeasibility| NIL)
+    (|mt_reachable_good_iff_good_exists| FORMULA-DECL NIL
+     |ppg_mt_infeasibility| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_infeasibility| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL))
+   SHOSTAK))
+ (|mt_no_repair_iff_infeasible| 0
+  (|mt_no_repair_iff_infeasible-1| NIL 4000890650
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "mt_noReachableGood_iff_infeasible"
+      ("vars" "vars!1" "bad" "bad!1" "fallback" "fallback!1" "enumeration"
+       "enumeration!1" "s" "s!1" "edges" "edges!1"))
+     (LEMMA "noReachableGood_iff_no_repair"
+      ("G" "mtRepairGraph(vars!1, bad!1, fallback!1, enumeration!1, edges!1)"
+       "v" "s!1"))
+     (GROUND))
+    NIL NIL)
+   ((|noReachableGood_iff_no_repair| FORMULA-DECL NIL |ppg_infeasibility| NIL)
+    (|RepairGraph| TYPE-EQ-DECL NIL |ppg_repair_semantics| NIL)
+    (|mtRepairGraph| CONST-DECL "RepairGraph" |ppg_mt_reach| NIL)
+    (|mt_noReachableGood_iff_infeasible| FORMULA-DECL NIL
+     |ppg_mt_infeasibility| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_infeasibility| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL))
+   SHOSTAK))
+ (|mt_infeasible_iff_minimalCore_exists| 0
+  (|mt_infeasible_iff_minimalCore_exists-1| NIL 4000890650
+   ("" (SKOSIMP*)
+    (("" (SPLIT +)
+      (("1" (SKOSIMP*)
+        (("1"
+          (LEMMA "minimalCore_exists"
+           ("allowed" "fullset[MTState]" "sat" "mtSat(bad!1)" "B" "events"))
+          (("1"
+            (GRIND :IF-MATCH NIL :EXCLUDE
+             ("is_finite" "MinimalCore" "Infeasible"))
+            (("1" (INST + "K!1") NIL NIL)) NIL))
+          NIL))
+        NIL)
+       ("2" (SKOSIMP*)
+        (("2"
+          (LEMMA "minimalCore_blocks_superset"
+           ("allowed" "fullset[MTState]" "sat" "mtSat(bad!1)" "B" "events" "K"
+            "K!1"))
+          (("2" (TYPEPRED "events")
+            (("2"
+              (GRIND :IF-MATCH ALL :EXCLUDE
+               ("is_finite" "MinimalCore" "Infeasible"))
+              NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_infeasibility| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (|mtSat| CONST-DECL "bool" |ppg_mt_infeasibility| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|events| FORMAL-CONST-DECL "{E: finite_set[C] | FORALL (c: C): E(c)}"
+     |ppg_mt_infeasibility| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|minimalCore_exists| FORMULA-DECL NIL |ppg_unsatisfiable_core| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|minimalCore_blocks_superset| FORMULA-DECL NIL |ppg_unsatisfiable_core|
+     NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL))
+   SHOSTAK))
+ (|mt_core_noReachableGood| 0
+  (|mt_core_noReachableGood-1| NIL 4000890650
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "mt_noReachableGood_iff_infeasible"
+      ("vars" "vars!1" "bad" "bad!1" "fallback" "fallback!1" "enumeration"
+       "enumeration!1" "s" "s!1" "edges" "edges!1"))
+     (LEMMA "mt_infeasible_iff_minimalCore_exists" ("bad" "bad!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("mt_wf" "completeEnumeration" "MTGood" "mtReach" "is_finite"
+       "MinimalCore" "Infeasible" "Satisfiable" "NoReachableGood"
+       "repair_possible" "isolated")))
+    NIL NIL)
+   ((|mt_infeasible_iff_minimalCore_exists| FORMULA-DECL NIL
+     |ppg_mt_infeasibility| NIL)
+    (|mtRepairGraph| CONST-DECL "RepairGraph" |ppg_mt_reach| NIL)
+    (|mt_noReachableGood_iff_infeasible| FORMULA-DECL NIL
+     |ppg_mt_infeasibility| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_infeasibility| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL))
+   SHOSTAK))
+ (|mt_good_exists_excludes_all_cores| 0
+  (|mt_good_exists_excludes_all_cores-1| NIL 4000890650
+   (""
+    (THEN (SKOSIMP*) (LEMMA "mt_satisfiable_iff_good_exists" ("bad" "bad!1"))
+     (LEMMA "mt_infeasible_iff_minimalCore_exists" ("bad" "bad!1"))
+     (EXPAND "Infeasible")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("mt_wf" "completeEnumeration" "MTGood" "mtReach" "is_finite"
+       "MinimalCore" "Infeasible" "Satisfiable" "NoReachableGood"
+       "repair_possible" "isolated")))
+    NIL NIL)
+   ((|mt_infeasible_iff_minimalCore_exists| FORMULA-DECL NIL
+     |ppg_mt_infeasibility| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Infeasible| CONST-DECL "bool" |ppg_infeasibility| NIL)
+    (|mt_satisfiable_iff_good_exists| FORMULA-DECL NIL |ppg_mt_infeasibility|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_infeasibility| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_infeasibility| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,101 @@
+(|ppg_measurable_product|
+ (|measurable_cylinder| 0
+  (|measurable_cylinder-1| NIL 4000889372
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "generated_contains[Pi]" ("G" "cylinders(coordinates!1)"))
+     (EXPAND "subset?" -1) (INST -1 "cylinder(i!1, B!1)")
+     (GRIND :IF-MATCH NIL :EXCLUDE ("generated" "sigma?" "cylinder"))
+     (INST + "i!1" "B!1") (ASSERT))
+    NIL NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|productSigma| CONST-DECL "ppg_measurable_space[Pi].MeasurableSpace"
+     |ppg_measurable_product| NIL)
+    (|cylinder| CONST-DECL "set[Pi]" |ppg_measurable_product| NIL)
+    (|generated_contains| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|cylinders| CONST-DECL "set[set[Pi]]" |ppg_measurable_product| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_measurable_product| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_measurable_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]" |ppg_measurable_product|
+     NIL)
+    (|Pi| TYPE-EQ-DECL NIL |ppg_measurable_product| NIL))
+   SHOSTAK))
+ (|measurable_coordinate| 0
+  (|measurable_coordinate-1| NIL 4000889372
+   (""
+    (THEN (SKOSIMP*) (EXPAND "measurable") (SKOSIMP*)
+     (LEMMA "measurable_cylinder"
+      ("coordinates" "coordinates!1" "i" "i!1" "B" "A!1"))
+     (EXPAND "inverseImage") (EXPAND "cylinder")
+     (GRIND :IF-MATCH NIL :EXCLUDE ("generated" "productSigma" "sigma?")))
+    NIL NIL)
+   ((|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|cylinder| CONST-DECL "set[Pi]" |ppg_measurable_product| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_measurable_product| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_measurable_product| NIL)
+    (|measurable_cylinder| FORMULA-DECL NIL |ppg_measurable_product| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL))
+   SHOSTAK))
+ (|inverseImage_cylinder| 0
+  (|inverseImage_cylinder-1| NIL 4000889372
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :EXCLUDE ("sigma?")))
+    NIL NIL)
+   ((I FORMAL-TYPE-DECL NIL |ppg_measurable_product| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_measurable_product| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]" |ppg_measurable_product|
+     NIL)
+    (|Pi| TYPE-EQ-DECL NIL |ppg_measurable_product| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|cylinder| CONST-DECL "set[Pi]" |ppg_measurable_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_measurable_product| NIL))
+   SHOSTAK))
+ (|measurable_product| 0
+  (|measurable_product-1| NIL 4000889372
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "measurable_into_generated[A, Pi]"
+      ("SX" "SA!1" "f" "f!1" "G" "cylinders(coordinates!1)"))
+     (EXPAND "productSigma")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("generated" "sigma?" "measurable" "inverseImage" "cylinder"))
+     (INST -3 "i!1") (EXPAND "measurable") (INST -3 "B!1")
+     (REWRITE "inverseImage_cylinder") (GROUND))
+    NIL NIL)
+   ((|productSigma| CONST-DECL "ppg_measurable_space[Pi].MeasurableSpace"
+     |ppg_measurable_product| NIL)
+    (|inverseImage_cylinder| FORMULA-DECL NIL |ppg_measurable_product| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|measurable_into_generated| FORMULA-DECL NIL |ppg_measurable_map| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|cylinders| CONST-DECL "set[set[Pi]]" |ppg_measurable_product| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_measurable_product| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_measurable_product| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_measurable_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]" |ppg_measurable_product|
+     NIL)
+    (|Pi| TYPE-EQ-DECL NIL |ppg_measurable_product| NIL))
+   SHOSTAK)))
+

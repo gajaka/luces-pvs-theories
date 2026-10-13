@@ -1,0 +1,43 @@
+% Restriction and extension of dependent assignments on a coordinate block.
+ppg_product_restriction[I, Value: TYPE, domain: [I -> set[Value]],
+                        F: set[I]]: THEORY
+BEGIN
+  Pi: TYPE = [i: I -> (domain(i))]
+  Partial: TYPE = [i: (F) -> (domain(i))]
+  IMPORTING ppg_measurable_product[Partial, I, Value, domain],
+            ppg_measurable_product[Pi, (F), Value,
+              LAMBDA (i: (F)): domain(i)]
+  coordinates: VAR [I -> ppg_measurable_space[Value].MeasurableSpace]
+  x, base: VAR Pi
+  y: VAR Partial
+  A: VAR set[Pi]
+  G: VAR set[I]
+  restrict(x): Partial = LAMBDA (i: (F)): x(i)
+  updateBlock(x: Pi, G: set[I], z: [i: (G) -> (domain(i))]): Pi =
+    LAMBDA (i: I): IF G(i) THEN z(i) ELSE x(i) ENDIF
+  extendDefault(base, y): Pi = updateBlock(base, F, y)
+  blockSigma(coordinates): ppg_measurable_space[Partial].MeasurableSpace =
+    productSigma[Pi, (F), Value, LAMBDA (i: (F)): domain(i)](
+      LAMBDA (i: (F)): coordinates(i))
+  dependsOn(A): bool = FORALL (x1, x2: Pi):
+    (FORALL (i: (F)): x1(i) = x2(i)) IMPLIES (A(x1) IFF A(x2))
+  blockEvent(base, A): set[Partial] = {y: Partial | A(extendDefault(base, y))}
+  extendDefault_restrict: LEMMA restrict(extendDefault(base, y)) = y
+  restrict_update_disjoint: LEMMA FORALL (z: [i: (G) -> (domain(i))]):
+    disjoint?(F, G) IMPLIES restrict(updateBlock(x, G, z)) = restrict(x)
+  restrict_update_same: LEMMA restrict(updateBlock(x, F, y)) = y
+  extend_restrict_agree: LEMMA FORALL (i: (F)):
+    extendDefault(base, restrict(x))(i) = x(i)
+  dependsOn_eq_restrict_preimage: LEMMA dependsOn(A) IMPLIES
+    A = {x: Pi | blockEvent(base, A)(restrict(x))}
+  blockEvent_base_independent: LEMMA dependsOn(A) IMPLIES
+    blockEvent(base, A) = blockEvent(x, A)
+  measurable_restrict: LEMMA measurable(
+    productSigma[Partial, I, Value, domain](coordinates), blockSigma(coordinates), restrict)
+  measurable_extendDefault: LEMMA measurable(blockSigma(coordinates),
+    productSigma[Partial, I, Value, domain](coordinates),
+    LAMBDA (y: Partial): extendDefault(base, y))
+  measurable_blockEvent: LEMMA
+    productSigma[Partial, I, Value, domain](coordinates)(A) IMPLIES
+      blockSigma(coordinates)(blockEvent(base, A))
+END ppg_product_restriction

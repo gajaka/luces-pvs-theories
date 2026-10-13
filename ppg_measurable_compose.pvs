@@ -1,0 +1,16 @@
+% Inverse images commute with composition, including empty source types.
+ppg_measurable_compose[X, Y, Z: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_map[X, Y], ppg_measurable_map[Y, Z],
+            ppg_measurable_map[X, Z]
+  SX: VAR ppg_measurable_space[X].MeasurableSpace
+  SY: VAR ppg_measurable_space[Y].MeasurableSpace
+  SZ: VAR ppg_measurable_space[Z].MeasurableSpace
+  f: VAR [X -> Y]
+  g: VAR [Y -> Z]
+  B: VAR set[Z]
+  inverseImage_compose: LEMMA
+    inverseImage(LAMBDA (x: X): g(f(x)), B) = inverseImage(f, inverseImage(g, B))
+  measurable_compose: LEMMA measurable(SX, SY, f) AND measurable(SY, SZ, g)
+    IMPLIES measurable(SX, SZ, LAMBDA (x: X): g(f(x)))
+END ppg_measurable_compose
