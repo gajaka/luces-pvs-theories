@@ -1,0 +1,30 @@
+% Disjoint coordinate blocks generate independent information, without a size restriction.
+ppg_probability_arbitrary_blocks[I, Value: TYPE, domain: [I -> set[Value]],
+  F, G: set[I],
+  (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace],
+  (IMPORTING ppg_probability_block_base[I, Value, domain, spaces])
+  coins: [i: I -> CoordinateLaw(i)]]: THEORY
+BEGIN
+  IMPORTING ppg_probability_infinite_product[I, Value, domain, spaces, coins],
+            ppg_probability_independence[FullBlock, tableSigma],
+            ppg_probability_infinite_independence, ppg_measurable_supported
+  FGenerators: set[TableEvent] =
+    ppg_measurable_supported[I, Value, domain, F, spaces].supportedGenerators
+  GGenerators: set[TableEvent] =
+    ppg_measurable_supported[I, Value, domain, G, spaces].supportedGenerators
+  FInformation: ppg_measurable_space[FullBlock].MeasurableSpace =
+    ppg_measurable_supported[I, Value, domain, F, spaces].supportedSigma
+  GInformation: ppg_measurable_space[FullBlock].MeasurableSpace =
+    ppg_measurable_supported[I, Value, domain, G, spaces].supportedSigma
+  block_generator_independence: LEMMA FORALL (A, B: (tableSigma)):
+    disjoint?(F, G) AND FGenerators(A) AND GGenerators(B) IMPLIES
+      independent(infiniteLaw, A, B)
+  block_information_independence: THEOREM FORALL (A, B: (tableSigma)):
+    disjoint?(F, G) AND FInformation(A) AND GInformation(B) IMPLIES
+      independent(infiniteLaw, A, B)
+  arbitrary_block_independence: THEOREM FORALL (B: (blockSigma(F)), D: (blockSigma(G))):
+    disjoint?(F, G) IMPLIES
+      infiniteLaw(intersection(tableCylinder(F, B), tableCylinder(G, D))) =
+        infiniteLaw(tableCylinder(F, B)) * infiniteLaw(tableCylinder(G, D))
+END ppg_probability_arbitrary_blocks

@@ -1,0 +1,22 @@
+% Arbitrary disjoint log-coordinate blocks are independent under the native MT law.
+ppg_mt_log_independence[C, V, Value: TYPE, domain: [V -> set[Value]],
+  (IMPORTING ppg_mt_native_spaces[C, V, Value, domain])
+  spaces: VariableSpaces, laws: VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_mt_log_probability[C, V, Value, domain, spaces, laws],
+            ppg_probability_arbitrary_blocks
+  logBlockEvent(F: set[[nat, V]], B: (blockSigma(F))): (NativeTableSigma(spaces)) =
+    ppg_measurable_map[LogSpace, Block(F)].inverseImage(logBlock(F), B)
+  log_block_event_preimage: LEMMA FORALL (F: set[[nat, V]], B: (blockSigma(F))):
+    ppg_measurable_map[FullBlock, LogSpace].inverseImage(logMap, logBlockEvent(F, B)) =
+      tableCylinder(F, B)
+  log_block_intersection_preimage: LEMMA FORALL (F, G: set[[nat, V]],
+    B: (blockSigma(F)), D: (blockSigma(G))):
+    ppg_measurable_map[FullBlock, LogSpace].inverseImage(logMap,
+      intersection(logBlockEvent(F, B), logBlockEvent(G, D))) =
+        intersection(tableCylinder(F, B), tableCylinder(G, D))
+  log_block_independence: THEOREM FORALL (F, G: set[[nat, V]],
+    B: (blockSigma(F)), D: (blockSigma(G))): disjoint?(F, G) IMPLIES
+      logMeasure(intersection(logBlockEvent(F, B), logBlockEvent(G, D))) =
+        logMeasure(logBlockEvent(F, B)) * logMeasure(logBlockEvent(G, D))
+END ppg_mt_log_independence

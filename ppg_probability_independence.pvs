@@ -1,0 +1,37 @@
+% Independence on two intersection-closed generators extends to their sigma algebras.
+ppg_probability_independence[X: TYPE,
+  (IMPORTING ppg_measurable_space[X]) S: MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_probability_unique[X, S], analysis@convergence_ops
+  mu: VAR Probability
+  A, B, C: VAR (S)
+  E: VAR [nat -> (S)]
+  independent(mu, A, B): bool = mu(intersection(A, B)) = mu(A) * mu(B)
+  independent_symmetric: LEMMA independent(mu, A, B) IFF independent(mu, B, A)
+  independent_full: LEMMA independent(mu, fullset[X], B)
+  independent_difference: LEMMA subset?(A, C) AND independent(mu, A, B) AND
+    independent(mu, C, B) IMPLIES independent(mu, difference(C, A), B)
+  independent_union: LEMMA increasingEvents(E) AND
+    (FORALL (n: nat): independent(mu, E(n), B)) IMPLIES
+      independent(mu, countableUnion(E), B)
+  independentClass(mu, B): set[Event] =
+    {A: Event | S(A) AND independent(mu, A, B)}
+  independent_class_full: LEMMA independentClass(mu, B)(fullset[X])
+  independent_class_difference: LEMMA FORALL (A, C: Event):
+    independentClass(mu, B)(A) AND independentClass(mu, B)(C) AND subset?(A, C)
+      IMPLIES independentClass(mu, B)(difference(C, A))
+  independent_class_union: LEMMA FORALL (E: Family): increasingEvents(E) AND
+    (FORALL (n: nat): independentClass(mu, B)(E(n))) IMPLIES
+      independentClass(mu, B)(countableUnion(E))
+  independent_class_dynkin: LEMMA dynkin?(independentClass(mu, B))
+  generator_extension: LEMMA FORALL (G: set[Event]):
+    intersectionClosed?(G) AND subset?(G, S) AND
+    (FORALL (A: (S)): G(A) IMPLIES independent(mu, A, B)) IMPLIES
+      (FORALL (A: (S)): generated(G)(A) IMPLIES independent(mu, A, B))
+  independent_generators: THEOREM FORALL (G, H: set[Event]):
+    intersectionClosed?(G) AND intersectionClosed?(H) AND
+    subset?(G, S) AND subset?(H, S) AND
+    (FORALL (A, B: (S)): G(A) AND H(B) IMPLIES independent(mu, A, B)) IMPLIES
+      (FORALL (A, B: (S)): generated(G)(A) AND generated(H)(B) IMPLIES
+        independent(mu, A, B))
+END ppg_probability_independence

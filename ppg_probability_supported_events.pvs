@@ -1,0 +1,20 @@
+% Measurable events determined by a coordinate block factor through its restriction.
+ppg_probability_supported_events[I, Value: TYPE, domain: [I -> set[Value]],
+  (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace],
+  (IMPORTING ppg_probability_block_base[I, Value, domain, spaces])
+  coins: [i: I -> CoordinateLaw(i)]]: THEORY
+BEGIN
+  IMPORTING ppg_probability_infinite_marginals[I, Value, domain, spaces, coins],
+            ppg_measurable_block_update[I, Value, domain, spaces],
+            ppg_probability_arbitrary_blocks
+  eventBase(F: set[I], A: (tableSigma)): (blockSigma(F)) =
+    {y: Block(F) | A(putBlock(F, anchor)(y))}
+  event_base_factor: THEOREM FORALL (F: set[I], A: (tableSigma)):
+    dependsOn(F, A) IMPLIES A = tableCylinder(F, eventBase(F, A))
+  infinitePi_eq_pi_of_dependsOn: THEOREM FORALL (F: finite_set[I], A: (tableSigma)):
+    dependsOn(F, A) IMPLIES infiniteLaw(A) = finiteLaw(F)(eventBase(F, A))
+  infinitePi_inter_eq_mul_of_dependsOn: THEOREM FORALL (F, G: set[I], A, B: (tableSigma)):
+    disjoint?(F, G) AND dependsOn(F, A) AND dependsOn(G, B) IMPLIES
+      infiniteLaw(intersection(A, B)) = infiniteLaw(A) * infiniteLaw(B)
+END ppg_probability_supported_events

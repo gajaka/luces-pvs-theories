@@ -1,0 +1,390 @@
+(|ppg_measurable_supported|
+ (|supported_member| 0
+  (|supported_member-1| NIL 4000994487
+   (""
+    (THEN (SKOSIMP*) (EXPAND "supportedGenerators") (INST 1 "H!1" "B!1")
+     (ASSERT))
+    NIL)
+   ((I FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]" |ppg_measurable_supported|
+     NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_measurable_supported| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|supportedGenerators| CONST-DECL
+     "set[TableEvent[I, Value, domain, spaces]]" |ppg_measurable_supported|
+     NIL))
+   SHOSTAK))
+ (|supported_intersection| 0
+  (|supported_intersection-1| NIL 4000994487
+   ("" (SKOLEM!)
+    (("" (TYPEPRED "A!1")
+      (("" (EXPAND "supportedGenerators" -1)
+        (("" (SKOSIMP*)
+          (("" (LABEL "repA" -2)
+            (("" (TYPEPRED "B!1")
+              (("" (EXPAND "supportedGenerators" -1)
+                (("" (SKOSIMP*)
+                  (("" (LABEL "repB" -2)
+                    (("" (REPLACE "repA")
+                      (("" (REPLACE "repB")
+                        (("" (REWRITE "cylinder_intersection")
+                          ((""
+                            (LEMMA "intersection_base_measurable"
+                             ("F" "H!1" "G" "H!2" "B" "B!2" "D" "B!3"))
+                            ((""
+                              (LEMMA "supported_member"
+                               ("H" "union(H!1,H!2)" "B"
+                                "intersection(liftEvent(union(H!1,H!2),H!1,B!2),liftEvent(union(H!1,H!2),H!2,B!3))"))
+                              (("1"
+                                (GRIND :EXCLUDE
+                                 ("supportedGenerators" "blockSigma"
+                                  "tableSigma" "is_finite" "intersection"
+                                  "liftEvent"))
+                                NIL NIL)
+                               ("2" (PROPAX) NIL NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|intersection_base_measurable| FORMULA-DECL NIL |ppg_measurable_cylinder|
+     NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|supported_member| FORMULA-DECL NIL |ppg_measurable_supported| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|liftEvent| CONST-DECL "set[Block[I, Value, domain, spaces](H)]"
+     |ppg_measurable_cylinder| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|cylinder_intersection| FORMULA-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|fullset| CONST-DECL "set" |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]" |ppg_measurable_supported|
+     NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_measurable_supported| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|supportedGenerators| CONST-DECL
+     "set[TableEvent[I, Value, domain, spaces]]" |ppg_measurable_supported|
+     NIL))
+   SHOSTAK))
+ (|supported_intersection_closed| 0
+  (|supported_intersection_closed-1| NIL 4000994487
+   (""
+    (THEN (LEMMA "supported_intersection")
+     (GRIND :DEFS ("intersectionClosed?") :EXCLUDE ("supportedGenerators")))
+    NIL)
+   ((|supported_intersection| FORMULA-DECL NIL |ppg_measurable_supported| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|supportedGenerators| CONST-DECL
+     "set[TableEvent[I, Value, domain, spaces]]" |ppg_measurable_supported|
+     NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_measurable_supported| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]" |ppg_measurable_supported|
+     NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (|intersectionClosed?| CONST-DECL "bool" |ppg_dynkin_system| NIL))
+   SHOSTAK))
+ (|supported_generators_measurable| 0
+  (|supported_generators_measurable-1| NIL 4000994487
+   (""
+    (THEN (EXPAND "subset?") (EXPAND "member") (SKOSIMP*)
+     (EXPAND "supportedGenerators" -1) (SKOSIMP*)
+     (LEMMA "cylinder_measurable" ("F" "H!1" "B" "B!1")) (ASSERT))
+    NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_measurable_supported| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]" |ppg_measurable_supported|
+     NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|cylinder_measurable| FORMULA-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|supportedGenerators| CONST-DECL
+     "set[TableEvent[I, Value, domain, spaces]]" |ppg_measurable_supported|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL))
+   SHOSTAK))
+ (|supported_sigma_measurable| 0
+  (|supported_sigma_measurable-1| NIL 4000994487
+   (""
+    (THEN (LEMMA "supported_generators_measurable")
+     (LEMMA "generated_least[FullBlock]"
+      ("G" "supportedGenerators" "S" "tableSigma"))
+     (EXPAND "supportedSigma") (ASSERT))
+    NIL)
+   ((|supported_generators_measurable| FORMULA-DECL NIL
+     |ppg_measurable_supported| NIL)
+    (|supportedSigma| CONST-DECL
+     "ppg_measurable_space[FullBlock[I, Value, domain, spaces]].MeasurableSpace"
+     |ppg_measurable_supported| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_measurable_supported| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]" |ppg_measurable_supported|
+     NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL)
+    (|supportedGenerators| CONST-DECL
+     "set[TableEvent[I, Value, domain, spaces]]" |ppg_measurable_supported|
+     NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|generated_least| FORMULA-DECL NIL |ppg_measurable_space| NIL))
+   SHOSTAK))
+ (|supported_coordinate_TCC1| 0
+  (|supported_coordinate_TCC1-1| NIL 4000994486 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)) NIL
+   (|supported_coordinate| SUBTYPE "i"
+    "(sets[ppg_measurable_supported.I].fullset)" (20 45 20 46))))
+ (|supported_coordinate| 0
+  (|supported_coordinate-1| NIL 4000994487
+   ("" (SKOLEM!)
+    ((""
+      (LEMMA "block_cylinder_measurable"
+       ("F" "singleton[I](i!1)" "i" "i!1" "B" "B!1"))
+      (("1"
+        (LEMMA "supported_member"
+         ("H" "singleton[I](i!1)" "B"
+          "blockCylinder(singleton[I](i!1),i!1,B!1)"))
+        (("1" (LEMMA "singleton_cylinder" ("i" "i!1" "B" "B!1"))
+          (("1"
+            (LEMMA "generated_contains[FullBlock]" ("G" "supportedGenerators"))
+            (("1" (EXPAND "supportedSigma")
+              (("1"
+                (GRIND :EXCLUDE
+                 ("supportedGenerators" "blockSigma" "tableSigma" "generated"
+                  "is_finite"))
+                NIL NIL))
+              NIL))
+            NIL))
+          NIL)
+         ("2" (PROPAX) NIL NIL))
+        NIL)
+       ("2" (EXPAND "singleton") (("2" (PROPAX) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   ((|supported_member| FORMULA-DECL NIL |ppg_measurable_supported| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|blockCylinder| CONST-DECL "set[Block(F)]" |ppg_measurable_block| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|supportedGenerators| CONST-DECL
+     "set[TableEvent[I, Value, domain, spaces]]" |ppg_measurable_supported|
+     NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|generated_contains| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|supportedSigma| CONST-DECL
+     "ppg_measurable_space[FullBlock[I, Value, domain, spaces]].MeasurableSpace"
+     |ppg_measurable_supported| NIL)
+    (|singleton_cylinder| FORMULA-DECL NIL |ppg_cylinder_algebra| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |countable_props| |sets_aux|)
+    (|block_cylinder_measurable| FORMULA-DECL NIL |ppg_measurable_block| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (F FORMAL-CONST-DECL "set[I]" |ppg_measurable_supported| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]" |ppg_measurable_supported|
+     NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_measurable_supported| NIL))
+   SHOSTAK))
+ (|supported_coordinate_measurable_TCC1| 0
+  (|supported_coordinate_measurable_TCC1-1| NIL 4000994486
+   ("" (SUBTYPE-TCC) NIL NIL) ((|fullset| CONST-DECL "set" |sets| NIL)) NIL
+   (|supported_coordinate_measurable| SUBTYPE "i"
+    "(sets[ppg_measurable_supported.I].fullset)" (23 58 23 59))))
+ (|supported_coordinate_measurable| 0
+  (|supported_coordinate_measurable-1| NIL 4000994487
+   (""
+    (THEN (SKOLEM!) (LEMMA "supported_coordinate" ("i" "i!1"))
+     (EXPAND "measurable") (EXPAND "inverseImage") (EXPAND "blockCylinder")
+     (GRIND :EXCLUDE ("supportedSigma" "spaces")))
+    NIL)
+   ((|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|blockCylinder| CONST-DECL "set[Block(F)]" |ppg_measurable_block| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]" |ppg_measurable_supported|
+     NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_measurable_supported| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|supported_coordinate| FORMULA-DECL NIL |ppg_measurable_supported| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (F FORMAL-CONST-DECL "set[I]" |ppg_measurable_supported| NIL))
+   SHOSTAK))
+ (|supported_restriction_measurable_TCC1| 0
+  (|supported_restriction_measurable_TCC1-1| NIL 4000994486
+   ("" (SUBTYPE-TCC) NIL NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL))
+   NIL
+   (|supported_restriction_measurable| SUBTYPE "F"
+    "{G: sets[ppg_measurable_supported.I].set | sets[ppg_measurable_supported.I].subset?(G, sets[ppg_measurable_supported.I].fullset)}"
+    (26 63 26 64))))
+ (|supported_restriction_measurable| 0
+  (|supported_restriction_measurable-1| NIL 4000994487
+   (""
+    (THEN (LEMMA "supported_coordinate_measurable")
+     (LEMMA "block_map_measurable[FullBlock,I,Value,domain,spaces]"
+      ("F" "F" "SA" "supportedSigma" "f" "restrictBlock(fullset[I],F)"))
+     (EXPAND "restrictBlock") (ASSERT))
+    NIL)
+   ((|supported_coordinate_measurable| FORMULA-DECL NIL
+     |ppg_measurable_supported| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_measurable_supported| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]" |ppg_measurable_supported|
+     NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (|restrictBlock| CONST-DECL "Block(G)" |ppg_measurable_block_restriction|
+     NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|supportedSigma| CONST-DECL
+     "ppg_measurable_space[FullBlock[I, Value, domain, spaces]].MeasurableSpace"
+     |ppg_measurable_supported| NIL)
+    (F FORMAL-CONST-DECL "set[I]" |ppg_measurable_supported| NIL)
+    (|block_map_measurable| FORMULA-DECL NIL |ppg_measurable_block_map| NIL))
+   SHOSTAK))
+ (|supported_cylinder| 0
+  (|supported_cylinder-1| NIL 4000994487
+   (""
+    (THEN (SKOLEM!) (LEMMA "supported_restriction_measurable")
+     (EXPAND "measurable") (INST -1 "B!1") (EXPAND "inverseImage")
+     (EXPAND "tableCylinder") (ASSERT))
+    NIL)
+   ((|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|tableCylinder| CONST-DECL "TableEvent" |ppg_measurable_cylinder| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_measurable_supported| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]" |ppg_measurable_supported|
+     NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (F FORMAL-CONST-DECL "set[I]" |ppg_measurable_supported| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_measurable_supported| NIL)
+    (|supported_restriction_measurable| FORMULA-DECL NIL
+     |ppg_measurable_supported| NIL))
+   SHOSTAK)))
+
