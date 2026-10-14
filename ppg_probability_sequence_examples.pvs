@@ -1,0 +1,19 @@
+% Countable cylinder sequences on an infinite coordinate type with varying native domains.
+ppg_probability_sequence_examples: THEORY
+BEGIN
+  IMPORTING ppg_probability_finite_examples,
+            ppg_probability_cylinder_bounded[nat, nat, domain, spaces, coins, F]
+  supports(n: nat): finite_set[nat] = IF n = 0 THEN singleton[nat](7) ELSE singleton[nat](2) ENDIF
+  baseEvents(n: nat): (blockSigma(supports(n))) =
+    IF n = 0 THEN fullset[Block(supports(n))] ELSE emptyset[Block(supports(n))] ENDIF
+  presentations: BoundedData = LAMBDA (n: nat): (supports(n), baseEvents(n))
+  event_value: LEMMA FORALL (n: nat): dataSequence(presentations)(n) =
+    IF n = 0 THEN fullset[FullBlock] ELSE emptyset[FullBlock] ENDIF
+  events_disjoint: LEMMA disjoint?(dataSequence(presentations))
+  events_decreasing: LEMMA decreasingEvents[FullBlock](dataSequence(presentations))
+  events_union: LEMMA countableUnion[FullBlock](dataSequence(presentations)) = fullset[FullBlock]
+  events_intersection: LEMMA
+    countableIntersection[FullBlock](dataSequence(presentations)) = emptyset[FullBlock]
+  additive_mass_one: THEOREM convergence(series(content o dataSequence(presentations)), 1)
+  decreasing_mass_zero: THEOREM convergence(content o dataSequence(presentations), 0)
+END ppg_probability_sequence_examples

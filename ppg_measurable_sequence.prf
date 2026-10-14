@@ -1,0 +1,58 @@
+(|ppg_measurable_sequence|
+ (|intersection_complement_union| 0
+  (|intersection_complement_union-1| NIL 4000968689
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :EXCLUDE ("sigma?" "blockSigma" "tableSigma")))
+    NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|complement| CONST-DECL "set" |sets| NIL)
+    (|countableUnion| CONST-DECL "Event" |ppg_measurable_space| NIL))
+   SHOSTAK))
+ (|measurable_countable_intersection| 0
+  (|measurable_countable_intersection-1| NIL 4000968690
+   (""
+    (THEN (SKOSIMP*)
+     (SPREAD (CASE "FORALL (n: nat): S!1(complement(E!1(n)))")
+      ((THEN
+        (LEMMA "measurable_countable_union"
+         ("S" "S!1" "E" "LAMBDA (n: nat): complement(E!1(n))"))
+        (ASSERT)
+        (LEMMA "measurable_complement"
+         ("S" "S!1" "A" "countableUnion(LAMBDA (n: nat): complement(E!1(n)))"))
+        (REWRITE "intersection_complement_union") (ASSERT))
+       (THEN (SKOLEM 1 "k!1")
+        (LEMMA "measurable_complement" ("S" "S!1" "A" "E!1(k!1)"))
+        (INST -2 "k!1") (ASSERT)))))
+    NIL)
+   ((|measurable_countable_union| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|countableUnion| CONST-DECL "Event" |ppg_measurable_space| NIL)
+    (|measurable_complement| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|complement| CONST-DECL "set" |sets| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   SHOSTAK))
+ (|sequence_intersection| 0
+  (|sequence_intersection-1| NIL 4000968690
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :EXCLUDE ("sigma?" "blockSigma" "tableSigma")))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL))
+   SHOSTAK))
+ (|decreasing_native_eq| 0
+  (|decreasing_native_eq-1| NIL 4000968690 ("" (GRIND :EXCLUDE ("sigma?")) NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|decreasing?| CONST-DECL "bool" |fun_preds_partial| |structures|))
+   SHOSTAK)))
+

@@ -1,0 +1,16 @@
+% On a finite coordinate type the cylinder content is the native product probability.
+ppg_probability_cylinder_finite[I, Value: TYPE, domain: [I -> set[Value]],
+  (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace],
+  (IMPORTING ppg_probability_block_base[I, Value, domain, spaces])
+  coins: [i: I -> CoordinateLaw(i)], F: {F: finite_set[I] | F = fullset[I]}]: THEORY
+BEGIN
+  IMPORTING ppg_probability_cylinder_premeasure[I, Value, domain, spaces, coins],
+            ppg_measurable_cylinder_sequence[I, Value, domain, spaces]
+  finite_cylinders_sigma: LEMMA Cylinders = tableSigma
+  nativeLaw: Probability = finiteLaw(F)
+  native_law_compatible: LEMMA compatible?(nativeLaw)
+  finite_content_continuity: THEOREM continuousEmpty?(content)
+  finite_content_premeasure: THEOREM
+    generalized_measure_def[FullBlock, Cylinders].finite_measure?(content)
+END ppg_probability_cylinder_finite

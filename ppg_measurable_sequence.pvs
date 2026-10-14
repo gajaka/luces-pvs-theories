@@ -1,0 +1,15 @@
+% Countable intersections and monotone sequences in the native sigma algebra.
+ppg_measurable_sequence[X: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_nasa_sigma[X]
+  E: VAR Family
+  S: VAR MeasurableSpace
+  countableIntersection(E): Event = {x: X | FORALL (n: nat): E(n)(x)}
+  decreasingEvents(E): bool = FORALL (m, n: nat): m <= n IMPLIES subset?(E(n), E(m))
+  intersection_complement_union: LEMMA countableIntersection(E) =
+    complement(countableUnion(LAMBDA (n: nat): complement(E(n))))
+  measurable_countable_intersection: LEMMA (FORALL (n: nat): S(E(n))) IMPLIES
+    S(countableIntersection(E))
+  sequence_intersection: LEMMA countableIntersection(E) = IIntersection(E)
+  decreasing_native_eq: LEMMA decreasingEvents(E) IFF decreasing?(E)
+END ppg_measurable_sequence

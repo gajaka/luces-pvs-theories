@@ -1,0 +1,42 @@
+% Countable additivity and continuity hold when all cylinders use one finite support.
+ppg_probability_cylinder_sequence[I, Value: TYPE, domain: [I -> set[Value]],
+  (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace],
+  (IMPORTING ppg_probability_block_base[I, Value, domain, spaces])
+  coins: [i: I -> CoordinateLaw(i)], F: finite_set[I]]: THEORY
+BEGIN
+  IMPORTING ppg_probability_cylinder_content[I, Value, domain, spaces, coins],
+            ppg_measurable_cylinder_sequence[I, Value, domain, spaces],
+            ppg_probability_continuity[Block(F), blockSigma(F)]
+  BlockSequence: TYPE = [nat -> (blockSigma(F))]
+  cylinderSequence(E: BlockSequence): [nat -> (Cylinders)] =
+    LAMBDA (n: nat): tableCylinder(F, E(n))
+  cylinder_sequence_mass: LEMMA FORALL (E: BlockSequence):
+    content o cylinderSequence(E) = finiteLaw(F) o E
+  sequence_disjoint_reflects: LEMMA FORALL (E: BlockSequence):
+    disjoint?(cylinderSequence(E)) IMPLIES disjoint?(E)
+  sequence_decreasing_reflects: LEMMA FORALL (E: BlockSequence):
+    decreasingEvents[FullBlock](cylinderSequence(E)) IMPLIES decreasingEvents[Block(F)](E)
+  sequence_increasing_reflects: LEMMA FORALL (E: BlockSequence):
+    increasingEvents[FullBlock](cylinderSequence(E)) IMPLIES increasingEvents[Block(F)](E)
+  sequence_union_member: LEMMA FORALL (E: BlockSequence):
+    Cylinders(countableUnion[FullBlock](cylinderSequence(E)))
+  sequence_intersection_member: LEMMA FORALL (E: BlockSequence):
+    Cylinders(countableIntersection[FullBlock](cylinderSequence(E)))
+  sequence_additive: THEOREM FORALL (E: BlockSequence):
+    disjoint?(cylinderSequence(E)) IMPLIES
+      convergence(series(content o cylinderSequence(E)),
+                  content(countableUnion[FullBlock](cylinderSequence(E))))
+  sequence_decreasing_mass: THEOREM FORALL (E: BlockSequence):
+    decreasingEvents[FullBlock](cylinderSequence(E)) IMPLIES
+      convergence(content o cylinderSequence(E),
+                  content(countableIntersection[FullBlock](cylinderSequence(E))))
+  sequence_decreasing_empty: THEOREM FORALL (E: BlockSequence):
+    decreasingEvents[FullBlock](cylinderSequence(E)) AND
+    countableIntersection[FullBlock](cylinderSequence(E)) = emptyset[FullBlock] IMPLIES
+      convergence(content o cylinderSequence(E), 0)
+  sequence_increasing_mass: THEOREM FORALL (E: BlockSequence):
+    increasingEvents[FullBlock](cylinderSequence(E)) IMPLIES
+      convergence(content o cylinderSequence(E),
+                  content(countableUnion[FullBlock](cylinderSequence(E))))
+END ppg_probability_cylinder_sequence

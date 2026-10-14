@@ -1,0 +1,13 @@
+% Continuity from above for normalized finite measures on native spaces.
+ppg_probability_continuity[X: TYPE,
+  (IMPORTING ppg_measurable_space[X]) S: MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_probability_unique[X, S], ppg_measurable_sequence[X]
+  mu: VAR Probability
+  E: VAR [nat -> (S)]
+  decreasing_mass: LEMMA decreasingEvents(E) IMPLIES
+    convergence_sequences.convergence(mu o E, mu(countableIntersection(E)))
+  decreasing_empty_mass: THEOREM decreasingEvents(E) AND
+    countableIntersection(E) = emptyset[X] IMPLIES
+      convergence_sequences.convergence(mu o E, 0)
+END ppg_probability_continuity

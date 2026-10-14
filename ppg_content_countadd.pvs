@@ -1,0 +1,44 @@
+% Continuity at an empty decreasing intersection suffices for a finite premeasure.
+ppg_content_countadd[X: TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) A: subset_algebra]: THEORY
+BEGIN
+  IMPORTING measure_integration@subset_algebra[X, A],
+            measure_integration@generalized_measure_def[X, A]
+  ContentMass: TYPE = [(A) -> nnreal]
+  EventSequence: TYPE = [nat -> (A)]
+  c: VAR ContentMass
+  E: VAR EventSequence
+  U: VAR (A)
+  n: VAR nat
+  additiveMass?(c): bool = c(emptyset[X]) = 0 AND
+    FORALL (B, D: (A)): disjoint?(B, D) IMPLIES c(union(B, D)) = c(B) + c(D)
+  continuousEmpty?(c): bool = FORALL (E: EventSequence):
+    decreasing?(E) AND IIntersection(E) = emptyset[X] IMPLIES convergence(c o E, 0)
+  prefix(E, n): RECURSIVE (A) =
+    IF n = 0 THEN E(0) ELSE union(prefix(E, n - 1), E(n)) ENDIF MEASURE n
+  prefix_zero: LEMMA prefix(E, 0) = E(0)
+  prefix_succ: LEMMA prefix(E, n + 1) = union(prefix(E, n), E(n + 1))
+  bounded_exists_succ: LEMMA FORALL (P: pred[nat]):
+    (EXISTS (k: nat): k <= n + 1 AND P(k)) IFF
+    ((EXISTS (k: nat): k <= n AND P(k)) OR P(n + 1))
+  prefix_member: LEMMA FORALL (x: X): prefix(E, n)(x) IFF
+    EXISTS (k: nat): k <= n AND E(k)(x)
+  prefix_subset_union: LEMMA subset?(prefix(E, n), IUnion(E))
+  prefix_monotone: LEMMA FORALL (m: nat): m <= n IMPLIES subset?(prefix(E, m), prefix(E, n))
+  prefix_disjoint_next: LEMMA disjoint?(E) IMPLIES disjoint?(prefix(E, n), E(n + 1))
+  prefix_mass: LEMMA additiveMass?(c) AND disjoint?(E) IMPLIES
+    c(prefix(E, n)) = series(c o E)(n)
+  residual(E, U)(n): (A) = difference(U, prefix(E, n))
+  residual_decreasing: LEMMA decreasing?(residual(E, U))
+  residual_empty: LEMMA U = IUnion(E) IMPLIES
+    IIntersection(residual(E, U)) = emptyset[X]
+  prefix_residual_disjoint: LEMMA disjoint?(prefix(E, n), residual(E, U)(n))
+  prefix_residual_union: LEMMA U = IUnion(E) IMPLIES
+    union(prefix(E, n), residual(E, U)(n)) = U
+  mass_decomposition: LEMMA additiveMass?(c) AND disjoint?(E) AND U = IUnion(E) IMPLIES
+    c(U) = series(c o E)(n) + c(residual(E, U)(n))
+  constant_minus_converges: LEMMA FORALL (s: sequence[real], b: real):
+    convergence(s, 0) IMPLIES convergence(LAMBDA (n: nat): b - s(n), b)
+  continuity_implies_countadd: THEOREM additiveMass?(c) AND continuousEmpty?(c) IMPLIES
+    finite_measure?(c)
+END ppg_content_countadd

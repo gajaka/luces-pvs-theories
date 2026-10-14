@@ -1,0 +1,22 @@
+% Restrictions commute with countable unions and intersections of block events.
+ppg_measurable_cylinder_sequence[I, Value: TYPE, domain: [I -> set[Value]],
+  (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_cylinder[I, Value, domain, spaces], ppg_measurable_sequence
+  table_sigma_full: LEMMA tableSigma = blockSigma(fullset[I])
+  cylinder_full_support: LEMMA FORALL (B: TableEvent):
+    tableCylinder(fullset[I], B) = B
+  cylinder_countable_union: LEMMA FORALL (F: set[I], E: [nat -> set[Block(F)]]):
+    tableCylinder(F, countableUnion(E)) =
+      countableUnion(LAMBDA (n: nat): tableCylinder(F, E(n)))
+  cylinder_countable_intersection: LEMMA FORALL (F: set[I], E: [nat -> set[Block(F)]]):
+    tableCylinder(F, countableIntersection(E)) =
+      countableIntersection(LAMBDA (n: nat): tableCylinder(F, E(n)))
+  lift_countable_union: LEMMA FORALL (H: set[I], F: {F: set[I] | subset?(F, H)},
+    E: [nat -> set[Block(F)]]): liftEvent(H, F, countableUnion(E)) =
+      countableUnion(LAMBDA (n: nat): liftEvent(H, F, E(n)))
+  lift_countable_intersection: LEMMA FORALL (H: set[I], F: {F: set[I] | subset?(F, H)},
+    E: [nat -> set[Block(F)]]): liftEvent(H, F, countableIntersection(E)) =
+      countableIntersection(LAMBDA (n: nat): liftEvent(H, F, E(n)))
+END ppg_measurable_cylinder_sequence

@@ -1,0 +1,12 @@
+% A table with no coordinates has a probability law and a countably additive cylinder content.
+ppg_probability_sequence_empty: THEORY
+BEGIN
+  IMPORTING ppg_probability_finite_empty
+  empty_coordinates: LEMMA emptyset[Empty] = fullset[Empty]
+  IMPORTING ppg_probability_cylinder_finite[Empty, Empty, domain, spaces, coins, emptyset[Empty]]
+  empty_native_normalized: LEMMA nativeLaw(fullset[FullBlock]) = 1
+  empty_native_zero: LEMMA nativeLaw(emptyset[FullBlock]) = 0
+  empty_continuity: LEMMA continuousEmpty?(content)
+  empty_premeasure: LEMMA
+    generalized_measure_def[FullBlock, Cylinders].finite_measure?(content)
+END ppg_probability_sequence_empty

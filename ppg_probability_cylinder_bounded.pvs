@@ -1,0 +1,38 @@
+% Finite presentations may vary along a sequence if their supports stay in one finite set.
+ppg_probability_cylinder_bounded[I, Value: TYPE, domain: [I -> set[Value]],
+  (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace],
+  (IMPORTING ppg_probability_block_base[I, Value, domain, spaces])
+  coins: [i: I -> CoordinateLaw(i)], H: finite_set[I]]: THEORY
+BEGIN
+  IMPORTING ppg_probability_cylinder_sequence[I, Value, domain, spaces, coins, H]
+  DataSequence: TYPE = [nat -> CylinderData]
+  boundedSupports?(R: DataSequence): bool =
+    FORALL (n: nat): subset?(R(n)`1, H)
+  BoundedData: TYPE = (boundedSupports?)
+  liftedSequence(R: BoundedData): BlockSequence =
+    LAMBDA (n: nat): liftEvent(H, R(n)`1, R(n)`2)
+  dataSequence(R: DataSequence): [nat -> (Cylinders)] =
+    LAMBDA (n: nat): dataCylinder(R(n))
+  lifted_sequence_eq: LEMMA FORALL (R: BoundedData):
+    cylinderSequence(liftedSequence(R)) = dataSequence(R)
+  bounded_union_member: LEMMA FORALL (R: BoundedData):
+    Cylinders(countableUnion[FullBlock](dataSequence(R)))
+  bounded_intersection_member: LEMMA FORALL (R: BoundedData):
+    Cylinders(countableIntersection[FullBlock](dataSequence(R)))
+  bounded_additive: THEOREM FORALL (R: BoundedData): disjoint?(dataSequence(R)) IMPLIES
+    convergence(series(content o dataSequence(R)),
+                content(countableUnion[FullBlock](dataSequence(R))))
+  bounded_decreasing_mass: THEOREM FORALL (R: BoundedData):
+    decreasingEvents[FullBlock](dataSequence(R)) IMPLIES
+      convergence(content o dataSequence(R),
+                  content(countableIntersection[FullBlock](dataSequence(R))))
+  bounded_decreasing_empty: THEOREM FORALL (R: BoundedData):
+    decreasingEvents[FullBlock](dataSequence(R)) AND
+    countableIntersection[FullBlock](dataSequence(R)) = emptyset[FullBlock] IMPLIES
+      convergence(content o dataSequence(R), 0)
+  bounded_increasing_mass: THEOREM FORALL (R: BoundedData):
+    increasingEvents[FullBlock](dataSequence(R)) IMPLIES
+      convergence(content o dataSequence(R),
+                  content(countableUnion[FullBlock](dataSequence(R))))
+END ppg_probability_cylinder_bounded
