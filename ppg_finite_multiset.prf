@@ -1,0 +1,385 @@
+(|ppg_finite_multiset|
+ (|fiber_empty| 0
+  (|fiber_empty-1| NIL 4001008005
+   ("" (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY) (GRIND)) NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|fiber| CONST-DECL "finite_set[A]" |ppg_finite_multiset| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL))
+   SHOSTAK))
+ (|fiber_union| 0
+  (|fiber_union-1| NIL 4001008005
+   ("" (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY) (GRIND)) NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|fiber| CONST-DECL "finite_set[A]" |ppg_finite_multiset| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL))
+   SHOSTAK))
+ (|fiber_disjoint| 0
+  (|fiber_disjoint-1| NIL 4001008005 ("" (THEN (GRIND)) NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|fiber| CONST-DECL "finite_set[A]" |ppg_finite_multiset| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|finite_intersection1| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL))
+   SHOSTAK))
+ (|count_empty| 0
+  (|count_empty-1| NIL 4001008005
+   (""
+    (THEN (SKOSIMP*) (EXPAND "mapCount") (REWRITE "fiber_empty")
+     (REWRITE "card_emptyset"))
+    NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|fiber_empty| FORMULA-DECL NIL |ppg_finite_multiset| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|card_emptyset| FORMULA-DECL NIL |finite_sets| NIL)
+    (|mapCount| CONST-DECL "nat" |ppg_finite_multiset| NIL))
+   SHOSTAK))
+ (|count_union| 0
+  (|count_union-1| NIL 4001008005
+   (""
+    (THEN (SKOSIMP*) (EXPAND "mapCount") (REWRITE "fiber_union")
+     (LEMMA "fiber_disjoint" ("S" "S!1" "T" "T!1" "f" "f!1" "b" "b!1"))
+     (LEMMA "card_disj_union[A]"
+      ("A" "fiber(S!1,f!1,b!1)" "B" "fiber(T!1,f!1,b!1)"))
+     (ASSERT))
+    NIL)
+   ((|finite_union| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|fiber_union| FORMULA-DECL NIL |ppg_finite_multiset| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|fiber| CONST-DECL "finite_set[A]" |ppg_finite_multiset| NIL)
+    (|card_disj_union| FORMULA-DECL NIL |finite_sets| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|fiber_disjoint| FORMULA-DECL NIL |ppg_finite_multiset| NIL)
+    (|mapCount| CONST-DECL "nat" |ppg_finite_multiset| NIL))
+   SHOSTAK))
+ (|fiber_singleton| 0
+  (|fiber_singleton-1| NIL 4001008005
+   ("" (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY) (GRIND)) NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|fiber| CONST-DECL "finite_set[A]" |ppg_finite_multiset| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL))
+   SHOSTAK))
+ (|count_singleton| 0
+  (|count_singleton-1| NIL 4001008005
+   (""
+    (THEN (SKOSIMP*) (EXPAND "mapCount") (REWRITE "fiber_singleton")
+     (AUTO-REWRITE "card_singleton" "card_emptyset") (ASSERT))
+    NIL)
+   ((|fiber_singleton| FORMULA-DECL NIL |ppg_finite_multiset| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|card_singleton| FORMULA-DECL NIL |finite_sets| NIL)
+    (|card_emptyset| FORMULA-DECL NIL |finite_sets| NIL)
+    (|mapCount| CONST-DECL "nat" |ppg_finite_multiset| NIL))
+   SHOSTAK))
+ (|count_positive| 0
+  (|count_positive-1| NIL 4001008005
+   (""
+    (THEN (SKOSIMP*) (EXPAND "mapCount")
+     (LEMMA "card_empty?[A]" ("S" "fiber(S!1,f!1,b!1)"))
+     (GRIND :IF-MATCH ALL :EXCLUDE ("card" "is_finite")))
+    NIL)
+   ((|card_empty?| FORMULA-DECL NIL |finite_sets| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|fiber| CONST-DECL "finite_set[A]" |ppg_finite_multiset| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|mapCount| CONST-DECL "nat" |ppg_finite_multiset| NIL))
+   SHOSTAK))
+ (|count_member| 0
+  (|count_member-1| NIL 4001008005
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "count_positive" ("S" "S!1" "f" "f!1" "b" "f!1(x!1)")) (ASSERT)
+     (INST 1 "x!1") (ASSERT))
+    NIL)
+   ((|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|count_positive| FORMULA-DECL NIL |ppg_finite_multiset| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL))
+   SHOSTAK))
+ (|count_two| 0
+  (|count_two-1| NIL 4001008005
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "card_subset[A]"
+      ("A" "add(x!1,singleton(y!1))" "B" "fiber(S!1,f!1,b!1)"))
+     (REWRITE "card_add") (REWRITE "card_singleton")
+     (GRIND :EXCLUDE ("card" "is_finite")))
+    NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|card_add| FORMULA-DECL NIL |finite_sets| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|plus_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|mapCount| CONST-DECL "nat" |ppg_finite_multiset| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|card_singleton| FORMULA-DECL NIL |finite_sets| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|fiber| CONST-DECL "finite_set[A]" |ppg_finite_multiset| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|card_subset| FORMULA-DECL NIL |finite_sets| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL))
+   SHOSTAK))
+ (|nodup_injective| 0
+  (|nodup_injective-1| NIL 4001008005
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "count_two"
+      ("S" "S!1" "f" "f!1" "x" "x!1" "y" "y!1" "b" "f!1(x!1)"))
+     (EXPAND "Nodup") (EXPAND "mapBag") (INST -2 "f!1(x!1)") (ASSERT))
+    NIL)
+   ((|Nodup| CONST-DECL "bool" |ppg_finite_multiset| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mapBag| CONST-DECL "[B -> nat]" |ppg_finite_multiset| NIL)
+    (|count_two| FORMULA-DECL NIL |ppg_finite_multiset| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL))
+   SHOSTAK))
+ (|support_image| 0
+  (|support_image-1| NIL 4001008005
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY) (REWRITE "mapBag")
+     (REWRITE "count_positive")
+     (GRIND :EXCLUDE ("mapCount" "card" "is_finite")))
+    NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|count_positive| FORMULA-DECL NIL |ppg_finite_multiset| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|mapBag| CONST-DECL "[B -> nat]" |ppg_finite_multiset| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL))
+   SHOSTAK))
+ (|map_finite| 0
+  (|map_finite-1| NIL 4001008005
+   (""
+    (THEN (SKOSIMP*) (EXPAND "finiteSupport") (REWRITE "support_image")
+     (TYPEPRED "image(f!1,S!1)"))
+    NIL)
+   ((|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|support_image| FORMULA-DECL NIL |ppg_finite_multiset| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|finiteSupport| CONST-DECL "bool" |ppg_finite_multiset| NIL))
+   SHOSTAK))
+ (|zero_finite| 0
+  (|zero_finite-1| NIL 4001008184
+   (""
+    (THEN (EXPAND "finiteSupport") (LEMMA "finite_emptyset[B]")
+     (EXPAND "emptyset") (ASSERT))
+    NIL)
+   ((|finiteSupport| CONST-DECL "bool" |ppg_finite_multiset| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|finite_emptyset| JUDGEMENT-TCC NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|plus_finite| 0
+  (|plus_finite-1| NIL 4001008184
+   ("" (SKOSIMP*)
+    (("" (EXPAND "finiteSupport")
+      ((""
+        (CASE
+            "(LAMBDA (b: B): m!1(b)+n!1(b)>0) = union((LAMBDA (b: B): m!1(b)>0),(LAMBDA (b: B): n!1(b)>0))")
+        (("1" (REPLACE -1)
+          (("1"
+            (TYPEPRED
+             "union[B]((LAMBDA (b: B): m!1(b)>0)::finite_set[B],(LAMBDA (b: B): n!1(b)>0)::finite_set[B])")
+            (("1" (PROPAX) NIL NIL) ("2" (PROPAX) NIL NIL)
+             ("3" (PROPAX) NIL NIL))
+            NIL))
+          NIL)
+         ("2" (APPLY-EXTENSIONALITY)
+          (("2" (GRIND :EXCLUDE ("is_finite")) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|union| CONST-DECL "set" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|finiteSupport| CONST-DECL "bool" |ppg_finite_multiset| NIL))
+   SHOSTAK))
+ (|mapBag_finite| 0
+  (|mapBag_finite-1| NIL 4001008005
+   ("" (THEN (SKOSIMP*) (LEMMA "map_finite" ("S" "S!1" "f" "f!1")) (ASSERT))
+    NIL)
+   ((|map_finite| FORMULA-DECL NIL |ppg_finite_multiset| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_multiset| NIL))
+   NIL (|mapBag_finite| SUBTYPE "mapBag(S, f)" "Multiset" (34 27 34 33)))))
+

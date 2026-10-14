@@ -1,0 +1,9 @@
+% Empty carriers need neither a chosen label nor a nonempty variable space.
+ppg_depth_labels_empty: THEORY
+BEGIN
+  Empty: TYPE = {b: bool | FALSE}
+  IMPORTING ppg_rose_depth_independence[Empty, Empty]
+  empty_depth_multiset: THEOREM labelsAtDepthChildren(null[WTree], 3) = (LAMBDA (a: Empty): 0)
+  empty_depth_finite: THEOREM finiteSupport(labelsAtDepthChildren(null[WTree], 3))
+  empty_label_no_tree: THEOREM NOT EXISTS (t: WTree): TRUE
+END ppg_depth_labels_empty

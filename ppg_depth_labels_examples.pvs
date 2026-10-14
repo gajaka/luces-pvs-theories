@@ -1,0 +1,20 @@
+% Repeated labels count twice; separated labels give a valid independent tree.
+ppg_depth_labels_examples: THEORY
+BEGIN
+  IMPORTING ppg_rose_depth_independence[nat, bool]
+  leaf(n: nat): WTree = roseNode[nat](n, null)
+  separated: WTree = roseNode[nat](0, cons(leaf(1), cons(leaf(2), null)))
+  repeated: WTree = roseNode[nat](0, cons(leaf(1), cons(leaf(1), null)))
+  vars: CertVars = LAMBDA (n: nat): IF n = 1 THEN singleton(TRUE) ELSE singleton(FALSE) ENDIF
+  repeated_count: THEOREM labelsAtDepth(repeated, 1)(1) = 2
+  repeated_not_nodup: THEOREM NOT Nodup(labelsAtDepth(repeated, 1))
+  repeated_not_independent: THEOREM NOT SameDepthIndependent(vars, toGrowingTree(repeated))
+  separated_count: THEOREM labelsAtDepth(separated, 1)(1) = 1 AND labelsAtDepth(separated, 1)(2) = 1
+  separated_profile: LEMMA FORALL (d, b: nat): labelsAtDepth(separated, d)(b) =
+    IF d = 0 THEN IF b = 0 THEN 1 ELSE 0 ENDIF
+    ELSIF d = 1 THEN IF b = 1 OR b = 2 THEN 1 ELSE 0 ENDIF ELSE 0 ENDIF
+  separated_depth_conditions: THEOREM depthNodup(separated) AND depthSeparated(vars, separated)
+  separated_independent: THEOREM SameDepthIndependent(vars, toGrowingTree(separated))
+  suffix_count: THEOREM domainBag(toGT_domChildren(cons(leaf(2), null), 1),
+    LAMBDA (w: Addr): toGT_lab(separated, w), 1)(2) = 1
+END ppg_depth_labels_examples

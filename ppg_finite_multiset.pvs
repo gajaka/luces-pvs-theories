@@ -1,0 +1,35 @@
+% A finite image multiset counts source elements, retaining repeated values.
+ppg_finite_multiset[A, B: TYPE]: THEORY
+BEGIN
+  S, T: VAR finite_set[A]
+  f: VAR [A -> B]
+  b: VAR B
+  x, y: VAR A
+  fiber(S, f, b): finite_set[A] = intersection(S, LAMBDA (x: A): f(x) = b)
+  mapCount(S, f, b): nat = card(fiber(S, f, b))
+  mapBag(S, f): [B -> nat] = LAMBDA (b: B): mapCount(S, f, b)
+  finiteSupport(m: [B -> nat]): bool = is_finite(LAMBDA (b: B): m(b) > 0)
+  Multiset: TYPE = {m: [B -> nat] | finiteSupport(m)}
+  Nodup(m: [B -> nat]): bool = FORALL (b: B): m(b) <= 1
+  fiber_empty: LEMMA fiber(emptyset[A], f, b) = emptyset[A]
+  fiber_union: LEMMA fiber(union(S, T), f, b) = union(fiber(S, f, b), fiber(T, f, b))
+  fiber_disjoint: LEMMA disjoint?(S, T) IMPLIES disjoint?(fiber(S, f, b), fiber(T, f, b))
+  count_empty: LEMMA mapCount(emptyset[A], f, b) = 0
+  count_union: LEMMA disjoint?(S, T) IMPLIES
+    mapCount(union(S, T), f, b) = mapCount(S, f, b) + mapCount(T, f, b)
+  fiber_singleton: LEMMA fiber(singleton(x), f, b) =
+    IF f(x) = b THEN singleton(x) ELSE emptyset[A] ENDIF
+  count_singleton: LEMMA mapCount(singleton(x), f, b) = IF f(x) = b THEN 1 ELSE 0 ENDIF
+  count_positive: LEMMA mapCount(S, f, b) > 0 IFF EXISTS (x: A): S(x) AND f(x) = b
+  count_member: LEMMA S(x) IMPLIES mapCount(S, f, f(x)) > 0
+  count_two: LEMMA S(x) AND S(y) AND x /= y AND f(x) = b AND f(y) = b
+    IMPLIES mapCount(S, f, b) >= 2
+  nodup_injective: THEOREM Nodup(mapBag(S, f)) AND S(x) AND S(y) AND x /= y
+    IMPLIES f(x) /= f(y)
+  support_image: LEMMA (LAMBDA (b: B): mapBag(S, f)(b) > 0) = image(f, S)
+  map_finite: THEOREM finiteSupport(mapBag(S, f))
+  zero_finite: LEMMA finiteSupport(LAMBDA (b: B): 0)
+  plus_finite: LEMMA FORALL (m, n: [B -> nat]): finiteSupport(m) AND finiteSupport(n)
+    IMPLIES finiteSupport(LAMBDA (b: B): m(b) + n(b))
+  mapBag_finite: JUDGEMENT mapBag(S, f) HAS_TYPE Multiset
+END ppg_finite_multiset
