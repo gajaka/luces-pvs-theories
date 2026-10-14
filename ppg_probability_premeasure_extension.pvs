@@ -1,0 +1,32 @@
+% A normalized finite premeasure extends to its generated sigma algebra.
+ppg_probability_premeasure_extension[X: TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) A: subset_algebra,
+  (IMPORTING measure_integration@measure_def[X, A])
+  alpha: {f: finite_measure | f(fullset[X]) = 1}]: THEORY
+BEGIN
+  algebra_nonempty: LEMMA nonempty?[set[X]](A)
+  extendedPremeasure: measure_type = to_measure(alpha)
+  IMPORTING measure_integration@hahn_kolmogorov[X, A, extendedPremeasure],
+            ppg_nasa_generated[X]
+  nativeSigma: MeasurableSpace = generated(A)
+  IMPORTING ppg_probability_measure[X, nativeSigma]
+  generated_in_induced: LEMMA subset?(nativeSigma, induced_sigma_algebra)
+  induced_full: LEMMA x_eq(induced_measure(fullset[X]), (TRUE, 1))
+  induced_bounded: LEMMA FORALL (B: (induced_sigma_algebra)):
+    x_le(induced_measure(B), (TRUE, 1))
+  native_event_induced: LEMMA FORALL (B: (nativeSigma)): induced_sigma_algebra(B)
+  native_generators: LEMMA subset?(A, nativeSigma)
+  nativeExtended(B: (nativeSigma)): extended_nnreal = induced_measure(B)
+  nativeMass(B: (nativeSigma)): nnreal = nativeExtended(B)`2
+  native_extended_finite: LEMMA FORALL (B: (nativeSigma)):
+    nativeExtended(B) = (TRUE, nativeMass(B))
+  native_mass_empty: LEMMA nativeMass(emptyset[X]) = 0
+  native_mass_full: LEMMA nativeMass(fullset[X]) = 1
+  native_mass_additive: LEMMA FORALL (E:
+    generalized_measure_def[X, nativeSigma].disjoint_indexed_measurable):
+      nativeSigma(IUnion(E)) IMPLIES
+        convergence_sequences.convergence(series(nativeMass o E), nativeMass(IUnion(E)))
+  native_mass_probability: LEMMA probability?(nativeMass)
+  extension: Probability = nativeMass
+  extension_agrees: THEOREM FORALL (B: (A)): extension(B) = alpha(B)
+END ppg_probability_premeasure_extension

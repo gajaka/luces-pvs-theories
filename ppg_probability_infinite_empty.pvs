@@ -1,0 +1,9 @@
+% Empty coordinate and value types still yield the probability law of the empty table.
+ppg_probability_infinite_empty: THEORY
+BEGIN
+  IMPORTING ppg_probability_finite_empty,
+            ppg_probability_infinite_marginals[Empty, Empty, domain, spaces, coins]
+  empty_table_probability: THEOREM infiniteLaw(fullset[FullBlock]) = 1
+  empty_block_marginal: THEOREM marginal(fullset[Empty], emptyset[Empty])(infiniteLaw) =
+    finiteLaw(emptyset[Empty])
+END ppg_probability_infinite_empty

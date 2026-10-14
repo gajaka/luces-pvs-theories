@@ -1,0 +1,15 @@
+% Measurable events on disjoint finite blocks are independent under the full law.
+ppg_probability_infinite_independence[I, Value: TYPE, domain: [I -> set[Value]],
+  F, G: finite_set[I],
+  (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace],
+  (IMPORTING ppg_probability_block_base[I, Value, domain, spaces])
+  coins: [i: I -> CoordinateLaw(i)]]: THEORY
+BEGIN
+  IMPORTING ppg_probability_infinite_product[I, Value, domain, spaces, coins],
+            ppg_probability_cylinder_independence[I, Value, domain, F, G, spaces, coins]
+  infinite_block_independence: THEOREM FORALL (B: (blockSigma(F)), D: (blockSigma(G))):
+    disjoint?(F, G) IMPLIES
+      infiniteLaw(intersection(tableCylinder(F, B), tableCylinder(G, D))) =
+        infiniteLaw(tableCylinder(F, B)) * infiniteLaw(tableCylinder(G, D))
+END ppg_probability_infinite_independence
