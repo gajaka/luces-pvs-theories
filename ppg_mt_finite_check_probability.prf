@@ -1,0 +1,444 @@
+(|ppg_mt_finite_check_probability|
+ (|baseEvent_TCC1| 0
+  (|baseEvent_TCC1-1| NIL 4001000821
+   ("" (THEN (SKOSIMP*) (TYPEPRED "bad!1") (INST -1 "a!1") (ASSERT)) NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_mt_finite_check_probability| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces"
+     |ppg_mt_finite_check_probability| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_mt_finite_check_probability| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL))
+   NIL
+   (|baseEvent| SUBTYPE "{s: MTState[C, V, Value, domain] | bad(a, s)}"
+    "(ppg_mt_native_spaces[ppg_mt_finite_check_probability.C, ppg_mt_finite_check_probability.V, ppg_mt_finite_check_probability.Value, ppg_mt_finite_check_probability.domain].NativeStateSigma(ppg_mt_finite_check_probability.spaces))"
+    (15 64 15 88))))
+ (|checkState_readAt| 0
+  (|checkState_readAt-1| NIL 4001000830
+   ("" (THEN (SKOLEM!) (EXPAND "checkState") (EXPAND "readAt") (ASSERT)) NIL)
+   ((|readAt| CONST-DECL "MTState" |ppg_mt_check_measurable| NIL)
+    (|checkState| CONST-DECL "MTState" |ppg_mt_check| NIL))
+   SHOSTAK))
+ (|check_event_preimage| 0
+  (|check_event_preimage-1| NIL 4001000830
+   (""
+    (THEN (SKOLEM!) (EXPAND "checkEvents") (EXPAND "inverseImage")
+     (EXPAND "baseEvent") (EXPAND "checkState") (EXPAND "readAt") (ASSERT))
+    NIL)
+   ((|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|checkState| CONST-DECL "MTState" |ppg_mt_check| NIL)
+    (|readAt| CONST-DECL "MTState" |ppg_mt_check_measurable| NIL)
+    (|baseEvent| CONST-DECL "(NativeStateSigma(spaces))"
+     |ppg_mt_finite_check_probability| NIL)
+    (|checkEvents| CONST-DECL "LogEvents" |ppg_mt_check_probability| NIL))
+   SHOSTAK))
+ (|logMeasure_checkState_eq_pi| 0
+  (|logMeasure_checkState_eq_pi-1| NIL 4001000831
+   (""
+    (THEN (SKOLEM!)
+     (LEMMA "logMeasure_map_readAt_eq_pi"
+      ("n" "LAMBDA (v: V): localCount(vars!1,T!1,w!1,v)"))
+     (REPLACE -1 :DIR RL) (EXPAND "readAtLaw") (EXPAND "pushforward")
+     (EXPAND "imageMass") (REWRITE "check_event_preimage") (ASSERT))
+    NIL)
+   ((|pushforward| CONST-DECL "TargetLaw" |ppg_probability_map| NIL)
+    (|check_event_preimage| FORMULA-DECL NIL |ppg_mt_finite_check_probability|
+     NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (|imageMass| CONST-DECL "nnreal" |ppg_probability_map| NIL)
+    (|readAtLaw| CONST-DECL "ppg_probability_measure
+    [MTState[C, V, Value, domain], NativeStateSigma(spaces)].Probability"
+     |ppg_mt_state_probability| NIL)
+    (|logMeasure_map_readAt_eq_pi| FORMULA-DECL NIL |ppg_mt_state_probability|
+     NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|Addr| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|GTree| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|localCount| CONST-DECL "nat" |ppg_mt_check| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_mt_finite_check_probability| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{F: finite_set[V] | F = fullset[V]}"
+     |ppg_mt_finite_check_probability| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces"
+     |ppg_mt_finite_check_probability| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_mt_finite_check_probability| NIL))
+   SHOSTAK))
+ (|check_event_factors_eq_labels| 0
+  (|check_event_factors_eq_labels-1| NIL 4001000831
+   (""
+    (THEN (SKOLEM!) (APPLY-EXTENSIONALITY :HIDE? T)
+     (EXPAND
+      "ppg_probability_event_product[LogSpace,Addr,NativeTableSigma(spaces)].eventFactors")
+     (EXPAND "labelFactors")
+     (LEMMA "logMeasure_checkState_eq_pi"
+      ("vars" "vars!1" "bad" "bad!1" "T" "T!1" "w" "x!1"))
+     (ASSERT))
+    NIL)
+   ((|logMeasure_checkState_eq_pi| FORMULA-DECL NIL
+     |ppg_mt_finite_check_probability| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_mt_finite_check_probability| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces"
+     |ppg_mt_finite_check_probability| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|MeasurableFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|eventFactors| CONST-DECL "[K -> real]" |ppg_probability_event_product|
+     NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_mt_finite_check_probability| NIL)
+    (|logMeasure| CONST-DECL "ppg_probability_measure
+    [LogSpace[C, V, Value, domain], NativeTableSigma(spaces)].Probability"
+     |ppg_mt_log_probability| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (|Addr| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|GTree| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|LogEvents| TYPE-EQ-DECL NIL |ppg_mt_log_family| NIL)
+    (|checkEvents| CONST-DECL "LogEvents" |ppg_mt_check_probability| NIL)
+    (|labelFactors| CONST-DECL "[Addr -> real]"
+     |ppg_mt_finite_check_probability| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|finite_tree_check_product_p_TCC1| 0
+  (|finite_tree_check_product_p_TCC1-1| NIL 4001000821
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "tauCheck_measurable" ("vars" "vars!1" "bad" "bad!1" "T" "T!1"))
+     (ASSERT))
+    NIL)
+   ((|tauCheck_measurable| FORMULA-DECL NIL |ppg_mt_check_probability| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|Addr| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|GTree| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_mt_finite_check_probability| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces"
+     |ppg_mt_finite_check_probability| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_mt_finite_check_probability| NIL))
+   NIL
+   (|finite_tree_check_product_p| SUBTYPE
+    "{omega: LogSpace[C, V, Value, domain] | tauCheck[C, V, Value, domain](vars, bad, T, omega)}"
+    "(ppg_mt_native_spaces[ppg_mt_finite_check_probability.C, ppg_mt_finite_check_probability.V, ppg_mt_finite_check_probability.Value, ppg_mt_finite_check_probability.domain].NativeTableSigma(ppg_mt_finite_check_probability.spaces))"
+    (28 15 28 64))))
+ (|finite_tree_check_product_p| 0
+  (|finite_tree_check_product_p-1| NIL 4001000831
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "tree_check_product" ("vars" "vars!1" "bad" "bad!1" "T" "T!1"))
+     (LEMMA "check_event_factors_eq_labels"
+      ("vars" "vars!1" "bad" "bad!1" "T" "T!1"))
+     (ASSERT))
+    NIL)
+   ((|check_event_factors_eq_labels| FORMULA-DECL NIL
+     |ppg_mt_finite_check_probability| NIL)
+    (|tree_check_product| FORMULA-DECL NIL |ppg_mt_check_probability| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|Addr| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|GTree| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_mt_finite_check_probability| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces"
+     |ppg_mt_finite_check_probability| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_mt_finite_check_probability| NIL))
+   SHOSTAK))
+ (|logMeasure_tauCheck_eq_prod_p_TCC1| 0
+  (|logMeasure_tauCheck_eq_prod_p_TCC1-1| NIL 4001000821
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "tauCheck_measurable"
+      ("vars" "vars!1" "bad" "bad!1" "T" "tau_C(vars!1,Clog!1,t!1)"))
+     (ASSERT))
+    NIL)
+   ((|tauCheck_measurable| FORMULA-DECL NIL |ppg_mt_check_probability| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|Addr| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|GTree| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|tau_C| CONST-DECL "GTree" |ppg_mt_tree| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_mt_finite_check_probability| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces"
+     |ppg_mt_finite_check_probability| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_mt_finite_check_probability| NIL))
+   NIL
+   (|logMeasure_tauCheck_eq_prod_p| SUBTYPE
+    "{omega: LogSpace[C, V, Value, domain] | tauCheck[C, V, Value, domain](vars, bad, tau_C[C, V](vars, Clog, t), omega)}"
+    "(ppg_mt_native_spaces[ppg_mt_finite_check_probability.C, ppg_mt_finite_check_probability.V, ppg_mt_finite_check_probability.Value, ppg_mt_finite_check_probability.domain].NativeTableSigma(ppg_mt_finite_check_probability.spaces))"
+    (30 15 30 83))))
+ (|logMeasure_tauCheck_eq_prod_p| 0
+  (|logMeasure_tauCheck_eq_prod_p-1| NIL 4001000831
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "logMeasure_tauCheck_eq_prod"
+      ("vars" "vars!1" "bad" "bad!1" "Clog" "Clog!1" "t" "t!1"))
+     (LEMMA "check_event_factors_eq_labels"
+      ("vars" "vars!1" "bad" "bad!1" "T" "tau_C(vars!1,Clog!1,t!1)"))
+     (ASSERT))
+    NIL)
+   ((|tau_C| CONST-DECL "GTree" |ppg_mt_tree| NIL)
+    (|GTree| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|Addr| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|check_event_factors_eq_labels| FORMULA-DECL NIL
+     |ppg_mt_finite_check_probability| NIL)
+    (|logMeasure_tauCheck_eq_prod| FORMULA-DECL NIL |ppg_mt_check_probability|
+     NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_finite_check_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_mt_finite_check_probability| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces"
+     |ppg_mt_finite_check_probability| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_mt_finite_check_probability| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,215 @@
+(|ppg_probability_disjoint_family|
+ (|complete_event_depends| 0
+  (|complete_event_depends-1| NIL 4000999251
+   (""
+    (THEN (SKOSIMP*) (EXPAND "completeEvent") (LIFT-IF)
+     (GRIND :DEFS ("dependsOn" "fullset") :EXCLUDE
+      ("sigma?" "tableSigma" "agreeOn")))
+    NIL)
+   ((|dependsOn| CONST-DECL "bool" |ppg_measurable_block_update| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|completeEvent| CONST-DECL "(S)" |ppg_finite_events| NIL))
+   SHOSTAK))
+ (|finite_meet_depends| 0
+  (|finite_meet_depends-1| NIL 4000999251
+   (""
+    (THEN
+     (GRIND :DEFS ("dependsOn" "agreeOn" "blockUnion" "finiteMeet") :IF-MATCH
+      ALL :EXCLUDE ("sigma?" "tableSigma" "blk")))
+    NIL)
+   ((|finiteMeet| CONST-DECL "Event" |ppg_finite_events| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|fullset| CONST-DECL "set" |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL)
+    (|dependsOn| CONST-DECL "bool" |ppg_measurable_block_update| NIL)
+    (|agreeOn| CONST-DECL "bool" |ppg_measurable_block_update| NIL))
+   SHOSTAK))
+ (|block_union_disjoint| 0
+  (|block_union_disjoint-1| NIL 4000999251
+   (""
+    (THEN
+     (GRIND :DEFS
+      ("pairwiseDisjoint" "disjoint?" "blockUnion" "subset?" "member"
+       "intersection" "emptyset")
+      :IF-MATCH ALL))
+    NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL))
+   SHOSTAK))
+ (|disjoint_family_factorizing| 0
+  (|disjoint_family_factorizing-1| NIL 4000999251
+   (""
+    (THEN (SKOSIMP*) (LABEL "each" -2) (EXPAND "factorizing?") (SKOSIMP*)
+     (SPREAD
+      (CASE
+          "FORALL (j: K): H!1(j) IMPLIES dependsOn(blk!1(j),completeFamily(E!1)(j))")
+      ((THEN
+        (LEMMA "block_union_disjoint"
+         ("F" "F!1" "H" "H!1" "blk" "blk!1" "i" "i!1"))
+        (LEMMA "complete_event_depends" ("F" "blk!1(i!1)" "A" "E!1(i!1)"))
+        (LEMMA "finite_meet_depends"
+         ("F" "H!1" "blk" "blk!1" "E" "completeFamily(E!1)"))
+        (LEMMA "finite_meet_measurable" ("F" "H!1" "E" "completeFamily(E!1)"))
+        (LEMMA "infinitePi_inter_eq_mul_of_dependsOn"
+         ("F" "blk!1(i!1)" "G" "blockUnion(H!1,blk!1)" "A"
+          "completeFamily(E!1)(i!1)" "B"
+          "finiteMeet(H!1,completeFamily(E!1))"))
+        (EXPAND "independent") (EXPAND "completeFamily") (INST "each" "i!1")
+        (GRIND :IF-MATCH ALL :EXCLUDE
+         ("dependsOn" "tableSigma" "sigma?" "completeEvent" "finiteMeet"
+          "blockUnion" "infiniteLaw" "pairwiseDisjoint" "is_finite")))
+       (THEN (SKOSIMP*) (INST "each" "j!1")
+        (LEMMA "complete_event_depends" ("F" "blk!1(j!1)" "A" "E!1(j!1)"))
+        (EXPAND "completeFamily")
+        (GRIND :EXCLUDE
+         ("dependsOn" "tableSigma" "sigma?" "completeEvent" "is_finite"))))))
+    NIL)
+   ((|factorizing?| CONST-DECL "bool" |ppg_probability_event_product| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|dependsOn| CONST-DECL "bool" |ppg_measurable_block_update| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL)
+    (|EventFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|MeasurableFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|completeFamily| CONST-DECL "MeasurableFamily" |ppg_finite_events| NIL)
+    (|finite_meet_measurable| FORMULA-DECL NIL |ppg_finite_events| NIL)
+    (|independent| CONST-DECL "bool" |ppg_probability_independence| NIL)
+    (|infinitePi_inter_eq_mul_of_dependsOn| FORMULA-DECL NIL
+     |ppg_probability_supported_events| NIL)
+    (|finiteMeet| CONST-DECL "Event" |ppg_finite_events| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL)
+    (|sequence| TYPE-EQ-DECL NIL |sequences| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|BlockLaw| TYPE-EQ-DECL NIL |ppg_probability_block_restriction| NIL)
+    (|finiteLaw| DEF-DECL "BlockLaw(F)" |ppg_probability_finite_product| NIL)
+    (|CylinderData| TYPE-EQ-DECL NIL |ppg_probability_cylinder_content| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|choose| CONST-DECL "(p)" |sets| NIL)
+    (|representations| CONST-DECL "set[CylinderData]"
+     |ppg_probability_cylinder_content| NIL)
+    (|T_low| TYPE-EQ-DECL NIL |sigma| |reals|)
+    (|T_high| TYPE-EQ-DECL NIL |sigma| |reals|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|completeEvent| CONST-DECL "(S)" |ppg_finite_events| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|extension| CONST-DECL "Probability"
+     |ppg_probability_premeasure_extension| NIL)
+    (|infiniteLaw| CONST-DECL "ppg_probability_measure
+    [FullBlock[I, Value, domain, spaces], tableSigma].Probability"
+     |ppg_probability_infinite_product| NIL)
+    (|extendedPremeasure| CONST-DECL "measure_type"
+     |ppg_probability_premeasure_extension| NIL)
+    (|induced_measure| CONST-DECL "complete_measure" |outer_measure_props|
+     |measure_integration|)
+    (|representation| CONST-DECL "(representations(A))"
+     |ppg_probability_cylinder_content| NIL)
+    (|dataMass| CONST-DECL "nnreal" |ppg_probability_cylinder_content| NIL)
+    (|content| CONST-DECL "nnreal" |ppg_probability_cylinder_content| NIL)
+    (|to_measure| CONST-DECL "measure_type" |generalized_measure_def|
+     |measure_integration|)
+    (|sigma| DEF-DECL "real" |sigma| |reals|)
+    (|series| CONST-DECL "sequence[real]" |series| |series|)
+    (|convergence| CONST-DECL "bool" |convergence_sequences| |analysis|)
+    (|convergent?| CONST-DECL "bool" |convergence_sequences| |analysis|)
+    (|limit| CONST-DECL "real" |convergence_sequences| |analysis|)
+    (|x_sum| CONST-DECL "extended_nnreal" |extended_nnreal| |extended_nnreal|)
+    (|x_eq| CONST-DECL "bool" |extended_nnreal| |extended_nnreal|)
+    (|x_inf| CONST-DECL "extended_nnreal" |extended_nnreal| |extended_nnreal|)
+    (|ast| CONST-DECL "outer_measure" |ast_def| |measure_integration|)
+    (|nativeExtended| CONST-DECL "extended_nnreal"
+     |ppg_probability_premeasure_extension| NIL)
+    (|nativeMass| CONST-DECL "nnreal" |ppg_probability_premeasure_extension|
+     NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|sigma_nnreal| APPLICATION-JUDGEMENT "nnreal" |sigma_nat| |reals|))
+   SHOSTAK))
+ (|infinitePi_iInter_eq_prod_of_dependsOn_TCC1| 0
+  (|infinitePi_iInter_eq_prod_of_dependsOn_TCC1-1| NIL 4000999250
+   (""
+    (THEN (SKOSIMP*) (LEMMA "finite_meet_measurable_on" ("F" "F!1" "E" "E!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("finiteMeet" "tableSigma" "sigma?" "dependsOn" "pairwiseDisjoint")))
+    NIL)
+   ((|finite_meet_measurable_on| FORMULA-DECL NIL |ppg_finite_events| NIL)
+    (|EventFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|fullset| CONST-DECL "set" |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL))
+   NIL
+   (|infinitePi_iInter_eq_prod_of_dependsOn| SUBTYPE
+    "finiteMeet[FullBlock[I, Value, domain, spaces], K, tableSigma](F, E)"
+    "(ppg_measurable_cylinder[ppg_probability_disjoint_family.I, ppg_probability_disjoint_family.Value, ppg_probability_disjoint_family.domain, ppg_probability_disjoint_family.spaces].tableSigma)"
+    (30 18 30 34))))
+ (|infinitePi_iInter_eq_prod_of_dependsOn| 0
+  (|infinitePi_iInter_eq_prod_of_dependsOn-1| NIL 4000999251
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "disjoint_family_factorizing" ("F" "F!1" "blk" "blk!1" "E" "E!1"))
+     (LEMMA "finite_intersection_product"
+      ("F" "F!1" "E" "completeFamily(E!1)" "mu" "infiniteLaw"))
+     (LEMMA "complete_family_eq" ("F" "F!1" "E" "E!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("finiteMeet" "tableSigma" "sigma?" "dependsOn" "pairwiseDisjoint"
+       "factorizing?" "product" "infiniteLaw" "eventFactors"
+       "completeFamily")))
+    NIL)
+   ((|finite_intersection_product| FORMULA-DECL NIL
+     |ppg_probability_event_product| NIL)
+    (|MeasurableFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|completeFamily| CONST-DECL "MeasurableFamily" |ppg_finite_events| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|infiniteLaw| CONST-DECL "ppg_probability_measure
+    [FullBlock[I, Value, domain, spaces], tableSigma].Probability"
+     |ppg_probability_infinite_product| NIL)
+    (|complete_family_eq| FORMULA-DECL NIL |ppg_finite_events| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL)
+    (|EventFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,14 @@
+% The state law and witness product remain defined with no variables or values.
+ppg_mt_query_empty: THEORY
+BEGIN
+  IMPORTING ppg_probability_finite_empty
+  universe: {F: finite_set[Empty] | F = fullset[Empty]} = emptyset[Empty]
+  IMPORTING ppg_mt_finite_check_probability[bool, Empty, Empty, domain, universe, spaces, coins]
+  empty_variable_read_law: THEOREM FORALL (n: Counter): readAtLaw(n) = stateMeasure
+  empty_slot_product_mass: THEOREM FORALL (n: Counter):
+    readBlockLaw(universe, n)(ppg_measurable_block_box[Empty, Empty, domain, spaces].blockBox(universe, fullEvents)) = 1
+  empty_variable_tree_product: THEOREM FORALL (vars: CertVars, bad: NativeBad, Clog: [nat -> bool], t: nat):
+    mt_wf(vars, bad) IMPLIES
+    logMeasure({omega: LogSpace | tauCheck(vars, bad, tau_C(vars, Clog, t), omega)}) =
+      product(tau_C(vars, Clog, t)`dom, labelFactors(bad, tau_C(vars, Clog, t)))
+END ppg_mt_query_empty

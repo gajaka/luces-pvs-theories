@@ -1,0 +1,21 @@
+% Different domains and different read slots instantiate the finite state law.
+ppg_mt_query_examples: THEORY
+BEGIN
+  IMPORTING ppg_measurable_space, ppg_probability_dirac
+  domain(v: bool): set[nat] = IF v THEN {x: nat | x = 2 OR x = 5}
+    ELSE {x: nat | x = 4 OR x = 6} ENDIF
+  spaces(v: bool): ppg_measurable_space[(domain(v))].MeasurableSpace = fullset[set[(domain(v))]]
+  seed(v: bool): (domain(v)) = IF v THEN 2 ELSE 4 ENDIF
+  laws(v: bool): ppg_probability_measure[(domain(v)), spaces(v)].Probability =
+    ppg_probability_dirac[(domain(v)), spaces(v)].dirac(seed(v))
+  universe: {F: finite_set[bool] | F = fullset[bool]} = add(TRUE, singleton(FALSE))
+  IMPORTING ppg_mt_finite_check_probability[bool, bool, nat, domain, universe, spaces, laws]
+  slots(v: bool): nat = IF v THEN 3 ELSE 7 ENDIF
+  unequal_slot_state_law: THEOREM readAtLaw(slots) = stateMeasure
+  finite_slot_marginal: THEOREM readBlockLaw(singleton(TRUE), slots) =
+    ppg_probability_finite_product[bool, nat, domain, spaces, laws].finiteLaw(singleton(TRUE))
+  generated_tree_label_product: THEOREM FORALL (vars: CertVars, bad: NativeBad, Clog: [nat -> bool], t: nat):
+    mt_wf(vars, bad) IMPLIES
+    logMeasure({omega: LogSpace | tauCheck(vars, bad, tau_C(vars, Clog, t), omega)}) =
+      product(tau_C(vars, Clog, t)`dom, labelFactors(bad, tau_C(vars, Clog, t)))
+END ppg_mt_query_examples

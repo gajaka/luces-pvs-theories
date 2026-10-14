@@ -1,0 +1,211 @@
+(|ppg_mt_state_probability|
+ (|full_universe| 0
+  (|full_universe-1| NIL 4001000513
+   ("" (THEN (TYPEPRED "universe") (ASSERT)) NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL))
+   SHOSTAK))
+ (|stateDecode_TCC1| 0
+  (|stateDecode_TCC1-1| NIL 4001000509
+   (""
+    (THEN (SKOLEM!) (LEMMA "full_universe") (REPLACE -1) (EXPAND "fullset")
+     (ASSERT))
+    NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)) NIL
+   (|stateDecode| SUBTYPE "v" "(ppg_mt_state_probability.universe)"
+    (10 67 10 68))))
+ (|state_decode_coordinate| 0
+  (|state_decode_coordinate-1| NIL 4001000513
+   (""
+    (THEN (SKOLEM!)
+     (LEMMA "block_coordinate_measurable[V,Value,domain,spaces]"
+      ("F" "universe" "i" "v!1"))
+     (EXPAND "StateBlockSigma") (EXPAND "stateDecode") (LEMMA "full_universe")
+     (GRIND :EXCLUDE ("measurable" "blockSigma" "sigma?")))
+    NIL)
+   ((|StateBlockSigma| CONST-DECL
+     "ppg_measurable_space[StateBlock(F)].MeasurableSpace"
+     |ppg_mt_read_probability| NIL)
+    (|block_coordinate_measurable| FORMULA-DECL NIL |ppg_measurable_block| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL))
+   SHOSTAK))
+ (|state_target_sigma| 0
+  (|state_target_sigma-1| NIL 4001000513
+   (""
+    (THEN (EXPAND "NativeStateSigma") (EXPAND "nativeProduct")
+     (EXPAND "nativeCylinders") (EXPAND "nativeCylinder") (ASSERT))
+    NIL)
+   ((|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|nativeCylinders| CONST-DECL "set[set[Pi[A, I, Value, domain]]]"
+     |ppg_measurable_dependent_product| NIL)
+    (|nativeCylinder| CONST-DECL "set[Pi[A, I, Value, domain]]"
+     |ppg_measurable_dependent_product| NIL)
+    (|nativeProduct| CONST-DECL
+     "ppg_measurable_space[Pi[A, I, Value, domain]].MeasurableSpace"
+     |ppg_measurable_dependent_product| NIL))
+   SHOSTAK))
+ (|state_decode_measurable| 0
+  (|state_decode_measurable-1| NIL 4001000513
+   (""
+    (THEN (LEMMA "state_decode_coordinate")
+     (LEMMA "native_product_measurable[StateBlock(universe),V,Value,domain]"
+      ("SA" "StateBlockSigma(universe)" "spaces" "spaces" "f" "stateDecode"))
+     (LEMMA "state_target_sigma") (REPLACE -1 :ACTUALS? T) (ASSERT))
+    NIL)
+   ((|StateBlock| TYPE-EQ-DECL NIL |ppg_mt_read_probability| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_measurable_dependent_product|
+     NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|Pi| TYPE-EQ-DECL NIL |ppg_measurable_product| NIL)
+    (|StateBlockSigma| CONST-DECL
+     "ppg_measurable_space[StateBlock(F)].MeasurableSpace"
+     |ppg_mt_read_probability| NIL)
+    (|native_product_measurable| FORMULA-DECL NIL
+     |ppg_measurable_dependent_product| NIL))
+   SHOSTAK))
+ (|stateMeasure_TCC1| 0
+  (|stateMeasure_TCC1-1| NIL 4001000509
+   (""
+    (THEN
+     (TYPEPRED
+      "ppg_probability_finite_product[V,Value,domain,spaces,laws].finiteLaw(universe)")
+     (LEMMA "state_block_sigma_eq" ("F" "universe")) (REPLACE -1 :ACTUALS? T)
+     (ASSERT))
+    NIL)
+   ((|finiteLaw| DEF-DECL "BlockLaw(F)" |ppg_probability_finite_product| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|BlockLaw| TYPE-EQ-DECL NIL |ppg_probability_block_restriction| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|state_block_sigma_eq| FORMULA-DECL NIL |ppg_mt_read_probability| NIL))
+   NIL
+   (|stateMeasure| SUBTYPE
+    "ppg_probability_finite_product[V, Value, domain, spaces, laws].finiteLaw(universe)"
+    "SourceLaw[StateBlock[C, V, Value, domain, spaces, laws](universe), MTState[C, V, Value, domain], StateBlockSigma[C, V, Value, domain, spaces, laws](universe), NativeStateSigma[C, V, Value, domain](spaces)]"
+    (21 6 21 88))))
+ (|stateMeasure_TCC2| 0
+  (|stateMeasure_TCC2-1| NIL 4001000509
+   ("" (THEN (LEMMA "state_decode_measurable") (ASSERT)) NIL) NIL NIL
+   (|stateMeasure| SUBTYPE "stateDecode"
+    "MeasurableMap[StateBlock[C, V, Value, domain, spaces, laws](universe), MTState[C, V, Value, domain], StateBlockSigma[C, V, Value, domain, spaces, laws](universe), NativeStateSigma[C, V, Value, domain](spaces)]"
+    (21 90 21 101))))
+ (|readAtLaw_TCC1| 0
+  (|readAtLaw_TCC1-1| NIL 4001000509
+   ("" (THEN (SKOLEM!) (LEMMA "native_readAt_measurable" ("n" "n!1")) (ASSERT))
+    NIL)
+   ((|native_readAt_measurable| FORMULA-DECL NIL |ppg_mt_read_probability| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL))
+   NIL
+   (|readAtLaw| SUBTYPE "readAt[C, V, Value, domain](n)"
+    "MeasurableMap[LogSpace[C, V, Value, domain], MTState[C, V, Value, domain], NativeTableSigma[C, V, Value, domain](spaces), NativeStateSigma[C, V, Value, domain](spaces)]"
+    (24 18 24 27))))
+ (|readAt_decode| 0
+  (|readAt_decode-1| NIL 4001000513
+   (""
+    (THEN (SKOLEM!) (EXPAND "stateDecode") (EXPAND "readBlock")
+     (APPLY-EXTENSIONALITY :HIDE? T) (APPLY-EXTENSIONALITY :HIDE? T) (ASSERT))
+    NIL)
+   ((|readBlock| CONST-DECL "StateBlock(F)" |ppg_mt_read_probability| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|readAt| CONST-DECL "MTState" |ppg_mt_check_measurable| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL))
+   SHOSTAK))
+ (|logMeasure_map_readAt_eq_pi| 0
+  (|logMeasure_map_readAt_eq_pi-1| NIL 4001000513
+   (""
+    (THEN (SKOLEM!) (LEMMA "native_readAt_measurable" ("n" "n!1"))
+     (LEMMA "read_block_measurable" ("F" "universe" "n" "n!1"))
+     (LEMMA "state_decode_measurable")
+     (LEMMA
+      "pushforward_compose[LogSpace,StateBlock(universe),MTState,NativeTableSigma(spaces),StateBlockSigma(universe),NativeStateSigma(spaces)]"
+      ("mu" "logMeasure" "f" "readBlock(universe,n!1)" "g" "stateDecode"))
+     (REWRITE "readAt_decode")
+     (LEMMA "read_block_marginal" ("F" "universe" "n" "n!1"))
+     (EXPAND "readAtLaw") (EXPAND "stateMeasure") (EXPAND "readBlockLaw" -1)
+     (ASSERT))
+    NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|read_block_measurable| FORMULA-DECL NIL |ppg_mt_read_probability| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|StateBlockSigma| CONST-DECL
+     "ppg_measurable_space[StateBlock(F)].MeasurableSpace"
+     |ppg_mt_read_probability| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|StateBlock| TYPE-EQ-DECL NIL |ppg_mt_read_probability| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|logMeasure| CONST-DECL "ppg_probability_measure
+    [LogSpace[C, V, Value, domain], NativeTableSigma(spaces)].Probability"
+     |ppg_mt_log_probability| NIL)
+    (|readBlock| CONST-DECL "StateBlock(F)" |ppg_mt_read_probability| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|pushforward_compose| FORMULA-DECL NIL |ppg_probability_push_compose| NIL)
+    (|read_block_marginal| FORMULA-DECL NIL |ppg_mt_read_probability| NIL)
+    (|readBlockLaw| CONST-DECL "StateBlockLaw(F)" |ppg_mt_read_probability|
+     NIL)
+    (|native_readAt_measurable| FORMULA-DECL NIL |ppg_mt_read_probability| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL))
+   SHOSTAK)))
+

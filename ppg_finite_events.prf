@@ -1,0 +1,96 @@
+(|ppg_finite_events|
+ (|finite_meet_empty| 0
+  (|finite_meet_empty-1| NIL 4000999017
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "finiteMeet")
+     (GRIND :EXCLUDE ("sigma?")))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|finite_meet_add| 0
+  (|finite_meet_add-1| NIL 4000999017
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "finiteMeet")
+     (EXPAND "intersection") (EXPAND "add") (EXPAND "member") (IFF)
+     (SPREAD (PROP)
+      ((THEN (INST -1 "i!1") (ASSERT))
+       (THEN (SKOSIMP*) (INST -2 "i!2") (ASSERT))
+       (THEN (SKOSIMP*) (INST -2 "i!2") (ASSERT)))))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|finite_meet_congr| 0
+  (|finite_meet_congr-1| NIL 4000999017
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "finiteMeet")
+     (GRIND :EXCLUDE ("sigma?")))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|completeEvent_TCC1| 0
+  (|completeEvent_TCC1-1| NIL 4000998974
+   ("" (THEN (LEMMA "measurable_full" ("S" "S")) (ASSERT)) NIL)
+   ((|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|measurable_full| FORMULA-DECL NIL |ppg_measurable_space| NIL))
+   NIL
+   (|completeEvent| SUBTYPE "fullset[X]" "(ppg_finite_events.S)"
+    (16 53 16 63))))
+ (|complete_event_eq| 0
+  (|complete_event_eq-1| NIL 4000999017
+   ("" (THEN (SKOLEM!) (EXPAND "completeEvent") (ASSERT)) NIL) NIL SHOSTAK))
+ (|complete_family_eq| 0
+  (|complete_family_eq-1| NIL 4000999017
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "finite_meet_congr"
+      ("F" "F!1" "E" "completeFamily(E!1)" "D" "E!1"))
+     (EXPAND "completeFamily") (EXPAND "completeEvent")
+     (GRIND :EXCLUDE ("finiteMeet" "sigma?")))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   SHOSTAK))
+ (|finite_meet_measurable| 0
+  (|finite_meet_measurable-1| NIL 4000999017
+   (""
+    (THEN (SKOLEM!)
+     (LEMMA "finite_set_ind_modified[K]"
+      ("P" "LAMBDA (F: finite_set[K]): S(finiteMeet(F,E!1))"))
+     (SPREAD (SPLIT -1)
+      ((THEN (INST -1 "F!1") (ASSERT))
+       (THEN (ASSERT) (REWRITE "finite_meet_empty")
+        (LEMMA "measurable_full" ("S" "S")) (ASSERT))
+       (THEN (SKOSIMP*) (REWRITE "finite_meet_add")
+        (LEMMA "measurable_intersection"
+         ("S" "S" "A" "E!1(e!1)" "B" "finiteMeet(S!1,E!1)"))
+        (ASSERT)))))
+    NIL)
+   ((|measurable_full| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|measurable_intersection| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|finite_set_ind_modified| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   SHOSTAK))
+ (|all_finite_meets_measurable| 0
+  (|all_finite_meets_measurable-1| NIL 4000999575
+   (""
+    (THEN (SKOSIMP*) (LEMMA "finite_meet_measurable" ("F" "H!1" "E" "E!1"))
+     (ASSERT))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   SHOSTAK))
+ (|finite_meet_measurable_on| 0
+  (|finite_meet_measurable_on-1| NIL 4000999017
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "finite_meet_measurable" ("F" "F!1" "E" "completeFamily(E!1)"))
+     (LEMMA "complete_family_eq" ("F" "F!1" "E" "E!1")) (ASSERT))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   SHOSTAK)))
+

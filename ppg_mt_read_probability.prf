@@ -1,0 +1,364 @@
+(|ppg_mt_read_probability|
+ (|state_block_sigma_eq| 0
+  (|state_block_sigma_eq-1| NIL 4001000826
+   ("" (THEN (SKOLEM!) (EXPAND "StateBlockSigma") (ASSERT)) NIL) NIL SHOSTAK))
+ (|log_entry_domain| 0
+  (|log_entry_domain-1| NIL 4001000826
+   (""
+    (THEN (SKOLEM!) (TYPEPRED "omega!1(p!1)") (EXPAND "TableDomain") (ASSERT))
+    NIL)
+   ((|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL))
+   SHOSTAK))
+ (|native_readAt_measurable| 0
+  (|native_readAt_measurable-1| NIL 4001000171
+   (""
+    (THEN (SKOLEM!)
+     (LEMMA "measurable_readAt"
+      ("coordinates" "variableAmbient(spaces)" "n" "n!1"))
+     (LEMMA "state_sigma_native_eq" ("spaces" "spaces"))
+     (LEMMA "table_sigma_native_eq" ("spaces" "spaces"))
+     (REPLACE -1 :ACTUALS? T) (REPLACE -2 :ACTUALS? T) (ASSERT))
+    NIL)
+   ((|state_sigma_native_eq| FORMULA-DECL NIL |ppg_mt_native_spaces| NIL)
+    (|table_sigma_native_eq| FORMULA-DECL NIL |ppg_mt_native_spaces| NIL)
+    (|measurable_readAt| FORMULA-DECL NIL |ppg_mt_check_measurable| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|variableAmbient| CONST-DECL
+     "[V -> ppg_measurable_space[Value].MeasurableSpace]"
+     |ppg_mt_native_spaces| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL))
+   SHOSTAK))
+ (|native_read_coordinate| 0
+  (|native_read_coordinate-1| NIL 4001000171
+   (""
+    (THEN (SKOLEM!) (LEMMA "native_readAt_measurable" ("n" "n!1"))
+     (LEMMA "native_coordinate_measurable[LogSpace,V,Value,domain]"
+      ("spaces" "spaces" "i" "v!1"))
+     (LEMMA "measurable_compose[LogSpace,MTState,(domain(v!1))]"
+      ("SX" "NativeTableSigma(spaces)" "SY" "NativeStateSigma(spaces)" "SZ"
+       "spaces(v!1)" "f" "readAt(n!1)" "g" "LAMBDA (s: MTState): s(v!1)"))
+     (EXPAND "NativeStateSigma") (ASSERT))
+    NIL)
+   ((|native_coordinate_measurable| FORMULA-DECL NIL
+     |ppg_measurable_dependent_product| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_measurable_dependent_product|
+     NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|measurable_compose| FORMULA-DECL NIL |ppg_measurable_compose| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|readAt| CONST-DECL "MTState" |ppg_mt_check_measurable| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL))
+   SHOSTAK))
+ (|read_block_measurable| 0
+  (|read_block_measurable-1| NIL 4001000171
+   (""
+    (THEN (SKOLEM!) (LEMMA "native_read_coordinate" ("n" "n!1"))
+     (LEMMA "block_map_measurable[LogSpace,V,Value,domain,spaces]"
+      ("F" "F!1" "SA" "NativeTableSigma(spaces)" "f" "readBlock(F!1,n!1)"))
+     (EXPAND "StateBlockSigma") (EXPAND "readBlock") (ASSERT) (SKOSIMP*)
+     (INST -1 "i!1") (ASSERT))
+    NIL)
+   ((|block_map_measurable| FORMULA-DECL NIL |ppg_measurable_block_map| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL))
+   SHOSTAK))
+ (|readBlockLaw_TCC1| 0
+  (|readBlockLaw_TCC1-1| NIL 4001000169
+   (""
+    (THEN (SKOLEM!) (LEMMA "read_block_measurable" ("F" "F!1" "n" "n!1"))
+     (ASSERT))
+    NIL)
+   ((|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL))
+   NIL
+   (|readBlockLaw| SUBTYPE "readBlock(F, n)"
+    "MeasurableMap[LogSpace[C, V, Value, domain], StateBlock(F), NativeTableSigma[C, V, Value, domain](spaces), StateBlockSigma(F)]"
+    (30 18 30 33))))
+ (|readBlockLaw_TCC2| 0
+  (|readBlockLaw_TCC2-1| NIL 4001000169
+   (""
+    (THEN (SKOLEM!) (LEMMA "read_block_measurable" ("F" "F!1" "n" "n!1"))
+     (TYPEPRED
+      "ppg_probability_map[LogSpace,StateBlock(F!1),NativeTableSigma(spaces),StateBlockSigma(F!1)].pushforward(logMeasure,readBlock(F!1,n!1))")
+     (LEMMA "state_block_sigma_eq" ("F" "F!1")) (REPLACE -1 :ACTUALS? T)
+     (ASSERT))
+    NIL)
+   ((|logMeasure| CONST-DECL "ppg_probability_measure
+    [LogSpace[C, V, Value, domain], NativeTableSigma(spaces)].Probability"
+     |ppg_mt_log_probability| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|pushforward| CONST-DECL "TargetLaw" |ppg_probability_map| NIL)
+    (|TargetLaw| TYPE-EQ-DECL NIL |ppg_probability_map| NIL)
+    (|MeasurableMap| TYPE-EQ-DECL NIL |ppg_probability_map| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|SourceLaw| TYPE-EQ-DECL NIL |ppg_probability_map| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL))
+   NIL
+   (|readBlockLaw| SUBTYPE
+    "ppg_probability_map[LogSpace[C, V, Value, domain], StateBlock(F), NativeTableSigma[C, V, Value, domain](spaces), StateBlockSigma(F)].pushforward(logMeasure[C, V, Value, domain, spaces, laws], readBlock(F, n))"
+    "StateBlockLaw(ppg_mt_read_probability.F)" (29 4 30 34))))
+ (|read_blocks_disjoint_TCC1| 0
+  (|read_blocks_disjoint_TCC1-1| NIL 4001000169
+   ("" (THEN (LEMMA "IMP_ppg_probability_infinite_marginals_TCC1") (ASSERT))
+    NIL)
+   ((|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|IMP_ppg_probability_infinite_marginals_TCC1| SUBTYPE-TCC NIL
+     |ppg_mt_log_probability| NIL))
+   NIL
+   (|read_blocks_disjoint| SUBTYPE "TableSpaces[C, V, Value, domain](spaces)"
+    "[i: [nat, V] -> MeasurableSpace[(TableDomain[C, V, Value, domain](i))]]"
+    (34 62 34 78))))
+ (|read_blocks_disjoint_TCC2| 0
+  (|read_blocks_disjoint_TCC2-1| NIL 4001000169
+   ("" (THEN (LEMMA "IMP_ppg_probability_infinite_marginals_TCC2") (ASSERT))
+    NIL)
+   ((|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|IMP_ppg_probability_infinite_marginals_TCC2| SUBTYPE-TCC NIL
+     |ppg_mt_log_probability| NIL))
+   NIL
+   (|read_blocks_disjoint| SUBTYPE "coinLaw[C, V, Value, domain](spaces, laws)"
+    "[i: [nat, V] -> CoordinateLaw[[nat, ppg_mt_read_probability.V], ppg_mt_read_probability.Value, ppg_mt_random_process[ppg_mt_read_probability.C, ppg_mt_read_probability.V, ppg_mt_read_probability.Value, ppg_mt_read_probability.domain].TableDomain, ppg_mt_coordinate_laws[ppg_mt_read_probability.C, ppg_mt_read_probability.V, ppg_mt_read_probability.Value, ppg_mt_read_probability.domain].TableSpaces(ppg_mt_read_probability.spaces)](i)]"
+    (34 62 34 78))))
+ (|read_blocks_disjoint| 0
+  (|read_blocks_disjoint-1| NIL 4001000171
+   (""
+    (THEN (SKOLEM!) (EXPAND "pairwiseDisjoint")
+     (GRIND :DEFS
+      ("readBlocks" "disjoint?" "singleton" "intersection" "emptyset")
+      :IF-MATCH ALL))
+    NIL)
+   ((|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|pairwiseDisjoint| CONST-DECL "bool" |ppg_probability_disjoint_family|
+     NIL))
+   SHOSTAK))
+ (|read_events_depend| 0
+  (|read_events_depend-1| NIL 4001000171
+   (""
+    (THEN (SKOLEM!) (EXPAND "logDepends") (EXPAND "readBlocks")
+     (EXPAND "readEvents") (EXPAND "log_coin_event")
+     (GRIND :DEFS ("singleton") :IF-MATCH ALL :EXCLUDE
+      ("NativeTableSigma" "spaces")))
+    NIL)
+   ((|log_coin_event| CONST-DECL "(NativeTableSigma(spaces))"
+     |ppg_mt_log_probability| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|logDepends| CONST-DECL "bool" |ppg_mt_log_family| NIL))
+   SHOSTAK))
+ (|read_box_preimage| 0
+  (|read_box_preimage-1| NIL 4001000171
+   (""
+    (THEN (SKOLEM!) (EXPAND "inverseImage")
+     (EXPAND "ppg_measurable_block_box[V,Value,domain,spaces].blockBox")
+     (EXPAND "finiteMeet") (EXPAND "readEvents") (EXPAND "log_coin_event")
+     (EXPAND "readBlock") (EXPAND "readAt") (EXPAND "atIdx")
+     (SPREAD (APPLY-EXTENSIONALITY :HIDE? T)
+      ((GRIND :EXCLUDE ("NativeTableSigma" "StateBlockSigma" "spaces"))
+       (THEN (SKOSIMP*)
+        (LEMMA "log_entry_domain" ("omega" "x!1" "p" "(n!1(i!1),i!1)"))
+        (ASSERT))
+       (THEN (SKOSIMP*)
+        (LEMMA "log_entry_domain" ("omega" "x!1" "p" "(n!1(i!1),i!1)"))
+        (ASSERT)))))
+    NIL)
+   ((|blockBox| CONST-DECL "set[Block[I, Value, domain, spaces](F)]"
+     |ppg_measurable_block_box| NIL)
+    (|atIdx| CONST-DECL "(domain(v))" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|readAt| CONST-DECL "MTState" |ppg_mt_check_measurable| NIL)
+    (|log_coin_event| CONST-DECL "(NativeTableSigma(spaces))"
+     |ppg_mt_log_probability| NIL)
+    (|finiteMeet| CONST-DECL "Event" |ppg_finite_events| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL))
+   SHOSTAK))
+ (|read_event_factors| 0
+  (|read_event_factors-1| NIL 4001000171
+   (""
+    (THEN (SKOLEM!) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "eventFactors")
+     (EXPAND "readEvents")
+     (LEMMA "log_coin_mass" ("n" "n!1(x!1)" "v" "x!1" "B" "E!1(x!1)"))
+     (ASSERT))
+    NIL)
+   ((|log_coin_mass| FORMULA-DECL NIL |ppg_mt_log_probability| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|MeasurableFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|eventFactors| CONST-DECL "[K -> real]" |ppg_probability_event_product|
+     NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|logMeasure| CONST-DECL "ppg_probability_measure
+    [LogSpace[C, V, Value, domain], NativeTableSigma(spaces)].Probability"
+     |ppg_mt_log_probability| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|LogEvents| TYPE-EQ-DECL NIL |ppg_mt_log_family| NIL))
+   SHOSTAK))
+ (|read_block_box_mass_TCC1| 0
+  (|read_block_box_mass_TCC1-1| NIL 4001000169
+   (""
+    (THEN (SKOLEM!)
+     (LEMMA "block_box_measurable[V,Value,domain,spaces]"
+      ("F" "F!1" "E" "E!1"))
+     (ASSERT))
+    NIL)
+   ((|block_box_measurable| FORMULA-DECL NIL |ppg_measurable_block_box| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL))
+   NIL
+   (|read_block_box_mass| SUBTYPE
+    "ppg_measurable_block_box[V, Value, domain, spaces].blockBox(F, E)"
+    "(ppg_measurable_block[ppg_mt_read_probability.V, ppg_mt_read_probability.Value, ppg_mt_read_probability.domain, ppg_mt_read_probability.spaces].blockSigma(ppg_mt_read_probability.F))"
+    (44 23 44 88))))
+ (|read_block_box_mass| 0
+  (|read_block_box_mass-1| NIL 4001000172
+   (""
+    (THEN (SKOLEM!) (EXPAND "readBlockLaw") (EXPAND "pushforward")
+     (EXPAND "imageMass") (REWRITE "read_box_preimage")
+     (LEMMA "read_blocks_disjoint" ("F" "F!1" "n" "n!1"))
+     (LEMMA "read_events_depend" ("n" "n!1" "E" "E!1"))
+     (LEMMA "log_finite_product"
+      ("F" "F!1" "blk" "readBlocks(n!1)" "E" "readEvents(n!1,E!1)"))
+     (LEMMA "read_event_factors" ("n" "n!1" "E" "E!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("finiteMeet" "pairwiseDisjoint" "logDepends" "eventFactors" "product"
+       "readEvents" "readBlocks" "logMeasure")))
+    NIL)
+   ((|pushforward| CONST-DECL "TargetLaw" |ppg_probability_map| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|log_finite_product| FORMULA-DECL NIL |ppg_mt_log_family| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|LogEvents| TYPE-EQ-DECL NIL |ppg_mt_log_family| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|imageMass| CONST-DECL "nnreal" |ppg_probability_map| NIL))
+   SHOSTAK))
+ (|read_block_marginal| 0
+  (|read_block_marginal-1| NIL 4001000172
+   (""
+    (THEN (SKOLEM!) (LEMMA "read_block_box_mass" ("F" "F!1" "n" "n!1"))
+     (LEMMA "stateProduct.finite_law_unique"
+      ("F" "F!1" "mu" "readBlockLaw(F!1,n!1)"))
+     (ASSERT))
+    NIL)
+   ((|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|BlockLaw| TYPE-EQ-DECL NIL |ppg_probability_block_restriction| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|finite_law_unique| FORMULA-DECL NIL |ppg_probability_finite_consistency|
+     NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL))
+   SHOSTAK)))
+

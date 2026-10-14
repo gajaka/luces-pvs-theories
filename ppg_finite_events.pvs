@@ -1,0 +1,27 @@
+% A finite intersection needs measurability only at its selected indices.
+ppg_finite_events[X, K: TYPE,
+  (IMPORTING ppg_measurable_space[X]) S: MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_finite_induction[K]
+  EventFamily: TYPE = [K -> Event]
+  MeasurableFamily: TYPE = [K -> (S)]
+  F, H: VAR set[K]
+  E: VAR EventFamily
+  i: VAR K
+  finiteMeet(F, E): Event = {x: X | FORALL (i: K): F(i) IMPLIES E(i)(x)}
+  finite_meet_empty: LEMMA finiteMeet(emptyset[K], E) = fullset[X]
+  finite_meet_add: LEMMA finiteMeet(add(i, F), E) = intersection(E(i), finiteMeet(F, E))
+  finite_meet_congr: LEMMA FORALL (D: EventFamily):
+    (FORALL (i: K): F(i) IMPLIES E(i) = D(i)) IMPLIES finiteMeet(F, E) = finiteMeet(F, D)
+  completeEvent(A: Event): (S) = IF S(A) THEN A ELSE fullset[X] ENDIF
+  completeFamily(E): MeasurableFamily = LAMBDA (i: K): completeEvent(E(i))
+  complete_event_eq: LEMMA FORALL (A: (S)): completeEvent(A) = A
+  complete_family_eq: LEMMA (FORALL (i: K): F(i) IMPLIES S(E(i))) IMPLIES
+    finiteMeet(F, completeFamily(E)) = finiteMeet(F, E)
+  finite_meet_measurable: LEMMA FORALL (F: finite_set[K], E: MeasurableFamily):
+    S(finiteMeet(F, E))
+  all_finite_meets_measurable: LEMMA FORALL (E: MeasurableFamily):
+    FORALL (H: finite_set[K]): S(finiteMeet(H, E))
+  finite_meet_measurable_on: THEOREM FORALL (F: finite_set[K]):
+    (FORALL (i: K): F(i) IMPLIES S(E(i))) IMPLIES S(finiteMeet(F, E))
+END ppg_finite_events
