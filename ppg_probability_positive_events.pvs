@@ -1,0 +1,18 @@
+% Decreasing measurable events with uniformly positive masses share a point.
+ppg_probability_positive_events[X: TYPE,
+  (IMPORTING ppg_measurable_space[X]) S: MeasurableSpace,
+  (IMPORTING ppg_probability_measure[X, S]) probLaw: Probability]: THEORY
+BEGIN
+  IMPORTING ppg_probability_continuity[X, S], ppg_probability_set_laws[X, S]
+  event_zero_if_empty: LEMMA FORALL (A: (S)): empty?(A) IMPLIES probLaw(A) = 0
+  positive_event_nonempty: LEMMA FORALL (A: (S)): probLaw(A) > 0 IMPLIES nonempty?(A)
+  positive_event_witness: LEMMA FORALL (A: (S)): probLaw(A) > 0 IMPLIES EXISTS (x: X): A(x)
+  lower_bound_limit: LEMMA FORALL (a: real, s: sequence[real], l: real):
+    convergence_sequences.convergence(s, l) AND (FORALL (n: nat): a <= s(n)) IMPLIES a <= l
+  decreasing_intersection_lower: THEOREM FORALL (E: [nat -> (S)], a: real):
+    decreasingEvents(E) AND (FORALL (n: nat): a <= probLaw(E(n))) IMPLIES
+      a <= probLaw(countableIntersection(E))
+  decreasing_positive_witness: THEOREM FORALL (E: [nat -> (S)], a: posreal):
+    decreasingEvents(E) AND (FORALL (n: nat): a <= probLaw(E(n))) IMPLIES
+      EXISTS (x: X): FORALL (n: nat): E(n)(x)
+END ppg_probability_positive_events

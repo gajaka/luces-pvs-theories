@@ -1,0 +1,233 @@
+(|ppg_probability_positive_events|
+ (|event_zero_if_empty| 0
+  (|event_zero_if_empty-1| NIL 4000973367
+   (""
+    (THEN (SKOSIMP*) (LEMMA "empty_event" ("B" "A!1"))
+     (LEMMA "probability_empty" ("mu" "probLaw")) (ASSERT))
+    NIL)
+   ((|probability_empty| FORMULA-DECL NIL |ppg_probability_measure| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probLaw| FORMAL-CONST-DECL "Probability"
+     |ppg_probability_positive_events| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|empty_event| FORMULA-DECL NIL |ppg_nasa_sigma| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_probability_positive_events|
+     NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_positive_events| NIL))
+   SHOSTAK))
+ (|positive_event_nonempty| 0
+  (|positive_event_nonempty-1| NIL 4000973367
+   (""
+    (THEN (SKOSIMP*) (LEMMA "event_zero_if_empty" ("A" "A!1"))
+     (EXPAND "nonempty?") (ASSERT))
+    NIL)
+   ((|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|event_zero_if_empty| FORMULA-DECL NIL |ppg_probability_positive_events|
+     NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_positive_events| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_probability_positive_events|
+     NIL))
+   SHOSTAK))
+ (|positive_event_witness| 0
+  (|positive_event_witness-1| NIL 4000973367
+   (""
+    (THEN (SKOSIMP*) (LEMMA "positive_event_nonempty" ("A" "A!1"))
+     (REWRITE "nonempty_exists") (GRIND :EXCLUDE ("sigma?" "probability?")))
+    NIL)
+   ((|nonempty_exists| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|positive_event_nonempty| FORMULA-DECL NIL
+     |ppg_probability_positive_events| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_positive_events| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_probability_positive_events|
+     NIL))
+   SHOSTAK))
+ (|lower_bound_limit| 0
+  (|lower_bound_limit-1| NIL 4000973367
+   (""
+    (THEN (SKOSIMP*) (LEMMA "cnv_seq_const" ("a" "a!1"))
+     (LEMMA "cnv_seq_order"
+      ("s1" "LAMBDA (n: nat): a!1" "s2" "s!1" "l1" "a!1" "l2" "l!1"))
+     (EXPAND "const_fun") (ASSERT))
+    NIL)
+   ((|cnv_seq_order| FORMULA-DECL NIL |convergence_ops| |analysis|)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|sequence| TYPE-EQ-DECL NIL |sequences| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|const_fun| CONST-DECL "[T -> real]" |real_fun_ops| |reals|)
+    (|cnv_seq_const| FORMULA-DECL NIL |convergence_ops| |analysis|)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   SHOSTAK))
+ (|decreasing_intersection_lower_TCC1| 0
+  (|decreasing_intersection_lower_TCC1-1| NIL 4000973365
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "measurable_countable_intersection" ("S" "S" "E" "E!1")) (ASSERT))
+    NIL)
+   ((|measurable_countable_intersection| FORMULA-DECL NIL
+     |ppg_measurable_sequence| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_probability_positive_events|
+     NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_positive_events| NIL))
+   NIL
+   (|decreasing_intersection_lower| SUBTYPE "countableIntersection[X](E)"
+    "(ppg_probability_positive_events.S)" (14 19 14 43))))
+ (|decreasing_intersection_lower| 0
+  (|decreasing_intersection_lower-1| NIL 4000973367
+   (""
+    (THEN (SKOSIMP*) (LEMMA "decreasing_mass" ("mu" "probLaw" "E" "E!1"))
+     (LEMMA "lower_bound_limit"
+      ("a" "a!1" "s" "probLaw o E!1" "l"
+       "probLaw(countableIntersection(E!1))"))
+     (EXPAND "o") (EXPAND "convergence_sequences.convergence")
+     (GRIND :EXCLUDE
+      ("decreasingEvents" "countableIntersection" "sigma?" "probability?")))
+    NIL)
+   ((|countableIntersection| CONST-DECL "Event" |ppg_measurable_sequence| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (O CONST-DECL "T3" |function_props| NIL)
+    (|sequence| TYPE-EQ-DECL NIL |sequences| NIL)
+    (|lower_bound_limit| FORMULA-DECL NIL |ppg_probability_positive_events|
+     NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|convergence| CONST-DECL "bool" |convergence_sequences| |analysis|)
+    (|decreasing_mass| FORMULA-DECL NIL |ppg_probability_continuity| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probLaw| FORMAL-CONST-DECL "Probability"
+     |ppg_probability_positive_events| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_positive_events| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_probability_positive_events|
+     NIL))
+   SHOSTAK))
+ (|decreasing_positive_witness| 0
+  (|decreasing_positive_witness-1| NIL 4000973367
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "measurable_countable_intersection" ("S" "S" "E" "E!1")) (ASSERT)
+     (LEMMA "decreasing_intersection_lower" ("E" "E!1" "a" "a!1")) (ASSERT)
+     (LEMMA "positive_event_witness" ("A" "countableIntersection(E!1)"))
+     (ASSERT) (EXPAND "countableIntersection")
+     (GRIND :EXCLUDE ("decreasingEvents" "sigma?" "probability?")))
+    NIL)
+   ((|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|positive_event_witness| FORMULA-DECL NIL
+     |ppg_probability_positive_events| NIL)
+    (|countableIntersection| CONST-DECL "Event" |ppg_measurable_sequence| NIL)
+    (|decreasing_intersection_lower| FORMULA-DECL NIL
+     |ppg_probability_positive_events| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|posreal| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|measurable_countable_intersection| FORMULA-DECL NIL
+     |ppg_measurable_sequence| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_probability_positive_events|
+     NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_positive_events| NIL))
+   SHOSTAK)))
+

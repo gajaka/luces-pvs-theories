@@ -1,0 +1,138 @@
+(|ppg_probability_positive_functions|
+ (|thresholds_decreasing| 0
+  (|thresholds_decreasing-1| NIL 4000973368
+   (""
+    (THEN (SKOSIMP*) (EXPAND "decreasingEvents") (SKOSIMP*) (EXPAND "subset?")
+     (EXPAND "member") (EXPAND "thresholdSequence") (EXPAND "threshold")
+     (EXPAND "pointwiseDecreasing")
+     (GRIND :IF-MATCH ALL :EXCLUDE ("sigma?" "probability?" "integrable?")))
+    NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|threshold| CONST-DECL "(S)" |ppg_probability_threshold| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_positive_functions| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|pointwiseDecreasing| CONST-DECL "bool"
+     |ppg_probability_positive_functions| NIL)
+    (|thresholdSequence| CONST-DECL "[nat -> (S)]"
+     |ppg_probability_positive_functions| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|decreasingEvents| CONST-DECL "bool" |ppg_measurable_sequence| NIL))
+   SHOSTAK))
+ (|common_positive_point| 0
+  (|common_positive_point-1| NIL 4000973368
+   ("" (SKOSIMP*)
+    (("" (CASE "FORALL (n: nat): e!1/2 <= probLaw(threshold(F!1(n),e!1/2))")
+      (("1" (LEMMA "thresholds_decreasing" ("F" "F!1" "a" "e!1/2"))
+        (("1"
+          (LEMMA "decreasing_positive_witness"
+           ("E" "thresholdSequence(F!1,e!1/2)" "a" "e!1/2"))
+          (("1" (EXPAND "thresholdSequence")
+            (("1" (EXPAND "threshold")
+              (("1"
+                (GRIND :IF-MATCH ALL :EXCLUDE
+                 ("sigma?" "probability?" "integrable?"))
+                NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (SKOLEM 1 "k!1")
+        (("2" (LEMMA "threshold_mass_lower" ("f" "F!1(k!1)" "e" "e!1"))
+          (("2" (INST -3 "k!1") (("2" (ASSERT) NIL NIL)) NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|threshold_mass_lower| FORMULA-DECL NIL |ppg_probability_threshold| NIL)
+    (|thresholds_decreasing| FORMULA-DECL NIL
+     |ppg_probability_positive_functions| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|expectation| CONST-DECL "real" |ppg_probability_integral| NIL)
+    (|integral| CONST-DECL "real" |integral| |measure_integration|)
+    (|pointwiseDecreasing| CONST-DECL "bool"
+     |ppg_probability_positive_functions| NIL)
+    (|decreasingEvents| CONST-DECL "bool" |ppg_measurable_sequence| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|decreasing_positive_witness| FORMULA-DECL NIL
+     |ppg_probability_positive_events| NIL)
+    (|thresholdSequence| CONST-DECL "[nat -> (S)]"
+     |ppg_probability_positive_functions| NIL)
+    (|UnitSequence| TYPE-EQ-DECL NIL |ppg_probability_positive_functions| NIL)
+    (|threshold| CONST-DECL "(S)" |ppg_probability_threshold| NIL)
+    (|UnitFunction| TYPE-EQ-DECL NIL |ppg_probability_threshold| NIL)
+    (|unitFunction?| CONST-DECL "bool" |ppg_probability_threshold| NIL)
+    (|NativeFunction| TYPE-EQ-DECL NIL |ppg_probability_integral| NIL)
+    (|integrable?| CONST-DECL "bool" |integral| |measure_integration|)
+    (|nasaLaw| CONST-DECL "generalized_measure_def[X, asNasa(S)].measure_type"
+     |ppg_probability_integral| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|probLaw| FORMAL-CONST-DECL "Probability"
+     |ppg_probability_positive_functions| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_probability_positive_functions|
+     NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_positive_functions| NIL)
+    (|posreal| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (/ CONST-DECL "[numfield, nznum -> numfield]" |number_fields| NIL)
+    (|nznum| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|posreal_div_posreal_is_posreal| APPLICATION-JUDGEMENT "posreal"
+     |real_types| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK)))
+

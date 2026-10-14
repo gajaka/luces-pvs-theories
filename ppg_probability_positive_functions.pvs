@@ -1,0 +1,17 @@
+% Uniformly positive means of decreasing unit functions give a common positive point.
+ppg_probability_positive_functions[X: TYPE,
+  (IMPORTING ppg_measurable_space[X]) S: MeasurableSpace,
+  (IMPORTING ppg_probability_measure[X, S]) probLaw: Probability]: THEORY
+BEGIN
+  IMPORTING ppg_probability_threshold[X, S, probLaw], ppg_probability_positive_events[X, S, probLaw]
+  UnitSequence: TYPE = [nat -> UnitFunction]
+  pointwiseDecreasing(F: UnitSequence): bool = FORALL (m, n: nat, x: X):
+    m <= n IMPLIES F(n)(x) <= F(m)(x)
+  thresholdSequence(F: UnitSequence, a: real): [nat -> (S)] =
+    LAMBDA (n: nat): threshold(F(n), a)
+  thresholds_decreasing: LEMMA FORALL (F: UnitSequence, a: real):
+    pointwiseDecreasing(F) IMPLIES decreasingEvents(thresholdSequence(F, a))
+  common_positive_point: THEOREM FORALL (F: UnitSequence, e: posreal):
+    pointwiseDecreasing(F) AND (FORALL (n: nat): e <= expectation(F(n))) IMPLIES
+      EXISTS (x: X): FORALL (n: nat): e / 2 <= F(n)(x)
+END ppg_probability_positive_functions

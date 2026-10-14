@@ -1,0 +1,18 @@
+% A bounded nonnegative function with positive mean has a positive threshold event.
+ppg_probability_threshold[X: TYPE,
+  (IMPORTING ppg_measurable_space[X]) S: MeasurableSpace,
+  (IMPORTING ppg_probability_measure[X, S]) probLaw: Probability]: THEORY
+BEGIN
+  IMPORTING ppg_probability_integral[X, S, probLaw]
+  unitFunction?(f: NativeFunction): bool = FORALL (x: X): 0 <= f(x) AND f(x) <= 1
+  UnitFunction: TYPE = (unitFunction?)
+  f: VAR UnitFunction
+  a: VAR real
+  threshold(f, a): (S) = {x: X | f(x) >= a}
+  threshold_dominates: LEMMA FORALL (a: nnreal, x: X):
+    f(x) <= (constant(a) + indicator(threshold(f, a)))(x)
+  threshold_mean_bound: THEOREM FORALL (a: nnreal):
+    expectation(f) <= a + probLaw(threshold(f, a))
+  threshold_mass_lower: THEOREM FORALL (e: posreal):
+    e <= expectation(f) IMPLIES e / 2 <= probLaw(threshold(f, e / 2))
+END ppg_probability_threshold

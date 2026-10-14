@@ -1,0 +1,17 @@
+% A varying sequence of unit functions has its common positive point at the Dirac atom.
+ppg_probability_selection_examples: THEORY
+BEGIN
+  IMPORTING ppg_probability_examples,
+            ppg_probability_positive_functions[nat, discreteNat, atSeven]
+  events(n: nat): (discreteNat) =
+    IF n = 0 THEN fullset[nat] ELSE {x: nat | x = 7} ENDIF
+  functions(n: nat): UnitFunction = indicator(events(n))
+  functions_value: LEMMA FORALL (n, x: nat): functions(n)(x) =
+    IF n = 0 OR x = 7 THEN 1 ELSE 0 ENDIF
+  functions_decreasing: LEMMA pointwiseDecreasing(functions)
+  means_one: LEMMA FORALL (n: nat): expectation(functions(n)) = 1
+  common_positive_witness: THEOREM EXISTS (x: nat):
+    FORALL (n: nat): 1 / 2 <= functions(n)(x)
+  witness_is_seven: LEMMA FORALL (x: nat):
+    (FORALL (n: nat): 1 / 2 <= functions(n)(x)) IMPLIES x = 7
+END ppg_probability_selection_examples

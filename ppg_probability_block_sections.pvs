@@ -1,0 +1,36 @@
+% Sections of a finite block event are unit functions on its fixed subblock.
+ppg_probability_block_sections[I, Value: TYPE, domain: [I -> set[Value]],
+  F, G: finite_set[I], (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace],
+  (IMPORTING ppg_probability_block_base[I, Value, domain, spaces])
+  coins: [i: I -> CoordinateLaw(i)]]: THEORY
+BEGIN
+  IMPORTING ppg_probability_finite_union[I, Value, domain, F, G, spaces, coins],
+            ppg_probability_pair_sections[LeftBlock, RightBlock, blockSigma(F), blockSigma(G),
+              finiteLaw(F), finiteLaw(G)], ppg_measurable_sequence[UnionBlock]
+  B, D: VAR (blockSigma(U))
+  x: VAR LeftBlock
+  pairEvent(B): (JointSpace) = {p: BlockPair | B(join(p))}
+  pair_event_preimage: LEMMA pairEvent(B) = inverseImage(
+    ppg_measurable_block_union[I, Value, domain, F, G, spaces].join, B)
+  pair_event_monotone: LEMMA subset?(B, D) IMPLIES subset?(pairEvent(B), pairEvent(D))
+  blockSection(B, x): (blockSigma(G)) = x_section(pairEvent(B))(x)
+  block_section_value: LEMMA FORALL (y: RightBlock): blockSection(B, x)(y) = B(join(x, y))
+  blockSectionMass(B, x): nnreal = finiteLaw(G)(blockSection(B, x))
+  block_section_mass_eq: LEMMA blockSectionMass(B, x) = sectionMass(pairEvent(B))(x)
+  block_section_bounds: LEMMA 0 <= blockSectionMass(B, x) AND blockSectionMass(B, x) <= 1
+  blockFunction(B): UnitFunction = sectionFunction(pairEvent(B))
+  block_function_value: LEMMA blockFunction(B)(x) = blockSectionMass(B, x)
+  block_section_mean: THEOREM disjoint?(F, G) IMPLIES
+    expectation(blockFunction(B)) = finiteLaw(U)(B)
+  block_section_monotone: THEOREM subset?(B, D) IMPLIES
+    blockSectionMass(B, x) <= blockSectionMass(D, x)
+  blockSequence(A: [nat -> (blockSigma(U))]): UnitSequence =
+    LAMBDA (n: nat): blockFunction(A(n))
+  block_sections_decreasing: LEMMA FORALL (A: [nat -> (blockSigma(U))]):
+    decreasingEvents[UnionBlock](A) IMPLIES pointwiseDecreasing(blockSequence(A))
+  positive_block_witness: THEOREM FORALL (A: [nat -> (blockSigma(U))], e: posreal):
+    disjoint?(F, G) AND decreasingEvents[UnionBlock](A) AND
+    (FORALL (n: nat): e <= finiteLaw(U)(A(n))) IMPLIES
+      EXISTS (x: LeftBlock): FORALL (n: nat): e / 2 <= blockSectionMass(A(n), x)
+END ppg_probability_block_sections
