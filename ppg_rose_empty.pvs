@@ -1,0 +1,10 @@
+% An empty label carrier has no rose trees but still has a countable tree type.
+ppg_rose_empty: THEORY
+BEGIN
+  Empty: TYPE = {b: bool | FALSE}
+  IMPORTING ppg_rose_countable[Empty], ppg_rose_to_growing[Empty, Empty]
+  empty_labels_countable: THEOREM countable_labels
+  empty_trees_countable: THEOREM EXISTS (e: [WTree -> nat]): injective?(e)
+  no_empty_labeled_tree: THEOREM NOT EXISTS (t: WTree): TRUE
+  empty_children_domain: THEOREM toGT_domChildren(null, 4) = emptyset[list[nat]]
+END ppg_rose_empty

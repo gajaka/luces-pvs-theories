@@ -1,0 +1,91 @@
+(|ppg_rose_size|
+ (|size_node| 0
+  (|size_node-1| NIL 4001005099
+   ("" (THEN (SKOSIMP*) (EXPAND "treeSize") (EXPAND "reduce_nat" 1 1) (ASSERT))
+    NIL)
+   ((|reduce_nat| ADT-DEF-DECL "[ppg_mt_rose -> nat]" |ppg_mt_rose_adt| NIL)
+    (|treeSize| CONST-DECL "[WTree -> nat]" |ppg_rose_size| NIL))
+   SHOSTAK))
+ (|size_pos| 0
+  (|size_pos-1| NIL 4001005099 ("" (THEN (GRIND)) NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|reduce_nat| ADT-DEF-DECL "[ppg_mt_rose -> nat]" |ppg_mt_rose_adt| NIL)
+    (|treeSize| CONST-DECL "[WTree -> nat]" |ppg_rose_size| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK))
+ (|size_le_sum_children| 0
+  (|size_le_sum_children-1| NIL 4001005099
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "list_member_sum[WTree]" ("f" "treeSize" "x" "c!1" "xs" "cs!1"))
+     (ASSERT))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|list_member_sum| FORMULA-DECL NIL |ppg_tree_lists| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|treeSize| CONST-DECL "[WTree -> nat]" |ppg_rose_size| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_size| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL))
+   SHOSTAK))
+ (|child_size_lt| 0
+  (|child_size_lt-1| NIL 4001005099
+   (""
+    (THEN (SKOSIMP*) (LEMMA "size_le_sum_children") (REWRITE "size_node")
+     (GRIND :IF-MATCH ALL :EXCLUDE ("treeSize" "natSum")))
+    NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|size_node| FORMULA-DECL NIL |ppg_rose_size| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_size| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|size_le_sum_children| FORMULA-DECL NIL |ppg_rose_size| NIL))
+   SHOSTAK))
+ (|tree_eta| 0
+  (|tree_eta-1| NIL 4001005099 ("" (THEN (INDUCT "t") (GRIND)) NIL)
+   ((|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|roseNode?| ADT-RECOGNIZER-DECL "[ppg_mt_rose -> boolean]"
+     |ppg_mt_rose_adt| NIL)
+    (|roseNode| ADT-CONSTRUCTOR-DECL "[[C, list[ppg_mt_rose]] -> (roseNode?)]"
+     |ppg_mt_rose_adt| NIL)
+    (|roseLabel| ADT-ACCESSOR-DECL "[ppg_mt_rose -> C]" |ppg_mt_rose_adt| NIL)
+    (|roseChildren| ADT-ACCESSOR-DECL "[ppg_mt_rose -> list[ppg_mt_rose]]"
+     |ppg_mt_rose_adt| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_size| NIL)
+    (|ppg_mt_rose_induction| FORMULA-DECL NIL |ppg_mt_rose_adt| NIL))
+   SHOSTAK))
+ (|rose_induction| 0
+  (|rose_induction-1| NIL 4001005099
+   ("" (THEN (LEMMA "ppg_mt_rose_induction") (ASSERT)) NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_rose_size| NIL)
+    (|ppg_mt_rose_induction| FORMULA-DECL NIL |ppg_mt_rose_adt| NIL))
+   SHOSTAK)))
+

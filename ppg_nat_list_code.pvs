@@ -1,0 +1,16 @@
+% A list code uses zero for nil and a positive paired code for cons.
+ppg_nat_list_code: THEORY
+BEGIN
+  IMPORTING extended_nnreal@code_product, ppg_tree_lists[nat]
+  pairCode(a, b: nat): nat = double_index_n(a, b)
+  pair_code_injective: LEMMA FORALL (a, b, c, d: nat):
+    pairCode(a, b) = pairCode(c, d) IMPLIES a = c AND b = d
+  listCode(xs: list[nat]): RECURSIVE nat =
+    CASES xs OF null: 0, cons(a, rest): 1 + pairCode(a, listCode(rest)) ENDCASES
+    MEASURE length(xs)
+  list_code_cons: LEMMA FORALL (h: nat, rest: list[nat]):
+    listCode(cons(h, rest)) = 1 + pairCode(h, listCode(rest))
+  list_code_zero: LEMMA FORALL (xs: list[nat]): listCode(xs) = 0 IFF null?(xs)
+  list_code_injective: THEOREM FORALL (xs, ys: list[nat]):
+    listCode(xs) = listCode(ys) IMPLIES xs = ys
+END ppg_nat_list_code
