@@ -1,0 +1,17 @@
+% Inclusion transfers a coordinate law to the ambient type without losing mass.
+ppg_probability_subtype[X: TYPE, D: set[X],
+  (IMPORTING ppg_measurable_subtype[X, D])
+  S: ppg_measurable_space[(D)].MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_probability_map[(D), X, S, ambientSpace(S)]
+  mu: VAR SourceLaw
+  B: VAR (ambientSpace(S))
+  A: VAR (S)
+  ambientLaw(mu): TargetLaw = pushforward(mu, inclusion)
+  ambientLaw_trace: LEMMA ambientLaw(mu)(B) = mu(trace(B))
+  ambientLaw_representative: LEMMA ambientLaw(mu)(representative(A)) = mu(A)
+  ambientLaw_domain: LEMMA ambientLaw(mu)(D) = 1
+  ambientLaw_outside: LEMMA ambientLaw(mu)(complement(D)) = 0
+  ambientLaw_same_trace: LEMMA FORALL (B1, B2: (ambientSpace(S))):
+    trace(B1) = trace(B2) IMPLIES ambientLaw(mu)(B1) = ambientLaw(mu)(B2)
+END ppg_probability_subtype

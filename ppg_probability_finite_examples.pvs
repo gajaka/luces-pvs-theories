@@ -1,0 +1,16 @@
+% Finite products allow an infinite index type and distinct coordinate domains.
+ppg_probability_finite_examples: THEORY
+BEGIN
+  IMPORTING ppg_measurable_space, ppg_probability_dirac
+  domain(i: nat): set[nat] = {v: nat | v = i OR v = i + 1}
+  spaces(i: nat): ppg_measurable_space[(domain(i))].MeasurableSpace =
+    fullset[set[(domain(i))]]
+  coins(i: nat): ppg_probability_measure[(domain(i)), spaces(i)].Probability =
+    ppg_probability_dirac[(domain(i)), spaces(i)].dirac(i)
+  IMPORTING ppg_probability_finite_marginals[nat, nat, domain, spaces, coins]
+  F: finite_set[nat] = add(7, singleton(2))
+  eventAtSeven: (spaces(7)) = {v: (domain(7)) | v = 7}
+  finite_seven_mass: LEMMA finiteLaw(F)(blockCylinder(F, 7, eventAtSeven)) = 1
+  finite_seven_marginal: LEMMA coordinateLaw(F, 7) = coins(7)
+  empty_product_mass: LEMMA finiteLaw(emptyset[nat])(blockBox(emptyset[nat], fullEvents)) = 1
+END ppg_probability_finite_examples

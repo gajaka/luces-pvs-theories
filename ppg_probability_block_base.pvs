@@ -1,0 +1,27 @@
+% Empty and singleton blocks supply the base cases of finite products.
+ppg_probability_block_base[I, Value: TYPE, domain: [I -> set[Value]],
+  (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]]: THEORY
+BEGIN
+  IMPORTING ppg_probability_block_restriction[I, Value, domain, spaces],
+            ppg_measurable_block_map, ppg_measurable_block_box[I, Value, domain, spaces],
+            ppg_probability_dirac
+  CoordinateLaw(i: I): TYPE = ppg_probability_measure[(domain(i)), spaces(i)].Probability
+  emptyPoint: Block(emptyset[I]) = LAMBDA (i: (emptyset[I])): choose(domain(i))
+  emptyLaw: BlockLaw(emptyset[I]) =
+    ppg_probability_dirac[Block(emptyset[I]), blockSigma(emptyset[I])].dirac(emptyPoint)
+  empty_block_unique: LEMMA FORALL (x, y: Block(emptyset[I])): x = y
+  empty_law_box: LEMMA FORALL (E: CoordinateEvents): emptyLaw(blockBox(emptyset[I], E)) = 1
+  singlePoint(i: I)(v: (domain(i))): Block(singleton(i)) =
+    LAMBDA (j: (singleton(i))): v
+  single_point_measurable: LEMMA FORALL (i: I):
+    ppg_measurable_map[(domain(i)), Block(singleton(i))].measurable(
+      spaces(i), blockSigma(singleton(i)), singlePoint(i))
+  singleLaw(i: I, mu: CoordinateLaw(i)): BlockLaw(singleton(i)) =
+    ppg_probability_map[(domain(i)), Block(singleton(i)), spaces(i),
+      blockSigma(singleton(i))].pushforward(mu, singlePoint(i))
+  single_box_preimage: LEMMA FORALL (i: I, E: CoordinateEvents):
+    {v: (domain(i)) | blockBox(singleton(i), E)(singlePoint(i)(v))} = E(i)
+  single_law_box: LEMMA FORALL (i: I, mu: CoordinateLaw(i), E: CoordinateEvents):
+    singleLaw(i, mu)(blockBox(singleton(i), E)) = mu(E(i))
+END ppg_probability_block_base

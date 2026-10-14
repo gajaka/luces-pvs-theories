@@ -1,0 +1,27 @@
+% Projection cylinders and measurable rectangles generate the same space.
+ppg_nasa_pair[A, X, Y: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_pair[A, X, Y], ppg_nasa_generated[[X, Y]],
+            ppg_nasa_sigma[X], ppg_nasa_sigma[Y],
+            measure_integration@product_sigma_def[X, Y]
+  SX: VAR ppg_measurable_space[X].MeasurableSpace
+  SY: VAR ppg_measurable_space[Y].MeasurableSpace
+  B: VAR set[X]
+  D: VAR set[Y]
+  E: VAR set[[X, Y]]
+  rectangle_intersection: LEMMA
+    cross_product(B, D) = intersection(leftCylinder(B), rightCylinder(D))
+  left_rectangle: LEMMA leftCylinder(B) = cross_product(B, fullset[Y])
+  right_rectangle: LEMMA rightCylinder(D) = cross_product(fullset[X], D)
+  rectangle_measurable: LEMMA SX(B) AND SY(D) IMPLIES
+    pairSigma(SX, SY)(cross_product(B, D))
+  cylinders_are_rectangles: LEMMA subset?(pairGenerators(SX, SY),
+    measurable_rectangle?(asNasa(SX), asNasa(SY)))
+  rectangles_are_measurable: LEMMA subset?(
+    measurable_rectangle?(asNasa(SX), asNasa(SY)), pairSigma(SX, SY))
+  rectangle_family_eq: LEMMA
+    (fullset[measurable_rectangle(asNasa(SX), asNasa(SY))] :: set[set[[X, Y]]]) =
+      measurable_rectangle?(asNasa(SX), asNasa(SY))
+  pair_nasa_eq: LEMMA
+    pairSigma(SX, SY) = sigma_times(asNasa(SX), asNasa(SY))
+END ppg_nasa_pair

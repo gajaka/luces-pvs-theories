@@ -1,0 +1,18 @@
+% Finite block laws are determined by their native measurable rectangles.
+ppg_probability_block_unique[I, Value: TYPE, domain: [I -> set[Value]],
+  (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_block_generators[I, Value, domain, spaces],
+            ppg_probability_block_restriction[I, Value, domain, spaces],
+            ppg_probability_unique
+  E, H: VAR CoordinateEvents
+  meetEvents(E, H): CoordinateEvents = LAMBDA (i: I): intersection(E(i), H(i))
+  box_intersection: LEMMA FORALL (F: set[I]):
+    intersection(blockBox(F, E), blockBox(F, H)) = blockBox(F, meetEvents(E, H))
+  boxes_intersection_closed: LEMMA FORALL (F: set[I]):
+    ppg_dynkin_system[Block(F)].intersectionClosed?(blockBoxes(F))
+  block_law_unique: THEOREM FORALL (F: finite_set[I], mu, nu: BlockLaw(F)):
+    (FORALL (E: CoordinateEvents): mu(blockBox(F, E)) = nu(blockBox(F, E)))
+      IMPLIES mu = nu
+END ppg_probability_block_unique

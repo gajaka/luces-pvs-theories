@@ -1,0 +1,15 @@
+% On a finite block, measurable rectangles generate the native product space.
+ppg_measurable_block_generators[I, Value: TYPE, domain: [I -> set[Value]],
+  (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_block_box[I, Value, domain, spaces]
+  blockBoxes(F: set[I]): set[set[Block(F)]] =
+    {A: set[Block(F)] | EXISTS (E: CoordinateEvents): A = blockBox(F, E)}
+  boxes_measurable: LEMMA FORALL (F: finite_set[I]): subset?(blockBoxes(F), blockSigma(F))
+  cylinders_in_boxes: LEMMA FORALL (F: set[I]):
+    subset?(ppg_measurable_dependent_product[bool, (F), Value,
+      LAMBDA (i: (F)): domain(i)].nativeCylinders(LAMBDA (i: (F)): spaces(i)), blockBoxes(F))
+  block_boxes_generate: LEMMA FORALL (F: finite_set[I]):
+    blockSigma(F) = ppg_measurable_space[Block(F)].generated(blockBoxes(F))
+END ppg_measurable_block_generators

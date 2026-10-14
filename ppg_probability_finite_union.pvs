@@ -1,0 +1,20 @@
+% Joining any disjoint finite coordinate blocks recovers their finite product law.
+ppg_probability_finite_union[I, Value: TYPE, domain: [I -> set[Value]],
+  F, G: finite_set[I], (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace],
+  (IMPORTING ppg_probability_block_base[I, Value, domain, spaces])
+  coins: [i: I -> CoordinateLaw(i)]]: THEORY
+BEGIN
+  IMPORTING ppg_probability_finite_consistency[I, Value, domain, spaces, coins],
+            ppg_probability_block_rectangle[I, Value, domain, F, G, spaces]
+  union_finite: LEMMA is_finite(U)
+  finite_union_box: LEMMA FORALL (E: CoordinateEvents): disjoint?(F, G) IMPLIES
+    unionLaw(finiteLaw(F), finiteLaw(G))(blockBox(U, E)) =
+      product(U, LAMBDA (i: I): coins(i)(E(i)))
+  finite_union_law: THEOREM disjoint?(F, G) IMPLIES
+    unionLaw(finiteLaw(F), finiteLaw(G)) = finiteLaw(U)
+  finite_block_independence: THEOREM FORALL (B: (blockSigma(F)), D: (blockSigma(G))):
+    disjoint?(F, G) IMPLIES
+      finiteLaw(U)(intersection(leftLift(B), rightLift(D))) =
+        finiteLaw(F)(B) * finiteLaw(G)(D)
+END ppg_probability_finite_union

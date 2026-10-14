@@ -26,7 +26,7 @@
     (THEN (SKOSIMP*) (EXPAND "measurable") (SKOSIMP*)
      (INST -1 "{n: nat | A!1(n + 1)}") (EXPAND "fullset")
      (EXPAND "inverseImage") (ASSERT))
-    NIL)
+    NIL NIL)
    ((|fullset| CONST-DECL "set" |sets| NIL)
     (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
     (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
@@ -70,7 +70,7 @@
      (GRIND :IF-MATCH ALL :EXCLUDE
       ("measurable" "sigma?" "TableSigma" "StateSigma" "resample" "is_finite"
        "pickFirstViolated" "atIdx" "randStep")))
-    NIL)
+    NIL NIL)
    ((|atIdx| CONST-DECL "(domain(v))" |ppg_mt_random_process| NIL)
     (|measurable_select| FORMULA-DECL NIL |ppg_measurable_select| NIL)
     (|select| CONST-DECL "Y" |ppg_measurable_select| NIL)
@@ -165,7 +165,7 @@
        "fullset[set[C]]" "f" "LAMBDA (omega: LogSpace): steps!1(omega)`1" "g"
        "LAMBDA (s: MTState): pickFirstViolated(bad!1, fallback!1, enumeration!1, s)"))
      (EXPAND "stepMeasurable") (GROUND))
-    NIL)
+    NIL NIL)
    ((|measurable_compose| FORMULA-DECL NIL |ppg_measurable_compose| NIL)
     (|TableSigma| CONST-DECL
      "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
@@ -223,7 +223,7 @@
      (GRIND :IF-MATCH ALL :EXCLUDE
       ("measurable" "sigma?" "TableSigma" "StateSigma" "resample" "is_finite"
        "pickFirstViolated" "atIdx" "randStep")))
-    NIL)
+    NIL NIL)
    ((|measurable_succ_index| FORMULA-DECL NIL |ppg_mt_trajectory_measurable|
      NIL)
     (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
@@ -289,7 +289,7 @@
      (GRIND :IF-MATCH ALL :EXCLUDE
       ("measurable" "sigma?" "TableSigma" "StateSigma" "resample" "is_finite"
        "pickFirstViolated" "atIdx" "randStep")))
-    NIL)
+    NIL NIL)
    ((|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
     (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
     (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
@@ -369,7 +369,7 @@
      (GRIND :IF-MATCH ALL :EXCLUDE
       ("measurable" "sigma?" "TableSigma" "StateSigma" "resample" "is_finite"
        "pickFirstViolated" "atIdx" "randStep")))
-    NIL)
+    NIL NIL)
    ((|measurable_next_draw| FORMULA-DECL NIL |ppg_mt_trajectory_measurable|
      NIL)
     (|measurable_advanced_counter| FORMULA-DECL NIL
@@ -430,7 +430,7 @@
    (""
     (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (REWRITE "randStep_succ")
      (EXPAND "advance") (ASSERT))
-    NIL)
+    NIL NIL)
    ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
      |real_props| NIL)
     (|randStep_succ| FORMULA-DECL NIL |ppg_mt_random_process| NIL)
@@ -522,59 +522,59 @@
         NIL))
       NIL))
     NIL)
-   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
-    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
-    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
-    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
-    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
-    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
-    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
-    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
-    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
-    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
-    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
-    (>= CONST-DECL "bool" |reals| NIL)
-    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
-    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
-    (C FORMAL-TYPE-DECL NIL |ppg_mt_trajectory_measurable| NIL)
-    (V FORMAL-TYPE-DECL NIL |ppg_mt_trajectory_measurable| NIL)
-    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_trajectory_measurable| NIL)
-    (|set| TYPE-EQ-DECL NIL |sets| NIL)
-    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
-     |ppg_mt_trajectory_measurable| NIL)
-    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
-    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
-    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
-    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
-    (|list| TYPE-DECL NIL |list_adt| NIL)
-    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
-    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
-    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
-    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
-    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
-    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
-    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
-    (|measurableBad| CONST-DECL "bool" |ppg_mt_policy_measurable| NIL)
-    (|Pi| TYPE-EQ-DECL NIL |ppg_measurable_product| NIL)
-    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
-    (|TableSigma| CONST-DECL
-     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
-     |ppg_mt_log_measurable| NIL)
+   ((|randStep_advance| FORMULA-DECL NIL |ppg_mt_trajectory_measurable| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|advance_measurable| FORMULA-DECL NIL |ppg_mt_trajectory_measurable| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|measurable_constant| FORMULA-DECL NIL |ppg_measurable_map| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|nat_induction| FORMULA-DECL NIL |naturalnumbers| NIL)
+    (|randStep| DEF-DECL "StepState" |ppg_mt_random_process| NIL)
+    (|stepMeasurable| CONST-DECL "bool" |ppg_mt_trajectory_measurable| NIL)
+    (|StepState| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
     (|StateSigma| CONST-DECL
      "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
      |ppg_mt_log_measurable| NIL)
-    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
-    (|StepState| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
-    (|stepMeasurable| CONST-DECL "bool" |ppg_mt_trajectory_measurable| NIL)
-    (|randStep| DEF-DECL "StepState" |ppg_mt_random_process| NIL)
-    (|nat_induction| FORMULA-DECL NIL |naturalnumbers| NIL)
-    (|fullset| CONST-DECL "set" |sets| NIL)
-    (|measurable_constant| FORMULA-DECL NIL |ppg_measurable_map| NIL)
-    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
-    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
-    (|advance_measurable| FORMULA-DECL NIL |ppg_mt_trajectory_measurable| NIL)
-    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
-    (|randStep_advance| FORMULA-DECL NIL |ppg_mt_trajectory_measurable| NIL))
+    (|TableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_log_measurable| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|Pi| TYPE-EQ-DECL NIL |ppg_measurable_product| NIL)
+    (|measurableBad| CONST-DECL "bool" |ppg_mt_policy_measurable| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_mt_trajectory_measurable| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_trajectory_measurable| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_trajectory_measurable| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_trajectory_measurable| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
    SHOSTAK))
  (|measurable_randStep| 0
   (|measurable_randStep-1| NIL 4000892617
@@ -588,7 +588,7 @@
       ("SX" "TableSigma(coordinates!1)" "SY" "StateSigma(coordinates!1)" "y"
        "initial!1"))
      (GROUND))
-    NIL)
+    NIL NIL)
    ((|Pi| TYPE-EQ-DECL NIL |ppg_measurable_product| NIL)
     (|StateSigma| CONST-DECL
      "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
@@ -638,7 +638,7 @@
        "bad" "bad!1" "fallback" "fallback!1" "enumeration" "enumeration!1" "t"
        "t!1"))
      (EXPAND "stepMeasurable") (EXPAND "randTraj") (GROUND))
-    NIL)
+    NIL NIL)
    ((|stepMeasurable| CONST-DECL "bool" |ppg_mt_trajectory_measurable| NIL)
     (|randTraj| CONST-DECL "MTState" |ppg_mt_random_process| NIL)
     (|measurable_randStep| FORMULA-DECL NIL |ppg_mt_trajectory_measurable| NIL)
@@ -680,7 +680,7 @@
        "enumeration!1" "t" "t!1"))
      (LEMMA "measurable_initialStateFromLog" ("coordinates" "coordinates!1"))
      (GROUND))
-    NIL)
+    NIL NIL)
    ((|measurable_initialStateFromLog| FORMULA-DECL NIL |ppg_mt_log_measurable|
      NIL)
     (|measurable_randStep_of_measurable_init| FORMULA-DECL NIL

@@ -4,7 +4,7 @@
    (""
     (THEN (SKOSIMP*) (TYPEPRED "universe")
      (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")))
-    NIL)
+    NIL NIL)
    ((|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
      NIL)
     (|intersection| CONST-DECL "set" |sets| NIL)
@@ -26,7 +26,7 @@
    (""
     (THEN (SKOSIMP*) (AUTO-REWRITE "mem_mtMismatch") (EXPAND "subset?")
      (EXPAND "member") (GRIND :EXCLUDE ("is_finite" "mtMismatch")))
-    NIL)
+    NIL NIL)
    ((|subset?| CONST-DECL "bool" |sets| NIL)
     (/= CONST-DECL "boolean" |notequal| NIL)
     (|mem_mtMismatch| FORMULA-DECL NIL |ppg_mt_constant_log| NIL)
@@ -77,29 +77,29 @@
         NIL))
       NIL))
     NIL)
-   ((|strict_subset?| CONST-DECL "bool" |sets| NIL)
+   ((|mtMismatch_resample_subset| FORMULA-DECL NIL |ppg_mt_constant_log| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_constant_log| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_constant_log| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_constant_log| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_constant_log| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|mt_wf| CONST-DECL "bool" |ppg_mt_semantics| NIL)
+    (|MTGood| CONST-DECL "bool" |ppg_mt_selection| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|mem_mtMismatch| FORMULA-DECL NIL |ppg_mt_constant_log| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|mtMismatch| CONST-DECL "finite_set[V]" |ppg_mt_constant_log| NIL)
+    (|resample| CONST-DECL "MTState" |ppg_mt_semantics| NIL)
     (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
      |sets_lemmas| NIL)
-    (|resample| CONST-DECL "MTState" |ppg_mt_semantics| NIL)
-    (|mtMismatch| CONST-DECL "finite_set[V]" |ppg_mt_constant_log| NIL)
-    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
-    (|mem_mtMismatch| FORMULA-DECL NIL |ppg_mt_constant_log| NIL)
-    (|subset?| CONST-DECL "bool" |sets| NIL)
-    (|member| CONST-DECL "bool" |sets| NIL)
-    (|MTGood| CONST-DECL "bool" |ppg_mt_selection| NIL)
-    (|mt_wf| CONST-DECL "bool" |ppg_mt_semantics| NIL)
-    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
-    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_constant_log| NIL)
-    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_constant_log| NIL)
-    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
-    (C FORMAL-TYPE-DECL NIL |ppg_mt_constant_log| NIL)
-    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
-    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
-    (|set| TYPE-EQ-DECL NIL |sets| NIL)
-    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
-    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
-    (V FORMAL-TYPE-DECL NIL |ppg_mt_constant_log| NIL)
-    (|mtMismatch_resample_subset| FORMULA-DECL NIL |ppg_mt_constant_log| NIL))
+    (|strict_subset?| CONST-DECL "bool" |sets| NIL))
    SHOSTAK))
  (|mtMismatch_card_randTraj_constantLog_lt| 0
   (|mtMismatch_card_randTraj_constantLog_lt-1| NIL 4000890382
@@ -122,7 +122,7 @@
      (GRIND :IF-MATCH NIL :EXCLUDE
       ("is_finite" "randStep" "randTraj" "mtMismatch" "MTGood" "mt_wf"
        "pickFirstViolated")))
-    NIL)
+    NIL NIL)
    ((|pickFirstViolated| CONST-DECL "C" |ppg_mt_random_process| NIL)
     (|mtMismatch_resample_ssubset| FORMULA-DECL NIL |ppg_mt_constant_log| NIL)
     (|randTraj_constantLog_succ| FORMULA-DECL NIL |ppg_mt_random_process| NIL)
@@ -175,7 +175,7 @@
      (GRIND :IF-MATCH ALL :EXCLUDE
       ("is_finite" "mt_wf" "MTGood" "randStep" "mtMismatch"
        "completeEnumeration")))
-    NIL)
+    NIL NIL)
    ((|mtMismatch_card_randTraj_constantLog_lt| FORMULA-DECL NIL
      |ppg_mt_constant_log| NIL)
     (|randStep_zero| FORMULA-DECL NIL |ppg_mt_random_process| NIL)
@@ -225,7 +225,7 @@
      (GRIND :IF-MATCH NIL :EXCLUDE
       ("is_finite" "MTGood" "mt_wf" "randTraj" "completeEnumeration"))
      (INST + "t!1") (ASSERT))
-    NIL)
+    NIL NIL)
    ((|card_subset| FORMULA-DECL NIL |finite_sets| NIL)
     (|mtMismatch| CONST-DECL "finite_set[V]" |ppg_mt_constant_log| NIL)
     (|universe| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"

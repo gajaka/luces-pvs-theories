@@ -1,0 +1,173 @@
+(|ppg_probability_block_unique|
+ (|meetEvents_TCC1| 0
+  (|meetEvents_TCC1-1| NIL 4000955769
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "measurable_intersection[(domain(i!1))]"
+      ("S" "spaces(i!1)" "A" "E!1(i!1)" "B" "H!1(i!1)"))
+     (ASSERT))
+    NIL)
+   ((|measurable_intersection| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_block_unique| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_block_unique| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_block_unique| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_block_unique| NIL))
+   NIL
+   (|meetEvents| SUBTYPE "intersection[(domain(i))](E(i), H(i))"
+    "(ppg_probability_block_unique.spaces(ppg_probability_block_unique.i))"
+    (10 54 10 78))))
+ (|box_intersection| 0
+  (|box_intersection-1| NIL 4000955772
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")))
+    NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|blockBox| CONST-DECL "set[Block[I, Value, domain, spaces](F)]"
+     |ppg_measurable_block_box| NIL)
+    (|meetEvents| CONST-DECL "CoordinateEvents" |ppg_probability_block_unique|
+     NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_block_unique| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_block_unique| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_block_unique| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_block_unique| NIL))
+   SHOSTAK))
+ (|boxes_intersection_closed| 0
+  (|boxes_intersection_closed-1| NIL 4000955772
+   (""
+    (THEN (SKOSIMP*) (EXPAND "intersectionClosed?") (EXPAND "blockBoxes")
+     (SKOSIMP*) (INST + "meetEvents(E!1, E!2)")
+     (LEMMA "box_intersection" ("F" "F!1" "E" "E!1" "H" "E!2")) (ASSERT))
+    NIL)
+   ((|blockBoxes| CONST-DECL "set[set[Block[I, Value, domain, spaces](F)]]"
+     |ppg_measurable_block_generators| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_block_unique| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_block_unique| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_block_unique| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_block_unique| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|meetEvents| CONST-DECL "CoordinateEvents" |ppg_probability_block_unique|
+     NIL)
+    (|box_intersection| FORMULA-DECL NIL |ppg_probability_block_unique| NIL)
+    (|intersectionClosed?| CONST-DECL "bool" |ppg_dynkin_system| NIL))
+   SHOSTAK))
+ (|block_law_unique_TCC1| 0
+  (|block_law_unique_TCC1-1| NIL 4000955769
+   (""
+    (THEN (SKOSIMP*) (LEMMA "block_box_measurable" ("F" "F!1" "E" "E!1"))
+     (ASSERT))
+    NIL)
+   ((|block_box_measurable| FORMULA-DECL NIL |ppg_measurable_block_box| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_block_unique| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_block_unique| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_block_unique| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_block_unique| NIL))
+   NIL
+   (|block_law_unique| SUBTYPE "blockBox[I, Value, domain, spaces](F, E)"
+    "(ppg_measurable_block[ppg_probability_block_unique.I, ppg_probability_block_unique.Value, ppg_probability_block_unique.domain, ppg_probability_block_unique.spaces].blockSigma(ppg_probability_block_unique.F))"
+    (16 38 16 52))))
+ (|block_law_unique| 0
+  (|block_law_unique-1| NIL 4000955772
+   (""
+    (THEN (SKOSIMP*) (LEMMA "boxes_intersection_closed" ("F" "F!1"))
+     (LEMMA "boxes_measurable" ("F" "F!1"))
+     (LEMMA "block_boxes_generate" ("F" "F!1"))
+     (LEMMA "probability_unique[Block(F!1), blockSigma(F!1)]"
+      ("G" "blockBoxes(F!1)" "mu" "mu!1" "nu" "nu!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("blockSigma" "blockBox" "generated" "intersectionClosed?" "is_finite"
+       "sigma?" "probability?")))
+    NIL)
+   ((|boxes_measurable| FORMULA-DECL NIL |ppg_measurable_block_generators| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_block_unique| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_block_unique| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_block_unique| NIL)
+    (|probability_unique| FORMULA-DECL NIL |ppg_probability_unique| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|BlockLaw| TYPE-EQ-DECL NIL |ppg_probability_block_restriction| NIL)
+    (|blockBoxes| CONST-DECL "set[set[Block[I, Value, domain, spaces](F)]]"
+     |ppg_measurable_block_generators| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|blockBox| CONST-DECL "set[Block[I, Value, domain, spaces](F)]"
+     |ppg_measurable_block_box| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|block_boxes_generate| FORMULA-DECL NIL |ppg_measurable_block_generators|
+     NIL)
+    (|boxes_intersection_closed| FORMULA-DECL NIL
+     |ppg_probability_block_unique| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_block_unique| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK)))
+

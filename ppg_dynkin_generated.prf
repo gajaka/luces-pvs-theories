@@ -1,0 +1,162 @@
+(|ppg_dynkin_generated|
+ (|hull_contains| 0
+  (|hull_contains-1| NIL 4000955220
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("dynkin?")) NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|hull_member| 0
+  (|hull_member-1| NIL 4000955293
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("dynkin?")) NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|hull_least| 0
+  (|hull_least-1| NIL 4000955220
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("dynkin?")) NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|hull_minimal_member| 0
+  (|hull_minimal_member-1| NIL 4000955332
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("dynkin?" "subset?")) NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|hull_dynkin| 0
+  (|hull_dynkin-1| NIL 4000955220
+   (""
+    (THEN (SKOSIMP*) (EXPAND "dynkin?" +)
+     (SPREAD (SPLIT)
+      ((THEN (EXPAND "hull") (SKOSIMP*) (REWRITE "dynkin_full"))
+       (THEN (SKOSIMP*) (EXPAND "hull" +) (SKOSIMP*)
+        (LEMMA "dynkin_difference" ("D" "D!1" "A" "A!1" "B" "B!1"))
+        (EXPAND "hull" -)
+        (GRIND :IF-MATCH ALL :EXCLUDE ("dynkin?" "subset?" "difference")))
+       (THEN (SKOSIMP*) (EXPAND "hull" +) (SKOSIMP*)
+        (LEMMA "dynkin_union_increasing" ("D" "D!1" "E" "E!1"))
+        (EXPAND "hull" -)
+        (GRIND :IF-MATCH ALL :EXCLUDE
+         ("dynkin?" "subset?" "countableUnion" "increasingEvents"))))))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|dynkin_full| FORMULA-DECL NIL |ppg_dynkin_system| NIL)
+    (|dynkin_difference| FORMULA-DECL NIL |ppg_dynkin_system| NIL)
+    (|dynkin_union_increasing| FORMULA-DECL NIL |ppg_dynkin_system| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|dynkin?| CONST-DECL "bool" |ppg_dynkin_system| NIL))
+   SHOSTAK))
+ (|meet_full| 0
+  (|meet_full-1| NIL 4000955220
+   ("" (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (GRIND)) NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|meet_difference| 0
+  (|meet_difference-1| NIL 4000955220
+   ("" (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (GRIND)) NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|meet_subset| 0
+  (|meet_subset-1| NIL 4000955220
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL) NIL SHOSTAK))
+ (|meet_increasing| 0
+  (|meet_increasing-1| NIL 4000955220
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL)
+   ((|increasingEvents| CONST-DECL "bool" |ppg_dynkin_system| NIL)) SHOSTAK))
+ (|meet_union| 0
+  (|meet_union-1| NIL 4000955220
+   ("" (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (GRIND :IF-MATCH ALL))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|countableUnion| CONST-DECL "Event" |ppg_measurable_space| NIL))
+   SHOSTAK))
+ (|meet_class_dynkin| 0
+  (|meet_class_dynkin-1| NIL 4000955220
+   (""
+    (THEN (SKOSIMP*) (EXPAND "dynkin?" +) (EXPAND "meetClass")
+     (REWRITE "meet_full")
+     (SPREAD (SPLIT)
+      ((THEN (LEMMA "dynkin_full" ("D" "D!1")) (ASSERT)) (PROPAX)
+       (THEN (SKOSIMP*) (REWRITE "meet_difference")
+        (LEMMA "meet_subset" ("A" "A!1" "B" "A!2" "C" "B!1"))
+        (LEMMA "dynkin_difference" ("D" "D!1" "A" "A!2" "B" "B!1"))
+        (LEMMA "dynkin_difference"
+         ("D" "D!1" "A" "intersection(A!1, A!2)" "B" "intersection(A!1, B!1)"))
+        (GRIND :EXCLUDE
+         ("dynkin?" "intersection" "difference" "countableUnion"
+          "increasingEvents")))
+       (THEN (SKOSIMP*) (REWRITE "meet_union")
+        (LEMMA "meet_increasing" ("A" "A!1" "E" "E!1"))
+        (LEMMA "dynkin_union_increasing" ("D" "D!1" "E" "E!1"))
+        (LEMMA "dynkin_union_increasing"
+         ("D" "D!1" "E" "meetFamily(A!1, E!1)"))
+        (GRIND :IF-MATCH ALL :EXCLUDE
+         ("dynkin?" "intersection" "difference" "increasingEvents"
+          "countableUnion"))))))
+    NIL)
+   ((|dynkin_full| FORMULA-DECL NIL |ppg_dynkin_system| NIL)
+    (|dynkin_difference| FORMULA-DECL NIL |ppg_dynkin_system| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|dynkin_union_increasing| FORMULA-DECL NIL |ppg_dynkin_system| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|dynkin?| CONST-DECL "bool" |ppg_dynkin_system| NIL))
+   SHOSTAK))
+ (|generator_meet_class| 0
+  (|generator_meet_class-1| NIL 4000955293
+   (""
+    (THEN (SKOSIMP*) (EXPAND "subset?" +) (SKOSIMP*) (EXPAND "member")
+     (EXPAND "meetClass") (LEMMA "hull_member" ("G" "G!1" "A" "x!1"))
+     (LEMMA "hull_member" ("G" "G!1" "A" "intersection(A!1, x!1)"))
+     (EXPAND "intersectionClosed?")
+     (GRIND :IF-MATCH ALL :EXCLUDE ("hull" "dynkin?" "intersection")))
+    NIL)
+   ((|intersectionClosed?| CONST-DECL "bool" |ppg_dynkin_system| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   SHOSTAK))
+ (|generator_meet_hull| 0
+  (|generator_meet_hull-1| NIL 4000955220
+   (""
+    (THEN (SKOSIMP*) (LEMMA "hull_member" ("G" "G!1" "A" "A!1"))
+     (LEMMA "hull_dynkin" ("G" "G!1"))
+     (LEMMA "generator_meet_class" ("G" "G!1" "A" "A!1"))
+     (LEMMA "meet_class_dynkin" ("D" "hull(G!1)" "A" "A!1"))
+     (LEMMA "hull_minimal_member"
+      ("G" "G!1" "D" "meetClass(hull(G!1), A!1)" "A" "B!1"))
+     (ASSERT) (EXPAND "meetClass")
+     (GRIND :EXCLUDE ("hull" "dynkin?" "intersectionClosed?" "intersection")))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|hull_meet_class| 0
+  (|hull_meet_class-1| NIL 4000955293
+   (""
+    (THEN (SKOSIMP*) (EXPAND "subset?" +) (SKOSIMP*) (EXPAND "member")
+     (EXPAND "meetClass") (LEMMA "hull_member" ("G" "G!1" "A" "x!1"))
+     (LEMMA "generator_meet_hull" ("G" "G!1" "A" "x!1" "B" "A!1"))
+     (LEMMA "intersection_commutative[X]" ("a" "x!1" "b" "A!1")) (ASSERT))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|hull_intersection| 0
+  (|hull_intersection-1| NIL 4000955220
+   (""
+    (THEN (SKOSIMP*) (EXPAND "intersectionClosed?" +) (SKOSIMP*)
+     (LEMMA "hull_dynkin" ("G" "G!1"))
+     (LEMMA "hull_meet_class" ("G" "G!1" "A" "A!1"))
+     (LEMMA "meet_class_dynkin" ("D" "hull(G!1)" "A" "A!1"))
+     (LEMMA "hull_minimal_member"
+      ("G" "G!1" "D" "meetClass(hull(G!1), A!1)" "A" "B!1"))
+     (ASSERT) (EXPAND "meetClass")
+     (GRIND :EXCLUDE ("hull" "dynkin?" "intersectionClosed?" "intersection")))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|intersectionClosed?| CONST-DECL "bool" |ppg_dynkin_system| NIL))
+   SHOSTAK))
+ (|pi_lambda| 0
+  (|pi_lambda-1| NIL 4000955220
+   (""
+    (THEN (SKOSIMP*) (LEMMA "hull_dynkin" ("G" "G!1"))
+     (LEMMA "hull_intersection" ("G" "G!1"))
+     (LEMMA "dynkin_sigma" ("D" "hull(G!1)")) (ASSERT)
+     (LEMMA "generated_least" ("G" "G!1" "S" "hull(G!1)"))
+     (LEMMA "hull_contains" ("G" "G!1"))
+     (LEMMA "hull_least" ("G" "G!1" "D" "D!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("dynkin?" "hull" "sigma?" "generated" "intersectionClosed?")))
+    NIL)
+   ((|generated_least| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|dynkin_sigma| FORMULA-DECL NIL |ppg_dynkin_system| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   SHOSTAK)))
+

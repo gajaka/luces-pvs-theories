@@ -1,0 +1,10 @@
+% A finite product with one varying factor evaluates at that coordinate.
+ppg_finite_product_factors[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_product[T], ppg_finite_induction[T]
+  product_single_factor: LEMMA FORALL (S: finite_set[T], i: T, a: real):
+    product(S, LAMBDA (j: T): IF j = i THEN a ELSE 1 ENDIF) =
+      IF S(i) THEN a ELSE 1 ENDIF
+  product_all_one: LEMMA FORALL (S: finite_set[T]):
+    product(S, LAMBDA (j: T): 1) = 1
+END ppg_finite_product_factors

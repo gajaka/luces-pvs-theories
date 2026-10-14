@@ -1,0 +1,19 @@
+% A block retains the native measurable space of each selected coordinate.
+ppg_measurable_block[I, Value: TYPE, domain: [I -> set[Value]],
+  (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_dependent_product
+  Block(F: set[I]): TYPE = [i: (F) -> (domain(i))]
+  blockSigma(F: set[I]): ppg_measurable_space[Block(F)].MeasurableSpace =
+    ppg_measurable_dependent_product[bool, (F), Value,
+      LAMBDA (i: (F)): domain(i)].nativeProduct(LAMBDA (i: (F)): spaces(i))
+  blockCylinder(F: set[I], i: (F), B: set[(domain(i))]): set[Block(F)] =
+    {x: Block(F) | B(x(i))}
+  block_cylinder_measurable: LEMMA
+    FORALL (F: set[I], i: (F), B: (spaces(i))):
+      blockSigma(F)(blockCylinder(F, i, B))
+  block_coordinate_measurable: LEMMA FORALL (F: set[I], i: (F)):
+    ppg_measurable_map[Block(F), (domain(i))].measurable(
+      blockSigma(F), spaces(i), LAMBDA (x: Block(F)): x(i))
+END ppg_measurable_block

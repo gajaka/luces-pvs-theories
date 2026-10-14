@@ -1,0 +1,20 @@
+% A subtype-valued map is measurable exactly when its inclusion is measurable.
+ppg_measurable_subtype_map[A, X: TYPE, D: set[X]]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_subtype[X, D],
+            ppg_measurable_map[A, (D)], ppg_measurable_map[A, X]
+  SA: VAR ppg_measurable_space[A].MeasurableSpace
+  SD: VAR ppg_measurable_space[(D)].MeasurableSpace
+  f: VAR [A -> (D)]
+  B: VAR set[X]
+  E: VAR set[(D)]
+  coerce(f)(a: A): X = f(a)
+  coerce_preimage: LEMMA inverseImage(coerce(f), B) = inverseImage(f, trace(B))
+  representative_preimage: LEMMA inverseImage(coerce(f), representative(E)) = inverseImage(f, E)
+  measurable_coerce: LEMMA measurable(SA, SD, f) IMPLIES
+    measurable(SA, ambientSpace(SD), coerce(f))
+  measurable_subtype: LEMMA measurable(SA, ambientSpace(SD), coerce(f)) IMPLIES
+    measurable(SA, SD, f)
+  measurable_subtype_iff: LEMMA measurable(SA, SD, f) IFF
+    measurable(SA, ambientSpace(SD), coerce(f))
+END ppg_measurable_subtype_map

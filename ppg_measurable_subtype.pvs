@@ -1,0 +1,25 @@
+% Transfer a sigma algebra on a subtype through its inclusion.
+ppg_measurable_subtype[X: TYPE, D: set[X]]: THEORY
+BEGIN
+  Sub: TYPE = (D)
+  IMPORTING ppg_measurable_map[Sub, X]
+  S: VAR ppg_measurable_space[Sub].MeasurableSpace
+  A: VAR set[Sub]
+  B: VAR set[X]
+  inclusion(x: Sub): X = x
+  trace(B): set[Sub] = {x: Sub | B(x)}
+  representative(A): set[X] = {x: X | EXISTS (y: Sub): y = x AND A(y)}
+  ambientSpace(S): ppg_measurable_space[X].MeasurableSpace = imageSigma(S, inclusion)
+  trace_inverseImage: LEMMA trace(B) = inverseImage(inclusion, B)
+  trace_representative: LEMMA trace(representative(A)) = A
+  representative_trace: LEMMA representative(trace(B)) = intersection(D, B)
+  trace_domain: LEMMA trace(D) = fullset[Sub]
+  trace_outside: LEMMA trace(complement(D)) = emptyset[Sub]
+  ambient_measurable_iff: LEMMA ambientSpace(S)(B) IFF S(trace(B))
+  representative_measurable_iff: LEMMA ambientSpace(S)(representative(A)) IFF S(A)
+  domain_measurable: LEMMA ambientSpace(S)(D)
+  outside_measurable: LEMMA ambientSpace(S)(complement(D))
+  inclusion_measurable: LEMMA measurable(S, ambientSpace(S), inclusion)
+  ambient_recovers_subtype: LEMMA
+    {A: set[Sub] | EXISTS (B: set[X]): ambientSpace(S)(B) AND A = trace(B)} = S
+END ppg_measurable_subtype

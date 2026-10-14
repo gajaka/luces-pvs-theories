@@ -1,0 +1,16 @@
+% No coordinate or value inhabitant is needed for the empty product.
+ppg_probability_finite_empty: THEORY
+BEGIN
+  IMPORTING ppg_measurable_space, ppg_probability_dirac
+  Empty: TYPE = {b: bool | FALSE}
+  domain(i: Empty): set[Empty] = emptyset[Empty]
+  spaces(i: Empty): ppg_measurable_space[(domain(i))].MeasurableSpace =
+    fullset[set[(domain(i))]]
+  seed(i: Empty): (domain(i)) = i
+  coins(i: Empty): ppg_probability_measure[(domain(i)), spaces(i)].Probability =
+    ppg_probability_dirac[(domain(i)), spaces(i)].dirac(seed(i))
+  IMPORTING ppg_probability_finite_product[Empty, Empty, domain, spaces, coins]
+  empty_product_exists: LEMMA EXISTS (mu: BlockLaw(emptyset[Empty])): mu = finiteLaw(emptyset[Empty])
+  empty_product_unique_assignment: LEMMA FORALL (x, y: Block(emptyset[Empty])): x = y
+  empty_product_box_mass: LEMMA finiteLaw(emptyset[Empty])(blockBox(emptyset[Empty], fullEvents)) = 1
+END ppg_probability_finite_empty

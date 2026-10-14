@@ -1,0 +1,14 @@
+% The union law multiplies the masses of finite block rectangles.
+ppg_probability_block_rectangle[I, Value: TYPE, domain: [I -> set[Value]],
+  F, G: finite_set[I], (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]]: THEORY
+BEGIN
+  IMPORTING ppg_probability_block_union[I, Value, domain, F, G, spaces],
+            ppg_measurable_block_box[I, Value, domain, spaces]
+  E: VAR CoordinateEvents
+  box_union: LEMMA blockBox(U, E) =
+    intersection(leftLift(blockBox(F, E)), rightLift(blockBox(G, E)))
+  union_box_mass: LEMMA FORALL (mu: BlockLaw(F), nu: BlockLaw(G)):
+    disjoint?(F, G) IMPLIES
+      unionLaw(mu, nu)(blockBox(U, E)) = mu(blockBox(F, E)) * nu(blockBox(G, E))
+END ppg_probability_block_rectangle

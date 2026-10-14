@@ -1,0 +1,40 @@
+% Independent laws on disjoint blocks combine into a law on their union.
+ppg_probability_block_union[I, Value: TYPE, domain: [I -> set[Value]], F, G: set[I],
+  (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_block_union[I, Value, domain, F, G, spaces],
+            ppg_probability_block_restriction[I, Value, domain, spaces],
+            ppg_probability_pair[LeftBlock, RightBlock, blockSigma(F), blockSigma(G)],
+            ppg_probability_map[BlockPair, UnionBlock, pairSpace, blockSigma(U)]
+  mu: VAR BlockLaw(F)
+  nu: VAR BlockLaw(G)
+  B: VAR (blockSigma(F))
+  D: VAR (blockSigma(G))
+  joint_space_eq: LEMMA JointSpace = pairSpace
+  unionLaw(mu, nu): BlockLaw(U) = pushforward(productLaw(mu, nu), join)
+  leftLift(B): set[UnionBlock] = {x: UnionBlock | B(leftPart(x))}
+  rightLift(D): set[UnionBlock] = {x: UnionBlock | D(rightPart(x))}
+  left_lift_measurable: LEMMA blockSigma(U)(leftLift(B))
+  right_lift_measurable: LEMMA blockSigma(U)(rightLift(D))
+  join_left_preimage: LEMMA inverseImage(join, leftLift(B)) =
+    ppg_measurable_pair[BlockPair, LeftBlock, RightBlock].leftCylinder(B)
+  join_right_preimage: LEMMA disjoint?(F, G) IMPLIES
+    inverseImage(join, rightLift(D)) =
+      ppg_measurable_pair[BlockPair, LeftBlock, RightBlock].rightCylinder(D)
+  join_rectangle_preimage: LEMMA disjoint?(F, G) IMPLIES
+    inverseImage(join, intersection(leftLift(B), rightLift(D))) = cross_product(B, D)
+  union_left_mass: LEMMA unionLaw(mu, nu)(leftLift(B)) = mu(B)
+  union_right_mass: LEMMA disjoint?(F, G) IMPLIES unionLaw(mu, nu)(rightLift(D)) = nu(D)
+  union_rectangle_mass: LEMMA disjoint?(F, G) IMPLIES
+    unionLaw(mu, nu)(intersection(leftLift(B), rightLift(D))) = mu(B) * nu(D)
+  union_block_independence: LEMMA disjoint?(F, G) IMPLIES
+    unionLaw(mu, nu)(intersection(leftLift(B), rightLift(D))) =
+      unionLaw(mu, nu)(leftLift(B)) * unionLaw(mu, nu)(rightLift(D))
+  union_left_marginal: LEMMA marginal(U, F)(unionLaw(mu, nu)) = mu
+  union_right_marginal: LEMMA disjoint?(F, G) IMPLIES marginal(U, G)(unionLaw(mu, nu)) = nu
+  union_left_submarginal: LEMMA FORALL (H: {H: set[I] | subset?(H, F)}):
+    marginal(U, H)(unionLaw(mu, nu)) = marginal(F, H)(mu)
+  union_right_submarginal: LEMMA FORALL (H: {H: set[I] | subset?(H, G)}):
+    disjoint?(F, G) IMPLIES marginal(U, H)(unionLaw(mu, nu)) = marginal(G, H)(nu)
+END ppg_probability_block_union

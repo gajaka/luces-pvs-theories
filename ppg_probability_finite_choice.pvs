@@ -1,0 +1,28 @@
+% Every recursive choice of the next coordinate yields the same finite law.
+ppg_probability_finite_choice[I, Value: TYPE, domain: [I -> set[Value]],
+  (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace],
+  (IMPORTING ppg_probability_block_base[I, Value, domain, spaces])
+  coins: [i: I -> CoordinateLaw(i)],
+  pick: [F: non_empty_finite_set[I] -> (F)]]: THEORY
+BEGIN
+  IMPORTING ppg_probability_finite_consistency[I, Value, domain, spaces, coins],
+            ppg_probability_finite_union
+  picked_union: LEMMA FORALL (F: non_empty_finite_set[I]):
+    ppg_measurable_block_union[I, Value, domain,
+      singleton[I](pick(F)), remove[I](pick(F), F), spaces].U = F
+  picked_disjoint: LEMMA FORALL (F: non_empty_finite_set[I]):
+    disjoint?[I](singleton[I](pick(F)), remove[I](pick(F), F))
+  picked_smaller: LEMMA FORALL (F: non_empty_finite_set[I]):
+    card(remove[I](pick(F), F)) < card(F)
+  selectedLaw(F: finite_set[I]): RECURSIVE BlockLaw(F) =
+    IF empty?(F) THEN emptyLaw
+    ELSE ppg_probability_block_union[I, Value, domain,
+      singleton[I](pick(F)), remove[I](pick(F), F), spaces].unionLaw(
+        singleLaw(pick(F), coins(pick(F))), selectedLaw(remove[I](pick(F), F)))
+    ENDIF
+    MEASURE card(F)
+  selected_law_box: LEMMA FORALL (F: finite_set[I], E: CoordinateEvents):
+    selectedLaw(F)(blockBox(F, E)) = product(F, LAMBDA (i: I): coins(i)(E(i)))
+  selected_law_eq: THEOREM FORALL (F: finite_set[I]): selectedLaw(F) = finiteLaw(F)
+END ppg_probability_finite_choice

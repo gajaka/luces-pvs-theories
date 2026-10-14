@@ -1,0 +1,24 @@
+% Distinct coordinate domains and an empty block instantiate the block laws.
+ppg_probability_block_examples: THEORY
+BEGIN
+  IMPORTING ppg_measurable_space
+  domain(i: bool): set[nat] = {n: nat | n = IF i THEN 0 ELSE 1 ENDIF}
+  spaces(i: bool): ppg_measurable_space[(domain(i))].MeasurableSpace =
+    fullset[set[(domain(i))]]
+  F: set[bool] = {i: bool | i}
+  G: set[bool] = {i: bool | NOT i}
+  IMPORTING ppg_probability_block_union[bool, nat, domain, F, G, spaces],
+            ppg_probability_dirac
+  leftPoint: LeftBlock = LAMBDA (i: (F)): 0
+  rightPoint: RightBlock = LAMBDA (i: (G)): 1
+  leftLaw: BlockLaw(F) = ppg_probability_dirac[LeftBlock, blockSigma(F)].dirac(leftPoint)
+  rightLaw: BlockLaw(G) = ppg_probability_dirac[RightBlock, blockSigma(G)].dirac(rightPoint)
+  joinedLaw: BlockLaw(U) = unionLaw(leftLaw, rightLaw)
+  disjoint_blocks: LEMMA disjoint?(F, G)
+  left_point_marginal: LEMMA marginal(U, F)(joinedLaw) = leftLaw
+  right_point_marginal: LEMMA marginal(U, G)(joinedLaw) = rightLaw
+  emptyPoint: Block(emptyset[bool]) = LAMBDA (i: (emptyset[bool])): 0
+  empty_block_unique: LEMMA FORALL (x, y: Block(emptyset[bool])): x = y
+  empty_probability_exists: LEMMA EXISTS (mu: BlockLaw(emptyset[bool])):
+    mu = ppg_probability_dirac[Block(emptyset[bool]), blockSigma(emptyset[bool])].dirac(emptyPoint)
+END ppg_probability_block_examples

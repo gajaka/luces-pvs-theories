@@ -1,0 +1,284 @@
+(|ppg_probability_unique|
+ (|nasa_space_eq| 0
+  (|nasa_space_eq-1| NIL 4000955494 ("" (THEN (EXPAND "asNasa") (ASSERT)) NIL)
+   ((|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)) SHOSTAK))
+ (|law_finite_TCC1| 0
+  (|law_finite_TCC1-1| NIL 4000955493 ("" (SUBTYPE-TCC) NIL)
+   ((|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)) NIL
+   (|law_finite| SUBTYPE "mu"
+    "[(ppg_nasa_sigma[ppg_probability_unique.X].asNasa(ppg_probability_unique.S)) -> nnreal]"
+    (11 74 11 76))))
+ (|law_finite_TCC2| 0
+  (|law_finite_TCC2-1| NIL 4000955493
+   ("" (THEN (EXPAND "asNasa") (LEMMA "measurable_empty" ("S" "S")) (ASSERT))
+    NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|measurable_empty| FORMULA-DECL NIL |ppg_measurable_space| NIL))
+   NIL
+   (|law_finite| ASSUMING
+    "measure_integration@generalized_measure_def[X, asNasa[X](S)]"
+    "S_empty: ASSUMPTION generalized_measure_def.S(sets[generalized_measure_def.T].emptyset)"
+    (11 20 11 73))))
+ (|law_finite| 0
+  (|law_finite-1| NIL 4000955494
+   (""
+    (THEN (SKOSIMP*) (LEMMA "nasa_space_eq") (REPLACE -1 :ACTUALS? T)
+     (TYPEPRED "mu!1") (EXPAND "probability?") (PROP))
+    NIL)
+   ((|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   SHOSTAK))
+ (|difference_measurable| 0
+  (|difference_measurable-1| NIL 4000955494
+   (""
+    (THEN (SKOSIMP*) (LEMMA "measurable_complement" ("S" "S" "A" "A!1"))
+     (LEMMA "measurable_intersection"
+      ("S" "S" "A" "B!1" "B" "complement(A!1)"))
+     (LEMMA "difference_intersection[X]" ("a" "B!1" "b" "A!1"))
+     (GRIND :EXCLUDE ("sigma?")))
+    NIL)
+   ((|measurable_intersection| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|complement| CONST-DECL "set" |sets| NIL)
+    (|measurable_complement| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   SHOSTAK))
+ (|nested_difference_mass_TCC1| 0
+  (|nested_difference_mass_TCC1-1| NIL 4000955493
+   ("" (THEN (SKOSIMP*) (REWRITE "difference_measurable")) NIL)
+   ((|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   NIL
+   (|nested_difference_mass| SUBTYPE "difference[X](B, A)"
+    "(ppg_probability_unique.S)" (14 23 14 39))))
+ (|nested_difference_mass| 0
+  (|nested_difference_mass-1| NIL 4000955494
+   (""
+    (THEN (SKOSIMP*) (LEMMA "law_finite" ("mu" "mu!1"))
+     (LEMMA "fm_subset[X, asNasa(S), mu!1]" ("A" "A!1" "B" "B!1"))
+     (EXPAND "asNasa")
+     (GRIND :EXCLUDE
+      ("finite_measure?" "sigma?" "probability?" "difference" "subset?")))
+    NIL)
+   ((|fm_subset| FORMULA-DECL NIL |finite_measure| |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|finite_measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL))
+   SHOSTAK))
+ (|increasing_union_mass_TCC1| 0
+  (|increasing_union_mass_TCC1-1| NIL 4000955493
+   (""
+    (THEN (SKOSIMP*) (LEMMA "measurable_countable_union" ("S" "S" "E" "E!1"))
+     (GRIND :EXCLUDE ("sigma?" "countableUnion" "increasingEvents")))
+    NIL)
+   ((|measurable_countable_union| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   NIL
+   (|increasing_union_mass| SUBTYPE "countableUnion[X](E)"
+    "(ppg_probability_unique.S)" (16 49 16 66))))
+ (|increasing_union_mass| 0
+  (|increasing_union_mass-1| NIL 4000955494
+   (""
+    (THEN (SKOSIMP*) (LEMMA "law_finite" ("mu" "mu!1"))
+     (LEMMA "fm_IUnion[X, asNasa(S), mu!1]" ("X" "E!1"))
+     (LEMMA "sequence_union" ("E" "E!1")) (LEMMA "nasa_space_eq")
+     (REPLACE -1 :ACTUALS? T) (EXPAND "o")
+     (GRIND :EXCLUDE
+      ("finite_measure?" "sigma?" "probability?" "convergence" "IUnion"
+       "countableUnion" "subset?")))
+    NIL)
+   ((|fm_IUnion| FORMULA-DECL NIL |finite_measure| |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|finite_measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|increasingEvents| CONST-DECL "bool" |ppg_dynkin_system| NIL)
+    (|increasing?| CONST-DECL "bool" |fun_preds_partial| |structures|)
+    (|sequence_union| FORMULA-DECL NIL |ppg_nasa_sigma| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL))
+   SHOSTAK))
+ (|equal_union_mass| 0
+  (|equal_union_mass-1| NIL 4000955582
+   (""
+    (THEN (SKOSIMP*) (LEMMA "increasing_union_mass" ("mu" "mu!1" "E" "E!1"))
+     (LEMMA "increasing_union_mass" ("mu" "nu!1" "E" "E!1"))
+     (SPREAD (CASE "mu!1 o E!1 = nu!1 o E!1")
+      ((THEN
+        (LEMMA "convergence_sequences.unique_limit"
+         ("u" "mu!1 o E!1" "l1" "mu!1(countableUnion(E!1))" "l2"
+          "nu!1(countableUnion(E!1))"))
+        (EXPAND "o") (ASSERT) (REPLACE -1) (EXPAND "convergence")
+        (GRIND :IF-MATCH ALL :EXCLUDE
+         ("sigma?" "probability?" "countableUnion" "increasingEvents")))
+       (THEN (APPLY-EXTENSIONALITY :HIDE? T)
+        (GRIND :IF-MATCH ALL :EXCLUDE
+         ("sigma?" "probability?" "convergence" "countableUnion"
+          "increasingEvents"))))))
+    NIL)
+   ((|sequence| TYPE-EQ-DECL NIL |sequences| NIL)
+    (|countableUnion| CONST-DECL "Event" |ppg_measurable_space| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|unique_limit| FORMULA-DECL NIL |convergence_sequences| |analysis|)
+    (|convergence| CONST-DECL "bool" |convergence_sequences| |analysis|)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL))
+   SHOSTAK))
+ (|agreement_full| 0
+  (|agreement_full-1| NIL 4000955495
+   (""
+    (THEN (SKOSIMP*) (EXPAND "agreement") (LEMMA "measurable_full" ("S" "S"))
+     (LEMMA "probability_full" ("mu" "mu!1"))
+     (LEMMA "probability_full" ("mu" "nu!1")) (ASSERT))
+    NIL)
+   ((|measurable_full| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability_full| FORMULA-DECL NIL |ppg_probability_measure| NIL))
+   SHOSTAK))
+ (|agreement_difference| 0
+  (|agreement_difference-1| NIL 4000955495
+   (""
+    (THEN (SKOSIMP*) (EXPAND "agreement") (FLATTEN)
+     (LEMMA "difference_measurable" ("A" "A!1" "B" "B!1"))
+     (LEMMA "nested_difference_mass" ("mu" "mu!1" "A" "A!1" "B" "B!1"))
+     (LEMMA "nested_difference_mass" ("mu" "nu!1" "A" "A!1" "B" "B!1"))
+     (GRIND :EXCLUDE ("sigma?" "probability?" "difference" "subset?")))
+    NIL)
+   ((|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   SHOSTAK))
+ (|agreement_union| 0
+  (|agreement_union-1| NIL 4000955495
+   (""
+    (THEN (SKOSIMP*) (EXPAND "agreement")
+     (SPREAD (CASE "FORALL (n: nat): S(E!1(n))")
+      ((SPREAD (CASE "FORALL (n: nat): mu!1(E!1(n)) = nu!1(E!1(n))")
+        ((THEN (LEMMA "measurable_countable_union" ("S" "S" "E" "E!1"))
+          (LEMMA "equal_union_mass" ("mu" "mu!1" "nu" "nu!1" "E" "E!1"))
+          (GRIND :IF-MATCH ALL :EXCLUDE
+           ("sigma?" "probability?" "countableUnion" "increasingEvents")))
+         (THEN (SKOLEM 1 "k!1") (INST -3 "k!1") (ASSERT))
+         (THEN (SKOSIMP*) (INST?) (ASSERT))))
+       (THEN (SKOLEM 1 "k!1") (INST -2 "k!1") (ASSERT)))))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|measurable_countable_union| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL))
+   SHOSTAK))
+ (|agreement_dynkin| 0
+  (|agreement_dynkin-1| NIL 4000955495
+   (""
+    (THEN (SKOSIMP*) (EXPAND "dynkin?")
+     (LEMMA "agreement_full" ("mu" "mu!1" "nu" "nu!1"))
+     (LEMMA "agreement_difference" ("mu" "mu!1" "nu" "nu!1"))
+     (LEMMA "agreement_union" ("mu" "mu!1" "nu" "nu!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("agreement" "countableUnion" "increasingEvents" "subset?"
+       "difference")))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|dynkin?| CONST-DECL "bool" |ppg_dynkin_system| NIL))
+   SHOSTAK))
+ (|probability_unique| 0
+  (|probability_unique-1| NIL 4000955495
+   (""
+    (THEN (SKOSIMP*)
+     (SPREAD (CASE "subset?(G!1, agreement(mu!1, nu!1))")
+      ((THEN (LEMMA "agreement_dynkin" ("mu" "mu!1" "nu" "nu!1"))
+        (LEMMA "pi_lambda" ("G" "G!1" "D" "agreement(mu!1, nu!1)")) (ASSERT)
+        (APPLY-EXTENSIONALITY :HIDE? T)
+        (GRIND :IF-MATCH ALL :EXCLUDE
+         ("dynkin?" "sigma?" "generated" "probability?"
+          "intersectionClosed?")))
+       (GRIND :IF-MATCH ALL :EXCLUDE
+        ("dynkin?" "sigma?" "generated" "probability?"
+         "intersectionClosed?")))))
+    NIL)
+   ((|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|pi_lambda| FORMULA-DECL NIL |ppg_dynkin_generated| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL))
+   SHOSTAK)))
+

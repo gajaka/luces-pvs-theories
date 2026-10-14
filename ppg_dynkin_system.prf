@@ -1,0 +1,122 @@
+(|ppg_dynkin_system|
+ (|prefix_zero| 0
+  (|prefix_zero-1| NIL 4000955089
+   ("" (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (GRIND)) NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   SHOSTAK))
+ (|prefix_successor| 0
+  (|prefix_successor-1| NIL 4000955089
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (SPREAD (GRIND :IF-MATCH NIL)
+      ((THEN (INST + "k!1") (ASSERT)) (THEN (INST + "k!1") (ASSERT))
+       (THEN (INST + "n!1") (ASSERT)))))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   SHOSTAK))
+ (|prefix_increasing| 0
+  (|prefix_increasing-1| NIL 4000955089
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL) NIL SHOSTAK))
+ (|prefix_union| 0
+  (|prefix_union-1| NIL 4000955089
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (SPREAD (GRIND :IF-MATCH NIL)
+      ((THEN (INST + "k!1") (ASSERT))
+       (THEN (INST + "n!1+1") (INST + "n!1") (ASSERT)))))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|countableUnion| CONST-DECL "Event" |ppg_measurable_space| NIL))
+   SHOSTAK))
+ (|difference_self| 0
+  (|difference_self-1| NIL 4000955089
+   ("" (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (GRIND)) NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|difference_full| 0
+  (|difference_full-1| NIL 4000955089
+   ("" (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (GRIND)) NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|union_complements| 0
+  (|union_complements-1| NIL 4000955188
+   ("" (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (GRIND)) NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|dynkin_union_increasing| 0
+  (|dynkin_union_increasing-1| NIL 4000955188
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("countableUnion" "increasingEvents"))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   SHOSTAK))
+ (|dynkin_full| 0
+  (|dynkin_full-1| NIL 4000955293
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL) NIL SHOSTAK))
+ (|dynkin_difference| 0
+  (|dynkin_difference-1| NIL 4000955293
+   ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|dynkin_empty| 0
+  (|dynkin_empty-1| NIL 4000955089
+   (""
+    (THEN (SKOSIMP*) (EXPAND "dynkin?") (FLATTEN)
+     (INST -2 "fullset[X]" "fullset[X]") (REWRITE "difference_self")
+     (GRIND :EXCLUDE ("countableUnion")))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|dynkin_complement| 0
+  (|dynkin_complement-1| NIL 4000955089
+   (""
+    (THEN (SKOSIMP*) (EXPAND "dynkin?") (FLATTEN) (INST -2 "A!1" "fullset[X]")
+     (REWRITE "difference_full") (GRIND :EXCLUDE ("countableUnion")))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|dynkin_binary_union| 0
+  (|dynkin_binary_union-1| NIL 4000955089
+   (""
+    (THEN (SKOSIMP*) (LEMMA "dynkin_complement" ("D" "D!1" "A" "A!1"))
+     (LEMMA "dynkin_complement" ("D" "D!1" "A" "B!1"))
+     (LEMMA "dynkin_complement"
+      ("D" "D!1" "A" "intersection(complement(A!1), complement(B!1))"))
+     (REWRITE "union_complements") (EXPAND "intersectionClosed?")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("dynkin?" "complement" "intersection" "union")))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)) SHOSTAK))
+ (|dynkin_prefix| 0
+  (|dynkin_prefix-1| NIL 4000955089
+   (""
+    (SPREAD (INDUCT "n")
+     ((THEN (SKOSIMP*) (REWRITE "prefix_zero") (REWRITE "dynkin_empty"))
+      (THEN (SKOSIMP*) (REWRITE "prefix_successor")
+       (LEMMA "dynkin_binary_union"
+        ("D" "D!1" "A" "prefix(E!1, j!1)" "B" "E!1(j!1)"))
+       (GRIND :IF-MATCH ALL :EXCLUDE
+        ("dynkin?" "intersectionClosed?" "prefix")))))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   SHOSTAK))
+ (|dynkin_sigma| 0
+  (|dynkin_sigma-1| NIL 4000955089
+   (""
+    (THEN (SKOSIMP*) (EXPAND "sigma?" +)
+     (SPREAD (SPLIT)
+      ((THEN (LEMMA "dynkin_empty" ("D" "D!1")) (ASSERT))
+       (THEN (SKOSIMP*) (LEMMA "dynkin_complement" ("D" "D!1" "A" "A!1"))
+        (ASSERT))
+       (THEN (SKOSIMP*) (LEMMA "dynkin_prefix" ("D" "D!1" "E" "E!1"))
+        (LEMMA "prefix_increasing" ("E" "E!1"))
+        (LEMMA "dynkin_union_increasing"
+         ("D" "D!1" "E" "LAMBDA (n: nat): prefix(E!1, n)"))
+        (REWRITE "prefix_union")
+        (GRIND :IF-MATCH ALL :EXCLUDE
+         ("prefix" "dynkin?" "intersectionClosed?" "increasingEvents"
+          "countableUnion"))))))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL))
+   SHOSTAK)))
+

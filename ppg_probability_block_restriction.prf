@@ -1,0 +1,143 @@
+(|ppg_probability_block_restriction|
+ (|marginal_TCC1| 0
+  (|marginal_TCC1-1| NIL 4000915225
+   (""
+    (THEN (SKOSIMP*) (LEMMA "restrict_block_measurable" ("F" "F!1" "G" "G!1"))
+     (ASSERT))
+    NIL)
+   ((|restrict_block_measurable| FORMULA-DECL NIL
+     |ppg_measurable_block_restriction| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   NIL
+   (|marginal| SUBTYPE "restrictBlock[I, Value, domain, spaces](F, G)"
+    "MeasurableMap[Block[I, Value, domain, spaces](F), Block[I, Value, domain, spaces](G), blockSigma[I, Value, domain, spaces](F), blockSigma[I, Value, domain, spaces](G)]"
+    (11 10 11 29))))
+ (|marginal_apply_TCC1| 0
+  (|marginal_apply_TCC1-1| NIL 4000915225
+   (""
+    (THEN (SKOSIMP*) (LEMMA "restrict_block_measurable" ("F" "F!1" "G" "G!1"))
+     (EXPAND "measurable") (INST -1 "B!1") (EXPAND "inverseImage") (ASSERT))
+    NIL)
+   ((|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|restrict_block_measurable| FORMULA-DECL NIL
+     |ppg_measurable_block_restriction| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL))
+   NIL
+   (|marginal_apply| SUBTYPE
+    "{x: Block[I, Value, domain, spaces](F) | B(restrictBlock[I, Value, domain, spaces](F, G)(x))}"
+    "(ppg_measurable_block[ppg_probability_block_restriction.I, ppg_probability_block_restriction.Value, ppg_probability_block_restriction.domain, ppg_probability_block_restriction.spaces].blockSigma(ppg_probability_block_restriction.F))"
+    (14 31 14 72))))
+ (|marginal_apply| 0
+  (|marginal_apply-1| NIL 4000915227
+   (""
+    (THEN (SKOSIMP*) (EXPAND "marginal") (EXPAND "pushforward")
+     (EXPAND "imageMass") (EXPAND "inverseImage") (ASSERT))
+    NIL)
+   ((|pushforward| CONST-DECL "TargetLaw" |ppg_probability_map| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|imageMass| CONST-DECL "nnreal" |ppg_probability_map| NIL))
+   SHOSTAK))
+ (|marginal_identity_TCC1| 0
+  (|marginal_identity_TCC1-1| NIL 4000915225 ("" (GRIND) NIL)
+   ((|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL))
+   NIL
+   (|marginal_identity| SUBTYPE "F"
+    "{G: sets[ppg_probability_block_restriction.I].set | sets[ppg_probability_block_restriction.I].subset?(G, ppg_probability_block_restriction.F)}"
+    (16 16 16 17))))
+ (|marginal_identity| 0
+  (|marginal_identity-1| NIL 4000915227
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (REWRITE "marginal_apply")
+     (REWRITE "restrict_identity_preimage") (ASSERT))
+    NIL)
+   ((|restrict_identity_preimage| FORMULA-DECL NIL
+     |ppg_measurable_block_restriction| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL))
+   SHOSTAK))
+ (|marginal_compose_TCC1| 0
+  (|marginal_compose_TCC1-1| NIL 4000915225 ("" (GRIND) NIL)
+   ((|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|sigma_nnreal| APPLICATION-JUDGEMENT "nnreal" |sigma| |reals|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|convergence| CONST-DECL "bool" |convergence_sequences| |analysis|)
+    (|series| CONST-DECL "sequence[real]" |series| |series|)
+    (|sigma| DEF-DECL "real" |sigma| |reals|)
+    (|generated| CONST-DECL "MeasurableSpace" |ppg_measurable_space| NIL)
+    (|nativeCylinders| CONST-DECL "set[set[Pi[A, I, Value, domain]]]"
+     |ppg_measurable_dependent_product| NIL)
+    (|nativeProduct| CONST-DECL
+     "ppg_measurable_space[Pi[A, I, Value, domain]].MeasurableSpace"
+     |ppg_measurable_dependent_product| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL))
+   NIL
+   (|marginal_compose| SUBTYPE "H"
+    "{G: sets[ppg_probability_block_restriction.I].set | sets[ppg_probability_block_restriction.I].subset?(G, ppg_probability_block_restriction.F)}"
+    (19 53 19 54))))
+ (|marginal_compose| 0
+  (|marginal_compose-1| NIL 4000915227
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "marginal")
+     (EXPAND "pushforward") (EXPAND "imageMass") (EXPAND "inverseImage")
+     (REWRITE "restrict_compose_preimage") (ASSERT))
+    NIL)
+   ((|imageMass| CONST-DECL "nnreal" |ppg_probability_map| NIL)
+    (|restrict_compose_preimage| FORMULA-DECL NIL
+     |ppg_measurable_block_restriction| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|pushforward| CONST-DECL "TargetLaw" |ppg_probability_map| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL))
+   SHOSTAK)))
+

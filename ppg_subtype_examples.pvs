@@ -1,0 +1,20 @@
+% Non-discrete and empty domains exercise the subtype adapter.
+ppg_subtype_examples: THEORY
+BEGIN
+  D: set[nat] = {n: nat | n = 2 OR n = 4}
+  Small: TYPE = (D)
+  IMPORTING ppg_measurable_subtype[nat, D],
+            ppg_measurable_subtype[nat, emptyset[nat]]
+  coarse: ppg_measurable_space[Small].MeasurableSpace =
+    {B: set[Small] | FORALL (x, y: Small): B(x) IFF B(y)}
+  IMPORTING ppg_probability_dirac[Small, coarse], ppg_probability_subtype[nat, D, coarse]
+  two: Small = 2
+  twoLaw: ppg_probability_measure[Small, coarse].Probability = dirac(two)
+  embedded_domain_mass: LEMMA ambientLaw(twoLaw)(D) = 1
+  embedded_outside_mass: LEMMA ambientLaw(twoLaw)(complement(D)) = 0
+  whole_domain_measurable: LEMMA ambientSpace[nat, D](coarse)(D)
+  outside_event_measurable: LEMMA ambientSpace[nat, D](coarse)({n: nat | n = 9})
+  single_point_not_measurable: LEMMA NOT ambientSpace[nat, D](coarse)({n: nat | n = 2})
+  empty_domain_ambient: LEMMA FORALL (S: ppg_measurable_space[(emptyset[nat])].MeasurableSpace):
+    ambientSpace[nat, emptyset[nat]](S) = fullset[set[nat]]
+END ppg_subtype_examples

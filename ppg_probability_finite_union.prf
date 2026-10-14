@@ -1,0 +1,277 @@
+(|ppg_probability_finite_union|
+ (|union_finite| 0
+  (|union_finite-1| NIL 4000956578
+   ("" (THEN (EXPAND "U") (LEMMA "finite_union[I]" ("A" "F" "B" "G")) (ASSERT))
+    NIL)
+   ((U CONST-DECL "set[I]" |ppg_measurable_block_union| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_finite_union| NIL)
+    (G FORMAL-CONST-DECL "finite_set[I]" |ppg_probability_finite_union| NIL)
+    (F FORMAL-CONST-DECL "finite_set[I]" |ppg_probability_finite_union| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|finite_union| JUDGEMENT-TCC NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|finite_union_box_TCC1| 0
+  (|finite_union_box_TCC1-1| NIL 4000956561
+   ("" (SKOSIMP*)
+    (("" (LEMMA "union_finite")
+      (("" (LEMMA "block_box_measurable" ("F" "U" "E" "E!1"))
+        (("1" (PROPAX) NIL NIL) ("2" (PROPAX) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   ((|block_box_measurable| FORMULA-DECL NIL |ppg_measurable_block_box| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (F FORMAL-CONST-DECL "finite_set[I]" |ppg_probability_finite_union| NIL)
+    (G FORMAL-CONST-DECL "finite_set[I]" |ppg_probability_finite_union| NIL)
+    (U CONST-DECL "set[I]" |ppg_measurable_block_union| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_finite_union| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_finite_union| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_finite_union| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_finite_union| NIL)
+    (|union_finite| FORMULA-DECL NIL |ppg_probability_finite_union| NIL))
+   NIL
+   (|finite_union_box| SUBTYPE
+    "blockBox[I, Value, domain, spaces](U[I, Value, domain, F, G, spaces], E)"
+    "(ppg_measurable_block[ppg_probability_finite_union.I, ppg_probability_finite_union.Value, ppg_probability_finite_union.domain, ppg_probability_finite_union.spaces].blockSigma(ppg_measurable_block_union[ppg_probability_finite_union.I, ppg_probability_finite_union.Value, ppg_probability_finite_union.domain, ppg_probability_finite_union.F, ppg_probability_finite_union.G, ppg_probability_finite_union.spaces].U))"
+    (12 41 12 55))))
+ (|finite_union_box_TCC2| 0
+  (|finite_union_box_TCC2-1| NIL 4000956561
+   ("" (THEN (LEMMA "union_finite") (GRIND :EXCLUDE ("is_finite" "U"))) NIL)
+   ((|union_finite| FORMULA-DECL NIL |ppg_probability_finite_union| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[I]"
+     |ppg_probability_finite_union| NIL))
+   NIL
+   (|finite_union_box| SUBTYPE "U[I, Value, domain, F, G, spaces]"
+    "finite_set[I]" (13 14 13 15))))
+ (|finite_union_box| 0
+  (|finite_union_box-1| NIL 4000956578
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "union_box_mass"
+      ("mu" "finiteLaw(F)" "nu" "finiteLaw(G)" "E" "E!1"))
+     (REWRITE "finite_law_box") (REWRITE "finite_law_box")
+     (LEMMA "product_disjoint_union[I]"
+      ("F" "F" "G" "G" "f" "LAMBDA (i: I): coins(i)(E!1(i))"))
+     (EXPAND "U") (ASSERT))
+    NIL)
+   ((|finite_law_box| FORMULA-DECL NIL |ppg_probability_finite_product| NIL)
+    (|product_disjoint_union| FORMULA-DECL NIL |ppg_real_product| NIL)
+    (U CONST-DECL "set[I]" |ppg_measurable_block_union| NIL)
+    (|union_box_mass| FORMULA-DECL NIL |ppg_probability_block_rectangle| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|BlockLaw| TYPE-EQ-DECL NIL |ppg_probability_block_restriction| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_finite_union| NIL)
+    (|finiteLaw| DEF-DECL "BlockLaw(F)" |ppg_probability_finite_product| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_finite_union| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_finite_union| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_finite_union| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (F FORMAL-CONST-DECL "finite_set[I]" |ppg_probability_finite_union| NIL)
+    (G FORMAL-CONST-DECL "finite_set[I]" |ppg_probability_finite_union| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_finite_union| NIL))
+   SHOSTAK))
+ (|finite_union_law| 0
+  (|finite_union_law-1| NIL 4000956578
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "finite_law_unique"
+      ("F" "U" "mu" "unionLaw(finiteLaw(F), finiteLaw(G))"))
+     (LEMMA "finite_union_box")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("finiteLaw" "unionLaw" "product" "blockBox" "blockSigma" "is_finite"
+       "U")))
+    NIL)
+   ((|finite_union_box| FORMULA-DECL NIL |ppg_probability_finite_union| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[I]"
+     |ppg_probability_finite_union| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|finite_law_unique| FORMULA-DECL NIL |ppg_probability_finite_consistency|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (F FORMAL-CONST-DECL "finite_set[I]" |ppg_probability_finite_union| NIL)
+    (G FORMAL-CONST-DECL "finite_set[I]" |ppg_probability_finite_union| NIL)
+    (U CONST-DECL "set[I]" |ppg_measurable_block_union| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|BlockLaw| TYPE-EQ-DECL NIL |ppg_probability_block_restriction| NIL)
+    (|unionLaw| CONST-DECL "BlockLaw(U)" |ppg_probability_block_union| NIL)
+    (|finiteLaw| DEF-DECL "BlockLaw(F)" |ppg_probability_finite_product| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_finite_union| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_finite_union| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_finite_union| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_finite_union| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_finite_union| NIL))
+   SHOSTAK))
+ (|finite_block_independence_TCC1| 0
+  (|finite_block_independence_TCC1-1| NIL 4000956561
+   (""
+    (THEN (SKOSIMP*) (LEMMA "left_lift_measurable" ("B" "B!1"))
+     (LEMMA "right_lift_measurable" ("D" "D!1"))
+     (LEMMA "measurable_intersection[Block(U)]"
+      ("S" "blockSigma(U)" "A" "leftLift(B!1)" "B" "rightLift(D!1)"))
+     (ASSERT))
+    NIL)
+   ((|right_lift_measurable| FORMULA-DECL NIL |ppg_probability_block_union|
+     NIL)
+    (U CONST-DECL "set[I]" |ppg_measurable_block_union| NIL)
+    (|rightLift| CONST-DECL "set[UnionBlock[I, Value, domain, F, G, spaces]]"
+     |ppg_probability_block_union| NIL)
+    (|leftLift| CONST-DECL "set[UnionBlock[I, Value, domain, F, G, spaces]]"
+     |ppg_probability_block_union| NIL)
+    (|UnionBlock| TYPE-EQ-DECL NIL |ppg_measurable_block_union| NIL)
+    (|measurable_intersection| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|left_lift_measurable| FORMULA-DECL NIL |ppg_probability_block_union| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_finite_union| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_finite_union| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_finite_union| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (F FORMAL-CONST-DECL "finite_set[I]" |ppg_probability_finite_union| NIL)
+    (G FORMAL-CONST-DECL "finite_set[I]" |ppg_probability_finite_union| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_finite_union| NIL))
+   NIL
+   (|finite_block_independence| SUBTYPE
+    "intersection[UnionBlock[I, Value, domain, F, G, spaces]](leftLift[I, Value, domain, F, G, spaces](B), rightLift[I, Value, domain, F, G, spaces](D))"
+    "(ppg_measurable_block[ppg_probability_finite_union.I, ppg_probability_finite_union.Value, ppg_probability_finite_union.domain, ppg_probability_finite_union.spaces].blockSigma(ppg_measurable_block_union[ppg_probability_finite_union.I, ppg_probability_finite_union.Value, ppg_probability_finite_union.domain, ppg_probability_finite_union.F, ppg_probability_finite_union.G, ppg_probability_finite_union.spaces].U))"
+    (18 19 18 58))))
+ (|finite_block_independence_TCC2| 0
+  (|finite_block_independence_TCC2-1| NIL 4000956561
+   ("" (THEN (LEMMA "union_finite") (GRIND :EXCLUDE ("is_finite" "U"))) NIL)
+   ((|union_finite| FORMULA-DECL NIL |ppg_probability_finite_union| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[I]"
+     |ppg_probability_finite_union| NIL))
+   NIL
+   (|finite_block_independence| SUBTYPE "U[I, Value, domain, F, G, spaces]"
+    "finite_set[I]" (18 16 18 17))))
+ (|finite_block_independence| 0
+  (|finite_block_independence-1| NIL 4000956578
+   (""
+    (THEN (SKOSIMP*) (LEMMA "finite_union_law")
+     (LEMMA "union_rectangle_mass"
+      ("mu" "finiteLaw(F)" "nu" "finiteLaw(G)" "B" "B!1" "D" "D!1"))
+     (ASSERT))
+    NIL)
+   ((|union_rectangle_mass| FORMULA-DECL NIL |ppg_probability_block_union| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|BlockLaw| TYPE-EQ-DECL NIL |ppg_probability_block_restriction| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_finite_union| NIL)
+    (|finiteLaw| DEF-DECL "BlockLaw(F)" |ppg_probability_finite_product| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_finite_union| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_finite_union| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_finite_union| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (F FORMAL-CONST-DECL "finite_set[I]" |ppg_probability_finite_union| NIL)
+    (G FORMAL-CONST-DECL "finite_set[I]" |ppg_probability_finite_union| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_finite_union| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|finite_union_law| FORMULA-DECL NIL |ppg_probability_finite_union| NIL))
+   SHOSTAK)))
+

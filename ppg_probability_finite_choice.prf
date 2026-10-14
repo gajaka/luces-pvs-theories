@@ -1,0 +1,471 @@
+(|ppg_probability_finite_choice|
+ (|picked_union| 0
+  (|picked_union-1| NIL 4000956443
+   (""
+    (THEN (SKOSIMP*) (EXPAND "U") (APPLY-EXTENSIONALITY :HIDE? T)
+     (TYPEPRED "pick(F!1)") (GRIND :EXCLUDE ("is_finite")))
+    NIL)
+   ((|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |step_fun_props| |analysis|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[I]" |ppg_probability_finite_choice| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[I]"
+     |ppg_probability_finite_choice| NIL)
+    (|nonempty_finite_union1| APPLICATION-JUDGEMENT "non_empty_finite_set[I]"
+     |ppg_probability_finite_choice| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|union| CONST-DECL "set" |sets| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|pick| FORMAL-CONST-DECL "[F: non_empty_finite_set[I] -> (F)]"
+     |ppg_probability_finite_choice| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_finite_choice| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (U CONST-DECL "set[I]" |ppg_measurable_block_union| NIL))
+   SHOSTAK))
+ (|picked_disjoint| 0
+  (|picked_disjoint-1| NIL 4000956443 ("" (GRIND :EXCLUDE ("is_finite")) NIL)
+   ((|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[I]"
+     |ppg_probability_finite_choice| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_finite_choice| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|picked_smaller| 0
+  (|picked_smaller-1| NIL 4000956443
+   (""
+    (THEN (SKOSIMP*) (LEMMA "card_remove[I]" ("S" "F!1" "x" "pick(F!1)"))
+     (TYPEPRED "pick(F!1)") (GRIND :EXCLUDE ("is_finite" "card")))
+    NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[I]"
+     |ppg_probability_finite_choice| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|card_remove| FORMULA-DECL NIL |finite_sets| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|pick| FORMAL-CONST-DECL "[F: non_empty_finite_set[I] -> (F)]"
+     |ppg_probability_finite_choice| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_finite_choice| NIL))
+   SHOSTAK))
+ (|selectedLaw_TCC1| 0
+  (|selectedLaw_TCC1-1| NIL 4000956435
+   (""
+    (THEN (SKOSIMP*) (REWRITE "emptyset_is_empty?" -1) (REPLACE -1 :ACTUALS? T)
+     (TYPEPRED "emptyLaw") (ASSERT))
+    NIL)
+   ((|emptyLaw| CONST-DECL "BlockLaw(emptyset[I])" |ppg_probability_block_base|
+     NIL)
+    (|BlockLaw| TYPE-EQ-DECL NIL |ppg_probability_block_restriction| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_finite_choice| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_finite_choice| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_finite_choice| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |sigma_countable|
+     |sigma_set|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[I]"
+     |ppg_probability_finite_choice| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_finite_choice| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|emptyset_is_empty?| FORMULA-DECL NIL |sets_lemmas| NIL))
+   NIL
+   (|selectedLaw| SUBTYPE "emptyLaw[I, Value, domain, spaces]"
+    "BlockLaw[ppg_probability_finite_choice.I, ppg_probability_finite_choice.Value, ppg_probability_finite_choice.domain, ppg_probability_finite_choice.spaces](ppg_probability_finite_choice.F)"
+    (19 22 19 30))))
+ (|selectedLaw_TCC2| 0
+  (|selectedLaw_TCC2-1| NIL 4000956435
+   (""
+    (THEN (SKOSIMP*) (LEMMA "picked_smaller" ("F" "F!1"))
+     (GRIND :EXCLUDE ("is_finite" "card")))
+    NIL)
+   ((|picked_smaller| FORMULA-DECL NIL |ppg_probability_finite_choice| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_finite_choice| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   NIL
+   (|selectedLaw| TERMINATION "selectedLaw(remove[I](pick(F), F))"
+    #A((3) BASE-CHAR . "NIL") (22 44 22 78))))
+ (|selectedLaw_TCC3| 0
+  (|selectedLaw_TCC3-1| NIL 4000956435
+   ("" (SKOSIMP*)
+    ((""
+      (TYPEPRED
+       "ppg_probability_block_union[I, Value, domain, singleton[I](pick(F!1)), remove[I](pick(F!1),F!1), spaces].unionLaw(singleLaw(pick(F!1), coins(pick(F!1))), v!1(remove[I](pick(F!1),F!1)))")
+      (("1" (LEMMA "picked_union" ("F" "F!1"))
+        (("1" (REPLACE -1 :ACTUALS? T) (("1" (ASSERT) NIL NIL)) NIL)) NIL)
+       ("2" (LEMMA "picked_union" ("F" "F!1"))
+        (("2" (REPLACE -1 :ACTUALS? T)
+          (("2" (ASSERT)
+            (("2" (LEMMA "picked_smaller" ("F" "F!1")) (("2" (PROPAX) NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("3" (PROPAX) NIL NIL))
+      NIL))
+    NIL)
+   ((|picked_smaller| FORMULA-DECL NIL |ppg_probability_finite_choice| NIL)
+    (|picked_union| FORMULA-DECL NIL |ppg_probability_finite_choice| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|card| CONST-DECL "{n: nat | n = Card(S)}" |finite_sets| NIL)
+    (|Card| CONST-DECL "nat" |finite_sets| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_finite_choice| NIL)
+    (|singleLaw| CONST-DECL "BlockLaw(singleton(i))"
+     |ppg_probability_block_base| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|unionLaw| CONST-DECL "BlockLaw(U)" |ppg_probability_block_union| NIL)
+    (|BlockLaw| TYPE-EQ-DECL NIL |ppg_probability_block_restriction| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (U CONST-DECL "set[I]" |ppg_measurable_block_union| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_finite_choice| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|pick| FORMAL-CONST-DECL "[F: non_empty_finite_set[I] -> (F)]"
+     |ppg_probability_finite_choice| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_finite_choice| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_finite_choice| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_finite_choice| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[I]"
+     |ppg_probability_finite_choice| NIL))
+   NIL
+   (|selectedLaw| SUBTYPE
+    "ppg_probability_block_union[I, Value, domain, singleton[I](pick(F)), remove[I](pick(F), F), spaces].unionLaw(singleLaw[I, Value, domain, spaces](pick(F), coins(pick(F))), selectedLaw(remove[I](pick(F), F)))"
+    "BlockLaw[ppg_probability_finite_choice.I, ppg_probability_finite_choice.Value, ppg_probability_finite_choice.domain, ppg_probability_finite_choice.spaces](ppg_probability_finite_choice.F)"
+    (20 9 22 79))))
+ (|selected_law_box_TCC1| 0
+  (|selected_law_box_TCC1-1| NIL 4000956435
+   (""
+    (THEN (SKOSIMP*) (LEMMA "block_box_measurable" ("F" "F!1" "E" "E!1"))
+     (ASSERT))
+    NIL)
+   ((|block_box_measurable| FORMULA-DECL NIL |ppg_measurable_block_box| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_finite_choice| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_finite_choice| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_finite_choice| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_finite_choice| NIL))
+   NIL
+   (|selected_law_box| SUBTYPE "blockBox[I, Value, domain, spaces](F, E)"
+    "(ppg_measurable_block[ppg_probability_finite_choice.I, ppg_probability_finite_choice.Value, ppg_probability_finite_choice.domain, ppg_probability_finite_choice.spaces].blockSigma(ppg_probability_finite_choice.F))"
+    (26 19 26 33))))
+ (|selected_law_box| 0
+  (|selected_law_box-1| NIL 4000956443
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "finite_set_induction_gen[I]"
+       ("P"
+        "LAMBDA (H: finite_set[I]): selectedLaw(H)(blockBox(H, E!1)) = product(H, LAMBDA (i: I): coins(i)(E!1(i)))"))
+      (("1" (SPLIT -1)
+        (("1" (INST -1 "F!1") NIL NIL)
+         ("2" (SKOSIMP*)
+          (("2" (LABEL "ih" -1)
+            (("2" (LABEL "step" 1)
+              (("2" (CASE "NOT empty?(S!1)")
+                (("1" (INST "ih" "remove[I](pick(S!1), S!1)")
+                  (("1" (LEMMA "picked_smaller" ("F" "S!1"))
+                    (("1" (ASSERT)
+                      (("1"
+                        (LEMMA
+                         "union_box_mass[I, Value, domain, singleton[I](pick(S!1)), remove[I](pick(S!1), S!1), spaces]"
+                         ("mu" "singleLaw(pick(S!1), coins(pick(S!1)))" "nu"
+                          "selectedLaw(remove[I](pick(S!1), S!1))" "E" "E!1"))
+                        (("1" (LEMMA "picked_disjoint" ("F" "S!1"))
+                          (("1" (LEMMA "picked_union" ("F" "S!1"))
+                            (("1" (REPLACE -1 :ACTUALS? T)
+                              (("1" (REWRITE "single_law_box")
+                                (("1"
+                                  (LEMMA "product_remove[I]"
+                                   ("F" "S!1" "i" "pick(S!1)" "f"
+                                    "LAMBDA (i: I): coins(i)(E!1(i))"))
+                                  (("1" (TYPEPRED "pick(S!1)")
+                                    (("1" (EXPAND "selectedLaw" "step" 1)
+                                      (("1"
+                                        (GRIND :EXCLUDE
+                                         ("product" "selectedLaw" "unionLaw"
+                                          "blockSigma" "blockBox" "singleLaw"
+                                          "is_finite" "coins"))
+                                        NIL NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL)
+                     ("2" (PROPAX) NIL NIL))
+                    NIL))
+                  NIL)
+                 ("2" (REWRITE "emptyset_is_empty?" -1)
+                  (("2" (REPLACE -1 :ACTUALS? T)
+                    (("2" (EXPAND "selectedLaw" "step" 1)
+                      (("2" (REWRITE "empty_law_box")
+                        (("2" (EXPAND "product" 1 1)
+                          (("2"
+                            (GRIND :EXCLUDE
+                             ("product" "selectedLaw" "emptyLaw" "is_finite"))
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (SKOSIMP*)
+        (("2" (LEMMA "block_box_measurable" ("F" "H!1" "E" "E!1"))
+          (("2" (PROPAX) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|block_box_measurable| FORMULA-DECL NIL |ppg_measurable_block_box| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|picked_smaller| FORMULA-DECL NIL |ppg_probability_finite_choice| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |step_fun_props| |analysis|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[I]" |ppg_probability_finite_choice| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|singleLaw| CONST-DECL "BlockLaw(singleton(i))"
+     |ppg_probability_block_base| NIL)
+    (|union_box_mass| FORMULA-DECL NIL |ppg_probability_block_rectangle| NIL)
+    (|picked_union| FORMULA-DECL NIL |ppg_probability_finite_choice| NIL)
+    (|single_law_box| FORMULA-DECL NIL |ppg_probability_block_base| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|nonempty_finite_union1| APPLICATION-JUDGEMENT "non_empty_finite_set[I]"
+     |ppg_probability_finite_choice| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[I]"
+     |ppg_probability_finite_choice| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (U CONST-DECL "set[I]" |ppg_measurable_block_union| NIL)
+    (|product_remove| FORMULA-DECL NIL |ppg_real_product| NIL)
+    (|picked_disjoint| FORMULA-DECL NIL |ppg_probability_finite_choice| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|pick| FORMAL-CONST-DECL "[F: non_empty_finite_set[I] -> (F)]"
+     |ppg_probability_finite_choice| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[I]"
+     |ppg_probability_finite_choice| NIL)
+    (|empty_law_box| FORMULA-DECL NIL |ppg_probability_block_base| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[I]"
+     |ppg_probability_finite_choice| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |sigma_countable|
+     |sigma_set|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[I]"
+     |ppg_probability_finite_choice| NIL)
+    (|emptyset_is_empty?| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|finite_set_induction_gen| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_finite_choice| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_finite_choice| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_finite_choice| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|BlockLaw| TYPE-EQ-DECL NIL |ppg_probability_block_restriction| NIL)
+    (|selectedLaw| DEF-DECL "BlockLaw(F)" |ppg_probability_finite_choice| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|blockBox| CONST-DECL "set[Block[I, Value, domain, spaces](F)]"
+     |ppg_measurable_block_box| NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_finite_choice| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_finite_choice| NIL))
+   SHOSTAK))
+ (|selected_law_eq| 0
+  (|selected_law_eq-1| NIL 4000956443
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "finite_law_unique" ("F" "F!1" "mu" "selectedLaw(F!1)"))
+     (LEMMA "selected_law_box" ("F" "F!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("finiteLaw" "selectedLaw" "blockBox" "blockSigma" "product"
+       "is_finite")))
+    NIL)
+   ((|selected_law_box| FORMULA-DECL NIL |ppg_probability_finite_choice| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|finite_law_unique| FORMULA-DECL NIL |ppg_probability_finite_consistency|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|BlockLaw| TYPE-EQ-DECL NIL |ppg_probability_block_restriction| NIL)
+    (|selectedLaw| DEF-DECL "BlockLaw(F)" |ppg_probability_finite_choice| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_finite_choice| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_finite_choice| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_finite_choice| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_finite_choice| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_finite_choice| NIL))
+   SHOSTAK)))
+

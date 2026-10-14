@@ -1,0 +1,129 @@
+(|ppg_measurable_block_generators|
+ (|boxes_measurable| 0
+  (|boxes_measurable-1| NIL 4000947588
+   (""
+    (THEN (SKOSIMP*) (EXPAND "subset?") (EXPAND "blockBoxes") (EXPAND "member")
+     (SKOSIMP*) (LEMMA "block_box_measurable" ("F" "F!1" "E" "E!1")) (ASSERT))
+    NIL)
+   ((|blockBoxes| CONST-DECL "set[set[Block[I, Value, domain, spaces](F)]]"
+     |ppg_measurable_block_generators| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_measurable_block_generators| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_measurable_block_generators| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_measurable_block_generators| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_measurable_block_generators| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|block_box_measurable| FORMULA-DECL NIL |ppg_measurable_block_box| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL))
+   SHOSTAK))
+ (|cylinders_in_boxes| 0
+  (|cylinders_in_boxes-1| NIL 4000947588
+   (""
+    (THEN (SKOSIMP*) (EXPAND "subset?") (EXPAND "nativeCylinders")
+     (EXPAND "member") (SKOSIMP*) (EXPAND "blockBoxes")
+     (INST + "atCoordinate(i!1, B!1)")
+     (LEMMA "box_at_coordinate" ("F" "F!1" "i" "i!1" "B" "B!1"))
+     (EXPAND "blockCylinder") (EXPAND "nativeCylinder") (ASSERT))
+    NIL)
+   ((|nativeCylinders| CONST-DECL "set[set[Pi[A, I, Value, domain]]]"
+     |ppg_measurable_dependent_product| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|atCoordinate| CONST-DECL "CoordinateEvents" |ppg_measurable_block_box|
+     NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_measurable_block_generators| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_measurable_block_generators| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_measurable_block_generators| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_measurable_block_generators| NIL)
+    (|blockCylinder| CONST-DECL "set[Block(F)]" |ppg_measurable_block| NIL)
+    (|nativeCylinder| CONST-DECL "set[Pi[A, I, Value, domain]]"
+     |ppg_measurable_dependent_product| NIL)
+    (|box_at_coordinate| FORMULA-DECL NIL |ppg_measurable_block_box| NIL)
+    (|blockBoxes| CONST-DECL "set[set[Block[I, Value, domain, spaces](F)]]"
+     |ppg_measurable_block_generators| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL))
+   SHOSTAK))
+ (|block_boxes_generate| 0
+  (|block_boxes_generate-1| NIL 4000947588
+   (""
+    (THEN (SKOSIMP*) (LEMMA "boxes_measurable" ("F" "F!1"))
+     (LEMMA "generated_least[Block(F!1)]"
+      ("G" "blockBoxes(F!1)" "S" "blockSigma(F!1)"))
+     (LEMMA "cylinders_in_boxes" ("F" "F!1"))
+     (LEMMA "generated_contains[Block(F!1)]" ("G" "blockBoxes(F!1)"))
+     (LEMMA "subset_transitive[set[Block(F!1)]]"
+      ("a"
+       "ppg_measurable_dependent_product[bool, (F!1), Value, LAMBDA (i: (F!1)): domain(i)].nativeCylinders(LAMBDA (i: (F!1)): spaces(i))"
+       "b" "blockBoxes(F!1)" "c"
+       "ppg_measurable_space[Block(F!1)].generated(blockBoxes(F!1))"))
+     (ASSERT)
+     (LEMMA "generated_least[Block(F!1)]"
+      ("G"
+       "ppg_measurable_dependent_product[bool, (F!1), Value, LAMBDA (i: (F!1)): domain(i)].nativeCylinders(LAMBDA (i: (F!1)): spaces(i))"
+       "S" "ppg_measurable_space[Block(F!1)].generated(blockBoxes(F!1))"))
+     (ASSERT) (EXPAND "blockSigma") (EXPAND "nativeProduct")
+     (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("generated" "blockBoxes" "nativeCylinders" "is_finite")))
+    NIL)
+   ((|generated_least| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|blockBoxes| CONST-DECL "set[set[Block[I, Value, domain, spaces](F)]]"
+     |ppg_measurable_block_generators| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_measurable_block_generators| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_measurable_block_generators| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_measurable_block_generators| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|generated_contains| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|nativeProduct| CONST-DECL
+     "ppg_measurable_space[Pi[A, I, Value, domain]].MeasurableSpace"
+     |ppg_measurable_dependent_product| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|generated| CONST-DECL "MeasurableSpace" |ppg_measurable_space| NIL)
+    (|nativeCylinders| CONST-DECL "set[set[Pi[A, I, Value, domain]]]"
+     |ppg_measurable_dependent_product| NIL)
+    (|Pi| TYPE-EQ-DECL NIL |ppg_measurable_product| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_measurable_dependent_product|
+     NIL)
+    (|subset_transitive| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|cylinders_in_boxes| FORMULA-DECL NIL |ppg_measurable_block_generators|
+     NIL)
+    (|boxes_measurable| FORMULA-DECL NIL |ppg_measurable_block_generators| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_measurable_block_generators| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK)))
+

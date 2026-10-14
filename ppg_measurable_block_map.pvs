@@ -1,0 +1,16 @@
+% A map into a block is measurable when all its coordinates are measurable.
+ppg_measurable_block_map[A, I, Value: TYPE, domain: [I -> set[Value]],
+  (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_block[I, Value, domain, spaces],
+            ppg_measurable_dependent_product
+  block_source_irrelevant: LEMMA FORALL (F: set[I]):
+    blockSigma(F) = ppg_measurable_dependent_product[A, (F), Value,
+      LAMBDA (i: (F)): domain(i)].nativeProduct(LAMBDA (i: (F)): spaces(i))
+  block_map_measurable: LEMMA FORALL (F: set[I],
+    SA: ppg_measurable_space[A].MeasurableSpace, f: [A -> Block(F)]):
+    (FORALL (i: (F)): ppg_measurable_map[A, (domain(i))].measurable(
+      SA, spaces(i), LAMBDA (a: A): f(a)(i))) IMPLIES
+      ppg_measurable_map[A, Block(F)].measurable(SA, blockSigma(F), f)
+END ppg_measurable_block_map

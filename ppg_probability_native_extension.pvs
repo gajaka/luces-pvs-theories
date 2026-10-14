@@ -1,0 +1,26 @@
+% Coordinate laws and block extensions share the native product sigma algebras.
+ppg_probability_native_extension[I, Value: TYPE, domain: [I -> set[Value]],
+                                 F: set[I]]: THEORY
+BEGIN
+  IMPORTING ppg_probability_extension[I, Value, domain, F],
+            ppg_measurable_dependent_product[Partial, I, Value, domain],
+            ppg_measurable_dependent_product[Assignment, (F), Value,
+              LAMBDA (i: (F)): domain(i)]
+  NativeSpaces: TYPE = ppg_probability_coordinates[I, Value, domain].CoordinateSpaces
+  spaces: VAR NativeSpaces
+  nativeBlockSigma(spaces): ppg_measurable_space[Partial].MeasurableSpace =
+    ppg_measurable_dependent_product[Assignment, (F), Value,
+      LAMBDA (i: (F)): domain(i)].nativeProduct(LAMBDA (i: (F)): spaces(i))
+  nativeAssignmentSigma(spaces): ppg_measurable_space[Assignment].MeasurableSpace =
+    ppg_measurable_dependent_product[Partial, I, Value, domain].nativeProduct(spaces)
+  block_native_eq: LEMMA blockSigma(
+    ppg_measurable_dependent_product[Partial, I, Value, domain].ambientCoordinates(spaces)) =
+      nativeBlockSigma(spaces)
+  native_restrict_measurable: LEMMA measurable(nativeAssignmentSigma(spaces), nativeBlockSigma(spaces), restrict)
+  native_canonical_measurable: LEMMA FORALL (laws: ProbabilityFamily(spaces)):
+    measurable(nativeBlockSigma(spaces), nativeAssignmentSigma(spaces),
+      LAMBDA (y: Partial): canonicalExtension(spaces, laws, y))
+  native_canonical_event: LEMMA FORALL (laws: ProbabilityFamily(spaces), A: set[Assignment]):
+    nativeAssignmentSigma(spaces)(A) IMPLIES
+      nativeBlockSigma(spaces)({y: Partial | A(canonicalExtension(spaces, laws, y))})
+END ppg_probability_native_extension

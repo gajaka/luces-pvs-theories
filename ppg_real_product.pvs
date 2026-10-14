@@ -1,0 +1,18 @@
+% Multiplicative monoid laws make the finite product independent of its fold order.
+ppg_real_product[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_product[T], ppg_finite_product_factors[T]
+  IMPORTING ppg_monoid_sum[T, real, 1, LAMBDA (a, b: real): a * b] AS multiplicative
+  F, G: VAR finite_set[T]
+  f, g: VAR [T -> real]
+  i: VAR T
+  product_eq_fold: LEMMA product(F, f) = multiplicative.sum(F, f)
+  product_congr: LEMMA (FORALL (i: (F)): f(i) = g(i))
+    IMPLIES product(F, f) = product(F, g)
+  product_remove: LEMMA F(i) IMPLIES
+    product(F, f) = f(i) * product(remove(i, F), f)
+  product_disjoint_union: LEMMA disjoint?(F, G) IMPLIES
+    product(union(F, G), f) = product(F, f) * product(G, f)
+  product_restrict: LEMMA subset?(G, F) IMPLIES
+    product(F, LAMBDA (i: T): IF G(i) THEN f(i) ELSE 1 ENDIF) = product(G, f)
+END ppg_real_product
