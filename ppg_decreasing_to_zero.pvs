@@ -1,0 +1,10 @@
+% A decreasing nonnegative sequence with arbitrarily small terms converges to zero.
+ppg_decreasing_to_zero: THEORY
+BEGIN
+  IMPORTING analysis@convergence_sequences
+  zero_limit: THEOREM FORALL (s: sequence[real]):
+    (FORALL (n: nat): 0 <= s(n)) AND
+    (FORALL (m, n: nat): m <= n IMPLIES s(n) <= s(m)) AND
+    (FORALL (a: posreal): EXISTS (n: nat): s(n) < a) IMPLIES
+      convergence_sequences.convergence(s, 0)
+END ppg_decreasing_to_zero

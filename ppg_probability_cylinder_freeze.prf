@@ -1,0 +1,864 @@
+(|ppg_probability_cylinder_freeze|
+ (|sliceEvent_TCC1| 0
+  (|sliceEvent_TCC1-1| NIL 4000979393
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "put_block_measurable" ("F" "freeSupport(F!1,R!1)" "x" "x!1"))
+     (LABEL "pm" -1) (LEMMA "data_cylinder_member" ("R" "R!1"))
+     (LEMMA "cylinders_measurable") (EXPAND "subset?") (EXPAND "member")
+     (INST -1 "dataCylinder(R!1)") (ASSERT) (EXPAND "measurable" "pm")
+     (INST "pm" "dataCylinder(R!1)") (EXPAND "inverseImage") (ASSERT))
+    NIL)
+   ((|cylinders_measurable| FORMULA-DECL NIL |ppg_cylinder_algebra| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|dataCylinder| CONST-DECL "TableEvent" |ppg_probability_cylinder_content|
+     NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|data_cylinder_member| FORMULA-DECL NIL |ppg_probability_cylinder_content|
+     NIL)
+    (|put_block_measurable| FORMULA-DECL NIL |ppg_measurable_block_update| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|CylinderData| TYPE-EQ-DECL NIL |ppg_probability_cylinder_content| NIL)
+    (|freeSupport| CONST-DECL "finite_set[I]" |ppg_probability_cylinder_freeze|
+     NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL))
+   NIL
+   (|sliceEvent| SUBTYPE
+    "{y: Block[I, Value, domain, spaces](freeSupport(F, R)) | dataCylinder[I, Value, domain, spaces, coins](R)(putBlock[I, Value, domain, spaces](freeSupport(F, R), x)(y))}"
+    "(ppg_measurable_block[ppg_probability_cylinder_freeze.I, ppg_probability_cylinder_freeze.Value, ppg_probability_cylinder_freeze.domain, ppg_probability_cylinder_freeze.spaces].blockSigma(ppg_probability_cylinder_freeze.freeSupport(ppg_probability_cylinder_freeze.F, ppg_probability_cylinder_freeze.R)))"
+    (16 4 16 86))))
+ (|freeze_data| 0
+  (|freeze_data-1| NIL 4000979393
+   ("" (SKOSIMP*)
+    (("" (APPLY-EXTENSIONALITY :HIDE? T)
+      (("" (EXPAND "freezeEvent")
+        (("" (EXPAND "sliceEvent")
+          (("" (EXPAND "tableCylinder")
+            (("" (EXPAND "dataCylinder")
+              (("" (EXPAND "tableCylinder")
+                ((""
+                  (CASE
+                      "restrictBlock(fullset[I],R!1`1)(freezeTable(F!1,x!1)(x!2)) = restrictBlock(fullset[I],R!1`1)(putBlock(freeSupport(F!1,R!1),x!1)(restrictBlock(fullset[I],freeSupport(F!1,R!1))(x!2)))")
+                  (("1" (ASSERT) NIL NIL)
+                   ("2" (APPLY-EXTENSIONALITY :HIDE? T)
+                    (("2"
+                      (GRIND :EXCLUDE
+                       ("Cylinders" "blockSigma" "tableSigma" "sigma?"
+                        "probability?" "finiteLaw" "is_finite" "content"
+                        "representation"))
+                      NIL NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[I]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|restrictBlock| CONST-DECL "Block(G)" |ppg_measurable_block_restriction|
+     NIL)
+    (|freezeTable| CONST-DECL "FullBlock" |ppg_measurable_block_update| NIL)
+    (|putBlock| CONST-DECL "FullBlock" |ppg_measurable_block_update| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|freezeEvent| CONST-DECL "TableEvent" |ppg_probability_cylinder_freeze|
+     NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|CylinderData| TYPE-EQ-DECL NIL |ppg_probability_cylinder_content| NIL)
+    (|dataCylinder| CONST-DECL "TableEvent" |ppg_probability_cylinder_content|
+     NIL)
+    (|tableCylinder| CONST-DECL "TableEvent" |ppg_measurable_cylinder| NIL)
+    (|freeSupport| CONST-DECL "finite_set[I]" |ppg_probability_cylinder_freeze|
+     NIL)
+    (|sliceEvent| CONST-DECL "(blockSigma(freeSupport(F, R)))"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL))
+   SHOSTAK))
+ (|freeze_cylinder_member| 0
+  (|freeze_cylinder_member-1| NIL 4000979393
+   (""
+    (THEN (SKOSIMP*) (LEMMA "representation_spec" ("A" "A!1")) (REPLACE -1)
+     (LEMMA "freeze_data" ("F" "F!1" "x" "x!1" "R" "representation(A!1)"))
+     (REPLACE -1)
+     (LEMMA "cylinder_member"
+      ("F" "freeSupport(F!1,representation(A!1))" "B"
+       "sliceEvent(F!1,x!1,representation(A!1))"))
+     (ASSERT))
+    NIL)
+   ((|cylinder_member| FORMULA-DECL NIL |ppg_cylinder_algebra| NIL)
+    (|freeSupport| CONST-DECL "finite_set[I]" |ppg_probability_cylinder_freeze|
+     NIL)
+    (|sliceEvent| CONST-DECL "(blockSigma(freeSupport(F, R)))"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|freeze_data| FORMULA-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|CylinderData| TYPE-EQ-DECL NIL |ppg_probability_cylinder_content| NIL)
+    (|representations| CONST-DECL "set[CylinderData]"
+     |ppg_probability_cylinder_content| NIL)
+    (|representation| CONST-DECL "(representations(A))"
+     |ppg_probability_cylinder_content| NIL)
+    (|representation_spec| FORMULA-DECL NIL |ppg_probability_cylinder_content|
+     NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_cylinder_freeze| NIL))
+   SHOSTAK))
+ (|frozen_TCC1| 0
+  (|frozen_TCC1-1| NIL 4000979393
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "freeze_cylinder_member" ("F" "F!1" "x" "x!1" "A" "A!1")) (ASSERT))
+    NIL)
+   ((|freeze_cylinder_member| FORMULA-DECL NIL
+     |ppg_probability_cylinder_freeze| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|fullset| CONST-DECL "set" |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL))
+   NIL
+   (|frozen| SUBTYPE "freezeEvent(F, x, A)"
+    "(ppg_cylinder_algebra[ppg_probability_cylinder_freeze.I, ppg_probability_cylinder_freeze.Value, ppg_probability_cylinder_freeze.domain, ppg_probability_cylinder_freeze.spaces].Cylinders)"
+    (22 33 22 53))))
+ (|frozen_data_TCC1| 0
+  (|frozen_data_TCC1-1| NIL 4000979393 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL)
+    (|dataCylinder| CONST-DECL "TableEvent" |ppg_probability_cylinder_content|
+     NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|CylinderData| TYPE-EQ-DECL NIL |ppg_probability_cylinder_content| NIL))
+   NIL
+   (|frozen_data| SUBTYPE "dataCylinder[I, Value, domain, spaces, coins](R)"
+    "(ppg_cylinder_algebra[ppg_probability_cylinder_freeze.I, ppg_probability_cylinder_freeze.Value, ppg_probability_cylinder_freeze.domain, ppg_probability_cylinder_freeze.spaces].Cylinders)"
+    (23 34 23 49))))
+ (|frozen_data| 0
+  (|frozen_data-1| NIL 4000979394
+   ("" (THEN (SKOSIMP*) (EXPAND "frozen") (REWRITE "freeze_data") (ASSERT))
+    NIL)
+   ((|freeze_data| FORMULA-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|CylinderData| TYPE-EQ-DECL NIL |ppg_probability_cylinder_content| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|frozen| CONST-DECL "(Cylinders)" |ppg_probability_cylinder_freeze| NIL))
+   SHOSTAK))
+ (|frozen_monotone| 0
+  (|frozen_monotone-1| NIL 4000979394
+   (""
+    (GRIND :IF-MATCH ALL :EXCLUDE
+     ("Cylinders" "blockSigma" "tableSigma" "sigma?" "probability?" "finiteLaw"
+      "is_finite" "content" "representation"))
+    NIL)
+   ((|freezeEvent| CONST-DECL "TableEvent" |ppg_probability_cylinder_freeze|
+     NIL)
+    (|frozen| CONST-DECL "(Cylinders)" |ppg_probability_cylinder_freeze| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|freezeTable| CONST-DECL "FullBlock" |ppg_measurable_block_update| NIL)
+    (|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|frozen_empty_coordinates| 0
+  (|frozen_empty_coordinates-1| NIL 4000979394
+   (""
+    (THEN (SKOSIMP*) (EXPAND "frozen") (EXPAND "freezeEvent")
+     (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "freeze_empty" ("x" "x!1" "z" "x!2")) (ASSERT))
+    NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |sigma_countable|
+     |sigma_set|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[I]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|freezeEvent| CONST-DECL "TableEvent" |ppg_probability_cylinder_freeze|
+     NIL)
+    (|freeze_empty| FORMULA-DECL NIL |ppg_measurable_block_update| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL)
+    (|freezeTable| CONST-DECL "FullBlock" |ppg_measurable_block_update| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|frozen| CONST-DECL "(Cylinders)" |ppg_probability_cylinder_freeze| NIL))
+   SHOSTAK))
+ (|frozen_agrees| 0
+  (|frozen_agrees-1| NIL 4000979394
+   (""
+    (THEN (SKOSIMP*) (LEMMA "freeze_same" ("F" "F!1" "x" "x!1" "z" "z!1"))
+     (EXPAND "frozen") (EXPAND "freezeEvent") (ASSERT))
+    NIL)
+   ((|frozen| CONST-DECL "(Cylinders)" |ppg_probability_cylinder_freeze| NIL)
+    (|freezeEvent| CONST-DECL "TableEvent" |ppg_probability_cylinder_freeze|
+     NIL)
+    (|freeze_same| FORMULA-DECL NIL |ppg_measurable_block_update| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL))
+   SHOSTAK))
+ (|representation_depends| 0
+  (|representation_depends-1| NIL 4000979394
+   (""
+    (THEN (SKOSIMP*) (LEMMA "representation_spec" ("A" "A!1"))
+     (LEMMA "cylinder_depends"
+      ("F" "representation(A!1)`1" "B" "representation(A!1)`2"))
+     (EXPAND "dataCylinder") (ASSERT))
+    NIL)
+   ((|representation| CONST-DECL "(representations(A))"
+     |ppg_probability_cylinder_content| NIL)
+    (|representations| CONST-DECL "set[CylinderData]"
+     |ppg_probability_cylinder_content| NIL)
+    (|CylinderData| TYPE-EQ-DECL NIL |ppg_probability_cylinder_content| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|cylinder_depends| FORMULA-DECL NIL |ppg_measurable_block_update| NIL)
+    (|dataCylinder| CONST-DECL "TableEvent" |ppg_probability_cylinder_content|
+     NIL)
+    (|representation_spec| FORMULA-DECL NIL |ppg_probability_cylinder_content|
+     NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_cylinder_freeze| NIL))
+   SHOSTAK))
+ (|frozen_decides| 0
+  (|frozen_decides-1| NIL 4000979500
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "depends_freeze" ("G" "G!1" "F" "F!1" "x" "x!1" "A" "A!1"))
+     (EXPAND "frozen") (EXPAND "freezeEvent") (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :EXCLUDE
+      ("Cylinders" "blockSigma" "tableSigma" "sigma?" "probability?"
+       "finiteLaw" "is_finite" "content" "representation")))
+    NIL)
+   ((|frozen| CONST-DECL "(Cylinders)" |ppg_probability_cylinder_freeze| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[I]])"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |sigma_countable|
+     |sigma_set|)
+    (|freezeTable| CONST-DECL "FullBlock" |ppg_measurable_block_update| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|agreeOn| CONST-DECL "bool" |ppg_measurable_block_update| NIL)
+    (|dependsOn| CONST-DECL "bool" |ppg_measurable_block_update| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|freezeEvent| CONST-DECL "TableEvent" |ppg_probability_cylinder_freeze|
+     NIL)
+    (|depends_freeze| FORMULA-DECL NIL |ppg_measurable_block_update| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL))
+   SHOSTAK))
+ (|conditional_mass_base| 0
+  (|conditional_mass_base-1| NIL 4000979500
+   (""
+    (THEN (SKOSIMP*) (LEMMA "representation_spec" ("A" "A!1")) (LABEL "rep" -1)
+     (EXPAND "conditionalMass") (REPLACE "rep") (REWRITE "frozen_data")
+     (REWRITE "content_cylinder") (ASSERT))
+    NIL)
+   ((|content_cylinder| FORMULA-DECL NIL |ppg_probability_cylinder_content|
+     NIL)
+    (|freeSupport| CONST-DECL "finite_set[I]" |ppg_probability_cylinder_freeze|
+     NIL)
+    (|sliceEvent| CONST-DECL "(blockSigma(freeSupport(F, R)))"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|representation| CONST-DECL "(representations(A))"
+     |ppg_probability_cylinder_content| NIL)
+    (|representations| CONST-DECL "set[CylinderData]"
+     |ppg_probability_cylinder_content| NIL)
+    (|CylinderData| TYPE-EQ-DECL NIL |ppg_probability_cylinder_content| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|frozen_data| FORMULA-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|conditionalMass| CONST-DECL "nnreal" |ppg_probability_cylinder_freeze|
+     NIL)
+    (|representation_spec| FORMULA-DECL NIL |ppg_probability_cylinder_content|
+     NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_cylinder_freeze| NIL))
+   SHOSTAK))
+ (|conditional_mass_empty| 0
+  (|conditional_mass_empty-1| NIL 4000979500
+   (""
+    (THEN (SKOSIMP*) (EXPAND "conditionalMass")
+     (REWRITE "frozen_empty_coordinates") (ASSERT))
+    NIL)
+   ((|frozen_empty_coordinates| FORMULA-DECL NIL
+     |ppg_probability_cylinder_freeze| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|fullset| CONST-DECL "set" |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL)
+    (|conditionalMass| CONST-DECL "nnreal" |ppg_probability_cylinder_freeze|
+     NIL))
+   SHOSTAK))
+ (|conditional_mass_monotone| 0
+  (|conditional_mass_monotone-1| NIL 4000979500
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "frozen_monotone" ("F" "F!1" "x" "x!1" "A" "A!1" "B" "B!1"))
+     (LEMMA "content_monotone"
+      ("A" "frozen(F!1,x!1,A!1)" "B" "frozen(F!1,x!1,B!1)"))
+     (EXPAND "conditionalMass") (ASSERT))
+    NIL)
+   ((|content_monotone| FORMULA-DECL NIL |ppg_probability_cylinder_content|
+     NIL)
+    (|frozen| CONST-DECL "(Cylinders)" |ppg_probability_cylinder_freeze| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|conditionalMass| CONST-DECL "nnreal" |ppg_probability_cylinder_freeze|
+     NIL)
+    (|frozen_monotone| FORMULA-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|fullset| CONST-DECL "set" |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL))
+   SHOSTAK))
+ (|conditional_mass_bound| 0
+  (|conditional_mass_bound-1| NIL 4000979500
+   (""
+    (THEN (SKOSIMP*) (LEMMA "content_bound" ("A" "frozen(F!1,x!1,A!1)"))
+     (EXPAND "conditionalMass") (ASSERT))
+    NIL)
+   ((|conditionalMass| CONST-DECL "nnreal" |ppg_probability_cylinder_freeze|
+     NIL)
+    (|content_bound| FORMULA-DECL NIL |ppg_probability_cylinder_content| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL)
+    (|frozen| CONST-DECL "(Cylinders)" |ppg_probability_cylinder_freeze| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_cylinder_freeze| NIL))
+   SHOSTAK))
+ (|conditional_mass_agrees| 0
+  (|conditional_mass_agrees-1| NIL 4000979500
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "frozen_agrees" ("F" "F!1" "x" "x!1" "z" "z!1" "A" "A!1"))
+     (EXPAND "conditionalMass") (ASSERT))
+    NIL)
+   ((|conditionalMass| CONST-DECL "nnreal" |ppg_probability_cylinder_freeze|
+     NIL)
+    (|frozen_agrees| FORMULA-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|fullset| CONST-DECL "set" |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL))
+   SHOSTAK))
+ (|conditional_mass_decides| 0
+  (|conditional_mass_decides-1| NIL 4000979500
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "frozen_decides" ("G" "G!1" "F" "F!1" "x" "x!1" "A" "A!1"))
+     (EXPAND "conditionalMass") (LEMMA "content_full") (LEMMA "content_empty")
+     (GRIND :EXCLUDE
+      ("Cylinders" "blockSigma" "tableSigma" "sigma?" "probability?"
+       "finiteLaw" "is_finite" "content" "representation")))
+    NIL)
+   ((|conditionalMass| CONST-DECL "nnreal" |ppg_probability_cylinder_freeze|
+     NIL)
+    (|content_empty| FORMULA-DECL NIL |ppg_probability_cylinder_content| NIL)
+    (|agreeOn| CONST-DECL "bool" |ppg_measurable_block_update| NIL)
+    (|dependsOn| CONST-DECL "bool" |ppg_measurable_block_update| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|frozen| CONST-DECL "(Cylinders)" |ppg_probability_cylinder_freeze| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |sigma_countable|
+     |sigma_set|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[I]])"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|content_full| FORMULA-DECL NIL |ppg_probability_cylinder_content| NIL)
+    (|frozen_decides| FORMULA-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|fullset| CONST-DECL "set" |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL))
+   SHOSTAK))
+ (|positive_conditional_decides| 0
+  (|positive_conditional_decides-1| NIL 4000979500
+   (""
+    (THEN (SKOSIMP*) (LEMMA "representation_depends" ("A" "A!1"))
+     (LEMMA "conditional_mass_decides"
+      ("G" "representation(A!1)`1" "F" "F!1" "x" "x!1" "A" "A!1"))
+     (GRIND :EXCLUDE
+      ("Cylinders" "blockSigma" "tableSigma" "sigma?" "probability?"
+       "finiteLaw" "is_finite" "content" "representation")))
+    NIL)
+   ((|conditional_mass_decides| FORMULA-DECL NIL
+     |ppg_probability_cylinder_freeze| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| FORMAL-CONST-DECL "[i: I -> CoordinateLaw(i)]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|CylinderData| TYPE-EQ-DECL NIL |ppg_probability_cylinder_content| NIL)
+    (|representations| CONST-DECL "set[CylinderData]"
+     |ppg_probability_cylinder_content| NIL)
+    (|representation| CONST-DECL "(representations(A))"
+     |ppg_probability_cylinder_content| NIL)
+    (|agreeOn| CONST-DECL "bool" |ppg_measurable_block_update| NIL)
+    (|dependsOn| CONST-DECL "bool" |ppg_measurable_block_update| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|frozen| CONST-DECL "(Cylinders)" |ppg_probability_cylinder_freeze| NIL)
+    (|conditionalMass| CONST-DECL "nnreal" |ppg_probability_cylinder_freeze|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[I]])"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|representation_depends| FORMULA-DECL NIL
+     |ppg_probability_cylinder_freeze| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|fullset| CONST-DECL "set" |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_cylinder_freeze| NIL)
+    (|domain| FORMAL-CONST-DECL "[I -> set[Value]]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| FORMAL-CONST-DECL
+     "[i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]"
+     |ppg_probability_cylinder_freeze| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL))
+   SHOSTAK)))
+

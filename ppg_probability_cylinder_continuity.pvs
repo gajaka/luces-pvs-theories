@@ -1,0 +1,24 @@
+% Cylinder content is continuous at an empty decreasing intersection without a support bound.
+ppg_probability_cylinder_continuity[I, Value: TYPE, domain: [I -> set[Value]],
+  (IMPORTING ppg_measurable_space)
+  spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace],
+  (IMPORTING ppg_probability_block_base[I, Value, domain, spaces])
+  coins: [i: I -> CoordinateLaw(i)]]: THEORY
+BEGIN
+  IMPORTING ppg_probability_cylinder_selection[I, Value, domain, spaces, coins],
+            ppg_probability_cylinder_premeasure[I, Value, domain, spaces, coins],
+            ppg_decreasing_to_zero
+  E: VAR CylinderSequence
+  masses_nonnegative: LEMMA FORALL (n: nat): 0 <= content(E(n))
+  masses_decreasing: LEMMA decreasingEvents[FullBlock](E) IMPLIES
+    FORALL (m, n: nat): m <= n IMPLIES content(E(n)) <= content(E(m))
+  empty_intersection_small_mass: THEOREM decreasingEvents[FullBlock](E) AND
+    countableIntersection[FullBlock](E) = emptyset[FullBlock] IMPLIES
+      FORALL (a: posreal): EXISTS (n: nat): content(E(n)) < a
+  unbounded_empty_mass: THEOREM decreasingEvents[FullBlock](E) AND
+    countableIntersection[FullBlock](E) = emptyset[FullBlock] IMPLIES
+      convergence_sequences.convergence(content o E, 0)
+  content_continuous: THEOREM continuousEmpty?(content)
+  cylinder_premeasure: THEOREM
+    generalized_measure_def[FullBlock, Cylinders].finite_measure?(content)
+END ppg_probability_cylinder_continuity

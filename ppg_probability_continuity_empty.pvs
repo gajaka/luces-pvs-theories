@@ -1,0 +1,10 @@
+% The recursive cylinder construction also works with empty coordinate and value types.
+ppg_probability_continuity_empty: THEORY
+BEGIN
+  IMPORTING ppg_probability_finite_empty,
+            ppg_probability_cylinder_continuity[Empty, Empty, domain, spaces, coins]
+  repeatedFull: CylinderSequence = LAMBDA (n: nat): fullset[FullBlock]
+  repeated_mass_one: LEMMA FORALL (n: nat): content(repeatedFull(n)) = 1
+  recursive_empty_witness: THEOREM EXISTS (x: FullBlock): FORALL (n: nat): repeatedFull(n)(x)
+  empty_native_premeasure: THEOREM generalized_measure_def[FullBlock, Cylinders].finite_measure?(content)
+END ppg_probability_continuity_empty
