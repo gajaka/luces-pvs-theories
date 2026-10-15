@@ -1,0 +1,40 @@
+% Monotone convergence permits an infinite integral of the pointwise supremum.
+ppg_monotone_integral[X: TYPE,
+  (IMPORTING ppg_measurable_space[X]) S: MeasurableSpace,
+  (IMPORTING ppg_probability_measure[X, S]) probLaw: Probability]: THEORY
+BEGIN
+  IMPORTING ppg_extended_integral[X,S,probLaw], ppg_sup_clip,
+    measure_integration@integral_convergence_scaf[X,asNasa(S),nasaLaw]
+  F: VAR [nat -> NonnegativeFunction]
+  g: VAR NonnegativeFunction
+  b: VAR nonneg_real
+  x: VAR X
+  level(g,x): nonneg_real = g(x)
+  values(F,x)(n: nat): nonneg_real = F(n)(x)
+  monotoneFamily(F): bool = FORALL (x: X, i,j: nat):
+    i<=j IMPLIES F(i)(x)<=F(j)(x)
+  supFunction(F)(x: X): ENN = iSupNN(LAMBDA(n:nat):F(n)(x))
+  truncated(g,F)(n: nat): NonnegativeFunction = min(g,F(n))
+  truncated_value: LEMMA FORALL (n: nat, x: X):
+    truncated(g,F)(n)(x)=min(g(x),F(n)(x))
+  truncated_below: LEMMA FORALL (n: nat):
+    mean(truncated(g,F)(n))<=mean(g) AND
+    mean(truncated(g,F)(n))<=mean(F(n))
+  values_monotone: LEMMA monotoneFamily(F) IMPLIES
+    FORALL (i,j: nat): i<=j IMPLIES values(F,x)(i)<=values(F,x)(j)
+  truncated_path: LEMMA (LAMBDA(n:nat):truncated(g,F)(n)(x))=clip(values(F,x),level(g,x))
+  truncated_path_converges: LEMMA monotoneFamily(F) AND minorant(g,supFunction(F)) IMPLIES
+    converges_upto?(LAMBDA(n:nat):truncated(g,F)(n)(x),g(x))
+  truncated_pointwise: LEMMA monotoneFamily(F) AND minorant(g,supFunction(F)) IMPLIES
+    pointwise_converges_upto?(LAMBDA(n:nat):truncated(g,F)(n),g)
+  truncated_means_bounded: LEMMA
+    real_fun_preds[nat].bounded?(LAMBDA(n:nat):mean(truncated(g,F)(n)))
+  truncated_convergence: LEMMA monotoneFamily(F) AND minorant(g,supFunction(F)) IMPLIES
+    converges_upto?(LAMBDA(n:nat):mean(truncated(g,F)(n)),mean(g))
+  family_minorant: LEMMA FORALL (n: nat): minorant(F(n),supFunction(F))
+  sup_integral_finite_bound: THEOREM monotoneFamily(F) IMPLIES
+    (ele(lintegral(supFunction(F)),ennFinite(b)) IFF
+      FORALL (n: nat): mean(F(n))<=b)
+  lintegral_sup: THEOREM monotoneFamily(F) IMPLIES
+    lintegral(supFunction(F))=iSupNN(LAMBDA(n:nat):mean(F(n)))
+END ppg_monotone_integral

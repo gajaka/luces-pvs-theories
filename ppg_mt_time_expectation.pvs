@@ -1,0 +1,51 @@
+% Expectations use the actual product-log law and retain arbitrary variable sets.
+ppg_mt_time_expectation[C,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_mt_extended_count[C,V,Value,domain],
+    ppg_mt_check_probability[C,V,Value,domain,spaces,laws],
+    ppg_count_integral[LogSpace,NativeTableSigma(spaces),logMeasure]
+  FullEnumeration: TYPE = {xs:list[C]|completeEnumeration(xs)}
+  vars: VAR CertVars
+  bad: VAR NativeBad
+  fallback,a: VAR C
+  enumeration: VAR FullEnumeration
+  initial: VAR MTState
+  fixedRun(vars,bad,fallback,enumeration,initial): [nat->(NativeTableSigma(spaces))] =
+    LAMBDA(s:nat):runningEvent(vars,bad,fallback,enumeration,LAMBDA(omega:LogSpace):initial,s+1)
+  fixedSelected(vars,bad,fallback,enumeration,initial,a): [nat->(NativeTableSigma(spaces))] =
+    LAMBDA(s:nat):resamplingEvent(vars,bad,fallback,enumeration,LAMBDA(omega:LogSpace):initial,a,s)
+  randomRun(vars,bad,fallback,enumeration): [nat->(NativeTableSigma(spaces))] =
+    LAMBDA(s:nat):randomInitRunningEvent(vars,bad,fallback,enumeration,s+1)
+  randomSelected(vars,bad,fallback,enumeration,a): [nat->(NativeTableSigma(spaces))] =
+    LAMBDA(s:nat):randomInitResamplingEvent(vars,bad,fallback,enumeration,a,s)
+  fixed_run_count_function: LEMMA
+    (LAMBDA(omega:LogSpace):TLog(vars,bad,fallback,enumeration,initial,omega))=
+    (LAMBDA(omega:LogSpace):eventCount(fixedRun(vars,bad,fallback,enumeration,initial),omega))
+  fixed_selected_count_function: LEMMA
+    (LAMBDA(omega:LogSpace):resamplingCount(vars,bad,fallback,enumeration,initial,omega,a))=
+    (LAMBDA(omega:LogSpace):eventCount(fixedSelected(vars,bad,fallback,enumeration,initial,a),omega))
+  random_run_count_function: LEMMA
+    (LAMBDA(omega:LogSpace):randomInitTLog(vars,bad,fallback,enumeration,omega))=
+    (LAMBDA(omega:LogSpace):eventCount(randomRun(vars,bad,fallback,enumeration),omega))
+  random_selected_count_function: LEMMA
+    (LAMBDA(omega:LogSpace):randomInitResamplingCount(vars,bad,fallback,enumeration,omega,a))=
+    (LAMBDA(omega:LogSpace):eventCount(randomSelected(vars,bad,fallback,enumeration,a),omega))
+  ETLog(vars,bad,fallback,enumeration,initial): ENN =
+    lintegral(LAMBDA(omega:LogSpace):TLog(vars,bad,fallback,enumeration,initial,omega))
+  expectedResamplingCount(vars,bad,fallback,enumeration,initial,a): ENN =
+    lintegral(LAMBDA(omega:LogSpace):resamplingCount(vars,bad,fallback,enumeration,initial,omega,a))
+  randomInitETLog(vars,bad,fallback,enumeration): ENN =
+    lintegral(LAMBDA(omega:LogSpace):randomInitTLog(vars,bad,fallback,enumeration,omega))
+  randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a): ENN =
+    lintegral(LAMBDA(omega:LogSpace):randomInitResamplingCount(vars,bad,fallback,enumeration,omega,a))
+  ETLog_eq_tsum: THEOREM ETLog(vars,bad,fallback,enumeration,initial)=
+    ppg_nonneg_tsum[nat].tsum(LAMBDA(s:nat):logMeasure(fixedRun(vars,bad,fallback,enumeration,initial)(s)))
+  expectedResamplingCount_eq_tsum: THEOREM expectedResamplingCount(vars,bad,fallback,enumeration,initial,a)=
+    ppg_nonneg_tsum[nat].tsum(LAMBDA(s:nat):logMeasure(fixedSelected(vars,bad,fallback,enumeration,initial,a)(s)))
+  randomInitETLog_eq_tsum: THEOREM randomInitETLog(vars,bad,fallback,enumeration)=
+    ppg_nonneg_tsum[nat].tsum(LAMBDA(s:nat):logMeasure(randomRun(vars,bad,fallback,enumeration)(s)))
+  randomInitExpectedResamplingCount_eq_tsum: THEOREM randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a)=
+    ppg_nonneg_tsum[nat].tsum(LAMBDA(s:nat):logMeasure(randomSelected(vars,bad,fallback,enumeration,a)(s)))
+END ppg_mt_time_expectation
