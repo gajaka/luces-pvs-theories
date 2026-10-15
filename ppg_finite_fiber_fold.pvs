@@ -1,0 +1,21 @@
+% Fibers of a map are disjoint. If the finite index set contains every
+% value used on the source set, their union is exactly the source set.
+% A commutative fold can therefore be evaluated one fiber at a time.
+ppg_finite_fiber_fold[A,B,R:TYPE,unit:R,
+  op:{f:[R,R->R]|identity?(f)(unit) AND associative?(f) AND commutative?(f)}]: THEORY
+BEGIN
+  IMPORTING ppg_bind_sum[B,A,R,unit,op],
+    ppg_monoid_sum[A,R,unit,op] AS sourceFold,
+    ppg_monoid_sum[B,R,unit,op] AS indexFold
+  S: VAR finite_set[A]
+  I: VAR finite_set[B]
+  key: VAR [A->B]
+  h: VAR [A->R]
+  b: VAR B
+  fiber(S,key,b): finite_set[A] = intersection(S,LAMBDA(a:A):key(a)=b)
+  fiber_disjoint: LEMMA disjointFamily(I,LAMBDA(b:B):fiber(S,key,b))
+  fiber_cover: LEMMA (FORALL(a:A):S(a) IMPLIES I(key(a))) IMPLIES
+    biUnion(I,LAMBDA(b:B):fiber(S,key,b))=S
+  fold_fiberwise: THEOREM (FORALL(a:A):S(a) IMPLIES I(key(a))) IMPLIES
+    sourceFold.sum(S,h)=indexFold.sum(I,LAMBDA(b:B):sourceFold.sum(fiber(S,key,b),h))
+END ppg_finite_fiber_fold

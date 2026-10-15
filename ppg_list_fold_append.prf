@@ -1,0 +1,83 @@
+(|ppg_list_fold_append|
+ (|fold_append| 0
+  (|fold_append-1| NIL 4001085545
+   ("" (INDUCT "L")
+    (("1" (SKOSIMP*)
+      (("1" (LEMMA "fold_nil" ("f" "f!1"))
+        (("1"
+          (LEMMA "ppg_monoid_sum[T,R,unit,op].plus_zero_left"
+           ("r" "fold(M!1,f!1)"))
+          (("1" (GRIND :EXCLUDE ("fold" "is_finite")) NIL NIL)) NIL))
+        NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (INST -1 "M!1" "f!1")
+        (("2" (EXPAND "append" 1 1)
+          (("2" (REWRITE "fold_cons")
+            (("2" (REWRITE "fold_cons")
+              (("2"
+                (LEMMA "ppg_monoid_sum[T,R,unit,op].plus_assoc"
+                 ("r1" "f!1(cons1_var!1)" "r2" "fold(cons2_var!1,f!1)" "r3"
+                  "fold(M!1,f!1)"))
+                (("2" (ASSERT) NIL NIL)) NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|list| TYPE-DECL NIL |list_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_list_fold_append| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|unit| FORMAL-CONST-DECL "R" |ppg_list_fold_append| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|op| FORMAL-CONST-DECL "{f: [R, R -> R] |
+   identity?(f)(unit) AND associative?(f) AND commutative?(f)}"
+     |ppg_list_fold_append| NIL)
+    (|fold| DEF-DECL "R" |ppg_list_fold| NIL)
+    (|append| DEF-DECL "list[T]" |list_props| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_list_fold_append| NIL)
+    (|list_induction| FORMULA-DECL NIL |list_adt| NIL)
+    (|fold_nil| FORMULA-DECL NIL |ppg_list_fold| NIL)
+    (|plus_zero_left| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|fold_cons| FORMULA-DECL NIL |ppg_list_fold| NIL)
+    (|plus_assoc| FORMULA-DECL NIL |ppg_monoid_sum| NIL))
+   SHOSTAK))
+ (|fold_snoc| 0
+  (|fold_snoc-1| NIL 4001085545
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fold_append" ("L" "L!1" "M" "cons[T](x!1,null[T])" "f" "f!1"))
+     (LEMMA "fold_cons" ("x" "x!1" "xs" "null[T]" "f" "f!1"))
+     (LEMMA "fold_nil" ("f" "f!1"))
+     (LEMMA "ppg_monoid_sum[T,R,unit,op].plus_zero_right" ("r" "f!1(x!1)"))
+     (ASSERT))
+    NIL)
+   ((|fold_cons| FORMULA-DECL NIL |ppg_list_fold| NIL)
+    (|unit| FORMAL-CONST-DECL "R" |ppg_list_fold_append| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|op| FORMAL-CONST-DECL "{f: [R, R -> R] |
+   identity?(f)(unit) AND associative?(f) AND commutative?(f)}"
+     |ppg_list_fold_append| NIL)
+    (|plus_zero_right| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|fold_nil| FORMULA-DECL NIL |ppg_list_fold| NIL)
+    (|fold_append| FORMULA-DECL NIL |ppg_list_fold_append| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_list_fold_append| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|cons?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|cons| ADT-CONSTRUCTOR-DECL "[[T, list] -> (cons?)]" |list_adt| NIL)
+    (|null?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|null| ADT-CONSTRUCTOR-DECL "(null?)" |list_adt| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_list_fold_append| NIL))
+   SHOSTAK)))
+

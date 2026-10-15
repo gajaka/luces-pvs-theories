@@ -1,0 +1,12 @@
+% Appending lists composes their folds through the monoid operation.
+% In particular, appending one element adds its contribution on the right.
+ppg_list_fold_append[T,R:TYPE,unit:R,
+  op:{f:[R,R->R]|identity?(f)(unit) AND associative?(f) AND commutative?(f)}]: THEORY
+BEGIN
+  IMPORTING ppg_list_fold[T,R,unit,op]
+  L,M: VAR list[T]
+  f: VAR [T->R]
+  x: VAR T
+  fold_append: LEMMA fold(append[T](L,M),f)=op(fold(L,f),fold(M,f))
+  fold_snoc: LEMMA fold(append[T](L,cons[T](x,null[T])),f)=op(fold(L,f),f(x))
+END ppg_list_fold_append

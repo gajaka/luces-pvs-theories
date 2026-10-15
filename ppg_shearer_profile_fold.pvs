@@ -1,0 +1,35 @@
+% A fold over tree vertices is a fold over depth-label pairs. Each depth
+% fiber maps injectively to its layer, so multiplicities are preserved.
+% The same commutative-monoid theorem gives both sums and products.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2. https://arxiv.org/abs/0903.0544v3
+% Lean counterpart: PPGraphShearerLayerProfile.lean.
+ppg_shearer_profile_fold[C,V,R:TYPE,(IMPORTING ppg_bdd[C,V]) vars:CertVars,unit:R,
+  op:{f:[R,R->R]|identity?(f)(unit) AND associative?(f) AND commutative?(f)}]: THEORY
+BEGIN
+  IMPORTING ppg_shearer_profile_data[C,V,vars], ppg_nat_range,
+    ppg_finite_fiber_fold[Addr,nat,R,unit,op], ppg_monoid_image[Addr,C,R,unit,op],
+    ppg_monoid_sum[Addr,R,unit,op] AS addresses,
+    ppg_monoid_sum[C,R,unit,op] AS labels,
+    ppg_monoid_sum[nat,R,unit,op] AS depths,
+    ppg_list_fold[Layer,R,unit,op] AS layers,
+    ppg_list_fold_append[Layer,R,unit,op]
+  T: VAR GTree
+  f: VAR [nat,C->R]
+  h: VAR [Layer->R]
+  g: VAR [nat->Layer]
+  d,n,k: VAR nat
+  depth_slice_fold: LEMMA SameDepthIndependent(vars,T) IMPLIES
+    addresses.sum(treeSlice(T,d),LAMBDA(w:Addr):f(length(w),T`lab(w)))=
+      labels.sum(treeLayer(T,d),LAMBDA(a:C):f(d,a))
+  fold_dom_eq_fold_layers: THEOREM SameDepthIndependent(vars,T) IMPLIES
+    addresses.sum(T`dom,LAMBDA(w:Addr):f(length(w),T`lab(w)))=
+      depths.sum(natRange(treeDepth(T)+1),LAMBDA(d:nat):labels.sum(treeLayer(T,d),LAMBDA(a:C):f(d,a)))
+  window_snoc: LEMMA layerWindow(g,n+1,k)=
+    append[Layer](layerWindow(g,n,k),cons[Layer](g(k+n+1),null[Layer]))
+  fold_window: LEMMA FORALL(g:[nat->Layer]):layers.fold(layerWindow(g,n,k),h)=
+    depths.sum(natRange(n+1),LAMBDA(d:nat):h(g(k+d)))
+  fold_map_treeLayers: THEOREM layers.fold(treeLayers(T),h)=
+    depths.sum(natRange(treeDepth(T)+1),LAMBDA(d:nat):h(treeLayer(T,d)))
+END ppg_shearer_profile_fold

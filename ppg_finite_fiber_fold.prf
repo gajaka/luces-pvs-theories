@@ -1,0 +1,75 @@
+(|ppg_finite_fiber_fold|
+ (|fiber_disjoint| 0
+  (|fiber_disjoint-1| NIL 4001085545
+   ("" (THEN (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite"))) NIL)
+   ((|finite_intersection1| APPLICATION-JUDGEMENT "finite_set[A]"
+     |ppg_finite_fiber_fold| NIL)
+    (|fiber| CONST-DECL "finite_set[A]" |ppg_finite_fiber_fold| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_finite_fiber_fold| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_fiber_fold| NIL)
+    (|disjointFamily| CONST-DECL "bool" |ppg_finite_bind| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|fiber_cover| 0
+  (|fiber_cover-1| NIL 4001085545
+   (""
+    (THEN (SKOSIMP*) (LABEL "COVER" -1) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "biUnion_member"
+      ("S" "I!1" "F" "LAMBDA(b:B):fiber(S!1,key!1,b)" "b" "x!1"))
+     (SPREAD (GRIND :IF-MATCH NIL :EXCLUDE ("biUnion" "is_finite"))
+      ((THEN (INST "COVER" "x!1") (INST 2 "key!1(x!1)") (ASSERT)))))
+    NIL)
+   ((A FORMAL-TYPE-DECL NIL |ppg_finite_fiber_fold| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|fiber| CONST-DECL "finite_set[A]" |ppg_finite_fiber_fold| NIL)
+    (|biUnion| DEF-DECL "finite_set[B]" |ppg_finite_bind| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_fiber_fold| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|biUnion_member| FORMULA-DECL NIL |ppg_finite_bind| NIL))
+   SHOSTAK))
+ (|fold_fiberwise| 0
+  (|fold_fiberwise-1| NIL 4001085545
+   (""
+    (THEN (SKOSIMP*) (LEMMA "fiber_cover" ("S" "S!1" "I" "I!1" "key" "key!1"))
+     (LEMMA "fiber_disjoint" ("S" "S!1" "I" "I!1" "key" "key!1"))
+     (LEMMA "sum_bind"
+      ("S" "I!1" "F" "LAMBDA(b:B):fiber(S!1,key!1,b)" "f" "h!1"))
+     (ASSERT))
+    NIL)
+   ((|fiber_disjoint| FORMULA-DECL NIL |ppg_finite_fiber_fold| NIL)
+    (|op| FORMAL-CONST-DECL "{f: [R, R -> R] |
+   identity?(f)(unit) AND associative?(f) AND commutative?(f)}"
+     |ppg_finite_fiber_fold| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|unit| FORMAL-CONST-DECL "R" |ppg_finite_fiber_fold| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_finite_fiber_fold| NIL)
+    (|fiber| CONST-DECL "finite_set[A]" |ppg_finite_fiber_fold| NIL)
+    (|sum_bind| FORMULA-DECL NIL |ppg_bind_sum| NIL)
+    (|fiber_cover| FORMULA-DECL NIL |ppg_finite_fiber_fold| NIL)
+    (B FORMAL-TYPE-DECL NIL |ppg_finite_fiber_fold| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_finite_fiber_fold| NIL))
+   SHOSTAK)))
+
