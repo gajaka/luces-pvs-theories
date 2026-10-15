@@ -1,0 +1,32 @@
+% A countable indicator count is measurable and may take the value infinity.
+ppg_event_count[X: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_enn_measurable[X], ppg_nat_tsum, ppg_nn_indicator[nat]
+  SX: VAR ppg_measurable_space[X].MeasurableSpace
+  E, F: VAR [nat -> set[X]]
+  x: VAR X
+  n: VAR nat
+  f: VAR [X -> nat]
+  countPrefix(E, x, n): nat = card(filteredRange(LAMBDA (k: nat): E(k)(x), n))
+  eventCount(E, x): ENN = tsum(LAMBDA (k: nat): IF E(k)(x) THEN 1 ELSE 0 ENDIF)
+  countPrefix_zero: LEMMA countPrefix(E, x, 0) = 0
+  countPrefix_succ: LEMMA countPrefix(E, x, n + 1) =
+    countPrefix(E, x, n) + IF E(n)(x) THEN 1 ELSE 0 ENDIF
+  sum_indicator_eq_card: LEMMA
+    sums.sum(natRange(n), LAMBDA (k: nat): IF E(k)(x) THEN 1 ELSE 0 ENDIF) = countPrefix(E, x, n)
+  indicator_prefixes: LEMMA
+    (LAMBDA(n:nat):sums.sum(natRange(n),LAMBDA(k:nat):IF E(k)(x) THEN 1 ELSE 0 ENDIF)) =
+    (LAMBDA(n:nat):countPrefix(E,x,n))
+  eventCount_eq_iSup_card: THEOREM eventCount(E, x) = iSupNN(LAMBDA (n: nat): countPrefix(E, x, n))
+  measurable_increment: LEMMA measurable(SX, fullset[set[nat]], f) IMPLIES
+    measurable(SX, fullset[set[nat]], LAMBDA (x: X): f(x) + 1)
+  prefix_function_succ: LEMMA (LAMBDA(x:X):countPrefix(E,x,n+1)) =
+    branch(E(n),LAMBDA(x:X):countPrefix(E,x,n)+1,LAMBDA(x:X):countPrefix(E,x,n))
+  eventCount_congr: LEMMA (FORALL(k:nat):E(k)(x)=F(k)(x)) IMPLIES eventCount(E,x)=eventCount(F,x)
+  measurable_countPrefix: LEMMA (FORALL (k: nat): SX(E(k))) IMPLIES
+    measurable(SX, fullset[set[nat]], LAMBDA (x: X): countPrefix(E, x, n))
+  count_function: LEMMA (LAMBDA (x: X): eventCount(E, x)) =
+    (LAMBDA (x: X): iSupNN(LAMBDA (n: nat): countPrefix(E, x, n)))
+  measurable_eventCount: THEOREM (FORALL (k: nat): SX(E(k))) IMPLIES
+    measurable(SX, ENNSigma, LAMBDA (x: X): eventCount(E, x))
+END ppg_event_count

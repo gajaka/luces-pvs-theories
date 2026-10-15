@@ -1,0 +1,11 @@
+% A finite nonnegative real sum of indicator values counts the selected members.
+ppg_nn_indicator[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_monoid_sum[T, nonneg_real, 0, LAMBDA (a, b: nonneg_real): a + b] AS totals
+  S: VAR finite_set[T]
+  P: VAR pred[T]
+  filter_add: LEMMA FORALL (x: T): intersection(add(x, S), P) =
+    IF P(x) THEN add(x, intersection(S, P)) ELSE intersection(S, P) ENDIF
+  sum_indicator: THEOREM totals.sum(S, LAMBDA (x: T): IF P(x) THEN 1 ELSE 0 ENDIF) =
+    card(intersection(S, P))
+END ppg_nn_indicator

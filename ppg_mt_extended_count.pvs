@@ -1,0 +1,72 @@
+% Extended stopped counts use the same measurable events and the actual table.
+ppg_mt_extended_count[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_resampling_prefix[C, V, Value, domain], ppg_event_count[LogSpace]
+  coordinates: VAR [V -> ppg_measurable_space[Value].MeasurableSpace]
+  vars: VAR CertVars
+  bad: VAR [C, MTState -> bool]
+  fallback, a: VAR C
+  enumeration: VAR list[C]
+  initial: VAR MTState
+  init: VAR [LogSpace -> MTState]
+  omega: VAR LogSpace
+  n: VAR nat
+  processCount(vars, bad, fallback, enumeration, init, omega): ENN =
+    eventCount(LAMBDA (s: nat): runningEvent(vars, bad, fallback, enumeration, init, s + 1), omega)
+  selectedCount(vars, bad, fallback, enumeration, init, omega, a): ENN =
+    eventCount(LAMBDA (s: nat): resamplingEvent(vars, bad, fallback, enumeration, init, a, s), omega)
+  TLog(vars, bad, fallback, enumeration, initial, omega): ENN =
+    processCount(vars, bad, fallback, enumeration, LAMBDA (omega: LogSpace): initial, omega)
+  resamplingCount(vars, bad, fallback, enumeration, initial, omega, a): ENN =
+    selectedCount(vars, bad, fallback, enumeration, LAMBDA (omega: LogSpace): initial, omega, a)
+  running_count_measurable: LEMMA measurableBad(coordinates, bad) AND
+    measurable(TableSigma(coordinates), StateSigma(coordinates), init) IMPLIES
+    measurable(TableSigma(coordinates), ENNSigma,
+      LAMBDA (omega: LogSpace): processCount(vars, bad, fallback, enumeration, init, omega))
+  selected_count_measurable: LEMMA measurableBad(coordinates, bad) AND
+    measurable(TableSigma(coordinates), StateSigma(coordinates), init) IMPLIES
+    measurable(TableSigma(coordinates), ENNSigma,
+      LAMBDA (omega: LogSpace): selectedCount(vars, bad, fallback, enumeration, init, omega, a))
+  measurable_TLog: THEOREM measurableBad(coordinates, bad) IMPLIES
+    measurable(TableSigma(coordinates), ENNSigma,
+      LAMBDA (omega: LogSpace): TLog(vars, bad, fallback, enumeration, initial, omega))
+  measurable_resamplingCount: THEOREM measurableBad(coordinates, bad) IMPLIES
+    measurable(TableSigma(coordinates), ENNSigma,
+      LAMBDA (omega: LogSpace): resamplingCount(vars, bad, fallback, enumeration, initial, omega, a))
+  stopped_prefix_count: LEMMA countPrefix(
+    LAMBDA (s: nat): resamplingEvent(vars, bad, fallback, enumeration, LAMBDA (omega: LogSpace): initial, a, s), omega, n) =
+    card(resamplingTimesUpTo(vars, bad, fallback, enumeration, initial, omega, a, n))
+  sum_resamplingEvent_indicator_eq_card: THEOREM esum(natRange(n), LAMBDA (s: nat):
+    ennFinite(IF resamplingEvent(vars, bad, fallback, enumeration, LAMBDA (omega: LogSpace): initial, a, s)(omega)
+      THEN 1 ELSE 0 ENDIF)) = ennFinite(card(resamplingTimesUpTo(vars, bad, fallback, enumeration, initial, omega, a, n)))
+  stopped_prefix_function: LEMMA
+    (LAMBDA(n:nat):countPrefix(LAMBDA(s:nat):resamplingEvent(vars,bad,fallback,enumeration,LAMBDA(omega:LogSpace):initial,a,s),omega,n)) =
+    (LAMBDA(n:nat):card(resamplingTimesUpTo(vars,bad,fallback,enumeration,initial,omega,a,n)))
+  resamplingCount_eq_iSup_card: THEOREM resamplingCount(vars, bad, fallback, enumeration, initial, omega, a) =
+    ppg_nonneg_tsum[nat].iSupNN(LAMBDA (n: nat): card(resamplingTimesUpTo(vars, bad, fallback, enumeration, initial, omega, a, n)))
+  prefix_card_functions: LEMMA
+    (LAMBDA (n: nat): card(resamplingTimesUpTo(vars, bad, fallback, enumeration, initial, omega, a, n))) =
+    (LAMBDA (n: nat): card(image(LAMBDA (s: nat): resamplingWitness(vars, bad, fallback, enumeration, initial, omega, s),
+      resamplingTimesUpTo(vars, bad, fallback, enumeration, initial, omega, a, n))))
+  resamplingCount_eq_iSup_card_witnesses: THEOREM resamplingCount(vars, bad, fallback, enumeration, initial, omega, a) =
+    ppg_nonneg_tsum[nat].iSupNN(LAMBDA (n: nat): card(image(LAMBDA (s: nat): resamplingWitness(vars, bad, fallback, enumeration, initial, omega, s),
+      resamplingTimesUpTo(vars, bad, fallback, enumeration, initial, omega, a, n))))
+  randomInitTLog(vars, bad, fallback, enumeration, omega): ENN =
+    TLog(vars, bad, fallback, enumeration, initialStateFromLog(omega), omega)
+  randomInitResamplingCount(vars, bad, fallback, enumeration, omega, a): ENN =
+    resamplingCount(vars, bad, fallback, enumeration, initialStateFromLog(omega), omega, a)
+  randomInitTLog_eq_tsum_indicator: THEOREM randomInitTLog(vars, bad, fallback, enumeration, omega) =
+    eventCount(LAMBDA (s: nat): randomInitRunningEvent(vars, bad, fallback, enumeration, s + 1), omega)
+  randomInitResamplingCount_eq_tsum_indicator: THEOREM randomInitResamplingCount(vars, bad, fallback, enumeration, omega, a) =
+    eventCount(LAMBDA (s: nat): randomInitResamplingEvent(vars, bad, fallback, enumeration, a, s), omega)
+  random_log_function: LEMMA (LAMBDA (omega: LogSpace): randomInitTLog(vars, bad, fallback, enumeration, omega)) =
+    (LAMBDA (omega: LogSpace): processCount(vars, bad, fallback, enumeration, initialStateFromLog, omega))
+  random_count_function: LEMMA (LAMBDA (omega: LogSpace): randomInitResamplingCount(vars, bad, fallback, enumeration, omega, a)) =
+    (LAMBDA (omega: LogSpace): selectedCount(vars, bad, fallback, enumeration, initialStateFromLog, omega, a))
+  measurable_randomInitTLog: THEOREM measurableBad(coordinates, bad) IMPLIES
+    measurable(TableSigma(coordinates), ENNSigma,
+      LAMBDA (omega: LogSpace): randomInitTLog(vars, bad, fallback, enumeration, omega))
+  measurable_randomInitResamplingCount: THEOREM measurableBad(coordinates, bad) IMPLIES
+    measurable(TableSigma(coordinates), ENNSigma,
+      LAMBDA (omega: LogSpace): randomInitResamplingCount(vars, bad, fallback, enumeration, omega, a))
+END ppg_mt_extended_count

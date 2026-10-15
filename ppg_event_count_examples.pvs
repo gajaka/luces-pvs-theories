@@ -1,0 +1,15 @@
+% The count distinguishes no events, a finite stopped prefix and infinitely many events.
+ppg_event_count_examples: THEORY
+BEGIN
+  IMPORTING ppg_event_count[bool]
+  m, n: VAR nat
+  full_prefix: LEMMA countPrefix(LAMBDA(k:nat):fullset[bool], TRUE, n) = n
+  full_prefix_function: LEMMA
+    (LAMBDA(n:nat):countPrefix(LAMBDA(k:nat):fullset[bool],TRUE,n)) = (LAMBDA(n:nat):n)
+  no_events: THEOREM eventCount(LAMBDA(k:nat):emptyset[bool], TRUE) = ennFinite(0)
+  infinitely_many_events: THEOREM eventCount(LAMBDA(k:nat):fullset[bool], TRUE) = ennInfinity
+  stopped_prefix: LEMMA countPrefix(LAMBDA(k:nat):{x:bool|k<m}, TRUE, n) = min(n,m)
+  stopped_prefix_function: LEMMA
+    (LAMBDA(n:nat):countPrefix(LAMBDA(k:nat):{x:bool|k<m},TRUE,n)) = (LAMBDA(n:nat):min(n,m))
+  finitely_many_events: THEOREM eventCount(LAMBDA(k:nat):{x:bool|k<m},TRUE) = ennFinite(m)
+END ppg_event_count_examples

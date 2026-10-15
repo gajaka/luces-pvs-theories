@@ -1,0 +1,135 @@
+(|ppg_nn_indicator|
+ (|totals_TCC1| 0
+  (|totals_TCC1-1| NIL 4001049885 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|totals| SUBTYPE "LAMBDA (a, b: nonneg_real): a + b"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_nn_indicator.op)(0), booleans.AND(operator_defs[nonneg_real].associative?(ppg_nn_indicator.op), operator_defs[nonneg_real].commutative?(ppg_nn_indicator.op)))}"
+    (4 46 4 79))))
+ (|filter_add| 0
+  (|filter_add-1| NIL 4001049899
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :EXCLUDE ("is_finite")))
+    NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set[T]"
+     |ppg_nn_indicator| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[T]"
+     |ppg_nn_indicator| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_nn_indicator| NIL))
+   SHOSTAK))
+ (|sum_indicator| 0
+  (|sum_indicator-1| NIL 4001049899
+   ("" (INDUCT "S" :NAME "finite_set_ind_modified[T]")
+    (("1" (SKOSIMP*)
+      (("1" (REWRITE "totals.sum_emptyset")
+        (("1" (REWRITE "intersection_commutative" 1)
+          (("1" (REWRITE "intersection_empty" 1)
+            (("1" (REWRITE "card_emptyset" 1) NIL NIL)) NIL))
+          NIL))
+        NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (INST -1 "P!1")
+        (("2" (REWRITE "totals.sum_add")
+          (("2" (LEMMA "filter_add")
+            (("2" (AUTO-REWRITE "card_add")
+              (("2" (GRIND :IF-MATCH ALL :EXCLUDE ("sum" "is_finite")) NIL
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL)
+     ("3" (GRIND :EXCLUDE ("sum" "is_finite")) NIL NIL)
+     ("4" (GRIND :EXCLUDE ("sum" "is_finite")) NIL NIL)
+     ("5" (GRIND :EXCLUDE ("sum" "is_finite")) NIL NIL))
+    NIL)
+   ((|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|Card| CONST-DECL "nat" |finite_sets| NIL)
+    (|card| CONST-DECL "{n: nat | n = Card(S)}" |finite_sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[T]"
+     |ppg_nn_indicator| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_nn_indicator| NIL)
+    (|finite_set_ind_modified| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (|sum_emptyset| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|intersection_empty| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|card_emptyset| FORMULA-DECL NIL |finite_sets| NIL)
+    (|finite_intersection1| APPLICATION-JUDGEMENT "finite_set[T]"
+     |ppg_nn_indicator| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |ppg_nn_indicator| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|intersection_commutative| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|filter_add| FORMULA-DECL NIL |ppg_nn_indicator| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|card_add| FORMULA-DECL NIL |finite_sets| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set[T]"
+     |ppg_nn_indicator| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|sum_add| FORMULA-DECL NIL |ppg_monoid_sum| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,110 @@
+(|ppg_nat_tsum|
+ (|nat_stages_increasing| 0
+  (|nat_stages_increasing-1| NIL 4001049899
+   (""
+    (THEN (EXPAND "increasing") (SKOSIMP*) (EXPAND "natStages")
+     (AUTO-REWRITE "natRange_member") (ASSERT))
+    NIL)
+   ((|increasing| CONST-DECL "bool" |ppg_increasing_finite| NIL)
+    (|natStages| CONST-DECL "[nat -> finite_set[nat]]" |ppg_nat_tsum| NIL)
+    (|natRange_member| FORMULA-DECL NIL |ppg_nat_range| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK))
+ (|nat_stages_cover| 0
+  (|nat_stages_cover-1| NIL 4001049899
+   (""
+    (THEN (SKOSIMP*) (EXPAND "family") (INST 1 "k!1+1") (EXPAND "natStages")
+     (REWRITE "natRange_member" 1) (ASSERT))
+    NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|natRange_member| FORMULA-DECL NIL |ppg_nat_range| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|natStages| CONST-DECL "[nat -> finite_set[nat]]" |ppg_nat_tsum| NIL)
+    (|family| CONST-DECL "bool" |ppg_increasing_finite| NIL))
+   SHOSTAK))
+ (|nat_stages_support| 0
+  (|nat_stages_support-1| NIL 4001049899
+   (""
+    (THEN (SKOSIMP*) (EXPAND "supportIn") (SKOSIMP*)
+     (LEMMA "nat_stages_cover" ("k" "t!1")) (PROP))
+    NIL)
+   ((|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nat_stages_cover| FORMULA-DECL NIL |ppg_nat_tsum| NIL)
+    (|supportIn| CONST-DECL "bool" |ppg_nonneg_tsum| NIL))
+   SHOSTAK))
+ (|tsum_eq_iSup_nat_TCC1| 0
+  (|tsum_eq_iSup_nat_TCC1-1| NIL 4001049886 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|tsum_eq_iSup_nat| SUBTYPE "LAMBDA (a, b: nonneg_real): a + b"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_nat_tsum.op)(0), booleans.AND(operator_defs[nonneg_real].associative?(ppg_nat_tsum.op), operator_defs[nonneg_real].commutative?(ppg_nat_tsum.op)))}"
+    (12 28 12 36))))
+ (|tsum_eq_iSup_nat| 0
+  (|tsum_eq_iSup_nat-1| NIL 4001049899
+   (""
+    (THEN (SKOSIMP*) (LEMMA "tsum_eq_iSup[nat]" ("f" "f!1" "E" "natStages"))
+     (LEMMA "nat_stages_increasing") (LEMMA "nat_stages_support" ("f" "f!1"))
+     (EXPAND "natStages") (ASSERT))
+    NIL)
+   ((|nat_stages_increasing| FORMULA-DECL NIL |ppg_nat_tsum| NIL)
+    (|nat_stages_support| FORMULA-DECL NIL |ppg_nat_tsum| NIL)
+    (|tsum_eq_iSup| FORMULA-DECL NIL |ppg_nonneg_tsum| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|natStages| CONST-DECL "[nat -> finite_set[nat]]" |ppg_nat_tsum| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK)))
+
