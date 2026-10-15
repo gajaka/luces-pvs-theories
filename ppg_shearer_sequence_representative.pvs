@@ -1,0 +1,29 @@
+% One raw tree with the chosen layer sequence is fixed before the table
+% varies. Check invariance sends every occurrence of that sequence to
+% this representative's check event. The weight keeps all repeated labels
+% at different depths and does not depend on the parent relation.
+%
+% Nicholas J. A. Harvey and Jan Vondrak, "An Algorithmic Proof of the
+% Lovasz Local Lemma via Resampling Oracles", Section 5.4.
+% https://arxiv.org/abs/1504.02044
+% Lean counterpart: PPGraphShearerSequenceProbability.lean.
+ppg_shearer_sequence_representative[C,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_bdd[C,V]) vars:CertVars]: THEORY
+BEGIN
+  IMPORTING ppg_shearer_check_profile[C,V,Value,domain,vars],
+    ppg_shearer_occurrence[C,V,Value,domain,vars], ppg_mt_occurrence_bridge[C,V,Value,domain]
+  bad: VAR [C,MTState->bool]
+  fallback,a: VAR C
+  enumeration: VAR list[C]
+  omega,rep: VAR LogSpace
+  s,r: VAR nat
+  L: VAR LayerSeq
+  p: VAR [C->real]
+  sequenceOccurrence_subset_tauCheck_of_representative: THEOREM mt_wf(vars,bad) AND
+    randomInitSequence(bad,fallback,enumeration,rep,r)=L IMPLIES
+    subset?(sequenceOccurrence(bad,fallback,enumeration,a,L),
+      {omega:LogSpace|tauCheck(vars,bad,rawTree(vars,bad,fallback,enumeration,rep,r),omega)})
+  randomInitSequence_weight_eq_prod: THEOREM sequenceWeight(p)(randomInitSequence(bad,fallback,enumeration,omega,s))=
+    product(rawTree(vars,bad,fallback,enumeration,omega,s)`dom,
+      LAMBDA(w:Addr):p(rawTree(vars,bad,fallback,enumeration,omega,s)`lab(w)))
+END ppg_shearer_sequence_representative
