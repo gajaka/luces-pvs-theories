@@ -1,4 +1,14 @@
-% Every occurrence of a label contributes one factor to the tree weight.
+% Tree weight is the product of p over all node labels, with repetitions.
+% countLabel counts those repetitions by addition over the same children.
+% Both folds are independent of sibling order, though literal tree
+% equality still depends on the order of its child list.
+%
+% Noga Alon and Joel H. Spencer, The Probabilistic Method, 4th ed.,
+% Wiley, 2016, Section 5.7, "Moser's Fix-It Algorithm".
+% Theorems 5.7.1 and 5.7.3.
+% Lean counterparts: PPGraphMoserTardosWeight.lean and
+% PPGraphMoserTardosInjectivityBridge.lean.
+
 ppg_rose_weight[C: TYPE]: THEORY
 BEGIN
   IMPORTING ppg_rose_size[C], ppg_mt_rose_adt_reduce[C, nonneg_real],
@@ -10,6 +20,7 @@ BEGIN
   a, b: VAR C
   p, q: VAR [C -> nonneg_real]
   prod_list(ns: list[nonneg_real]): nonneg_real = scalar.fold(ns, LAMBDA (r: nonneg_real): r)
+  % The fold visits nodes, so equal labels contribute separate factors.
   weight(p): [WTree -> nonneg_real] = ppg_mt_rose_adt_reduce[C, nonneg_real].reduce(
     LAMBDA (a: C, ns: list[nonneg_real]): p(a) * prod_list(ns))
   weight_children: THEOREM weight(p)(roseNode(a, cs)) = p(a) * prod_list(map(weight(p))(cs))

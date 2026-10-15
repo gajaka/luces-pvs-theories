@@ -1,4 +1,13 @@
-% A budget gives a good target; constant-log descent supplies arbitrary starts.
+% The MT budget gives finite expectation for slot-zero initialization,
+% hence a good target. A separate constant-table descent proves an
+% existential path from every initial state to a good state.
+%
+% Finite variables are needed for that descent. No almost-sure claim
+% about arbitrary fixed starts follows from this repair theorem.
+% fallback supplies the source's nonempty event-label assumption.
+% Lean counterparts: PPGraphMoserTardosTermination.lean and
+% PPGraphMoserTardosRepairBridge.lean.
+
 ppg_mt_budget_repair[C,V,Value:TYPE,domain:[V->set[Value]],
   universe:{F:finite_set[V]|F=fullset[V]},
   (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])

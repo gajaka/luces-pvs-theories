@@ -1,45 +1,19 @@
-%------------------------------------------------------------------------------
-% ppg_mt_growing.pvs
-% Algorithmic Lovasz Local Lemma (Moser-Tardos)
+% The backward witness-tree construction scans the event log from time t
+% toward its beginning. A dependent label is attached below a vertex of
+% maximum depth among the eligible vertices.
 %
-% Layer 3, Part B: the address-indexed growing witness tree, and the
-% backward construction of tau_C(t) from a log.
+% Vertices are finite lists of child indices. The finite address domain
+% makes attachment and node counting explicit; labels outside that domain
+% have no mathematical role. msub is natural subtraction truncated at zero.
+% Fresh child indices and ties at maximum depth are chosen from sets
+% proved nonempty. The more general carrier version is ppg_mt_tree.
 %
-% Moser & Tardos, "A constructive proof of the general Lovasz Local
-% Lemma", arXiv:0903.0544v3, Section 2.
-%
-% PVS development (Stosic, 2026).
-%
-% Builds on ppg_probabilistic (CertVars, dependent?). The neighbor
-% relation is dependent?(vars) here, so this theory needs neither the
-% state space nor the resample operator, and takes parameters [C, V].
-%
-% A vertex is named by a list of naturals: null is the root and
-% snoc(v, k) is the (k+1)-th child of v. dom is the finite set of
-% addresses built so far, lab labels them (meaningless outside dom).
-% Addressing is what lets a new child be attached at an arbitrary
-% existing vertex, which a plain rose tree cannot express.
-%
-% Two implementation notes:
-%
-%  msub is truncating subtraction on nat (truncating at zero), since PVS
-%  subtraction on nat lands in int. The backward scan must visit the same
-%  indices, because the injectivity argument of the next layer counts them.
-%
-%  exists_fresh_index comes from injection_and_cardinal in
-%  finite_sets@finite_sets_card_eq. If every snoc(v, k) with
-%  k < card(dom) + 1 were present, that many distinct addresses would
-%  inject into dom, forcing card(dom) + 1 <= card(dom).
-%
-% Choice: the fresh child index and the tie-break among maximum-depth
-% candidates use choose applied to a set that the preceding existence
-% lemma shows to be nonempty.
-%
-% Not attempted here: injectivity of the map from time to tree (next
-% layer), and any link to a rose-tree representation.
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2, Lemma 2.1.
+% https://arxiv.org/abs/0903.0544v3
+% Lean counterpart: PPGraphMoserTardosGrowing.lean.
 %
 % Author: Dragan Stosic, 2026.
-%------------------------------------------------------------------------------
 
 ppg_mt_growing[C: TYPE+, V: TYPE+]: THEORY
 BEGIN
@@ -146,10 +120,9 @@ BEGIN
     FORALL (vars: CertVars, T: GTree, a: C):
       subset?(candidates(vars, T, a), T`dom)
 
-  % A vertex already labelled a is always a candidate. This drives the
-  % injectivity argument of the next layer: the root of tau_C(t) carries
-  % label C(t), so every earlier occurrence of that label finds an
-  % attachment point and does add a node.
+  % The root labelled C(t) remains an attachment candidate. Every earlier
+  % occurrence of that label therefore adds a node, as counted in
+  % ppg_mt_injectivity.
   candidates_nonempty_of_label: LEMMA
     FORALL (vars: CertVars, T: GTree, a: C, v: Addr):
       T`dom(v) AND T`lab(v) = a IMPLIES nonempty?(candidates(vars, T, a))
@@ -224,10 +197,9 @@ BEGIN
   % attaches at a candidate, while the candidates at a are the vertices
   % whose inclusive neighborhood contains a.
   %
-  % Stated on the address representation. The rose-tree condition wf? of
-  % ppg_mt_witness says the same thing about that representation; the two
-  % are not connected here; this development leaves
-  % the bridge between its GrowingTree and WTree open.
+  % This predicate states parent-child compatibility on addresses.
+  % ppg_mt_real_tree proves the corresponding rose-tree property for
+  % the arbitrary-carrier version of the construction.
 
   gt_child_ok?(vars, T): bool =
     FORALL (v: Addr, k: nat):

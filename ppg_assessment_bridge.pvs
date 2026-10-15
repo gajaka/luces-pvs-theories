@@ -1,19 +1,12 @@
-%%% ppg_assessment_bridge.pvs
-%%% Bridge: Self-Assessment / Parametric Certification
-%%%
-%%% Parametric certification IS an instance of the self-assessment
-%%% repair model. We set:
-%%%   S := D        (system state = datum)
-%%%   V := Th       (vertex = specification level)
-%%%   Spec := fully_certified F
-%%%   RepairOp := R : D, Th -> D
-%%%
-%%% Then valid_repair gives target_restored + core_preserved,
-%%% and the complete cycle follows:
-%%%   canonical, blocking, repair, strict growth, blocking cleared,
-%%%   canonical frontier advances
-%%%
-%%% Author: Dragan Stosic, 2026
+% Parametric certification instantiates the self-assessment repair model.
+% The datum is the system state, specification levels are graph vertices,
+% and fully_certified supplies the state predicate. A valid repair restores
+% the target while preserving the certified core; the existing growth
+% lemmas then advance the certification frontier.
+%
+% Lean counterpart: PPGraphAssessmentBridge.lean.
+%
+% Author: Dragan Stosic, 2026.
 
 ppg_assessment_bridge[D: TYPE, Th: TYPE, <=: (partial_order?[Th])]: THEORY
 BEGIN

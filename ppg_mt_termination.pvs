@@ -1,4 +1,12 @@
-% The actual product-log law gives almost sure termination from slot zero.
+% Finite expected stopped length makes the infinite-count event null.
+% The pointwise count/termination equivalence then gives probability one
+% of reaching a good state, and hence the existence of a good state.
+%
+% Initialization uses slot zero of the same product table as resampling.
+% These statements do not give almost-sure termination from an arbitrary
+% fixed initial state. The variable type need not be finite.
+% Lean counterpart: PPGraphMoserTardosTermination.lean.
+
 ppg_mt_termination[C,V,Value:TYPE,domain:[V->set[Value]],
   (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
   spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
@@ -12,6 +20,7 @@ BEGIN
   enumeration: VAR FullEnumeration
   randomCountFunction(vars,bad,fallback,enumeration)(omega:LogSpace): ENN =
     randomInitTLog(vars,bad,fallback,enumeration,omega)
+  % Reaching one good state suffices; later unstopped states are irrelevant.
   terminationEvent(vars,bad,fallback,enumeration): set[LogSpace] =
     {omega:LogSpace|EXISTS(N:nat):MTGood(bad,
       randTraj(vars,bad,fallback,enumeration,initialStateFromLog(omega),omega,N))}

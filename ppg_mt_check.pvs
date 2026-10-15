@@ -1,4 +1,17 @@
-% Each tree vertex reads one table entry per variable in its footprint.
+% A tree vertex reads one table entry for each variable in its footprint.
+% Its index for v counts strictly deeper vertices that also use v.
+% The whole check passes when every reconstructed state violates its label.
+%
+% Same-depth independence makes distinct vertices read disjoint pairs
+% (local index, variable). This is a statement about fixed table reads;
+% the probability calculation is in ppg_mt_check_probability.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2, Lemma 2.1.
+% https://arxiv.org/abs/0903.0544v3
+% Lean counterparts: PPGraphMoserTardosCheck.lean and
+% PPGraphMoserTardosProbabilityGeneral.lean.
+
 ppg_mt_check[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
 BEGIN
   IMPORTING ppg_mt_check_order[C, V], ppg_mt_random_process[C, V, Value, domain]

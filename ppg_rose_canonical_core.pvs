@@ -1,4 +1,13 @@
-% Fuel bounds structural recursion while canonical children use label-set order.
+% Canonicalization recursively orders children by their finite label set.
+% A depth-sized fuel bound reaches every node. For proper trees it preserves
+% the root label, well-formedness, weight and every label multiplicity.
+% An address-based child order need not itself be canonical.
+%
+% This is the representation argument in PPGraphMoserTardosCanonical.lean,
+% used to sum each weak witness tree once in the MT bound. For that bound,
+% see Alon and Spencer, The Probabilistic Method, 4th ed., Section 5.7,
+% Theorems 5.7.1--5.7.3.
+
 ppg_rose_canonical_core[C,V: TYPE]: THEORY
 BEGIN
   IMPORTING ppg_rose_rebuild[C,V], ppg_rose_depth[C]
@@ -7,6 +16,7 @@ BEGIN
   vars: VAR CertVars
   p: VAR [C -> nonneg_real]
   a: VAR C
+  % Reordering is recursive: a proper tree has one child per selected label.
   canonicalFuel(n,t): RECURSIVE WTree = IF n=0 THEN roseNode(roseLabel(t),null)
     ELSE rebuild(t,LAMBDA(c:WTree):canonicalFuel(n-1,c)) ENDIF MEASURE n
   canonicalize(t): WTree = canonicalFuel(depth(t),t)
@@ -16,6 +26,7 @@ BEGIN
   canonicalFuel_structural: LEMMA FORALL(vars:CertVars): FORALL(n:nat): FORALL(t:WTree):
     wellFormed(vars)(t) AND proper(t) IMPLIES
       wellFormed(vars)(canonicalFuel(n,t)) AND proper(canonicalFuel(n,t))
+  % Insufficient fuel may truncate the tree; weight preservation needs depth(t)<=n.
   canonicalFuel_weight: LEMMA FORALL(p:[C -> nonneg_real]): FORALL(n:nat): FORALL(t:WTree): proper(t) AND depth(t)<=n
     IMPLIES weight(p)(canonicalFuel(n,t))=weight(p)(t)
   canonicalFuel_countLabel: THEOREM FORALL(a:C): FORALL(n:nat): FORALL(t:WTree): proper(t) AND depth(t)<=n

@@ -1,23 +1,12 @@
-%%% ppg_self_assessment.pvs
-%%% Formal Self-Assessment for Proof-Preserving Graphs
-%%%
-%%% A PPG is failure-containing, self-assessing, and repair-capable.
-%%% A failure may change the certified region, but it cannot silently
-%%% redefine what counts as certified.
-%%%
-%%% Three evolution modes:
-%%%   PP evolution: G -> G', Spec fixed
-%%%   Relaxation:   theta -> theta', State fixed
-%%%   Repair:       s -> s', Spec fixed
-%%%
-%%% Repair is a primitive operator (S -> V -> S) on system state.
-%%% The specification (S -> V -> Prop) is an external fixed parameter
-%%% that repair cannot access or modify. A repair operator is valid
-%%% (proof-preserving) if it satisfies two proof obligations:
-%%% target restoration and core preservation. Monotone recovery is
-%%% then a derived theorem, not a definitional truth.
-%%%
-%%% Author: Dragan Stosic, 2026
+% Repair changes the system state while keeping the specification fixed.
+% A valid repair restores the target specification and preserves the
+% already certified core. These two obligations imply monotone recovery.
+%
+% Graph evolution, specification relaxation and state repair are distinct
+% operations: each result states which parameters are held fixed.
+% Lean counterpart: PPGraphSelfAssessment.lean.
+%
+% Author: Dragan Stosic, 2026.
 
 ppg_self_assessment[S: TYPE+, N: posnat]: THEORY
 BEGIN

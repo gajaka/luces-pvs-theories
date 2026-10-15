@@ -1,33 +1,17 @@
-%------------------------------------------------------------------------------
-% ppg_mt_witness.pvs
-% Algorithmic Lovasz Local Lemma (Moser-Tardos)
+% Witness trees are finite rooted trees whose children have labels in
+% the inclusive neighborhood of their parent's label. A child may thus
+% repeat its parent's label. Properness requires distinct sibling labels;
+% it does not require all labels in the tree to be distinct.
 %
-% Layer 3, Part A: the witness tree conditions.
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2, Lemma 2.1.
+% https://arxiv.org/abs/0903.0544v3
+% Lean counterpart: PPGraphMoserTardosWitness.lean.
 %
-% PVS development (Stosic, 2026), apart from
-% its dependency-graph section, which ppg_mt_process already covers:
-% The neighbor relation is dependent?(vars), its neighbor_symm is
-% dependent_symm, and its mt_new_violation_neighbor is the lemma of the
-% same name there.
-%
-% Moser & Tardos, arXiv:0903.0544v3, Section 2. Children draw labels from
-% the inclusive neighborhood Gamma+(s_T(u)), so a child may repeat its
-% parent's own label; that is wf? below. Properness is a sibling
-% condition, "if distinct children of the same vertex always receive
-% distinct labels we call the witness tree proper", and says nothing
-% about non-sibling vertices sharing a label; that is proper? below.
-%
-% Recursion over the tree goes through REDUCE and reduce_nat from the
-% generated ppg_wtree_adt rather than through MEASURE. A definition
-% written directly, with the recursive call inside a lambda passed to
-% every, does not typecheck: the termination argument cannot see that the
-% argument of that call is a child of the current node. REDUCE instead
-% hands the recursive values of the children over as a list, and its third
-% argument gives access to the node itself, which wf? needs to look at the
-% children's labels.
+% The generated datatype folds supply recursive child values to wf? and
+% proper?. The dependent-domain construction uses ppg_rose_structure.
 %
 % Author: Dragan Stosic, 2026.
-%------------------------------------------------------------------------------
 
 ppg_mt_witness[C: TYPE+, V: TYPE+]: THEORY
 BEGIN

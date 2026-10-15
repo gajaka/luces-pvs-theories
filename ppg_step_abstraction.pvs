@@ -1,4 +1,14 @@
-% Step simulations and exact abstractions preserve the intended reachability semantics.
+% A step simulation projects concrete paths to abstract paths. Exactness
+% also lifts each abstract step and reflects the good-state predicate,
+% so abstract and concrete good-state reachability agree. These are
+% local obligations on a supplied projection, not a synthesis theorem.
+%
+% Lean counterpart: PPGraphFiniteAbstraction.lean.
+% Simulation/bisimulation references: Manolios, Namjoshi and Sumners,
+% CAV 1999, pp. 369--379; Schmuck and Raisch, Definitions 4--5 and
+% Section VI: https://arxiv.org/abs/1402.3506
+% The statements concern discrete steps, without stuttering.
+
 ppg_step_abstraction[State, Abstract: TYPE]: THEORY
 BEGIN
   IMPORTING ppg_reachability_refutation[State, bool] AS concrete,

@@ -1,29 +1,15 @@
-%------------------------------------------------------------------------------
-% ppg_wtree.pvs
-% Algorithmic Lovasz Local Lemma (Moser-Tardos)
+% An ordered witness-tree shape has an event label at each node and a
+% finite child list. Well-formedness and properness are separate predicates
+% in ppg_mt_witness; this datatype imposes neither condition itself.
 %
-% The witness tree shape: a finite rooted tree whose nodes carry event
-% labels.
-%
-% PVS port of the WTree datatype of PPGraphMoserTardosWitness.lean
-% (Stosic, 2026).
-%
-% Moser & Tardos, "A constructive proof of the general Lovasz Local
-% Lemma", arXiv:0903.0544v3, Section 2: "A witness tree tau = (T, s_T) is
-% a finite rooted tree T together with a labelling s_T of its vertices
-% with events such that the children of a vertex u receive labels from
-% Gamma+(s_T(u))."
-%
-% Pure shape only. The dependency condition on labels is wf? in
-% ppg_mt_witness, the sibling-distinctness condition is proper? there,
-% and no link to an actual log is made at this level.
-%
-% Declared at file level so that PVS generates ppg_wtree_adt, which
-% supplies reduce_nat, REDUCE, every, subterm and the well-founded <<
-% needed to define recursive functions over the nested list of children.
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2, Lemma 2.1.
+% https://arxiv.org/abs/0903.0544v3
+% Lean datatype: WTree in PPGraphMoserTardosWitness.lean.
+% The file-level declaration generates the PVS datatype folds used by
+% the structural definitions.
 %
 % Author: Dragan Stosic, 2026.
-%------------------------------------------------------------------------------
 
 ppg_wtree[I: TYPE+]: DATATYPE
 BEGIN

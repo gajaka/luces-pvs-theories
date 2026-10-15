@@ -1,30 +1,16 @@
-%------------------------------------------------------------------------------
-% ppg_mt.pvs
-% Algorithmic Lovasz Local Lemma (Moser-Tardos)
+% Resampling replaces the coordinates in a selected footprint and leaves
+% all other coordinates unchanged. An event determined by a disjoint
+% footprint therefore keeps its truth value.
 %
-% Layer 1: product state space, the resample operator, and the bridge
-% from footprint disjointness to the dependency graph of
-% ppg_probabilistic.
+% This theory uses one common value domain D. The dependent-domain version
+% used by the random-table construction is ppg_mt_semantics.
+% Lean counterpart: PPGraphMoserTardos.lean.
 %
-% The footprint of a certificate is not new data: ppg_probabilistic
-% already carries CertVars = [C -> finite_set[V]], and vars(c) is the set
-% of variables c reads. So "the footprints of c1 and c2 overlap" is
-% dependent?(vars)(c1, c2), the same dependency graph ppg_lll is stated
-% over. That identity is recorded as disjoint_iff_independent, and is why
-% no separate neighbor relation is introduced.
-%
-% This layer fixes one shared domain D and takes the state space to be
-% [V -> D], rather than a per-variable family of domains. The three
-% theorems here concern the resample function alone and carry no
-% measure-theoretic content, so nothing is lost by this choice.
-%
-% Events are plain sets of states, not members of a sigma-algebra.
-% Connecting this layer to ppg_lll would mean instantiating that theory
-% at T := MTState with a product measure on [V -> D]. That probability
-% model is left open here.
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Algorithm 1.1.
+% https://arxiv.org/abs/0903.0544v3
 %
 % Author: Dragan Stosic, 2026.
-%------------------------------------------------------------------------------
 
 ppg_mt[C: TYPE+, V: TYPE+, D: TYPE+]: THEORY
 BEGIN

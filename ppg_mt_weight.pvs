@@ -1,33 +1,18 @@
-%------------------------------------------------------------------------------
-% ppg_mt_weight.pvs
-% Algorithmic Lovasz Local Lemma (Moser-Tardos)
+% The weight p[T] multiplies p over all nodes of a witness tree.
+% Every repeated label contributes another factor. Nonnegative factors
+% make this weight monotone in p.
 %
-% Layer 4: the tree weight p[T].
+% Noga Alon and Joel H. Spencer, The Probabilistic Method, 4th ed.,
+% Wiley, 2016, Section 5.7, "Moser's Fix-It Algorithm".
+% Theorems 5.7.1 and 5.7.3 use this node product. The book's weak Moser
+% trees satisfy wf? and proper?: distinctness is required among siblings.
+% Lean counterpart: PPGraphMoserTardosWeight.lean.
 %
-% Alon-Spencer, The Probabilistic Method, 4th ed., section 5.7, used in
-% Theorems 5.7.1 and 5.7.3. "Weak Moser Tree" in the book's terminology is
-% wf? and proper? of ppg_mt_witness taken together: the book relaxes its
-% stronger "Moser Tree", which asks for distinctness at equal depth, to
-% the sibling-only notion for the summation argument.
-%
-% PVS development (Stosic, 2026).
-%
-% p[T] is the product of p over all node labels with multiplicity, as in
-% the book: "the product of the p[a], where a ranges over the labels of
-% the nodes... when a appears u times, the factor p[a] appears u times."
-%
-% Here p and q range over nonneg_real, so the weight
-% is nonneg by typing and no separate nonnegativity lemma is needed. The
-% recursion goes through reduce from the generated ppg_wtree_adt_reduce,
-% for the reason given in ppg_mt_witness.
-%
-% The recursive w(D, a) sum of (5.9) is not built from these weights. It
-% is defined directly by its recursion in ppg_mt_convergence, which is how
-% the book's own proof of 5.7.3 proceeds, so enumerating weak Moser trees
-% of bounded depth is never needed.
+% This theory defines the weight, not its probabilistic interpretation.
+% ppg_rose_weight_sum proves the finite-depth enumeration identity for
+% the arbitrary-carrier construction used by the expectation theorems.
 %
 % Author: Dragan Stosic, 2026.
-%------------------------------------------------------------------------------
 
 ppg_mt_weight[C: TYPE+, V: TYPE+]: THEORY
 BEGIN

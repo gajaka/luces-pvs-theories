@@ -1,4 +1,12 @@
-% Reconstruct a native rose tree from the direct children of an address tree.
+% An address subtree is reconstructed as an ordered rose tree by listing
+% its direct child addresses. A depth bound supplies sufficient recursion
+% fuel. Reconstruction preserves the root label, well-formedness and
+% properness of a valid execution tree.
+%
+% The child order comes from addresses, so it need not match the order
+% used by the canonical label-based enumeration.
+% Lean counterpart: PPGraphMoserTardosRealTree.lean.
+
 ppg_mt_real_tree[C, V: TYPE]: THEORY
 BEGIN
   IMPORTING ppg_mt_prefix[C, V], ppg_rose_structure[C, V], ppg_rose_depth[C],
@@ -20,7 +28,7 @@ BEGIN
     childSet(T, v)(u) AND childSet(T, v)(w) AND T`lab(u) = T`lab(w) IMPLIES u = w
   childSet_compatible: LEMMA edgeCompatible(vars, T) AND T`dom(v) AND childSet(T, v)(w) IMPLIES
     T`lab(v) = T`lab(w) OR dependent?(vars)(T`lab(v), T`lab(w))
-  % Zero fuel retains the current label; positive fuel unfolds actual children.
+  % Zero fuel retains the current label; positive fuel unfolds its children.
   toWTreeFuel(T, n, v): RECURSIVE WTree = IF n = 0 THEN roseNode(T`lab(v), null) ELSE
     roseNode(T`lab(v), map(LAMBDA (w: Addr): toWTreeFuel(T, n - 1, w))(childList(T, v)))
     ENDIF MEASURE n

@@ -1,48 +1,19 @@
-%------------------------------------------------------------------------------
-% ppg_mt_convergence.pvs
-% Convergence bound for the Fix-It / Moser-Tardos algorithm.
+% The algebraic MT budget bounds the recurrence w(D,c) uniformly in D.
+% At each candidate child label, 1 + w(D,b) accounts for either no child
+% or one child with a subtree of depth at most D.
 %
-% Alon-Spencer, The Probabilistic Method, 4th ed., section 5.7 ("Moser's
-% Fix-It Algorithm"), Theorem 5.7.3 (pp. 84-85; equation (5.9), which
-% defines the recursion, is on p. 83).
+% Noga Alon and Joel H. Spencer, The Probabilistic Method, 4th ed.,
+% Wiley, 2016, Section 5.7, "Moser's Fix-It Algorithm".
+% Theorem 5.7.3, equation (5.9).
+% Lean counterpart: PPGraphMoserTardosConvergence.lean.
 %
-% PVS development (Stosic, 2026).
-%
-% This is the algebraic core of the convergence bound: w(D, c) <= x(c),
-% assuming x bounds the failure probabilities p and satisfies the
-% self-consistency condition of (5.9)-(5.10). Here
-% w(D, c) is defined by the recursion (5.9) rather than as a sum over an
-% enumerated set of weak Moser trees. The book's own proof of 5.7.3 works
-% from the recursion, so tree enumeration is not needed and no finiteness
-% assumption on C is required.
-%
-% The theory depends only on the dependency graph, not on the state space
-% or the resample operator, so it imports ppg_probabilistic and takes
-% parameters [C, V]. The neighbor relation is dependent?(vars), and
-% Gamma+ is plus_neighbors below.
-%
-% Gamma+ is taken relative to a blocking set B, as in the rest of this
-% library, rather than over all of C; relativizing to B removes any
-% need for a finiteness assumption on C.
-% plus_neighbors adds c unconditionally rather than relying on
-% dependent?(vars)(c, c), whose reflexivity would need vars(c) nonempty,
-% the side condition that would otherwise remain unestablished.
-%
-% Here p and x range over nonneg_real, and nonnegativity of the weight
-% is proved as mt_weight_nonneg.
-%
-% product_le_pointwise has no counterpart in the PVS finite_sets
-% libraries, which supply product_nonneg and product_pos but no pointwise
-% monotonicity, so it is proved here by finite-set induction.
-%
-% Still missing: the probabilistic half, the link
-% between w(D, c) and the expected number of resamplings. The book gets
-% it from Theorems 5.7.1 and 5.7.2, which need a probability model for
-% the log. No such model exists here yet, so the bound below is the
-% inequality that "E[TLOG] <= sum of x" reduces to once one is supplied.
+% Gamma+ includes c explicitly, even when its footprint is empty.
+% Neighborhood products range over a finite blocking set B; the whole
+% label type need not be finite. The hypotheses here are numerical.
+% The arbitrary-carrier enumeration and probability arguments are proved
+% in ppg_rose_weight_sum and ppg_mt_expected_bounds, respectively.
 %
 % Author: Dragan Stosic, 2026.
-%------------------------------------------------------------------------------
 
 ppg_mt_convergence[C: TYPE+, V: TYPE+]: THEORY
 BEGIN

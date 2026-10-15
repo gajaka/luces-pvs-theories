@@ -1,35 +1,17 @@
-%------------------------------------------------------------------------------
-% ppg_mt_injectivity.pvs
-% Algorithmic Lovasz Local Lemma (Moser-Tardos)
+% Different occurrence times of one event give different witness trees.
+% The root label belongs to its own inclusive neighborhood, so every
+% earlier occurrence of that label is attached during the backward scan.
+% Counting those nodes recovers the event's occurrence number.
 %
-% Layer 3, Part C: distinct occurrence times of the same event give
-% distinct witness trees.
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Sections 2--3, the occurrence-counting argument.
+% https://arxiv.org/abs/0903.0544v3
+% Lean counterpart: PPGraphMoserTardosInjectivity.lean.
 %
-% Moser & Tardos, "A constructive proof of the general Lovasz Local
-% Lemma", arXiv:0903.0544v3, end of Section 2 / start of Section 3: "if
-% t_i is the i-th time step with C(t_i) = A, then obviously the tree
-% tau_C(t_i) contains exactly i vertices labelled A, thus
-% tau_C(t_i) /= tau_C(t_j) unless i = j."
-%
-% PVS development (Stosic, 2026).
-% Builds on ppg_mt_growing (GTree, attach_child, attach_at, tau_build,
-% tau_C, fresh_index_spec, candidates_nonempty_of_label).
-%
-% The mechanism the paper calls obvious but does not spell out: the root
-% of tau_C(t) carries label Clog(t), and the inclusive neighborhood of a
-% label contains that label, so every earlier occurrence of Clog(t) in the
-% backward scan has an attachment point available and therefore adds one
-% new vertex with that label. tau_build_root_and_count below is that
-% mechanism, and the counting claim follows from it.
-%
-% steps_covered records which log indices the backward scan has already
-% processed. Its four arithmetic lemmas are where the truncating
-% subtraction msub of ppg_mt_growing has to be handled: each carries the
-% hypothesis (n < t or 0 < t) under which msub agrees with ordinary
-% subtraction.
+% steps_covered tracks the scanned log indices, including the boundary at
+% time zero. ppg_mt_label_counts gives the arbitrary-carrier version.
 %
 % Author: Dragan Stosic, 2026.
-%------------------------------------------------------------------------------
 
 ppg_mt_injectivity[C: TYPE+, V: TYPE+]: THEORY
 BEGIN

@@ -1,31 +1,17 @@
-%------------------------------------------------------------------------------
-% ppg_lll.pvs
-% Lovász Local Lemma for PPG Blocking Sets
+% The general Lovasz Local Lemma for a finite family of bad events.
+% The induction splits previously excluded events into neighbors and
+% non-neighbors. Independence controls the numerator; successive avoidance
+% bounds give a positive denominator.
 %
-% Formalization of Alon-Spencer, Lemma 5.1.1, pp.70-71 (Stosic, 2026).
-% Structure: base case -> denominator bound -> inductive step -> main theorem.
+% Noga Alon and Joel H. Spencer, The Probabilistic Method, 4th ed.,
+% Wiley, 2016, Lemma 5.1.1, pp. 70--71.
+% Lean counterpart: PPGraphLLL.lean.
 %
-% Uses NASA PVSLib:
-%   probability@probability_measure (probability type, P_subset_le, etc.)
-%   probability@probability_space (independent?, measurable events)
-%
-% Running example (same as ppg_probabilistic.pvs):
-%   B = {c1, c2, c3, c5, c6}
-%   vars(c1) = {v1,v2}, vars(c2) = {v2,v3}, vars(c5) = {v1,v6},
-%   vars(c6) = {v2,v7}, vars(c3) = {v4}.
-%   neighbors(c1) = {c2, c5, c6}, c3 independent of c1.
-%
-%   S = {c2, c3, c5} (arbitrary subset of B \ {c1}).
-%   S1 = intersection(S, Gamma(c1)) = {c2, c5} (neighbors of c1 inside S).
-%   S2 = S \ S1 = {c3} (non-neighbors of c1 inside S).
-%
-% The proof is division-free: instead of conditional probability
-% Pr[A|B] = Pr[A and B] / Pr[B], we use the multiplicative form
-% Pr[A and B] <= x * Pr[B]. This avoids division-by-zero issues
-% when Pr[B] = 0 (which PVS would require explicit handling for).
+% Conditional bounds are stated as Pr[A and B] <= x * Pr[B], so the
+% induction does not divide by the probability of an avoidance event.
+% Probability measures and measurable events come from NASALib.
 %
 % Author: Dragan Stosic, 2026.
-%------------------------------------------------------------------------------
 
 ppg_lll[T: TYPE+,
         (IMPORTING measure_integration@subset_algebra_def[T])

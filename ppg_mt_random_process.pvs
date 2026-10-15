@@ -1,4 +1,15 @@
-% A sample table is indexed by an unbounded local counter and a variable.
+% Each variable has an unbounded resampling counter and its own value
+% domain. Slot zero supplies an optional random initial state; a variable's
+% first resampling consumes slot one, regardless of the global step.
+% pickFirstViolated scans the supplied finite event enumeration.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2, the resampling-table construction.
+% https://arxiv.org/abs/0903.0544v3
+% Lean counterparts: PPGraphMoserTardosLogSpace.lean,
+% PPGraphMoserTardosRandomTrajectory.lean and
+% PPGraphMoserTardosConstantLog.lean.
+
 ppg_mt_random_process[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
 BEGIN
   IMPORTING ppg_mt_semantics[C, V, Value, domain]
