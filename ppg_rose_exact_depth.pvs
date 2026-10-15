@@ -1,0 +1,17 @@
+% Exact-depth label counts form a depth-indexed additive node fold.
+ppg_rose_exact_depth[C, V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_rose_depth_labels[C, V],
+    ppg_mt_reconstruction_fold[C, V, nat, 0, LAMBDA (a, b: nat): a + b] AS exactFold,
+    ppg_rose_count_fold[C], ppg_list_fold_map[WTree, nat, nat, 0, LAMBDA (a, b: nat): a + b] AS sumMap
+  t: VAR WTree
+  cs: VAR list[WTree]
+  a, b: VAR C
+  n, target, d: VAR nat
+  zero_fold: LEMMA treeLists.fold(cs, LAMBDA (c: WTree): 0) = 0
+  depth_node_succ: LEMMA depthCount(roseNode(a, cs), n + 1, b) =
+    treeLists.fold(cs, LAMBDA (c: WTree): depthCount(c, n, b))
+  depthAt(target, b, d, t): nat = IF d <= target THEN depthCount(t, msub(target, d), b) ELSE 0 ENDIF
+  exact_hom: LEMMA exactFold.nodeHom(LAMBDA (d: nat, t: WTree): depthAt(target, b, d, t),
+    LAMBDA (d: nat, a: C): IF d = target AND a = b THEN 1 ELSE 0 ENDIF)
+END ppg_rose_exact_depth

@@ -1,0 +1,20 @@
+% Exact depth multisets retain every label occurrence of the address tree.
+ppg_mt_depth_reconstruction[C, V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_rose_exact_depth[C, V], ppg_nat_indicator[Addr]
+  T: VAR GTree
+  v, w: VAR Addr
+  b: VAR C
+  t: VAR WTree
+  d, n, base: VAR nat
+  S: VAR finite_set[Addr]
+  exact_fiber: LEMMA fiber(intersection(S, LAMBDA (w: Addr): length(w) = d), T`lab, b) =
+    intersection(S, LAMBDA (w: Addr): length(w) = d AND T`lab(w) = b)
+  depthAt_offset: LEMMA depthAt(base + d, b, base, t) = depthCount(t, d, b)
+  toWTreeFuel_labelsAtDepth: THEOREM gt_valid?(T) AND T`dom(v) AND
+    (FORALL (w: Addr): T`dom(w) IMPLIES length(w) <= length(v) + n) IMPLIES
+    labelsAtDepth(toWTreeFuel(T, n, v), d) =
+      mapBag(intersection(descendants(T, v), LAMBDA (w: Addr): length(w) = length(v) + d), T`lab)
+  labelsAtDepth_toWTree_eq: THEOREM gt_valid?(T) AND T`dom(null) IMPLIES
+    labelsAtDepth(toWTree(T, null), d) = domainBag(T`dom, T`lab, d)
+END ppg_mt_depth_reconstruction
