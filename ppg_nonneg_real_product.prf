@@ -1,0 +1,26 @@
+(|ppg_nonneg_real_product|
+ (|product_nonneg_embed_TCC1| 0
+  (|product_nonneg_embed_TCC1-1| NIL 4001051567 ("" (SUBTYPE-TCC) NIL NIL) NIL
+   NIL
+   (|product_nonneg_embed| SUBTYPE "LAMBDA (a, b: nonneg_real): a * b"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_nonneg_real_product.op)(1), booleans.AND(operator_defs[nonneg_real].associative?(ppg_nonneg_real_product.op), operator_defs[nonneg_real].commutative?(ppg_nonneg_real_product.op)))}"
+    (7 60 7 72))))
+ (|product_nonneg_embed| 0
+  (|product_nonneg_embed-1| NIL 4001051568
+   (""
+    (THEN
+     (SPREAD (INDUCT "S" :NAME "finite_set_induction_rest[T]")
+      ((THEN (SKOSIMP*) (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite")))
+       (THEN (SKOSIMP*) (INST -1 "f!1") (EXPAND "product" 1 1)
+        (EXPAND "products.sum" 1 1)
+        (GRIND :IF-MATCH NIL :EXCLUDE ("product" "sum" "is_finite")))))
+     (GRIND :IF-MATCH NIL :EXCLUDE ("product" "sum" "is_finite")))
+    NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_set_induction_rest| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL))
+   SHOSTAK)))
+

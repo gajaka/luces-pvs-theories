@@ -1,0 +1,44 @@
+% An occurrence passes the check of a fixed raw representative with the same shape.
+ppg_mt_occurrence_bridge[C,V,Value:TYPE,domain:[V->set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_occurrence[C,V,Value,domain], ppg_mt_check_bridge[C,V,Value,domain]
+  vars: VAR CertVars
+  bad: VAR [C,MTState->bool]
+  fallback,a: VAR C
+  enumeration: VAR list[C]
+  omega,rep: VAR LogSpace
+  s,r: VAR nat
+  U: VAR finite_set[C]
+  W: VAR WTree
+  p: VAR [C->nonneg_real]
+  rawTree(vars,bad,fallback,enumeration,omega,s): GTree =
+    tau_C(vars,shiftedC(vars,bad,fallback,enumeration,initialStateFromLog(omega),omega),s+1)
+  rawShape(vars,bad,fallback,enumeration,omega,s): WTree =
+    toWTree(rawTree(vars,bad,fallback,enumeration,omega,s),null)
+  actual_witness_shape: LEMMA randomInitWitness(vars,bad,fallback,enumeration,omega,s) =
+    canonicalize(rawShape(vars,bad,fallback,enumeration,omega,s))
+  actual_raw_proper: LEMMA proper(rawShape(vars,bad,fallback,enumeration,omega,s))
+  randomInitWitness_weight_eq_prod: THEOREM weight(p)(randomInitWitness(vars,bad,fallback,enumeration,omega,s)) =
+    products.sum(rawTree(vars,bad,fallback,enumeration,omega,s)`dom,
+      LAMBDA(w:Addr):p(rawTree(vars,bad,fallback,enumeration,omega,s)`lab(w)))
+  actual_witness_family: LEMMA fullUniverse(U) IMPLIES
+    witnessFamily(vars,U,realC(vars,bad,fallback,enumeration,initialStateFromLog(omega),omega,s))
+      (randomInitWitness(vars,bad,fallback,enumeration,omega,s))
+  witnessOccurrence_nonempty_mem_wtreesUpTo: THEOREM fullUniverse(U) AND
+    nonempty?(witnessOccurrence(vars,bad,fallback,enumeration,a,W)) IMPLIES
+    EXISTS(D:nat):wtreesUpTo(vars,U,D,a)(W)
+  actual_check_bridge: LEMMA
+    tauCheck(vars,bad,rawTree(vars,bad,fallback,enumeration,rep,r),omega) IFF
+    roseTauCheck(vars,bad,omega,rawShape(vars,bad,fallback,enumeration,rep,r))
+  actual_raw_passes: LEMMA mt_wf(vars,bad) AND
+    randomInitRunningEvent(vars,bad,fallback,enumeration,s+1)(omega) IMPLIES
+    tauCheck(vars,bad,rawTree(vars,bad,fallback,enumeration,omega,s),omega)
+  fixed_shape_checks: LEMMA
+    randomInitWitness(vars,bad,fallback,enumeration,omega,s) = randomInitWitness(vars,bad,fallback,enumeration,rep,r)
+    IMPLIES (tauCheck(vars,bad,rawTree(vars,bad,fallback,enumeration,omega,s),omega) IFF
+      tauCheck(vars,bad,rawTree(vars,bad,fallback,enumeration,rep,r),omega))
+  witnessOccurrence_subset_tauCheck_of_witness: THEOREM mt_wf(vars,bad) AND
+    randomInitWitness(vars,bad,fallback,enumeration,rep,r)=W IMPLIES
+    subset?(witnessOccurrence(vars,bad,fallback,enumeration,a,W),
+      {omega:LogSpace|tauCheck(vars,bad,rawTree(vars,bad,fallback,enumeration,rep,r),omega)})
+END ppg_mt_occurrence_bridge

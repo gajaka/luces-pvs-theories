@@ -1,0 +1,39 @@
+% The probability of a fixed canonical witness occurrence is bounded by its weight.
+ppg_mt_occurrence_probability[C,V,Value:TYPE,domain:[V->set[Value]],
+  universe:{F:finite_set[V]|F=fullset[V]},
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_mt_occurrence_bridge[C,V,Value,domain],
+    ppg_mt_finite_check_probability[C,V,Value,domain,universe,spaces,laws],
+    ppg_probability_set_laws[LogSpace,NativeTableSigma(spaces)],
+    ppg_nonneg_real_product[Addr],ppg_nonneg_order[Addr]
+  FullEnumeration: TYPE = {xs:list[C]|completeEnumeration(xs)}
+  vars: VAR CertVars
+  bad: VAR NativeBad
+  fallback,a: VAR C
+  enumeration: VAR FullEnumeration
+  W: VAR WTree
+  T: VAR GTree
+  rep: VAR LogSpace
+  r: VAR nat
+  p: VAR [C->nonneg_real]
+  baseProbability(bad)(a:C): nonneg_real = stateMeasure(baseEvent(bad,a))
+  native_occurrence_measurable: LEMMA NativeTableSigma(spaces)(witnessOccurrence(vars,bad,fallback,enumeration,a,W))
+  occurrenceEvent(vars,bad,fallback,enumeration,a,W): (NativeTableSigma(spaces)) =
+    witnessOccurrence(vars,bad,fallback,enumeration,a,W)
+  treeEvent(vars,bad,T): (NativeTableSigma(spaces)) = {omega:LogSpace|tauCheck(vars,bad,T,omega)}
+  raw_check_probability: LEMMA mt_wf(vars,bad) IMPLIES
+    logMeasure(treeEvent(vars,bad,rawTree(vars,bad,fallback,enumeration,rep,r))) =
+      products.sum(rawTree(vars,bad,fallback,enumeration,rep,r)`dom,
+        LAMBDA(w:Addr):baseProbability(bad)(rawTree(vars,bad,fallback,enumeration,rep,r)`lab(w)))
+  fixed_rep_probability_bound: LEMMA mt_wf(vars,bad) AND
+    (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND
+    randomInitWitness(vars,bad,fallback,enumeration,rep,r)=W IMPLIES
+    logMeasure(treeEvent(vars,bad,rawTree(vars,bad,fallback,enumeration,rep,r))) <= weight(p)(W)
+  empty_occurrence_mass: LEMMA empty?(occurrenceEvent(vars,bad,fallback,enumeration,a,W)) IMPLIES
+    logMeasure(occurrenceEvent(vars,bad,fallback,enumeration,a,W))=0
+  logMeasure_witnessOccurrence_le_weight: THEOREM mt_wf(vars,bad) AND
+    (FORALL(c:C):baseProbability(bad)(c)<=p(c)) IMPLIES
+    logMeasure(occurrenceEvent(vars,bad,fallback,enumeration,a,W))<=weight(p)(W)
+END ppg_mt_occurrence_probability
