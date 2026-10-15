@@ -1,0 +1,17 @@
+% An injective change of finite index preserves a commutative sum.
+ppg_monoid_image[Source,Target,R: TYPE, unit:R,
+  op:{f:[R,R -> R] | identity?(f)(unit) AND associative?(f) AND commutative?(f)}]: THEORY
+BEGIN
+  IMPORTING ppg_monoid_sum[Source,R,unit,op] AS domain,
+    ppg_monoid_sum[Target,R,unit,op] AS codomain,
+    ppg_finite_induction[Source]
+  S: VAR finite_set[Source]
+  h: VAR [Source -> Target]
+  f: VAR [Target -> R]
+  x: VAR Source
+  image_empty: LEMMA image(h,emptyset[Source])=emptyset[Target]
+  image_add: LEMMA image(h,add(x,S))=add(h(x),image(h,S))
+  sum_image: THEOREM
+    (FORALL(a,b:Source): S(a) AND S(b) AND h(a)=h(b) IMPLIES a=b) IMPLIES
+    codomain.sum(image(h,S),f)=domain.sum(S,LAMBDA(a:Source):f(h(a)))
+END ppg_monoid_image

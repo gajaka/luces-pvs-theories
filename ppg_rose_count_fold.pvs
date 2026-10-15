@@ -1,0 +1,16 @@
+% The structural occurrence count is an additive fold over the actual children.
+ppg_rose_count_fold[C: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_rose_weight[C],
+    ppg_list_fold[nat,nat,0,LAMBDA(a,b:nat):a+b] AS scalars,
+    ppg_list_fold[WTree,nat,0,LAMBDA(a,b:nat):a+b] AS totals,
+    ppg_list_fold_map[WTree,nat,nat,0,LAMBDA(a,b:nat):a+b]
+  ns: VAR list[nat]
+  cs: VAR list[WTree]
+  t: VAR WTree
+  a,b: VAR C
+  sum_scalar: LEMMA ppg_tree_lists[WTree].natSum(ns) = scalars.fold(ns,LAMBDA(n:nat):n)
+  count_node_fold: LEMMA countLabel(a)(roseNode(b,cs)) =
+    (IF b=a THEN 1 ELSE 0 ENDIF) + totals.fold(cs,countLabel(a))
+  count_unfold: LEMMA countLabel(a)(t) = (IF roseLabel(t)=a THEN 1 ELSE 0 ENDIF) + totals.fold(roseChildren(t),countLabel(a))
+END ppg_rose_count_fold

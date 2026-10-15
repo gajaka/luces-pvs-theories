@@ -1,0 +1,46 @@
+% Bounded canonical trees choose any subset of the inclusive neighborhood.
+ppg_rose_enumeration[C,V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_rose_attach[C,V], ppg_rose_depth[C], ppg_subsets_product[C],
+    ppg_finite_bind[finite_set[C],WTree] AS enumBind
+  vars: VAR CertVars
+  U,S: VAR finite_set[C]
+  D,E: VAR nat
+  a,b: VAR C
+  t: VAR WTree
+  f: VAR [C -> WTree]
+  plusNeighbors(vars,U,a): finite_set[C] = intersection(U,LAMBDA(b:C):b=a OR dependent?(vars)(a,b))
+  wtreesUpTo(vars,U,D,a): RECURSIVE finite_set[WTree] = IF D=0 THEN singleton(roseNode(a,null))
+    ELSE enumBind.biUnion(subsets(plusNeighbors(vars,U,a)),LAMBDA(S:finite_set[C]):
+      rootFamily(a,S,LAMBDA(b:C):wtreesUpTo(vars,U,D-1,b))) ENDIF MEASURE D
+  enum_zero: LEMMA wtreesUpTo(vars,U,0,a)=singleton(roseNode(a,null))
+  enum_succ: LEMMA wtreesUpTo(vars,U,D+1,a)=enumBind.biUnion(subsets(plusNeighbors(vars,U,a)),
+    LAMBDA(S:finite_set[C]):rootFamily(a,S,LAMBDA(b:C):wtreesUpTo(vars,U,D,b)))
+  enum_member_succ: LEMMA wtreesUpTo(vars,U,D+1,a)(t) IFF
+    EXISTS(S:finite_set[C]): subset?(S,plusNeighbors(vars,U,a)) AND
+      rootFamily(a,S,LAMBDA(b:C):wtreesUpTo(vars,U,D,b))(t)
+  enum_intro: LEMMA subset?(S,plusNeighbors(vars,U,a)) AND
+    rootFamily(a,S,LAMBDA(b:C):wtreesUpTo(vars,U,D,b))(t) IMPLIES wtreesUpTo(vars,U,D+1,a)(t)
+  mem_wtreesUpTo_label: THEOREM wtreesUpTo(vars,U,D,a)(t) IMPLIES roseLabel(t)=a
+  enum_rooted: LEMMA rooted(S,LAMBDA(b:C):wtreesUpTo(vars,U,D,b))
+  enum_family_wf: LEMMA (FORALL(b:C,t:WTree):wtreesUpTo(vars,U,D,b)(t) IMPLIES wellFormed(vars)(t)) AND
+    subset?(S,plusNeighbors(vars,U,a)) IMPLIES familyProperty(S,LAMBDA(b:C):wtreesUpTo(vars,U,D,b),
+      LAMBDA(b:C,c:WTree):wellFormed(vars)(c) AND (roseLabel(c)=a OR dependent?(vars)(a,roseLabel(c))))
+  mem_wtreesUpTo_wellFormed: THEOREM wtreesUpTo(vars,U,D,a)(t) IMPLIES wellFormed(vars)(t)
+  enum_family_proper: LEMMA (FORALL(b:C,t:WTree):wtreesUpTo(vars,U,D,b)(t) IMPLIES proper(t))
+    IMPLIES familyProperty(S,LAMBDA(b:C):wtreesUpTo(vars,U,D,b),LAMBDA(b:C,c:WTree):proper(c))
+  mem_wtreesUpTo_proper: THEOREM wtreesUpTo(vars,U,D,a)(t) IMPLIES proper(t)
+  enum_choice_labels: LEMMA choiceValid(S,LAMBDA(b:C):wtreesUpTo(vars,U,D,b),f) IMPLIES
+    map(roseLabel)(map(f)(ppg_list_sets[C].setList(S)))=ppg_list_sets[C].setList(S)
+  wtreesUpTo_succ_children_sub: THEOREM choiceValid(S,LAMBDA(b:C):wtreesUpTo(vars,U,D,b),f) AND
+    member(b,map(roseLabel)(map(f)(ppg_list_sets[C].setList(S)))) IMPLIES S(b)
+  wtreesUpTo_succ_children_sup: THEOREM choiceValid(S,LAMBDA(b:C):wtreesUpTo(vars,U,D,b),f) AND S(b)
+    IMPLIES member(b,map(roseLabel)(map(f)(ppg_list_sets[C].setList(S))))
+  wtreesUpTo_succ_disjoint: THEOREM enumBind.disjointFamily(subsets(plusNeighbors(vars,U,a)),
+    LAMBDA(S:finite_set[C]):rootFamily(a,S,LAMBDA(b:C):wtreesUpTo(vars,U,D,b)))
+  enum_leaf: LEMMA wtreesUpTo(vars,U,D,a)(roseNode(a,null))
+  enum_family_mono: LEMMA (FORALL(b:C):subset?(wtreesUpTo(vars,U,D,b),wtreesUpTo(vars,U,E,b)))
+    IMPLIES familyProperty(S,LAMBDA(b:C):wtreesUpTo(vars,U,D,b),LAMBDA(b:C,c:WTree):wtreesUpTo(vars,U,E,b)(c))
+  wtreesUpTo_mono: THEOREM subset?(wtreesUpTo(vars,U,D,a),wtreesUpTo(vars,U,D+1,a))
+  wtreesUpTo_mono_le: THEOREM D<=E IMPLIES subset?(wtreesUpTo(vars,U,D,a),wtreesUpTo(vars,U,E,a))
+END ppg_rose_enumeration

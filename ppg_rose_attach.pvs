@@ -1,0 +1,51 @@
+% A root attached to one subtree for each selected child label.
+ppg_rose_attach[C,V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_rose_child_choice[C,V], ppg_rose_weight[C],
+    ppg_forest_weight[C,WTree],
+    ppg_monoid_image[list[WTree],WTree,nonneg_real,0,LAMBDA(x,y:nonneg_real):x+y] AS rootIndex,
+    ppg_monoid_sum[WTree,nonneg_real,0,LAMBDA(x,y:nonneg_real):x+y] AS treeSums,
+    ppg_list_fold_map[C,WTree,nonneg_real,1,LAMBDA(x,y:nonneg_real):x*y] AS choiceFold
+  a,b: VAR C
+  S,S1,S2: VAR finite_set[C]
+  F,G: VAR [C -> finite_set[WTree]]
+  f,g: VAR [C -> WTree]
+  t: VAR WTree
+  cs,ds: VAR list[WTree]
+  p: VAR [C -> nonneg_real]
+  rooted(S,F): bool = familyProperty(S,F,LAMBDA(b:C,c:WTree):roseLabel(c)=b)
+  attach(a,S,f): WTree = roseNode(a,map(f)(ppg_list_sets[C].setList(S)))
+  rootFamily(a,S,F): finite_set[WTree] = image[list[WTree],WTree](
+    LAMBDA(cs:list[WTree]):roseNode(a,cs),forest(S,F))
+  rootFamily_member: LEMMA rootFamily(a,S,F)(t) IFF
+    EXISTS(cs:list[WTree]): forest(S,F)(cs) AND t=roseNode(a,cs)
+  rootFamily_label: LEMMA rootFamily(a,S,F)(t) IMPLIES roseLabel(t)=a
+  rootFamily_attach: LEMMA choiceValid(S,F,f) IMPLIES rootFamily(a,S,F)(attach(a,S,f))
+  rootFamily_choice: LEMMA rootFamily(a,S,F)(t) IFF
+    EXISTS(f:[C -> WTree]): choiceValid(S,F,f) AND t=attach(a,S,f)
+  rootFamily_labels: LEMMA rootFamily(a,S,F)(t) AND rooted(S,F) IMPLIES
+    map(roseLabel)(roseChildren(t))=ppg_list_sets[C].setList(S)
+  rootFamily_labelSet: LEMMA rootFamily(a,S,F)(t) AND rooted(S,F) IMPLIES labelSet(t)=S
+  rootFamily_disjoint: LEMMA S1/=S2 AND rooted(S1,F) AND rooted(S2,F) IMPLIES
+    disjoint?(rootFamily(a,S1,F),rootFamily(a,S2,F))
+  attach_injective: THEOREM attach(a,S,f)=attach(a,S,g) IMPLIES
+    FORALL(b:C): S(b) IMPLIES f(b)=g(b)
+  rootFamily_every: LEMMA FORALL(P:pred[WTree]):
+    rootFamily(a,S,F)(t) AND familyProperty(S,F,LAMBDA(b:C,c:WTree):P(c)) IMPLIES
+      every(P)(roseChildren(t))
+  rootFamily_proper: LEMMA rootFamily(a,S,F)(t) AND rooted(S,F) AND
+    familyProperty(S,F,LAMBDA(b:C,c:WTree):proper(c)) IMPLIES proper(t)
+  rootFamily_wellFormed: LEMMA FORALL(vars:CertVars):
+    rootFamily(a,S,F)(t) AND familyProperty(S,F,LAMBDA(b:C,c:WTree):
+      wellFormed(vars)(c) AND (roseLabel(c)=a OR dependent?(vars)(a,roseLabel(c))))
+    IMPLIES wellFormed(vars)(t)
+  rootFamily_empty: LEMMA rootFamily(a,emptyset[C],F)=singleton(roseNode(a,null))
+  rootFamily_mono: LEMMA familyProperty(S,F,LAMBDA(b:C,c:WTree):G(b)(c))
+    IMPLIES subset?(rootFamily(a,S,F),rootFamily(a,S,G))
+  weight_attach: THEOREM weight(p)(attach(a,S,f)) =
+    p(a)*indices.sum(S,LAMBDA(b:C):weight(p)(f(b)))
+  root_weight_function: LEMMA (LAMBDA(cs:list[WTree]):weight(p)(roseNode(a,cs))) =
+    (LAMBDA(cs:list[WTree]):p(a)*lists.fold(cs,weight(p)))
+  rootFamily_weight: THEOREM treeSums.sum(rootFamily(a,S,F),weight(p)) =
+    p(a)*indices.sum(S,LAMBDA(b:C):treeSums.sum(F(b),weight(p)))
+END ppg_rose_attach

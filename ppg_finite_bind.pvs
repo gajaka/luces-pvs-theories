@@ -1,0 +1,26 @@
+% A finite union indexed by a finite set keeps its witnesses explicit.
+ppg_finite_bind[A,B: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_induction[A]
+  S: VAR finite_set[A]
+  F: VAR [A -> finite_set[B]]
+  b: VAR B
+  a: VAR A
+  P: VAR pred[A]
+  exists_add: LEMMA (EXISTS(c:A): add(a,S)(c) AND P(c)) IFF (P(a) OR EXISTS(c:A): S(c) AND P(c))
+  exists_rest: LEMMA FORALL(SS:non_empty_finite_set[A]):
+    (EXISTS(c:A): SS(c) AND P(c)) IFF (P(choose(SS)) OR EXISTS(c:A): rest(SS)(c) AND P(c))
+  biUnion(S,F): RECURSIVE finite_set[B] = IF empty?(S) THEN emptyset[B]
+    ELSE union(F(choose(S)),biUnion(rest(S),F)) ENDIF MEASURE card(S)
+  biUnion_empty: LEMMA biUnion(emptyset[A],F)=emptyset[B]
+  biUnion_step: LEMMA NOT empty?(S) IMPLIES biUnion(S,F)=union(F(choose(S)),biUnion(rest(S),F))
+  biUnion_member: LEMMA biUnion(S,F)(b) IFF EXISTS(a:A): S(a) AND F(a)(b)
+  biUnion_intro: LEMMA S(a) AND F(a)(b) IMPLIES biUnion(S,F)(b)
+  biUnion_elim: LEMMA biUnion(S,F)(b) IMPLIES EXISTS(a:A): S(a) AND F(a)(b)
+  disjointFamily(S,F): bool = FORALL(a,c:A): S(a) AND S(c) AND a/=c IMPLIES disjoint?(F(a),F(c))
+  disjoint_rest: LEMMA disjointFamily(S,F) IMPLIES disjointFamily(rest(S),F)
+  disjoint_bind: LEMMA FORALL(T:finite_set[B]):
+    (FORALL(a:A): S(a) IMPLIES disjoint?(T,F(a))) IMPLIES disjoint?(T,biUnion(S,F))
+  disjoint_head: LEMMA FORALL(SS:non_empty_finite_set[A]):
+    disjointFamily(SS,F) IMPLIES disjoint?(F(choose(SS)),biUnion(rest(SS),F))
+END ppg_finite_bind

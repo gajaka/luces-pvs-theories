@@ -1,0 +1,25 @@
+% Fuel bounds structural recursion while canonical children use label-set order.
+ppg_rose_canonical_core[C,V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_rose_rebuild[C,V], ppg_rose_depth[C]
+  n: VAR nat
+  t: VAR WTree
+  vars: VAR CertVars
+  p: VAR [C -> nonneg_real]
+  a: VAR C
+  canonicalFuel(n,t): RECURSIVE WTree = IF n=0 THEN roseNode(roseLabel(t),null)
+    ELSE rebuild(t,LAMBDA(c:WTree):canonicalFuel(n-1,c)) ENDIF MEASURE n
+  canonicalize(t): WTree = canonicalFuel(depth(t),t)
+  canonicalFuel_zero: LEMMA canonicalFuel(0,t)=roseNode(roseLabel(t),null)
+  canonicalFuel_succ: LEMMA canonicalFuel(n+1,t)=rebuild(t,LAMBDA(c:WTree):canonicalFuel(n,c))
+  canonicalFuel_label: LEMMA roseLabel(canonicalFuel(n,t))=roseLabel(t)
+  canonicalFuel_structural: LEMMA FORALL(vars:CertVars): FORALL(n:nat): FORALL(t:WTree):
+    wellFormed(vars)(t) AND proper(t) IMPLIES
+      wellFormed(vars)(canonicalFuel(n,t)) AND proper(canonicalFuel(n,t))
+  canonicalFuel_weight: LEMMA FORALL(p:[C -> nonneg_real]): FORALL(n:nat): FORALL(t:WTree): proper(t) AND depth(t)<=n
+    IMPLIES weight(p)(canonicalFuel(n,t))=weight(p)(t)
+  canonicalFuel_countLabel: THEOREM FORALL(a:C): FORALL(n:nat): FORALL(t:WTree): proper(t) AND depth(t)<=n
+    IMPLIES countLabel(a)(canonicalFuel(n,t))=countLabel(a)(t)
+  canonicalize_weight: LEMMA proper(t) IMPLIES weight(p)(canonicalize(t))=weight(p)(t)
+  canonicalize_countLabel: THEOREM proper(t) IMPLIES countLabel(a)(canonicalize(t))=countLabel(a)(t)
+END ppg_rose_canonical_core

@@ -1,0 +1,33 @@
+% Finite lists, multiplicities and the canonical choose/rest listing of a set.
+ppg_list_sets[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_induction[T], ppg_tree_lists[T]
+  xs, ys: VAR list[T]
+  x, y: VAR T
+  P: VAR pred[T]
+  S: VAR finite_set[T]
+  listSet(xs): RECURSIVE finite_set[T] = CASES xs OF
+    null: emptyset[T], cons(x, rest): add(x, listSet(rest)) ENDCASES MEASURE length(xs)
+  count(x, xs): RECURSIVE nat = CASES xs OF null: 0,
+    cons(y, rest): (IF x = y THEN 1 ELSE 0 ENDIF) + count(x, rest) ENDCASES MEASURE length(xs)
+  nodup(xs): RECURSIVE bool = CASES xs OF null: TRUE,
+    cons(x, rest): NOT member(x, rest) AND nodup(rest) ENDCASES MEASURE length(xs)
+  perm(xs, ys): bool = FORALL (x: T): count(x, xs) = count(x, ys)
+  setList(S): RECURSIVE list[T] = IF empty?(S) THEN null
+    ELSE cons(choose(S), setList(rest(S))) ENDIF MEASURE card(S)
+  all_cons: LEMMA (FORALL (y: T): member(y, cons(x, xs)) IMPLIES P(y)) IFF
+    (P(x) AND FORALL (y: T): member(y, xs) IMPLIES P(y))
+  exists_cons: LEMMA (EXISTS (y: T): member(y, cons(x, xs)) AND P(y)) IFF
+    (P(x) OR EXISTS (y: T): member(y, xs) AND P(y))
+  map_fix: LEMMA FORALL (h: [T -> T]): (FORALL (x: T): member(x, xs) IMPLIES h(x) = x)
+    IMPLIES map(h)(xs) = xs
+  listSet_member: LEMMA listSet(xs)(x) IFF member(x, xs)
+  count_member: LEMMA count(x, xs) > 0 IFF member(x, xs)
+  count_nodup: LEMMA nodup(xs) IMPLIES count(x, xs) = IF member(x, xs) THEN 1 ELSE 0 ENDIF
+  perm_nodup: LEMMA nodup(xs) AND nodup(ys) AND listSet(xs) = listSet(ys) IMPLIES perm(xs, ys)
+  setList_empty: LEMMA setList(emptyset[T]) = null
+  setList_step: LEMMA NOT empty?(S) IMPLIES setList(S) = cons(choose(S), setList(rest(S)))
+  setList_member: LEMMA member(x, setList(S)) IFF S(x)
+  setList_set: LEMMA listSet(setList(S)) = S
+  setList_nodup: LEMMA nodup(setList(S))
+END ppg_list_sets

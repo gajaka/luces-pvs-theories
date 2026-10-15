@@ -1,0 +1,12 @@
+% Empty label and variable carriers introduce no inhabitant requirement.
+ppg_rose_canonical_empty: THEORY
+BEGIN
+  Empty: TYPE = {b:bool | FALSE}
+  IMPORTING ppg_rose_canonical_enum[Empty,Empty], ppg_rose_weight_sum[Empty,Empty], ppg_rose_equality[Empty]
+  no_tree: THEOREM NOT EXISTS(t:WTree):TRUE
+  full_empty_universe: THEOREM fullUniverse(emptyset[Empty])
+  empty_choice: THEOREM FORALL(F:[Empty -> finite_set[WTree]]):
+    forest(emptyset[Empty],F)=singleton(null[WTree])
+  empty_choice_weight: THEOREM FORALL(F:[Empty -> finite_set[WTree]],w:[WTree -> nonneg_real]):
+    forest_mass(emptyset[Empty],F,w)=1
+END ppg_rose_canonical_empty

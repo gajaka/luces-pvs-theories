@@ -1,0 +1,507 @@
+(|ppg_subsets_product|
+ (|reindex_TCC1| 0
+  (|reindex_TCC1-1| NIL 4001035377 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|reindex| SUBTYPE "LAMBDA (a, b: nonneg_real): a + b"
+    "{f: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_subsets_product.f)(0), booleans.AND(operator_defs[nonneg_real].associative?(ppg_subsets_product.f), operator_defs[nonneg_real].commutative?(ppg_subsets_product.f)))}"
+    (5 63 5 90))))
+ (|products_TCC1| 0
+  (|products_TCC1-1| NIL 4001035377 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|products| SUBTYPE "LAMBDA (a, b: nonneg_real): a * b"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_subsets_product.op)(1), booleans.AND(operator_defs[nonneg_real].associative?(ppg_subsets_product.op), operator_defs[nonneg_real].commutative?(ppg_subsets_product.op)))}"
+    (7 35 7 62))))
+ (|subsets_empty| 0
+  (|subsets_empty-1| NIL 4001035378
+   (""
+    (THEN
+     (THEN (APPLY-EXTENSIONALITY)
+      (THEN (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite"))
+       (THEN (APPLY-EXTENSIONALITY 1)
+        (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite"))))))
+    NIL)
+   ((T FORMAL-TYPE-DECL NIL |ppg_subsets_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[finite_set[T]]" |ppg_subsets_product| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |ppg_subsets_product| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |ppg_subsets_product| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|powerset_finite| APPLICATION-JUDGEMENT "finite_set[set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|nonempty_powerset| APPLICATION-JUDGEMENT "(nonempty?[set[T]])"
+     |ppg_subsets_product| NIL)
+    (|powerset_finite2| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|powerset| CONST-DECL "setofsets" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL))
+   SHOSTAK))
+ (|subsets_add| 0
+  (|subsets_add-1| NIL 4001035378
+   ("" (SKOSIMP*)
+    (("" (APPLY-EXTENSIONALITY)
+      (("" (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite"))
+        (("1" (INST 2 "remove(e!1, x!1)")
+          (("1" (LEMMA "add_remove_member[T]" ("x" "e!1" "a" "x!1"))
+            (("1" (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite"))
+              (("1" (INST -1 "x!2") (("1" (GROUND) NIL NIL)) NIL)) NIL))
+            NIL)
+           ("2" (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite"))
+            (("2" (INST -2 "x!3") (("2" (GROUND) NIL NIL)) NIL)) NIL))
+          NIL)
+         ("2" (INST -2 "x!2") (("2" (GROUND) NIL NIL)) NIL)
+         ("3" (INST -1 "x!2") (("3" (GROUND) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|powerset| CONST-DECL "setofsets" |sets| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|powerset_finite2| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|nonempty_powerset| APPLICATION-JUDGEMENT "(nonempty?[set[T]])"
+     |ppg_subsets_product| NIL)
+    (|powerset_finite| APPLICATION-JUDGEMENT "finite_set[set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |ppg_subsets_product| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|add_remove_member| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |ppg_subsets_product|
+     NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set" |ppg_subsets_product|
+     NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|inserted| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |ppg_subsets_product| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_subsets_product| NIL))
+   SHOSTAK))
+ (|subsets_inserted_disjoint| 0
+  (|subsets_inserted_disjoint-1| NIL 4001035378
+   (""
+    (THEN
+     (THEN (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite"))
+      (THEN (INST -4 "e!1") (ASSERT))))
+    NIL)
+   ((|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|powerset| CONST-DECL "setofsets" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|inserted| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|finite_intersection1| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_subsets_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_subsets_product| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |ppg_subsets_product| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|powerset_finite| APPLICATION-JUDGEMENT "finite_set[set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|nonempty_powerset| APPLICATION-JUDGEMENT "(nonempty?[set[T]])"
+     |ppg_subsets_product| NIL)
+    (|powerset_finite2| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL))
+   SHOSTAK))
+ (|insert_injective| 0
+  (|insert_injective-1| NIL 4001035378
+   ("" (SKOSIMP*)
+    (("" (DECOMPOSE-EQUALITY -3)
+      (("" (APPLY-EXTENSIONALITY)
+        (("" (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite"))
+          (("1" (INST -2 "x!1")
+            (("1" (INST -3 "x!1") (("1" (GROUND) NIL NIL)) NIL)) NIL)
+           ("2" (INST -2 "x!1")
+            (("2" (INST -4 "x!1") (("2" (GROUND) NIL NIL)) NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |ppg_subsets_product| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|powerset_finite| APPLICATION-JUDGEMENT "finite_set[set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|nonempty_powerset| APPLICATION-JUDGEMENT "(nonempty?[set[T]])"
+     |ppg_subsets_product| NIL)
+    (|powerset_finite2| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|powerset| CONST-DECL "setofsets" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |ppg_subsets_product| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_subsets_product| NIL))
+   SHOSTAK))
+ (|sum_subsets_empty| 0
+  (|sum_subsets_empty-1| NIL 4001035378
+   (""
+    (THEN (SKOSIMP*) (REWRITE "subsets_empty" 1)
+     (AUTO-REWRITE "choose_singleton" "rest_singleton"
+                   "remove_member_singleton" "sum_emptyset")
+     (EXPAND "subsetsSum.sum" 1 1)
+     (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite")))
+    NIL)
+   ((|finite_rest| APPLICATION-JUDGEMENT "finite_set" |ppg_subsets_product|
+     NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |ppg_subsets_product|
+     NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |ppg_subsets_product| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_subsets_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|remove_member_singleton| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|choose_singleton| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[finite_set[T]]" |ppg_subsets_product| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |ppg_subsets_product| NIL)
+    (|subsets_empty| FORMULA-DECL NIL |ppg_subsets_product| NIL))
+   SHOSTAK))
+ (|sum_subsets_add| 0
+  (|sum_subsets_add-1| NIL 4001035378
+   (""
+    (THEN
+     (THEN (SKOSIMP*)
+      (THEN (REWRITE "subsets_add")
+       (THEN (LEMMA "subsets_inserted_disjoint" ("S" "S!1" "e" "e!1"))
+        (THEN
+         (LEMMA "subsetsSum.sum_disj_union"
+          ("A" "subsets(S!1)" "B" "inserted(e!1, S!1)" "f" "F!1"))
+         (THEN (LEMMA "insert_injective" ("S" "S!1" "e" "e!1"))
+          (THEN
+           (LEMMA "reindex.sum_image"
+            ("S" "subsets(S!1)" "h" "LAMBDA (K: finite_set[T]): add(e!1, K)"
+             "f" "F!1"))
+           (THEN (EXPAND "inserted") (GROUND)))))))))
+    NIL)
+   ((|subsets_inserted_disjoint| FORMULA-DECL NIL |ppg_subsets_product| NIL)
+    (|insert_injective| FORMULA-DECL NIL |ppg_subsets_product| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |ppg_subsets_product| NIL)
+    (|sum_image| FORMULA-DECL NIL |ppg_monoid_image| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|inserted| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|sum_disj_union| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set" |ppg_subsets_product|
+     NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_subsets_product| NIL)
+    (|subsets_add| FORMULA-DECL NIL |ppg_subsets_product| NIL))
+   SHOSTAK))
+ (|insert_product| 0
+  (|insert_product-1| NIL 4001035378
+   (""
+    (THEN (SKOSIMP*) (LEMMA "product_add" ("S" "K!1" "x" "e!1" "f" "f!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE ("sum" "is_finite")))
+    NIL)
+   ((|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |ppg_subsets_product| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|powerset_finite| APPLICATION-JUDGEMENT "finite_set[set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|nonempty_powerset| APPLICATION-JUDGEMENT "(nonempty?[set[T]])"
+     |ppg_subsets_product| NIL)
+    (|powerset_finite2| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |ppg_subsets_product| NIL)
+    (|powerset| CONST-DECL "setofsets" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|product_add| FORMULA-DECL NIL |ppg_nonneg_folds| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_subsets_product| NIL))
+   SHOSTAK))
+ (|inserted_product_sum| 0
+  (|inserted_product_sum-1| NIL 4001035378
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "subsetsSum.sum_f_g"
+       ("S" "subsets(S!1)" "f"
+        "LAMBDA(K:finite_set[T]):products.sum(add(e!1,K),f!1)" "g"
+        "LAMBDA(K:finite_set[T]):f!1(e!1)*products.sum(K,f!1)"))
+      (("1" (SPLIT -1)
+        (("1"
+          (LEMMA "subsetAlgebra.sum_scale"
+           ("S" "subsets(S!1)" "k" "f!1(e!1)" "f"
+            "LAMBDA(K:finite_set[T]):products.sum(K,f!1)"))
+          (("1" (ASSERT) NIL NIL)) NIL)
+         ("2" (SKOSIMP*)
+          (("2"
+            (LEMMA "insert_product" ("S" "S!1" "K" "x!1" "e" "e!1" "f" "f!1"))
+            (("2" (ASSERT) NIL NIL)) NIL))
+          NIL))
+        NIL)
+       ("2"
+        (LEMMA "subsetAlgebra.sum_scale"
+         ("S" "subsets(S!1)" "k" "f!1(e!1)" "f"
+          "LAMBDA(K:finite_set[T]):products.sum(K,f!1)"))
+        (("1" (ASSERT)
+          (("1" (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "is_finite" "subsets"))
+            NIL NIL))
+          NIL)
+         ("2" (ASSERT)
+          (("2" (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "is_finite" "subsets"))
+            NIL NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|insert_product| FORMULA-DECL NIL |ppg_subsets_product| NIL)
+    (|sum_scale| FORMULA-DECL NIL |ppg_nonneg_folds| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_subsets_product| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|sum_f_g| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |ppg_subsets_product| NIL))
+   SHOSTAK))
+ (|sum_product_subsets| 0
+  (|sum_product_subsets-1| NIL 4001035378
+   ("" (INDUCT "S" :NAME "finite_set_ind_modified[T]")
+    (("1" (SKOSIMP*)
+      (("1" (REWRITE "sum_subsets_empty" 1)
+        (("1" (AUTO-REWRITE "product_empty") (("1" (ASSERT) NIL NIL)) NIL)
+         ("2" (AUTO-REWRITE "product_empty")
+          (("2" (ASSERT)
+            (("2" (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "is_finite" "subsets"))
+              NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (INST -1 "f!1")
+        (("2"
+          (LEMMA "sum_subsets_add"
+           ("S" "S!1" "e" "e!1" "F"
+            "LAMBDA(K:finite_set[T]):products.sum(K,f!1)"))
+          (("1" (LEMMA "inserted_product_sum" ("S" "S!1" "e" "e!1" "f" "f!1"))
+            (("1"
+              (LEMMA "product_add"
+               ("S" "S!1" "x" "e!1" "f" "LAMBDA(x:T):1+f!1(x)"))
+              (("1"
+                (GRIND :IF-MATCH NIL :EXCLUDE
+                 ("sum" "subsets" "is_finite" "inserted"))
+                NIL NIL))
+              NIL))
+            NIL)
+           ("2" (LEMMA "inserted_product_sum" ("S" "S!1" "e" "e!1" "f" "f!1"))
+            (("2"
+              (LEMMA "product_add"
+               ("S" "S!1" "x" "e!1" "f" "LAMBDA(x:T):1+f!1(x)"))
+              (("2"
+                (GRIND :IF-MATCH NIL :EXCLUDE
+                 ("sum" "subsets" "is_finite" "inserted"))
+                NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL)
+     ("3" (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "is_finite" "subsets")) NIL NIL)
+     ("4" (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "is_finite" "subsets")) NIL NIL)
+     ("5" (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "is_finite" "subsets")) NIL NIL)
+     ("6" (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "is_finite" "subsets")) NIL NIL)
+     ("7" (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "is_finite" "subsets")) NIL NIL)
+     ("8" (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "is_finite" "subsets")) NIL
+      NIL))
+    NIL)
+   ((|sum_subsets_add| FORMULA-DECL NIL |ppg_subsets_product| NIL)
+    (|product_add| FORMULA-DECL NIL |ppg_nonneg_folds| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |ppg_subsets_product| NIL)
+    (|inserted_product_sum| FORMULA-DECL NIL |ppg_subsets_product| NIL)
+    (|product_empty| FORMULA-DECL NIL |ppg_nonneg_folds| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |ppg_subsets_product| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|sum_subsets_empty| FORMULA-DECL NIL |ppg_subsets_product| NIL)
+    (|finite_set_ind_modified| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_subsets_product| NIL)
+    (|posreal_plus_nnreal_is_posreal| APPLICATION-JUDGEMENT "posreal"
+     |real_types| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL))
+   SHOSTAK)))
+

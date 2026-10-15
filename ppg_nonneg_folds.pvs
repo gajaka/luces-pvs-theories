@@ -1,0 +1,19 @@
+% Finite nonnegative sums and products share the usual semiring laws.
+ppg_nonneg_folds[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_monoid_sum[T,nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b] AS sums,
+    ppg_monoid_sum[T,nonneg_real,1,LAMBDA(a,b:nonneg_real):a*b] AS products,
+    ppg_finite_induction[T]
+  S: VAR finite_set[T]
+  f,g: VAR [T -> nonneg_real]
+  k: VAR nonneg_real
+  sum_scale: LEMMA sums.sum(S,LAMBDA(x:T):k*f(x))=k*sums.sum(S,f)
+  sum_scale_right: LEMMA sums.sum(S,LAMBDA(x:T):f(x)*k)=sums.sum(S,f)*k
+  sum_congr: LEMMA (FORALL(x:T): S(x) IMPLIES f(x)=g(x)) IMPLIES sums.sum(S,f)=sums.sum(S,g)
+  product_congr: LEMMA (FORALL(x:T): S(x) IMPLIES f(x)=g(x)) IMPLIES products.sum(S,f)=products.sum(S,g)
+  product_empty: LEMMA products.sum(emptyset[T],f)=1
+  sum_empty: LEMMA sums.sum(emptyset[T],f)=0
+  product_singleton: LEMMA FORALL(x:T): products.sum(singleton(x),f)=f(x)
+  sum_singleton: LEMMA FORALL(x:T): sums.sum(singleton(x),f)=f(x)
+  product_add: LEMMA FORALL(x:T): NOT S(x) IMPLIES products.sum(add(x,S),f)=f(x)*products.sum(S,f)
+END ppg_nonneg_folds

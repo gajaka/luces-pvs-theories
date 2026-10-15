@@ -1,0 +1,604 @@
+(|ppg_forest_weight|
+ (|heads_TCC1| 0
+  (|heads_TCC1-1| NIL 4001036908 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|heads| SUBTYPE "LAMBDA (a, b: nonneg_real): a + b"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_forest_weight.op)(0), booleans.AND(operator_defs[nonneg_real].associative?(ppg_forest_weight.op), operator_defs[nonneg_real].commutative?(ppg_forest_weight.op)))}"
+    (6 35 6 62))))
+ (|indices_TCC1| 0
+  (|indices_TCC1-1| NIL 4001036908 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|indices| SUBTYPE "LAMBDA (a, b: nonneg_real): a * b"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_forest_weight.op)(1), booleans.AND(operator_defs[nonneg_real].associative?(ppg_forest_weight.op), operator_defs[nonneg_real].commutative?(ppg_forest_weight.op)))}"
+    (8 35 8 62))))
+ (|fold_cons_function| 0
+  (|fold_cons_function-1| NIL 4001036908
+   ("" (SKOSIMP*)
+    (("" (APPLY-EXTENSIONALITY)
+      (("1" (REWRITE "lists.fold_cons" 1) NIL NIL) ("2" (GRIND) NIL NIL)) NIL))
+    NIL)
+   ((|fold_cons| FORMULA-DECL NIL |ppg_list_fold| NIL)
+    (|fold| DEF-DECL "R" |ppg_list_fold| NIL)
+    (|cons?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|cons| ADT-CONSTRUCTOR-DECL "[[T, list] -> (cons?)]" |list_adt| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_forest_weight| NIL))
+   SHOSTAK))
+ (|cons_product_sum| 0
+  (|cons_product_sum-1| NIL 4001036908
+   ("" (SKOSIMP*)
+    (("" (EXPAND "consFamily" 1)
+      ((""
+        (LEMMA "consIndex.sum_image"
+         ("S" "H!1" "h" "LAMBDA(xs:list[T]):cons(c!1,xs)" "f"
+          "LAMBDA(xs:list[T]):lists.fold(xs,w!1)"))
+        (("1" (SPLIT -1)
+          (("1" (ASSERT)
+            (("1" (LEMMA "fold_cons_function" ("c" "c!1" "w" "w!1"))
+              (("1" (REPLACE -1)
+                (("1"
+                  (LEMMA "listAlgebra.sum_scale"
+                   ("S" "H!1" "k" "w!1(c!1)" "f"
+                    "LAMBDA(xs:list[T]):lists.fold(xs,w!1)"))
+                  (("1" (ASSERT) NIL NIL)) NIL))
+                NIL))
+              NIL))
+            NIL)
+           ("2" (SKOSIMP*)
+            (("2" (LEMMA "cons_injective" ("c" "c!1" "xs" "a!1" "ys" "b!1"))
+              (("2" (ASSERT) NIL NIL)) NIL))
+            NIL))
+          NIL)
+         ("2" (ASSERT)
+          (("2" (LEMMA "fold_cons_function" ("c" "c!1" "w" "w!1"))
+            (("2"
+              (LEMMA "listAlgebra.sum_scale"
+               ("S" "H!1" "k" "w!1(c!1)" "f"
+                "LAMBDA(xs:list[T]):lists.fold(xs,w!1)"))
+              (("1" (ASSERT)
+                (("1" (PROP)
+                  (("1" (ASSERT)
+                    (("1"
+                      (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "fold" "is_finite"))
+                      NIL NIL))
+                    NIL)
+                   ("2" (ASSERT)
+                    (("2"
+                      (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "fold" "is_finite"))
+                      NIL NIL))
+                    NIL)
+                   ("3" (ASSERT)
+                    (("3"
+                      (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "fold" "is_finite"))
+                      NIL NIL))
+                    NIL))
+                  NIL))
+                NIL)
+               ("2" (ASSERT)
+                (("2" (PROP)
+                  (("1" (ASSERT)
+                    (("1"
+                      (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "fold" "is_finite"))
+                      NIL NIL))
+                    NIL)
+                   ("2" (ASSERT)
+                    (("2"
+                      (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "fold" "is_finite"))
+                      NIL NIL))
+                    NIL)
+                   ("3" (ASSERT)
+                    (("3"
+                      (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "fold" "is_finite"))
+                      NIL NIL))
+                    NIL)
+                   ("4" (ASSERT)
+                    (("4"
+                      (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "fold" "is_finite"))
+                      NIL NIL))
+                    NIL)
+                   ("5" (ASSERT)
+                    (("5"
+                      (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "fold" "is_finite"))
+                      NIL NIL))
+                    NIL)
+                   ("6" (ASSERT)
+                    (("6"
+                      (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "fold" "is_finite"))
+                      NIL NIL))
+                    NIL)
+                   ("7" (ASSERT)
+                    (("7"
+                      (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "fold" "is_finite"))
+                      NIL NIL))
+                    NIL)
+                   ("8" (ASSERT)
+                    (("8"
+                      (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "fold" "is_finite"))
+                      NIL NIL))
+                    NIL)
+                   ("9" (ASSERT)
+                    (("9"
+                      (GRIND :IF-MATCH NIL :EXCLUDE ("sum" "fold" "is_finite"))
+                      NIL NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|sum_image| FORMULA-DECL NIL |ppg_monoid_image| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|fold| DEF-DECL "R" |ppg_list_fold| NIL)
+    (|cons?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|cons| ADT-CONSTRUCTOR-DECL "[[T, list] -> (cons?)]" |list_adt| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_forest_weight| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|fold_cons_function| FORMULA-DECL NIL |ppg_forest_weight| NIL)
+    (|sum_scale| FORMULA-DECL NIL |ppg_nonneg_folds| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_forest_weight| NIL)
+    (|cons_injective| FORMULA-DECL NIL |ppg_finite_forest| NIL)
+    (|consFamily| CONST-DECL "finite_set[list[T]]" |ppg_finite_forest| NIL))
+   SHOSTAK))
+ (|cons_mass_function| 0
+  (|cons_mass_function-1| NIL 4001036908
+   ("" (SKOSIMP*)
+    (("" (APPLY-EXTENSIONALITY)
+      (("1" (LEMMA "cons_product_sum" ("c" "x!1" "H" "H!1" "w" "w!1"))
+        (("1" (PROPAX) NIL NIL)) NIL)
+       ("2" (GRIND) NIL NIL) ("3" (GRIND) NIL NIL))
+      NIL))
+    NIL)
+   ((T FORMAL-TYPE-DECL NIL |ppg_forest_weight| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|fold| DEF-DECL "R" |ppg_list_fold| NIL)
+    (|consFamily| CONST-DECL "finite_set[list[T]]" |ppg_finite_forest| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_forest_weight| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|cons_product_sum| FORMULA-DECL NIL |ppg_forest_weight| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL))
+   SHOSTAK))
+ (|components_disjoint| 0
+  (|components_disjoint-1| NIL 4001036908
+   (""
+    (THEN (SKOSIMP*) (EXPAND "disjointFamily") (SKOSIMP*)
+     (LEMMA "consFamily_disjoint"
+      ("c" "a!1" "d" "c!1" "H" "forest(rest(SS!1),F!1)"))
+     (ASSERT))
+    NIL)
+   ((T FORMAL-TYPE-DECL NIL |ppg_forest_weight| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_forest_weight| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|forest| DEF-DECL "finite_set[list[T]]" |ppg_finite_forest| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|consFamily_disjoint| FORMULA-DECL NIL |ppg_finite_forest| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set" |ppg_forest_weight| NIL)
+    (|disjointFamily| CONST-DECL "bool" |ppg_finite_bind| NIL))
+   SHOSTAK))
+ (|forest_mass_empty| 0
+  (|forest_mass_empty-1| NIL 4001036908
+   (""
+    (THEN (SKOSIMP*) (EXPAND "forest_mass") (REWRITE "forest_empty" 1)
+     (AUTO-REWRITE "choose_singleton" "rest_singleton"
+                   "remove_member_singleton" "sum_emptyset" "lists.fold_nil")
+     (EXPAND "forests.sum" 1 1) (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite")))
+    NIL)
+   ((|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[list[T]]" |ppg_forest_weight| NIL)
+    (|forest_empty| FORMULA-DECL NIL |ppg_finite_forest| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_forest_weight| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_forest_weight| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|choose_singleton| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|fold| DEF-DECL "R" |ppg_list_fold| NIL)
+    (|remove_member_singleton| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |ppg_forest_weight| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |ppg_forest_weight|
+     NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set" |ppg_forest_weight| NIL)
+    (|forest_mass| CONST-DECL "nonneg_real" |ppg_forest_weight| NIL))
+   SHOSTAK))
+ (|forest_mass_step| 0
+  (|forest_mass_step-1| NIL 4001036908
+   ("" (SKOSIMP*)
+    (("" (EXPAND "forest_mass")
+      (("" (REWRITE "forest_step" 1)
+        ((""
+          (LEMMA "headUnion.sum_bind"
+           ("S" "F!1(choose(SS!1))" "F"
+            "LAMBDA(c:T):consFamily(c,forest(rest(SS!1),F!1))" "f"
+            "LAMBDA(xs:list[T]):lists.fold(xs,w!1)"))
+          (("1" (LEMMA "components_disjoint" ("SS" "SS!1" "F" "F!1"))
+            (("1" (ASSERT)
+              (("1"
+                (LEMMA "cons_mass_function"
+                 ("H" "forest(rest(SS!1),F!1)" "w" "w!1"))
+                (("1" (REPLACE -1)
+                  (("1"
+                    (LEMMA "headAlgebra.sum_scale_right"
+                     ("S" "F!1(choose(SS!1))" "f" "w!1" "k"
+                      "forests.sum(forest(rest(SS!1),F!1),LAMBDA(xs:list[T]):lists.fold(xs,w!1))"))
+                    (("1" (ASSERT) NIL NIL)
+                     ("2" (ASSERT)
+                      (("2" (PROP)
+                        (("1"
+                          (GRIND :IF-MATCH NIL :EXCLUDE
+                           ("sum" "forest" "fold" "is_finite"))
+                          NIL NIL)
+                         ("2"
+                          (GRIND :IF-MATCH NIL :EXCLUDE
+                           ("sum" "forest" "fold" "is_finite"))
+                          NIL NIL)
+                         ("3"
+                          (GRIND :IF-MATCH NIL :EXCLUDE
+                           ("sum" "forest" "fold" "is_finite"))
+                          NIL NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL)
+           ("2" (LEMMA "components_disjoint" ("SS" "SS!1" "F" "F!1"))
+            (("2" (ASSERT)
+              (("2"
+                (LEMMA "cons_mass_function"
+                 ("H" "forest(rest(SS!1),F!1)" "w" "w!1"))
+                (("2"
+                  (LEMMA "headAlgebra.sum_scale_right"
+                   ("S" "F!1(choose(SS!1))" "f" "w!1" "k"
+                    "forests.sum(forest(rest(SS!1),F!1),LAMBDA(xs:list[T]):lists.fold(xs,w!1))"))
+                  (("1" (ASSERT)
+                    (("1" (PROP)
+                      (("1"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("2"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("3"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL))
+                      NIL))
+                    NIL)
+                   ("2" (ASSERT)
+                    (("2" (PROP)
+                      (("1"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("2"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("3"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("4"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("5"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("6"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("7"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("8"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("9"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL))
+                      NIL))
+                    NIL)
+                   ("3" (ASSERT)
+                    (("3" (PROP)
+                      (("1"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("2"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("3"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("4"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("5"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("6"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("7"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("8"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL)
+                       ("9"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("sum" "forest" "fold" "is_finite"))
+                        NIL NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|finite_rest| APPLICATION-JUDGEMENT "finite_set" |ppg_forest_weight| NIL)
+    (|forest_step| FORMULA-DECL NIL |ppg_finite_forest| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_forest_weight| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_forest_weight| NIL)
+    (|components_disjoint| FORMULA-DECL NIL |ppg_forest_weight| NIL)
+    (|cons_mass_function| FORMULA-DECL NIL |ppg_forest_weight| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|sum_scale_right| FORMULA-DECL NIL |ppg_nonneg_folds| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|fold| DEF-DECL "R" |ppg_list_fold| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|choose| CONST-DECL "(p)" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|forest| DEF-DECL "finite_set[list[T]]" |ppg_finite_forest| NIL)
+    (|consFamily| CONST-DECL "finite_set[list[T]]" |ppg_finite_forest| NIL)
+    (|sum_bind| FORMULA-DECL NIL |ppg_bind_sum| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|forest_mass| CONST-DECL "nonneg_real" |ppg_forest_weight| NIL))
+   SHOSTAK))
+ (|forest_product_sum| 0
+  (|forest_product_sum-1| NIL 4001036908
+   ("" (INDUCT "S" :NAME "finite_set_induction_rest[I]")
+    (("1" (SKOSIMP*)
+      (("1" (REWRITE "forest_mass_empty" 1)
+        (("1"
+          (LEMMA "indices.sum_emptyset"
+           ("f" "LAMBDA(k:I):heads.sum(F!1(k),w!1)"))
+          (("1" (ASSERT) NIL NIL)
+           ("2" (ASSERT)
+            (("2"
+              (GRIND :IF-MATCH NIL :EXCLUDE
+               ("sum" "forest" "fold" "forest_mass" "is_finite"))
+              NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (INST -1 "F!1" "w!1")
+        (("2" (LEMMA "forest_mass_step" ("SS" "SS!1" "F" "F!1" "w" "w!1"))
+          (("2"
+            (LEMMA "indices.sum_rest"
+             ("S" "SS!1" "f" "LAMBDA(k:I):heads.sum(F!1(k),w!1)"))
+            (("1" (ASSERT) NIL NIL)
+             ("2" (ASSERT)
+              (("2"
+                (GRIND :IF-MATCH NIL :EXCLUDE
+                 ("sum" "forest" "fold" "forest_mass" "is_finite"))
+                NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL)
+     ("3"
+      (GRIND :IF-MATCH NIL :EXCLUDE
+       ("sum" "forest" "fold" "forest_mass" "is_finite"))
+      NIL NIL)
+     ("4"
+      (GRIND :IF-MATCH NIL :EXCLUDE
+       ("sum" "forest" "fold" "forest_mass" "is_finite"))
+      NIL NIL)
+     ("5"
+      (GRIND :IF-MATCH NIL :EXCLUDE
+       ("sum" "forest" "fold" "forest_mass" "is_finite"))
+      NIL NIL)
+     ("6"
+      (GRIND :IF-MATCH NIL :EXCLUDE
+       ("sum" "forest" "fold" "forest_mass" "is_finite"))
+      NIL NIL))
+    NIL)
+   ((|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|forest_mass_step| FORMULA-DECL NIL |ppg_forest_weight| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |ppg_forest_weight|
+     NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set" |ppg_forest_weight| NIL)
+    (|sum_rest| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|sum_emptyset| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |ppg_forest_weight| NIL)
+    (|forest_mass_empty| FORMULA-DECL NIL |ppg_forest_weight| NIL)
+    (|finite_set_induction_rest| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_forest_weight| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|forest_mass| CONST-DECL "nonneg_real" |ppg_forest_weight| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_forest_weight| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL))
+   SHOSTAK)))
+

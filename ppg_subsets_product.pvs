@@ -1,0 +1,31 @@
+% Expanding a product of one-plus factors chooses a subset of active factors.
+ppg_subsets_product[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_nonneg_folds[T], ppg_nonneg_folds[finite_set[T]] AS subsetAlgebra,
+    ppg_monoid_image[finite_set[T],finite_set[T],nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b] AS reindex,
+    ppg_monoid_sum[finite_set[T],nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b] AS subsetsSum,
+    ppg_monoid_sum[T,nonneg_real,1,LAMBDA(a,b:nonneg_real):a*b] AS products,
+    ppg_finite_induction[T]
+  S: VAR finite_set[T]
+  e: VAR T
+  f: VAR [T -> nonneg_real]
+  F: VAR [finite_set[T] -> nonneg_real]
+  K: VAR finite_set[T]
+  subsets(S): finite_set[finite_set[T]]=powerset(S)
+  inserted(e,S): finite_set[finite_set[T]]=image[finite_set[T],finite_set[T]](LAMBDA(K:finite_set[T]):add(e,K),subsets(S))
+  subsets_empty: LEMMA subsets(emptyset[T])=singleton(emptyset[T])
+  subsets_add: LEMMA subsets(add(e,S))=union(subsets(S),inserted(e,S))
+  subsets_inserted_disjoint: LEMMA NOT S(e) IMPLIES disjoint?(subsets(S),inserted(e,S))
+  insert_injective: LEMMA NOT S(e) IMPLIES FORALL(A,B:finite_set[T]):
+    subsets(S)(A) AND subsets(S)(B) AND add(e,A)=add(e,B) IMPLIES A=B
+  sum_subsets_empty: LEMMA subsetsSum.sum(subsets(emptyset[T]),F)=F(emptyset[T])
+  sum_subsets_add: LEMMA NOT S(e) IMPLIES subsetsSum.sum(subsets(add(e,S)),F)=
+    subsetsSum.sum(subsets(S),F)+subsetsSum.sum(subsets(S),LAMBDA(K:finite_set[T]):F(add(e,K)))
+  insert_product: LEMMA NOT S(e) AND subsets(S)(K) IMPLIES
+    products.sum(add(e,K),f)=f(e)*products.sum(K,f)
+  inserted_product_sum: LEMMA NOT S(e) IMPLIES
+    subsetsSum.sum(subsets(S),LAMBDA(K:finite_set[T]):products.sum(add(e,K),f))=
+      f(e)*subsetsSum.sum(subsets(S),LAMBDA(K:finite_set[T]):products.sum(K,f))
+  sum_product_subsets: THEOREM subsetsSum.sum(subsets(S),LAMBDA(K:finite_set[T]):products.sum(K,f))=
+    products.sum(S,LAMBDA(x:T):1+f(x))
+END ppg_subsets_product

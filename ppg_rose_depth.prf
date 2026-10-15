@@ -1,0 +1,179 @@
+(|ppg_rose_depth|
+ (|height_TCC1| 0
+  (|height_TCC1-1| NIL 4001031745 ("" (TERMINATION-TCC) NIL NIL)
+   ((|length| DEF-DECL "nat" |list_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|height| TERMINATION "height(rest)" #A((3) BASE-CHAR . "NIL")
+    (9 30 9 42))))
+ (|depth_node| 0
+  (|depth_node-1| NIL 4001031745
+   (""
+    (THEN (SKOSIMP*) (EXPAND "depthList") (EXPAND "depth")
+     (EXPAND "reduce_nat" 1 1) (ASSERT))
+    NIL)
+   ((|depth| CONST-DECL "[WTree -> nat]" |ppg_rose_depth| NIL)
+    (|reduce_nat| ADT-DEF-DECL "[ppg_mt_rose -> nat]" |ppg_mt_rose_adt| NIL)
+    (|depthList| CONST-DECL "nat" |ppg_rose_depth| NIL))
+   SHOSTAK))
+ (|depth_nil| 0
+  (|depth_nil-1| NIL 4001031745
+   ("" (THEN (SKOSIMP*) (REWRITE "depth_node") (GRIND)) NIL)
+   ((|depthList| CONST-DECL "nat" |ppg_rose_depth| NIL)
+    (|height| DEF-DECL "nat" |ppg_rose_depth| NIL)
+    (|map| ADT-DEF-DECL "list[T1]" |list_adt_map| NIL)
+    (|depth| CONST-DECL "[WTree -> nat]" |ppg_rose_depth| NIL)
+    (|null| ADT-CONSTRUCTOR-DECL "(null?)" |list_adt| NIL)
+    (|null?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_depth| NIL)
+    (|depth_node| FORMULA-DECL NIL |ppg_rose_depth| NIL))
+   SHOSTAK))
+ (|depthList_nil| 0
+  (|depthList_nil-1| NIL 4001031745 ("" (THEN (GRIND)) NIL)
+   ((|depth| CONST-DECL "[WTree -> nat]" |ppg_rose_depth| NIL)
+    (|map| ADT-DEF-DECL "list[T1]" |list_adt_map| NIL)
+    (|height| DEF-DECL "nat" |ppg_rose_depth| NIL)
+    (|depthList| CONST-DECL "nat" |ppg_rose_depth| NIL))
+   SHOSTAK))
+ (|depthList_cons| 0
+  (|depthList_cons-1| NIL 4001031745
+   (""
+    (THEN (SKOSIMP*) (EXPAND "depthList") (EXPAND "map" 1 1)
+     (EXPAND "height" 1 1) (ASSERT))
+    NIL)
+   ((|map| ADT-DEF-DECL "list[T1]" |list_adt_map| NIL)
+    (|height| DEF-DECL "nat" |ppg_rose_depth| NIL)
+    (|depthList| CONST-DECL "nat" |ppg_rose_depth| NIL))
+   SHOSTAK))
+ (|depth_lt_depthList| 0
+  (|depth_lt_depthList-1| NIL 4001031745
+   ("" (INDUCT "cs")
+    (("1" (SKOSIMP*)
+      (("1" (AUTO-REWRITE "depthList_nil" "depthList_cons")
+        (("1"
+          (GRIND :IF-MATCH ALL :EXCLUDE
+           ("depth" "depthList" "height" "is_finite"))
+          NIL NIL))
+        NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (AUTO-REWRITE "depthList_nil" "depthList_cons")
+        (("2"
+          (GRIND :IF-MATCH ALL :EXCLUDE
+           ("depth" "depthList" "height" "is_finite"))
+          NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|list| TYPE-DECL NIL |list_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|depth| CONST-DECL "[WTree -> nat]" |ppg_rose_depth| NIL)
+    (|depthList| CONST-DECL "nat" |ppg_rose_depth| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_depth| NIL)
+    (|list_induction| FORMULA-DECL NIL |list_adt| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nonneg_rat_max| APPLICATION-JUDGEMENT
+     "{s: nonneg_rat | s >= q AND s >= r}" |real_defs| NIL)
+    (|nat_max| APPLICATION-JUDGEMENT "{k: nat | i <= k AND j <= k}" |real_defs|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|depthList_cons| FORMULA-DECL NIL |ppg_rose_depth| NIL)
+    (|max| CONST-DECL "{p: real | p >= m AND p >= n}" |real_defs| NIL))
+   SHOSTAK))
+ (|depth_child_lt| 0
+  (|depth_child_lt-1| NIL 4001031745
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "depth_node" ("a" "roseLabel(t!1)" "cs" "roseChildren(t!1)"))
+     (REWRITE "tree_eta")
+     (LEMMA "depth_lt_depthList" ("cs" "roseChildren(t!1)" "c" "c!1"))
+     (ASSERT))
+    NIL)
+   ((|tree_eta| FORMULA-DECL NIL |ppg_rose_size| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|depth_lt_depthList| FORMULA-DECL NIL |ppg_rose_depth| NIL)
+    (|depth_node| FORMULA-DECL NIL |ppg_rose_depth| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_depth| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|roseLabel| ADT-ACCESSOR-DECL "[ppg_mt_rose -> C]" |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|roseChildren| ADT-ACCESSOR-DECL "[ppg_mt_rose -> list[ppg_mt_rose]]"
+     |ppg_mt_rose_adt| NIL))
+   SHOSTAK))
+ (|depth_zero_children| 0
+  (|depth_zero_children-1| NIL 4001031745
+   ("" (SKOSIMP*)
+    (("" (LEMMA "list_cases[WTree]" ("xs" "roseChildren(t!1)"))
+      (("" (SPLIT -1)
+        (("1" (PROPAX) NIL NIL)
+         ("2" (SKOSIMP*)
+          (("2" (LEMMA "depth_child_lt" ("t" "t!1" "c" "h!1"))
+            (("2" (GRIND :EXCLUDE ("depth" "depthList" "height" "is_finite"))
+              NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|depth_child_lt| FORMULA-DECL NIL |ppg_rose_depth| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|list_cases| FORMULA-DECL NIL |ppg_tree_lists| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|roseChildren| ADT-ACCESSOR-DECL "[ppg_mt_rose -> list[ppg_mt_rose]]"
+     |ppg_mt_rose_adt| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_depth| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL))
+   SHOSTAK)))
+

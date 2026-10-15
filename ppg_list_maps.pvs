@@ -1,0 +1,23 @@
+% Maps preserve membership and reflect equality on the listed elements.
+ppg_list_maps[T, R: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_list_sets[T], ppg_list_sets[R]
+  xs: VAR list[T]
+  x, y: VAR T
+  b: VAR R
+  f, g: VAR [T -> R]
+  P: VAR pred[T]
+  map_member: LEMMA member(b, map(f)(xs)) IFF EXISTS (x: T): member(x, xs) AND f(x) = b
+  every_member: LEMMA every(P)(xs) IFF FORALL (x: T): member(x, xs) IMPLIES P(x)
+  every_map_comp: LEMMA FORALL (Q: pred[R]): every(Q)(map(f)(xs)) = every(LAMBDA (x: T): Q(f(x)))(xs)
+  every_id_map: LEMMA every(LAMBDA (b: bool): b)(map(P)(xs)) = every(P)(xs)
+  map_set: LEMMA ppg_list_sets[R].listSet(map(f)(xs)) = image(f, ppg_list_sets[T].listSet(xs))
+  map_eq_iff: THEOREM (map(f)(xs) = map(g)(xs)) IFF
+    FORALL (x: T): member(x, xs) IMPLIES f(x) = g(x)
+  nodup_map_tail: LEMMA ppg_list_sets[R].nodup(map(f)(xs)) IMPLIES ppg_list_sets[T].nodup(xs)
+  nodup_map_injective: LEMMA ppg_list_sets[R].nodup(map(f)(xs)) AND
+    member(x, xs) AND member(y, xs) AND f(x) = f(y) IMPLIES x = y
+  nodup_map: LEMMA ppg_list_sets[T].nodup(xs) AND
+    (FORALL (x, y: T): member(x, xs) AND member(y, xs) AND f(x) = f(y) IMPLIES x = y)
+    IMPLIES ppg_list_sets[R].nodup(map(f)(xs))
+END ppg_list_maps

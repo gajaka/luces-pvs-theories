@@ -1,0 +1,517 @@
+(|ppg_rose_child_choice|
+ (|mem_labelSet_iff| 0
+  (|mem_labelSet_iff-1| NIL 4001032046
+   (""
+    (THEN (SKOSIMP*) (EXPAND "labelSet") (REWRITE "listSet_member")
+     (REWRITE "map_member"))
+    NIL)
+   ((|listSet_member| FORMULA-DECL NIL |ppg_list_sets| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|map| ADT-DEF-DECL "list[T1]" |list_adt_map| NIL)
+    (|roseLabel| ADT-ACCESSOR-DECL "[ppg_mt_rose -> C]" |ppg_mt_rose_adt| NIL)
+    (|roseChildren| ADT-ACCESSOR-DECL "[ppg_mt_rose -> list[ppg_mt_rose]]"
+     |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|map_member| FORMULA-DECL NIL |ppg_list_maps| NIL)
+    (|labelSet| CONST-DECL "finite_set[C]" |ppg_rose_child_choice| NIL))
+   SHOSTAK))
+ (|labelSet_of_child| 0
+  (|labelSet_of_child-1| NIL 4001032046
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "mem_labelSet_iff" ("t" "t!1" "b" "roseLabel(c!1)")) (ASSERT)
+     (INST 1 "c!1") (ASSERT))
+    NIL)
+   ((|mem_labelSet_iff| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|roseLabel| ADT-ACCESSOR-DECL "[ppg_mt_rose -> C]" |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL))
+   SHOSTAK))
+ (|childSet_member| 0
+  (|childSet_member-1| NIL 4001032248
+   ("" (SKOSIMP*)
+    (("" (EXPAND "childSet")
+      (("" (EXPAND "intersection")
+        (("" (EXPAND "member")
+          (("" (REWRITE "ppg_list_sets[ppg_mt_rose[C]].listSet_member")
+            (("" (PROP)
+              (("1"
+                (GRIND :IF-MATCH NIL :EXCLUDE
+                 ("listSet" "labelSet" "is_finite"))
+                NIL NIL)
+               ("2"
+                (GRIND :IF-MATCH NIL :EXCLUDE
+                 ("listSet" "labelSet" "is_finite"))
+                NIL NIL)
+               ("3"
+                (GRIND :IF-MATCH NIL :EXCLUDE
+                 ("listSet" "labelSet" "is_finite"))
+                NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|intersection| CONST-DECL "set" |sets| NIL)
+    (|listSet_member| FORMULA-DECL NIL |ppg_list_sets| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|roseChildren| ADT-ACCESSOR-DECL "[ppg_mt_rose -> list[ppg_mt_rose]]"
+     |ppg_mt_rose_adt| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|childSet| CONST-DECL "finite_set[WTree[C]]" |ppg_rose_child_choice| NIL))
+   SHOSTAK))
+ (|childSet_nonempty| 0
+  (|childSet_nonempty-1| NIL 4001032248
+   (""
+    (THEN (SKOSIMP*) (LEMMA "mem_labelSet_iff" ("t" "t!1" "b" "b!1")) (ASSERT)
+     (SKOSIMP*) (LEMMA "childSet_member" ("t" "t!1" "b" "b!1" "c" "c!1"))
+     (ASSERT) (EXPAND "nonempty?") (EXPAND "empty?") (INST -5 "c!1")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("childSet" "labelSet" "listSet" "is_finite")))
+    NIL)
+   ((|childSet_member| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|mem_labelSet_iff| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL))
+   SHOSTAK))
+ (|childOf_TCC1| 0
+  (|childOf_TCC1-1| NIL 4001032046
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "b!1")
+     (LEMMA "childSet_nonempty" ("t" "t!1" "b" "b!1")) (ASSERT))
+    NIL)
+   ((|childSet_nonempty| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|labelSet| CONST-DECL "finite_set[C]" |ppg_rose_child_choice| NIL))
+   NIL
+   (|childOf| SUBTYPE "childSet(t, b)" "(sets[WTree[C]].nonempty?)"
+    (15 11 15 24))))
+ (|childOf_TCC2| 0
+  (|childOf_TCC2-1| NIL 4001032046
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "b!1")
+     (LEMMA "childSet_nonempty" ("t" "t!1" "b" "b!1")) (ASSERT)
+     (TYPEPRED "choose(childSet(t!1,b!1))")
+     (LEMMA "childSet_member"
+      ("t" "t!1" "b" "b!1" "c" "choose(childSet(t!1,b!1))"))
+     (EXPAND "member") (PROP))
+    NIL)
+   ((|childSet_nonempty| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (|childSet| CONST-DECL "finite_set[WTree[C]]" |ppg_rose_child_choice| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|choose| CONST-DECL "(p)" |sets| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|childSet_member| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|labelSet| CONST-DECL "finite_set[C]" |ppg_rose_child_choice| NIL))
+   NIL
+   (|childOf| SUBTYPE "choose[WTree[C]](childSet(t, b))"
+    "{c: ppg_rose_size[ppg_rose_child_choice.C].WTree | booleans.AND(list_props[WTree[C]].member(c, ppg_mt_rose_adt[ppg_rose_child_choice.C].roseChildren(ppg_rose_child_choice.t)), ppg_mt_rose_adt[ppg_rose_child_choice.C].roseLabel(c) = ppg_rose_child_choice.b)}"
+    (15 4 15 25))))
+ (|childOf_mem| 0
+  (|childOf_mem-1| NIL 4001032046
+   ("" (THEN (SKOSIMP*) (TYPEPRED "childOf(t!1)(b!1)") (PROP)) NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|labelSet| CONST-DECL "finite_set[C]" |ppg_rose_child_choice| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|roseChildren| ADT-ACCESSOR-DECL "[ppg_mt_rose -> list[ppg_mt_rose]]"
+     |ppg_mt_rose_adt| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|roseLabel| ADT-ACCESSOR-DECL "[ppg_mt_rose -> C]" |ppg_mt_rose_adt| NIL)
+    (|childOf| CONST-DECL
+     "{c: WTree | member(c, roseChildren(t)) AND roseLabel(c) = b}"
+     |ppg_rose_child_choice| NIL))
+   SHOSTAK))
+ (|childOf_label| 0
+  (|childOf_label-1| NIL 4001032046
+   ("" (THEN (SKOSIMP*) (TYPEPRED "childOf(t!1)(b!1)") (PROP)) NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|labelSet| CONST-DECL "finite_set[C]" |ppg_rose_child_choice| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|roseChildren| ADT-ACCESSOR-DECL "[ppg_mt_rose -> list[ppg_mt_rose]]"
+     |ppg_mt_rose_adt| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|roseLabel| ADT-ACCESSOR-DECL "[ppg_mt_rose -> C]" |ppg_mt_rose_adt| NIL)
+    (|childOf| CONST-DECL
+     "{c: WTree | member(c, roseChildren(t)) AND roseLabel(c) = b}"
+     |ppg_rose_child_choice| NIL))
+   SHOSTAK))
+ (|proper_nodup_labels| 0
+  (|proper_nodup_labels-1| NIL 4001032046
+   (""
+    (THEN (SKOSIMP*) (REWRITE "proper_unfold" -1) (EXPAND "distinctLabels")
+     (PROP))
+    NIL)
+   ((|distinctLabels| CONST-DECL "bool" |ppg_rose_structure| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|proper_unfold| FORMULA-DECL NIL |ppg_rose_structure| NIL))
+   SHOSTAK))
+ (|proper_nodup_children| 0
+  (|proper_nodup_children-1| NIL 4001032046
+   (""
+    (THEN (SKOSIMP*) (LEMMA "proper_nodup_labels" ("t" "t!1"))
+     (LEMMA "nodup_map_tail[WTree,C]"
+      ("xs" "roseChildren(t!1)" "f" "roseLabel"))
+     (ASSERT))
+    NIL)
+   ((|nodup_map_tail| FORMULA-DECL NIL |ppg_list_maps| NIL)
+    (|roseLabel| ADT-ACCESSOR-DECL "[ppg_mt_rose -> C]" |ppg_mt_rose_adt| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|roseChildren| ADT-ACCESSOR-DECL "[ppg_mt_rose -> list[ppg_mt_rose]]"
+     |ppg_mt_rose_adt| NIL)
+    (|proper_nodup_labels| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL))
+   SHOSTAK))
+ (|eq_of_mem_children_label_eq| 0
+  (|eq_of_mem_children_label_eq-1| NIL 4001032046
+   (""
+    (THEN (SKOSIMP*) (LEMMA "proper_nodup_labels" ("t" "t!1"))
+     (LEMMA "nodup_map_injective[WTree,C]"
+      ("xs" "roseChildren(t!1)" "f" "roseLabel" "x" "c1!1" "y" "c2!1"))
+     (ASSERT))
+    NIL)
+   ((|nodup_map_injective| FORMULA-DECL NIL |ppg_list_maps| NIL)
+    (|roseLabel| ADT-ACCESSOR-DECL "[ppg_mt_rose -> C]" |ppg_mt_rose_adt| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|roseChildren| ADT-ACCESSOR-DECL "[ppg_mt_rose -> list[ppg_mt_rose]]"
+     |ppg_mt_rose_adt| NIL)
+    (|proper_nodup_labels| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL))
+   SHOSTAK))
+ (|childOf_eq_self_of_mem_TCC1| 0
+  (|childOf_eq_self_of_mem_TCC1-1| NIL 4001032046
+   (""
+    (THEN (SKOSIMP*) (LEMMA "labelSet_of_child" ("t" "t!1" "c" "c!1"))
+     (ASSERT))
+    NIL)
+   ((|labelSet_of_child| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL))
+   NIL
+   (|childOf_eq_self_of_mem| SUBTYPE "roseLabel[C](c)"
+    "(ppg_rose_child_choice.labelSet(ppg_rose_child_choice.t))"
+    (23 15 23 27))))
+ (|childOf_eq_self_of_mem| 0
+  (|childOf_eq_self_of_mem-1| NIL 4001032046
+   (""
+    (THEN (SKOSIMP*) (LEMMA "labelSet_of_child" ("t" "t!1" "c" "c!1"))
+     (LEMMA "eq_of_mem_children_label_eq"
+      ("t" "t!1" "c1" "childOf(t!1)(roseLabel(c!1))" "c2" "c!1"))
+     (TYPEPRED "childOf(t!1)(roseLabel(c!1))") (ASSERT))
+    NIL)
+   ((|eq_of_mem_children_label_eq| FORMULA-DECL NIL |ppg_rose_child_choice|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|labelSet| CONST-DECL "finite_set[C]" |ppg_rose_child_choice| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|roseChildren| ADT-ACCESSOR-DECL "[ppg_mt_rose -> list[ppg_mt_rose]]"
+     |ppg_mt_rose_adt| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|roseLabel| ADT-ACCESSOR-DECL "[ppg_mt_rose -> C]" |ppg_mt_rose_adt| NIL)
+    (|childOf| CONST-DECL
+     "{c: WTree | member(c, roseChildren(t)) AND roseLabel(c) = b}"
+     |ppg_rose_child_choice| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|labelSet_of_child| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL))
+   SHOSTAK))
+ (|childFor_mem| 0
+  (|childFor_mem-1| NIL 4001032046
+   ("" (SKOSIMP*)
+    (("" (EXPAND "childFor")
+      (("" (TYPEPRED "childOf(t!1)(b!1)")
+        (("1" (ASSERT) NIL NIL) ("2" (PROPAX) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|labelSet| CONST-DECL "finite_set[C]" |ppg_rose_child_choice| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|roseChildren| ADT-ACCESSOR-DECL "[ppg_mt_rose -> list[ppg_mt_rose]]"
+     |ppg_mt_rose_adt| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|roseLabel| ADT-ACCESSOR-DECL "[ppg_mt_rose -> C]" |ppg_mt_rose_adt| NIL)
+    (|childOf| CONST-DECL
+     "{c: WTree | member(c, roseChildren(t)) AND roseLabel(c) = b}"
+     |ppg_rose_child_choice| NIL)
+    (|childFor| CONST-DECL "WTree" |ppg_rose_child_choice| NIL))
+   SHOSTAK))
+ (|childFor_label| 0
+  (|childFor_label-1| NIL 4001032046
+   ("" (SKOSIMP*)
+    (("" (EXPAND "childFor")
+      (("" (TYPEPRED "childOf(t!1)(b!1)")
+        (("1" (ASSERT) NIL NIL) ("2" (PROPAX) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|labelSet| CONST-DECL "finite_set[C]" |ppg_rose_child_choice| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|roseChildren| ADT-ACCESSOR-DECL "[ppg_mt_rose -> list[ppg_mt_rose]]"
+     |ppg_mt_rose_adt| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|roseLabel| ADT-ACCESSOR-DECL "[ppg_mt_rose -> C]" |ppg_mt_rose_adt| NIL)
+    (|childOf| CONST-DECL
+     "{c: WTree | member(c, roseChildren(t)) AND roseLabel(c) = b}"
+     |ppg_rose_child_choice| NIL)
+    (|childFor| CONST-DECL "WTree" |ppg_rose_child_choice| NIL))
+   SHOSTAK))
+ (|childFor_injective| 0
+  (|childFor_injective-1| NIL 4001032046
+   (""
+    (THEN (SKOSIMP*) (LEMMA "childFor_label" ("t" "t!1" "b" "a!1"))
+     (LEMMA "childFor_label" ("t" "t!1" "b" "b!1")) (ASSERT))
+    NIL)
+   ((|childFor_label| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL))
+   SHOSTAK))
+ (|childFor_self| 0
+  (|childFor_self-1| NIL 4001032046
+   (""
+    (THEN (SKOSIMP*) (LEMMA "labelSet_of_child" ("t" "t!1" "c" "c!1"))
+     (LEMMA "childOf_eq_self_of_mem" ("t" "t!1" "c" "c!1")) (EXPAND "childFor")
+     (ASSERT))
+    NIL)
+   ((|childOf_eq_self_of_mem| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (|childFor| CONST-DECL "WTree" |ppg_rose_child_choice| NIL)
+    (|labelSet_of_child| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL))
+   SHOSTAK))
+ (|ordered_member| 0
+  (|ordered_member-1| NIL 4001032046
+   (""
+    (THEN (SKOSIMP*) (EXPAND "orderedChildren") (REWRITE "map_member[C,WTree]")
+     (LEMMA "childFor_mem") (LEMMA "childFor_self") (LEMMA "labelSet_of_child")
+     (AUTO-REWRITE "setList_member[C]")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("childFor" "labelSet" "proper" "is_finite" "setList")))
+    NIL)
+   ((|map_member| FORMULA-DECL NIL |ppg_list_maps| NIL)
+    (|childFor| CONST-DECL "WTree" |ppg_rose_child_choice| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|setList| DEF-DECL "list[T]" |ppg_list_sets| NIL)
+    (|labelSet| CONST-DECL "finite_set[C]" |ppg_rose_child_choice| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|childFor_self| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (|roseLabel| ADT-ACCESSOR-DECL "[ppg_mt_rose -> C]" |ppg_mt_rose_adt| NIL)
+    (|setList_member| FORMULA-DECL NIL |ppg_list_sets| NIL)
+    (|labelSet_of_child| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (|childFor_mem| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (|orderedChildren| CONST-DECL "list[WTree[C]]" |ppg_rose_child_choice|
+     NIL))
+   SHOSTAK))
+ (|ordered_nodup| 0
+  (|ordered_nodup-1| NIL 4001032046
+   (""
+    (THEN (SKOSIMP*) (EXPAND "orderedChildren")
+     (LEMMA "nodup_map[C,WTree]"
+      ("xs" "ppg_list_sets[C].setList(labelSet(t!1))" "f"
+       "LAMBDA (b: C): childFor(t!1,b)"))
+     (LEMMA "setList_nodup[C]" ("S" "labelSet(t!1)"))
+     (LEMMA "childFor_injective") (AUTO-REWRITE "setList_member[C]")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("childFor" "labelSet" "proper" "is_finite" "setList" "nodup")))
+    NIL)
+   ((|nodup_map| FORMULA-DECL NIL |ppg_list_maps| NIL)
+    (|childFor| CONST-DECL "WTree" |ppg_rose_child_choice| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|setList| DEF-DECL "list[T]" |ppg_list_sets| NIL)
+    (|labelSet| CONST-DECL "finite_set[C]" |ppg_rose_child_choice| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|childFor_injective| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (|setList_member| FORMULA-DECL NIL |ppg_list_sets| NIL)
+    (|setList_nodup| FORMULA-DECL NIL |ppg_list_sets| NIL)
+    (|orderedChildren| CONST-DECL "list[WTree[C]]" |ppg_rose_child_choice|
+     NIL))
+   SHOSTAK))
+ (|ordered_labels| 0
+  (|ordered_labels-1| NIL 4001034576
+   ("" (SKOSIMP*)
+    (("" (EXPAND "orderedChildren")
+      (("" (REWRITE "map_list_composition[C,WTree,C]" 1)
+        (("" (EXPAND "o")
+          ((""
+            (LEMMA "map_fix[C]"
+             ("xs" "ppg_list_sets[C].setList(labelSet(t!1))" "h"
+              "LAMBDA(b:C):roseLabel(childFor(t!1,b))"))
+            (("" (SPLIT -1)
+              (("1" (PROPAX) NIL NIL)
+               ("2" (SKOSIMP*)
+                (("2" (REWRITE "setList_member[C]" -1)
+                  (("2" (LEMMA "childFor_label" ("t" "t!1" "b" "x!1"))
+                    (("2" (ASSERT) NIL NIL)) NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|map_list_composition| FORMULA-DECL NIL |map_props| NIL)
+    (|childFor| CONST-DECL "WTree" |ppg_rose_child_choice| NIL)
+    (|roseLabel| ADT-ACCESSOR-DECL "[ppg_mt_rose -> C]" |ppg_mt_rose_adt| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|setList| DEF-DECL "list[T]" |ppg_list_sets| NIL)
+    (|labelSet| CONST-DECL "finite_set[C]" |ppg_rose_child_choice| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|map_fix| FORMULA-DECL NIL |ppg_list_sets| NIL)
+    (|childFor_label| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (|setList_member| FORMULA-DECL NIL |ppg_list_sets| NIL)
+    (O CONST-DECL "T3" |function_props| NIL)
+    (|orderedChildren| CONST-DECL "list[WTree[C]]" |ppg_rose_child_choice|
+     NIL))
+   SHOSTAK))
+ (|ordered_set| 0
+  (|ordered_set-1| NIL 4001032046
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY)
+     (AUTO-REWRITE "listSet_member[WTree]")
+     (LEMMA "ordered_member" ("t" "t!1" "c" "x!1")) (ASSERT) (IFF) (PROP))
+    NIL)
+   ((|listSet_member| FORMULA-DECL NIL |ppg_list_sets| NIL)
+    (|ordered_member| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|listSet| DEF-DECL "finite_set[T]" |ppg_list_sets| NIL)
+    (|orderedChildren| CONST-DECL "list[WTree[C]]" |ppg_rose_child_choice| NIL)
+    (|roseChildren| ADT-ACCESSOR-DECL "[ppg_mt_rose -> list[ppg_mt_rose]]"
+     |ppg_mt_rose_adt| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL))
+   SHOSTAK))
+ (|children_perm_labelSet_attach| 0
+  (|children_perm_labelSet_attach-1| NIL 4001032046
+   (""
+    (THEN (SKOSIMP*) (LEMMA "proper_nodup_children" ("t" "t!1"))
+     (LEMMA "ordered_nodup" ("t" "t!1")) (LEMMA "ordered_set" ("t" "t!1"))
+     (LEMMA "ppg_list_sets[ppg_mt_rose[C]].perm_nodup"
+      ("xs" "roseChildren(t!1)" "ys" "orderedChildren(t!1)"))
+     (ASSERT) (PROP) (ASSERT))
+    NIL)
+   ((|ordered_nodup| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (|perm_nodup| FORMULA-DECL NIL |ppg_list_sets| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|roseChildren| ADT-ACCESSOR-DECL "[ppg_mt_rose -> list[ppg_mt_rose]]"
+     |ppg_mt_rose_adt| NIL)
+    (|orderedChildren| CONST-DECL "list[WTree[C]]" |ppg_rose_child_choice| NIL)
+    (|ordered_set| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (|proper_nodup_children| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL))
+   SHOSTAK)))
+

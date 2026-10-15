@@ -1,0 +1,372 @@
+(|ppg_rose_weight_sum|
+ (|enumSum_TCC1| 0
+  (|enumSum_TCC1-1| NIL 4001037395 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|enumSum| SUBTYPE "LAMBDA (x, y: nonneg_real): x + y"
+    "{f: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_rose_weight_sum.f)(0), booleans.AND(operator_defs[nonneg_real].associative?(ppg_rose_weight_sum.f), operator_defs[nonneg_real].commutative?(ppg_rose_weight_sum.f)))}"
+    (5 51 5 78))))
+ (|mtWeight_TCC1| 0
+  (|mtWeight_TCC1-1| NIL 4001037395 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL (|mtWeight| SUBTYPE "D - 1" "nat" (14 82 14 85))))
+ (|mtWeight_TCC2| 0
+  (|mtWeight_TCC2-1| NIL 4001037395 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|mtWeight| TERMINATION "mtWeight(vars, U, p, D - 1, b)"
+    #A((3) BASE-CHAR . "NIL") (14 64 14 88))))
+ (|mtWeight_TCC3| 0
+  (|mtWeight_TCC3-1| NIL 4001037395 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL))
+   NIL
+   (|mtWeight| SUBTYPE "LAMBDA (x, y: nonneg_real): x * y"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_rose_weight_sum.op)(1), booleans.AND(operator_defs[nonneg_real].associative?(ppg_rose_weight_sum.op), operator_defs[nonneg_real].commutative?(ppg_rose_weight_sum.op)))}"
+    (14 14 14 25))))
+ (|mtWeight_zero| 0
+  (|mtWeight_zero-1| NIL 4001037395
+   ("" (THEN (SKOSIMP*) (EXPAND "mtWeight" 1 1) (ASSERT)) NIL)
+   ((|mtWeight| DEF-DECL "nonneg_real" |ppg_rose_weight_sum| NIL)) SHOSTAK))
+ (|mtWeight_succ_TCC1| 0
+  (|mtWeight_succ_TCC1-1| NIL 4001037395 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|mtWeight_succ| SUBTYPE "LAMBDA (x, y: nonneg_real): x * y"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_rose_weight_sum.op)(1), booleans.AND(operator_defs[nonneg_real].associative?(ppg_rose_weight_sum.op), operator_defs[nonneg_real].commutative?(ppg_rose_weight_sum.op)))}"
+    (17 53 17 64))))
+ (|mtWeight_succ| 0
+  (|mtWeight_succ-1| NIL 4001037395
+   ("" (THEN (SKOSIMP*) (EXPAND "mtWeight" 1 1) (ASSERT)) NIL)
+   ((|mtWeight| DEF-DECL "nonneg_real" |ppg_rose_weight_sum| NIL)) SHOSTAK))
+ (|enum_mass_zero| 0
+  (|enum_mass_zero-1| NIL 4001037395
+   (""
+    (THEN (SKOSIMP*) (EXPAND "enum_mass") (REWRITE "enum_zero")
+     (AUTO-REWRITE "choose_singleton" "rest_singleton"
+                   "remove_member_singleton" "sum_emptyset" "weight_singleton")
+     (EXPAND "treeSums.sum" 1 1)
+     (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite" "weight")))
+    NIL)
+   ((|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[WTree[C]]" |ppg_rose_weight_sum| NIL)
+    (|enum_zero| FORMULA-DECL NIL |ppg_rose_enumeration| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_weight_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_rose_weight_sum| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|choose_singleton| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|weight_singleton| FORMULA-DECL NIL |ppg_rose_weight| NIL)
+    (|remove_member_singleton| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |ppg_rose_weight_sum| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |ppg_rose_weight_sum|
+     NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set" |ppg_rose_weight_sum|
+     NIL)
+    (|enum_mass| CONST-DECL "nonneg_real" |ppg_rose_weight_sum| NIL))
+   SHOSTAK))
+ (|root_mass_function| 0
+  (|root_mass_function-1| NIL 4001037395
+   ("" (SKOSIMP*)
+    (("" (APPLY-EXTENSIONALITY)
+      (("1" (AUTO-REWRITE "rootFamily_weight")
+        (("1" (EXPAND "enum_mass")
+          (("1"
+            (GRIND :IF-MATCH NIL :EXCLUDE
+             ("sum" "wtreesUpTo" "rootFamily" "weight" "is_finite"))
+            NIL NIL))
+          NIL))
+        NIL)
+       ("2" (AUTO-REWRITE "rootFamily_weight")
+        (("2" (EXPAND "enum_mass")
+          (("2"
+            (GRIND :IF-MATCH NIL :EXCLUDE
+             ("sum" "wtreesUpTo" "rootFamily" "weight" "is_finite"))
+            NIL NIL))
+          NIL))
+        NIL)
+       ("3" (AUTO-REWRITE "rootFamily_weight")
+        (("3" (EXPAND "enum_mass")
+          (("3"
+            (GRIND :IF-MATCH NIL :EXCLUDE
+             ("sum" "wtreesUpTo" "rootFamily" "weight" "is_finite"))
+            NIL NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|rootFamily_weight| FORMULA-DECL NIL |ppg_rose_attach| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_rose_weight_sum| NIL)
+    (|rootFamily| CONST-DECL "finite_set[WTree[C]]" |ppg_rose_attach| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|wtreesUpTo| DEF-DECL "finite_set[WTree[C]]" |ppg_rose_enumeration| NIL)
+    (|weight| CONST-DECL "[WTree -> nonneg_real]" |ppg_rose_weight| NIL)
+    (|enum_mass| CONST-DECL "nonneg_real" |ppg_rose_weight_sum| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_weight_sum| NIL))
+   SHOSTAK))
+ (|enum_mass_succ| 0
+  (|enum_mass_succ-1| NIL 4001037395
+   ("" (SKOSIMP*)
+    (("" (EXPAND "enum_mass" 1 1)
+      (("" (REWRITE "enum_succ" 1)
+        ((""
+          (LEMMA "enumSum.sum_bind"
+           ("S" "subsets(plusNeighbors(vars!1,U!1,a!1))" "F"
+            "LAMBDA(S:finite_set[C]):rootFamily(a!1,S,LAMBDA(b:C):wtreesUpTo(vars!1,U!1,D!1,b))"
+            "f" "weight(p!1)"))
+          ((""
+            (LEMMA "wtreesUpTo_succ_disjoint"
+             ("vars" "vars!1" "U" "U!1" "D" "D!1" "a" "a!1"))
+            (("" (ASSERT)
+              ((""
+                (LEMMA "root_mass_function"
+                 ("vars" "vars!1" "U" "U!1" "D" "D!1" "a" "a!1" "p" "p!1"))
+                (("" (REPLACE -1)
+                  ((""
+                    (LEMMA "subsetAlgebra.sum_scale"
+                     ("S" "subsets(plusNeighbors(vars!1,U!1,a!1))" "k"
+                      "p!1(a!1)" "f"
+                      "LAMBDA(S:finite_set[C]):indices.sum(S,LAMBDA(b:C):enum_mass(vars!1,U!1,p!1,D!1,b))"))
+                    (("1"
+                      (LEMMA "sum_product_subsets"
+                       ("S" "plusNeighbors(vars!1,U!1,a!1)" "f"
+                        "LAMBDA(b:C):enum_mass(vars!1,U!1,p!1,D!1,b)"))
+                      (("1" (ASSERT) NIL NIL)) NIL)
+                     ("2"
+                      (LEMMA "sum_product_subsets"
+                       ("S" "plusNeighbors(vars!1,U!1,a!1)" "f"
+                        "LAMBDA(b:C):enum_mass(vars!1,U!1,p!1,D!1,b)"))
+                      (("2" (ASSERT)
+                        (("2" (PROP)
+                          (("1"
+                            (GRIND :IF-MATCH NIL :EXCLUDE
+                             ("sum" "wtreesUpTo" "rootFamily" "enum_mass"
+                              "weight" "is_finite"))
+                            NIL NIL)
+                           ("2"
+                            (GRIND :IF-MATCH NIL :EXCLUDE
+                             ("sum" "wtreesUpTo" "rootFamily" "enum_mass"
+                              "weight" "is_finite"))
+                            NIL NIL)
+                           ("3"
+                            (GRIND :IF-MATCH NIL :EXCLUDE
+                             ("sum" "wtreesUpTo" "rootFamily" "enum_mass"
+                              "weight" "is_finite"))
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_minus_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|minus_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_u8_u8| APPLICATION-JUDGEMENT "int16" |integertypes| NIL)
+    (|enum_succ| FORMULA-DECL NIL |ppg_rose_enumeration| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_weight_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_rose_weight_sum| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|wtreesUpTo_succ_disjoint| FORMULA-DECL NIL |ppg_rose_enumeration| NIL)
+    (|root_mass_function| FORMULA-DECL NIL |ppg_rose_weight_sum| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|sum_scale| FORMULA-DECL NIL |ppg_nonneg_folds| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|sum_product_subsets| FORMULA-DECL NIL |ppg_subsets_product| NIL)
+    (|posreal_plus_nnreal_is_posreal| APPLICATION-JUDGEMENT "posreal"
+     |real_types| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|sum_bind| FORMULA-DECL NIL |ppg_bind_sum| NIL)
+    (|rootFamily| CONST-DECL "finite_set[WTree[C]]" |ppg_rose_attach| NIL)
+    (|wtreesUpTo| DEF-DECL "finite_set[WTree[C]]" |ppg_rose_enumeration| NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|plusNeighbors| CONST-DECL "finite_set[C]" |ppg_rose_enumeration| NIL)
+    (|weight| CONST-DECL "[WTree -> nonneg_real]" |ppg_rose_weight| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|enum_mass| CONST-DECL "nonneg_real" |ppg_rose_weight_sum| NIL))
+   SHOSTAK))
+ (|sum_wtreesUpTo_weight| 0
+  (|sum_wtreesUpTo_weight-1| NIL 4001037395
+   ("" (INDUCT "D")
+    (("1" (SKOSIMP*)
+      (("1" (REWRITE "enum_mass_zero" 1)
+        (("1" (REWRITE "mtWeight_zero" 1) NIL NIL)) NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (REWRITE "enum_mass_succ" 1)
+        (("2" (REWRITE "mtWeight_succ" 1)
+          (("2"
+            (LEMMA "labelAlgebra.product_congr"
+             ("S" "plusNeighbors(vars!1,U!1,a!1)" "f"
+              "LAMBDA(b:C):1+enum_mass(vars!1,U!1,p!1,j!1,b)" "g"
+              "LAMBDA(b:C):1+mtWeight(vars!1,U!1,p!1,j!1,b)"))
+            (("2" (SPLIT -1)
+              (("1" (ASSERT) NIL NIL)
+               ("2" (SKOSIMP*)
+                (("2" (INST -2 "U!1" "x!1" "p!1" "vars!1")
+                  (("2" (ASSERT) NIL NIL)) NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|mtWeight_succ| FORMULA-DECL NIL |ppg_rose_weight_sum| NIL)
+    (|product_congr| FORMULA-DECL NIL |ppg_nonneg_folds| NIL)
+    (|plusNeighbors| CONST-DECL "finite_set[C]" |ppg_rose_enumeration| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posreal_plus_nnreal_is_posreal| APPLICATION-JUDGEMENT "posreal"
+     |real_types| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|enum_mass_succ| FORMULA-DECL NIL |ppg_rose_weight_sum| NIL)
+    (|mtWeight_zero| FORMULA-DECL NIL |ppg_rose_weight_sum| NIL)
+    (|enum_mass_zero| FORMULA-DECL NIL |ppg_rose_weight_sum| NIL)
+    (|nat_induction| FORMULA-DECL NIL |naturalnumbers| NIL)
+    (|mtWeight| DEF-DECL "nonneg_real" |ppg_rose_weight_sum| NIL)
+    (|enum_mass| CONST-DECL "nonneg_real" |ppg_rose_weight_sum| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_rose_weight_sum| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_weight_sum| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,12 @@
+% Disjoint finite families may be summed one component at a time.
+ppg_bind_sum[A,B,R: TYPE, unit:R,
+  op:{f:[R,R -> R] | identity?(f)(unit) AND associative?(f) AND commutative?(f)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_bind[A,B], ppg_monoid_sum[A,R,unit,op] AS indices,
+    ppg_monoid_sum[B,R,unit,op] AS values
+  S: VAR finite_set[A]
+  F: VAR [A -> finite_set[B]]
+  f: VAR [B -> R]
+  sum_bind: THEOREM disjointFamily(S,F) IMPLIES values.sum(biUnion(S,F),f) =
+    indices.sum(S,LAMBDA(a:A):values.sum(F(a),f))
+END ppg_bind_sum

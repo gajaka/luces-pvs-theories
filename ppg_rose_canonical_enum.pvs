@@ -1,0 +1,30 @@
+% Canonicalization lands in the finite enumeration for the full finite label universe.
+ppg_rose_canonical_enum[C,V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_rose_canonical_core[C,V], ppg_rose_enumeration[C,V]
+  vars: VAR CertVars
+  U: VAR finite_set[C]
+  n: VAR nat
+  t: VAR WTree
+  p: VAR [C -> nonneg_real]
+  fullUniverse(U): bool = FORALL(b:C):U(b)
+  labelSet_neighbors: LEMMA fullUniverse(U) AND wellFormed(vars)(t) IMPLIES
+    subset?(labelSet(t),plusNeighbors(vars,U,roseLabel(t)))
+  canonical_rebuild_attach: LEMMA rebuild(t,LAMBDA(c:WTree):canonicalFuel(n,c)) =
+    attach(roseLabel(t),labelSet(t),LAMBDA(b:C):canonicalFuel(n,childFor(t,b)))
+  fuel_children_valid: LEMMA
+    (FORALL(c:WTree):wellFormed(vars)(c) AND proper(c) AND depth(c)<=n IMPLIES
+      wtreesUpTo(vars,U,n,roseLabel(c))(canonicalFuel(n,c))) AND
+    wellFormed(vars)(t) AND proper(t) AND depth(t)<=n+1 IMPLIES
+      choiceValid(labelSet(t),LAMBDA(b:C):wtreesUpTo(vars,U,n,b),LAMBDA(b:C):canonicalFuel(n,childFor(t,b)))
+  canonicalFuel_mem: LEMMA fullUniverse(U) AND wellFormed(vars)(t) AND proper(t) AND depth(t)<=n IMPLIES
+    wtreesUpTo(vars,U,n,roseLabel(t))(canonicalFuel(n,t))
+  canonicalFuel_props: THEOREM fullUniverse(U) AND wellFormed(vars)(t) AND proper(t) AND depth(t)<=n IMPLIES
+    roseLabel(canonicalFuel(n,t))=roseLabel(t) AND
+    weight(p)(canonicalFuel(n,t))=weight(p)(t) AND
+    wellFormed(vars)(canonicalFuel(n,t)) AND proper(canonicalFuel(n,t)) AND
+    wtreesUpTo(vars,U,n,roseLabel(t))(canonicalFuel(n,t))
+  canonicalize_mem_wtreesUpTo: THEOREM fullUniverse(U) AND wellFormed(vars)(t) AND proper(t) IMPLIES
+    roseLabel(canonicalize(t))=roseLabel(t) AND weight(p)(canonicalize(t))=weight(p)(t) AND
+    wtreesUpTo(vars,U,depth(t),roseLabel(t))(canonicalize(t))
+END ppg_rose_canonical_enum

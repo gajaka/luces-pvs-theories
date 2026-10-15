@@ -1,0 +1,19 @@
+% A commutative fold agrees with the finite-set fold for a duplicate-free list.
+ppg_list_fold[T, R: TYPE, unit: R,
+  op: {f: [R, R -> R] | identity?(f)(unit) AND associative?(f) AND commutative?(f)}]: THEORY
+BEGIN
+  IMPORTING ppg_list_sets[T], ppg_monoid_sum[T, R, unit, op] AS finite
+  xs: VAR list[T]
+  S: VAR finite_set[T]
+  f, g: VAR [T -> R]
+  fold(xs, f): RECURSIVE R = CASES xs OF null: unit,
+    cons(x, rest): op(f(x), fold(rest, f)) ENDCASES MEASURE length(xs)
+  fold_nil: LEMMA fold(null[T], f) = unit
+  fold_cons: LEMMA FORALL (x: T): fold(cons(x, xs), f) = op(f(x), fold(xs, f))
+  fold_congr: LEMMA (FORALL (x: T): member(x, xs) IMPLIES f(x) = g(x))
+    IMPLIES fold(xs, f) = fold(xs, g)
+  fold_setList: LEMMA fold(setList(S), f) = finite.sum(S, f)
+  fold_nodup: LEMMA nodup(xs) IMPLIES fold(xs, f) = finite.sum(listSet(xs), f)
+  fold_reorder: THEOREM FORALL (ys: list[T]): nodup(xs) AND nodup(ys) AND listSet(xs) = listSet(ys)
+    IMPLIES fold(xs, f) = fold(ys, f)
+END ppg_list_fold
