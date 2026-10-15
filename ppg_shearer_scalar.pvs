@@ -1,0 +1,17 @@
+% Scalar inequalities used by the finite-set ratio induction.
+% The avoidance quantities pe, pr and ps may be negative at this stage;
+% only the polynomial denominators and the stated multiplier are positive.
+% Positivity of avoidance probabilities is derived after normalization.
+
+ppg_shearer_scalar: THEORY
+BEGIN
+  alpha,qe,qr,qs,qt,pe,pr,ps,pt: VAR real
+  a,b,c,d: VAR real
+  div0(a,b): real = IF b=0 THEN 0 ELSE a/b ENDIF
+  edge_comparison: LEMMA 0<qe AND 0<=alpha AND qe*pr<=pe*qr AND
+    pe-alpha*pr<=ps AND qs=qe-alpha*qr IMPLIES qs*pe<=ps*qe
+  chain_comparison: LEMMA 0<qe AND 0<qs AND 0<qt AND
+    qe*pt<=pe*qt AND qs*pe<=ps*qe IMPLIES qs*pt<=ps*qt
+  positive_division_order: LEMMA 0<b AND 0<d IMPLIES
+    (div0(a,b)<=div0(c,d) IFF a*d<=c*b)
+END ppg_shearer_scalar
