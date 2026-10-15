@@ -1,0 +1,22 @@
+% Original MT budgets bound the total slot-zero expected stopped length.
+ppg_mt_total_budget[C,V,Value:TYPE,domain:[V->set[Value]],
+  universe:{F:finite_set[V]|F=fullset[V]},
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_mt_expected_decomposition[C,V,Value,domain,spaces,laws],
+    ppg_mt_expected_bounds[C,V,Value,domain,universe,spaces,laws], ppg_enn_finite[C]
+  vars: VAR CertVars
+  bad: VAR NativeBad
+  fallback: VAR C
+  enumeration: VAR {xs:list[C]|completeEnumeration(xs)}
+  p,x: VAR [C->nonneg_real]
+  randomInitETLog_le_sum: THEOREM mt_wf(vars,bad) AND
+    (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND
+    budget(vars,labelUniverse(enumeration),p,x) IMPLIES
+    ele(randomInitETLog(vars,bad,fallback,enumeration),ennFinite(tSum.sum(labelUniverse(enumeration),x)))
+  randomInitETLog_lt_top: THEOREM mt_wf(vars,bad) AND
+    (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND
+    budget(vars,labelUniverse(enumeration),p,x) IMPLIES
+    ennFinite?(randomInitETLog(vars,bad,fallback,enumeration))
+END ppg_mt_total_budget

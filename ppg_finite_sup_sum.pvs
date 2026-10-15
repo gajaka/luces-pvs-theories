@@ -1,0 +1,21 @@
+% A finite sum commutes with the common increasing index of its summands.
+ppg_finite_sup_sum[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_sup_add, ppg_enn_finite[T]
+  A: VAR finite_set[T]
+  q: VAR [T,nat->nonneg_real]
+  t: VAR T
+  n: VAR nat
+  natSup(u:[nat->nonneg_real]): ENN = ppg_nonneg_tsum[nat].iSupNN(u)
+  rowMonotone(q): bool = FORALL(t:T):monotone(LAMBDA(n:nat):q(t,n))
+  stageSum(A,q)(n): nonneg_real = sums.sum(A,LAMBDA(t:T):q(t,n))
+  finiteSup(A,q): ENN = esum(A,LAMBDA(t:T):natSup(LAMBDA(n:nat):q(t,n)))
+  row_monotone: LEMMA rowMonotone(q) IMPLIES monotone(LAMBDA(n:nat):q(t,n))
+  stage_monotone: LEMMA rowMonotone(q) IMPLIES monotone(stageSum(A,q))
+  stage_empty: LEMMA stageSum(emptyset[T],q)=(LAMBDA(n:nat):0)
+  stage_function_rest: LEMMA nonempty?(A) IMPLIES stageSum(A,q)=
+    (LAMBDA(n:nat):q(choose(A),n)+stageSum(rest(A),q)(n))
+  finite_sup_rest: LEMMA nonempty?(A) IMPLIES finiteSup(A,q)=
+    eadd(natSup(LAMBDA(n:nat):q(choose(A),n)),finiteSup(rest(A),q))
+  finite_sup_sum: THEOREM rowMonotone(q) IMPLIES finiteSup(A,q)=natSup(stageSum(A,q))
+END ppg_finite_sup_sum

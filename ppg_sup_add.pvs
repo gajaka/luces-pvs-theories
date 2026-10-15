@@ -1,0 +1,25 @@
+% A common increasing index commutes with addition of nonnegative suprema.
+ppg_sup_add: THEORY
+BEGIN
+  IMPORTING ppg_sup_clip, ppg_enn_add
+  u,v: VAR [nat->nonneg_real]
+  a,c,b: VAR nonneg_real
+  r: VAR real
+  monotone(u): bool = FORALL(i,j:nat):i<=j IMPLIES u(i)<=u(j)
+  eadd_finite_values: LEMMA eadd(ennFinite(a),ennFinite(c))=ennFinite(a+c)
+  isup_zero_value: LEMMA iSupNN(LAMBDA(n:nat):0)=ennFinite(0)
+  sup_real_approx: LEMMA ele(ennFinite(a),iSupNN(u)) AND r<a IMPLIES
+    EXISTS(n:nat):r<u(n)
+  sum_controls_components: LEMMA (FORALL(n:nat):u(n)+v(n)<=b) IMPLIES
+    (FORALL(n:nat):u(n)<=b) AND (FORALL(n:nat):v(n)<=b)
+  component_sup_finite: LEMMA (FORALL(n:nat):u(n)+v(n)<=b) IMPLIES
+    ennFinite?(iSupNN(u)) AND ennFinite?(iSupNN(v))
+  monotone_sum_bound: LEMMA monotone(u) AND monotone(v) AND
+    (FORALL(n:nat):u(n)+v(n)<=b) AND
+    ele(ennFinite(a),iSupNN(u)) AND ele(ennFinite(c),iSupNN(v)) IMPLIES a+c<=b
+  sup_add_finite_bound: LEMMA monotone(u) AND monotone(v) IMPLIES
+    (ele(eadd(iSupNN(u),iSupNN(v)),ennFinite(b)) IFF
+      FORALL(n:nat):u(n)+v(n)<=b)
+  sup_add: THEOREM monotone(u) AND monotone(v) IMPLIES
+    eadd(iSupNN(u),iSupNN(v))=iSupNN(LAMBDA(n:nat):u(n)+v(n))
+END ppg_sup_add
