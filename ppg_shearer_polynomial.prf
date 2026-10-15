@@ -1,0 +1,639 @@
+(|ppg_shearer_polynomial|
+ (|polynomial_unfiltered| 0
+  (|polynomial_unfiltered-1| NIL 4001069337
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fsum_filter"
+      ("A" "subsets(T!1)" "P" "Independent" "f" "term(p!1)"))
+     (EXPAND "polynomial") (EXPAND "independentSubsets") (EXPAND "lifted")
+     (EXPAND "mask") (ASSERT))
+    NIL)
+   ((|polynomial| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (|lifted| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (|mask| CONST-DECL "real" |ppg_real_filter| NIL)
+    (|independentSubsets| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_shearer_sets| NIL)
+    (|fsum_filter| FORMULA-DECL NIL |ppg_real_filter| NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_powerset_sum| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_shearer_polynomial| NIL)
+    (|Independent| CONST-DECL "bool" |ppg_shearer_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|term| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|term_empty| 0
+  (|term_empty-1| NIL 4001069337
+   (""
+    (THEN (SKOSIMP*) (EXPAND "term") (EXPAND "product")
+     (GRIND :EXCLUDE ("product" "is_finite")))
+    NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[C]" |ppg_shearer_polynomial|
+     NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|term| CONST-DECL "real" |ppg_shearer_polynomial| NIL))
+   SHOSTAK))
+ (|term_insert| 0
+  (|term_insert-1| NIL 4001069337
+   (""
+    (THEN (SKOSIMP*) (EXPAND "term")
+     (LEMMA "product_remove"
+      ("F" "add(a!1,I!1)" "f" "negWeight(p!1)" "i" "a!1"))
+     (LEMMA "remove_add_member" ("x" "a!1" "a" "I!1")) (EXPAND "negWeight")
+     (GRIND :EXCLUDE ("product" "is_finite")))
+    NIL)
+   ((|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|product_remove| FORMULA-DECL NIL |ppg_real_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|negWeight| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|remove_add_member| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|term| CONST-DECL "real" |ppg_shearer_polynomial| NIL))
+   SHOSTAK))
+ (|polynomial_empty| 0
+  (|polynomial_empty-1| NIL 4001069337
+   (""
+    (THEN (SKOSIMP*) (REWRITE "polynomial_unfiltered" 1)
+     (REWRITE "sum_subsets_empty") (EXPAND "lifted")
+     (LEMMA "independent_empty") (LEMMA "term_empty" ("p" "p!1")) (ASSERT))
+    NIL)
+   ((|lifted| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (|sum_subsets_empty| FORMULA-DECL NIL |ppg_powerset_sum| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_shearer_polynomial| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|independent_empty| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (|term_empty| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[C]" |ppg_shearer_polynomial|
+     NIL)
+    (|polynomial_unfiltered| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   SHOSTAK))
+ (|inserted_term| 0
+  (|inserted_term-1| NIL 4001069337
+   (""
+    (THEN (SKOSIMP*) (LEMMA "term_insert" ("p" "p!1" "I" "I!1" "a" "a!1"))
+     (EXPAND "lifted") (EXPAND "mask")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("term" "product" "Independent" "is_finite")))
+    NIL)
+   ((|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|lifted| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (|minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_polynomial| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|mask| CONST-DECL "real" |ppg_real_filter| NIL)
+    (|term_insert| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   SHOSTAK))
+ (|inserted_sum| 0
+  (|inserted_sum-1| NIL 4001069337
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fsum_congr"
+      ("S" "subsets(T!1)" "f" "LAMBDA(I:finite_set[C]):lifted(p!1)(add(a!1,I))"
+       "g"
+       "LAMBDA(I:finite_set[C]):-p!1(a!1)*mask(LAMBDA(K:finite_set[C]):Independent(add(a!1,K)),term(p!1))(I)"))
+     (LEMMA "fsum_scale"
+      ("S" "subsets(T!1)" "r" "-p!1(a!1)" "f"
+       "mask(LAMBDA(K:finite_set[C]):Independent(add(a!1,K)),term(p!1))"))
+     (LEMMA "fsum_filter"
+      ("A" "subsets(T!1)" "P" "LAMBDA(K:finite_set[C]):Independent(add(a!1,K))"
+       "f" "term(p!1)"))
+     (LEMMA "independent_insert_filter" ("T" "T!1" "a" "a!1"))
+     (LEMMA "inserted_term" ("p" "p!1" "T" "T!1" "a" "a!1"))
+     (AUTO-REWRITE "subsets_membership") (EXPAND "polynomial")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("fsum" "product" "term" "lifted" "mask" "Independent"
+       "independentSubsets" "subsets" "is_finite")))
+    NIL)
+   ((|minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|fsum_scale| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|independent_insert_filter| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (|subsets_membership| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[finite_set[C]]"
+     |ppg_shearer_polynomial| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|remote| CONST-DECL "finite_set[C]" |ppg_shearer_sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|polynomial| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (|inserted_term| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|fsum_filter| FORMULA-DECL NIL |ppg_real_filter| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|term| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (|Independent| CONST-DECL "bool" |ppg_shearer_sets| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_shearer_polynomial| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|mask| CONST-DECL "real" |ppg_real_filter| NIL)
+    (- CONST-DECL "[numfield -> numfield]" |number_fields| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|lifted| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_powerset_sum| NIL)
+    (|fsum_congr| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set[C]"
+     |ppg_shearer_polynomial| NIL))
+   SHOSTAK))
+ (|polynomial_insert| 0
+  (|polynomial_insert-1| NIL 4001069337
+   (""
+    (THEN (SKOSIMP*) (REWRITE "polynomial_unfiltered" 2)
+     (LEMMA "sum_subsets_add" ("S" "T!1" "e" "a!1" "F" "lifted(p!1)"))
+     (LEMMA "polynomial_unfiltered" ("p" "p!1" "T" "T!1"))
+     (LEMMA "inserted_sum" ("p" "p!1" "T" "T!1" "a" "a!1"))
+     (GRIND :EXCLUDE
+      ("fsum" "polynomial" "lifted" "subsets" "product" "Independent"
+       "is_finite")))
+    NIL)
+   ((|lifted| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (|sum_subsets_add| FORMULA-DECL NIL |ppg_powerset_sum| NIL)
+    (|inserted_sum| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_shearer_polynomial| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|remote| CONST-DECL "finite_set[C]" |ppg_shearer_sets| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_plus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|polynomial_unfiltered| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   SHOSTAK))
+ (|polynomial_delete| 0
+  (|polynomial_delete-1| NIL 4001069337
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "polynomial_insert" ("p" "p!1" "T" "remove(a!1,T!1)" "a" "a!1"))
+     (LEMMA "add_remove_member" ("x" "a!1" "a" "T!1"))
+     (LEMMA "remote_erase" ("T" "T!1" "a" "a!1"))
+     (GRIND :EXCLUDE
+      ("fsum" "polynomial" "lifted" "subsets" "product" "Independent"
+       "is_finite")))
+    NIL)
+   ((|add_remove_member| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|remote| CONST-DECL "finite_set[C]" |ppg_shearer_sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|remote_erase| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_shearer_polynomial| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|polynomial_insert| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_polynomial| NIL))
+   SHOSTAK))
+ (|factor_step| 0
+  (|factor_step-1| NIL 4001069823
+   (""
+    (THEN (SKOSIMP*) (LEMMA "left_not_right" ("S" "S!1" "T" "T!1" "a" "a!1"))
+     (LEMMA "no_cross_at_left" ("S" "S!1" "T" "T!1" "a" "a!1")) (ASSERT)
+     (LEMMA "remove_union_left" ("S" "S!1" "T" "T!1" "a" "a!1"))
+     (LEMMA "remote_union" ("S" "S!1" "T" "T!1" "a" "a!1"))
+     (LEMMA "polynomial_delete" ("p" "p!1" "T" "union(S!1,T!1)" "a" "a!1"))
+     (LEMMA "polynomial_delete" ("p" "p!1" "T" "S!1" "a" "a!1"))
+     (LEMMA "associative_mult"
+      ("x" "p!1(a!1)" "y" "polynomial(p!1,remote(S!1,a!1))" "z"
+       "polynomial(p!1,T!1)"))
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("polynomial" "fsum" "product" "noCrossEdges" "Independent" "is_finite"
+       "subsets")))
+    NIL)
+   ((|no_cross_at_left| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (|remove_union_left| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|polynomial_delete| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|remote| CONST-DECL "finite_set[C]" |ppg_shearer_sets| NIL)
+    (|polynomial| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|associative_mult| FORMULA-DECL NIL |number_fields| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|finite_intersection1| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|remote_union| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|left_not_right| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_shearer_polynomial| NIL))
+   SHOSTAK))
+ (|polynomial_union| 0
+  (|polynomial_union-1| NIL 4001069337
+   ("" (INDUCT "S" :NAME "finite_set_induction_gen[C]")
+    (("" (SKOSIMP*)
+      (("" (LABEL "IH" -1)
+        (("" (CASE "empty?(S!1)")
+          (("1" (HIDE "IH")
+            (("1" (REWRITE "emptyset_is_empty?[C]" -1)
+              (("1" (REPLACE*)
+                (("1"
+                  (LEMMA "union_commutative[C]" ("a" "emptyset[C]" "b" "T!1"))
+                  (("1" (AUTO-REWRITE "union_empty[C]" "polynomial_empty")
+                    (("1" (ASSERT) NIL NIL)) NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL)
+           ("2" (EXPAND "empty?" 1)
+            (("2" (EXPAND "member[C]" 1)
+              (("2" (SKOSIMP*)
+                (("2" (INST-CP -2 "remove(x!1,S!1)")
+                  (("2" (INST-CP -2 "remote(S!1,x!1)")
+                    (("2" (LABEL "IR" -4)
+                      (("2" (LABEL "IB" -3)
+                        (("2" (HIDE -2)
+                          (("2" (LEMMA "remove_card_lt" ("S" "S!1" "a" "x!1"))
+                            (("2"
+                              (LEMMA "remote_card_lt" ("S" "S!1" "a" "x!1"))
+                              (("2" (ASSERT)
+                                (("2" (INST "IR" "T!1" "p!1")
+                                  (("2" (INST "IB" "T!1" "p!1")
+                                    (("2"
+                                      (LEMMA "separated_left_subset"
+                                       ("S" "S!1" "T" "T!1" "R"
+                                        "remove(x!1,S!1)"))
+                                      (("2"
+                                        (LEMMA "subset_remove[C]"
+                                         ("a" "S!1" "x" "x!1"))
+                                        (("2"
+                                          (LEMMA "remote_subset"
+                                           ("T" "S!1" "a" "x!1"))
+                                          (("2"
+                                            (LEMMA "separated_left_subset"
+                                             ("S" "S!1" "T" "T!1" "R"
+                                              "remote(S!1,x!1)"))
+                                            (("2" (ASSERT)
+                                              (("2"
+                                                (LEMMA "factor_step"
+                                                 ("S" "S!1" "T" "T!1" "a" "x!1"
+                                                  "p" "p!1"))
+                                                (("2"
+                                                  (GRIND :IF-MATCH NIL :EXCLUDE
+                                                   ("polynomial" "fsum"
+                                                    "product" "remote"
+                                                    "subset?" "noCrossEdges"
+                                                    "Independent" "is_finite"
+                                                    "subsets" "card"))
+                                                  NIL NIL))
+                                                NIL))
+                                              NIL))
+                                            NIL))
+                                          NIL))
+                                        NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_shearer_polynomial| NIL)
+    (|noCrossEdges| CONST-DECL "bool" |ppg_shearer_sets| NIL)
+    (|polynomial| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|finite_set_induction_gen| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (|remote| CONST-DECL "finite_set[C]" |ppg_shearer_sets| NIL)
+    (|remove_card_lt| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|subset_remove| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|factor_step| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_polynomial| NIL)
+    (|remote_subset| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (|separated_left_subset| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (|remote_card_lt| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|union_empty| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|polynomial_empty| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|union_commutative| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[C]" |ppg_shearer_polynomial|
+     NIL)
+    (|emptyset_is_empty?| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL))
+   SHOSTAK))
+ (|strictCriterion_mono| 0
+  (|strictCriterion_mono-1| NIL 4001069337
+   (""
+    (THEN
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("fsum" "polynomial" "lifted" "subsets" "product" "Independent"
+       "is_finite")))
+    NIL)
+   ((|StrictCriterion| CONST-DECL "bool" |ppg_shearer_polynomial| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_polynomial| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|strictCriterion_union_intro| 0
+  (|strictCriterion_union_intro-1| NIL 4001073417
+   (""
+    (THEN (SKOSIMP*) (LABEL "LEFT" -3) (LABEL "RIGHT" -4)
+     (EXPAND "StrictCriterion" 1) (SKOSIMP*) (EXPAND "StrictCriterion" "LEFT")
+     (EXPAND "StrictCriterion" "RIGHT") (INST "LEFT" "intersection(U!1,S!1)")
+     (INST "RIGHT" "intersection(U!1,T!1)")
+     (LEMMA "subset_union_partition" ("I" "U!1" "S" "S!1" "T" "T!1"))
+     (LEMMA "intersections_separated" ("I" "U!1" "S" "S!1" "T" "T!1"))
+     (LEMMA "polynomial_union"
+      ("S" "intersection(U!1,S!1)" "T" "intersection(U!1,T!1)" "p" "p!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("polynomial" "fsum" "product" "Independent" "is_finite" "subsets"))
+     (LEMMA "posreal_mult_closed"
+      ("x" "polynomial(p!1,intersection(U!1,S!1))" "y"
+       "polynomial(p!1,intersection(U!1,T!1))"))
+     (ASSERT))
+    NIL)
+   ((|intersections_separated| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|noCrossEdges| CONST-DECL "bool" |ppg_shearer_sets| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_polynomial| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posreal_mult_closed| FORMULA-DECL NIL |real_axioms| NIL)
+    (|polynomial| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (|polynomial_union| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_shearer_polynomial| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|subset_union_partition| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (|finite_intersection1| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|StrictCriterion| CONST-DECL "bool" |ppg_shearer_polynomial| NIL))
+   SHOSTAK))
+ (|strictCriterion_union_iff| 0
+  (|strictCriterion_union_iff-1| NIL 4001069337
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "strictCriterion_union_intro" ("S" "S!1" "T" "T!1" "p" "p!1"))
+     (LEMMA "strictCriterion_mono" ("S" "S!1" "T" "union(S!1,T!1)" "p" "p!1"))
+     (LEMMA "strictCriterion_mono" ("S" "T!1" "T" "union(S!1,T!1)" "p" "p!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("StrictCriterion" "polynomial" "fsum" "product" "Independent"
+       "is_finite" "subsets")))
+    NIL)
+   ((|finite_union| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|strictCriterion_mono| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|finite_intersection1| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_polynomial| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_polynomial| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|noCrossEdges| CONST-DECL "bool" |ppg_shearer_sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_shearer_polynomial| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|strictCriterion_union_intro| FORMULA-DECL NIL |ppg_shearer_polynomial|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   SHOSTAK)))
+

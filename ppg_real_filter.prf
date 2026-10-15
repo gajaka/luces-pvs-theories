@@ -1,0 +1,98 @@
+(|ppg_real_filter|
+ (|mask_on_filter| 0
+  (|mask_on_filter-1| NIL 4001069024
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fsum_congr"
+      ("S" "intersection(A!1,P!1)" "f" "mask(P!1,f!1)" "g" "f!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE ("fsum" "is_finite")))
+    NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_real_filter| NIL)
+    (|mask| CONST-DECL "real" |ppg_real_filter| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|fsum_congr| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[T]"
+     |ppg_real_filter| NIL))
+   SHOSTAK))
+ (|mask_off_filter| 0
+  (|mask_off_filter-1| NIL 4001069024
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fsum_congr"
+      ("S" "difference(A!1,intersection(A!1,P!1))" "f" "mask(P!1,f!1)" "g"
+       "LAMBDA(x:T):0"))
+     (LEMMA "fsum_zero" ("S" "difference(A!1,intersection(A!1,P!1))"))
+     (GRIND :IF-MATCH ALL :EXCLUDE ("fsum" "is_finite")))
+    NIL)
+   ((|fsum_zero| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_real_filter| NIL)
+    (|mask| CONST-DECL "real" |ppg_real_filter| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|fsum_congr| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[T]"
+     |ppg_real_filter| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[T]"
+     |ppg_real_filter| NIL))
+   SHOSTAK))
+ (|fsum_filter| 0
+  (|fsum_filter-1| NIL 4001069024
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fsum_diff_subset"
+      ("A" "intersection(A!1,P!1)" "B" "A!1" "f" "mask(P!1,f!1)"))
+     (LEMMA "mask_on_filter" ("A" "A!1" "P" "P!1" "f" "f!1"))
+     (LEMMA "mask_off_filter" ("A" "A!1" "P" "P!1" "f" "f!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE ("fsum" "is_finite")))
+    NIL)
+   ((|mask_on_filter| FORMULA-DECL NIL |ppg_real_filter| NIL)
+    (|real_plus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[T]"
+     |ppg_real_filter| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |ppg_real_filter| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|mask_off_filter| FORMULA-DECL NIL |ppg_real_filter| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_real_filter| NIL)
+    (|mask| CONST-DECL "real" |ppg_real_filter| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|fsum_diff_subset| FORMULA-DECL NIL |ppg_real_sum| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[T]"
+     |ppg_real_filter| NIL))
+   SHOSTAK)))
+
