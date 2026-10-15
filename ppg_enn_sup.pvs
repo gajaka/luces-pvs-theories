@@ -1,0 +1,42 @@
+% Suprema include the unbounded case and use real completeness only when bounded.
+ppg_enn_sup: THEORY
+BEGIN
+  IMPORTING ppg_ennreal
+  ENN: TYPE = ppg_ennreal
+  x,y: VAR ENN
+  a,b: VAR nonneg_real
+  A,B: VAR set[nonneg_real]
+  ele(x,y): bool = ennInfinity?(y) OR
+    (ennFinite?(x) AND ennFinite?(y) AND ennValue(x)<=ennValue(y))
+  eadd(x,y): ENN = CASES x OF ennInfinity:ennInfinity,
+    ennFinite(a):CASES y OF ennInfinity:ennInfinity,ennFinite(b):ennFinite(a+b) ENDCASES ENDCASES
+  zero_le: LEMMA ele(ennFinite(0),x)
+  no_finite_bounds: LEMMA (FORALL(b:nonneg_real):NOT ele(x,ennFinite(b))) IMPLIES x=ennInfinity
+  finite_le: LEMMA ele(ennFinite(a),ennFinite(b)) IFF a<=b
+  infinity_not_le: LEMMA NOT ele(ennInfinity,ennFinite(a))
+  le_infinity: LEMMA ele(x,ennInfinity)
+  ele_refl: LEMMA ele(x,x)
+  finite_eta: LEMMA ennFinite?(x) IMPLIES ennFinite(ennValue(x))=x
+  ele_antisym: LEMMA ele(x,y) AND ele(y,x) IMPLIES x=y
+  finite_bounds_separate: LEMMA
+    (FORALL(b:nonneg_real):ele(x,ennFinite(b)) IFF ele(y,ennFinite(b))) IMPLIES x=y
+  bounded(A): bool = EXISTS(b:nonneg_real):FORALL(a:nonneg_real):A(a) IMPLIES a<=b
+  realCarrier(A): (nonempty?[real]) = {r:real | r=0 OR EXISTS(a:nonneg_real):A(a) AND r=a}
+  carrier_in: LEMMA A(a) IMPLIES realCarrier(A)(a)
+  carrier_upper: LEMMA (FORALL(a:nonneg_real):A(a) IMPLIES a<=b) IMPLIES upper_bound?(b,realCarrier(A))
+  bounded_from_upper: LEMMA (FORALL(a:nonneg_real):A(a) IMPLIES a<=b) IMPLIES bounded(A)
+  carrier_bounded: LEMMA bounded(A) IMPLIES bounded_above?(realCarrier(A))
+  realSup(A:(bounded)): nonneg_real = lub(realCarrier(A))
+  realSup_upper: LEMMA FORALL(A:(bounded)): A(a) IMPLIES a<=realSup(A)
+  realSup_least: LEMMA FORALL(A:(bounded)):
+    (FORALL(a:nonneg_real):A(a) IMPLIES a<=b) IMPLIES realSup(A)<=b
+  sSup(A): ENN = IF bounded(A) THEN ennFinite(realSup(A)) ELSE ennInfinity ENDIF
+  sup_finite_bound: THEOREM ele(sSup(A),ennFinite(b)) IFF
+    FORALL(a:nonneg_real):A(a) IMPLIES a<=b
+  sup_cofinal: THEOREM
+    (FORALL(b:nonneg_real):
+      (FORALL(a:nonneg_real):A(a) IMPLIES a<=b) IFF
+      (FORALL(a:nonneg_real):B(a) IMPLIES a<=b)) IMPLIES sSup(A)=sSup(B)
+  sup_zero: LEMMA (FORALL(a:nonneg_real):A(a) IMPLIES a=0) IMPLIES sSup(A)=ennFinite(0)
+  sup_unbounded: LEMMA NOT bounded(A) IMPLIES sSup(A)=ennInfinity
+END ppg_enn_sup

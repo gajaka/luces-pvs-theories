@@ -1,0 +1,16 @@
+% The source MT budget bounds every finite-depth enumerated weight.
+ppg_rose_convergence[C,V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_rose_weight_sum[C,V], ppg_nonneg_order[C] AS labelOrder,
+    ppg_monoid_sum[C,nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b] AS labelSums
+  vars: VAR CertVars
+  U,F: VAR finite_set[C]
+  p,x: VAR [C -> nonneg_real]
+  D: VAR nat
+  a: VAR C
+  budget(vars,U,p,x): bool = (FORALL(a:C):p(a)<=x(a)) AND
+    (FORALL(a:C):p(a)*indices.sum(plusNeighbors(vars,U,a),LAMBDA(b:C):1+x(b))<=x(a))
+  mtWeight_le: THEOREM budget(vars,U,p,x) IMPLIES mtWeight(vars,U,p,D,a)<=x(a)
+  sum_mtWeight_le: THEOREM budget(vars,U,p,x) IMPLIES
+    labelSums.sum(F,LAMBDA(a:C):mtWeight(vars,U,p,D,a))<=labelSums.sum(F,x)
+END ppg_rose_convergence

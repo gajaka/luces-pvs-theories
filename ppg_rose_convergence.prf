@@ -1,0 +1,165 @@
+(|ppg_rose_convergence|
+ (|labelSums_TCC1| 0
+  (|labelSums_TCC1-1| NIL 4001040822 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|labelSums| SUBTYPE "LAMBDA (a, b: nonneg_real): a + b"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_rose_convergence.op)(0), booleans.AND(operator_defs[nonneg_real].associative?(ppg_rose_convergence.op), operator_defs[nonneg_real].commutative?(ppg_rose_convergence.op)))}"
+    (5 35 5 62))))
+ (|budget_TCC1| 0
+  (|budget_TCC1-1| NIL 4001040822 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL))
+   NIL
+   (|budget| SUBTYPE "LAMBDA (x, y: nonneg_real): x * y"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_rose_convergence.op)(1), booleans.AND(operator_defs[nonneg_real].associative?(ppg_rose_convergence.op), operator_defs[nonneg_real].commutative?(ppg_rose_convergence.op)))}"
+    (12 22 12 33))))
+ (|mtWeight_le| 0
+  (|mtWeight_le-1| NIL 4001040822
+   ("" (INDUCT "D")
+    (("1" (SKOSIMP*)
+      (("1" (REWRITE "mtWeight_zero" 1)
+        (("1" (EXPAND "budget")
+          (("1" (FLATTEN) (("1" (INST -1 "a!1") NIL NIL)) NIL)) NIL))
+        NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (LABEL "IH" -1)
+        (("2" (LABEL "B" -2)
+          (("2" (REWRITE "mtWeight_succ" 1)
+            (("2"
+              (LEMMA "labelOrder.product_mono"
+               ("S" "plusNeighbors(vars!1,U!1,a!1)" "f"
+                "LAMBDA(b:C):1+mtWeight(vars!1,U!1,p!1,j!1,b)" "g"
+                "LAMBDA(b:C):1+x!1(b)"))
+              (("2" (SPLIT -1)
+                (("1" (EXPAND "budget" "B")
+                  (("1" (FLATTEN)
+                    (("1" (INST -4 "a!1")
+                      (("1"
+                        (LEMMA "le_times_le_pos"
+                         ("nnx" "p!1(a!1)" "y" "p!1(a!1)" "nnz"
+                          "indices.sum(plusNeighbors(vars!1,U!1,a!1),LAMBDA(b:C):1+mtWeight(vars!1,U!1,p!1,j!1,b))"
+                          "w"
+                          "indices.sum(plusNeighbors(vars!1,U!1,a!1),LAMBDA(b:C):1+x!1(b))"))
+                        (("1" (ASSERT) NIL NIL)
+                         ("2" (ASSERT)
+                          (("2"
+                            (GRIND :IF-MATCH NIL :EXCLUDE
+                             ("mtWeight" "sum" "plusNeighbors" "budget"))
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL)
+                 ("2" (SKOSIMP*)
+                  (("2" (INST "IH" "U!1" "x!2" "p!1" "vars!1" "x!1")
+                    (("2" (ASSERT) NIL NIL)) NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|plusNeighbors| CONST-DECL "finite_set[C]" |ppg_rose_enumeration| NIL)
+    (|product_mono| FORMULA-DECL NIL |ppg_nonneg_order| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|le_times_le_pos| FORMULA-DECL NIL |real_props| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|mtWeight_succ| FORMULA-DECL NIL |ppg_rose_weight_sum| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posreal_plus_nnreal_is_posreal| APPLICATION-JUDGEMENT "posreal"
+     |real_types| NIL)
+    (|mtWeight_zero| FORMULA-DECL NIL |ppg_rose_weight_sum| NIL)
+    (|nat_induction| FORMULA-DECL NIL |naturalnumbers| NIL)
+    (|mtWeight| DEF-DECL "nonneg_real" |ppg_rose_weight_sum| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|budget| CONST-DECL "bool" |ppg_rose_convergence| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_rose_convergence| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_convergence| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|sum_mtWeight_le| 0
+  (|sum_mtWeight_le-1| NIL 4001040822
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "labelOrder.sum_mono"
+       ("S" "F!1" "f" "LAMBDA(a:C):mtWeight(vars!1,U!1,p!1,D!1,a)" "g" "x!1"))
+      (("" (SPLIT -1)
+        (("1" (PROPAX) NIL NIL)
+         ("2" (SKOSIMP*)
+          (("2"
+            (LEMMA "mtWeight_le"
+             ("vars" "vars!1" "U" "U!1" "p" "p!1" "x" "x!1" "D" "D!1" "a"
+              "x!2"))
+            (("2" (ASSERT) NIL NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|mtWeight_le| FORMULA-DECL NIL |ppg_rose_convergence| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|sum_mono| FORMULA-DECL NIL |ppg_nonneg_order| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_rose_convergence| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|mtWeight| DEF-DECL "nonneg_real" |ppg_rose_weight_sum| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_rose_convergence| NIL))
+   SHOSTAK)))
+
