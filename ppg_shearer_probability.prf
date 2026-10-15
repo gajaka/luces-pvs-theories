@@ -1,0 +1,433 @@
+(|ppg_shearer_probability|
+ (|remote_side| 0
+  (|remote_side-1| NIL 4001077421
+   ("" (SKOSIMP*)
+    (("" (SPLIT)
+      (("1" (EXPAND "subset?" -1)
+        (("1" (INST -1 "a!1") (("1" (ASSERT) NIL NIL)) NIL)) NIL)
+       ("2" (LEMMA "remote_subset" ("T" "T!1" "a" "a!1"))
+        (("2"
+          (LEMMA "subset_transitive[C]"
+           ("a" "remote(T!1,a!1)" "b" "T!1" "c" "B!1"))
+          (("2" (ASSERT) NIL NIL)) NIL))
+        NIL)
+       ("3" (SKOSIMP*)
+        (("3" (EXPAND "remote")
+          (("3" (EXPAND "intersection")
+            (("3" (EXPAND "member") (("3" (PROP) NIL NIL)) NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|intersection| CONST-DECL "set" |sets| NIL)
+    (G FORMAL-CONST-DECL "{H: [C, C -> bool] |
+   (FORALL (a: C): NOT H(a, a)) AND (FORALL (a, b: C): H(a, b) = H(b, a))}"
+     |ppg_shearer_probability| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|remote_subset| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_probability| NIL)
+    (|remote| CONST-DECL "finite_set[C]" |ppg_shearer_sets| NIL)
+    (|subset_transitive| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_probability| NIL))
+   SHOSTAK))
+ (|remote_lopsidependence| 0
+  (|remote_lopsidependence-1| NIL 4001077175
+   (""
+    (THEN (SKOSIMP*) (LABEL "LOP" -1)
+     (LEMMA "remote_side" ("T" "T!1" "B" "B!1" "a" "a!1")) (ASSERT) (FLATTEN)
+     (EXPAND "Lopsidependence" "LOP") (INST "LOP" "a!1") (ASSERT)
+     (INST "LOP" "remote(T!1,a!1)") (PROP))
+    NIL)
+   ((|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_probability| NIL)
+    (|remote_side| FORMULA-DECL NIL |ppg_shearer_probability| NIL)
+    (|remote| CONST-DECL "finite_set[C]" |ppg_shearer_sets| NIL)
+    (G FORMAL-CONST-DECL "{H: [C, C -> bool] |
+   (FORALL (a: C): NOT H(a, a)) AND (FORALL (a, b: C): H(a, b) = H(b, a))}"
+     |ppg_shearer_probability| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|Lopsidependence| CONST-DECL "bool" |ppg_shearer_probability| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_probability| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL))
+   SHOSTAK))
+ (|deleted_intersection_subset| 0
+  (|deleted_intersection_subset-1| NIL 4001077175
+   (""
+    (THEN (SKOSIMP*) (LEMMA "remote_subset_erase" ("T" "T!1" "a" "a!1"))
+     (LEMMA "all_pass_subset"
+      ("A" "A!1" "U" "remote(T!1,a!1)" "T" "remove(a!1,T!1)"))
+     (GRIND :EXCLUDE ("all_pass" "remote")))
+    NIL)
+   ((|finite_remove| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_probability| NIL)
+    (|all_pass_subset| FORMULA-DECL NIL |ppg_event_avoidance| NIL)
+    (|BadEvents| TYPE-EQ-DECL NIL |ppg_event_avoidance| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|remote| CONST-DECL "finite_set[C]" |ppg_shearer_sets| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_shearer_probability| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_probability| NIL)
+    (|remote_subset_erase| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{H: [C, C -> bool] |
+   (FORALL (a: C): NOT H(a, a)) AND (FORALL (a, b: C): H(a, b) = H(b, a))}"
+     |ppg_shearer_probability| NIL))
+   SHOSTAK))
+ (|fundamental_probability_inequality| 0
+  (|fundamental_probability_inequality-1| NIL 4001077176
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "remote_lopsidependence"
+       ("A" "A!1" "p" "p!1" "B" "B!1" "T" "T!1" "a" "a!1"))
+      ((""
+        (LEMMA "deleted_intersection_subset" ("A" "A!1" "T" "T!1" "a" "a!1"))
+        ((""
+          (LEMMA "mass_monotone"
+           ("A" "intersection(all_pass(A!1,remove(a!1,T!1)),A!1(a!1))" "B"
+            "intersection(A!1(a!1),all_pass(A!1,remote(T!1,a!1)))"))
+          (("" (EXPAND "all_measurable")
+            (("" (INST -4 "a!1")
+              ((""
+                (LEMMA "mass_split"
+                 ("B" "all_pass(A!1,remove(a!1,T!1))" "E" "A!1(a!1)"))
+                (("1"
+                  (LEMMA "all_pass_remove_diff"
+                   ("A" "A!1" "T" "T!1" "a" "a!1"))
+                  (("1" (EXPAND "passProbability")
+                    (("1"
+                      (GRIND :EXCLUDE
+                       ("mass" "all_pass" "remote" "Lopsidependence" "ast"
+                        "x_inf"))
+                      NIL NIL))
+                    NIL))
+                  NIL)
+                 ("2" (PROPAX) NIL NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|deleted_intersection_subset| FORMULA-DECL NIL |ppg_shearer_probability|
+     NIL)
+    (|all_measurable| CONST-DECL "bool" |ppg_shearer_probability| NIL)
+    (|mass_split| FORMULA-DECL NIL |ppg_probability_outer| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|passProbability| CONST-DECL "nnreal" |ppg_event_avoidance| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_probability| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|all_pass_remove_diff| FORMULA-DECL NIL |ppg_event_avoidance| NIL)
+    (|mu| FORMAL-CONST-DECL "Probability" |ppg_shearer_probability| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_shearer_probability| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|remote| CONST-DECL "finite_set[C]" |ppg_shearer_sets| NIL)
+    (G FORMAL-CONST-DECL "{H: [C, C -> bool] |
+   (FORALL (a: C): NOT H(a, a)) AND (FORALL (a, b: C): H(a, b) = H(b, a))}"
+     |ppg_shearer_probability| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|all_pass| CONST-DECL "set[X]" |ppg_event_avoidance| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|mass_monotone| FORMULA-DECL NIL |ppg_probability_outer| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_probability| NIL)
+    (|remote_lopsidependence| FORMULA-DECL NIL |ppg_shearer_probability| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_probability| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_shearer_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|BadEvents| TYPE-EQ-DECL NIL |ppg_event_avoidance| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   SHOSTAK))
+ (|shearer_recurrences| 0
+  (|shearer_recurrences-1| NIL 4001077176
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fundamental_probability_inequality"
+      ("A" "A!1" "p" "p!1" "B" "B!1"))
+     (LEMMA "polynomial_delete" ("p" "p!1")) (LEMMA "remote_subset_erase")
+     (EXPAND "Recurrences") (EXPAND "StrictCriterion")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("mass" "polynomial" "remote" "all_pass" "passProbability"
+       "all_measurable" "Lopsidependence" "ast" "x_inf")))
+    NIL)
+   ((G FORMAL-CONST-DECL "{H: [C, C -> bool] |
+   (FORALL (a: C): NOT H(a, a)) AND (FORALL (a, b: C): H(a, b) = H(b, a))}"
+     |ppg_shearer_probability| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|polynomial_delete| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_probability| NIL)
+    (|Recurrences| CONST-DECL "bool" |ppg_shearer_induction| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL) (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|StrictCriterion| CONST-DECL "bool" |ppg_shearer_polynomial| NIL)
+    (|remote_subset_erase| FORMULA-DECL NIL |ppg_shearer_sets| NIL)
+    (|fundamental_probability_inequality| FORMULA-DECL NIL
+     |ppg_shearer_probability| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_probability| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_shearer_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|BadEvents| TYPE-EQ-DECL NIL |ppg_event_avoidance| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   SHOSTAK))
+ (|good_event_lower_bound| 0
+  (|good_event_lower_bound-1| NIL 4001077176
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "shearer_recurrences" ("A" "A!1" "p" "p!1" "B" "B!1"))
+     (LEMMA "mass_full") (LEMMA "passProbability_empty" ("m" "mass" "A" "A!1"))
+     (LEMMA "polynomial_empty" ("p" "p!1"))
+     (LEMMA "probability_ge"
+      ("B" "B!1" "p" "p!1" "P"
+       "LAMBDA(U:finite_set[C]):passProbability(mass,A!1,U)" "q"
+       "LAMBDA(U:finite_set[C]):polynomial(p!1,U)" "R" "remote" "S" "T!1"))
+     (ASSERT) (PROP))
+    NIL)
+   ((|mass_full| FORMULA-DECL NIL |ppg_probability_outer| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_shearer_probability| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "Probability" |ppg_shearer_probability| NIL)
+    (G FORMAL-CONST-DECL "{H: [C, C -> bool] |
+   (FORALL (a: C): NOT H(a, a)) AND (FORALL (a, b: C): H(a, b) = H(b, a))}"
+     |ppg_shearer_probability| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|polynomial_empty| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_probability| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(asNasa(S))"
+     |ppg_shearer_probability| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(induced_sigma_algebra)"
+     |ppg_shearer_probability| NIL)
+    (|outer_measurable_fullset| NAME-JUDGEMENT
+     "outer_measurable[X, ast(extendedLaw)]" |ppg_shearer_probability| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT
+     "measurable_set[X, induced_sigma_algebra]" |ppg_shearer_probability| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[C]" |ppg_shearer_probability|
+     NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|probability_ge| FORMULA-DECL NIL |ppg_shearer_induction| NIL)
+    (|passProbability| CONST-DECL "nnreal" |ppg_event_avoidance| NIL)
+    (|remote| CONST-DECL "finite_set[C]" |ppg_shearer_sets| NIL)
+    (|polynomial| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (|passProbability_empty| FORMULA-DECL NIL |ppg_event_avoidance| NIL)
+    (|RawMass| TYPE-EQ-DECL NIL |ppg_event_avoidance| NIL)
+    (|mass| CONST-DECL "nnreal" |ppg_probability_outer| NIL)
+    (|shearer_recurrences| FORMULA-DECL NIL |ppg_shearer_probability| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_probability| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_shearer_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|BadEvents| TYPE-EQ-DECL NIL |ppg_event_avoidance| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   SHOSTAK))
+ (|positive_probability| 0
+  (|positive_probability-1| NIL 4001077176
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "good_event_lower_bound" ("A" "A!1" "p" "p!1" "B" "B!1" "T" "B!1"))
+     (EXPAND "StrictCriterion") (INST -2 "B!1")
+     (GRIND :EXCLUDE
+      ("mass" "polynomial" "remote" "all_pass" "passProbability"
+       "all_measurable" "Lopsidependence" "ast" "x_inf")))
+    NIL)
+   ((|StrictCriterion| CONST-DECL "bool" |ppg_shearer_polynomial| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_probability| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|good_event_lower_bound| FORMULA-DECL NIL |ppg_shearer_probability| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_probability| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_shearer_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|BadEvents| TYPE-EQ-DECL NIL |ppg_event_avoidance| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   SHOSTAK))
+ (|good_state_exists| 0
+  (|good_state_exists-1| NIL 4001077176
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "positive_probability" ("A" "A!1" "p" "p!1" "B" "B!1"))
+     (LEMMA "mass_empty")
+     (LEMMA "positive_mass_has_state" ("m" "mass" "A" "A!1" "T" "B!1"))
+     (ASSERT) (PROP))
+    NIL)
+   ((|mass_empty| FORMULA-DECL NIL |ppg_probability_outer| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_shearer_probability| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "Probability" |ppg_shearer_probability| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|subset_algebra_emptyset| NAME-JUDGEMENT "(asNasa(S))"
+     |ppg_shearer_probability| NIL)
+    (|outer_negligible_emptyset| NAME-JUDGEMENT
+     "outer_negligible[X, ast(extendedLaw)]" |ppg_shearer_probability| NIL)
+    (|subset_algebra_emptyset| NAME-JUDGEMENT "(induced_sigma_algebra)"
+     |ppg_shearer_probability| NIL)
+    (|null_emptyset| NAME-JUDGEMENT
+     "null_set[X, induced_sigma_algebra, induced_measure]"
+     |ppg_shearer_probability| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|positive_mass_has_state| FORMULA-DECL NIL |ppg_event_avoidance| NIL)
+    (|RawMass| TYPE-EQ-DECL NIL |ppg_event_avoidance| NIL)
+    (|mass| CONST-DECL "nnreal" |ppg_probability_outer| NIL)
+    (|positive_probability| FORMULA-DECL NIL |ppg_shearer_probability| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_probability| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_shearer_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|BadEvents| TYPE-EQ-DECL NIL |ppg_event_avoidance| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   SHOSTAK)))
+

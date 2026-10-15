@@ -1,0 +1,277 @@
+(|ppg_probability_outer_examples|
+ (|trivial_sigma| 0
+  (|trivial_sigma-1| NIL 4001076859
+   ("" (THEN (EXPAND "sigma?") (GRIND :IF-MATCH ALL :EXCLUDE ("sigma?"))) NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|complement| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|countableUnion| CONST-DECL "Event" |ppg_measurable_space| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|trivialRaw| CONST-DECL "bool" |ppg_probability_outer_examples| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL))
+   SHOSTAK))
+ (|trivialSpace_TCC1| 0
+  (|trivialSpace_TCC1-1| NIL 4001076856
+   ("" (THEN (LEMMA "trivial_sigma") (ASSERT)) NIL)
+   ((|trivial_sigma| FORMULA-DECL NIL |ppg_probability_outer_examples| NIL))
+   NIL
+   (|trivialSpace| SUBTYPE "trivialRaw" "MeasurableSpace[bool]" (9 34 9 44))))
+ (|measurable_superset_full| 0
+  (|measurable_superset_full-1| NIL 4001076859
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "E!1") (EXPAND "trivialSpace")
+     (EXPAND "trivialRaw") (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :IF-MATCH ALL))
+    NIL)
+   ((|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |countable_setofsets| |sets_aux|)
+    (|measurable_fullset| NAME-JUDGEMENT
+     "measurable_set[bool, induced_sigma_algebra]"
+     |ppg_probability_outer_examples| NIL)
+    (|outer_measurable_fullset| NAME-JUDGEMENT
+     "outer_measurable[bool, ast(extendedLaw)]"
+     |ppg_probability_outer_examples| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(induced_sigma_algebra)"
+     |ppg_probability_outer_examples| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(asNasa(trivialSpace))"
+     |ppg_probability_outer_examples| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (FALSE CONST-DECL "bool" |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL)
+    (|trivialRaw| CONST-DECL "bool" |ppg_probability_outer_examples| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|trivialSpace| CONST-DECL "MeasurableSpace"
+     |ppg_probability_outer_examples| NIL))
+   SHOSTAK))
+ (|measurable_superset_mass| 0
+  (|measurable_superset_mass-1| NIL 4001076859
+   (""
+    (THEN (SKOSIMP*) (LEMMA "measurable_superset_full" ("b" "b!1" "E" "E!1"))
+     (LEMMA "probability_full" ("mu" "pointLaw")) (REPLACE -2) (ASSERT))
+    NIL)
+   ((|probability_full| FORMULA-DECL NIL |ppg_probability_measure| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|pointLaw| CONST-DECL
+     "ppg_probability_measure[bool, trivialSpace].Probability"
+     |ppg_probability_outer_examples| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |countable_setofsets| |sets_aux|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(asNasa(trivialSpace))"
+     |ppg_probability_outer_examples| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(induced_sigma_algebra)"
+     |ppg_probability_outer_examples| NIL)
+    (|outer_measurable_fullset| NAME-JUDGEMENT
+     "outer_measurable[bool, ast(extendedLaw)]"
+     |ppg_probability_outer_examples| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT
+     "measurable_set[bool, induced_sigma_algebra]"
+     |ppg_probability_outer_examples| NIL)
+    (|measurable_superset_full| FORMULA-DECL NIL
+     |ppg_probability_outer_examples| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|trivialSpace| CONST-DECL "MeasurableSpace"
+     |ppg_probability_outer_examples| NIL))
+   SHOSTAK))
+ (|singleton_not_measurable| 0
+  (|singleton_not_measurable-1| NIL 4001076859
+   ("" (THEN (SKOSIMP*) (EXPAND "trivialSpace") (EXPAND "trivialRaw") (GRIND))
+    NIL)
+   ((|trivialRaw| CONST-DECL "bool" |ppg_probability_outer_examples| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |countable_setofsets| |sets_aux|)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|trivialSpace| CONST-DECL "MeasurableSpace"
+     |ppg_probability_outer_examples| NIL))
+   SHOSTAK))
+ (|singleton_outer_one| 0
+  (|singleton_outer_one-1| NIL 4001076859
+   ("" (SKOSIMP*)
+    (("" (LEMMA "mass_bound" ("A" "singleton(b!1)"))
+      ((""
+        (LEMMA "measurable_cover_lower_bound" ("A" "singleton(b!1)" "c" "1"))
+        (("" (SPLIT -1)
+          (("1" (ASSERT) NIL NIL)
+           ("2" (ASSERT)
+            (("2" (SKOSIMP*)
+              (("2" (LEMMA "measurable_superset_mass" ("b" "b!1" "E" "E!1"))
+                (("2" (ASSERT) NIL NIL)) NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|measurable_cover_lower_bound| FORMULA-DECL NIL |ppg_probability_outer|
+     NIL)
+    (|measurable_superset_mass| FORMULA-DECL NIL
+     |ppg_probability_outer_examples| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |countable_setofsets| |sets_aux|)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mass_bound| FORMULA-DECL NIL |ppg_probability_outer| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|trivialSpace| CONST-DECL "MeasurableSpace"
+     |ppg_probability_outer_examples| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|pointLaw| CONST-DECL
+     "ppg_probability_measure[bool, trivialSpace].Probability"
+     |ppg_probability_outer_examples| NIL))
+   SHOSTAK))
+ (|singleton_union_full| 0
+  (|singleton_union_full-1| NIL 4001076859
+   ("" (THEN (APPLY-EXTENSIONALITY :HIDE? T) (GRIND)) NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (FALSE CONST-DECL "bool" |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|union| CONST-DECL "set" |sets| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(asNasa(trivialSpace))"
+     |ppg_probability_outer_examples| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(induced_sigma_algebra)"
+     |ppg_probability_outer_examples| NIL)
+    (|outer_measurable_fullset| NAME-JUDGEMENT
+     "outer_measurable[bool, ast(extendedLaw)]"
+     |ppg_probability_outer_examples| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT
+     "measurable_set[bool, induced_sigma_algebra]"
+     |ppg_probability_outer_examples| NIL)
+    (|nonempty_finite_union2| APPLICATION-JUDGEMENT "non_empty_finite_set[T]"
+     |countable_setofsets| |sets_aux|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |countable_setofsets| |sets_aux|)
+    (|member| CONST-DECL "bool" |sets| NIL))
+   SHOSTAK))
+ (|arbitrary_additivity_fails| 0
+  (|arbitrary_additivity_fails-1| NIL 4001076859
+   (""
+    (THEN (LEMMA "singleton_outer_one" ("b" "TRUE"))
+     (LEMMA "singleton_outer_one" ("b" "FALSE")) (LEMMA "singleton_union_full")
+     (LEMMA "mass_full") (REPLACE -2)
+     (GRIND :EXCLUDE ("mass" "outerValue" "pointLaw" "ast" "x_inf")))
+    NIL)
+   ((TRUE CONST-DECL "bool" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|singleton_outer_one| FORMULA-DECL NIL |ppg_probability_outer_examples|
+     NIL)
+    (|singleton_union_full| FORMULA-DECL NIL |ppg_probability_outer_examples|
+     NIL)
+    (|measurable_fullset| NAME-JUDGEMENT
+     "measurable_set[bool, induced_sigma_algebra]"
+     |ppg_probability_outer_examples| NIL)
+    (|outer_measurable_fullset| NAME-JUDGEMENT
+     "outer_measurable[bool, ast(extendedLaw)]"
+     |ppg_probability_outer_examples| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(induced_sigma_algebra)"
+     |ppg_probability_outer_examples| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(asNasa(trivialSpace))"
+     |ppg_probability_outer_examples| NIL)
+    (|nonempty_finite_union2| APPLICATION-JUDGEMENT "non_empty_finite_set[T]"
+     |countable_setofsets| |sets_aux|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |countable_setofsets| |sets_aux|)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[T]"
+     |countable_setofsets| |sets_aux|)
+    (|pointLaw| CONST-DECL
+     "ppg_probability_measure[bool, trivialSpace].Probability"
+     |ppg_probability_outer_examples| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|trivialSpace| CONST-DECL "MeasurableSpace"
+     |ppg_probability_outer_examples| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|mass_full| FORMULA-DECL NIL |ppg_probability_outer| NIL)
+    (FALSE CONST-DECL "bool" |booleans| NIL))
+   SHOSTAK)))
+

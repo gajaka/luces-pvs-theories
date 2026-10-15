@@ -1,0 +1,25 @@
+% On the two-point space with only empty and full measurable sets, both
+% singletons have outer mass one. Their disjoint union also has mass one.
+% Thus the all-set extension must not assume additivity on arbitrary sets.
+ppg_probability_outer_examples: THEORY
+BEGIN
+  IMPORTING ppg_measurable_space[bool]
+  trivialRaw(A:set[bool]): bool = A(TRUE)=A(FALSE)
+  trivial_sigma: LEMMA sigma?(trivialRaw)
+  trivialSpace: MeasurableSpace = trivialRaw
+  IMPORTING ppg_probability_dirac[bool,trivialSpace]
+  pointLaw: ppg_probability_measure[bool,trivialSpace].Probability =
+    ppg_probability_dirac[bool,trivialSpace].dirac(TRUE)
+  IMPORTING ppg_probability_outer[bool,trivialSpace,pointLaw]
+  b: VAR bool
+  E: VAR (trivialSpace)
+  measurable_superset_full: LEMMA subset?(singleton(b),E) IMPLIES E=fullset[bool]
+  measurable_superset_mass: LEMMA subset?(singleton(b),E) IMPLIES pointLaw(E)=1
+  singleton_not_measurable: THEOREM NOT trivialSpace(singleton(b))
+  singleton_outer_one: THEOREM mass(singleton(b))=1
+  singleton_union_full: LEMMA union(singleton(TRUE),singleton(FALSE))=fullset[bool]
+  arbitrary_additivity_fails: THEOREM
+    disjoint?(singleton(TRUE),singleton(FALSE)) AND
+    mass(union(singleton(TRUE),singleton(FALSE)))=1 AND
+    mass(singleton(TRUE))+mass(singleton(FALSE))=2
+END ppg_probability_outer_examples

@@ -1,0 +1,206 @@
+(|ppg_shearer_ppg|
+ (|graph_independent_side| 0
+  (|graph_independent_side-1| NIL 4001077422
+   (""
+    (THEN (SKOSIMP*) (LABEL "SUB" -1) (LABEL "SIDE" -2)
+     (EXPAND "independent_side") (SKOSIMP*) (EXPAND "subset?" "SUB")
+     (INST "SUB" "j!1") (INST "SIDE" "j!1") (EXPAND "independent")
+     (EXPAND "dependencyGraph") (GRIND :EXCLUDE ("dependent")))
+    NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_shearer_ppg| NIL)
+    (|independent| CONST-DECL "bool" |ppg_event_dependence| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|dependencyGraph| CONST-DECL "SimpleDependencyGraph" |ppg_shearer_bdd|
+     NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|independent_side| CONST-DECL "bool" |ppg_event_dependence| NIL))
+   SHOSTAK))
+ (|marginal_upper_nonnegative| 0
+  (|marginal_upper_nonnegative-1| NIL 4001077422
+   (""
+    (THEN (SKOSIMP*) (INST -2 "a!1") (GRIND :EXCLUDE ("mass" "ast" "x_inf")))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_ppg| NIL))
+   SHOSTAK))
+ (|lopsidependence_of_ppg| 0
+  (|lopsidependence_of_ppg-1| NIL 4001077422
+   (""
+    (THEN (SKOSIMP*) (EXPAND "Lopsidependence") (SKOSIMP*)
+     (LEMMA "graph_independent_side" ("B" "B!1" "a" "a!1" "J" "J!1"))
+     (EXPAND "lll_lopsidependence") (INST -5 "a!1") (ASSERT) (INST -1 "J!1")
+     (INST -5 "a!1")
+     (LEMMA "both_sides_times_pos_le1_imp"
+      ("x" "mass(A!1(a!1))" "y" "p!1(a!1)" "nnw"
+       "passProbability(mass,A!1,J!1)"))
+     (GRIND :EXCLUDE
+      ("mass" "all_pass" "passProbability" "independent_side" "ast" "x_inf")))
+    NIL)
+   ((|lll_lopsidependence| CONST-DECL "bool" |ppg_event_dependence| NIL)
+    (|both_sides_times_pos_le1_imp| FORMULA-DECL NIL |extra_real_props| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_shearer_ppg| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|RawMass| TYPE-EQ-DECL NIL |ppg_event_avoidance| NIL)
+    (|BadEvents| TYPE-EQ-DECL NIL |ppg_event_avoidance| NIL)
+    (|passProbability| CONST-DECL "nnreal" |ppg_event_avoidance| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_shearer_ppg| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "Probability" |ppg_shearer_ppg| NIL)
+    (|mass| CONST-DECL "nnreal" |ppg_probability_outer| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_ppg| NIL)
+    (|dependent| CONST-DECL "bool" |ppg_bdd| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_ppg| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|dependencyGraph| CONST-DECL "SimpleDependencyGraph" |ppg_shearer_bdd|
+     NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_ppg| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_ppg| NIL)
+    (|graph_independent_side| FORMULA-DECL NIL |ppg_shearer_ppg| NIL)
+    (|Lopsidependence| CONST-DECL "bool" |ppg_shearer_probability| NIL))
+   SHOSTAK))
+ (|ppg_good_event_lower_bound| 0
+  (|ppg_good_event_lower_bound-1| NIL 4001077422
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "lopsidependence_of_ppg" ("A" "A!1" "p" "p!1" "B" "B!1"))
+     (LEMMA "marginal_upper_nonnegative" ("A" "A!1" "p" "p!1" "B" "B!1"))
+     (LEMMA "good_event_lower_bound" ("A" "A!1" "p" "p!1" "B" "B!1" "T" "B!1"))
+     (PROP)
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("mass" "all_pass" "passProbability" "polynomial" "StrictCriterion"
+       "all_measurable" "Lopsidependence" "lll_lopsidependence" "ast"
+       "x_inf")))
+    NIL)
+   ((|marginal_upper_nonnegative| FORMULA-DECL NIL |ppg_shearer_ppg| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_ppg| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|dependencyGraph| CONST-DECL "SimpleDependencyGraph" |ppg_shearer_bdd|
+     NIL)
+    (|SimpleDependencyGraph| TYPE-EQ-DECL NIL |ppg_shearer_bdd| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_ppg| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_ppg| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|mu| FORMAL-CONST-DECL "Probability" |ppg_shearer_ppg| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_shearer_ppg| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|good_event_lower_bound| FORMULA-DECL NIL |ppg_shearer_probability| NIL)
+    (|lopsidependence_of_ppg| FORMULA-DECL NIL |ppg_shearer_ppg| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_ppg| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_shearer_ppg| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|BadEvents| TYPE-EQ-DECL NIL |ppg_event_avoidance| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   SHOSTAK))
+ (|ppg_good_state_exists| 0
+  (|ppg_good_state_exists-1| NIL 4001077422
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "independence_implies_lopsidependence"
+      ("m" "mass" "A" "A!1" "B" "B!1"))
+     (LEMMA "lopsidependence_of_ppg" ("A" "A!1" "p" "p!1" "B" "B!1"))
+     (LEMMA "marginal_upper_nonnegative" ("A" "A!1" "p" "p!1" "B" "B!1"))
+     (LEMMA "good_state_exists" ("A" "A!1" "p" "p!1" "B" "B!1")) (PROP)
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("mass" "all_pass" "passProbability" "polynomial" "StrictCriterion"
+       "all_measurable" "Lopsidependence" "lll_lopsidependence"
+       "lll_independence" "ast" "x_inf")))
+    NIL)
+   ((|lopsidependence_of_ppg| FORMULA-DECL NIL |ppg_shearer_ppg| NIL)
+    (|dependencyGraph| CONST-DECL "SimpleDependencyGraph" |ppg_shearer_bdd|
+     NIL)
+    (|SimpleDependencyGraph| TYPE-EQ-DECL NIL |ppg_shearer_bdd| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|good_state_exists| FORMULA-DECL NIL |ppg_shearer_probability| NIL)
+    (|marginal_upper_nonnegative| FORMULA-DECL NIL |ppg_shearer_ppg| NIL)
+    (|independence_implies_lopsidependence| FORMULA-DECL NIL
+     |ppg_event_dependence| NIL)
+    (|BadEvents| TYPE-EQ-DECL NIL |ppg_event_avoidance| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|RawMass| TYPE-EQ-DECL NIL |ppg_event_avoidance| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_shearer_ppg| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "Probability" |ppg_shearer_ppg| NIL)
+    (|mass| CONST-DECL "nnreal" |ppg_probability_outer| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_shearer_ppg| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_ppg| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_ppg| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_ppg| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,25 @@
+% Avoiding a family of bad events is a finite conjunction of complements.
+% The events may be arbitrary subsets. Measurability belongs in the
+% probability lemmas that use it, rather than in the event-family type.
+% Lean counterparts: PPGraphLLL.lean and PPGraphShearer.lean.
+ppg_event_avoidance[X,C:TYPE]: THEORY
+BEGIN
+  BadEvents: TYPE = [C->set[X]]
+  RawMass: TYPE = [set[X]->nnreal]
+  A: VAR BadEvents
+  U,T: VAR finite_set[C]
+  a: VAR C
+  m: VAR RawMass
+  all_pass(A,T): set[X] = {w:X|FORALL(j:C):T(j) IMPLIES NOT A(j)(w)}
+  passProbability(m,A,T): nnreal = m(all_pass(A,T))
+  all_pass_empty: LEMMA all_pass(A,emptyset[C])=fullset[X]
+  all_pass_subset: LEMMA subset?(U,T) IMPLIES subset?(all_pass(A,T),all_pass(A,U))
+  all_pass_union: LEMMA all_pass(A,union(U,T))=intersection(all_pass(A,U),all_pass(A,T))
+  all_pass_insert: LEMMA all_pass(A,add(a,T))=intersection(complement(A(a)),all_pass(A,T))
+  all_pass_remove_diff: LEMMA T(a) IMPLIES
+    difference(all_pass(A,remove(a,T)),A(a))=all_pass(A,T)
+  passProbability_empty: THEOREM m(fullset[X])=1 IMPLIES passProbability(m,A,emptyset[C])=1
+  passProbability_nonneg: THEOREM 0<=passProbability(m,A,T)
+  positive_mass_has_state: LEMMA m(emptyset[X])=0 AND 0<passProbability(m,A,T) IMPLIES
+    EXISTS(w:X):all_pass(A,T)(w)
+END ppg_event_avoidance

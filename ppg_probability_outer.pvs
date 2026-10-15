@@ -1,0 +1,48 @@
+% Extend a normalized probability law to arbitrary subsets by the outer
+% measure construction. On measurable events the mass is unchanged.
+% All masses are finite and at most one. A measurable cut splits the
+% outer mass of any set, even when that set itself is not measurable.
+%
+% Construction: David Lester's NASALib ast_def and hahn_kolmogorov.
+% Reference: Sterling K. Berberian, Fundamentals of Real Analysis,
+% Springer, 1999. https://doi.org/10.1007/978-1-4612-0549-4
+% Lean counterparts: the all-set measure expressions in PPGraphLLL.lean
+% and PPGraphLopsidedLLL.lean.
+
+ppg_probability_outer[X:TYPE,
+  (IMPORTING ppg_measurable_space[X]) S:MeasurableSpace,
+  (IMPORTING ppg_probability_measure[X,S]) mu:Probability]: THEORY
+BEGIN
+  IMPORTING ppg_probability_unique[X,S]
+  extendedLaw: generalized_measure_def[X,asNasa(S)].measure_type =
+    generalized_measure_def[X,asNasa(S)].to_measure(mu)
+  IMPORTING measure_integration@hahn_kolmogorov[X,asNasa(S),extendedLaw]
+  A,B: VAR set[X]
+  E: VAR (S)
+  outerValue(A): extended_nnreal = ast(extendedLaw)(A)
+  mass(A): nnreal = outerValue(A)`2
+  outer_value_measurable: LEMMA outerValue(E)=(TRUE,mu(E))
+  outer_value_full: LEMMA outerValue(fullset[X])=(TRUE,1)
+  outer_value_empty: LEMMA outerValue(emptyset[X])=(TRUE,0)
+  outer_value_finite: LEMMA outerValue(A)`1
+  outer_mass_value: LEMMA outerValue(A)=(TRUE,mass(A))
+  mass_measurable: THEOREM mass(E)=mu(E)
+  mass_full: LEMMA mass(fullset[X])=1
+  mass_empty: LEMMA mass(emptyset[X])=0
+  mass_monotone: THEOREM subset?(A,B) IMPLIES mass(A)<=mass(B)
+  mass_bound: THEOREM mass(A)<=1
+  original_outer_measurable: LEMMA outer_measurable?(E)
+  difference_intersection: LEMMA difference(B,A)=intersection(B,complement(A))
+  mass_split: THEOREM mass(B)=mass(intersection(B,E))+mass(difference(B,E))
+
+  % Countable covers give measurable supersets with arbitrarily small excess.
+  cover_union_measurable: LEMMA FORALL (I: sequence[(asNasa(S))]): S(IUnion(I))
+  cover_mass_bound: LEMMA FORALL (I: sequence[(asNasa(S))]):
+    x_le((TRUE,mu(IUnion(I))),x_sum(extendedLaw o I))
+  mass_le_measurable_super: THEOREM subset?(A,E) IMPLIES mass(A)<=mu(E)
+  real_chain: LEMMA FORALL (u,v,w: real): u<=v AND v<=w IMPLIES u<=w
+  mass_measurable_approximation: THEOREM FORALL (epsilon: posreal):
+    EXISTS (E: (S)): subset?(A,E) AND mu(E)<=mass(A)+epsilon
+  measurable_cover_lower_bound: THEOREM FORALL (c: real):
+    (FORALL (E: (S)): subset?(A,E) IMPLIES c<=mu(E)) IMPLIES c<=mass(A)
+END ppg_probability_outer

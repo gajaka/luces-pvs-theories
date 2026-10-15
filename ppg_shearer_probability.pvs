@@ -1,0 +1,51 @@
+% A measurable bad event splits the mass of the current avoidance set.
+% Lopsidependence bounds the lost part by the avoidance probability of
+% non-neighbors. The resulting deletion inequality feeds the finite-set
+% ratio induction, giving the strict-interior Shearer lower bound.
+%
+% Nicholas J. A. Harvey and Jan Vondrak, "Short proofs for generalizations
+% of the Lovasz Local Lemma: Shearer's condition and cluster expansion",
+% Section 2, Lemma 1 and Claims 2--3. https://arxiv.org/abs/1711.06797
+% Lean counterpart: PPGraphShearer.lean.
+ppg_shearer_probability[X,C:TYPE,
+  (IMPORTING ppg_measurable_space[X]) S:MeasurableSpace,
+  (IMPORTING ppg_probability_measure[X,S]) mu:Probability,
+  G:{H:[C,C->bool]|(FORALL(a:C):NOT H(a,a)) AND
+    (FORALL(a,b:C):H(a,b)=H(b,a))}]: THEORY
+BEGIN
+  IMPORTING ppg_probability_outer[X,S,mu],ppg_event_avoidance[X,C],
+            ppg_shearer_polynomial[C,G],ppg_shearer_induction[C]
+  A: VAR BadEvents
+  B,T,U,J: VAR finite_set[C]
+  a: VAR C
+  p: VAR [C->real]
+  all_measurable(A): bool = FORALL(a:C):S(A(a))
+  Lopsidependence(A,p,B): bool = FORALL(a:C):B(a) IMPLIES
+    FORALL(J:finite_set[C]):subset?(J,B) AND
+      (FORALL(j:C):J(j) IMPLIES j/=a AND NOT G(a,j)) IMPLIES
+        mass(intersection(A(a),all_pass(A,J)))<=p(a)*passProbability(mass,A,J)
+  remote_side: LEMMA subset?(T,B) AND T(a) IMPLIES B(a) AND
+    subset?(remote(T,a),B) AND
+    (FORALL(j:C):remote(T,a)(j) IMPLIES j/=a AND NOT G(a,j))
+  remote_lopsidependence: LEMMA Lopsidependence(A,p,B) AND subset?(T,B) AND T(a) IMPLIES
+    mass(intersection(A(a),all_pass(A,remote(T,a))))<=p(a)*passProbability(mass,A,remote(T,a))
+  deleted_intersection_subset: LEMMA
+    subset?(intersection(all_pass(A,remove(a,T)),A(a)),intersection(A(a),all_pass(A,remote(T,a))))
+  fundamental_probability_inequality: THEOREM
+    all_measurable(A) AND Lopsidependence(A,p,B) AND subset?(T,B) AND T(a) IMPLIES
+      passProbability(mass,A,remove(a,T))-p(a)*passProbability(mass,A,remote(T,a))<=
+        passProbability(mass,A,T)
+  shearer_recurrences: LEMMA all_measurable(A) AND Lopsidependence(A,p,B) AND
+    (FORALL(a:C):B(a) IMPLIES 0<=p(a)) AND StrictCriterion(p,B) IMPLIES
+      Recurrences(B,p,LAMBDA(T:finite_set[C]):passProbability(mass,A,T),
+        LAMBDA(T:finite_set[C]):polynomial(p,T),remote)
+  good_event_lower_bound: THEOREM all_measurable(A) AND Lopsidependence(A,p,B) AND
+    (FORALL(a:C):B(a) IMPLIES 0<=p(a)) AND StrictCriterion(p,B) AND subset?(T,B) IMPLIES
+      polynomial(p,T)<=passProbability(mass,A,T)
+  positive_probability: THEOREM all_measurable(A) AND Lopsidependence(A,p,B) AND
+    (FORALL(a:C):B(a) IMPLIES 0<=p(a)) AND StrictCriterion(p,B) IMPLIES
+      0<passProbability(mass,A,B)
+  good_state_exists: THEOREM all_measurable(A) AND Lopsidependence(A,p,B) AND
+    (FORALL(a:C):B(a) IMPLIES 0<=p(a)) AND StrictCriterion(p,B) IMPLIES
+      EXISTS(w:X):all_pass(A,B)(w)
+END ppg_shearer_probability

@@ -1,0 +1,36 @@
+% The PPG non-neighbor hypothesis supplies graph lopsidependence.
+% Upper bounds on event probabilities may replace exact marginals.
+% Strict positivity of every induced polynomial then gives a good state.
+%
+% Lean counterpart: PPGraphShearer.lean, PPG bridge.
+% Nicholas J. A. Harvey and Jan Vondrak, "Short proofs for generalizations
+% of the Lovasz Local Lemma: Shearer's condition and cluster expansion",
+% Section 2. https://arxiv.org/abs/1711.06797
+ppg_shearer_ppg[X,C,V:TYPE,
+  (IMPORTING ppg_measurable_space[X]) S:MeasurableSpace,
+  (IMPORTING ppg_probability_measure[X,S]) mu:Probability,
+  (IMPORTING ppg_bdd[C,V]) vars:CertVars]: THEORY
+BEGIN
+  IMPORTING ppg_shearer_bdd[C,V,vars],ppg_event_dependence[X,C,V,vars],
+    ppg_shearer_probability[X,C,S,mu,dependencyGraph]
+  A: VAR BadEvents
+  B,J: VAR finite_set[C]
+  a: VAR C
+  p: VAR [C->real]
+  graph_independent_side: LEMMA subset?(J,B) AND
+    (FORALL(j:C):J(j) IMPLIES j/=a AND NOT dependencyGraph(a,j)) IMPLIES
+      independent_side(B,a,J)
+  marginal_upper_nonnegative: LEMMA
+    (FORALL(a:C):B(a) IMPLIES mass(A(a))<=p(a)) IMPLIES
+      (FORALL(a:C):B(a) IMPLIES 0<=p(a))
+  lopsidependence_of_ppg: THEOREM lll_lopsidependence(mass,A,B) AND
+    (FORALL(a:C):B(a) IMPLIES mass(A(a))<=p(a)) IMPLIES Lopsidependence(A,p,B)
+  ppg_good_event_lower_bound: THEOREM all_measurable(A) AND
+    lll_lopsidependence(mass,A,B) AND
+    (FORALL(a:C):B(a) IMPLIES mass(A(a))<=p(a)) AND StrictCriterion(p,B) IMPLIES
+      polynomial(p,B)<=passProbability(mass,A,B)
+  ppg_good_state_exists: THEOREM all_measurable(A) AND
+    lll_independence(mass,A,B) AND
+    (FORALL(a:C):B(a) IMPLIES mass(A(a))<=p(a)) AND StrictCriterion(p,B) IMPLIES
+      EXISTS(w:X):all_pass(A,B)(w)
+END ppg_shearer_ppg
