@@ -1,0 +1,539 @@
+(|ppg_shearer_bdd|
+ (|dependencyGraph_TCC1| 0
+  (|dependencyGraph_TCC1-1| NIL 4001074113
+   (""
+    (THEN
+     (GRIND :IF-MATCH ALL :EXCLUDE ("EquivClos" "SameComponent" "is_finite")))
+    NIL)
+   ((/= CONST-DECL "boolean" |notequal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL)
+    (|dependent| CONST-DECL "bool" |ppg_bdd| NIL))
+   NIL
+   (|dependencyGraph| SUBTYPE
+    "LAMBDA (a, b: C): a /= b AND dependent[C, V](vars, a, b)"
+    "SimpleDependencyGraph" (18 43 18 85))))
+ (|dependencyGraph_adj_iff| 0
+  (|dependencyGraph_adj_iff-1| NIL 4001073888 ("" (THEN (GRIND)) NIL)
+   ((/= CONST-DECL "boolean" |notequal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL)
+    (|dependent| CONST-DECL "bool" |ppg_bdd| NIL)
+    (|dependencyGraph| CONST-DECL "SimpleDependencyGraph" |ppg_shearer_bdd|
+     NIL))
+   SHOSTAK))
+ (|not_adj_compOf_sdiff| 0
+  (|not_adj_compOf_sdiff-1| NIL 4001073888
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "sameComponent_of_coupled"
+      ("vars" "vars" "B" "B!1" "c" "a!1" "d" "b!1"))
+     (LEMMA "sameComponent_trans"
+      ("vars" "vars" "B" "B!1" "c" "c!1" "d" "a!1" "e" "b!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE ("EquivClos" "SameComponent" "is_finite")))
+    NIL)
+   ((|sameComponent_trans| FORMULA-DECL NIL |ppg_bdd| NIL)
+    (|CoupledIn| CONST-DECL "bool" |ppg_bdd| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|dependent| CONST-DECL "bool" |ppg_bdd| NIL)
+    (|dependencyGraph| CONST-DECL "SimpleDependencyGraph" |ppg_shearer_bdd|
+     NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_bdd| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_bdd| NIL)
+    (|sameComponent_of_coupled| FORMULA-DECL NIL |ppg_bdd| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL))
+   SHOSTAK))
+ (|component_full_partition| 0
+  (|component_full_partition-1| NIL 4001073888
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :EXCLUDE ("EquivClos" "SameComponent" "is_finite")))
+    NIL)
+   ((|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_bdd| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_bdd| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set[C]" |ppg_shearer_bdd|
+     NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|union| CONST-DECL "set" |sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_bdd| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL))
+   SHOSTAK))
+ (|component_separated| 0
+  (|component_separated-1| NIL 4001073888
+   (""
+    (THEN (SKOSIMP*) (LEMMA "not_adj_compOf_sdiff" ("B" "B!1" "c" "c!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("EquivClos" "SameComponent" "is_finite" "compOf" "dependencyGraph")))
+    NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|dependencyGraph| CONST-DECL "SimpleDependencyGraph" |ppg_shearer_bdd|
+     NIL)
+    (|SimpleDependencyGraph| TYPE-EQ-DECL NIL |ppg_shearer_bdd| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|noCrossEdges| CONST-DECL "bool" |ppg_shearer_sets| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_bdd| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_bdd| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|not_adj_compOf_sdiff| FORMULA-DECL NIL |ppg_shearer_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|polynomial_BDD_split| 0
+  (|polynomial_BDD_split-1| NIL 4001073888
+   (""
+    (THEN (SKOSIMP*) (LEMMA "component_full_partition" ("B" "B!1" "c" "c!1"))
+     (LEMMA "component_separated" ("B" "B!1" "c" "c!1"))
+     (LEMMA "polynomial_union"
+      ("S" "compOf(vars,B!1,c!1)" "T" "difference(B!1,compOf(vars,B!1,c!1))"
+       "p" "p!1"))
+     (GRIND :EXCLUDE
+      ("polynomial" "fsum" "product" "EquivClos" "SameComponent" "is_finite"
+       "compOf" "dependencyGraph" "noCrossEdges")))
+    NIL)
+   ((|component_separated| FORMULA-DECL NIL |ppg_shearer_bdd| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_bdd| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set[C]" |ppg_shearer_bdd|
+     NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|dependencyGraph| CONST-DECL "SimpleDependencyGraph" |ppg_shearer_bdd|
+     NIL)
+    (|SimpleDependencyGraph| TYPE-EQ-DECL NIL |ppg_shearer_bdd| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_bdd| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL)
+    (|polynomial_union| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_bdd| NIL)
+    (|component_full_partition| FORMULA-DECL NIL |ppg_shearer_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|component_slice_partition| 0
+  (|component_slice_partition-1| NIL 4001073888
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :EXCLUDE ("EquivClos" "SameComponent" "is_finite" "compOf")))
+    NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_bdd| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_bdd| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set[C]" |ppg_shearer_bdd|
+     NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|union| CONST-DECL "set" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_bdd| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL))
+   SHOSTAK))
+ (|component_slice_separated| 0
+  (|component_slice_separated-1| NIL 4001073888
+   ("" (SKOSIMP*)
+    (("" (LABEL "SUB" -1)
+      (("" (SPLIT 1)
+        (("1"
+          (GRIND :EXCLUDE
+           ("EquivClos" "SameComponent" "is_finite" "compOf"
+            "dependencyGraph"))
+          NIL NIL)
+         ("2" (EXPAND "noCrossEdges" 1)
+          (("2" (SKOSIMP*)
+            (("2" (EXPAND "subset?" "SUB")
+              (("2" (INST "SUB" "j!1")
+                (("2" (LEMMA "not_adj_compOf_sdiff" ("B" "B!1" "c" "c!1"))
+                  (("2" (INST -1 "i!1" "j!1")
+                    (("2"
+                      (GRIND :EXCLUDE
+                       ("EquivClos" "SameComponent" "is_finite" "compOf"
+                        "dependencyGraph"))
+                      NIL NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_bdd| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_bdd| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_bdd| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|not_adj_compOf_sdiff| FORMULA-DECL NIL |ppg_shearer_bdd| NIL)
+    (|noCrossEdges| CONST-DECL "bool" |ppg_shearer_sets| NIL))
+   SHOSTAK))
+ (|component_remainder_smaller| 0
+  (|component_remainder_smaller-1| NIL 4001073888
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "mem_compOf_self" ("vars" "vars" "B" "B!1" "c" "c!1"))
+     (LEMMA "card_remove[C]" ("S" "T!1" "x" "c!1"))
+     (LEMMA "card_subset[C]"
+      ("A" "difference(T!1,compOf(vars,B!1,c!1))" "B" "remove(c!1,T!1)"))
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("EquivClos" "SameComponent" "is_finite" "card" "compOf")))
+    NIL)
+   ((|card_remove| FORMULA-DECL NIL |finite_sets| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_bdd| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|card_subset| FORMULA-DECL NIL |finite_sets| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[C]" |ppg_shearer_bdd|
+     NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_bdd| NIL)
+    (|mem_compOf_self| FORMULA-DECL NIL |ppg_bdd| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL))
+   SHOSTAK))
+ (|strict_components_intro| 0
+  (|strict_components_intro-1| NIL 4001073888
+   ("" (SKOSIMP*)
+    (("" (LABEL "COMP" -1)
+      ((""
+        (LEMMA "finite_set_induction_gen[C]"
+         ("P"
+          "LAMBDA(T:finite_set[C]):subset?(T,B!1) IMPLIES 0<polynomial(p!1,T)"))
+        (("" (SPLIT -1)
+          (("1" (EXPAND "StrictCriterion" 1) (("1" (ASSERT) NIL NIL)) NIL)
+           ("2" (SKOSIMP*)
+            (("2" (LABEL "IH" -1)
+              (("2" (LABEL "SUB" -2)
+                (("2" (CASE "empty?(S!1)")
+                  (("1" (REWRITE "emptyset_is_empty?[C]" -1)
+                    (("1" (REPLACE*)
+                      (("1" (REWRITE "polynomial_empty" 1)
+                        (("1" (ASSERT) NIL NIL)) NIL))
+                      NIL))
+                    NIL)
+                   ("2" (EXPAND "empty?" 1)
+                    (("2" (EXPAND "member[C]" 1)
+                      (("2" (SKOSIMP*)
+                        (("2"
+                          (INST "IH" "difference(S!1,compOf(vars,B!1,x!1))")
+                          (("2"
+                            (LEMMA "component_remainder_smaller"
+                             ("T" "S!1" "B" "B!1" "c" "x!1"))
+                            (("2" (ASSERT)
+                              (("2"
+                                (LEMMA "difference_subset[C]"
+                                 ("a" "S!1" "b" "compOf(vars,B!1,x!1)"))
+                                (("2"
+                                  (LEMMA "subset_transitive[C]"
+                                   ("a" "difference(S!1,compOf(vars,B!1,x!1))"
+                                    "b" "S!1" "c" "B!1"))
+                                  (("2" (ASSERT)
+                                    (("2" (INST "COMP" "x!1")
+                                      (("2" (EXPAND "subset?" "SUB")
+                                        (("2" (INST-CP "SUB" "x!1")
+                                          (("2" (ASSERT)
+                                            (("2"
+                                              (EXPAND "StrictCriterion" "COMP")
+                                              (("2"
+                                                (LEMMA
+                                                 "component_slice_separated"
+                                                 ("T" "S!1" "B" "B!1" "c"
+                                                  "x!1"))
+                                                (("2"
+                                                  (LEMMA
+                                                   "component_slice_partition"
+                                                   ("T" "S!1" "B" "B!1" "c"
+                                                    "x!1"))
+                                                  (("2"
+                                                    (LEMMA "polynomial_union"
+                                                     ("p" "p!1" "S"
+                                                      "intersection(S!1,compOf(vars,B!1,x!1))"
+                                                      "T"
+                                                      "difference(S!1,compOf(vars,B!1,x!1))"))
+                                                    (("2"
+                                                      (GRIND :IF-MATCH ALL
+                                                       :EXCLUDE
+                                                       ("StrictCriterion"
+                                                        "polynomial" "fsum"
+                                                        "product" "EquivClos"
+                                                        "SameComponent"
+                                                        "is_finite" "compOf"
+                                                        "dependencyGraph"
+                                                        "card"))
+                                                      (("1"
+                                                        (LEMMA
+                                                         "posreal_mult_closed"
+                                                         ("x"
+                                                          "polynomial(p!1,intersection(S!1,compOf(vars,B!1,x!1)))"
+                                                          "y"
+                                                          "polynomial(p!1,difference(S!1,compOf(vars,B!1,x!1)))"))
+                                                        (("1" (ASSERT) NIL
+                                                          NIL))
+                                                        NIL)
+                                                       ("2"
+                                                        (LEMMA
+                                                         "posreal_mult_closed"
+                                                         ("x"
+                                                          "polynomial(p!1,intersection(S!1,compOf(vars,B!1,x!1)))"
+                                                          "y"
+                                                          "polynomial(p!1,difference(S!1,compOf(vars,B!1,x!1)))"))
+                                                        (("2" (ASSERT) NIL
+                                                          NIL))
+                                                        NIL)
+                                                       ("3"
+                                                        (LEMMA
+                                                         "posreal_mult_closed"
+                                                         ("x"
+                                                          "polynomial(p!1,intersection(S!1,compOf(vars,B!1,x!1)))"
+                                                          "y"
+                                                          "polynomial(p!1,difference(S!1,compOf(vars,B!1,x!1)))"))
+                                                        (("3" (ASSERT) NIL
+                                                          NIL))
+                                                        NIL)
+                                                       ("4"
+                                                        (LEMMA
+                                                         "posreal_mult_closed"
+                                                         ("x"
+                                                          "polynomial(p!1,intersection(S!1,compOf(vars,B!1,x!1)))"
+                                                          "y"
+                                                          "polynomial(p!1,difference(S!1,compOf(vars,B!1,x!1)))"))
+                                                        (("4" (ASSERT) NIL
+                                                          NIL))
+                                                        NIL)
+                                                       ("5"
+                                                        (LEMMA
+                                                         "posreal_mult_closed"
+                                                         ("x"
+                                                          "polynomial(p!1,intersection(S!1,compOf(vars,B!1,x!1)))"
+                                                          "y"
+                                                          "polynomial(p!1,difference(S!1,compOf(vars,B!1,x!1)))"))
+                                                        (("5" (ASSERT) NIL
+                                                          NIL))
+                                                        NIL))
+                                                      NIL))
+                                                    NIL))
+                                                  NIL))
+                                                NIL))
+                                              NIL))
+                                            NIL))
+                                          NIL))
+                                        NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL)
+    (|polynomial| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (|dependencyGraph| CONST-DECL "SimpleDependencyGraph" |ppg_shearer_bdd|
+     NIL)
+    (|SimpleDependencyGraph| TYPE-EQ-DECL NIL |ppg_shearer_bdd| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|finite_set_induction_gen| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (|component_remainder_smaller| FORMULA-DECL NIL |ppg_shearer_bdd| NIL)
+    (|difference_subset| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|component_slice_separated| FORMULA-DECL NIL |ppg_shearer_bdd| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_bdd| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|polynomial_union| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|posreal_mult_closed| FORMULA-DECL NIL |real_axioms| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|noCrossEdges| CONST-DECL "bool" |ppg_shearer_sets| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set[C]" |ppg_shearer_bdd|
+     NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|component_slice_partition| FORMULA-DECL NIL |ppg_shearer_bdd| NIL)
+    (|subset_transitive| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_bdd| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_bdd| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|emptyset_is_empty?| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[C]" |ppg_shearer_bdd| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|polynomial_empty| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_bdd| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|StrictCriterion| CONST-DECL "bool" |ppg_shearer_polynomial| NIL))
+   SHOSTAK))
+ (|strictCriterion_iff_components| 0
+  (|strictCriterion_iff_components-1| NIL 4001073888
+   (""
+    (THEN (SKOSIMP*) (LEMMA "strict_components_intro" ("B" "B!1" "p" "p!1"))
+     (LEMMA "strictCriterion_mono" ("T" "B!1" "p" "p!1"))
+     (LEMMA "compOf_subset" ("vars" "vars" "B" "B!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("StrictCriterion" "polynomial" "fsum" "product" "EquivClos"
+       "SameComponent" "is_finite" "compOf"))
+     (LEMMA "strictCriterion_mono"
+      ("S" "compOf(vars,B!1,c!1)" "T" "B!1" "p" "p!1"))
+     (LEMMA "compOf_subset" ("vars" "vars" "B" "B!1" "c" "c!1")) (ASSERT))
+    NIL)
+   ((|strictCriterion_mono| FORMULA-DECL NIL |ppg_shearer_polynomial| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|SimpleDependencyGraph| TYPE-EQ-DECL NIL |ppg_shearer_bdd| NIL)
+    (|dependencyGraph| CONST-DECL "SimpleDependencyGraph" |ppg_shearer_bdd|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_bdd| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|compOf_subset| FORMULA-DECL NIL |ppg_bdd| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL)
+    (|strict_components_intro| FORMULA-DECL NIL |ppg_shearer_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   SHOSTAK)))
+
