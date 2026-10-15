@@ -1,0 +1,30 @@
+% An injection on an arbitrary support preserves its unrestricted indicator count.
+ppg_indicator_reindex[D,R:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_bijection[D,R] AS finiteMap, ppg_finite_induction[R],
+    ppg_nn_indicator[D],ppg_nn_indicator[R],
+    ppg_nonneg_tsum[D] AS sourceCount,ppg_nonneg_tsum[R] AS targetCount
+  A: VAR set[D]
+  i: VAR [D->R]
+  F: VAR finite_set[D]
+  S: VAR finite_set[R]
+  b: VAR nonneg_real
+  supportImage(A,i): set[R] = {y:R|EXISTS(x:D):A(x) AND i(x)=y}
+  support_image_intro: LEMMA FORALL(x:D):A(x) IMPLIES supportImage(A,i)(i(x))
+  finite_preimage: LEMMA EXISTS(F:finite_set[D]):
+    subset?(F,A) AND image(i,F)=intersection(S,supportImage(A,i))
+  source_indicator_bound: LEMMA
+    ele(sourceCount.tsum(LAMBDA(x:D):IF A(x) THEN 1 ELSE 0 ENDIF),ennFinite(b)) IFF
+    FORALL(F:finite_set[D]):card(intersection(F,A))<=b
+  target_indicator_bound: LEMMA
+    ele(targetCount.tsum(LAMBDA(y:R):IF supportImage(A,i)(y) THEN 1 ELSE 0 ENDIF),ennFinite(b)) IFF
+    FORALL(S:finite_set[R]):card(intersection(S,supportImage(A,i)))<=b
+  source_image_card: LEMMA finiteMap.injOn(i,intersection(F,A)) IMPLIES
+    card(intersection(image(i,intersection(F,A)),supportImage(A,i)))=card(intersection(F,A))
+  target_preimage_card: LEMMA finiteMap.injOn(i,F) AND subset?(F,A) AND
+    image(i,F)=intersection(S,supportImage(A,i)) IMPLIES
+    card(intersection(F,A))=card(intersection(S,supportImage(A,i)))
+  indicator_count_reindex: THEOREM (FORALL(x,y:D):A(x) AND A(y) AND i(x)=i(y) IMPLIES x=y) IMPLIES
+    sourceCount.tsum(LAMBDA(x:D):IF A(x) THEN 1 ELSE 0 ENDIF) =
+    targetCount.tsum(LAMBDA(y:R):IF supportImage(A,i)(y) THEN 1 ELSE 0 ENDIF)
+END ppg_indicator_reindex

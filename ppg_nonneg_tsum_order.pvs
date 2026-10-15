@@ -1,0 +1,9 @@
+% Nonnegative infinite sums are monotone before any finiteness bound is known.
+ppg_nonneg_tsum_order[T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_nonneg_tsum[T],ppg_enn_order
+  f,g: VAR [T->nonneg_real]
+  F: VAR finite_set[T]
+  tsum_monotone: THEOREM (FORALL(x:T):f(x)<=g(x)) IMPLIES ele(tsum(f),tsum(g))
+  finite_partial_le: THEOREM ele(ennFinite(sums.sum(F,f)),tsum(f))
+END ppg_nonneg_tsum_order
