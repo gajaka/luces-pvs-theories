@@ -1,0 +1,32 @@
+% A root contained in one BDD component has the same Shearer budget in
+% that component as in the full event set. Strict positivity makes the
+% polynomial on the remaining components nonzero, so it cancels from
+% the coefficient-to-polynomial ratio. No sign condition on weights is
+% needed for these identities.
+%
+% The components are Dragan Stosic's blocking dependency decomposition.
+% Polynomial factorization follows Nicholas J. A. Harvey and Jan Vondrak,
+% "Short proofs for generalizations of the Lovasz Local Lemma: Shearer's
+% condition and cluster expansion", Section 2.
+% https://arxiv.org/abs/1711.06797
+% Lean counterpart: PPGraphShearerBDDBudget.lean.
+ppg_shearer_bdd_budget[C,V:TYPE,(IMPORTING ppg_bdd[C,V]) vars:CertVars]: THEORY
+BEGIN
+  IMPORTING ppg_shearer_bdd[C,V,vars], ppg_shearer_budget_split[C,dependencyGraph]
+  B,J: VAR finite_set[C]
+  c,a: VAR C
+  p: VAR [C->real]
+  coefficient_compOf: THEOREM subset?(J,compOf(vars,B,c)) IMPLIES
+    coefficient(p,B,J)=coefficient(p,compOf(vars,B,c),J)*polynomial(p,difference(B,compOf(vars,B,c)))
+  component_remainder_positive: LEMMA StrictCriterion(p,B) IMPLIES
+    0<polynomial(p,difference(B,compOf(vars,B,c)))
+  stableBudget_compOf: THEOREM subset?(J,compOf(vars,B,c)) AND StrictCriterion(p,B) IMPLIES
+    stableBudget(p,B,J)=stableBudget(p,compOf(vars,B,c),J)
+  coefficient_singleton_compOf: THEOREM compOf(vars,B,c)(a) IMPLIES
+    coefficient(p,B,sets[C].singleton(a))=
+      coefficient(p,compOf(vars,B,c),sets[C].singleton(a))*polynomial(p,difference(B,compOf(vars,B,c)))
+  stableBudget_singleton_compOf: THEOREM compOf(vars,B,c)(a) AND StrictCriterion(p,B) IMPLIES
+    stableBudget(p,B,sets[C].singleton(a))=stableBudget(p,compOf(vars,B,c),sets[C].singleton(a))
+  stableBudget_singleton_own_compOf: THEOREM B(a) AND StrictCriterion(p,B) IMPLIES
+    stableBudget(p,B,sets[C].singleton(a))=stableBudget(p,compOf(vars,B,a),sets[C].singleton(a))
+END ppg_shearer_bdd_budget
