@@ -1,0 +1,593 @@
+(|ppg_shearer_bdd_expectation|
+ (|component_budget_nonnegative| 0
+  (|component_budget_nonnegative-1| NIL 4001091157
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "component_nonnegative"
+      ("bad" "bad!1" "B" "B!1" "c" "c!1" "p" "p!1"))
+     (LEMMA "stableBudget_nonneg"
+      ("p" "p!1" "B" "compOf(vars,B!1,c!1)" "J" "sets[C].singleton(a!1)"))
+     (EXPAND "bddSingletonBudgets") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[C]" |ppg_shearer_bdd_expectation| NIL)
+    (|dependencyGraph| CONST-DECL "SimpleDependencyGraph" |ppg_shearer_bdd|
+     NIL)
+    (|SimpleDependencyGraph| TYPE-EQ-DECL NIL |ppg_shearer_bdd| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|stableBudget_nonneg| FORMULA-DECL NIL |ppg_shearer_budget| NIL)
+    (|bddSingletonBudgets| CONST-DECL "real" |ppg_shearer_component_budgets|
+     NIL)
+    (|component_nonnegative| FORMULA-DECL NIL
+     |ppg_shearer_component_expectation| NIL)
+    (|UniversalLabels| TYPE-EQ-DECL NIL |ppg_shearer_witness| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{F: finite_set[V] | F = fullset[V]}"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_shearer_bdd_expectation|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_bdd_expectation| NIL))
+   SHOSTAK))
+ (|component_clipped_budget_sum_TCC1| 0
+  (|component_clipped_budget_sum_TCC1-1| NIL 4001091156
+   ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|baseProbability| CONST-DECL "nonneg_real" |ppg_mt_occurrence_probability|
+     NIL)
+    (|imageMass| CONST-DECL "nnreal" |ppg_probability_map| NIL)
+    (|stateMeasure| CONST-DECL "ppg_probability_measure
+    [MTState[C, V, Value, domain], NativeStateSigma(spaces)].Probability"
+     |ppg_mt_state_probability| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{F: finite_set[V] | F = fullset[V]}"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_shearer_bdd_expectation|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|pushforward| CONST-DECL "TargetLaw" |ppg_probability_map| NIL)
+    (|StrictCriterion| CONST-DECL "bool" |ppg_shearer_polynomial| NIL)
+    (|polynomial| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (|independentSubsets| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_shearer_sets| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_bdd_expectation| NIL)
+    (|SimpleDependencyGraph| TYPE-EQ-DECL NIL |ppg_shearer_bdd| NIL)
+    (|dependencyGraph| CONST-DECL "SimpleDependencyGraph" |ppg_shearer_bdd|
+     NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_powerset_sum| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|EquivClos| CONST-DECL "equivalence[T]" |EquivalenceClosure| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|CoupledIn| CONST-DECL "bool" |ppg_bdd| NIL)
+    (|dependent| CONST-DECL "bool" |ppg_bdd| NIL)
+    (|SameComponent| CONST-DECL "equivalence[C]" |ppg_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL))
+   NIL
+   (|component_clipped_budget_sum| SUBTYPE "LAMBDA (a, b: nonneg_real): a + b"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_shearer_bdd_expectation.op)(0), booleans.AND(operator_defs[nonneg_real].associative?(ppg_shearer_bdd_expectation.op), operator_defs[nonneg_real].commutative?(ppg_shearer_bdd_expectation.op)))}"
+    (29 4 29 12))))
+ (|component_clipped_budget_sum| 0
+  (|component_clipped_budget_sum-1| NIL 4001091157
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "component_budget_nonnegative"
+      ("bad" "bad!1" "B" "B!1" "c" "c!1" "p" "p!1"))
+     (LEMMA "clipped_sum[C]"
+      ("F" "compOf(vars,B!1,c!1)" "h"
+       "bddSingletonBudgets(p!1,compOf(vars,B!1,c!1))"))
+     (EXPAND "componentBudget") (GRIND :DEFS NIL) (EXPAND "max")
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|bddSingletonBudgets| CONST-DECL "real" |ppg_shearer_component_budgets|
+     NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|clipped_sum| FORMULA-DECL NIL |ppg_nonneg_real_sum| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|max| CONST-DECL "{p: real | p >= m AND p >= n}" |real_defs| NIL)
+    (|componentBudget| CONST-DECL "real" |ppg_shearer_component_budgets| NIL)
+    (|component_budget_nonnegative| FORMULA-DECL NIL
+     |ppg_shearer_bdd_expectation| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_bdd_expectation| NIL)
+    (|UniversalLabels| TYPE-EQ-DECL NIL |ppg_shearer_witness| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_shearer_bdd_expectation|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL))
+   SHOSTAK))
+ (|randomInitExpectedComponentCount_le_budget| 0
+  (|randomInitExpectedComponentCount_le_budget-1| NIL 4001091157
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "randomInitExpectedSetResamplingCount_eq_sum"
+       ("bad" "bad!1" "fallback" "fallback!1" "enumeration" "enumeration!1" "K"
+        "compOf(vars,B!1,c!1)"))
+      ((""
+        (LEMMA "component_clipped_budget_sum"
+         ("bad" "bad!1" "B" "B!1" "c" "c!1" "p" "p!1"))
+        ((""
+          (LEMMA "esum_majorant[C]"
+           ("F" "compOf(vars,B!1,c!1)" "g"
+            "LAMBDA(a:C):randomInitExpectedResamplingCount(vars,bad!1,fallback!1,enumeration!1,a)"
+            "h"
+            "LAMBDA(a:C):max(0,bddSingletonBudgets(p!1,compOf(vars,B!1,c!1))(a))"))
+          (("" (SPLIT -1)
+            (("1" (GRIND :DEFS NIL :IF-MATCH NIL) NIL NIL)
+             ("2" (SKOSIMP*)
+              (("2"
+                (LEMMA "randomInitExpectedResamplingCount_le_componentBudget"
+                 ("bad" "bad!1" "fallback" "fallback!1" "enumeration"
+                  "enumeration!1" "B" "B!1" "p" "p!1" "c" "c!1" "a" "t!1"))
+                (("2" (EXPAND "bddSingletonBudgets")
+                  (("2" (GRIND :DEFS NIL :IF-MATCH NIL) NIL NIL)) NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|component_clipped_budget_sum| FORMULA-DECL NIL
+     |ppg_shearer_bdd_expectation| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|randomInitExpectedResamplingCount_le_componentBudget| FORMULA-DECL NIL
+     |ppg_shearer_component_expectation| NIL)
+    (|esum_majorant| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|FullEnumeration| TYPE-EQ-DECL NIL |ppg_mt_time_expectation| NIL)
+    (|randomInitExpectedResamplingCount| CONST-DECL "ENN"
+     |ppg_mt_time_expectation| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|max| CONST-DECL "{p: real | p >= m AND p >= n}" |real_defs| NIL)
+    (|bddSingletonBudgets| CONST-DECL "real" |ppg_shearer_component_budgets|
+     NIL)
+    (|randomInitExpectedSetResamplingCount_eq_sum| FORMULA-DECL NIL
+     |ppg_shearer_component_integral| NIL)
+    (|compOf| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|UniversalLabels| TYPE-EQ-DECL NIL |ppg_shearer_witness| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|completeEnumeration| CONST-DECL "bool" |ppg_mt_selection| NIL)
+    (|ComponentEnumeration| TYPE-EQ-DECL NIL |ppg_shearer_component_counts|
+     NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{F: finite_set[V] | F = fullset[V]}"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|SeqProbabilityEnumeration| TYPE-EQ-DECL NIL
+     |ppg_shearer_sequence_probability| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_shearer_bdd_expectation|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_bdd_expectation| NIL))
+   SHOSTAK))
+ (|randomInitExpectedComponentCount_lt_top| 0
+  (|randomInitExpectedComponentCount_lt_top-1| NIL 4001091158
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "randomInitExpectedComponentCount_le_budget"
+      ("bad" "bad!1" "fallback" "fallback!1" "enumeration" "enumeration!1" "B"
+       "B!1" "p" "p!1" "c" "c!1"))
+     (GRIND :DEFS NIL :REWRITES ("ele")))
+    NIL)
+   ((|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|randomInitExpectedComponentCount_le_budget| FORMULA-DECL NIL
+     |ppg_shearer_bdd_expectation| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_bdd_expectation| NIL)
+    (|UniversalLabels| TYPE-EQ-DECL NIL |ppg_shearer_witness| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_shearer_bdd_expectation|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|completeEnumeration| CONST-DECL "bool" |ppg_mt_selection| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{F: finite_set[V] | F = fullset[V]}"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|SeqProbabilityEnumeration| TYPE-EQ-DECL NIL
+     |ppg_shearer_sequence_probability| NIL))
+   SHOSTAK))
+ (|component_criteria_global| 0
+  (|component_criteria_global-1| NIL 4001091158
+   ("" (SKOSIMP*)
+    (("" (LABEL "HC" -1)
+      (("" (LEMMA "strict_components_intro" ("p" "p!1" "B" "B!1"))
+        (("" (SPLIT -1)
+          (("1" (PROPAX) NIL NIL)
+           ("2" (SKOSIMP*) (("2" (INST "HC" "c!1") NIL NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_bdd_expectation| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|UniversalLabels| TYPE-EQ-DECL NIL |ppg_shearer_witness| NIL)
+    (|strict_components_intro| FORMULA-DECL NIL |ppg_shearer_bdd| NIL))
+   SHOSTAK))
+ (|singleton_budget_functions| 0
+  (|singleton_budget_functions-1| NIL 4001091158
+   (""
+    (THEN (SKOSIMP*) (EXPAND "singletonBudget") (EXPAND "bddSingletonBudgets")
+     (ASSERT))
+    NIL)
+   ((|bddSingletonBudgets| CONST-DECL "real" |ppg_shearer_component_budgets|
+     NIL)
+    (|singletonBudget| CONST-DECL "real" |ppg_shearer_total_expectation| NIL))
+   SHOSTAK))
+ (|randomInitETLog_le_sum_componentBudgets| 0
+  (|randomInitETLog_le_sum_componentBudgets-1| NIL 4001091158
+   (""
+    (THEN (SKOSIMP*) (LEMMA "component_criteria_global" ("p" "p!1" "B" "B!1"))
+     (LEMMA "randomInitETLog_le_sum_stableBudget"
+      ("bad" "bad!1" "fallback" "fallback!1" "enumeration" "enumeration!1" "B"
+       "B!1" "p" "p!1"))
+     (LEMMA "sum_stableBudget_eq_sum_componentBudgets" ("p" "p!1" "B" "B!1"))
+     (LEMMA "singleton_budget_functions" ("p" "p!1" "B" "B!1")) (REPLACE -1)
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|randomInitETLog_le_sum_stableBudget| FORMULA-DECL NIL
+     |ppg_shearer_total_expectation| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|completeEnumeration| CONST-DECL "bool" |ppg_mt_selection| NIL)
+    (|SeqProbabilityEnumeration| TYPE-EQ-DECL NIL
+     |ppg_shearer_sequence_probability| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_shearer_bdd_expectation| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{F: finite_set[V] | F = fullset[V]}"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_shearer_bdd_expectation|
+     NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|singleton_budget_functions| FORMULA-DECL NIL
+     |ppg_shearer_bdd_expectation| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|sum_stableBudget_eq_sum_componentBudgets| FORMULA-DECL NIL
+     |ppg_shearer_component_budgets| NIL)
+    (|component_criteria_global| FORMULA-DECL NIL |ppg_shearer_bdd_expectation|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_bdd_expectation| NIL)
+    (|UniversalLabels| TYPE-EQ-DECL NIL |ppg_shearer_witness| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   SHOSTAK))
+ (|randomInitETLog_lt_top_of_components| 0
+  (|randomInitETLog_lt_top_of_components-1| NIL 4001091158
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "randomInitETLog_le_sum_componentBudgets"
+      ("bad" "bad!1" "fallback" "fallback!1" "enumeration" "enumeration!1" "B"
+       "B!1" "p" "p!1"))
+     (GRIND :DEFS NIL :REWRITES ("ele")))
+    NIL)
+   ((|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|randomInitETLog_le_sum_componentBudgets| FORMULA-DECL NIL
+     |ppg_shearer_bdd_expectation| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_bdd_expectation| NIL)
+    (|UniversalLabels| TYPE-EQ-DECL NIL |ppg_shearer_witness| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_shearer_bdd_expectation|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|completeEnumeration| CONST-DECL "bool" |ppg_mt_selection| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{F: finite_set[V] | F = fullset[V]}"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|SeqProbabilityEnumeration| TYPE-EQ-DECL NIL
+     |ppg_shearer_sequence_probability| NIL))
+   SHOSTAK))
+ (|ae_randomInit_exists_good_of_components| 0
+  (|ae_randomInit_exists_good_of_components-1| NIL 4001091159
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "randomInitETLog_lt_top_of_components"
+      ("bad" "bad!1" "fallback" "fallback!1" "enumeration" "enumeration!1" "B"
+       "B!1" "p" "p!1"))
+     (LEMMA "ae_randomInit_exists_good"
+      ("vars" "vars" "bad" "bad!1" "fallback" "fallback!1" "enumeration"
+       "enumeration!1"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|FullEnumeration| TYPE-EQ-DECL NIL |ppg_mt_time_expectation| NIL)
+    (|ae_randomInit_exists_good| FORMULA-DECL NIL |ppg_mt_termination| NIL)
+    (|randomInitETLog_lt_top_of_components| FORMULA-DECL NIL
+     |ppg_shearer_bdd_expectation| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|vars| FORMAL-CONST-DECL "CertVars" |ppg_shearer_bdd_expectation| NIL)
+    (|UniversalLabels| TYPE-EQ-DECL NIL |ppg_shearer_witness| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_shearer_bdd_expectation| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_shearer_bdd_expectation|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|completeEnumeration| CONST-DECL "bool" |ppg_mt_selection| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{F: finite_set[V] | F = fullset[V]}"
+     |ppg_shearer_bdd_expectation| NIL)
+    (|SeqProbabilityEnumeration| TYPE-EQ-DECL NIL
+     |ppg_shearer_sequence_probability| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,31 @@
+% Sum finitely many event counts before integrating. Their finite time
+% prefixes are integrable and increase together. Finite sums commute
+% with this common increasing limit, giving linearity even when the
+% counts or their integrals are infinite.
+% Support for PPGraphShearerBDDExpectation.lean.
+ppg_finite_count_integral[X,C:TYPE,
+  (IMPORTING ppg_measurable_space[X]) S:MeasurableSpace,
+  (IMPORTING ppg_probability_measure[X,S]) probLaw:Probability]: THEORY
+BEGIN
+  IMPORTING ppg_event_partition_integral[X,C,S,probLaw]
+  K: VAR finite_set[C]
+  E: VAR [C->[nat->(S)]]
+  n,i,j: VAR nat
+  x: VAR X
+  countRows(E,x)(a:C,n:nat): nonneg_real = countPrefix(E(a),x,n)
+  setApprox(K,E)(n): NonnegativeFunction = nativeSum(K,approxRows(E,n))
+  rows_value: LEMMA rowValue(approxRows(E,n),x)=(LAMBDA(a:C):countRows(E,x)(a,n))
+  rows_monotone: LEMMA rowMonotone(countRows(E,x))
+  set_approx_value: LEMMA setApprox(K,E)(n)(x)=stageSum(K,countRows(E,x))(n)
+  set_approx_monotone: LEMMA monotoneFamily(setApprox(K,E))
+  set_approx_path: LEMMA (LAMBDA(n:nat):setApprox(K,E)(n)(x))=stageSum(K,countRows(E,x))
+  count_row_sup: LEMMA
+    (LAMBDA(a:C):eventCount(E(a),x))=(LAMBDA(a:C):natSup(LAMBDA(n:nat):countRows(E,x)(a,n)))
+  set_approx_sup: LEMMA supFunction(setApprox(K,E))=
+    (LAMBDA(x:X):ppg_nonneg_tsum[C].esum(K,LAMBDA(a:C):eventCount(E(a),x)))
+  set_approx_mean_path: LEMMA
+    (LAMBDA(n:nat):mean(setApprox(K,E)(n)))=stageSum(K,meanRows(E))
+  lintegral_finite_counts: THEOREM
+    lintegral(LAMBDA(x:X):ppg_nonneg_tsum[C].esum(K,LAMBDA(a:C):eventCount(E(a),x)))=
+    ppg_nonneg_tsum[C].esum(K,LAMBDA(a:C):lintegral(LAMBDA(x:X):eventCount(E(a),x)))
+END ppg_finite_count_integral
