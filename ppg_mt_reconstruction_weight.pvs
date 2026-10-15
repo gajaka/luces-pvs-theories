@@ -1,0 +1,17 @@
+% Reconstructed tree weights are the product over the original address domain.
+ppg_mt_reconstruction_weight[C, V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_mt_reconstruction_fold[C, V, nonneg_real, 1, LAMBDA (a, b: nonneg_real): a * b] AS weightFold,
+    ppg_rose_weight[C], ppg_nonneg_folds[Addr]
+  T: VAR GTree
+  p: VAR [C -> nonneg_real]
+  v, w: VAR Addr
+  n: VAR nat
+  weight_hom: LEMMA weightFold.nodeHom(LAMBDA (d: nat, t: WTree): weight(p)(t),
+    LAMBDA (d: nat, a: C): p(a))
+  toWTreeFuel_weight_eq_prod: THEOREM gt_valid?(T) AND T`dom(v) AND
+    (FORALL (w: Addr): T`dom(w) IMPLIES length(w) <= length(v) + n) IMPLIES
+    weight(p)(toWTreeFuel(T, n, v)) = products.sum(descendants(T, v), LAMBDA (w: Addr): p(T`lab(w)))
+  toWTree_weight_eq_prod: THEOREM gt_valid?(T) AND T`dom(null) IMPLIES
+    weight(p)(toWTree(T, null)) = products.sum(T`dom, LAMBDA (w: Addr): p(T`lab(w)))
+END ppg_mt_reconstruction_weight

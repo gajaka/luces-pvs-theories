@@ -1,0 +1,26 @@
+% Prefixes decompose every proper descendant through a unique direct child.
+ppg_address_prefix: THEORY
+BEGIN
+  IMPORTING ppg_tree_lists[nat]
+  Address: TYPE = list[nat]
+  u, v, w, r, s: VAR Address
+  i, j, k: VAR nat
+  addrPrefix(u, w): bool = EXISTS (r: Address): append(u, r) = w
+  length_zero_nil: LEMMA length(u) = 0 IMPLIES u = null
+  append_cancel: LEMMA append(u, r) = append(u, s) IMPLIES r = s
+  prefix_nil: LEMMA addrPrefix(null, w)
+  prefix_refl: LEMMA addrPrefix(w, w)
+  prefix_length: LEMMA addrPrefix(u, w) IMPLIES length(u) <= length(w)
+  prefix_equal_length: LEMMA addrPrefix(u, w) AND length(w) <= length(u) IMPLIES u = w
+  prefix_cons: LEMMA addrPrefix(cons(i, u), cons(j, w)) IFF i = j AND addrPrefix(u, w)
+  prefix_into_nil: LEMMA addrPrefix(u, null) IMPLIES u = null
+  prefix_trans: LEMMA addrPrefix(u, v) AND addrPrefix(v, w) IMPLIES addrPrefix(u, w)
+  prefix_comparable: LEMMA addrPrefix(u, w) AND addrPrefix(v, w) AND length(u) <= length(v)
+    IMPLIES addrPrefix(u, v)
+  prefix_unique_depth: LEMMA addrPrefix(u, w) AND addrPrefix(v, w) AND length(u) = length(v)
+    IMPLIES u = v
+  append_snoc: LEMMA append(u, append(v, cons(k, null))) = append(append(u, v), cons(k, null))
+  prefix_child: LEMMA addrPrefix(v, append(v, cons(k, null)))
+  proper_descendant: LEMMA addrPrefix(v, w) AND v /= w IMPLIES
+    EXISTS (k: nat, r: Address): append(append(v, cons(k, null)), r) = w
+END ppg_address_prefix

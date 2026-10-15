@@ -1,0 +1,12 @@
+% Mapping a finite listing and folding agrees with its finite-set fold.
+ppg_list_set_fold[T, R: TYPE, unit: R,
+  op: {f: [R, R -> R] | identity?(f)(unit) AND associative?(f) AND commutative?(f)}]: THEORY
+BEGIN
+  IMPORTING ppg_list_fold_map[T, R, R, unit, op] AS mapped,
+    ppg_list_fold[R, R, unit, op] AS values,
+    ppg_list_fold[T, R, unit, op] AS entries,
+    ppg_monoid_sum[T, R, unit, op] AS finiteTotals
+  S: VAR finite_set[T]
+  g: VAR [T -> R]
+  toList_map_sum: THEOREM values.fold(map(g)(setList(S)), LAMBDA (r: R): r) = finiteTotals.sum(S, g)
+END ppg_list_set_fold
