@@ -1,0 +1,32 @@
+% Occurrence probabilities and canonical family weights bound each expected count.
+ppg_mt_expected_bounds[C,V,Value:TYPE,domain:[V->set[Value]],
+  universe:{F:finite_set[V]|F=fullset[V]},
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_mt_witness_expectation[C,V,Value,domain,spaces,laws],
+    ppg_mt_occurrence_probability[C,V,Value,domain,universe,spaces,laws],
+    ppg_mt_occurrence_support[C,V,Value,domain], ppg_nonneg_tsum_order[WTree], ppg_enn_add
+  vars: VAR CertVars
+  bad: VAR NativeBad
+  fallback,a: VAR C
+  enumeration: VAR {xs:list[C]|completeEnumeration(xs)}
+  W: VAR WTree
+  p,x: VAR [C->nonneg_real]
+  logMeasure_witnessOccurrence_le_familyWeight: THEOREM mt_wf(vars,bad) AND
+    (FORALL(c:C):baseProbability(bad)(c)<=p(c)) IMPLIES
+    logMeasure(occurrenceEvents(vars,bad,fallback,enumeration,a)(W))<=
+      familyWeightNN(vars,labelUniverse(enumeration),p,a)(W)
+  randomInitExpectedResamplingCount_le_tsum_familyWeight: THEOREM mt_wf(vars,bad) AND
+    (FORALL(c:C):baseProbability(bad)(c)<=p(c)) IMPLIES
+    ele(randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a),
+      familyTotal(vars,labelUniverse(enumeration),p,a))
+  randomInitExpectedResamplingCount_le_iSup_mtWeight: THEOREM mt_wf(vars,bad) AND
+    (FORALL(c:C):baseProbability(bad)(c)<=p(c)) IMPLIES
+    ele(randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a),
+      ppg_nonneg_tsum[WTree].iSupNN(LAMBDA(D:nat):mtWeight(vars,labelUniverse(enumeration),p,D,a)))
+  randomInitExpectedResamplingCount_le: THEOREM mt_wf(vars,bad) AND
+    (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND
+    budget(vars,labelUniverse(enumeration),p,x) IMPLIES
+    ele(randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a),ennFinite(x(a)))
+END ppg_mt_expected_bounds

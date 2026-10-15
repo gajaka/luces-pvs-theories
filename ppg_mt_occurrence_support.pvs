@@ -1,0 +1,15 @@
+% An actual occurrence belongs to the canonical family over the full label set.
+ppg_mt_occurrence_support[C,V,Value:TYPE,domain:[V->set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_occurrence_bridge[C,V,Value,domain],
+    ppg_mt_label_partition[C,V,Value,domain]
+  vars: VAR CertVars
+  bad: VAR [C,MTState->bool]
+  fallback,a: VAR C
+  enumeration: VAR LabelEnumeration
+  W: VAR WTree
+  label_universe_is_full: LEMMA fullUniverse(labelUniverse(enumeration))
+  witnessOccurrence_eq_empty_of_not_mem_family: THEOREM
+    NOT witnessFamily(vars,labelUniverse(enumeration),a)(W) IMPLIES
+      witnessOccurrence(vars,bad,fallback,enumeration,a,W)=emptyset[LogSpace]
+END ppg_mt_occurrence_support

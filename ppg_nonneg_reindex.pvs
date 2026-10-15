@@ -1,0 +1,28 @@
+% An injective change of index preserves an unrestricted nonnegative sum.
+ppg_nonneg_reindex[D,R: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_indicator_reindex[D,R],
+    ppg_monoid_image[D,R,nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b] AS sumImage,
+    ppg_monoid_sum[D,nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b] AS dsum,
+    ppg_monoid_sum[R,nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b] AS rsum
+  f: VAR [D->nonneg_real]
+  g: VAR [R->nonneg_real]
+  i: VAR [D->R]
+  H: VAR finite_set[D]
+  K: VAR finite_set[R]
+  b: VAR nonneg_real
+  imageRange(i): set[R] = supportImage(fullset[D],i)
+  compatible(i,f,g): bool = injective?(i) AND
+    (FORALL(x:D):g(i(x))=f(x)) AND
+    (FORALL(y:R):NOT imageRange(i)(y) IMPLIES g(y)=0)
+  weighted_image: LEMMA compatible(i,f,g) IMPLIES
+    rsum.sum(image(i,H),g)=dsum.sum(H,f)
+  weighted_preimage: LEMMA compatible(i,f,g) AND
+    image(i,H)=intersection(K,imageRange(i)) IMPLIES
+    rsum.sum(K,g)=dsum.sum(H,f)
+  reindex_bounds: LEMMA compatible(i,f,g) IMPLIES
+    ((FORALL(H:finite_set[D]):dsum.sum(H,f)<=b) IFF
+      (FORALL(K:finite_set[R]):rsum.sum(K,g)<=b))
+  tsum_reindex: THEOREM compatible(i,f,g) IMPLIES
+    sourceCount.tsum(f)=targetCount.tsum(g)
+END ppg_nonneg_reindex

@@ -1,0 +1,12 @@
+% Order and addition laws include both finite values and infinity.
+ppg_enn_add: THEORY
+BEGIN
+  IMPORTING ppg_enn_order
+  x,y,z,w: VAR ENN
+  ele_transitive: LEMMA ele(x,y) AND ele(y,z) IMPLIES ele(x,z)
+  eadd_zero_left: LEMMA eadd(ennFinite(0),x)=x
+  eadd_zero_right: LEMMA eadd(x,ennFinite(0))=x
+  eadd_commutative: LEMMA eadd(x,y)=eadd(y,x)
+  eadd_associative: LEMMA eadd(eadd(x,y),z)=eadd(x,eadd(y,z))
+  eadd_monotone: LEMMA ele(x,y) AND ele(z,w) IMPLIES ele(eadd(x,z),eadd(y,w))
+END ppg_enn_add
