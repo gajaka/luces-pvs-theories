@@ -1,0 +1,11 @@
+% Address-level local indices equal the reconstructed whole-tree footprint count.
+ppg_mt_check_invariance[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_count_beyond[C, V], ppg_mt_check[C, V, Value, domain]
+  T: VAR GTree
+  vars: VAR CertVars
+  w: VAR Addr
+  x: VAR V
+  localCount_eq_footprintCountBeyondAt: THEOREM gt_valid?(T) AND T`dom(w) AND T`dom(null) IMPLIES
+    localCount(vars, T, w, x) = footprintCountBeyondAt(vars, x, length(w), 0, toWTree(T, null))
+END ppg_mt_check_invariance

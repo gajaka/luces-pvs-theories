@@ -1,0 +1,62 @@
+% A whole-tree check uses global depth counts and ignores sibling order.
+ppg_rose_check_shape[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_check_invariance[C, V, Value, domain],
+    ppg_rose_level_invariance[C, V, bool, TRUE, LAMBDA (a, b: bool): a AND b] AS checkFold,
+    ppg_mt_reconstruction_fold[C, V, bool, TRUE, LAMBDA (a, b: bool): a AND b] AS checkNodes,
+    ppg_bool_fold[WTree]
+  CheckFn: TYPE = [nat -> bool]
+  IMPORTING ppg_mt_rose_adt_reduce[C, CheckFn],
+    ppg_list_fold[CheckFn, bool, TRUE, LAMBDA (a, b: bool): a AND b] AS functionChecks,
+    ppg_list_fold_map[WTree, CheckFn, bool, TRUE, LAMBDA (a, b: bool): a AND b] AS checkMap
+  vars: VAR CertVars
+  bad: VAR [C, MTState -> bool]
+  omega: VAR LogSpace
+  whole, whole1, whole2, t: VAR WTree
+  d, n: VAR nat
+  a: VAR C
+  cs: VAR list[WTree]
+  checkStateAt(vars, omega, whole, d): MTState = LAMBDA (x: V):
+    atIdx(omega, x, footprintCountBeyondAt(vars, x, d, 0, whole))
+  checkNode(vars, bad, omega, whole)(a: C, bs: list[CheckFn]): CheckFn =
+    LAMBDA (d: nat): bad(a, checkStateAt(vars, omega, whole, d)) AND
+      functionChecks.fold(bs, LAMBDA (f: CheckFn): f(d + 1))
+  checkValues(vars, bad, omega, whole): [WTree -> CheckFn] =
+    ppg_mt_rose_adt_reduce[C, CheckFn].reduce(checkNode(vars, bad, omega, whole))
+  checkOK(vars, bad, omega, whole, d, t): bool = checkValues(vars, bad, omega, whole)(t)(d)
+  checkOKList(vars, bad, omega, whole, d, cs): bool =
+    andLists.fold(cs, LAMBDA (c: WTree): checkOK(vars, bad, omega, whole, d, c))
+  roseTauCheck(vars, bad, omega, t): bool = checkOK(vars, bad, omega, t, 0, t)
+  checkOK_node: LEMMA checkOK(vars, bad, omega, whole, d, roseNode(a, cs)) =
+    (bad(a, checkStateAt(vars, omega, whole, d)) AND checkOKList(vars, bad, omega, whole, d + 1, cs))
+  checkOKList_iff_forall_mem: THEOREM checkOKList(vars, bad, omega, whole, d, cs) IFF
+    FORALL (c: WTree): member(c, cs) IMPLIES checkOK(vars, bad, omega, whole, d, c)
+  check_hom: LEMMA checkNodes.nodeHom(
+    LAMBDA (d: nat, t: WTree): checkOK(vars, bad, omega, whole, d, t),
+    LAMBDA (d: nat, a: C): bad(a, checkStateAt(vars, omega, whole, d)))
+  canonicalizeFuel_checkOK: THEOREM proper(t) AND depth(t) <= n IMPLIES
+    (checkOK(vars, bad, omega, whole, d, canonicalFuel(n, t)) IFF checkOK(vars, bad, omega, whole, d, t))
+  canonicalize_checkOK: THEOREM proper(t) IMPLIES
+    (checkOK(vars, bad, omega, whole, d, canonicalize(t)) IFF checkOK(vars, bad, omega, whole, d, t))
+  checkStateAt_whole_congr: LEMMA
+    (FORALL (x: V, threshold: nat): footprintCountBeyondAt(vars, x, threshold, 0, whole1) =
+      footprintCountBeyondAt(vars, x, threshold, 0, whole2)) IMPLIES
+    checkStateAt(vars, omega, whole1, d) = checkStateAt(vars, omega, whole2, d)
+  checkNode_whole_congr: LEMMA
+    (FORALL (x: V, threshold: nat): footprintCountBeyondAt(vars, x, threshold, 0, whole1) =
+      footprintCountBeyondAt(vars, x, threshold, 0, whole2)) IMPLIES
+    checkNode(vars, bad, omega, whole1) = checkNode(vars, bad, omega, whole2)
+  checkOK_whole_congr: THEOREM
+    (FORALL (x: V, threshold: nat): footprintCountBeyondAt(vars, x, threshold, 0, whole1) =
+      footprintCountBeyondAt(vars, x, threshold, 0, whole2)) IMPLIES
+    (checkOK(vars, bad, omega, whole1, d, t) IFF checkOK(vars, bad, omega, whole2, d, t))
+  checkOKList_whole_congr: THEOREM
+    (FORALL (x: V, threshold: nat): footprintCountBeyondAt(vars, x, threshold, 0, whole1) =
+      footprintCountBeyondAt(vars, x, threshold, 0, whole2)) IMPLIES
+    (checkOKList(vars, bad, omega, whole1, d, cs) IFF checkOKList(vars, bad, omega, whole2, d, cs))
+  tauCheck_iff_tauCheck_canonicalize: THEOREM proper(t) IMPLIES
+    (roseTauCheck(vars, bad, omega, t) IFF roseTauCheck(vars, bad, omega, canonicalize(t)))
+  tauCheck_congr_of_canonicalize_eq: THEOREM proper(whole1) AND proper(whole2) AND
+    canonicalize(whole1) = canonicalize(whole2) IMPLIES
+    (roseTauCheck(vars, bad, omega, whole1) IFF roseTauCheck(vars, bad, omega, whole2))
+END ppg_rose_check_shape

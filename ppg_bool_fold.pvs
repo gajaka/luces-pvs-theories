@@ -1,0 +1,13 @@
+% Finite conjunction is the Boolean commutative fold with unit TRUE.
+ppg_bool_fold[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_list_fold[T, bool, TRUE, LAMBDA (a, b: bool): a AND b] AS andLists,
+    ppg_monoid_sum[T, bool, TRUE, LAMBDA (a, b: bool): a AND b] AS andSets,
+    ppg_list_maps[T, bool]
+  xs: VAR list[T]
+  P: VAR pred[T]
+  S: VAR finite_set[T]
+  list_and_every: LEMMA andLists.fold(xs, P) = every(P)(xs)
+  list_and_forall: LEMMA andLists.fold(xs, P) = (FORALL (x: T): member(x, xs) IMPLIES P(x))
+  set_and_forall: LEMMA andSets.sum(S, P) = (FORALL (x: T): S(x) IMPLIES P(x))
+END ppg_bool_fold

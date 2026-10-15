@@ -1,0 +1,33 @@
+% Address and reconstructed checks agree on every valid tree.
+ppg_mt_check_bridge[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_rose_check_shape[C, V, Value, domain], ppg_bool_fold[Addr],
+    ppg_mt_reconstruction_fold[C, V, bool, TRUE, LAMBDA (a, b: bool): a AND b] AS reconstructCheck
+  vars: VAR CertVars
+  bad: VAR [C, MTState -> bool]
+  omega: VAR LogSpace
+  T: VAR GTree
+  w, v: VAR Addr
+  Clog: VAR [nat -> C]
+  n, t: VAR nat
+  S: VAR finite_set[Addr]
+  checkStateAt_reconstruction: LEMMA gt_valid?(T) AND T`dom(w) IMPLIES
+    checkStateAt(vars, omega, toWTree(T, null), length(w)) = checkState(vars, T, omega, w)
+  descendants_subset: LEMMA subset?(descendants(T, v), T`dom)
+  finite_checks_congr: LEMMA gt_valid?(T) AND subset?(S, T`dom) IMPLIES
+    andSets.sum(S, LAMBDA (w: Addr): bad(T`lab(w), checkStateAt(vars, omega, toWTree(T, null), length(w)))) =
+      andSets.sum(S, LAMBDA (w: Addr): bad(T`lab(w), checkState(vars, T, omega, w)))
+  fuel_checkOK: LEMMA gt_valid?(T) AND T`dom(v) AND
+    (FORALL (w: Addr): T`dom(w) IMPLIES length(w) <= length(v) + n) IMPLIES
+    (checkOK(vars, bad, omega, toWTree(T, null), length(v), toWTreeFuel(T, n, v)) IFF
+      FORALL (w: Addr): T`dom(w) AND addrPrefix(v, w) IMPLIES bad(T`lab(w), checkState(vars, T, omega, w)))
+  check_reconstruction: THEOREM gt_valid?(T) IMPLIES
+    (tauCheck(vars, bad, T, omega) IFF roseTauCheck(vars, bad, omega, toWTree(T, null)))
+  tauC_toWTreeFuel_checkOK: THEOREM tau_C(vars, Clog, t)`dom(v) AND
+    (FORALL (w: Addr): tau_C(vars, Clog, t)`dom(w) IMPLIES length(w) <= length(v) + n) IMPLIES
+    (checkOK(vars, bad, omega, toWTree(tau_C(vars, Clog, t), null), length(v), toWTreeFuel(tau_C(vars, Clog, t), n, v)) IFF
+      FORALL (w: Addr): tau_C(vars, Clog, t)`dom(w) AND addrPrefix(v, w) IMPLIES
+        bad(tau_C(vars, Clog, t)`lab(w), checkState(vars, tau_C(vars, Clog, t), omega, w)))
+  tauC_tauCheck_iff_WTree_tauCheck: THEOREM tauCheck(vars, bad, tau_C(vars, Clog, t), omega) IFF
+    roseTauCheck(vars, bad, omega, toWTree(tau_C(vars, Clog, t), null))
+END ppg_mt_check_bridge
