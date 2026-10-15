@@ -1,0 +1,594 @@
+(|ppg_shearer_family|
+ (|properWeight_partial_sum_TCC1| 0
+  (|properWeight_partial_sum_TCC1-1| NIL 4001081747 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|properWeight_partial_sum| SUBTYPE "LAMBDA (a, b: nonneg_real): a + b"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_shearer_family.op)(0), booleans.AND(operator_defs[nonneg_real].associative?(ppg_shearer_family.op), operator_defs[nonneg_real].commutative?(ppg_shearer_family.op)))}"
+    (31 48 31 56))))
+ (|properWeight_partial_sum| 0
+  (|properWeight_partial_sum-1| NIL 4001081748
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "esum_embed" ("F" "F!1" "f" "properWeights(p!1,B!1,J!1)"))
+     (EXPAND "properFamilyWeight") (ASSERT))
+    NIL)
+   ((|properFamilyWeight| CONST-DECL "ENN" |ppg_shearer_family| NIL)
+    (|esum_embed| FORMULA-DECL NIL |ppg_nonneg_tsum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|properWeights| CONST-DECL "nonneg_real" |ppg_shearer_family| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_family| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{H: [C, C -> bool] |
+   (FORALL (a: C): NOT H(a, a)) AND (FORALL (a, b: C): H(a, b) = H(b, a))}"
+     |ppg_shearer_family| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL))
+   SHOSTAK))
+ (|proper_filter_sum| 0
+  (|proper_filter_sum-1| NIL 4001081748
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "sum_filter_zero"
+       ("F" "F!1" "A" "properFamily(B!1,J!1)" "f"
+        "properWeights(p!1,B!1,J!1)"))
+      (("" (SPLIT -1)
+        (("1"
+          (LEMMA "ppg_nonneg_folds[LayerSeq].sum_congr"
+           ("S" "sets[LayerSeq].intersection(F!1,properFamily(B!1,J!1))" "f"
+            "properWeights(p!1,B!1,J!1)" "g" "clippedWeight(p!1)"))
+          (("1" (SPLIT -1)
+            (("1" (ASSERT) NIL NIL)
+             ("2" (GRIND :EXCLUDE ("properFamily" "clippedWeight" "is_finite"))
+              NIL NIL))
+            NIL))
+          NIL)
+         ("2" (GRIND :EXCLUDE ("properFamily" "clippedWeight" "is_finite")) NIL
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|sum_congr| FORMULA-DECL NIL |ppg_nonneg_folds| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|clippedWeight| CONST-DECL "nonneg_real" |ppg_shearer_family| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[LayerSeq[C, G]]"
+     |ppg_shearer_family| NIL)
+    (|sum_filter_zero| FORMULA-DECL NIL |ppg_nonneg_order| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|properFamily| CONST-DECL "bool" |ppg_shearer_padding| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|properWeights| CONST-DECL "nonneg_real" |ppg_shearer_family| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_family| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{H: [C, C -> bool] |
+   (FORALL (a: C): NOT H(a, a)) AND (FORALL (a, b: C): H(a, b) = H(b, a))}"
+     |ppg_shearer_family| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL))
+   SHOSTAK))
+ (|clippedWeight_padTo| 0
+  (|clippedWeight_padTo-1| NIL 4001081748
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "sequenceWeight_padTo" ("D" "D!1" "L" "L!1" "p" "p!1"))
+     (EXPAND "clippedWeight") (ASSERT))
+    NIL)
+   ((|clippedWeight| CONST-DECL "nonneg_real" |ppg_shearer_family| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|sequenceWeight_padTo| FORMULA-DECL NIL |ppg_shearer_padding| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_family| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{H: [C, C -> bool] |
+   (FORALL (a: C): NOT H(a, a)) AND (FORALL (a, b: C): H(a, b) = H(b, a))}"
+     |ppg_shearer_family| NIL))
+   SHOSTAK))
+ (|padding_image_sum| 0
+  (|padding_image_sum-1| NIL 4001081748
+   ("" (SKOSIMP*)
+    (("" (LABEL "PROPER" -1)
+      ((""
+        (LEMMA "sum_nonneg_embed"
+         ("F" "image[LayerSeq,LayerSeq](LAMBDA(L:LayerSeq):padTo(D!1,L),F!1)"
+          "f" "clippedWeight(p!1)"))
+        (("" (LEMMA "sum_nonneg_embed" ("F" "F!1" "f" "clippedWeight(p!1)"))
+          ((""
+            (LEMMA "fsum_image"
+             ("S" "F!1" "h" "LAMBDA(L:LayerSeq):padTo(D!1,L)" "f"
+              "LAMBDA(L:LayerSeq):clippedWeight(p!1)(L)"))
+            (("" (SPLIT -1)
+              (("1"
+                (LEMMA "fsum_congr[LayerSeq]"
+                 ("S" "F!1" "f"
+                  "LAMBDA(L:LayerSeq):clippedWeight(p!1)(padTo(D!1,L))" "g"
+                  "LAMBDA(L:LayerSeq):clippedWeight(p!1)(L)"))
+                (("1" (SPLIT -1)
+                  (("1" (ASSERT) NIL NIL)
+                   ("2" (SKOSIMP*)
+                    (("2"
+                      (LEMMA "clippedWeight_padTo"
+                       ("p" "p!1" "D" "D!1" "L" "x!1"))
+                      (("2" (PROPAX) NIL NIL)) NIL))
+                    NIL))
+                  NIL))
+                NIL)
+               ("2" (SKOSIMP*)
+                (("2" (INST-CP "PROPER" "a!1")
+                  (("2" (INST "PROPER" "b!1")
+                    (("2"
+                      (LEMMA "padTo_injective_on_proper"
+                       ("D" "D!1" "L" "a!1" "M" "b!1"))
+                      (("2" (PROP) NIL NIL)) NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|sum_nonneg_embed| FORMULA-DECL NIL |ppg_nonneg_real_sum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|padTo| CONST-DECL "LayerSeq" |ppg_shearer_padding| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|clippedWeight| CONST-DECL "nonneg_real" |ppg_shearer_family| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_family| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{H: [C, C -> bool] |
+   (FORALL (a: C): NOT H(a, a)) AND (FORALL (a, b: C): H(a, b) = H(b, a))}"
+     |ppg_shearer_family| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|fsum_image| FORMULA-DECL NIL |ppg_sum_image| NIL)
+    (|padTo_injective_on_proper| FORMULA-DECL NIL |ppg_shearer_padding| NIL)
+    (|fsum_congr| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|clippedWeight_padTo| FORMULA-DECL NIL |ppg_shearer_family| NIL))
+   SHOSTAK))
+ (|stable_sequences_nonnegative| 0
+  (|stable_sequences_nonnegative-1| NIL 4001081748
+   ("" (SKOSIMP*)
+    (("" (LEMMA "sequenceWeight_nonneg" ("p" "p!1" "L" "L!1"))
+      (("" (SPLIT -1)
+        (("1" (PROPAX) NIL NIL)
+         ("2" (EXPAND "nonnegativeLayers")
+          (("2" (SKOSIMP*)
+            (("2"
+              (LEMMA "stableSequences_layers"
+               ("B" "B!1" "J" "J!1" "d" "D!1" "L" "L!1"))
+              (("2" (ASSERT)
+                (("2" (INST -1 "J!2")
+                  (("2"
+                    (LEMMA "nonnegative_subset"
+                     ("p" "p!1" "B" "B!1" "J" "J!2"))
+                    (("2" (PROP) NIL NIL)) NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_family| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|nonnegative_subset| FORMULA-DECL NIL |ppg_shearer_budget| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|stableSequences_layers| FORMULA-DECL NIL |ppg_shearer_sequences| NIL)
+    (|nonnegativeLayers| CONST-DECL "bool" |ppg_shearer_sequences| NIL)
+    (|sequenceWeight_nonneg| FORMULA-DECL NIL |ppg_shearer_sequences| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_family| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{H: [C, C -> bool] |
+   (FORALL (a: C): NOT H(a, a)) AND (FORALL (a, b: C): H(a, b) = H(b, a))}"
+     |ppg_shearer_family| NIL))
+   SHOSTAK))
+ (|padded_family_subset| 0
+  (|padded_family_subset-1| NIL 4001081748
+   (""
+    (THEN (SKOSIMP*) (LABEL "DEPTH" -1) (EXPAND "subset?" 1) (SKOSIMP*)
+     (GRIND :IF-MATCH NIL :EXCLUDE ("padTo" "stableSequences" "is_finite"))
+     (INST "DEPTH" "x!2") (ASSERT))
+    NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_family| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{H: [C, C -> bool] |
+   (FORALL (a: C): NOT H(a, a)) AND (FORALL (a, b: C): H(a, b) = H(b, a))}"
+     |ppg_shearer_family| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK))
+ (|finite_proper_sum_le| 0
+  (|finite_proper_sum_le-1| NIL 4001081748
+   ("" (SKOSIMP*)
+    (("" (LABEL "FAMILY" -5)
+      (("" (LEMMA "exists_padding_depth" ("B" "B!1" "J" "J!1" "F" "F!1"))
+        (("" (SPLIT -1)
+          (("1" (SKOLEM -1 "D!1")
+            (("1" (LABEL "DEPTH" -1)
+              (("1"
+                (LEMMA "padded_family_subset"
+                 ("B" "B!1" "J" "J!1" "F" "F!1" "D" "D!1"))
+                (("1" (ASSERT)
+                  (("1"
+                    (LEMMA "padding_image_sum" ("F" "F!1" "D" "D!1" "p" "p!1"))
+                    (("1" (SPLIT -1)
+                      (("1"
+                        (LEMMA "sum_subset"
+                         ("F"
+                          "image[LayerSeq,LayerSeq](LAMBDA(L:LayerSeq):padTo(D!1,L),F!1)"
+                          "S" "stableSequences(B!1,D!1,J!1)" "f"
+                          "clippedWeight(p!1)"))
+                        (("1"
+                          (LEMMA "clipped_sum"
+                           ("F" "stableSequences(B!1,D!1,J!1)" "h"
+                            "sequenceWeight(p!1)"))
+                          (("1" (SPLIT -1)
+                            (("1"
+                              (LEMMA "sum_stableSequences_le"
+                               ("B" "B!1" "J" "J!1" "d" "D!1" "p" "p!1"))
+                              (("1" (EXPAND "clippedWeight")
+                                (("1" (ASSERT) NIL NIL)) NIL))
+                              NIL)
+                             ("2" (SKOSIMP*)
+                              (("2"
+                                (LEMMA "stable_sequences_nonnegative"
+                                 ("B" "B!1" "J" "J!1" "D" "D!1" "L" "t!1" "p"
+                                  "p!1"))
+                                (("2" (ASSERT) NIL NIL)) NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL)
+                       ("2" (SKOSIMP*)
+                        (("2" (INST "FAMILY" "L!1")
+                          (("2" (EXPAND "properFamily") (("2" (PROP) NIL NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL)
+           ("2" (PROPAX) NIL NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((G FORMAL-CONST-DECL "{H: [C, C -> bool] |
+   (FORALL (a: C): NOT H(a, a)) AND (FORALL (a, b: C): H(a, b) = H(b, a))}"
+     |ppg_shearer_family| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_family| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|exists_padding_depth| FORMULA-DECL NIL |ppg_shearer_padding| NIL)
+    (|padded_family_subset| FORMULA-DECL NIL |ppg_shearer_family| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|padding_image_sum| FORMULA-DECL NIL |ppg_shearer_family| NIL)
+    (|properFamily| CONST-DECL "bool" |ppg_shearer_padding| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|clippedWeight| CONST-DECL "nonneg_real" |ppg_shearer_family| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|stableSequences| DEF-DECL "finite_set[LayerSeq]" |ppg_shearer_sequences|
+     NIL)
+    (|padTo| CONST-DECL "LayerSeq" |ppg_shearer_padding| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|sum_subset| FORMULA-DECL NIL |ppg_nonneg_order| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT
+     "(partial_order?[set[LayerSeq[C, G]]])" |ppg_shearer_family| NIL)
+    (|sum_stableSequences_le| FORMULA-DECL NIL |ppg_shearer_sequences| NIL)
+    (|stable_sequences_nonnegative| FORMULA-DECL NIL |ppg_shearer_family| NIL)
+    (|clipped_sum| FORMULA-DECL NIL |ppg_nonneg_real_sum| NIL)
+    (|sequenceWeight| CONST-DECL "real" |ppg_shearer_sequences| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_family| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK))
+ (|finite_family_sum_le| 0
+  (|finite_family_sum_le-1| NIL 4001081748
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "proper_filter_sum" ("F" "F!1" "B" "B!1" "J" "J!1" "p" "p!1"))
+     (LEMMA "finite_proper_sum_le"
+      ("F" "sets[LayerSeq].intersection(F!1,properFamily(B!1,J!1))" "B" "B!1"
+       "J" "J!1" "p" "p!1"))
+     (ASSERT) (GRIND :EXCLUDE ("properFamily" "stableSequences" "is_finite")))
+    NIL)
+   ((|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[LayerSeq[C, G]]"
+     |ppg_shearer_family| NIL)
+    (|properFamily| CONST-DECL "bool" |ppg_shearer_padding| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|finite_proper_sum_le| FORMULA-DECL NIL |ppg_shearer_family| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|Independent| CONST-DECL "bool" |ppg_shearer_sets| NIL)
+    (|nonnegativeOn| CONST-DECL "bool" |ppg_shearer_budget| NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_powerset_sum| NIL)
+    (|independentSubsets| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_shearer_sets| NIL)
+    (|powerset| CONST-DECL "setofsets" |sets| NIL)
+    (|polynomial| CONST-DECL "real" |ppg_shearer_polynomial| NIL)
+    (|StrictCriterion| CONST-DECL "bool" |ppg_shearer_polynomial| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|coefficient| CONST-DECL "real" |ppg_shearer_coefficients| NIL)
+    (|div0| CONST-DECL "real" |ppg_shearer_scalar| NIL)
+    (|stableBudget| CONST-DECL "real" |ppg_shearer_budget| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[finite_set[C]]"
+     |ppg_shearer_family| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[C]"
+     |ppg_shearer_family| NIL)
+    (|powerset_finite2| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|nonempty_powerset| APPLICATION-JUDGEMENT "(nonempty?[set[C]])"
+     |ppg_shearer_family| NIL)
+    (|powerset_finite| APPLICATION-JUDGEMENT "finite_set[set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_family| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|proper_filter_sum| FORMULA-DECL NIL |ppg_shearer_family| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_family| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{H: [C, C -> bool] |
+   (FORALL (a: C): NOT H(a, a)) AND (FORALL (a, b: C): H(a, b) = H(b, a))}"
+     |ppg_shearer_family| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   SHOSTAK))
+ (|tsum_properFamilyWeight_le| 0
+  (|tsum_properFamilyWeight_le-1| NIL 4001081748
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "tsum_finite_bound"
+      ("f" "properWeights(p!1,B!1,J!1)" "b"
+       "max(0,stableBudget(p!1,B!1,J!1))"))
+     (EXPAND "properFamilyTotal") (ASSERT) (SKOSIMP*)
+     (LEMMA "finite_family_sum_le" ("F" "F!1" "B" "B!1" "J" "J!1" "p" "p!1"))
+     (GRIND :EXCLUDE
+      ("stableBudget" "properWeights" "nonnegativeOn" "StrictCriterion"
+       "Independent" "subset?" "sum" "tsum" "is_finite")))
+    NIL)
+   ((|properFamilyTotal| CONST-DECL "ENN" |ppg_shearer_family| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|finite_family_sum_le| FORMULA-DECL NIL |ppg_shearer_family| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[C]])"
+     |ppg_shearer_family| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|tsum_finite_bound| FORMULA-DECL NIL |ppg_nonneg_tsum| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|max| CONST-DECL "{p: real | p >= m AND p >= n}" |real_defs| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|stableBudget| CONST-DECL "real" |ppg_shearer_budget| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|properWeights| CONST-DECL "nonneg_real" |ppg_shearer_family| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_family| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{H: [C, C -> bool] |
+   (FORALL (a: C): NOT H(a, a)) AND (FORALL (a, b: C): H(a, b) = H(b, a))}"
+     |ppg_shearer_family| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL))
+   SHOSTAK))
+ (|tsum_properFamilyWeight_lt_top| 0
+  (|tsum_properFamilyWeight_lt_top-1| NIL 4001081748
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "tsum_properFamilyWeight_le" ("B" "B!1" "J" "J!1" "p" "p!1"))
+     (LEMMA "infinity_not_le" ("a" "max(0,stableBudget(p!1,B!1,J!1))"))
+     (LEMMA "le_infinity" ("x" "properFamilyTotal(p!1,B!1,J!1)")) (PROP)
+     (ASSERT))
+    NIL)
+   ((|infinity_not_le| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|max| CONST-DECL "{p: real | p >= m AND p >= n}" |real_defs| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|stableBudget| CONST-DECL "real" |ppg_shearer_budget| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|le_infinity| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|properFamilyTotal| CONST-DECL "ENN" |ppg_shearer_family| NIL)
+    (|tsum_properFamilyWeight_le| FORMULA-DECL NIL |ppg_shearer_family| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_shearer_family| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{H: [C, C -> bool] |
+   (FORALL (a: C): NOT H(a, a)) AND (FORALL (a, b: C): H(a, b) = H(b, a))}"
+     |ppg_shearer_family| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   SHOSTAK)))
+

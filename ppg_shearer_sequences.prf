@@ -1,0 +1,365 @@
+(|ppg_shearer_sequences|
+ (|layerSums_TCC1| 0
+  (|layerSums_TCC1-1| NIL 4001081225 ("" (THEN (GRIND)) NIL) NIL NIL
+   (|layerSums| SUBTYPE "LAMBDA (a, b: real): a + b"
+    "{f: [real, real -> real] | booleans.AND(operator_defs[real].identity?(ppg_shearer_sequences.f)(0), booleans.AND(operator_defs[real].associative?(ppg_shearer_sequences.f), operator_defs[real].commutative?(ppg_shearer_sequences.f)))}"
+    (16 39 16 59))))
+ (|layerWeights_TCC1| 0
+  (|layerWeights_TCC1-1| NIL 4001081225 ("" (THEN (GRIND)) NIL) NIL NIL
+   (|layerWeights| SUBTYPE "LAMBDA (a, b: real): a * b"
+    "{f: [real, real -> real] | booleans.AND(operator_defs[real].identity?(ppg_shearer_sequences.f)(1), booleans.AND(operator_defs[real].associative?(ppg_shearer_sequences.f), operator_defs[real].commutative?(ppg_shearer_sequences.f)))}"
+    (18 31 18 51))))
+ (|stableSequences_TCC1| 0
+  (|stableSequences_TCC1-1| NIL 4001081225 ("" (THEN (SUBTYPE-TCC)) NIL) NIL
+   NIL (|stableSequences| SUBTYPE "d - 1" "nat" (28 77 28 80))))
+ (|stableSequences_TCC2| 0
+  (|stableSequences_TCC2-1| NIL 4001081225 ("" (THEN (TERMINATION-TCC)) NIL)
+   NIL NIL
+   (|stableSequences| TERMINATION "stableSequences(B, d - 1, K)" "NIL"
+    (28 59 28 83))))
+ (|stableSequences_zero| 0
+  (|stableSequences_zero-1| NIL 4001081225
+   ("" (THEN (SKOSIMP*) (EXPAND "stableSequences" 1 1) (ASSERT)) NIL) NIL
+   SHOSTAK))
+ (|stableSequences_succ| 0
+  (|stableSequences_succ-1| NIL 4001081225
+   ("" (THEN (SKOSIMP*) (EXPAND "stableSequences" 1 1) (ASSERT)) NIL) NIL
+   SHOSTAK))
+ (|cons_family_member| 0
+  (|cons_family_member-1| NIL 4001081225
+   (""
+    (THEN
+     (SPREAD (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite"))
+      ((THEN (INST 1 "x!1") (GRIND :EXCLUDE ("is_finite")))
+       (THEN (INST 1 "M!1") (GRIND :EXCLUDE ("is_finite"))))))
+    NIL)
+   ((|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL))
+   SHOSTAK))
+ (|stableSequences_member_succ| 0
+  (|stableSequences_member_succ-1| NIL 4001081225
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "stableSequences_succ" ("B" "B!1" "d" "d!1" "J" "J!1"))
+     (LEMMA "biUnion_member"
+      ("S" "successors(B!1,J!1)" "F"
+       "LAMBDA(K:Layer):consFamily(J!1,stableSequences(B!1,d!1,K))" "b" "L!1"))
+     (REPLACE -2) (EXPAND "consFamily")
+     (SPREAD
+      (GRIND :IF-MATCH NIL :EXCLUDE
+       ("stableSequences" "biUnion" "successors" "is_finite"))
+      ((THEN (INST 1 "a!1" "x!1") (ASSERT))
+       (THEN (INST 2 "K!1") (ASSERT) (INST 2 "M!1") (ASSERT)))))
+    NIL)
+   ((|biUnion_member| FORMULA-DECL NIL |ppg_finite_bind| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|successors| CONST-DECL "finite_set[finite_set[C]]" |ppg_shearer_closed|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL))
+   SHOSTAK))
+ (|cons_tail_injective| 0
+  (|cons_tail_injective-1| NIL 4001081225
+   (""
+    (THEN (SKOSIMP*)
+     (SPREAD
+      (CASE
+          "cdr[Layer](cons[Layer](J!1,L!1))=cdr[Layer](cons[Layer](J!1,M!1))")
+      ((THEN (ASSERT)) (THEN (REPLACE -1) (ASSERT)))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)) SHOSTAK))
+ (|rooted_unique| 0
+  (|rooted_unique-1| NIL 4001081225
+   ("" (THEN (GRIND :EXCLUDE ("is_finite"))) NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)) SHOSTAK))
+ (|sequenceWeight_null| 0
+  (|sequenceWeight_null-1| NIL 4001081225
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "layerWeights.fold_nil" ("f" "LAMBDA(J:Layer):product(J,p!1)"))
+     (EXPAND "sequenceWeight") (ASSERT))
+    NIL)
+   ((|fold_nil| FORMULA-DECL NIL |ppg_list_fold| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL))
+   SHOSTAK))
+ (|sequenceWeight_cons| 0
+  (|sequenceWeight_cons-1| NIL 4001081225
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "layerWeights.fold_cons"
+      ("xs" "L!1" "x" "J!1" "f" "LAMBDA(J:Layer):product(J,p!1)"))
+     (EXPAND "sequenceWeight") (ASSERT))
+    NIL)
+   ((|fold_cons| FORMULA-DECL NIL |ppg_list_fold| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL))
+   SHOSTAK))
+ (|stableSequences_head_length| 0
+  (|stableSequences_head_length-1| NIL 4001081225
+   (""
+    (THEN
+     (SPREAD (INDUCT "d")
+      ((THEN (SKOSIMP*) (REWRITE "stableSequences_zero")
+        (GRIND :EXCLUDE ("stableSequences" "is_finite")))
+       (THEN (SKOSIMP*) (LABEL "IH" -1)
+        (LEMMA "stableSequences_member_succ"
+         ("B" "B!1" "d" "j!1" "J" "J!1" "L" "L!1"))
+        (ASSERT) (SKOLEM -1 ("K!1" "M!1")) (FLATTEN)
+        (INST "IH" "B!1" "K!1" "M!1")
+        (GRIND :EXCLUDE ("stableSequences" "biUnion" "is_finite"))))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|Independent| CONST-DECL "bool" |ppg_shearer_sets| NIL)
+    (|successors| CONST-DECL "finite_set[finite_set[C]]" |ppg_shearer_closed|
+     NIL)
+    (|independentSubsets| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_shearer_sets| NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_powerset_sum| NIL)
+    (|closed| CONST-DECL "finite_set[C]" |ppg_shearer_closed| NIL))
+   SHOSTAK))
+ (|stableSequences_next_disjoint| 0
+  (|stableSequences_next_disjoint-1| NIL 4001081225
+   (""
+    (THEN (SKOSIMP*) (EXPAND "disjoint?") (EXPAND "empty?")
+     (EXPAND "intersection") (EXPAND "member") (SKOSIMP*)
+     (LEMMA "cons_family_member"
+      ("J" "J!1" "F" "stableSequences(B!1,d!1,K!1)" "L" "x!1"))
+     (ASSERT) (SKOLEM -1 "R!1") (FLATTEN)
+     (LEMMA "cons_family_member"
+      ("J" "J!1" "F" "stableSequences(B!1,d!1,H!1)" "L" "x!1"))
+     (ASSERT) (SKOLEM -1 "S!1") (FLATTEN)
+     (LEMMA "stableSequences_head_length"
+      ("B" "B!1" "d" "d!1" "J" "K!1" "L" "R!1"))
+     (LEMMA "stableSequences_head_length"
+      ("B" "B!1" "d" "d!1" "J" "H!1" "L" "S!1"))
+     (LEMMA "cons_tail_injective" ("J" "J!1" "L" "R!1" "M" "S!1")) (ASSERT)
+     (FLATTEN) (LEMMA "rooted_unique" ("J" "K!1" "K" "H!1" "L" "R!1"))
+     (GRIND :EXCLUDE
+      ("stableSequences" "length" "sequenceWeight" "is_finite" "consFamily")))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|successor_layer| 0
+  (|successor_layer-1| NIL 4001081443
+   (""
+    (THEN (SKOSIMP*) (LEMMA "mem_successors" ("B" "B!1" "J" "J!1" "K" "K!1"))
+     (LEMMA "closed_subset" ("B" "B!1" "J" "J!1"))
+     (LEMMA "subset_transitive[C]" ("a" "K!1" "b" "closed(B!1,J!1)" "c" "B!1"))
+     (PROP))
+    NIL)
+   ((|closed_subset| FORMULA-DECL NIL |ppg_shearer_closed| NIL)
+    (|closed| CONST-DECL "finite_set[C]" |ppg_shearer_closed| NIL)
+    (|subset_transitive| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|mem_successors| FORMULA-DECL NIL |ppg_shearer_closed| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|sum_consFamily| 0
+  (|sum_consFamily-1| NIL 4001081443
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fsum_image"
+      ("S" "F!1" "h" "LAMBDA(L:LayerSeq):cons[Layer](J!1,L)" "f"
+       "sequenceWeight(p!1)"))
+     (SPREAD (SPLIT -1)
+      ((THEN
+        (LEMMA "fsum_congr[LayerSeq]"
+         ("S" "F!1" "f"
+          "LAMBDA(L:LayerSeq):sequenceWeight(p!1)(cons[Layer](J!1,L))" "g"
+          "LAMBDA(L:LayerSeq):product(J!1,p!1)*sequenceWeight(p!1)(L)"))
+        (SPREAD (SPLIT -1)
+         ((THEN
+           (LEMMA "fsum_scale[LayerSeq]"
+            ("S" "F!1" "r" "product(J!1,p!1)" "f" "sequenceWeight(p!1)"))
+           (EXPAND "consFamily") (ASSERT))
+          (THEN (SKOSIMP*)
+           (LEMMA "sequenceWeight_cons" ("p" "p!1" "J" "J!1" "L" "x!1"))
+           (ASSERT)))))
+       (THEN (SKOSIMP*)
+        (LEMMA "cons_tail_injective" ("J" "J!1" "L" "a!1" "M" "b!1"))
+        (ASSERT)))))
+    NIL)
+   ((|fsum_scale| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|fsum_congr| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (|fsum_image| FORMULA-DECL NIL |ppg_sum_image| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL))
+   SHOSTAK))
+ (|layer_fsum_as_fold| 0
+  (|layer_fsum_as_fold-1| NIL 4001081680
+   (""
+    (THEN
+     (SPREAD (APPLY-EXTENSIONALITY :HIDE? T)
+      ((THEN (REWRITE "fsum_eq_sum[Layer]") (ASSERT)) (THEN (GRIND)))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|fsum| DEF-DECL "real" |ppg_finite_sum| NIL)
+    (|fsum_eq_sum| FORMULA-DECL NIL |ppg_real_sum| NIL))
+   SHOSTAK))
+ (|sequence_fsum_as_fold| 0
+  (|sequence_fsum_as_fold-1| NIL 4001081680
+   (""
+    (THEN
+     (SPREAD (APPLY-EXTENSIONALITY :HIDE? T)
+      ((THEN (REWRITE "fsum_eq_sum[LayerSeq]") (ASSERT)) (THEN (GRIND)))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|fsum| DEF-DECL "real" |ppg_finite_sum| NIL)
+    (|fsum_eq_sum| FORMULA-DECL NIL |ppg_real_sum| NIL))
+   SHOSTAK))
+ (|sum_stableSequences_succ| 0
+  (|sum_stableSequences_succ-1| NIL 4001081225
+   (""
+    (THEN (SKOSIMP*) (REWRITE "stableSequences_succ")
+     (LEMMA "layerSums.sum_bind"
+      ("S" "successors(B!1,J!1)" "F"
+       "LAMBDA(K:Layer):consFamily(J!1,stableSequences(B!1,d!1,K))" "f"
+       "sequenceWeight(p!1)"))
+     (SPREAD (SPLIT -1)
+      ((THEN (LEMMA "layer_fsum_as_fold") (REPLACE -1 :DIR RL)
+        (LEMMA "sequence_fsum_as_fold") (REPLACE -1 :DIR RL)
+        (LEMMA "fsum_scale[Layer]"
+         ("S" "successors(B!1,J!1)" "r" "product(J!1,p!1)" "f"
+          "depthWeights(p!1,B!1,d!1)"))
+        (LEMMA "fsum_congr[Layer]"
+         ("S" "successors(B!1,J!1)" "f"
+          "LAMBDA(K:Layer):ppg_finite_sum[LayerSeq].fsum(consFamily(J!1,stableSequences(B!1,d!1,K)),sequenceWeight(p!1))"
+          "g" "LAMBDA(K:Layer):product(J!1,p!1)*depthWeights(p!1,B!1,d!1)(K)"))
+        (SPREAD (SPLIT -1)
+         ((THEN (EXPAND "depthWeights") (ASSERT))
+          (THEN (SKOSIMP*)
+           (LEMMA "sum_consFamily"
+            ("p" "p!1" "J" "J!1" "F" "stableSequences(B!1,d!1,x!1)"))
+           (EXPAND "depthWeights") (ASSERT)))))
+       (THEN (EXPAND "disjointFamily") (SKOSIMP*)
+        (LEMMA "stableSequences_next_disjoint"
+         ("B" "B!1" "d" "d!1" "J" "J!1" "K" "a!1" "H" "c!1"))
+        (ASSERT)))))
+    NIL)
+   ((|sum_bind| FORMULA-DECL NIL |ppg_bind_sum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|successors| CONST-DECL "finite_set[finite_set[C]]" |ppg_shearer_closed|
+     NIL)
+    (|disjointFamily| CONST-DECL "bool" |ppg_finite_bind| NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (|fsum_scale| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|fsum_congr| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|fsum| DEF-DECL "real" |ppg_finite_sum| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL))
+   SHOSTAK))
+ (|stableSequences_layers| 0
+  (|stableSequences_layers-1| NIL 4001081225
+   (""
+    (THEN
+     (SPREAD (INDUCT "d")
+      ((THEN (SKOSIMP*) (REWRITE "stableSequences_zero")
+        (GRIND :EXCLUDE ("stableSequences" "is_finite" "Independent")))
+       (THEN (SKOSIMP*) (LABEL "IH" -1)
+        (LEMMA "stableSequences_member_succ"
+         ("B" "B!1" "d" "j!1" "J" "J!1" "L" "L!1"))
+        (ASSERT) (SKOLEM -1 ("H!1" "M!1")) (FLATTEN)
+        (LEMMA "successor_layer" ("B" "B!1" "J" "J!1" "K" "H!1")) (ASSERT)
+        (FLATTEN) (INST "IH" "B!1" "H!1" "M!1") (ASSERT) (INST "IH" "K!1")
+        (GRIND :EXCLUDE
+         ("stableSequences" "successors" "biUnion" "Independent"
+          "is_finite"))))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Independent| CONST-DECL "bool" |ppg_shearer_sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL))
+   SHOSTAK))
+ (|sequenceWeight_nonneg| 0
+  (|sequenceWeight_nonneg-1| NIL 4001081225
+   (""
+    (THEN
+     (SPREAD (INDUCT "L")
+      ((THEN (SKOSIMP*) (REWRITE "sequenceWeight_null") (ASSERT))
+       (THEN (SKOSIMP*) (LABEL "IH" -1) (LABEL "NP" -2) (INST "IH" "p!1")
+        (EXPAND "nonnegativeLayers" "NP") (INST-CP "NP" "cons1_var!1")
+        (LEMMA "product_nonnegative" ("p" "p!1" "J" "cons1_var!1"))
+        (LEMMA "nonnegative_times"
+         ("x" "product(cons1_var!1,p!1)" "y"
+          "sequenceWeight(p!1)(cons2_var!1)"))
+        (REWRITE "sequenceWeight_cons")
+        (SPREAD (SPLIT "IH")
+         ((THEN
+           (GRIND :EXCLUDE
+            ("sequenceWeight" "product" "nonnegativeOn" "is_finite")))
+          (THEN (EXPAND "nonnegativeLayers" 1) (SKOSIMP*) (INST "NP" "J!1")
+           (GRIND :EXCLUDE
+            ("sequenceWeight" "product" "nonnegativeOn" "is_finite")))))))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (|nonnegative_times| FORMULA-DECL NIL |ppg_shearer_budget| NIL)
+    (|product_nonnegative| FORMULA-DECL NIL |ppg_shearer_budget| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|sum_stableSequences_le| 0
+  (|sum_stableSequences_le-1| NIL 4001081225
+   (""
+    (THEN
+     (SPREAD (INDUCT "d")
+      ((THEN (SKOSIMP*) (REWRITE "stableSequences_zero")
+        (LEMMA "fsum_singleton[LayerSeq]"
+         ("x" "cons[Layer](J!1,null[Layer])" "f" "sequenceWeight(p!1)"))
+        (LEMMA "prod_le_stableBudget" ("p" "p!1" "B" "B!1" "J" "J!1"))
+        (LEMMA "sequenceWeight_cons" ("p" "p!1" "J" "J!1" "L" "null[Layer]"))
+        (LEMMA "sequenceWeight_null" ("p" "p!1")) (ASSERT))
+       (THEN (SKOSIMP*) (LABEL "IH" -1)
+        (LEMMA "sum_stableSequences_succ"
+         ("B" "B!1" "d" "j!1" "J" "J!1" "p" "p!1"))
+        (LEMMA "stableBudget_recurrence" ("B" "B!1" "J" "J!1" "p" "p!1"))
+        (LEMMA "nonnegative_subset" ("B" "B!1" "J" "J!1" "p" "p!1"))
+        (LEMMA "product_nonnegative" ("J" "J!1" "p" "p!1")) (ASSERT)
+        (LEMMA "both_sides_times_pos_le2_imp"
+         ("x"
+          "ppg_finite_sum[Layer].fsum(successors(B!1,J!1),depthWeights(p!1,B!1,j!1))"
+          "y"
+          "ppg_finite_sum[Layer].fsum(successors(B!1,J!1),budgetWeights(p!1,B!1))"
+          "nnw" "product(J!1,p!1)"))
+        (LEMMA "fsum_mono[Layer]"
+         ("S" "successors(B!1,J!1)" "f" "depthWeights(p!1,B!1,j!1)" "g"
+          "budgetWeights(p!1,B!1)"))
+        (SPREAD (SPLIT -1)
+         ((THEN (EXPAND "depthWeights") (ASSERT))
+          (THEN (SKOSIMP*)
+           (LEMMA "successor_layer" ("B" "B!1" "J" "J!1" "K" "x!1"))
+           (INST "IH" "B!1" "x!1" "p!1") (EXPAND "depthWeights")
+           (EXPAND "budgetWeights") (PROP))))))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Independent| CONST-DECL "bool" |ppg_shearer_sets| NIL)
+    (|nonnegativeOn| CONST-DECL "bool" |ppg_shearer_budget| NIL)
+    (|StrictCriterion| CONST-DECL "bool" |ppg_shearer_polynomial| NIL)
+    (|fsum| DEF-DECL "real" |ppg_finite_sum| NIL)
+    (|stableBudget| CONST-DECL "real" |ppg_shearer_budget| NIL)
+    (|prod_le_stableBudget| FORMULA-DECL NIL |ppg_shearer_budget| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|fsum_singleton| FORMULA-DECL NIL |ppg_real_division_sum| NIL)
+    (|stableBudget_recurrence| FORMULA-DECL NIL |ppg_shearer_budget| NIL)
+    (|product_nonnegative| FORMULA-DECL NIL |ppg_shearer_budget| NIL)
+    (|budgetWeights| CONST-DECL "[finite_set[C] -> real]" |ppg_shearer_budget|
+     NIL)
+    (|successors| CONST-DECL "finite_set[finite_set[C]]" |ppg_shearer_closed|
+     NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (|fsum_mono| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|nonnegative_subset| FORMULA-DECL NIL |ppg_shearer_budget| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,265 @@
+(|ppg_shearer_padding|
+ (|emptyLayers_TCC1| 0
+  (|emptyLayers_TCC1-1| NIL 4001081617 ("" (THEN (SUBTYPE-TCC)) NIL) NIL NIL
+   (|emptyLayers| SUBTYPE "k - 1" "nat" (20 45 20 48))))
+ (|emptyLayers_TCC2| 0
+  (|emptyLayers_TCC2-1| NIL 4001081617 ("" (THEN (TERMINATION-TCC)) NIL) NIL
+   NIL (|emptyLayers| TERMINATION "emptyLayers(k - 1)" "NIL" (20 33 20 49))))
+ (|padTo_TCC1| 0
+  (|padTo_TCC1-1| NIL 4001081617 ("" (THEN (GRIND)) NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL))
+   NIL
+   (|padTo| SUBTYPE "max(0, D + 1 - length[Layer[C, G]](L))" "nat"
+    (21 53 21 80))))
+ (|trim_TCC1| 0
+  (|trim_TCC1-1| NIL 4001081617 ("" (THEN (TERMINATION-TCC)) NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL))
+   NIL (|trim| TERMINATION "trim(M)" "NIL" (24 67 24 74))))
+ (|emptyLayers_zero| 0
+  (|emptyLayers_zero-1| NIL 4001081617
+   ("" (THEN (EXPAND "emptyLayers" 1 1) (ASSERT)) NIL) NIL SHOSTAK))
+ (|emptyLayers_succ| 0
+  (|emptyLayers_succ-1| NIL 4001081617
+   ("" (THEN (SKOSIMP*) (EXPAND "emptyLayers" 1 1) (ASSERT)) NIL) NIL SHOSTAK))
+ (|emptyLayers_append| 0
+  (|emptyLayers_append-1| NIL 4001081617
+   (""
+    (THEN
+     (SPREAD (INDUCT "k")
+      ((THEN (REWRITE "emptyLayers_succ") (REWRITE "emptyLayers_zero")
+        (GRIND :EXCLUDE ("emptyLayers" "is_finite")))
+       (THEN (SKOSIMP*) (LEMMA "emptyLayers_succ" ("k" "j!1+1")) (REPLACE -1)
+        (LEMMA "emptyLayers_succ" ("k" "j!1")) (REPLACE -1)
+        (EXPAND "append" 1 1)
+        (GRIND :EXCLUDE ("emptyLayers" "append" "is_finite"))))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL))
+   SHOSTAK))
+ (|stableSequences_cons| 0
+  (|stableSequences_cons-1| NIL 4001081617
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "stableSequences_member_succ"
+      ("B" "B!1" "J" "J!1" "d" "d!1" "L" "cons[Layer](J!1,L!1)"))
+     (ASSERT) (INST 1 "K!1" "L!1") (ASSERT))
+    NIL)
+   ((|stableSequences_member_succ| FORMULA-DECL NIL |ppg_shearer_sequences|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL))
+   SHOSTAK))
+ (|stableSequences_append_empty| 0
+  (|stableSequences_append_empty-1| NIL 4001081617
+   (""
+    (THEN
+     (SPREAD (INDUCT "d")
+      ((THEN (SKOSIMP*) (REWRITE "stableSequences_zero")
+        (LEMMA "stableSequences_cons"
+         ("B" "B!1" "J" "J!1" "K" "emptyset[C]" "d" "0" "L"
+          "cons[Layer](emptyset[C],null[Layer])"))
+        (LEMMA "empty_mem_successors" ("B" "B!1" "J" "J!1"))
+        (REWRITE "stableSequences_zero")
+        (GRIND :EXCLUDE ("stableSequences" "is_finite")))
+       (THEN (SKOSIMP*) (LABEL "IH" -1)
+        (LEMMA "stableSequences_member_succ"
+         ("B" "B!1" "J" "J!1" "d" "j!1" "L" "L!1"))
+        (ASSERT) (SKOLEM -1 ("K!1" "M!1")) (FLATTEN)
+        (INST "IH" "B!1" "K!1" "M!1")
+        (LEMMA "stableSequences_cons"
+         ("B" "B!1" "J" "J!1" "K" "K!1" "d" "j!1+1" "L"
+          "append[Layer](M!1,cons[Layer](emptyset[C],null[Layer]))"))
+        (GRIND :EXCLUDE ("stableSequences" "successors" "is_finite"))))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|stableSequences| DEF-DECL "finite_set[LayerSeq]" |ppg_shearer_sequences|
+     NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|stableSequences_zero| FORMULA-DECL NIL |ppg_shearer_sequences| NIL)
+    (|empty_mem_successors| FORMULA-DECL NIL |ppg_shearer_closed| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|Independent| CONST-DECL "bool" |ppg_shearer_sets| NIL)
+    (|successors| CONST-DECL "finite_set[finite_set[C]]" |ppg_shearer_closed|
+     NIL)
+    (|independentSubsets| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_shearer_sets| NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_powerset_sum| NIL)
+    (|closed| CONST-DECL "finite_set[C]" |ppg_shearer_closed| NIL)
+    (|stableSequences_member_succ| FORMULA-DECL NIL |ppg_shearer_sequences|
+     NIL))
+   SHOSTAK))
+ (|stableSequences_append_padding| 0
+  (|stableSequences_append_padding-1| NIL 4001081617
+   (""
+    (THEN
+     (SPREAD (INDUCT "k")
+      ((THEN (SKOSIMP*) (REWRITE "emptyLayers_zero")
+        (REWRITE "append_null[Layer]") (ASSERT))
+       (THEN (SKOSIMP*) (LABEL "IH" -1) (INST "IH" "B!1" "J!1" "L!1" "d!1")
+        (LEMMA "stableSequences_append_empty"
+         ("B" "B!1" "J" "J!1" "d" "d!1+j!1" "L"
+          "append[Layer](L!1,emptyLayers(j!1))"))
+        (REWRITE "emptyLayers_append") (REWRITE "append_assoc[Layer]")
+        (ASSERT)))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|stableSequences| DEF-DECL "finite_set[LayerSeq]" |ppg_shearer_sequences|
+     NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL))
+   SHOSTAK))
+ (|padTo_mem_stableSequences| 0
+  (|padTo_mem_stableSequences-1| NIL 4001081617
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "stableSequences_head_length"
+      ("B" "B!1" "J" "J!1" "d" "d!1" "L" "L!1"))
+     (LEMMA "stableSequences_append_padding"
+      ("B" "B!1" "J" "J!1" "d" "d!1" "k" "D!1-d!1" "L" "L!1"))
+     (EXPAND "padTo")
+     (GRIND :EXCLUDE
+      ("stableSequences" "append" "emptyLayers" "rooted" "length"
+       "is_finite")))
+    NIL)
+   ((|stableSequences_head_length| FORMULA-DECL NIL |ppg_shearer_sequences|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL))
+   SHOSTAK))
+ (|sequenceWeight_append| 0
+  (|sequenceWeight_append-1| NIL 4001081617
+   (""
+    (THEN
+     (SPREAD (INDUCT "L")
+      ((THEN (SKOSIMP*) (REWRITE "sequenceWeight_null")
+        (GRIND :EXCLUDE ("sequenceWeight" "is_finite")))
+       (THEN (SKOSIMP*) (INST -1 "M!1" "p!1") (EXPAND "append" 1 1)
+        (REWRITE "sequenceWeight_cons") (REWRITE "sequenceWeight_cons")
+        (ASSERT) (GRIND :EXCLUDE ("sequenceWeight" "product" "is_finite"))))))
+    NIL)
+   ((|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|sequenceWeight| CONST-DECL "real" |ppg_shearer_sequences| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|sequenceWeight_null| FORMULA-DECL NIL |ppg_shearer_sequences| NIL)
+    (|sequenceWeight_cons| FORMULA-DECL NIL |ppg_shearer_sequences| NIL))
+   SHOSTAK))
+ (|sequenceWeight_emptyLayers| 0
+  (|sequenceWeight_emptyLayers-1| NIL 4001081617
+   (""
+    (THEN
+     (SPREAD (INDUCT "k")
+      ((THEN (SKOSIMP*) (REWRITE "emptyLayers_zero")
+        (REWRITE "sequenceWeight_null") (ASSERT))
+       (THEN (SKOSIMP*) (INST -1 "p!1") (REWRITE "emptyLayers_succ")
+        (REWRITE "sequenceWeight_cons") (EXPAND "product" 1 1)
+        (GRIND :EXCLUDE ("product" "sequenceWeight" "is_finite"))))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|sequenceWeight| CONST-DECL "real" |ppg_shearer_sequences| NIL)
+    (|sequenceWeight_null| FORMULA-DECL NIL |ppg_shearer_sequences| NIL)
+    (|sequenceWeight_cons| FORMULA-DECL NIL |ppg_shearer_sequences| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL))
+   SHOSTAK))
+ (|sequenceWeight_padTo| 0
+  (|sequenceWeight_padTo-1| NIL 4001081617
+   (""
+    (THEN (SKOSIMP*) (EXPAND "padTo") (REWRITE "sequenceWeight_append")
+     (REWRITE "sequenceWeight_emptyLayers") (ASSERT))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL))
+   SHOSTAK))
+ (|trim_emptyLayers| 0
+  (|trim_emptyLayers-1| NIL 4001081617
+   (""
+    (THEN (SKOSIMP*)
+     (SPREAD (CASE "k!1=0")
+      ((THEN (REPLACE -1) (REWRITE "emptyLayers_zero") (EXPAND "trim")
+        (ASSERT))
+       (THEN (EXPAND "emptyLayers" 2 1) (EXPAND "trim" 2 1) (ASSERT)
+        (EXPAND "trim" 2 1) (ASSERT)))))
+    NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL))
+   SHOSTAK))
+ (|trim_append_proper| 0
+  (|trim_append_proper-1| NIL 4001081617
+   (""
+    (THEN
+     (SPREAD (INDUCT "L")
+      ((THEN (SKOSIMP*) (EXPAND "append") (REWRITE "trim_emptyLayers")
+        (ASSERT))
+       (THEN (SKOSIMP*) (LABEL "IH" -1) (LABEL "P" -2) (INST "IH" "k!1")
+        (EXPAND "proper") (EXPAND "append" 1 1) (EXPAND "trim" 1 1)
+        (GRIND :IF-MATCH ALL :EXCLUDE
+         ("trim" "append" "emptyLayers" "is_finite"))))))
+    NIL)
+   ((|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL))
+   SHOSTAK))
+ (|takeWhile_padTo| 0
+  (|takeWhile_padTo-1| NIL 4001081617
+   (""
+    (THEN (SKOSIMP*) (EXPAND "padTo")
+     (LEMMA "trim_append_proper"
+      ("L" "L!1" "k" "max(0,D!1+1-length[Layer](L!1))"))
+     (ASSERT))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL))
+   SHOSTAK))
+ (|padTo_injective_on_proper| 0
+  (|padTo_injective_on_proper-1| NIL 4001081617
+   (""
+    (THEN (SKOSIMP*) (LEMMA "takeWhile_padTo" ("D" "D!1" "L" "L!1"))
+     (LEMMA "takeWhile_padTo" ("D" "D!1" "L" "M!1")) (ASSERT))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL))
+   SHOSTAK))
+ (|exists_padding_depth| 0
+  (|exists_padding_depth-1| NIL 4001081617
+   (""
+    (THEN (SKOSIMP*) (LABEL "FAMILY" -1)
+     (INST 1 "bound(F!1,LAMBDA(L:LayerSeq):length[Layer](L))") (SKOSIMP*)
+     (TYPEPRED "bound(F!1,LAMBDA(L:LayerSeq):length[Layer](L))")
+     (INST -1 "L!1") (INST "FAMILY" "L!1") (ASSERT) (EXPAND "properFamily")
+     (FLATTEN) (SKOLEM -2 "d!1")
+     (LEMMA "stableSequences_head_length"
+      ("B" "B!1" "J" "J!1" "d" "d!1" "L" "L!1"))
+     (LEMMA "padTo_mem_stableSequences"
+      ("B" "B!1" "J" "J!1" "d" "d!1" "D"
+       "bound(F!1,LAMBDA(L:LayerSeq):length[Layer](L))" "L" "L!1"))
+     (ASSERT))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|bound| CONST-DECL "{n: nat | FORALL (x: T): S(x) IMPLIES f(x) < n}"
+     |ppg_finite_nat_bound| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|stableSequences_head_length| FORMULA-DECL NIL |ppg_shearer_sequences|
+     NIL))
+   SHOSTAK)))
+

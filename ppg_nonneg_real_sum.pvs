@@ -1,0 +1,14 @@
+% A finite sum of nonnegative reals has the same value in the real and
+% nonnegative additive monoids. Clipping is irrelevant on nonnegative
+% summands; the resulting identity connects finite real estimates to the
+% supremum definition of an unordered nonnegative sum.
+ppg_nonneg_real_sum[T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_real_sum[T], ppg_nonneg_order[T], ppg_real_filter[T]
+  F,S: VAR finite_set[T]
+  f: VAR [T->nonneg_real]
+  h: VAR [T->real]
+  sum_nonneg_embed: LEMMA fsum(F,LAMBDA(t:T):f(t))=sums.sum(F,f)
+  clipped_sum: LEMMA (FORALL(t:T):F(t) IMPLIES 0<=h(t)) IMPLIES
+    sums.sum(F,LAMBDA(t:T):max(0,h(t)))=fsum(F,h)
+END ppg_nonneg_real_sum

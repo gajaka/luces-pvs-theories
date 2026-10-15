@@ -1,0 +1,40 @@
+(|ppg_nonneg_real_sum|
+ (|sum_nonneg_embed_TCC1| 0
+  (|sum_nonneg_embed_TCC1-1| NIL 4001081747 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|sum_nonneg_embed| SUBTYPE "LAMBDA (a, b: nonneg_real): a + b"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_nonneg_real_sum.op)(0), booleans.AND(operator_defs[nonneg_real].associative?(ppg_nonneg_real_sum.op), operator_defs[nonneg_real].commutative?(ppg_nonneg_real_sum.op)))}"
+    (11 51 11 59))))
+ (|sum_nonneg_embed| 0
+  (|sum_nonneg_embed-1| NIL 4001081748
+   (""
+    (THEN
+     (SPREAD (INDUCT "F" :NAME "finite_set_induction_rest[T]")
+      ((THEN (SKOSIMP*) (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite")))
+       (THEN (SKOSIMP*) (INST -1 "f!1") (EXPAND "fsum" 1 1)
+        (EXPAND "sums.sum" 1 1)
+        (GRIND :IF-MATCH NIL :EXCLUDE ("fsum" "sum" "is_finite")))))
+     (GRIND :EXCLUDE ("fsum" "sum" "is_finite")))
+    NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_set_induction_rest| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|fsum| DEF-DECL "real" |ppg_finite_sum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL))
+   SHOSTAK))
+ (|clipped_sum| 0
+  (|clipped_sum-1| NIL 4001081748
+   (""
+    (THEN (SKOSIMP*) (LABEL "NN" -1)
+     (LEMMA "sum_nonneg_embed" ("F" "F!1" "f" "LAMBDA(t:T):max(0,h!1(t))"))
+     (LEMMA "fsum_congr" ("S" "F!1" "f" "LAMBDA(t:T):max(0,h!1(t))" "g" "h!1"))
+     (SPREAD (SPLIT -1)
+      ((THEN (ASSERT))
+       (THEN (SKOSIMP*) (INST "NN" "x!1")
+        (GRIND :EXCLUDE ("fsum" "sum" "is_finite"))))))
+    NIL)
+   ((|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|fsum_congr| FORMULA-DECL NIL |ppg_finite_sum| NIL))
+   SHOSTAK)))
+
