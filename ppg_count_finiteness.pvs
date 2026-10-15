@@ -1,0 +1,17 @@
+% Stopped event counts are finite exactly when the active prefix ends.
+ppg_count_finiteness[X: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_event_count[X]
+  E: VAR [nat->set[X]]
+  x: VAR X
+  n,N: VAR nat
+  prefix_le_length: LEMMA countPrefix(E,x,n)<=n
+  prefix_tail_bound: LEMMA (FORALL(k:nat):N<=k IMPLIES NOT E(k)(x)) IMPLIES
+    countPrefix(E,x,n)<=N
+  count_tail_bound: THEOREM (FORALL(k:nat):N<=k IMPLIES NOT E(k)(x)) IMPLIES
+    ele(eventCount(E,x),ennFinite(N))
+  full_prefix_value: LEMMA (FORALL(k:nat):E(k)(x)) IMPLIES countPrefix(E,x,n)=n
+  full_prefix_function: LEMMA (FORALL(k:nat):E(k)(x)) IMPLIES
+    (LAMBDA(n:nat):countPrefix(E,x,n))=(LAMBDA(n:nat):n)
+  count_all_infinite: THEOREM (FORALL(k:nat):E(k)(x)) IMPLIES eventCount(E,x)=ennInfinity
+END ppg_count_finiteness

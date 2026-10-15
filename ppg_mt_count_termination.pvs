@@ -1,0 +1,25 @@
+% Finiteness concerns the stopped count, even if the unstopped path later changes.
+ppg_mt_count_termination[C,V,Value: TYPE,domain:[V->set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_extended_count[C,V,Value,domain],ppg_count_finiteness[LogSpace]
+  vars: VAR CertVars
+  bad: VAR [C,MTState->bool]
+  fallback: VAR C
+  enumeration: VAR list[C]
+  initial: VAR MTState
+  omega: VAR LogSpace
+  n,N: VAR nat
+  good_stops_running: LEMMA MTGood(bad,randTraj(vars,bad,fallback,enumeration,initial,omega,N)) AND
+    N<=n IMPLIES NOT RunningUntil(vars,bad,fallback,enumeration,initial,omega,n+1)
+  TLog_le_of_good: THEOREM MTGood(bad,randTraj(vars,bad,fallback,enumeration,initial,omega,N)) IMPLIES
+    ele(TLog(vars,bad,fallback,enumeration,initial,omega),ennFinite(N))
+  no_good_all_running: LEMMA completeEnumeration(enumeration) AND
+    NOT (EXISTS(N:nat):MTGood(bad,randTraj(vars,bad,fallback,enumeration,initial,omega,N))) IMPLIES
+    RunningUntil(vars,bad,fallback,enumeration,initial,omega,n+1)
+  no_good_infinite_count: LEMMA completeEnumeration(enumeration) AND
+    NOT (EXISTS(N:nat):MTGood(bad,randTraj(vars,bad,fallback,enumeration,initial,omega,N))) IMPLIES
+    TLog(vars,bad,fallback,enumeration,initial,omega)=ennInfinity
+  TLog_lt_top_iff_exists_good: THEOREM completeEnumeration(enumeration) IMPLIES
+    (ennFinite?(TLog(vars,bad,fallback,enumeration,initial,omega)) IFF
+      EXISTS(N:nat):MTGood(bad,randTraj(vars,bad,fallback,enumeration,initial,omega,N)))
+END ppg_mt_count_termination

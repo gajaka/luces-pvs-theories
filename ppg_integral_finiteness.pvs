@@ -1,0 +1,30 @@
+% A finite nonnegative integral gives a measurable null set of infinite values.
+ppg_integral_finiteness[X: TYPE,
+  (IMPORTING ppg_measurable_space[X]) S: MeasurableSpace,
+  (IMPORTING ppg_probability_measure[X,S]) probLaw: Probability]: THEORY
+BEGIN
+  IMPORTING ppg_extended_integral[X,S,probLaw], ppg_enn_finiteness[X],
+    ppg_probability_set_laws[X,S]
+  f: VAR [X->ENN]
+  A: VAR (S)
+  c,b,m: VAR nonneg_real
+  scaledIndicator(c,A): NonnegativeFunction = c*nnIndicator(A)
+  scaled_indicator_value: LEMMA FORALL(x:X):scaledIndicator(c,A)(x)=
+    IF A(x) THEN c ELSE 0 ENDIF
+  scaled_indicator_mean: LEMMA mean(scaledIndicator(c,A))=c*probLaw(A)
+  scaled_infinite_minorant: LEMMA subset?(A,infiniteEvent(f)) IMPLIES
+    minorant(scaledIndicator(c,A),f)
+  infinite_mass_bound: LEMMA ele(lintegral(f),ennFinite(b)) AND
+    subset?(A,infiniteEvent(f)) IMPLIES c*probLaw(A)<=b
+  bounded_scaled_mass_zero: LEMMA (FORALL(c:nonneg_real):c*m<=b) IMPLIES m=0
+  null_measurable_infinite_subset: THEOREM ennFinite?(lintegral(f)) AND
+    subset?(A,infiniteEvent(f)) IMPLIES probLaw(A)=0
+  measurable_probability_zero_negligible: LEMMA probLaw(A)=0 IMPLIES
+    negligible_set?[X,asNasa(S),nasaLaw](A)
+  zero_complement_ae: LEMMA probLaw(A)=0 IMPLIES
+    ae?[X,asNasa(S),nasaLaw](complement(A))
+  finite_integral_ae: THEOREM measurable(S,ENNSigma,f) AND ennFinite?(lintegral(f)) IMPLIES
+    ae?[X,asNasa(S),nasaLaw](finiteEvent(f))
+  finite_integral_probability_one: THEOREM measurable(S,ENNSigma,f) AND ennFinite?(lintegral(f)) IMPLIES
+    probLaw(finiteEvent(f))=1
+END ppg_integral_finiteness

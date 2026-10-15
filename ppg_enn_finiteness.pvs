@@ -1,0 +1,16 @@
+% Finiteness is measurable in the extended nonnegative order sigma algebra.
+ppg_enn_finiteness[X: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_enn_measurable[X]
+  S: VAR ppg_measurable_space[X].MeasurableSpace
+  f: VAR [X->ENN]
+  z: VAR ENN
+  finite_iff_nat_bound: LEMMA ennFinite?(z) IFF EXISTS(n:nat):ele(z,ennFinite(n))
+  finiteEvent(f): set[X] = {x:X|ennFinite?(f(x))}
+  infiniteEvent(f): set[X] = complement(finiteEvent(f))
+  finite_event_union: LEMMA finiteEvent(f)=
+    countableUnion(LAMBDA(n:nat):inverseImage(f,upperRay(n)))
+  measurable_finite_event: LEMMA measurable(S,ENNSigma,f) IMPLIES S(finiteEvent(f))
+  measurable_infinite_event: LEMMA measurable(S,ENNSigma,f) IMPLIES S(infiniteEvent(f))
+  infinite_event_value: LEMMA FORALL(x:X):infiniteEvent(f)(x) IFF f(x)=ennInfinity
+END ppg_enn_finiteness
