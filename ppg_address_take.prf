@@ -1,0 +1,64 @@
+(|ppg_address_take|
+ (|takeAddress_TCC1| 0
+  (|takeAddress_TCC1-1| NIL 4001083138 ("" (THEN (SUBTYPE-TCC)) NIL)
+   ((|Address| TYPE-EQ-DECL NIL |ppg_address_prefix| NIL)) NIL
+   (|takeAddress| SUBTYPE "w" "(list_adt[nat].cons?)" (10 23 10 24))))
+ (|takeAddress_TCC2| 0
+  (|takeAddress_TCC2-1| NIL 4001083138 ("" (THEN (TERMINATION-TCC)) NIL)
+   ((|Address| TYPE-EQ-DECL NIL |ppg_address_prefix| NIL)) NIL
+   (|takeAddress| SUBTYPE "d - 1" "nat" (10 45 10 48))))
+ (|takeAddress_TCC3| 0
+  (|takeAddress_TCC3-1| NIL 4001083138 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|takeAddress| TERMINATION "takeAddress(cdr[nat](w), d - 1)" "NIL"
+    (10 26 10 49))))
+ (|takeAddress_length| 0
+  (|takeAddress_length-1| NIL 4001083140
+   (""
+    (THEN
+     (SPREAD (INDUCT "w")
+      ((THEN (GRIND :EXCLUDE ("is_finite")))
+       (THEN (SKOSIMP*) (LABEL "IH" -1)
+        (SPREAD (CASE "d!1=0")
+         ((THEN (GRIND :EXCLUDE ("takeAddress" "is_finite"))
+           (EXPAND "takeAddress" 1 1) (ASSERT))
+          (THEN (INST "IH" "d!1-1") (EXPAND "takeAddress" 2 1)
+           (GRIND :EXCLUDE ("takeAddress" "is_finite")))))))))
+    NIL)
+   ((|Address| TYPE-EQ-DECL NIL |ppg_address_prefix| NIL)) SHOSTAK))
+ (|takeAddress_prefix| 0
+  (|takeAddress_prefix-1| NIL 4001083140
+   (""
+    (THEN
+     (SPREAD (INDUCT "w")
+      ((THEN (SKOSIMP*) (EXPAND "takeAddress")
+        (LEMMA "prefix_nil" ("w" "null[nat]")) (ASSERT))
+       (THEN (SKOSIMP*) (LABEL "IH" -1)
+        (SPREAD (CASE "d!1=0")
+         ((THEN (EXPAND "takeAddress" 1 1)
+           (LEMMA "prefix_nil" ("w" "cons[nat](cons1_var!1,cons2_var!1)"))
+           (ASSERT))
+          (THEN
+           (SPREAD (INST "IH" "d!1-1")
+            ((THEN (EXPAND "takeAddress" 2 1) (ASSERT) (REWRITE "prefix_cons")
+              (ASSERT))
+             (THEN (GRIND :EXCLUDE ("takeAddress" "addrPrefix" "is_finite")))))
+           (ASSERT))))))))
+    NIL)
+   ((|Address| TYPE-EQ-DECL NIL |ppg_address_prefix| NIL)
+    (|addrPrefix| CONST-DECL "bool" |ppg_address_prefix| NIL)
+    (|prefix_nil| FORMULA-DECL NIL |ppg_address_prefix| NIL)
+    (|prefix_cons| FORMULA-DECL NIL |ppg_address_prefix| NIL))
+   SHOSTAK))
+ (|address_parent| 0
+  (|address_parent-1| NIL 4001083339
+   (""
+    (THEN (SKOSIMP*) (LEMMA "list_cases[nat]" ("xs" "reverse(w!1)"))
+     (LEMMA "length_reverse[nat]" ("l" "w!1"))
+     (LEMMA "reverse_reverse[nat]" ("l" "w!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE ("reverse" "append" "is_finite"))
+     (INST 1 "reverse(rest!1)" "h!1") (EXPAND "reverse" -3 1) (ASSERT))
+    NIL)
+   ((|list_cases| FORMULA-DECL NIL |ppg_tree_lists| NIL)
+    (|Address| TYPE-EQ-DECL NIL |ppg_address_prefix| NIL))
+   SHOSTAK)))
+

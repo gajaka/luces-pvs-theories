@@ -1,0 +1,77 @@
+(|ppg_shearer_windows|
+ (|layerWindow_TCC1| 0
+  (|layerWindow_TCC1-1| NIL 4001083139 ("" (THEN (SUBTYPE-TCC)) NIL) NIL NIL
+   (|layerWindow| SUBTYPE "n - 1" "nat" (19 40 19 43))))
+ (|layerWindow_TCC2| 0
+  (|layerWindow_TCC2-1| NIL 4001083139 ("" (THEN (TERMINATION-TCC)) NIL) NIL
+   NIL
+   (|layerWindow| TERMINATION "layerWindow(f, n - 1, d + 1)" "NIL"
+    (19 26 19 48))))
+ (|window_zero| 0
+  (|window_zero-1| NIL 4001083140
+   ("" (THEN (SKOSIMP*) (EXPAND "layerWindow" 1 1) (ASSERT)) NIL) NIL SHOSTAK))
+ (|window_succ| 0
+  (|window_succ-1| NIL 4001083140
+   ("" (THEN (SKOSIMP*) (EXPAND "layerWindow" 1 1) (ASSERT)) NIL) NIL SHOSTAK))
+ (|window_length| 0
+  (|window_length-1| NIL 4001083140
+   (""
+    (THEN
+     (SPREAD (INDUCT "n")
+      ((THEN (SKOSIMP*) (REWRITE "window_zero")
+        (GRIND :EXCLUDE ("layerWindow" "is_finite")))
+       (THEN (SKOSIMP*) (INST -1 "d!1+1" "f!1") (REWRITE "window_succ")
+        (GRIND :EXCLUDE ("layerWindow" "is_finite"))))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL))
+   SHOSTAK))
+ (|window_proper| 0
+  (|window_proper-1| NIL 4001083140
+   (""
+    (THEN
+     (SPREAD (INDUCT "n")
+      ((THEN (SKOSIMP*) (INST -1 "0") (REWRITE "window_zero")
+        (GRIND :EXCLUDE ("layerWindow" "is_finite")))
+       (THEN (SKOSIMP*) (LABEL "IH" -1) (LABEL "NONEMPTY" -2)
+        (INST "IH" "d!1+1" "f!1")
+        (SPREAD (SPLIT "IH")
+         ((THEN (INST "NONEMPTY" "0") (REWRITE "window_succ") (EXPAND "proper")
+           (SKOSIMP*) (INST "IH" "K!1")
+           (GRIND :EXCLUDE ("layerWindow" "is_finite")))
+          (THEN (SKOSIMP*) (INST "NONEMPTY" "k!1+1") (ASSERT))))))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|proper| CONST-DECL "bool" |ppg_shearer_padding| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL))
+   SHOSTAK))
+ (|layer_window_mem_stableSequences| 0
+  (|layer_window_mem_stableSequences-1| NIL 4001083140
+   (""
+    (THEN
+     (SPREAD (INDUCT "n")
+      ((THEN (SKOSIMP*) (REWRITE "window_zero")
+        (REWRITE "stableSequences_zero")
+        (GRIND :EXCLUDE ("stableSequences" "layerWindow" "is_finite")))
+       (THEN (SKOSIMP*) (LABEL "IH" -1) (LABEL "NEXT" -2)
+        (INST "IH" "B!1" "d1!1+1" "f!1") (ASSERT) (INST "NEXT" "d1!1")
+        (LEMMA "stableSequences_cons"
+         ("B" "B!1" "J" "f!1(d1!1)" "K" "f!1(d1!1+1)" "d" "j!1" "L"
+          "layerWindow(f!1,j!1,d1!1+1)"))
+        (REWRITE "window_succ") (ASSERT)))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|successors| CONST-DECL "finite_set[finite_set[C]]" |ppg_shearer_closed|
+     NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|stableSequences| DEF-DECL "finite_set[LayerSeq]" |ppg_shearer_sequences|
+     NIL)
+    (|stableSequences_zero| FORMULA-DECL NIL |ppg_shearer_sequences| NIL)
+    (|stableSequences_cons| FORMULA-DECL NIL |ppg_shearer_padding| NIL))
+   SHOSTAK)))
+

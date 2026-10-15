@@ -1,0 +1,15 @@
+% Taking the first d entries gives a prefix. Its length is d whenever
+% d does not exceed the length of the address. Prefix-closed witness
+% domains therefore contain an address at every earlier depth.
+ppg_address_take: THEORY
+BEGIN
+  IMPORTING ppg_address_prefix
+  w: VAR Address
+  d: VAR nat
+  takeAddress(w,d): RECURSIVE Address = IF d=0 OR null?(w) THEN null[nat]
+    ELSE cons[nat](car(w),takeAddress(cdr(w),d-1)) ENDIF MEASURE d
+  takeAddress_length: LEMMA d<=length(w) IMPLIES length(takeAddress(w,d))=d
+  takeAddress_prefix: LEMMA addrPrefix(takeAddress(w,d),w)
+  address_parent: LEMMA 0<length(w) IMPLIES
+    EXISTS(u:Address,k:nat):w=append(u,cons[nat](k,null[nat]))
+END ppg_address_take

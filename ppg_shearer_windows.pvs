@@ -1,0 +1,28 @@
+% A window lists consecutive layers, starting at offset d. It is the
+% recursive form of map(f(d+·),range(n+1)). Successor membership proves
+% stability of the whole window by induction on its length.
+%
+% Nicholas J. A. Harvey and Jan Vondrak, "An Algorithmic Proof of the
+% Lovasz Local Lemma via Resampling Oracles", Section 5.4.
+% https://arxiv.org/abs/1504.02044
+% Lean counterpart: PPGraphShearerWitness.lean.
+ppg_shearer_windows[C:TYPE,G:{H:[C,C->bool]|(FORALL(a:C):NOT H(a,a)) AND
+  (FORALL(a,b:C):H(a,b)=H(b,a))}]: THEORY
+BEGIN
+  IMPORTING ppg_shearer_padding[C,G]
+  B: VAR Layer
+  f: VAR [nat->Layer]
+  n,d,k: VAR nat
+  L: VAR LayerSeq
+  K: VAR Layer
+  layerWindow(f,n,d): RECURSIVE LayerSeq = IF n=0 THEN cons[Layer](f(d),null[Layer])
+    ELSE cons[Layer](f(d),layerWindow(f,n-1,d+1)) ENDIF MEASURE n
+  window_zero: LEMMA layerWindow(f,0,d)=cons[Layer](f(d),null[Layer])
+  window_succ: LEMMA layerWindow(f,n+1,d)=cons[Layer](f(d),layerWindow(f,n,d+1))
+  window_length: LEMMA length[Layer](layerWindow(f,n,d))=n+1
+  window_proper: LEMMA (FORALL(k:nat):k<=n IMPLIES f(d+k)/=emptyset[C]) IMPLIES
+    proper(layerWindow(f,n,d))
+  layer_window_mem_stableSequences: THEOREM
+    (FORALL(d:nat):successors(B,f(d))(f(d+1))) IMPLIES
+    stableSequences(B,n,f(d))(layerWindow(f,n,d))
+END ppg_shearer_windows

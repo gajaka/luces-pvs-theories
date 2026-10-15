@@ -1,0 +1,32 @@
+% A layer is the set of labels at one address depth. The greatest occupied
+% depth is attained in a nonempty finite domain. Prefix closure then makes
+% every layer from the root through that depth nonempty.
+%
+% The domain and labels are the existing GrowingTree representation.
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2. https://arxiv.org/abs/0903.0544v3
+% Lean counterpart: PPGraphShearerWitness.lean.
+ppg_shearer_tree_layers[C,V:TYPE,(IMPORTING ppg_bdd[C,V]) vars:CertVars]: THEORY
+BEGIN
+  IMPORTING ppg_shearer_bdd[C,V,vars], ppg_shearer_windows[C,dependencyGraph],
+    ppg_mt_descendants[C,V], ppg_address_take
+  T: VAR GTree
+  w,u: VAR Addr
+  d,k: VAR nat
+  a: VAR C
+  J: VAR Layer
+  treeSlice(T,d): finite_set[Addr] = intersection(T`dom,LAMBDA(w:Addr):length(w)=d)
+  treeLayer(T,d): Layer = image[Addr,C](T`lab,treeSlice(T,d))
+  treeDepth(T): nat = IF nonempty?(T`dom) THEN length(max_depth_pick(T`dom)) ELSE 0 ENDIF
+  treeLayers(T): LayerSeq = layerWindow(LAMBDA(d:nat):treeLayer(T,d),treeDepth(T),0)
+  mem_treeLayer: THEOREM treeLayer(T,d)(a) IFF
+    EXISTS(w:Addr):T`dom(w) AND length(w)=d AND T`lab(w)=a
+  treeLayer_intro: LEMMA T`dom(w) AND length(w)=d IMPLIES treeLayer(T,d)(T`lab(w))
+  treeLayer_zero: THEOREM gt_valid?(T) IMPLIES treeLayer(T,0)=sets[C].singleton(T`lab(null[nat]))
+  length_le_treeDepth: THEOREM T`dom(w) IMPLIES length(w)<=treeDepth(T)
+  treeLayer_eq_empty_of_depth_lt: THEOREM treeDepth(T)<d IMPLIES treeLayer(T,d)=emptyset[C]
+  treeDepth_attained: LEMMA gt_valid?(T) IMPLIES
+    EXISTS(w:Addr):T`dom(w) AND length(w)=treeDepth(T)
+  treeLayer_nonempty: THEOREM gt_valid?(T) AND d<=treeDepth(T) IMPLIES nonempty?(treeLayer(T,d))
+  treeLayers_nonempty_layers: THEOREM gt_valid?(T) IMPLIES proper(treeLayers(T))
+END ppg_shearer_tree_layers
