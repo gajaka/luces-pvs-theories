@@ -1,0 +1,25 @@
+% Counting active steps uses the existing measurable indicator sum.
+% History-measurable active events are also ambient-measurable because
+% every history sigma-algebra is contained in the ambient sigma-algebra.
+% These facts use no drift inequality and no finiteness of the measure.
+%
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Lean counterparts: measurable_activeCount and
+% ConditionalCertificate.measurable_active in PPGraphAdditiveDrift.lean.
+ppg_additive_drift_count[Omega,State: TYPE,
+  (IMPORTING ppg_measurable_space[Omega])
+  ambient: ppg_measurable_space[Omega].MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_event_count[Omega],ppg_filtration[Omega,State,ambient]
+  E: VAR [nat->set[Omega]]
+  H: VAR Filtration
+  n: VAR nat
+  activeCount(E:[nat->set[Omega]],omega:Omega): ENN = eventCount(E,omega)
+  historyMeasurable(H,E): bool = FORALL(n:nat):H(n)(E(n))
+  active_count_function: LEMMA (LAMBDA(omega:Omega):activeCount(E,omega))=
+    (LAMBDA(omega:Omega):eventCount(E,omega))
+  measurable_activeCount: THEOREM (FORALL(n:nat):ambient(E(n))) IMPLIES
+    measurable(ambient,ENNSigma,LAMBDA(omega:Omega):activeCount(E,omega))
+  measurable_active: THEOREM historyMeasurable(H,E) IMPLIES ambient(E(n))
+END ppg_additive_drift_count
