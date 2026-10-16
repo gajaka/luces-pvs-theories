@@ -1,0 +1,45 @@
+% Continuity from above applies to the original finite measure, including
+% zero total mass. The native extended-measure limit reduces to the real
+% mass limit because the intersection has finite mass.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_finite_measure_continuity[Omega: TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_finite_expectation[Omega,S,measureLaw]
+  E: VAR [nat->(S)]
+  A: VAR (S)
+  V: VAR [nat->extended_nnreal]
+  a: VAR extended_nnreal
+  u,v: VAR [nat->real]
+  c,b: VAR real
+
+  DecreasingEvents(E): bool = FORALL(i,j:nat):i<=j IMPLIES subset?(E(j),E(i))
+
+  intersection_measurable: LEMMA S(IIntersection(E))
+
+  finiteIntersection(E): (S) = IIntersection(E)
+
+  finite_flag: LEMMA measureLaw(A)`1
+
+  native_decreasing: LEMMA DecreasingEvents(E) IMPLIES
+    structures@fun_preds_partial[nat,set[Omega],reals.<=,subset?[Omega]].decreasing?(E)
+
+  finite_x_convergence: LEMMA a`1 AND x_converges?(V,a) IMPLIES
+    convergence_sequences.convergence((LAMBDA(n:nat):V(n)`2),a`2)
+
+  continuous_from_above: THEOREM DecreasingEvents(E) IMPLIES
+    convergence_sequences.convergence((LAMBDA(n:nat):mass(E(n))),mass(finiteIntersection(E)))
+
+  real_convergence_equivalence: LEMMA convergence_sequences.convergence(u,c) IFF
+    convergence?(u,c)
+
+  zero_squeeze: LEMMA convergence_sequences.convergence(v,0) AND
+    (FORALL(n:nat):0<=u(n) AND u(n)<=v(n)) IMPLIES convergence_sequences.convergence(u,0)
+
+  scaled_zero_squeeze: LEMMA convergence?(u,0) AND
+    (FORALL(n:nat):0<=v(n) AND v(n)<=b*u(n)) IMPLIES convergence?(v,0)
+
+END ppg_finite_measure_continuity

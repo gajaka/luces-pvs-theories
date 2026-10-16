@@ -1,0 +1,47 @@
+% A checked unit-rate potential gives almost-sure success by the proved
+% drift bound. Every successful path has an eventually zero stopped
+% potential. The decreasing running events therefore have vanishing mass.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Exercise 10.22(a), American Mathematical Society, 2017.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_stopped_residual[State,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw,
+  (IMPORTING ppg_filtration[Omega,State,S]) history:Filtration]: THEORY
+BEGIN
+  IMPORTING ppg_finite_stopped_telescope[State,Omega,universe,S,measureLaw,history],
+    ppg_finite_process_hitting[State,Omega,universe,S,measureLaw,history]
+  M: VAR Model
+  f: VAR Vector
+  X: VAR AdaptedProcess
+  omega: VAR Omega
+  u: VAR [nat->real]
+  i,j,n: VAR nat
+
+  CheckedVector(M:Model): TYPE = {f:Vector|check(M,(# potential:=f,delta:=1 #))}
+
+  unitWitness(M:Model,f:CheckedVector(M)): AcceptedWitness(M) = (# potential:=f,delta:=1 #)
+
+  stoppedFamily(M,f,X): [nat->NativeFunction] = LAMBDA(n:nat):stoppedNativeValue(M,f,X,n)
+
+  eventual_zero: LEMMA (EXISTS(T:nat):M`good(X(T)(omega))) IMPLIES
+    EXISTS(T:nat):FORALL(n:nat):T<=n IMPLIES stoppedNativeValue(M,f,X,n)(omega)=0
+
+  eventual_zero_converges: LEMMA
+    (EXISTS(T:nat):FORALL(n:nat):T<=n IMPLIES u(n)=0) IMPLIES convergence?(u,0)
+
+  ae_eventual_zero: LEMMA FORALL(M:Model,f:CheckedVector(M),X:Realization(M)):
+    ae?({omega:Omega|EXISTS(T:nat):FORALL(n:nat):T<=n IMPLIES
+      stoppedNativeValue(M,f,X,n)(omega)=0})
+
+  stoppedValue_ae_tendsto_zero: THEOREM FORALL(M:Model,f:CheckedVector(M),X:Realization(M)):
+    ae_convergence?(stoppedFamily(M,f,X),constant(0))
+
+  running_antitone: LEMMA i<=j IMPLIES
+    subset?(runningAmbient(M,X,j),runningAmbient(M,X,i))
+
+  running_intersection: LEMMA IIntersection(runningSchedule(M,X))=complement(successEvent(M,X))
+
+END ppg_finite_stopped_residual
