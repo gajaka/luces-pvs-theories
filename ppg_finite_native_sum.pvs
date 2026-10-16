@@ -1,0 +1,29 @@
+% Padding a finite-state function by zeros identifies its state sum with
+% the native ordered row sum. The bijection and the prefix identities keep
+% the equality valid for the empty state type as well.
+%
+% Sheldon Axler, Linear Algebra Done Right, fourth edition, Chapter 3.
+ppg_finite_native_sum[State: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_index_prefix[State,universe],
+    ppg_finite_rational_matrix[State,universe],ppg_native_cramer_rows
+  F: VAR [nat->real]
+  f: VAR [State->real]
+  A: VAR StateMatrix
+  k: VAR nat
+  i,j: VAR Index
+  s: VAR State
+  prefix_native_sum: LEMMA prefixSum(F,k)=rowSum(F,k)
+  stateExtension(f)(k): real = IF k<dimension THEN f(state(k)) ELSE 0 ENDIF
+  state_extension_index: LEMMA stateExtension(f)(i)=f(state(i))
+  state_extension_restricted: LEMMA
+    (LAMBDA(i:Index):stateExtension(f)(i))=(LAMBDA(i:Index):f(state(i)))
+  native_state_sum: THEOREM rowSum(stateExtension(f),dimension)=
+    ppg_finite_sum[State].fsum(universe,f)
+  state_dimension_positive: LEMMA FORALL(s:State):0<dimension
+  state_index_equal: LEMMA state(i)=state(j) IFF i=j
+  state_product_extension: LEMMA
+    (LAMBDA(k:nat):nativeEntries(A)(index(s),k)*stateExtension(f)(k))=
+    stateExtension(LAMBDA(t:State):A(s,t)*f(t))
+END ppg_finite_native_sum
