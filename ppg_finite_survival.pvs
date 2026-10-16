@@ -1,0 +1,70 @@
+% The killed transition recursion gives the probability of avoiding good
+% states through a finite horizon. A stochastic row preserves order and
+% constants. These properties give boundedness and monotonicity before
+% any accessibility or termination premise is considered.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Lemma 1.13, American Mathematical Society, 2017.
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Theorem 3.1 and Section 7.1.1,
+% Cambridge University Press, 2017.
+ppg_finite_survival[State: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_closed_bad[State,universe]
+  M: VAR Model
+  f,g: VAR Vector
+  s: VAR State
+  n,m,L,k: VAR nat
+  c,b: VAR rat
+  U: VAR set[State]
+
+  row_nonnegative: LEMMA Stochastic(M) AND (FORALL(t:State):0<=f(t)) IMPLIES
+    0<=successorValue(M,f,s)
+
+  row_monotone: LEMMA Stochastic(M) AND (FORALL(t:State):f(t)<=g(t)) IMPLIES
+    successorValue(M,f,s)<=successorValue(M,g,s)
+
+  row_constant: LEMMA Stochastic(M) IMPLIES
+    successorValue(M,LAMBDA(t:State):c,s)=c
+
+  row_scale_terms: LEMMA (LAMBDA(t:State):M`transition(s,t)*(c*f(t)))=
+    (LAMBDA(t:State):M`transition(s,t)*(f(t)*c))
+
+  row_scale: LEMMA successorValue(M,LAMBDA(t:State):c*f(t),s)=c*successorValue(M,f,s)
+
+  survival(M,n,s): RECURSIVE rat =
+    IF M`good(s) THEN 0 ELSIF n=0 THEN 1 ELSE
+      successorValue(M,LAMBDA(t:State):survival(M,n-1,t),s) ENDIF
+    MEASURE n
+
+  survival_good: THEOREM M`good(s) IMPLIES survival(M,n,s)=0
+
+  survival_nonnegative: THEOREM Stochastic(M) IMPLIES 0<=survival(M,n,s)
+
+  survival_le_one: THEOREM Stochastic(M) IMPLIES survival(M,n,s)<=1
+
+  survival_step_antitone: LEMMA Stochastic(M) IMPLIES
+    survival(M,n+1,s)<=survival(M,n,s)
+
+  survival_antitone: THEOREM Stochastic(M) AND m<=n IMPLIES
+    survival(M,n,s)<=survival(M,m,s)
+
+  survival_zero: LEMMA survival(M,0,s)=IF M`good(s) THEN 0 ELSE 1 ENDIF
+
+  survival_succ: LEMMA survival(M,n+1,s)=IF M`good(s) THEN 0 ELSE
+    successorValue(M,LAMBDA(t:State):survival(M,n,t),s) ENDIF
+
+  survival_add_le: THEOREM Stochastic(M) AND
+    (FORALL(t:State):survival(M,L,t)<=b) IMPLIES
+      survival(M,n+L,s)<=b*survival(M,n,s)
+
+  survival_blocks_le: THEOREM Stochastic(M) AND 0<=b AND
+    (FORALL(t:State):survival(M,L,t)<=b) IMPLIES survival(M,k*L,s)<=expt(b,k)
+
+  closed_bad_is_bad: LEMMA ClosedBad(M,U) AND U(s) IMPLIES NOT M`good(s)
+
+  survival_closedBad: THEOREM Stochastic(M) AND ClosedBad(M,U) AND U(s) IMPLIES
+    survival(M,n,s)=1
+
+END ppg_finite_survival
