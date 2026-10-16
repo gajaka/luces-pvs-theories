@@ -1,0 +1,43 @@
+% A nonempty bad class with zero transition mass to its complement cannot
+% reach a good state along positive-mass edges. The checker visits the
+% finite state carrier and checks the supplied membership function; no
+% reachability result is trusted as input to the checker.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, American Mathematical Society, 2017.
+ppg_finite_closed_bad[State: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_potential_reach[State,universe]
+  M: VAR Model
+  U: VAR set[State]
+  p: VAR pred[State]
+  s,t: VAR State
+  ClosedBad(M,U): bool = (EXISTS(s:State):U(s)) AND
+    (FORALL(s:State):U(s) IMPLIES NOT M`good(s)) AND
+    (FORALL(s,t:State):U(s) AND NOT U(t) IMPLIES M`transition(s,t)=0)
+  checkClosedBad(M,U): bool =
+    NOT finiteAll(universe,LAMBDA(s:State):NOT U(s)) AND
+    finiteAll(universe,LAMBDA(s:State):U(s) IMPLIES NOT M`good(s)) AND
+    finiteAll(universe,LAMBDA(s:State):finiteAll(universe,
+      LAMBDA(t:State):U(s) AND NOT U(t) IMPLIES M`transition(s,t)=0))
+  finite_full_all: LEMMA finiteAll(universe,p) IFF (FORALL(s:State):p(s))
+  checkClosedBad_iff: THEOREM checkClosedBad(M,U) IFF ClosedBad(M,U)
+  closedBad_step: THEOREM ClosedBad(M,U) AND U(s) AND 0<M`transition(s,t) IMPLIES U(t)
+  closedBad_inductive: LEMMA ClosedBad(M,U) IMPLIES InductiveSet(positiveStep(M),U)
+  closedBad_path: THEOREM ClosedBad(M,U) AND U(s) AND Reach(positiveStep(M))(s,t) IMPLIES U(t)
+  closedBad_not_reachesGood: THEOREM ClosedBad(M,U) AND U(s) IMPLIES NOT ReachesGood(M,s)
+  checkedClosedBad_not_reachesGood: THEOREM checkClosedBad(M,U) AND U(s) IMPLIES
+    NOT ReachesGood(M,s)
+  closedBad_not_accessible: THEOREM ClosedBad(M,U) IMPLIES NOT Accessible(M)
+  checkedClosedBad_no_global_witness: THEOREM checkClosedBad(M,U) IMPLIES
+    NOT (EXISTS(W:Witness):check(M,W))
+  inaccessible_outgoing_zero: LEMMA Stochastic(M) AND NOT ReachesGood(M,s) AND ReachesGood(M,t)
+    IMPLIES M`transition(s,t)=0
+  inaccessible_closed_bad: LEMMA Stochastic(M) AND NOT Accessible(M) IMPLIES
+    ClosedBad(M,LAMBDA(s:State):NOT ReachesGood(M,s))
+  inaccessible_checked_exists: LEMMA Stochastic(M) AND NOT Accessible(M) IMPLIES
+    EXISTS(U:set[State]):checkClosedBad(M,U)
+  exists_checkedClosedBad_iff: THEOREM Stochastic(M) IMPLIES
+    ((EXISTS(U:set[State]):checkClosedBad(M,U)) IFF NOT Accessible(M))
+END ppg_finite_closed_bad

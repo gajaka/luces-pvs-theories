@@ -1,0 +1,17 @@
+% A checked closed bad class refutes global accessibility. The proved
+% synthesis equivalences then give a failed synthesis and a zero system
+% determinant for this same stochastic absorbing transition kernel.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, American Mathematical Society, 2017.
+ppg_finite_closed_bad_synthesis[State: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_closed_bad[State,universe],ppg_finite_potential_accessible[State,universe]
+  M: VAR Model
+  U: VAR set[State]
+  checkedClosedBad_synthesize_none: THEOREM Stochastic(M) AND Absorbing(M) AND
+    checkClosedBad(M,U) IMPLIES synthesize(M)=bottom[Witness]
+  checkedClosedBad_det_zero: THEOREM Stochastic(M) AND Absorbing(M) AND
+    checkClosedBad(M,U) IMPLIES stateDeterminant(systemMatrix(M))=0
+END ppg_finite_closed_bad_synthesis

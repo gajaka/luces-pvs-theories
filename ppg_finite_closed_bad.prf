@@ -1,0 +1,298 @@
+(|ppg_finite_closed_bad|
+ (|finite_full_all| 0
+  (|finite_full_all-1| NIL 4001171996
+   (""
+    (THEN (SKOSIMP*) (LEMMA "finite_all_iff" ("A" "universe" "p" "p!1"))
+     (LEMMA "universe_member")
+     (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE ("finiteAll" "is_finite")))
+    NIL)
+   ((|universe_member| FORMULA-DECL NIL |ppg_finite_drift| NIL)
+    (|finite_all_iff| FORMULA-DECL NIL |ppg_finite_all| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_closed_bad|
+     NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_closed_bad| NIL))
+   SHOSTAK))
+ (|checkClosedBad_iff| 0
+  (|checkClosedBad_iff-1| NIL 4001171996
+   (""
+    (THEN (SKOSIMP*) (AUTO-REWRITE "finite_full_all") (EXPAND "checkClosedBad")
+     (EXPAND "ClosedBad")
+     (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE ("finiteAll" "is_finite")))
+    NIL)
+   ((|checkClosedBad| CONST-DECL "bool" |ppg_finite_closed_bad| NIL)
+    (|finite_full_all| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|ClosedBad| CONST-DECL "bool" |ppg_finite_closed_bad| NIL))
+   SHOSTAK))
+ (|closedBad_step| 0
+  (|closedBad_step-1| NIL 4001171996
+   (""
+    (THEN (SKOSIMP*)
+     (GRIND :DEFS ("ClosedBad") :IF-MATCH ALL :EXCLUDE
+      ("Reach" "ReachesGood" "is_finite")))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|ClosedBad| CONST-DECL "bool" |ppg_finite_closed_bad| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_closed_bad| NIL))
+   SHOSTAK))
+ (|closedBad_inductive| 0
+  (|closedBad_inductive-1| NIL 4001171996
+   (""
+    (THEN (SKOSIMP*) (EXPAND "InductiveSet") (SKOSIMP*)
+     (LEMMA "closedBad_step" ("M" "M!1" "U" "U!1" "s" "u!1" "t" "w!1"))
+     (EXPAND "positiveStep") (ASSERT))
+    NIL)
+   ((|positiveStep| CONST-DECL "bool" |ppg_finite_potential_reach| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_closed_bad|
+     NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|closedBad_step| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|InductiveSet| CONST-DECL "bool" |ppg_reachability_refutation| NIL))
+   SHOSTAK))
+ (|closedBad_path| 0
+  (|closedBad_path-1| NIL 4001171996
+   (""
+    (THEN (SKOSIMP*) (LEMMA "closedBad_inductive" ("M" "M!1" "U" "U!1"))
+     (LEMMA "inductiveSet_reachable"
+      ("step" "positiveStep(M!1)" "I" "U!1" "v" "s!1" "w" "t!1"))
+     (ASSERT))
+    NIL)
+   ((|inductiveSet_reachable| FORMULA-DECL NIL |ppg_reachability_refutation|
+     NIL)
+    (|positiveStep| CONST-DECL "bool" |ppg_finite_potential_reach| NIL)
+    (|closedBad_inductive| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_closed_bad|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL))
+   SHOSTAK))
+ (|closedBad_not_reachesGood| 0
+  (|closedBad_not_reachesGood-1| NIL 4001171996
+   (""
+    (THEN (SKOSIMP*) (EXPAND "ReachesGood") (SKOSIMP*)
+     (LEMMA "closedBad_path" ("M" "M!1" "U" "U!1" "s" "s!1" "t" "g!1"))
+     (GRIND :DEFS ("ClosedBad") :IF-MATCH ALL :EXCLUDE
+      ("Reach" "ReachesGood" "is_finite")))
+    NIL)
+   ((|ClosedBad| CONST-DECL "bool" |ppg_finite_closed_bad| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_closed_bad|
+     NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|closedBad_path| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|ReachesGood| CONST-DECL "bool" |ppg_finite_potential_reach| NIL))
+   SHOSTAK))
+ (|checkedClosedBad_not_reachesGood| 0
+  (|checkedClosedBad_not_reachesGood-1| NIL 4001171996
+   (""
+    (THEN (SKOSIMP*) (LEMMA "checkClosedBad_iff" ("M" "M!1" "U" "U!1"))
+     (LEMMA "closedBad_not_reachesGood" ("M" "M!1" "U" "U!1" "s" "s!1"))
+     (ASSERT))
+    NIL)
+   ((|closedBad_not_reachesGood| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|checkClosedBad_iff| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_closed_bad|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL))
+   SHOSTAK))
+ (|closedBad_not_accessible| 0
+  (|closedBad_not_accessible-1| NIL 4001171996
+   (""
+    (THEN (SKOSIMP*) (LEMMA "closedBad_not_reachesGood" ("M" "M!1" "U" "U!1"))
+     (EXPAND "ClosedBad") (EXPAND "Accessible")
+     (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+      ("Reach" "ReachesGood" "is_finite")))
+    NIL)
+   ((|ClosedBad| CONST-DECL "bool" |ppg_finite_closed_bad| NIL)
+    (|Accessible| CONST-DECL "bool" |ppg_finite_potential_reach| NIL)
+    (|closedBad_not_reachesGood| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_closed_bad|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL))
+   SHOSTAK))
+ (|checkedClosedBad_no_global_witness| 0
+  (|checkedClosedBad_no_global_witness-1| NIL 4001171996
+   (""
+    (THEN (SKOSIMP*) (LEMMA "checkClosedBad_iff" ("M" "M!1" "U" "U!1"))
+     (LEMMA "closedBad_not_accessible" ("M" "M!1" "U" "U!1"))
+     (LEMMA "checked_accessible" ("M" "M!1" "W" "W!1"))
+     (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+      ("ClosedBad" "Accessible" "check" "checkClosedBad")))
+    NIL)
+   ((|closedBad_not_accessible| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|checked_accessible| FORMULA-DECL NIL |ppg_finite_potential_reach| NIL)
+    (|checkClosedBad_iff| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_closed_bad|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL))
+   SHOSTAK))
+ (|inaccessible_outgoing_zero| 0
+  (|inaccessible_outgoing_zero-1| NIL 4001171996
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "reachesGood_of_step" ("M" "M!1" "s" "s!1" "t" "t!1"))
+     (GRIND :DEFS ("Stochastic") :IF-MATCH ALL :EXCLUDE
+      ("sum" "fsum" "Reach" "ReachesGood" "is_finite")))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|reachesGood_of_step| FORMULA-DECL NIL |ppg_finite_potential_reach| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_closed_bad|
+     NIL))
+   SHOSTAK))
+ (|inaccessible_closed_bad| 0
+  (|inaccessible_closed_bad-1| NIL 4001171996
+   (""
+    (THEN (SKOSIMP*) (LEMMA "good_reachesGood" ("M" "M!1"))
+     (LEMMA "inaccessible_outgoing_zero" ("M" "M!1")) (EXPAND "Accessible")
+     (EXPAND "ClosedBad")
+     (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+      ("Stochastic" "Reach" "ReachesGood" "is_finite")))
+    NIL)
+   ((|inaccessible_outgoing_zero| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|ClosedBad| CONST-DECL "bool" |ppg_finite_closed_bad| NIL)
+    (|Accessible| CONST-DECL "bool" |ppg_finite_potential_reach| NIL)
+    (|good_reachesGood| FORMULA-DECL NIL |ppg_finite_potential_reach| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_closed_bad|
+     NIL))
+   SHOSTAK))
+ (|inaccessible_checked_exists| 0
+  (|inaccessible_checked_exists-1| NIL 4001171996
+   (""
+    (THEN (SKOSIMP*) (LEMMA "inaccessible_closed_bad" ("M" "M!1"))
+     (LEMMA "checkClosedBad_iff"
+      ("M" "M!1" "U" "LAMBDA(s:State):NOT ReachesGood(M!1,s)"))
+     (INST + "LAMBDA(s:State):NOT ReachesGood(M!1,s)")
+     (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+      ("Stochastic" "ClosedBad" "Accessible" "checkClosedBad" "ReachesGood")))
+    NIL)
+   ((|checkClosedBad_iff| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|ReachesGood| CONST-DECL "bool" |ppg_finite_potential_reach| NIL)
+    (|inaccessible_closed_bad| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_closed_bad|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL))
+   SHOSTAK))
+ (|exists_checkedClosedBad_iff| 0
+  (|exists_checkedClosedBad_iff-1| NIL 4001171996
+   (""
+    (THEN (SKOSIMP*) (LEMMA "closedBad_not_accessible" ("M" "M!1"))
+     (LEMMA "checkClosedBad_iff" ("M" "M!1"))
+     (LEMMA "inaccessible_checked_exists" ("M" "M!1"))
+     (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+      ("Stochastic" "ClosedBad" "Accessible" "checkClosedBad" "ReachesGood")))
+    NIL)
+   ((|checkClosedBad_iff| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|inaccessible_checked_exists| FORMULA-DECL NIL |ppg_finite_closed_bad|
+     NIL)
+    (|closedBad_not_accessible| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_closed_bad|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL))
+   SHOSTAK)))
+
