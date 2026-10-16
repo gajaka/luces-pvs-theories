@@ -1,0 +1,30 @@
+% Finite state values are measurable for any sigma-algebra on the reals:
+% every inverse image is a subset of the finite state carrier. Restriction
+% to the running event preserves measurability. No finiteness assumption
+% on a measure is needed for this part of the expectation argument.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_stopped_measurable[State,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  (IMPORTING ppg_measurable_space[Omega])
+  ambient:ppg_measurable_space[Omega].MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_finite_stopped_value[State,Omega,universe,ambient],
+    ppg_measurable_map[Omega,real] AS realMap
+  M: VAR Model
+  f: VAR Vector
+  X: VAR Process
+  SY: VAR StateSpace
+  R: VAR ppg_measurable_space[real].MeasurableSpace
+  B: VAR set[real]
+  n: VAR nat
+  value_preimage: LEMMA realMap.inverseImage((LAMBDA(omega:Omega):f(X(n)(omega))),B)=
+    ppg_measurable_map[Omega,State].inverseImage(X(n),{s:State|B(f(s))})
+  finite_state_value_measurable: LEMMA singletonMeasurable(SY) AND processMeasurable(SY,X)
+    IMPLIES realMap.measurable(ambient,R,(LAMBDA(omega:Omega):f(X(n)(omega))))
+  stopped_value_branch: LEMMA stoppedValue(M,f,X,n)=
+    realMap.branch(runningEvent(M,X,n),(LAMBDA(omega:Omega):f(X(n)(omega))),
+      (LAMBDA(omega:Omega):0))
+  stoppedValue_measurable: THEOREM singletonMeasurable(SY) AND processMeasurable(SY,X)
+    IMPLIES realMap.measurable(ambient,R,stoppedValue(M,f,X,n))
+END ppg_finite_stopped_measurable
