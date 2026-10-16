@@ -1,0 +1,40 @@
+% Two conditional versions agree almost everywhere. Their strict
+% comparison events are history-measurable, and the integral of their
+% positive difference vanishes there. Each comparison event is null.
+%
+% Conditional expectation is chosen only on functions for which a
+% conditional version has been proved to exist. Uniqueness identifies
+% this choice almost everywhere with every supplied conditional version.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_conditional_unique[Omega: TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw,
+  H:{H:MeasurableSpace|subset?(H,S)}]: THEORY
+BEGIN
+  IMPORTING ppg_conditional_versions[Omega,S,measureLaw,H],
+    ppg_positive_integral_mass[Omega,S,measureLaw]
+  f: VAR NativeFunction
+  g,h: VAR HistoryFunction
+  omega: VAR Omega
+  greaterEvent(g,h): (H) = {omega:Omega|h(omega)<g(omega)}
+  greater_event_value: LEMMA greaterEvent(g,h)(omega) IFF h(omega)<g(omega)
+  greater_event_zero: LEMMA conditionalVersion(f,g) AND conditionalVersion(f,h)
+    IMPLIES mu(historyEvent(greaterEvent(g,h)))=0
+  greater_event_null: LEMMA conditionalVersion(f,g) AND conditionalVersion(f,h)
+    IMPLIES null_set?(historyEvent(greaterEvent(g,h)))
+  different_event_union: LEMMA {omega:Omega|g(omega)/=h(omega)}=
+    union(greaterEvent(g,h),greaterEvent(h,g))
+  conditional_unique: THEOREM conditionalVersion(f,g) AND conditionalVersion(f,h)
+    IMPLIES ae_eq?(g,h)
+  hasConditionalVersion(f): bool = EXISTS(g:HistoryFunction):conditionalVersion(f,g)
+  AdmissibleFunction: TYPE = (hasConditionalVersion)
+  conditionalExpectation(f:AdmissibleFunction): {g:HistoryFunction|conditionalVersion(f,g)} =
+    choose({g:HistoryFunction|conditionalVersion(f,g)})
+  conditional_version_admissible: LEMMA conditionalVersion(f,g) IMPLIES hasConditionalVersion(f)
+  conditional_expectation_version: LEMMA FORALL(f:AdmissibleFunction):
+    conditionalVersion(f,conditionalExpectation(f))
+  conditional_expectation_unique: THEOREM FORALL(f:AdmissibleFunction,g:HistoryFunction):
+    conditionalVersion(f,g) IMPLIES ae_eq?(conditionalExpectation(f),g)
+END ppg_conditional_unique

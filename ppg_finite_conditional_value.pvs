@@ -1,0 +1,56 @@
+% The conditional transition law for state indicators determines the
+% conditional value of every finite state function by linearity. The
+% resulting version is the transition-weighted finite sum. Its existence
+% is constructed before the canonical representative is used.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964.
+% Lean counterpart: conditional_next_value in PPGraphFiniteDriftProcess.lean.
+ppg_finite_conditional_value[State,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw,
+  H:{H:MeasurableSpace|subset?(H,S)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_history_value[State,Omega,universe,S,measureLaw,H],
+    ppg_conditional_ae_versions[Omega,S,measureLaw,H]
+  M: VAR Model
+  X: VAR HistoryStateMap
+  Y: VAR StateMap
+  f: VAR [State->real]
+  A: VAR finite_set[State]
+  t: VAR State
+  omega: VAR Omega
+  rowCoordinate(M,X,t): HistoryFunction = historyValue(LAMBDA(s:State):M`transition(s,t),X)
+  TransitionVersions(M,X,Y): bool = FORALL(t:State):
+    conditionalVersion(indicator(stateEvent(Y,t)),rowCoordinate(M,X,t))
+  rowValue(A,f,M,X): RECURSIVE HistoryFunction =
+    IF empty?(A) THEN historyValue(LAMBDA(s:State):0,X)
+    ELSE historyAdd(historyScale(f(choose(A)),rowCoordinate(M,X,choose(A))),
+      rowValue(rest(A),f,M,X)) ENDIF MEASURE card(A)
+  localValue(M,f): [State->real] = LAMBDA(s:State):
+    fsum(universe,LAMBDA(t:State):M`transition(s,t)*f(t))
+  row_coordinate_at: LEMMA rowCoordinate(M,X,t)(omega)=M`transition(X(omega),t)
+  row_value_at: LEMMA rowValue(A,f,M,X)(omega)=
+    fsum(A,LAMBDA(t:State):M`transition(X(omega),t)*f(t))
+  conditional_scalar_term: LEMMA TransitionVersions(M,X,Y) IMPLIES
+    conditionalVersion(f(t)*indicator(stateEvent(Y,t)),historyScale(f(t),rowCoordinate(M,X,t)))
+  conditional_row_finite: LEMMA TransitionVersions(M,X,Y) IMPLIES
+    conditionalVersion(finiteValue(A,f,Y),rowValue(A,f,M,X))
+  row_value_function: LEMMA rowValue(universe,f,M,X)=historyValue(localValue(M,f),X)
+  finite_conditional_version: LEMMA TransitionVersions(M,X,Y) IMPLIES
+    conditionalVersion(integrableValue(f,Y),historyValue(localValue(M,f),X))
+  Pair: TYPE = [# current:HistoryStateMap,next:StateMap #]
+  realized(M:Model,p:Pair): bool = TransitionVersions(M,p`current,p`next)
+  RealizedPair(M:Model): TYPE = {p:Pair|realized(M,p)}
+  nextValue(M:Model,p:RealizedPair(M),f:[State->real]): AdmissibleFunction =
+    integrableValue(f,p`next)
+  realized_indicator_version: LEMMA FORALL(M:Model,p:RealizedPair(M),t:State):
+    conditionalVersion(indicator(stateEvent(p`next,t)),rowCoordinate(M,p`current,t))
+  realizedIndicator(M:Model,p:RealizedPair(M),t:State): AdmissibleFunction =
+    indicator(stateEvent(p`next,t))
+  canonical_transition_law: THEOREM FORALL(M:Model,p:RealizedPair(M),t:State):
+    ae_eq?(conditionalExpectation(realizedIndicator(M,p,t)),rowCoordinate(M,p`current,t))
+  conditional_next_value: THEOREM FORALL(M:Model,p:RealizedPair(M),f:[State->real]):
+    ae_eq?(conditionalExpectation(nextValue(M,p,f)),historyValue(localValue(M,f),p`current))
+END ppg_finite_conditional_value

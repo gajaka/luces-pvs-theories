@@ -1,0 +1,22 @@
+% Replacing an integrable function almost everywhere preserves every
+% event integral. Thus an integrable history-measurable function is a
+% conditional version exactly when it agrees almost everywhere with
+% the chosen conditional expectation on its proved domain of existence.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_conditional_ae_versions[Omega: TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw,
+  H:{H:MeasurableSpace|subset?(H,S)}]: THEORY
+BEGIN
+  IMPORTING ppg_conditional_unique[Omega,S,measureLaw,H]
+  A: VAR (S)
+  f,k: VAR NativeFunction
+  g,h: VAR HistoryFunction
+  ae_restricted_congr: LEMMA ae_eq?(f,k) IMPLIES ae_eq?(restricted(A,f),restricted(A,k))
+  set_integral_ae_eq: LEMMA ae_eq?(f,k) IMPLIES setIntegral(A,f)=setIntegral(A,k)
+  conditional_version_ae_congr: LEMMA conditionalVersion(f,g) AND ae_eq?(g,h)
+    IMPLIES conditionalVersion(f,h)
+  canonical_version_iff: THEOREM FORALL(f:AdmissibleFunction,g:HistoryFunction):
+    conditionalVersion(f,g) IFF ae_eq?(conditionalExpectation(f),g)
+END ppg_conditional_ae_versions

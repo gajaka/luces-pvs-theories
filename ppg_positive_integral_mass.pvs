@@ -1,0 +1,27 @@
+% A strictly positive integrable function cannot have zero integral on
+% an event of positive measure. Applied to the difference of two
+% conditional versions, this identifies their strict comparison events
+% as null events.
+%
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_positive_integral_mass[Omega: TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_finite_restricted_integral[Omega,S,measureLaw],
+    measure_integration@indefinite_integral[Omega,asNasa(S),measureLaw] AS indef
+  A: VAR (S)
+  f,g: VAR NativeFunction
+  pointwise_ae_in: LEMMA (FORALL(omega:Omega):A(omega) IMPLIES 0<f(omega))
+    IMPLIES ae_in?(LAMBDA(omega:Omega):0<f(omega))(A)
+  positive_zero_mass: THEOREM (FORALL(omega:Omega):A(omega) IMPLIES 0<f(omega)) AND
+    setIntegral(A,f)=0 IMPLIES mu(A)=0
+  set_integral_agreement_zero_diff: LEMMA setIntegral(A,f)=setIntegral(A,g) IMPLIES
+    setIntegral(A,f-g)=0
+  positive_comparison_zero_mass: LEMMA A={omega:Omega|g(omega)<f(omega)} AND
+    setIntegral(A,f)=setIntegral(A,g) IMPLIES mu(A)=0
+  zero_mass_null: LEMMA mu(A)=0 IMPLIES null_set?(A)
+  ae_from_null_bad: LEMMA null_set?(A) AND
+    (FORALL(omega:Omega):NOT A(omega) IMPLIES f(omega)=g(omega)) IMPLIES ae_eq?(f,g)
+END ppg_positive_integral_mass

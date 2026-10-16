@@ -1,0 +1,258 @@
+(|ppg_conditional_ae_versions|
+ (|ae_restricted_congr| 0
+  (|ae_restricted_congr-1| NIL 4001156488
+   (""
+    (THEN (SKOSIMP*) (EXPAND "ae_eq?") (EXPAND "pointwise_ae?") (EXPAND "ae?")
+     (EXPAND "ae_in?") (SKOSIMP*) (INST + "E!1") (SKOSIMP*) (INST -1 "x!1")
+     (LEMMA "restricted_value" ("A" "A!1" "f" "f!1" "omega" "x!1"))
+     (LEMMA "restricted_value" ("A" "A!1" "f" "k!1" "omega" "x!1"))
+     (GRIND :DEFS ("member" "fullset") :EXCLUDE
+      ("restricted" "integrable?" "sigma?" "allFinite")))
+    NIL)
+   ((|pointwise_ae?| CONST-DECL "bool" |measure_theory| |measure_integration|)
+    (|ae_in?| CONST-DECL "bool" |measure_theory| |measure_integration|)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_conditional_ae_versions| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_conditional_ae_versions| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_conditional_ae_versions|
+     NIL)
+    (|negligible_set?| CONST-DECL "bool" |measure_theory|
+     |measure_integration|)
+    (|negligible| NONEMPTY-TYPE-EQ-DECL NIL |measure_theory|
+     |measure_integration|)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|restricted_value| FORMULA-DECL NIL |ppg_finite_restricted_integral| NIL)
+    (|integrable?| CONST-DECL "bool" |integral| |measure_integration|)
+    (|NativeFunction| TYPE-EQ-DECL NIL |ppg_finite_measure_integral| NIL)
+    (|ae?| CONST-DECL "bool" |measure_theory| |measure_integration|)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(asNasa(S))"
+     |ppg_conditional_ae_versions| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT "measurable_set[Omega, asNasa(S)]"
+     |ppg_conditional_ae_versions| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT "measurable_set"
+     |ppg_conditional_ae_versions| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(S)"
+     |ppg_conditional_ae_versions| NIL)
+    (|ae_eq?| CONST-DECL "bool" |measure_theory| |measure_integration|))
+   SHOSTAK))
+ (|set_integral_ae_eq| 0
+  (|set_integral_ae_eq-1| NIL 4001156488
+   ("" (SKOSIMP*)
+    (("" (LEMMA "ae_restricted_congr" ("A" "A!1" "f" "f!1" "k" "k!1"))
+      ((""
+        (LEMMA "integral_ae_eq"
+         ("f" "restricted(A!1,f!1)" "h" "restricted(A!1,k!1)"))
+        (("1" (EXPAND "setIntegral")
+          (("1" (TYPEPRED "restricted(A!1,k!1)")
+            (("1" (LEMMA "integrable_is_measurable")
+              (("1"
+                (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+                 ("integrable?" "measurable_function?" "sigma?" "allFinite"))
+                NIL NIL))
+              NIL))
+            NIL))
+          NIL)
+         ("2" (EXPAND "setIntegral")
+          (("2" (TYPEPRED "restricted(A!1,k!1)")
+            (("2" (LEMMA "integrable_is_measurable")
+              (("2"
+                (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+                 ("integrable?" "measurable_function?" "sigma?" "allFinite"))
+                NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|measurable_function| NONEMPTY-TYPE-EQ-DECL NIL |measure_space_def|
+     |measure_integration|)
+    (|measurable_function?| CONST-DECL "bool" |measure_space_def|
+     |measure_integration|)
+    (|restricted| CONST-DECL "NativeFunction" |ppg_finite_restricted_integral|
+     NIL)
+    (|integrable| NONEMPTY-TYPE-EQ-DECL NIL |integral| |measure_integration|)
+    (|integral_ae_eq| FORMULA-DECL NIL |integral| |measure_integration|)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|integrable_is_measurable| JUDGEMENT-TCC NIL |integral|
+     |measure_integration|)
+    (|setIntegral| CONST-DECL "real" |ppg_finite_restricted_integral| NIL)
+    (|ae_restricted_congr| FORMULA-DECL NIL |ppg_conditional_ae_versions| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_conditional_ae_versions| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_conditional_ae_versions| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_conditional_ae_versions|
+     NIL)
+    (|integrable?| CONST-DECL "bool" |integral| |measure_integration|)
+    (|NativeFunction| TYPE-EQ-DECL NIL |ppg_finite_measure_integral| NIL))
+   SHOSTAK))
+ (|conditional_version_ae_congr| 0
+  (|conditional_version_ae_congr-1| NIL 4001156488
+   (""
+    (THEN (SKOSIMP*) (LABEL "VERSION" -1) (LABEL "AE" -2)
+     (EXPAND "conditionalVersion") (SKOSIMP*) (INST "VERSION" "A!1")
+     (LEMMA "set_integral_ae_eq" ("A" "historyEvent(A!1)" "f" "g!1" "k" "h!1"))
+     (ASSERT))
+    NIL)
+   ((|set_integral_ae_eq| FORMULA-DECL NIL |ppg_conditional_ae_versions| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_conditional_ae_versions|
+     NIL)
+    (|historyEvent| CONST-DECL "(S)" |ppg_conditional_versions| NIL)
+    (|integrable?| CONST-DECL "bool" |integral| |measure_integration|)
+    (|NativeFunction| TYPE-EQ-DECL NIL |ppg_finite_measure_integral| NIL)
+    (|historyMeasurable| CONST-DECL "bool" |ppg_conditional_versions| NIL)
+    (|HistoryFunction| TYPE-EQ-DECL NIL |ppg_conditional_versions| NIL)
+    (H FORMAL-CONST-DECL "{H: MeasurableSpace | subset?(H, S)}"
+     |ppg_conditional_ae_versions| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_conditional_ae_versions| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_conditional_ae_versions| NIL)
+    (|conditionalVersion| CONST-DECL "bool" |ppg_conditional_versions| NIL))
+   SHOSTAK))
+ (|canonical_version_iff| 0
+  (|canonical_version_iff-1| NIL 4001156489
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "conditional_expectation_unique" ("f" "f!1" "g" "g!1"))
+     (LEMMA "conditional_expectation_version" ("f" "f!1"))
+     (LEMMA "conditional_version_ae_congr"
+      ("f" "f!1" "g" "conditionalExpectation(f!1)" "h" "g!1"))
+     (PROP))
+    NIL)
+   ((|conditional_expectation_version| FORMULA-DECL NIL
+     |ppg_conditional_unique| NIL)
+    (|conditional_version_ae_congr| FORMULA-DECL NIL
+     |ppg_conditional_ae_versions| NIL)
+    (|conditionalVersion| CONST-DECL "bool" |ppg_conditional_versions| NIL)
+    (|conditionalExpectation| CONST-DECL
+     "{g: HistoryFunction | conditionalVersion(f, g)}" |ppg_conditional_unique|
+     NIL)
+    (|conditional_expectation_unique| FORMULA-DECL NIL |ppg_conditional_unique|
+     NIL)
+    (|integrable?| CONST-DECL "bool" |integral| |measure_integration|)
+    (|NativeFunction| TYPE-EQ-DECL NIL |ppg_finite_measure_integral| NIL)
+    (|hasConditionalVersion| CONST-DECL "bool" |ppg_conditional_unique| NIL)
+    (|AdmissibleFunction| TYPE-EQ-DECL NIL |ppg_conditional_unique| NIL)
+    (|historyMeasurable| CONST-DECL "bool" |ppg_conditional_versions| NIL)
+    (|HistoryFunction| TYPE-EQ-DECL NIL |ppg_conditional_versions| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_conditional_ae_versions| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_conditional_ae_versions| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_conditional_ae_versions|
+     NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (H FORMAL-CONST-DECL "{H: MeasurableSpace | subset?(H, S)}"
+     |ppg_conditional_ae_versions| NIL))
+   SHOSTAK)))
+
