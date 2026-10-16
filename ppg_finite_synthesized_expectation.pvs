@@ -1,0 +1,29 @@
+% Accessibility makes the original rational system nonsingular. Its
+% constructed Cramer potential therefore satisfies the first-step
+% equations, and the proved expectation identity applies to that value.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Exercise 10.22(a), American Mathematical Society, 2017.
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Section 7.1.1, Cambridge University Press, 2017.
+ppg_finite_synthesized_expectation[State,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw,
+  (IMPORTING ppg_filtration[Omega,State,S]) history:Filtration]: THEORY
+BEGIN
+  IMPORTING ppg_finite_potential_expectation[State,Omega,universe,S,measureLaw,history],
+    ppg_finite_potential_accessible[State,universe]
+
+  AccessibleModel: TYPE = {M:StochasticAbsorbingModel|Accessible(M)}
+
+  actualPotential(M:AccessibleModel): SolvingVector(M) = potential(M)
+
+  potential_expectedHitCount_eq: THEOREM FORALL(M:AccessibleModel,X:Realization(M)):
+    expectedHitCount(M,X)=ofReal(integral(integrableValue(potential(M),ambientState(X,0))))
+
+  potential_expectedHitCount_fixed_eq: THEOREM FORALL(M:AccessibleModel,X:Realization(M),s0:State):
+    mass(fullset[Omega])=1 AND (FORALL(omega:Omega):X(0)(omega)=s0) IMPLIES
+      expectedHitCount(M,X)=ofReal(potential(M)(s0))
+
+END ppg_finite_synthesized_expectation

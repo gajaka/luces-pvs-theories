@@ -1,0 +1,22 @@
+% A finite-horizon identity identifies the supremum of the accumulated
+% nonnegative counts once its nonnegative residual tends to zero. The
+% proof uses finite upper bounds, so it requires no separate topology
+% on the extended nonnegative reals.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_exact_count_limit: THEORY
+BEGIN
+  IMPORTING ppg_nonneg_tsum[nat],metric_space@convergence_aux
+  u: VAR [nat->nonneg_real]
+  v: VAR [nat->real]
+  a,b: VAR nonneg_real
+
+  zero_limit_lower_bound: LEMMA
+    (FORALL(n:nat):u(n)+v(n)=a) AND convergence?(v,0) AND
+    (FORALL(n:nat):u(n)<=b) IMPLIES a<=b
+
+  supremum_from_residual: THEOREM
+    (FORALL(n:nat):u(n)+v(n)=a) AND (FORALL(n:nat):0<=v(n)) AND
+    convergence?(v,0) IMPLIES iSupNN(u)=ennFinite(a)
+
+END ppg_exact_count_limit
