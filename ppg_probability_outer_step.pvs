@@ -1,0 +1,22 @@
+% A measurable slice bounds the mass gained between two arbitrary sets.
+% Split the larger set at the slice, then use monotonicity on each part.
+% The original sets need not be measurable. This is the estimate used
+% when a variable-LLL cylinder grows along one dependency coordinate.
+%
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999,
+% Chapter 2, "Lebesgue Measure". Lean counterpart: growAlong_measure_step_le in
+% PPGraphVariableLLL.lean.
+ppg_probability_outer_step[X:TYPE,
+  (IMPORTING ppg_measurable_space[X]) S:MeasurableSpace,
+  (IMPORTING ppg_probability_measure[X,S]) mu:Probability]: THEORY
+BEGIN
+  IMPORTING ppg_probability_outer[X,S,mu]
+  A,B: VAR set[X]
+  E: VAR (S)
+  intersection_in_right: LEMMA subset?(intersection(A,B),B)
+  union_without_right: LEMMA subset?(difference(union(A,B),B),A)
+  left_in_union: LEMMA subset?(A,union(A,B))
+  measurable_gain_bound: THEOREM subset?(difference(B,E),A) IMPLIES mass(B)<=mass(A)+mu(E)
+  mass_one_if_contains: LEMMA mu(E)=1 AND subset?(E,A) IMPLIES mass(A)=1
+  mass_zero_extension: LEMMA mu(E)=0 IMPLIES mass(union(A,E))=mass(A)
+END ppg_probability_outer_step

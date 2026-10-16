@@ -1,0 +1,26 @@
+% The [0,1]-restricted Borel law assigns mass t to (-infinity,t]
+% for 0<=t<=1. Subtracting two nested half-lines gives the mass t-s
+% of the half-open slice (s,t]. Endpoints zero and one are included.
+%
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999,
+% Chapters 2 and 7. Lean counterpart: cubeMeasure_slice_eq and the two
+% endpoint evaluations in PPGraphVariableLLL.lean.
+ppg_probability_unit_slices: THEORY
+BEGIN
+  IMPORTING ppg_probability_unit_interval,
+    ppg_probability_unique[real,borelSigma]
+  halfLine(t:real): right_semiclosed_interval = inf_closed(t)
+  intervalSlice(s,t:real): set[real] = {x:real|s<x AND x<=t}
+  s,t,a: VAR real
+  closed_members: LEMMA FORALL(a:real,b:{x:real|a<=x}):
+    closed(a,b)={x:real|a<=x AND x<=b}
+  halfLine_borel: LEMMA borelSigma(halfLine(t))
+  slice_eq_difference: LEMMA intervalSlice(s,t)=sets[real].difference(halfLine(t),halfLine(s))
+  slice_borel: LEMMA borelSigma(intervalSlice(s,t))
+  halfline_nested: LEMMA s<=t IMPLIES sets[real].subset?(halfLine(s),halfLine(t))
+  cut_halfline: LEMMA 0<=t AND t<=1 IMPLIES sets[real].intersection(unitInterval,halfLine(t))=closed(0,t)
+  closed_completed: LEMMA FORALL(a:real,b:{x:real|a<=x}):cal_M(closed(a,b))
+  closed_interval_mass: LEMMA FORALL(a:real,b:{x:real|a<=x}):lambda_(closed(a,b))=(TRUE,b-a)
+  uniform_halfline: THEOREM 0<=t AND t<=1 IMPLIES borelUniform(halfLine(t))=t
+  uniform_slice: THEOREM 0<=s AND s<=t AND t<=1 IMPLIES borelUniform(intervalSlice(s,t))=t-s
+END ppg_probability_unit_slices

@@ -1,0 +1,154 @@
+(|ppg_probability_outer_step|
+ (|intersection_in_right| 0
+  (|intersection_in_right-1| NIL 4001131008
+   (""
+    (THEN (AUTO-REWRITE "member") (EXPAND "subset?") (EXPAND "intersection")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL))
+   SHOSTAK))
+ (|union_without_right| 0
+  (|union_without_right-1| NIL 4001131008
+   (""
+    (THEN (AUTO-REWRITE "member") (EXPAND "subset?") (EXPAND "union")
+     (EXPAND "difference") (GRIND :DEFS NIL))
+    NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|union| CONST-DECL "set" |sets| NIL))
+   SHOSTAK))
+ (|left_in_union| 0
+  (|left_in_union-1| NIL 4001131008
+   (""
+    (THEN (AUTO-REWRITE "member") (EXPAND "subset?") (EXPAND "union")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|union| CONST-DECL "set" |sets| NIL))
+   SHOSTAK))
+ (|measurable_gain_bound| 0
+  (|measurable_gain_bound-1| NIL 4001131009
+   (""
+    (THEN (SKOSIMP*) (LEMMA "mass_split" ("B" "B!1" "E" "E!1"))
+     (LEMMA "mass_monotone" ("A" "difference(B!1,E!1)" "B" "A!1"))
+     (LEMMA "mass_monotone" ("A" "intersection(B!1,E!1)" "B" "E!1"))
+     (LEMMA "intersection_in_right" ("A" "B!1" "B" "E!1"))
+     (LEMMA "mass_measurable" ("E" "E!1")) (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|mass_monotone| FORMULA-DECL NIL |ppg_probability_outer| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|intersection_in_right| FORMULA-DECL NIL |ppg_probability_outer_step| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|mass_measurable| FORMULA-DECL NIL |ppg_probability_outer| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|mass_split| FORMULA-DECL NIL |ppg_probability_outer| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_outer_step| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_probability_outer_step| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "Probability" |ppg_probability_outer_step| NIL))
+   SHOSTAK))
+ (|mass_one_if_contains| 0
+  (|mass_one_if_contains-1| NIL 4001131009
+   (""
+    (THEN (SKOSIMP*) (LEMMA "mass_monotone" ("A" "E!1" "B" "A!1"))
+     (LEMMA "mass_measurable" ("E" "E!1")) (LEMMA "mass_bound" ("A" "A!1"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|mass_measurable| FORMULA-DECL NIL |ppg_probability_outer| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|mass_bound| FORMULA-DECL NIL |ppg_probability_outer| NIL)
+    (|mass_monotone| FORMULA-DECL NIL |ppg_probability_outer| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_outer_step| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_probability_outer_step| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "Probability" |ppg_probability_outer_step| NIL))
+   SHOSTAK))
+ (|mass_zero_extension| 0
+  (|mass_zero_extension-1| NIL 4001131009
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "measurable_gain_bound" ("B" "union(A!1,E!1)" "A" "A!1" "E" "E!1"))
+     (LEMMA "union_without_right" ("A" "A!1" "B" "E!1"))
+     (LEMMA "mass_monotone" ("A" "A!1" "B" "union(A!1,E!1)"))
+     (LEMMA "left_in_union" ("A" "A!1" "B" "E!1"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|union_without_right| FORMULA-DECL NIL |ppg_probability_outer_step| NIL)
+    (|left_in_union| FORMULA-DECL NIL |ppg_probability_outer_step| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|mu| FORMAL-CONST-DECL "Probability" |ppg_probability_outer_step| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|mass_monotone| FORMULA-DECL NIL |ppg_probability_outer| NIL)
+    (|measurable_gain_bound| FORMULA-DECL NIL |ppg_probability_outer_step| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_outer_step| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|union| CONST-DECL "set" |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_probability_outer_step| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,158 @@
+(|ppg_probability_full_real|
+ (|intoFull_TCC1| 0
+  (|intoFull_TCC1-1| NIL 4001131830
+   ("" (THEN (SKOSIMP*) (EXPAND "fullset") (ASSERT)) NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)) NIL
+   (|intoFull| SUBTYPE "x" "FullReal" (13 31 13 32))))
+ (|fullSpace_TCC1| 0
+  (|fullSpace_TCC1-1| NIL 4001131830
+   ("" (THEN (LEMMA "borelSigma_TCC1") (ASSERT)) NIL)
+   ((|borelSigma_TCC1| SUBTYPE-TCC NIL |ppg_probability_unit_interval| NIL))
+   NIL
+   (|fullSpace| SUBTYPE "real_borel" "MeasurableSpace[real]" (16 38 16 48))))
+ (|into_full_measurable| 0
+  (|into_full_measurable-1| NIL 4001131874
+   (""
+    (THEN (LEMMA "borelSigma_TCC1") (EXPAND "measurable") (EXPAND "fullSpace")
+     (EXPAND "imageSigma") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|borelSigma_TCC1| SUBTYPE-TCC NIL |ppg_probability_unit_interval| NIL)
+    (|fullSpace| CONST-DECL "ppg_measurable_space[FullReal].MeasurableSpace"
+     |ppg_probability_full_real| NIL)
+    (|imageSigma| CONST-DECL "ppg_measurable_space[Y].MeasurableSpace"
+     |ppg_measurable_map| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL))
+   SHOSTAK))
+ (|fullLaw_TCC1| 0
+  (|fullLaw_TCC1-1| NIL 4001131830
+   ("" (THEN (LEMMA "into_full_measurable") (ASSERT)) NIL)
+   ((|into_full_measurable| FORMULA-DECL NIL |ppg_probability_full_real| NIL))
+   NIL
+   (|fullLaw| SUBTYPE "intoFull"
+    "MeasurableMap[real, FullReal, real_borel, fullSpace]" (18 85 18 93))))
+ (|full_preimage_trace| 0
+  (|full_preimage_trace-1| NIL 4001131874
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "inverseImage")
+     (EXPAND "intoFull") (EXPAND "realTrace") (ASSERT))
+    NIL)
+   ((|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|fullset| CONST-DECL "set" |sets| NIL)
+    (|FullReal| TYPE-EQ-DECL NIL |ppg_probability_full_real| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|intoFull| CONST-DECL "FullReal" |ppg_probability_full_real| NIL)
+    (|realTrace| CONST-DECL "set[FullReal]" |ppg_probability_full_real| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|full_union_eta| 0
+  (|full_union_eta-1| NIL 4001134435
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "IUnion")
+     (ASSERT))
+    NIL)
+   NIL SHOSTAK))
+ (|full_trace_measurable| 0
+  (|full_trace_measurable-1| NIL 4001131874
+   (""
+    (THEN (AUTO-REWRITE "full_preimage_trace") (SKOSIMP*) (TYPEPRED "E!1")
+     (EXPAND "fullSpace") (EXPAND "imageSigma") (ASSERT))
+    NIL)
+   ((|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|real_borel| CONST-DECL "sigma_algebra" |real_borel|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|imageSigma| CONST-DECL "ppg_measurable_space[Y].MeasurableSpace"
+     |ppg_measurable_map| NIL)
+    (|full_preimage_trace| FORMULA-DECL NIL |ppg_probability_full_real| NIL)
+    (|fullSpace| CONST-DECL "ppg_measurable_space[FullReal].MeasurableSpace"
+     |ppg_probability_full_real| NIL))
+   SHOSTAK))
+ (|full_trace_mass_TCC1| 0
+  (|full_trace_mass_TCC1-1| NIL 4001131830
+   ("" (THEN (SKOSIMP*) (LEMMA "full_trace_measurable" ("E" "E!1")) (ASSERT))
+    NIL)
+   ((|full_trace_measurable| FORMULA-DECL NIL |ppg_probability_full_real| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|real_borel| CONST-DECL "sigma_algebra" |real_borel|
+     |measure_integration|))
+   NIL
+   (|full_trace_mass| SUBTYPE "realTrace(E)"
+    "(ppg_probability_full_real.fullSpace)" (24 58 24 70))))
+ (|full_trace_mass| 0
+  (|full_trace_mass-1| NIL 4001131875
+   (""
+    (THEN (AUTO-REWRITE "full_trace_measurable" "full_preimage_trace")
+     (SKOSIMP*) (EXPAND "fullLaw") (REWRITE "pushforward_apply") (ASSERT))
+    NIL)
+   ((|fullLaw| CONST-DECL
+     "ppg_probability_measure[FullReal, fullSpace].Probability"
+     |ppg_probability_full_real| NIL)
+    (|full_preimage_trace| FORMULA-DECL NIL |ppg_probability_full_real| NIL)
+    (|fullSpace| CONST-DECL "ppg_measurable_space[FullReal].MeasurableSpace"
+     |ppg_probability_full_real| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|real_borel| CONST-DECL "sigma_algebra" |real_borel|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|FullReal| TYPE-EQ-DECL NIL |ppg_probability_full_real| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|borelUniform| CONST-DECL "TargetLaw" |ppg_probability_unit_interval| NIL)
+    (|TargetLaw| TYPE-EQ-DECL NIL |ppg_probability_map| NIL)
+    (|cal_M| CONST-DECL "sigma_algebra" |lebesgue_def| |lebesgue|)
+    (|SourceLaw| TYPE-EQ-DECL NIL |ppg_probability_map| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|intoFull| CONST-DECL "FullReal" |ppg_probability_full_real| NIL)
+    (|MeasurableMap| TYPE-EQ-DECL NIL |ppg_probability_map| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|realTrace| CONST-DECL "set[FullReal]" |ppg_probability_full_real| NIL)
+    (|pushforward_apply| FORMULA-DECL NIL |ppg_probability_map| NIL))
+   SHOSTAK)))
+

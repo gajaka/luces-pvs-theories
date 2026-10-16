@@ -1,0 +1,25 @@
+% Passing from real to its full subtype changes the carrier's type but
+% excludes no points. Transport the Borel law along this explicit
+% bijection so that native dependent coordinates keep the same law.
+%
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+%
+% This is only a change of representation of the [0,1]-restricted
+% Lebesgue law in PPGraphVariableLLL.lean.
+ppg_probability_full_real: THEORY
+BEGIN
+  FullReal: TYPE = (fullset[real])
+  IMPORTING ppg_probability_unit_slices,ppg_measurable_map[real,FullReal]
+  intoFull(x:real): FullReal = x
+  fullSpace: ppg_measurable_space[FullReal].MeasurableSpace = imageSigma(borelSigma,intoFull)
+  into_full_measurable: LEMMA measurable(borelSigma,fullSpace,intoFull)
+  IMPORTING ppg_probability_map[real,FullReal,borelSigma,fullSpace]
+  fullLaw: ppg_probability_measure[FullReal,fullSpace].Probability =
+    ppg_probability_map[real,FullReal,borelSigma,fullSpace].pushforward(borelUniform,intoFull)
+  realTrace(E:set[real]): set[FullReal] = {x:FullReal|E(x)}
+  full_preimage_trace: LEMMA FORALL(E:set[real]):inverseImage(intoFull,realTrace(E))=E
+  full_union_eta: LEMMA FORALL(X:[nat->set[FullReal]]):
+    indexed_sets[nat,(fullset[real])].IUnion(X)=indexed_sets[nat,FullReal].IUnion(X)
+  full_trace_measurable: LEMMA FORALL(E:(borelSigma)):fullSpace(realTrace(E))
+  full_trace_mass: THEOREM FORALL(E:(borelSigma)):fullLaw(realTrace(E))=borelUniform(E)
+END ppg_probability_full_real
