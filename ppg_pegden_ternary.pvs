@@ -1,0 +1,24 @@
+% The same two events have probability one third, satisfy Pegden's
+% criterion at budgets one, and fail the older product criterion at every
+% pair of nonnegative budgets. The native expectation theorem bounds the
+% uniformly initialized stopped log length by two.
+%
+% Wesley Pegden, "An extension of the Moser-Tardos algorithmic local
+% lemma", Theorem 1.4. https://arxiv.org/abs/1102.2853
+% Lean counterpart: expected_work_le_two and strictly_extends_product_criterion
+% in Pegden.TernaryExample, PPGraphMoserTardosPegden.lean.
+ppg_pegden_ternary: THEORY
+BEGIN
+  IMPORTING ppg_pegden_ternary_model
+  eventEnumeration: {xs:list[bool]|completeEnumeration(xs)} = cons(FALSE,cons(TRUE,null))
+  example_labels: LEMMA labelUniverse(eventEnumeration)=labels
+  example_upper: LEMMA pegdenUpper(nativeBad,thirds)
+  example_budget: LEMMA pegdenBudget(allVars,labelUniverse(eventEnumeration),thirds,ones)
+  two_label_sum: LEMMA sums.sum(labels,ones)=2
+  native_well_formed: LEMMA mt_wf(allVars,nativeBad)
+  expected_work_le_two: THEOREM ele(randomInitETLog(allVars,nativeBad,FALSE,eventEnumeration),ennFinite(2))
+  strictly_extends_product_criterion: THEOREM
+    ele(randomInitETLog(allVars,nativeBad,FALSE,eventEnumeration),ennFinite(2)) AND
+    NOT EXISTS(x:[bool->nonneg_real]):FORALL(i:bool):
+      thirds(i)*products.sum(plusNeighbors(allVars,labels,i),LAMBDA(j:bool):1+x(j))<=x(i)
+END ppg_pegden_ternary

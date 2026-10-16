@@ -1,0 +1,308 @@
+(|ppg_pegden_ternary|
+ (|eventEnumeration_TCC1| 0
+  (|eventEnumeration_TCC1-1| NIL 4001129823
+   ("" (THEN (EXPAND "completeEnumeration") (GRIND :IF-MATCH NIL)) NIL)
+   ((|completeEnumeration| CONST-DECL "bool" |ppg_mt_selection| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL))
+   NIL
+   (|eventEnumeration| SUBTYPE
+    "cons[bool](FALSE, cons[bool](TRUE, null[bool]))"
+    "{xs: list_adt[bool].list | ppg_mt_selection[bool, UnitIndex, Ternary, ppg_pegden_ternary_frame.valueDomain].completeEnumeration(xs)}"
+    (13 62 13 89))))
+ (|example_labels| 0
+  (|example_labels-1| NIL 4001129824
+   (""
+    (THEN (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "label_universe_full" ("enumeration" "eventEnumeration" "a" "x!1"))
+     (LEMMA "labels_full") (EXPAND "fullset") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|labels| CONST-DECL "finite_set[bool]" |ppg_pegden_ternary_frame| NIL)
+    (|eventEnumeration| CONST-DECL "{xs: list[bool] | completeEnumeration(xs)}"
+     |ppg_pegden_ternary| NIL)
+    (|labelUniverse| CONST-DECL "finite_set[C]" |ppg_mt_label_partition| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|LabelEnumeration| TYPE-EQ-DECL NIL |ppg_mt_label_partition| NIL)
+    (|completeEnumeration| CONST-DECL "bool" |ppg_mt_selection| NIL)
+    (|valueDomain| CONST-DECL "set[Ternary]" |ppg_pegden_ternary_frame| NIL)
+    (|Ternary| TYPE-EQ-DECL NIL |ppg_pegden_ternary_frame| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|UnitIndex| TYPE-EQ-DECL NIL |ppg_pegden_ternary_frame| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|labels_full| FORMULA-DECL NIL |ppg_pegden_ternary_frame| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|label_universe_full| FORMULA-DECL NIL |ppg_mt_label_partition| NIL))
+   SHOSTAK))
+ (|example_upper_TCC1| 0
+  (|example_upper_TCC1-1| NIL 4001129823
+   ("" (THEN (LEMMA "full_unit_universe") (ASSERT)) NIL)
+   ((|full_unit_universe| FORMULA-DECL NIL |ppg_pegden_ternary_frame| NIL)) NIL
+   (|example_upper| SUBTYPE "unitUniverse"
+    "{F: finite_sets[UnitIndex].finite_set | F = sets[UnitIndex].fullset}"
+    (15 23 15 34))))
+ (|example_upper| 0
+  (|example_upper-1| NIL 4001129824
+   (""
+    (THEN (EXPAND "pegdenUpper") (SKOSIMP*)
+     (LEMMA "bad_probability" ("i" "c!1")) (ASSERT))
+    NIL)
+   ((|pegdenUpper| CONST-DECL "bool" |ppg_pegden_expectation| NIL)
+    (|bad_probability| FORMULA-DECL NIL |ppg_pegden_ternary_model| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK))
+ (|example_budget| 0
+  (|example_budget-1| NIL 4001129824
+   (""
+    (THEN (REWRITE "example_labels") (EXPAND "pegdenBudget") (SKOSIMP*)
+     (LEMMA "criterion" ("i" "a!1")) (ASSERT))
+    NIL)
+   ((|example_labels| FORMULA-DECL NIL |ppg_pegden_ternary| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|criterion| FORMULA-DECL NIL |ppg_pegden_ternary_frame| NIL)
+    (|pegdenBudget| CONST-DECL "bool" |ppg_pegden_polynomial| NIL))
+   SHOSTAK))
+ (|two_label_sum_TCC1| 0
+  (|two_label_sum_TCC1-1| NIL 4001129823 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|two_label_sum| SUBTYPE "LAMBDA (a, b: nonneg_real): a + b"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_pegden_ternary.op)(0), booleans.AND(operator_defs[nonneg_real].associative?(ppg_pegden_ternary.op), operator_defs[nonneg_real].commutative?(ppg_pegden_ternary.op)))}"
+    (17 23 17 31))))
+ (|two_label_sum| 0
+  (|two_label_sum-1| NIL 4001129824
+   (""
+    (THEN (LEMMA "nonnegative_addition_monoid") (REWRITE "labels_split")
+     (REWRITE
+      "ppg_monoid_sum[bool,nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b].sum_add"
+      1)
+     (REWRITE
+      "ppg_monoid_sum[bool,nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b].sum_singleton"
+      1)
+     (EXPAND "ones") (EXPAND "singleton") (EXPAND "member")
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|UnitIndex| TYPE-EQ-DECL NIL |ppg_pegden_ternary_frame| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|nonnegative_addition_monoid| FORMULA-DECL NIL |ppg_pegden_weight_sum|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|real_plus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|sum_add| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (FALSE CONST-DECL "bool" |booleans| NIL)
+    (|ones| CONST-DECL "nonneg_real" |ppg_pegden_ternary_frame| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|sum_singleton| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|labels_split| FORMULA-DECL NIL |ppg_pegden_ternary_frame| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL))
+   SHOSTAK))
+ (|native_well_formed| 0
+  (|native_well_formed-1| NIL 4001129824
+   ("" (THEN (LEMMA "ternary_well_formed") (EXPAND "nativeBad") (ASSERT)) NIL)
+   ((|ternary_well_formed| FORMULA-DECL NIL |ppg_pegden_ternary_frame| NIL)
+    (|nativeBad| CONST-DECL "NativeBad" |ppg_pegden_ternary_model| NIL))
+   SHOSTAK))
+ (|expected_work_le_two| 0
+  (|expected_work_le_two-1| NIL 4001129824
+   (""
+    (THEN
+     (LEMMA "randomInitETLog_le_sum"
+      ("vars" "allVars" "bad" "nativeBad" "fallback" "FALSE" "enumeration"
+       "eventEnumeration" "p" "thirds" "x" "ones"))
+     (LEMMA "native_well_formed") (LEMMA "example_upper")
+     (LEMMA "example_budget") (LEMMA "two_label_sum") (LEMMA "example_labels")
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|ternaryLaws| CONST-DECL
+     "ppg_probability_measure[(valueDomain(v)), ternarySpaces(v)].Probability"
+     |ppg_pegden_ternary_model| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ternarySpaces| CONST-DECL
+     "ppg_measurable_space[(valueDomain(v))].MeasurableSpace"
+     |ppg_pegden_ternary_model| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|unitUniverse| CONST-DECL "finite_set[UnitIndex]"
+     |ppg_pegden_ternary_frame| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|valueDomain| CONST-DECL "set[Ternary]" |ppg_pegden_ternary_frame| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Ternary| TYPE-EQ-DECL NIL |ppg_pegden_ternary_frame| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|UnitIndex| TYPE-EQ-DECL NIL |ppg_pegden_ternary_frame| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|ones| CONST-DECL "nonneg_real" |ppg_pegden_ternary_frame| NIL)
+    (|allVars| CONST-DECL "CertVars" |ppg_pegden_ternary_frame| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|thirds| CONST-DECL "nonneg_real" |ppg_pegden_ternary_frame| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (FALSE CONST-DECL "bool" |booleans| NIL)
+    (|eventEnumeration| CONST-DECL "{xs: list[bool] | completeEnumeration(xs)}"
+     |ppg_pegden_ternary| NIL)
+    (|completeEnumeration| CONST-DECL "bool" |ppg_mt_selection| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|nativeBad| CONST-DECL "NativeBad" |ppg_pegden_ternary_model| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|randomInitETLog_le_sum| FORMULA-DECL NIL |ppg_pegden_expectation| NIL)
+    (|example_upper| FORMULA-DECL NIL |ppg_pegden_ternary| NIL)
+    (|two_label_sum| FORMULA-DECL NIL |ppg_pegden_ternary| NIL)
+    (|example_labels| FORMULA-DECL NIL |ppg_pegden_ternary| NIL)
+    (|example_budget| FORMULA-DECL NIL |ppg_pegden_ternary| NIL)
+    (|native_well_formed| FORMULA-DECL NIL |ppg_pegden_ternary| NIL))
+   SHOSTAK))
+ (|strictly_extends_product_criterion_TCC1| 0
+  (|strictly_extends_product_criterion_TCC1-1| NIL 4001129823
+   ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|nativeBad| CONST-DECL "NativeBad" |ppg_pegden_ternary_model| NIL)
+    (|eventEnumeration| CONST-DECL "{xs: list[bool] | completeEnumeration(xs)}"
+     |ppg_pegden_ternary| NIL)
+    (|valueDomain| CONST-DECL "set[Ternary]" |ppg_pegden_ternary_frame| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Ternary| TYPE-EQ-DECL NIL |ppg_pegden_ternary_frame| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|UnitIndex| TYPE-EQ-DECL NIL |ppg_pegden_ternary_frame| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|initialStateFromLog| CONST-DECL "MTState" |ppg_mt_random_process| NIL)
+    (|pickFirstViolated| CONST-DECL "C" |ppg_mt_random_process| NIL)
+    (|realC| CONST-DECL "C" |ppg_mt_selection| NIL)
+    (|ternaryBad| CONST-DECL "bool" |ppg_pegden_ternary_frame| NIL)
+    (|RunningUntil| CONST-DECL "bool" |ppg_mt_correspondence| NIL)
+    (|runningEvent| CONST-DECL "set[LogSpace[C, V, Value, domain]]"
+     |ppg_mt_stopped_events| NIL)
+    (|finiteValues| CONST-DECL "set[nonneg_real]" |ppg_nonneg_tsum| NIL)
+    (|bounded| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|tsum| CONST-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|eventCount| CONST-DECL "ENN" |ppg_event_count| NIL)
+    (|processCount| CONST-DECL "ENN" |ppg_mt_extended_count| NIL)
+    (|TLog| CONST-DECL "ENN" |ppg_mt_extended_count| NIL)
+    (|randomInitTLog| CONST-DECL "ENN" |ppg_mt_extended_count| NIL)
+    (|logMeasure| CONST-DECL "ppg_probability_measure
+    [LogSpace[C, V, Value, domain], NativeTableSigma(spaces)].Probability"
+     |ppg_mt_log_probability| NIL)
+    (|ternaryLaws| CONST-DECL
+     "ppg_probability_measure[(valueDomain(v)), ternarySpaces(v)].Probability"
+     |ppg_pegden_ternary_model| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ternarySpaces| CONST-DECL
+     "ppg_measurable_space[(valueDomain(v))].MeasurableSpace"
+     |ppg_pegden_ternary_model| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|embed| CONST-DECL "ENN" |ppg_extended_integral| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|minorant| CONST-DECL "bool" |ppg_extended_integral| NIL)
+    (|integral| CONST-DECL "real" |integral| |measure_integration|)
+    (|expectation| CONST-DECL "real" |ppg_probability_integral| NIL)
+    (|mean| CONST-DECL "nonneg_real" |ppg_extended_integral| NIL)
+    (|lowerValues| CONST-DECL "set[nonneg_real]" |ppg_extended_integral| NIL)
+    (|lintegral| CONST-DECL "ENN" |ppg_extended_integral| NIL)
+    (|randomInitETLog| CONST-DECL "ENN" |ppg_mt_time_expectation| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|strictly_extends_product_criterion| SUBTYPE
+    "LAMBDA (a, b: nonneg_real): a * b"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_pegden_ternary.op)(1), booleans.AND(operator_defs[nonneg_real].associative?(ppg_pegden_ternary.op), operator_defs[nonneg_real].commutative?(ppg_pegden_ternary.op)))}"
+    (23 16 23 28))))
+ (|strictly_extends_product_criterion| 0
+  (|strictly_extends_product_criterion-1| NIL 4001129824
+   (""
+    (THEN (LEMMA "expected_work_le_two") (LEMMA "no_old_product_budget")
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|expected_work_le_two| FORMULA-DECL NIL |ppg_pegden_ternary| NIL)
+    (|no_old_product_budget| FORMULA-DECL NIL |ppg_pegden_ternary_frame| NIL))
+   SHOSTAK)))
+

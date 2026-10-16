@@ -1,0 +1,32 @@
+% A convex combination of normalized finite measures is again a
+% probability law. Countable additivity follows from linearity of
+% convergent series. This construction supplies the uniform three-point
+% law from point masses without assuming a finite probability model.
+%
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+% https://doi.org/10.1007/978-1-4612-0549-4
+ppg_probability_convex[X:TYPE,
+  (IMPORTING ppg_measurable_space[X]) S:MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_probability_dirac[X,S],analysis@convergence_ops
+  MixingWeight: TYPE = {r:real|0<=r AND r<=1}
+  r: VAR MixingWeight
+  mu,nu: VAR Probability
+  E: VAR disjoint_indexed_measurable
+  A: VAR (S)
+  a,b: VAR sequence[real]
+  u,v,c,d: VAR real
+  mixMass(r,mu,nu)(A:(S)): nnreal = r*mu(A)+(1-r)*nu(A)
+  sequence_add_eta: LEMMA a+b=(LAMBDA(n:nat):a(n)+b(n))
+  linear_series: LEMMA series(LAMBDA(n:nat):c*a(n)+d*b(n))=c*series(a)+d*series(b)
+  linear_series_converges: LEMMA convergence(series(a),u) AND convergence(series(b),v) IMPLIES
+    convergence(series(LAMBDA(n:nat):c*a(n)+d*b(n)),c*u+d*v)
+  mix_composition: LEMMA mixMass(r,mu,nu) o E =
+    (LAMBDA(n:nat):r*(mu o E)(n)+(1-r)*(nu o E)(n))
+  mix_empty: LEMMA mixMass(r,mu,nu)(emptyset[X])=0
+  mix_full: LEMMA mixMass(r,mu,nu)(fullset[X])=1
+  mix_additive: LEMMA convergence(series(mixMass(r,mu,nu) o E),mixMass(r,mu,nu)(IUnion(E)))
+  mix_probability: THEOREM probability?(mixMass(r,mu,nu))
+  mixture(r,mu,nu): Probability = mixMass(r,mu,nu)
+  mixture_at: LEMMA mixture(r,mu,nu)(A)=r*mu(A)+(1-r)*nu(A)
+END ppg_probability_convex
