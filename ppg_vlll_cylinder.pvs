@@ -1,0 +1,35 @@
+% A cylinder inspects only its declared dependency coordinates. Enlarging
+% that coordinate set preserves the cylinder property; unions over a
+% common coordinate set preserve it as well.
+%
+% Growing along coordinate j adds the half-space x(j)<=t. The portion
+% gained between cutoffs s and t is contained in the slice s<x(j)<=t.
+% These are set identities, independent of a measure or a nonempty cube.
+%
+% Kun He, Liang Li, Xingwu Liu, Yuyi Wang and Mingji Xia,
+% "Variable Version Lovasz Local Lemma: Beyond Shearer's Bound",
+% FOCS 2017, Section 3 and Lemma 10. https://arxiv.org/abs/1709.05143
+% Lean counterpart: IsCylinderOver and growAlong in PPGraphVariableLLL.lean.
+ppg_vlll_cylinder[m:nat]: THEORY
+BEGIN
+  Coordinate: TYPE = below(m)
+  CubeState: TYPE = [Coordinate->real]
+  IsCylinderOver(S:finite_set[Coordinate],A:set[CubeState]): bool =
+    FORALL(x,y:CubeState):(FORALL(j:(S)):x(j)=y(j)) IMPLIES (A(x) IFF A(y))
+  evalEvent(j:Coordinate,E:set[real]): set[CubeState] = {x:CubeState|E(x(j))}
+  growAlong(A:set[CubeState],j:Coordinate,t:real): set[CubeState] =
+    union(A,evalEvent(j,{r:real|r<=t}))
+  S,T: VAR finite_set[Coordinate]
+  A,B: VAR set[CubeState]
+  E: VAR set[real]
+  j: VAR Coordinate
+  s,t: VAR real
+  cylinder_mono: THEOREM subset?(S,T) AND IsCylinderOver(S,A) IMPLIES IsCylinderOver(T,A)
+  cylinder_union: THEOREM IsCylinderOver(S,A) AND IsCylinderOver(S,B) IMPLIES IsCylinderOver(S,union(A,B))
+  isCylinderOver_singleton_preimage: THEOREM IsCylinderOver(singleton(j),evalEvent(j,E))
+  growAlong_cylinderOver: THEOREM IsCylinderOver(S,A) AND S(j) IMPLIES IsCylinderOver(S,growAlong(A,j,t))
+  growAlong_subset: THEOREM subset?(A,growAlong(A,j,t))
+  growAlong_mono: THEOREM s<=t IMPLIES subset?(growAlong(A,j,s),growAlong(A,j,t))
+  growAlong_diff_subset_slice: THEOREM s<=t IMPLIES subset?(difference(growAlong(A,j,t),growAlong(A,j,s)),
+    evalEvent(j,{r:real|s<r AND r<=t}))
+END ppg_vlll_cylinder
