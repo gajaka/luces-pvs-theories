@@ -1,0 +1,950 @@
+(|ppg_finite_potential_real_harmonic|
+ (|r_sub_sum| 0
+  (|r_sub_sum-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fsum_add_functions"
+      ("S" "A!1" "f" "f!1" "g" "LAMBDA(t:State):(-1)*g!1(t)"))
+     (LEMMA "fsum_scale" ("S" "A!1" "f" "g!1" "r" "-1")) (ASSERT))
+    NIL)
+   ((|fsum_scale| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_plus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|fsum_add_functions| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK))
+ (|r_point_sum| 0
+  (|r_point_sum-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "point_sum_value" ("A" "universe" "f" "f!1" "x" "s!1"))
+     (LEMMA "universe_member" ("s" "s!1")) (EXPAND "pointSum") (ASSERT))
+    NIL)
+   ((|universe_member| FORMULA-DECL NIL |ppg_finite_drift| NIL)
+    (|pointSum| CONST-DECL "real" |ppg_finite_point_sum| NIL)
+    (|point_sum_value| FORMULA-DECL NIL |ppg_finite_point_sum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL))
+   SHOSTAK))
+ (|r_member_bound| 0
+  (|r_member_bound-1| NIL 4001162711
+   ("" (SKOSIMP*)
+    (("" (LABEL "NN" -2)
+      (("" (LEMMA "point_sum_value" ("A" "A!1" "f" "f!1" "x" "x!1"))
+        ((""
+          (LEMMA "fsum_mono"
+           ("S" "A!1" "f" "LAMBDA(t:State):IF t=x!1 THEN f!1(t) ELSE 0 ENDIF"
+            "g" "f!1"))
+          (("" (EXPAND "pointSum")
+            ((""
+              (CASE
+                  "FORALL(y:State):A!1(y) IMPLIES (IF y=x!1 THEN f!1(y) ELSE 0 ENDIF)<=f!1(y)")
+              (("1" (PROP)
+                (("1"
+                  (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+                   ("fsum" "sum" "is_finite"))
+                  NIL NIL)
+                 ("2"
+                  (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+                   ("fsum" "sum" "is_finite"))
+                  NIL NIL))
+                NIL)
+               ("2" (SKOSIMP*)
+                (("2" (INST "NN" "y!1")
+                  (("2"
+                    (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+                     ("fsum" "sum" "is_finite"))
+                    NIL NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|point_sum_value| FORMULA-DECL NIL |ppg_finite_point_sum| NIL)
+    (|pointSum| CONST-DECL "real" |ppg_finite_point_sum| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|fsum_mono| FORMULA-DECL NIL |ppg_finite_sum| NIL))
+   SHOSTAK))
+ (|r_full_minimum_exists| 0
+  (|r_full_minimum_exists-1| NIL 4001162711
+   ("" (SKOSIMP*)
+    (("" (LEMMA "minimum_exists" ("S" "universe" "f" "LAMBDA(t:State):f!1(t)"))
+      (("" (CASE "NOT empty?(universe)")
+        (("1" (ASSERT)
+          (("1" (SKOSIMP*)
+            (("1" (INST + "m!1")
+              (("1" (SKOSIMP*)
+                (("1" (LEMMA "universe_member" ("s" "t!1"))
+                  (("1"
+                    (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+                     ("minimum" "argmin" "is_finite"))
+                    NIL NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL)
+         ("2"
+          (GRIND :DEFS ("empty?") :IF-MATCH ALL :EXCLUDE
+           ("minimum" "argmin" "is_finite"))
+          NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|empty?| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|universe_member| FORMULA-DECL NIL |ppg_finite_drift| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|minimum_exists| FORMULA-DECL NIL |ppg_real_minimum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL))
+   SHOSTAK))
+ (|r_vector_eq_iff| 0
+  (|r_vector_eq_iff-1| NIL 4001162711
+   ("" (SKOSIMP*)
+    (("" (PROP)
+      (("1" (SKOSIMP*) (("1" (REPLACE -1) (("1" (PROPAX) NIL NIL)) NIL)) NIL)
+       ("2" (APPLY-EXTENSIONALITY :HIDE? T) NIL NIL))
+      NIL))
+    NIL)
+   ((|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL))
+   SHOSTAK))
+ (|r_system_row_coefficients| 0
+  (|r_system_row_coefficients-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :DEFS ("systemMatrix")))
+    NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Matrix| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|systemMatrix| CONST-DECL "Matrix" |ppg_finite_potential_system| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL))
+   SHOSTAK))
+ (|r_systemMatrix_mulVec| 0
+  (|r_systemMatrix_mulVec-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*) (EXPAND "r_matVec")
+     (LEMMA "r_system_row_coefficients" ("M" "M!1" "f" "f!1" "s" "s!1"))
+     (REPLACE -1) (AUTO-REWRITE "r_sub_sum" "r_point_sum")
+     (GRIND :DEFS ("r_successorValue") :EXCLUDE
+      ("sum" "is_finite" "systemMatrix")))
+    NIL)
+   ((|r_system_row_coefficients| FORMULA-DECL NIL
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|r_point_sum| FORMULA-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|r_sub_sum| FORMULA-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|r_successorValue| CONST-DECL "real" |ppg_finite_potential_real_harmonic|
+     NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|r_matVec| CONST-DECL "r_Vector" |ppg_finite_potential_real_harmonic|
+     NIL))
+   SHOSTAK))
+ (|r_matrix_harmonic_iff| 0
+  (|r_matrix_harmonic_iff-1| NIL 4001162711
+   ("" (SKOSIMP*)
+    (("" (REWRITE "r_vector_eq_iff")
+      (("" (EXPAND "r_Harmonic")
+        (("" (PROP)
+          (("1" (SKOSIMP*)
+            (("1"
+              (LEMMA "r_systemMatrix_mulVec" ("M" "M!1" "f" "f!1" "s" "s!1"))
+              (("1"
+                (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+                 ("r_matVec" "sum" "is_finite"))
+                NIL NIL))
+              NIL))
+            NIL)
+           ("2" (SKOSIMP*)
+            (("2"
+              (LEMMA "r_systemMatrix_mulVec" ("M" "M!1" "f" "f!1" "s" "s!1"))
+              (("2"
+                (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+                 ("r_matVec" "sum" "is_finite"))
+                NIL NIL))
+              NIL))
+            NIL)
+           ("3" (SKOSIMP*)
+            (("3"
+              (LEMMA "r_systemMatrix_mulVec" ("M" "M!1" "f" "f!1" "s" "s!1"))
+              (("3"
+                (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+                 ("r_matVec" "sum" "is_finite"))
+                NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|r_Harmonic| CONST-DECL "bool" |ppg_finite_potential_real_harmonic| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|r_systemMatrix_mulVec| FORMULA-DECL NIL
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|systemMatrix| CONST-DECL "Matrix" |ppg_finite_potential_system| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|r_matVec| CONST-DECL "r_Vector" |ppg_finite_potential_real_harmonic| NIL)
+    (|Matrix| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|r_vector_eq_iff| FORMULA-DECL NIL |ppg_finite_potential_real_harmonic|
+     NIL))
+   SHOSTAK))
+ (|r_row_constant_sum| 0
+  (|r_row_constant_sum-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "real_sum_eq"
+      ("A" "universe" "f" "LAMBDA(u:State):M!1`transition(s!1,u)"))
+     (LEMMA "fsum_scale_right"
+      ("S" "universe" "f" "LAMBDA(u:State):M!1`transition(s!1,u)" "r" "c!1"))
+     (GRIND :DEFS ("Stochastic") :IF-MATCH ALL :EXCLUDE
+      ("sum" "fsum" "is_finite")))
+    NIL)
+   ((|fsum_scale_right| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|real_sum_eq| FORMULA-DECL NIL |ppg_rational_sum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL))
+   SHOSTAK))
+ (|r_offset_coefficients| 0
+  (|r_offset_coefficients-1| NIL 4001162711
+   ("" (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (ASSERT)) NIL)
+   ((* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL))
+   SHOSTAK))
+ (|r_offset_sum_zero| 0
+  (|r_offset_sum_zero-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "r_offset_coefficients" ("M" "M!1" "f" "f!1" "c" "c!1" "s" "s!1"))
+     (LEMMA "r_sub_sum"
+      ("A" "universe" "f" "LAMBDA(u:State):M!1`transition(s!1,u)*f!1(u)" "g"
+       "LAMBDA(u:State):M!1`transition(s!1,u)*c!1"))
+     (LEMMA "r_row_constant_sum" ("M" "M!1" "c" "c!1" "s" "s!1"))
+     (EXPAND "r_successorValue") (ASSERT))
+    NIL)
+   ((|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|r_sub_sum| FORMULA-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|r_successorValue| CONST-DECL "real" |ppg_finite_potential_real_harmonic|
+     NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|r_row_constant_sum| FORMULA-DECL NIL |ppg_finite_potential_real_harmonic|
+     NIL)
+    (|r_offset_coefficients| FORMULA-DECL NIL
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL))
+   SHOSTAK))
+ (|r_offset_nonnegative| 0
+  (|r_offset_nonnegative-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "nonnegative_scale_monotone"
+      ("a" "0" "b" "f!1(t!1)-c!1" "w" "M!1`transition(s!1,t!1)"))
+     (GRIND :DEFS ("Stochastic") :IF-MATCH ALL :EXCLUDE
+      ("sum" "fsum" "is_finite")))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|rat_times_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nonnegative_scale_monotone| FORMULA-DECL NIL |ppg_finite_potential_order|
+     NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL))
+   SHOSTAK))
+ (|r_minimum_step| 0
+  (|r_minimum_step-1| NIL 4001162711
+   ("" (SKOSIMP*)
+    (("" (LEMMA "r_offset_sum_zero" ("M" "M!1" "f" "f!1" "c" "c!1" "s" "s!1"))
+      ((""
+        (LEMMA "r_member_bound"
+         ("A" "universe" "f"
+          "LAMBDA(u:State):M!1`transition(s!1,u)*(f!1(u)-c!1)" "x" "t!1"))
+        (("" (LEMMA "universe_member" ("s" "t!1"))
+          ((""
+            (LEMMA "zero_times3"
+             ("x" "M!1`transition(s!1,t!1)" "y" "f!1(t!1)-c!1"))
+            ((""
+              (LEMMA "r_offset_nonnegative"
+               ("M" "M!1" "f" "f!1" "c" "c!1" "s" "s!1" "t" "t!1"))
+              ((""
+                (CASE
+                    "FORALL(y:State):universe(y) IMPLIES 0<=M!1`transition(s!1,y)*(f!1(y)-c!1)")
+                (("1" (PROP)
+                  (("1"
+                    (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+                     ("sum" "fsum" "is_finite" "Stochastic"
+                      "r_successorValue"))
+                    NIL NIL)
+                   ("2"
+                    (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+                     ("sum" "fsum" "is_finite" "Stochastic"
+                      "r_successorValue"))
+                    NIL NIL)
+                   ("3"
+                    (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+                     ("sum" "fsum" "is_finite" "Stochastic"
+                      "r_successorValue"))
+                    NIL NIL)
+                   ("4"
+                    (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+                     ("sum" "fsum" "is_finite" "Stochastic"
+                      "r_successorValue"))
+                    NIL NIL)
+                   ("5"
+                    (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+                     ("sum" "fsum" "is_finite" "Stochastic"
+                      "r_successorValue"))
+                    NIL NIL)
+                   ("6"
+                    (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+                     ("sum" "fsum" "is_finite" "Stochastic"
+                      "r_successorValue"))
+                    NIL NIL))
+                  NIL)
+                 ("2" (SKOSIMP*)
+                  (("2"
+                    (LEMMA "r_offset_nonnegative"
+                     ("M" "M!1" "f" "f!1" "c" "c!1" "s" "s!1" "t" "y!1"))
+                    (("2" (ASSERT) NIL NIL)) NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|r_member_bound| FORMULA-DECL NIL |ppg_finite_potential_real_harmonic|
+     NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|zero_times3| FORMULA-DECL NIL |real_props| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|r_offset_nonnegative| FORMULA-DECL NIL
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|universe_member| FORMULA-DECL NIL |ppg_finite_drift| NIL)
+    (|r_offset_sum_zero| FORMULA-DECL NIL |ppg_finite_potential_real_harmonic|
+     NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL))
+   SHOSTAK))
+ (|r_negative_minimum_inductive| 0
+  (|r_negative_minimum_inductive-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*) (EXPAND "InductiveSet") (EXPAND "levelSet") (SKOSIMP*)
+     (LEMMA "r_minimum_step"
+      ("M" "M!1" "f" "f!1" "c" "c!1" "s" "u!1" "t" "w!1"))
+     (GRIND :DEFS ("positiveStep" "r_Harmonic") :IF-MATCH ALL :EXCLUDE
+      ("sum" "fsum" "is_finite" "Stochastic" "r_successorValue")))
+    NIL)
+   ((|levelSet| CONST-DECL "set[State]" |ppg_finite_potential_real_harmonic|
+     NIL)
+    (|r_minimum_step| FORMULA-DECL NIL |ppg_finite_potential_real_harmonic|
+     NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|r_Harmonic| CONST-DECL "bool" |ppg_finite_potential_real_harmonic| NIL)
+    (|positiveStep| CONST-DECL "bool" |ppg_finite_potential_reach| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|InductiveSet| CONST-DECL "bool" |ppg_reachability_refutation| NIL))
+   SHOSTAK))
+ (|r_harmonic_minimum_reaches| 0
+  (|r_harmonic_minimum_reaches-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "r_negative_minimum_inductive" ("M" "M!1" "f" "f!1" "c" "c!1"))
+     (LEMMA "inductiveSet_reachable"
+      ("step" "positiveStep(M!1)" "I" "levelSet(f!1,c!1)" "v" "s!1" "w" "t!1"))
+     (EXPAND "levelSet") (ASSERT))
+    NIL)
+   ((|inductiveSet_reachable| FORMULA-DECL NIL |ppg_reachability_refutation|
+     NIL)
+    (|levelSet| CONST-DECL "set[State]" |ppg_finite_potential_real_harmonic|
+     NIL)
+    (|positiveStep| CONST-DECL "bool" |ppg_finite_potential_reach| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|r_negative_minimum_inductive| FORMULA-DECL NIL
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL))
+   SHOSTAK))
+ (|r_harmonic_nonnegative| 0
+  (|r_harmonic_nonnegative-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*) (LABEL "ACCESS" -2) (LABEL "HARM" -3)
+     (LEMMA "r_full_minimum_exists" ("f" "f!1" "s" "s!1"))
+     (LEMMA "universe_member" ("s" "s!1")) (ASSERT) (SKOSIMP*)
+     (EXPAND "Accessible" "ACCESS") (INST "ACCESS" "m!1")
+     (EXPAND "ReachesGood" "ACCESS") (SKOSIMP*)
+     (LEMMA "r_harmonic_minimum_reaches"
+      ("M" "M!1" "f" "f!1" "c" "f!1(m!1)" "s" "m!1" "t" "g!1"))
+     (EXPAND "r_Harmonic" "HARM")
+     (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+      ("sum" "fsum" "is_finite" "Stochastic" "r_successorValue" "Reach")))
+    NIL)
+   ((|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|universe_member| FORMULA-DECL NIL |ppg_finite_drift| NIL)
+    (|r_Harmonic| CONST-DECL "bool" |ppg_finite_potential_real_harmonic| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|r_harmonic_minimum_reaches| FORMULA-DECL NIL
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|ReachesGood| CONST-DECL "bool" |ppg_finite_potential_reach| NIL)
+    (|Accessible| CONST-DECL "bool" |ppg_finite_potential_reach| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|r_full_minimum_exists| FORMULA-DECL NIL
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL))
+   SHOSTAK))
+ (|r_successor_negative| 0
+  (|r_successor_negative-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fsum_scale"
+      ("S" "universe" "f" "LAMBDA(u:State):M!1`transition(s!1,u)*f!1(u)" "r"
+       "-1"))
+     (LEMMA "fsum_congr"
+      ("S" "universe" "f"
+       "LAMBDA(u:State):M!1`transition(s!1,u)*negativeVector(f!1)(u)" "g"
+       "LAMBDA(u:State):(-1)*(M!1`transition(s!1,u)*f!1(u))"))
+     (EXPAND "r_successorValue")
+     (GRIND :DEFS ("negativeVector") :IF-MATCH ALL :EXCLUDE
+      ("sum" "fsum" "is_finite")))
+    NIL)
+   ((|negativeVector| CONST-DECL "r_Vector"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|fsum_congr| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|r_successorValue| CONST-DECL "real" |ppg_finite_potential_real_harmonic|
+     NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|fsum_scale| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL))
+   SHOSTAK))
+ (|r_harmonic_neg| 0
+  (|r_harmonic_neg-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*) (LEMMA "r_successor_negative" ("M" "M!1" "f" "f!1"))
+     (GRIND :DEFS ("r_Harmonic" "negativeVector") :IF-MATCH ALL :EXCLUDE
+      ("sum" "fsum" "is_finite" "r_successorValue")))
+    NIL)
+   ((|r_Harmonic| CONST-DECL "bool" |ppg_finite_potential_real_harmonic| NIL)
+    (|negativeVector| CONST-DECL "r_Vector"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|r_successor_negative| FORMULA-DECL NIL
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL))
+   SHOSTAK))
+ (|r_harmonic_zero| 0
+  (|r_harmonic_zero-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "r_harmonic_nonnegative" ("M" "M!1" "f" "f!1" "s" "x!1"))
+     (LEMMA "r_harmonic_neg" ("M" "M!1" "f" "f!1"))
+     (LEMMA "r_harmonic_nonnegative"
+      ("M" "M!1" "f" "negativeVector(f!1)" "s" "x!1"))
+     (EXPAND "negativeVector") (ASSERT))
+    NIL)
+   ((|r_harmonic_nonnegative| FORMULA-DECL NIL
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|negativeVector| CONST-DECL "r_Vector"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|r_harmonic_neg| FORMULA-DECL NIL |ppg_finite_potential_real_harmonic|
+     NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL))
+   SHOSTAK))
+ (|r_difference_products| 0
+  (|r_difference_products-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (EXPAND "differenceVector") (ASSERT))
+    NIL)
+   ((|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|Matrix| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|differenceVector| CONST-DECL "r_Vector"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL))
+   SHOSTAK))
+ (|r_matVec_difference| 0
+  (|r_matVec_difference-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "r_difference_products"
+      ("matrix" "matrix!1" "f" "f!1" "g" "g!1" "s" "x!1"))
+     (LEMMA "r_sub_sum"
+      ("A" "universe" "f" "LAMBDA(t:State):matrix!1(x!1,t)*f!1(t)" "g"
+       "LAMBDA(t:State):matrix!1(x!1,t)*g!1(t)"))
+     (EXPAND "differenceVector") (EXPAND "r_matVec") (ASSERT))
+    NIL)
+   ((|r_difference_products| FORMULA-DECL NIL
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|r_sub_sum| FORMULA-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|Matrix| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|r_matVec| CONST-DECL "r_Vector" |ppg_finite_potential_real_harmonic| NIL)
+    (|differenceVector| CONST-DECL "r_Vector"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL))
+   SHOSTAK))
+ (|r_difference_zero_iff| 0
+  (|r_difference_zero_iff-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*) (LEMMA "r_vector_eq_iff" ("f" "f!1" "g" "g!1"))
+     (LEMMA "r_vector_eq_iff"
+      ("f" "differenceVector(f!1,g!1)" "g" "LAMBDA(s:State):0"))
+     (EXPAND "differenceVector")
+     (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE ("sum" "fsum" "is_finite")))
+    NIL)
+   ((|differenceVector| CONST-DECL "r_Vector"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|r_vector_eq_iff| FORMULA-DECL NIL |ppg_finite_potential_real_harmonic|
+     NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL))
+   SHOSTAK))
+ (|r_matrix_injective| 0
+  (|r_matrix_injective-1| NIL 4001162711
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "r_matVec_difference"
+      ("matrix" "systemMatrix(M!1)" "f" "f!1" "g" "g!1"))
+     (LEMMA "r_difference_zero_iff"
+      ("f" "r_matVec(systemMatrix(M!1),f!1)" "g"
+       "r_matVec(systemMatrix(M!1),g!1)"))
+     (LEMMA "r_matrix_harmonic_iff"
+      ("M" "M!1" "f" "differenceVector(f!1,g!1)"))
+     (LEMMA "r_harmonic_zero" ("M" "M!1" "f" "differenceVector(f!1,g!1)"))
+     (LEMMA "r_difference_zero_iff" ("f" "f!1" "g" "g!1")) (ASSERT))
+    NIL)
+   ((|r_difference_zero_iff| FORMULA-DECL NIL
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|r_matVec| CONST-DECL "r_Vector" |ppg_finite_potential_real_harmonic| NIL)
+    (|r_harmonic_zero| FORMULA-DECL NIL |ppg_finite_potential_real_harmonic|
+     NIL)
+    (|r_matrix_harmonic_iff| FORMULA-DECL NIL
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|differenceVector| CONST-DECL "r_Vector"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|r_matVec_difference| FORMULA-DECL NIL
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|r_Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_real_harmonic| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_real_harmonic| NIL)
+    (|Matrix| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|systemMatrix| CONST-DECL "Matrix" |ppg_finite_potential_system| NIL))
+   SHOSTAK)))
+

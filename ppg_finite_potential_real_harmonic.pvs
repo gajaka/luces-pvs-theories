@@ -1,0 +1,76 @@
+% The harmonic minimum argument also applies to real vectors. A negative
+% minimum propagates along positive transitions to a good state, where the
+% value is zero. This rules out a real kernel before using native matrix
+% inversion; rational injectivity alone is not used as a substitute.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Exercise 10.22.
+% Sheldon Axler, Linear Algebra Done Right, fourth edition, Chapter 3.
+ppg_finite_potential_real_harmonic[State: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_potential_reach[State,universe]
+  r_Vector: TYPE = [State->real]
+  r_matVec(matrix:Matrix,f:r_Vector): r_Vector = LAMBDA(s:State):
+    fsum(universe,LAMBDA(t:State):matrix(s,t)*f(t))
+  r_successorValue(M:Model,f:r_Vector,s:State): real =
+    fsum(universe,LAMBDA(t:State):M`transition(s,t)*f(t))
+  r_Harmonic(M:Model,f:r_Vector): bool =
+    (FORALL(s:State):M`good(s) IMPLIES f(s)=0) AND
+    (FORALL(s:State):NOT M`good(s) IMPLIES f(s)=r_successorValue(M,f,s))
+  r_sub_sum: LEMMA FORALL(A:finite_set[State],f,g:r_Vector):
+    fsum(A,LAMBDA(t:State):f(t)-g(t))=fsum(A,f)-fsum(A,g)
+  r_point_sum: LEMMA FORALL(f:r_Vector,s:State):fsum(universe,
+    LAMBDA(t:State):IF t=s THEN f(t) ELSE 0 ENDIF)=f(s)
+  r_member_bound: LEMMA FORALL(A:finite_set[State],f:r_Vector,x:State):
+    A(x) AND (FORALL(y:State):A(y) IMPLIES 0<=f(y)) IMPLIES f(x)<=fsum(A,f)
+  r_full_minimum_exists: LEMMA FORALL(f:r_Vector,s:State):universe(s) IMPLIES
+    EXISTS(m:State):FORALL(t:State):f(m)<=f(t)
+  r_vector_eq_iff: LEMMA FORALL(f,g:r_Vector):f=g IFF (FORALL(s:State):f(s)=g(s))
+  r_system_row_coefficients: LEMMA FORALL(M:Model,f:r_Vector,s:State):
+    (LAMBDA(t:State):systemMatrix(M)(s,t)*f(t))=
+    IF M`good(s) THEN (LAMBDA(t:State):IF t=s THEN f(t) ELSE 0 ENDIF)
+    ELSE (LAMBDA(t:State):(IF t=s THEN f(t) ELSE 0 ENDIF)-M`transition(s,t)*f(t)) ENDIF
+  r_systemMatrix_mulVec: LEMMA FORALL(M:Model,f:r_Vector,s:State):
+    r_matVec(systemMatrix(M),f)(s)=
+    IF M`good(s) THEN f(s) ELSE f(s)-r_successorValue(M,f,s) ENDIF
+  r_matrix_harmonic_iff: LEMMA FORALL(M:Model,f:r_Vector):
+    r_matVec(systemMatrix(M),f)=(LAMBDA(s:State):0) IFF r_Harmonic(M,f)
+  M: VAR Model
+  f,g: VAR r_Vector
+  matrix: VAR Matrix
+  s,t: VAR State
+  c: VAR real
+  r_row_constant_sum: LEMMA Stochastic(M) IMPLIES
+    fsum(universe,LAMBDA(u:State):M`transition(s,u)*c)=c
+  r_offset_coefficients: LEMMA (LAMBDA(u:State):M`transition(s,u)*(f(u)-c))=
+    (LAMBDA(u:State):M`transition(s,u)*f(u)-M`transition(s,u)*c)
+  r_offset_sum_zero: LEMMA Stochastic(M) AND f(s)=c AND f(s)=r_successorValue(M,f,s)
+    IMPLIES fsum(universe,LAMBDA(u:State):M`transition(s,u)*(f(u)-c))=0
+  r_offset_nonnegative: LEMMA Stochastic(M) AND (FORALL(u:State):c<=f(u)) IMPLIES
+    0<=M`transition(s,t)*(f(t)-c)
+  r_minimum_step: THEOREM Stochastic(M) AND (FORALL(u:State):c<=f(u)) AND f(s)=c AND
+    f(s)=r_successorValue(M,f,s) AND 0<M`transition(s,t) IMPLIES f(t)=c
+  levelSet(f,c): set[State] = {u:State|f(u)=c}
+  r_negative_minimum_inductive: LEMMA Stochastic(M) AND r_Harmonic(M,f) AND
+    (FORALL(u:State):c<=f(u)) AND c<0 IMPLIES
+    InductiveSet(positiveStep(M),levelSet(f,c))
+  r_harmonic_minimum_reaches: LEMMA Stochastic(M) AND r_Harmonic(M,f) AND
+    (FORALL(u:State):c<=f(u)) AND c<0 AND f(s)=c AND
+    Reach(positiveStep(M))(s,t) IMPLIES f(t)=c
+  r_harmonic_nonnegative: THEOREM Stochastic(M) AND Accessible(M) AND r_Harmonic(M,f)
+    IMPLIES 0<=f(s)
+  negativeVector(f): r_Vector = LAMBDA(s:State):-f(s)
+  r_successor_negative: LEMMA r_successorValue(M,negativeVector(f),s)=-r_successorValue(M,f,s)
+  r_harmonic_neg: THEOREM r_Harmonic(M,f) IMPLIES r_Harmonic(M,negativeVector(f))
+  r_harmonic_zero: THEOREM Stochastic(M) AND Accessible(M) AND r_Harmonic(M,f) IMPLIES
+    f=(LAMBDA(s:State):0)
+  differenceVector(f,g): r_Vector = LAMBDA(s:State):f(s)-g(s)
+  r_difference_products: LEMMA (LAMBDA(t:State):matrix(s,t)*differenceVector(f,g)(t))=
+    (LAMBDA(t:State):matrix(s,t)*f(t)-matrix(s,t)*g(t))
+  r_matVec_difference: LEMMA r_matVec(matrix,differenceVector(f,g))=
+    differenceVector(r_matVec(matrix,f),r_matVec(matrix,g))
+  r_difference_zero_iff: LEMMA differenceVector(f,g)=(LAMBDA(s:State):0) IFF f=g
+  r_matrix_injective: THEOREM Stochastic(M) AND Accessible(M) IMPLIES
+    (FORALL(f,g:r_Vector):r_matVec(systemMatrix(M),f)=r_matVec(systemMatrix(M),g) IMPLIES f=g)
+END ppg_finite_potential_real_harmonic
