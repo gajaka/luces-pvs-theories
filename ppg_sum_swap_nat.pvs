@@ -8,11 +8,16 @@ BEGIN
   q: VAR [T,nat->nonneg_real]
   f: VAR [nat->nonneg_real]
   n: VAR nat
+
   nat_sum_zero: LEMMA nSum.sum(natRange(0),f)=0
+
   nat_sum_succ: LEMMA nSum.sum(natRange(n+1),f)=nSum.sum(natRange(n),f)+f(n)
+
   row_prefix_function_succ: LEMMA
     (LAMBDA(t:T):nSum.sum(natRange(n+1),LAMBDA(k:nat):q(t,k)))=
     (LAMBDA(t:T):nSum.sum(natRange(n),LAMBDA(k:nat):q(t,k))+q(t,n))
+
   swap_nat_prefix: THEOREM nSum.sum(natRange(n),LAMBDA(k:nat):tSum.sum(A,LAMBDA(t:T):q(t,k)))=
     tSum.sum(A,LAMBDA(t:T):nSum.sum(natRange(n),LAMBDA(k:nat):q(t,k)))
+
 END ppg_sum_swap_nat

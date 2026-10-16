@@ -12,10 +12,15 @@ BEGIN
   key: VAR [A->B]
   h: VAR [A->R]
   b: VAR B
+
   fiber(S,key,b): finite_set[A] = intersection(S,LAMBDA(a:A):key(a)=b)
+
   fiber_disjoint: LEMMA disjointFamily(I,LAMBDA(b:B):fiber(S,key,b))
+
   fiber_cover: LEMMA (FORALL(a:A):S(a) IMPLIES I(key(a))) IMPLIES
     biUnion(I,LAMBDA(b:B):fiber(S,key,b))=S
+
   fold_fiberwise: THEOREM (FORALL(a:A):S(a) IMPLIES I(key(a))) IMPLIES
     sourceFold.sum(S,h)=indexFold.sum(I,LAMBDA(b:B):sourceFold.sum(fiber(S,key,b),h))
+
 END ppg_finite_fiber_fold

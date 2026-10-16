@@ -2,6 +2,7 @@
 ppg_finite_feasibility[State: TYPE, C: TYPE]: THEORY
 BEGIN
   IMPORTING ppg_infeasibility[State, C]
+
   SearchResult: DATATYPE
   BEGIN
     none: none?
@@ -13,8 +14,10 @@ BEGIN
   B: VAR finite_set[C]
   z: VAR State
   states: VAR list[State]
+
   goodTest(allowed, sat, B, z): bool =
     allowed(z) AND FORALL (c: C): B(c) IMPLIES sat(c, z)
+
   search(allowed, sat, B, states): RECURSIVE SearchResult =
     CASES states OF
       null: none,
@@ -26,17 +29,23 @@ BEGIN
   goodTest_eq_true: THEOREM
     goodTest(allowed, sat, B, z) IFF
       (allowed(z) AND FORALL (c: C): B(c) IMPLIES sat(c, z))
+
   search_none_iff: THEOREM
     search(allowed, sat, B, states) = none IFF
       FORALL z: member(z, states) IMPLIES NOT goodTest(allowed, sat, B, z)
+
   search_sound: THEOREM
     search(allowed, sat, B, states) = some(z) IMPLIES goodTest(allowed, sat, B, z)
+
   search_witness_mem: THEOREM
     search(allowed, sat, B, states) = some(z) IMPLIES member(z, states)
+
   search_none_iff_infeasible: THEOREM
     (FORALL z: allowed(z) IMPLIES member(z, states)) IMPLIES
       (search(allowed, sat, B, states) = none IFF Infeasible(allowed, sat, B))
+
   search_complete: THEOREM
     (FORALL z: allowed(z) IMPLIES member(z, states)) AND Satisfiable(allowed, sat, B)
     IMPLIES EXISTS z: search(allowed, sat, B, states) = some(z)
+
 END ppg_finite_feasibility

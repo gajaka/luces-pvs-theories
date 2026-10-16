@@ -6,13 +6,17 @@ ppg_probability_finite_product[I, Value: TYPE, domain: [I -> set[Value]],
   coins: [i: I -> CoordinateLaw(i)]]: THEORY
 BEGIN
   IMPORTING ppg_probability_block_rectangle, ppg_finite_product[I]
+
   rest_union: LEMMA FORALL (F: non_empty_finite_set[I]):
     union[I](singleton[I](choose(F)), rest[I](F)) = F
+
   rest_disjoint: LEMMA FORALL (F: non_empty_finite_set[I]):
     disjoint?[I](singleton[I](choose(F)), rest[I](F))
+
   rest_block_union: LEMMA FORALL (F: non_empty_finite_set[I]):
     ppg_measurable_block_union[I, Value, domain,
       singleton[I](choose(F)), rest[I](F), spaces].U = F
+
   finiteLaw(F: finite_set[I]): RECURSIVE BlockLaw(F) =
     IF empty?(F) THEN emptyLaw
     ELSE ppg_probability_block_union[I, Value, domain,
@@ -20,7 +24,10 @@ BEGIN
         singleLaw(choose(F), coins(choose(F))), finiteLaw(rest(F)))
     ENDIF
     MEASURE card(F)
+
   finite_law_empty: LEMMA finiteLaw(emptyset[I]) = emptyLaw
+
   finite_law_box: LEMMA FORALL (F: finite_set[I], E: CoordinateEvents):
     finiteLaw(F)(blockBox(F, E)) = product(F, LAMBDA (i: I): coins(i)(E(i)))
+
 END ppg_probability_finite_product

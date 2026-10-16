@@ -22,6 +22,7 @@ BEGIN
 %% ═══════════════════════════════════════════════════════════
 
 Channel: TYPE = subrange(0, 9)   % AS7341: F1..F8, Clear, NIR (10 of 11;
+
 % Flicker channel excluded — constant zero,
 % never responsive under any excitation)
 
@@ -102,7 +103,6 @@ ax_dominant_responsive: AXIOM
     sensitivity(brightness, cb) > sensitivity(cct, cb) AND
     sensitivity(cct, cc) > sensitivity(brightness, cc)
 
-
 %% ═══════════════════════════════════════════════════════════
 %% THEOREMS (T1-T7)
 %% ═══════════════════════════════════════════════════════════
@@ -147,8 +147,6 @@ thm_chart_non_redundancy: THEOREM
     sensitivity(brightness, ch1) > sensitivity(cct, ch1) AND
     sensitivity(cct, ch2) > sensitivity(brightness, ch2)
 
-
-
 %% ═══════════════════════════════════════════════════════════
 %% TEMPORAL STRATIFICATION (T5)
 %% Allen Interval Logic from NASA PVS Library
@@ -159,7 +157,9 @@ IMPORTING interval_arith@allen_interval
 
 % Regime intervals (uninterpreted constants with empirical meaning)
 night_regime: StrictInterval       % interval where lux=0
+
 spectral_active: StrictInterval    % interval where χ changes
+
 intensity_recovery: StrictInterval % interval where ρ becomes nonzero
 
 % AXIOM 5: Spectral activity occurs during night regime

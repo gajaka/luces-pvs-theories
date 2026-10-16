@@ -12,38 +12,54 @@ BEGIN
   A: VAR (Cylinders)
   x: VAR FullBlock
   y: VAR Block(H)
+
   tailSupport(A): finite_set[I] = freeSupport(union(F, H), representation(A))
+
   wideSupport(A): finite_set[I] = union(H, tailSupport(A))
+
   wide_union: LEMMA wideSupport(A) =
     ppg_measurable_block_union[I, Value, domain, H, tailSupport(A), spaces].U
+
   tail_disjoint: LEMMA disjoint?(H, tailSupport(A))
+
   wideEvent(A, x): (blockSigma(wideSupport(A))) =
     {z: Block(wideSupport(A)) | A(putBlock(wideSupport(A), x)(z))}
+
   wide_cylinder: LEMMA disjoint?(F, H) IMPLIES
     tableCylinder(wideSupport(A), wideEvent(A, x)) = frozen(F, x, A)
+
   wide_mass: LEMMA disjoint?(F, H) IMPLIES
     finiteLaw(wideSupport(A))(wideEvent(A, x)) = conditionalMass(F, x, A)
+
   wide_put_split: LEMMA FORALL (z: Block(tailSupport(A))):
     putBlock(wideSupport(A), x)(ppg_measurable_block_union[I, Value, domain,
       H, tailSupport(A), spaces].join(y, z)) =
         putBlock(tailSupport(A), putBlock(H, x)(y))(z)
+
   section_slice: LEMMA
     ppg_probability_block_sections[I, Value, domain, H, tailSupport(A), spaces, coins].blockSection(
       wideEvent(A, x), y) = sliceEvent(union(F, H), putBlock(H, x)(y), representation(A))
+
   afterFunction(A, x): UnitFunction =
     ppg_probability_block_sections[I, Value, domain, H, tailSupport(A), spaces, coins].blockFunction(
       wideEvent(A, x))
+
   after_function_value: LEMMA afterFunction(A, x)(y) =
     conditionalMass(union(F, H), putBlock(H, x)(y), A)
+
   after_function_mean: THEOREM disjoint?(F, H) IMPLIES
     expectation(afterFunction(A, x)) = conditionalMass(F, x, A)
+
   afterSequence(E: [nat -> (Cylinders)], x: FullBlock): UnitSequence =
     LAMBDA (n: nat): afterFunction(E(n), x)
+
   after_sequence_decreasing: LEMMA FORALL (E: [nat -> (Cylinders)]):
     decreasingEvents[FullBlock](E) IMPLIES pointwiseDecreasing(afterSequence(E, x))
+
   simultaneous_block_choice: THEOREM FORALL (E: [nat -> (Cylinders)], e: posreal):
     disjoint?(F, H) AND decreasingEvents[FullBlock](E) AND
     (FORALL (n: nat): e <= conditionalMass(F, x, E(n))) IMPLIES
       EXISTS (y: Block(H)): FORALL (n: nat):
         e / 2 <= conditionalMass(union(F, H), putBlock(H, x)(y), E(n))
+
 END ppg_probability_cylinder_step

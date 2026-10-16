@@ -8,25 +8,39 @@ BEGIN
   A: VAR set[Y]
   E: VAR set[X]
   y: VAR Y
+
   inverseImage(f, A): set[X] = {x: X | A(f(x))}
+
   inverseImage_empty: LEMMA inverseImage(f, emptyset[Y]) = emptyset[X]
+
   inverseImage_full: LEMMA inverseImage(f, fullset[Y]) = fullset[X]
+
   inverseImage_complement: LEMMA inverseImage(f, complement(A)) = complement(inverseImage(f, A))
+
   inverseImage_countable_union: LEMMA FORALL (D: [nat -> set[Y]]):
     inverseImage(f, ppg_measurable_space[Y].countableUnion(D)) =
       ppg_measurable_space[X].countableUnion(LAMBDA (n: nat): inverseImage(f, D(n)))
+
   measurable(SX, SY, f): bool = FORALL (A: set[Y]): SY(A) IMPLIES SX(inverseImage(f, A))
+
   inverseImage_constant: LEMMA inverseImage(LAMBDA (x: X): y, A) =
     IF A(y) THEN fullset[X] ELSE emptyset[X] ENDIF
+
   measurable_constant: LEMMA measurable(SX, SY, LAMBDA (x: X): y)
+
   branch(E, f, g)(x: X): Y = IF E(x) THEN f(x) ELSE g(x) ENDIF
+
   branch_preimage: LEMMA inverseImage(branch(E, f, g), A) =
     union(intersection(E, inverseImage(f, A)), intersection(complement(E), inverseImage(g, A)))
+
   measurable_branch: LEMMA SX(E) AND measurable(SX, SY, f) AND measurable(SX, SY, g)
     IMPLIES measurable(SX, SY, branch(E, f, g))
+
   imageSigma(SX, f): ppg_measurable_space[Y].MeasurableSpace =
     {A: set[Y] | SX(inverseImage(f, A))}
+
   measurable_into_generated: LEMMA FORALL (G: set[set[Y]]):
     (FORALL (A: set[Y]): G(A) IMPLIES SX(inverseImage(f, A))) IMPLIES
       measurable(SX, generated(G), f)
+
 END ppg_measurable_map

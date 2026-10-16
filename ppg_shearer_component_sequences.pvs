@@ -18,20 +18,30 @@ BEGIN
   p: VAR [C->real]
   S: VAR finite_set[Layer]
   F,H: VAR [Layer->finite_set[LayerSeq]]
+
   closed_compOf: THEOREM subset?(J,compOf(vars,B,c)) IMPLIES
     closed(B,J)=closed(compOf(vars,B,c),J)
+
   successors_compOf: THEOREM subset?(J,compOf(vars,B,c)) IMPLIES
     successors(B,J)=successors(compOf(vars,B,c),J)
+
   successor_in_component: LEMMA successors(compOf(vars,B,c),J)(K) IMPLIES subset?(K,compOf(vars,B,c))
+
   layer_union_congr: LEMMA (FORALL(K:Layer):S(K) IMPLIES F(K)=H(K)) IMPLIES biUnion(S,F)=biUnion(S,H)
+
   stableSequences_compOf: THEOREM FORALL(d:nat):FORALL(B:Layer,c:C,J:Layer):
     subset?(J,compOf(vars,B,c)) IMPLIES stableSequences(B,d,J)=stableSequences(compOf(vars,B,c),d,J)
+
   properFamily_compOf: THEOREM subset?(J,compOf(vars,B,c)) IMPLIES
     properFamily(B,J)=properFamily(compOf(vars,B,c),J)
+
   properWeights_compOf: LEMMA subset?(J,compOf(vars,B,c)) IMPLIES
     properWeights(p,B,J)=properWeights(p,compOf(vars,B,c),J)
+
   properFamilyWeight_compOf: THEOREM subset?(J,compOf(vars,B,c)) IMPLIES
     properFamilyWeight(p,B,J)(L)=properFamilyWeight(p,compOf(vars,B,c),J)(L)
+
   properFamilyTotal_compOf: LEMMA subset?(J,compOf(vars,B,c)) IMPLIES
     properFamilyTotal(p,B,J)=properFamilyTotal(p,compOf(vars,B,c),J)
+
 END ppg_shearer_component_sequences

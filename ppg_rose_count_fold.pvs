@@ -12,8 +12,12 @@ BEGIN
   cs: VAR list[WTree]
   t: VAR WTree
   a,b: VAR C
+
   sum_scalar: LEMMA ppg_tree_lists[WTree].natSum(ns) = scalars.fold(ns,LAMBDA(n:nat):n)
+
   count_node_fold: LEMMA countLabel(a)(roseNode(b,cs)) =
     (IF b=a THEN 1 ELSE 0 ENDIF) + totals.fold(cs,countLabel(a))
+
   count_unfold: LEMMA countLabel(a)(t) = (IF roseLabel(t)=a THEN 1 ELSE 0 ENDIF) + totals.fold(roseChildren(t),countLabel(a))
+
 END ppg_rose_count_fold

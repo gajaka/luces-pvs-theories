@@ -16,34 +16,55 @@ BEGIN
   F: VAR finite_set[LayerSeq]
   d,D,k: VAR nat
   p: VAR [C->real]
+
   emptyLayers(k): RECURSIVE LayerSeq = IF k=0 THEN null[Layer]
     ELSE cons[Layer](emptyset[C],emptyLayers(k-1)) ENDIF MEASURE k
+
   padTo(D,L): LayerSeq = append[Layer](L,emptyLayers(max(0,D+1-length[Layer](L))))
+
   proper(L): bool = FORALL(K:Layer):list_props[Layer].member(K,L) IMPLIES K/=emptyset[C]
+
   trim(L): RECURSIVE LayerSeq = CASES L OF null:null[Layer],
     cons(J,M):IF J=emptyset[C] THEN null[Layer] ELSE cons[Layer](J,trim(M)) ENDIF
     ENDCASES MEASURE length[Layer](L)
+
   properFamily(B,J)(L): bool = (EXISTS(d:nat):stableSequences(B,d,J)(L)) AND proper(L)
+
   emptyLayers_zero: LEMMA emptyLayers(0)=null[Layer]
+
   emptyLayers_succ: LEMMA emptyLayers(k+1)=cons[Layer](emptyset[C],emptyLayers(k))
+
   emptyLayers_append: LEMMA emptyLayers(k+1)=
     append[Layer](emptyLayers(k),cons[Layer](emptyset[C],null[Layer]))
+
   stableSequences_cons: LEMMA successors(B,J)(K) AND stableSequences(B,d,K)(L) IMPLIES
     stableSequences(B,d+1,J)(cons[Layer](J,L))
+
   stableSequences_append_empty: THEOREM stableSequences(B,d,J)(L) IMPLIES
     stableSequences(B,d+1,J)(append[Layer](L,cons[Layer](emptyset[C],null[Layer])))
+
   stableSequences_append_padding: THEOREM stableSequences(B,d,J)(L) IMPLIES
     stableSequences(B,d+k,J)(append[Layer](L,emptyLayers(k)))
+
   padTo_mem_stableSequences: THEOREM stableSequences(B,d,J)(L) AND d<=D IMPLIES
     stableSequences(B,D,J)(padTo(D,L))
+
   sequenceWeight_append: LEMMA sequenceWeight(p)(append[Layer](L,M))=
     sequenceWeight(p)(L)*sequenceWeight(p)(M)
+
   sequenceWeight_emptyLayers: LEMMA sequenceWeight(p)(emptyLayers(k))=1
+
   sequenceWeight_padTo: THEOREM sequenceWeight(p)(padTo(D,L))=sequenceWeight(p)(L)
+
   trim_emptyLayers: LEMMA trim(emptyLayers(k))=null[Layer]
+
   trim_append_proper: LEMMA proper(L) IMPLIES trim(append[Layer](L,emptyLayers(k)))=L
+
   takeWhile_padTo: THEOREM proper(L) IMPLIES trim(padTo(D,L))=L
+
   padTo_injective_on_proper: THEOREM proper(L) AND proper(M) AND padTo(D,L)=padTo(D,M) IMPLIES L=M
+
   exists_padding_depth: THEOREM (FORALL(L:LayerSeq):F(L) IMPLIES properFamily(B,J)(L)) IMPLIES
     EXISTS(D:nat):FORALL(L:LayerSeq):F(L) IMPLIES stableSequences(B,D,J)(padTo(D,L))
+
 END ppg_shearer_padding

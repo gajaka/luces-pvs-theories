@@ -4,34 +4,57 @@ ppg_probability_pair[X, Y: TYPE,
   SX: ppg_measurable_space[X].MeasurableSpace,
   SY: ppg_measurable_space[Y].MeasurableSpace]: THEORY
 BEGIN
+
   JointSpace: ppg_measurable_space[[X, Y]].MeasurableSpace = pairSigma(SX, SY)
+
   IMPORTING ppg_probability_measure[X, SX], ppg_probability_measure[Y, SY],
             ppg_probability_measure[[X, Y], JointSpace],
             measure_integration@product_finite_measure[X, Y, asNasa(SX), asNasa(SY)]
+
   LeftLaw: TYPE = ppg_probability_measure[X, SX].Probability
+
   RightLaw: TYPE = ppg_probability_measure[Y, SY].Probability
+
   JointLaw: TYPE = ppg_probability_measure[[X, Y], JointSpace].Probability
+
   mu: VAR LeftLaw
   nu: VAR RightLaw
   B: VAR (SX)
   D: VAR (SY)
   E: VAR (JointSpace)
+
   left_sigma_eq: LEMMA asNasa(SX) = SX
+
   right_sigma_eq: LEMMA asNasa(SY) = SY
+
   left_law_finite: LEMMA generalized_measure_def[X, asNasa(SX)].finite_measure?(mu)
+
   right_law_finite: LEMMA generalized_measure_def[Y, asNasa(SY)].finite_measure?(nu)
+
   product_space_eq: LEMMA JointSpace = sigma_times(asNasa(SX), asNasa(SY))
+
   rectangle_in_space: LEMMA JointSpace(cross_product(B, D))
+
   jointMass(mu, nu)(E): nnreal = fm_times(mu, nu)(E)
+
   jointMass_finite: LEMMA
     generalized_measure_def[[X, Y], JointSpace].finite_measure?(jointMass(mu, nu))
+
   jointMass_rectangle: LEMMA jointMass(mu, nu)(cross_product(B, D)) = mu(B) * nu(D)
+
   full_rectangle: LEMMA cross_product(fullset[X], fullset[Y]) = fullset[[X, Y]]
+
   jointMass_full: LEMMA jointMass(mu, nu)(fullset[[X, Y]]) = 1
+
   jointMass_probability: LEMMA
     ppg_probability_measure[[X, Y], JointSpace].probability?(jointMass(mu, nu))
+
   productLaw(mu, nu): JointLaw = jointMass(mu, nu)
+
   product_rectangle: LEMMA productLaw(mu, nu)(cross_product(B, D)) = mu(B) * nu(D)
+
   left_cylinder_mass: LEMMA productLaw(mu, nu)(leftCylinder(B)) = mu(B)
+
   right_cylinder_mass: LEMMA productLaw(mu, nu)(rightCylinder(D)) = nu(D)
+
 END ppg_probability_pair

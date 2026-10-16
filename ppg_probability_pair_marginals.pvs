@@ -11,21 +11,35 @@ BEGIN
   nu: VAR RightLaw
   B: VAR (SX)
   D: VAR (SY)
+
   firstProjection(p: [X, Y]): X = p`1
+
   secondProjection(p: [X, Y]): Y = p`2
+
   first_measurable: LEMMA measurable(JointSpace, SX, firstProjection)
+
   second_measurable: LEMMA measurable(JointSpace, SY, secondProjection)
+
   first_preimage: LEMMA inverseImage(firstProjection, B) = leftCylinder(B)
+
   second_preimage: LEMMA inverseImage(secondProjection, D) = rightCylinder(D)
+
   leftMarginal(mu, nu): LeftLaw =
     ppg_probability_map[[X, Y], X, JointSpace, SX].pushforward(productLaw(mu, nu), firstProjection)
+
   rightMarginal(mu, nu): RightLaw =
     ppg_probability_map[[X, Y], Y, JointSpace, SY].pushforward(productLaw(mu, nu), secondProjection)
+
   left_marginal_apply: LEMMA leftMarginal(mu, nu)(B) = mu(B)
+
   right_marginal_apply: LEMMA rightMarginal(mu, nu)(D) = nu(D)
+
   left_marginal: LEMMA leftMarginal(mu, nu) = mu
+
   right_marginal: LEMMA rightMarginal(mu, nu) = nu
+
   coordinate_independence: LEMMA
     productLaw(mu, nu)(intersection(leftCylinder(B), rightCylinder(D))) =
       productLaw(mu, nu)(leftCylinder(B)) * productLaw(mu, nu)(rightCylinder(D))
+
 END ppg_probability_pair_marginals

@@ -8,36 +8,58 @@ BEGIN
   IMPORTING ppg_cylinder_algebra[I, Value, domain, spaces],
             ppg_probability_cylinder_coherence[I, Value, domain, spaces, coins],
             ppg_probability_set_laws
+
   CylinderData: TYPE = [F: finite_set[I], (blockSigma(F))]
+
   dataCylinder(R: CylinderData): TableEvent = tableCylinder(R`1, R`2)
+
   dataMass(R: CylinderData): nnreal = finiteLaw(R`1)(R`2)
+
   data_cylinder_member: LEMMA FORALL (R: CylinderData): Cylinders(dataCylinder(R))
+
   unionData(R, T: CylinderData): CylinderData =
     (union(R`1, T`1), union(liftEvent(union(R`1, T`1), R`1, R`2),
                             liftEvent(union(R`1, T`1), T`1, T`2)))
+
   data_union_cylinder: LEMMA FORALL (R, T: CylinderData):
     dataCylinder(unionData(R, T)) = union(dataCylinder(R), dataCylinder(T))
+
   data_mass_coherent: LEMMA FORALL (R, T: CylinderData):
     dataCylinder(R) = dataCylinder(T) IMPLIES dataMass(R) = dataMass(T)
+
   data_mass_union: LEMMA FORALL (R, T: CylinderData):
     disjoint?(dataCylinder(R), dataCylinder(T)) IMPLIES
       dataMass(unionData(R, T)) = dataMass(R) + dataMass(T)
+
   data_mass_monotone: LEMMA FORALL (R, T: CylinderData):
     subset?(dataCylinder(R), dataCylinder(T)) IMPLIES dataMass(R) <= dataMass(T)
+
   representations(A: TableEvent): set[CylinderData] =
     {R: CylinderData | A = dataCylinder(R)}
+
   representation_exists: LEMMA FORALL (A: (Cylinders)): nonempty?(representations(A))
+
   representation(A: (Cylinders)): (representations(A)) = choose(representations(A))
+
   representation_spec: LEMMA FORALL (A: (Cylinders)): A = dataCylinder(representation(A))
+
   content(A: (Cylinders)): nnreal = dataMass(representation(A))
+
   content_data: LEMMA FORALL (R: CylinderData): content(dataCylinder(R)) = dataMass(R)
+
   content_cylinder: LEMMA FORALL (F: finite_set[I], B: (blockSigma(F))):
     content(tableCylinder(F, B)) = finiteLaw(F)(B)
+
   content_empty: LEMMA content(emptyset[FullBlock]) = 0
+
   content_full: LEMMA content(fullset[FullBlock]) = 1
+
   content_union: THEOREM FORALL (A, B: (Cylinders)): disjoint?(A, B) IMPLIES
     content(union(A, B)) = content(A) + content(B)
+
   content_monotone: LEMMA FORALL (A, B: (Cylinders)): subset?(A, B) IMPLIES
     content(A) <= content(B)
+
   content_bound: LEMMA FORALL (A: (Cylinders)): content(A) <= 1
+
 END ppg_probability_cylinder_content

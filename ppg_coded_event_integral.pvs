@@ -10,28 +10,43 @@ ppg_coded_event_integral[X,T: TYPE,
 BEGIN
   IMPORTING ppg_count_integral[X,S,probLaw], ppg_nonneg_reindex[T,nat]
   E: VAR [T->(S)]
+
   Code: TYPE = {c:[T->nat]|injective?(c)}
+
   code: VAR Code
   t: VAR T
   n: VAR nat
   x: VAR X
+
   codedEvent(E,code,n): set[X] = {x:X|EXISTS(t:T):code(t)=n AND E(t)(x)}
+
   coded_event_at: LEMMA codedEvent(E,code,code(t))=E(t)
+
   coded_event_empty: LEMMA NOT (EXISTS(t:T):code(t)=n) IMPLIES
     codedEvent(E,code,n)=emptyset[X]
+
   coded_event_measurable: LEMMA S(codedEvent(E,code,n))
+
   codedEvents(E,code): [nat->(S)] = LAMBDA(n:nat):codedEvent(E,code,n)
+
   nnEvent(E,x)(t:T): nonneg_real = IF E(t)(x) THEN 1 ELSE 0 ENDIF
+
   event_indicator_image: LEMMA compatible(code,nnEvent(E,x),
     LAMBDA(n:nat):IF codedEvents(E,code)(n)(x) THEN 1 ELSE 0 ENDIF)
+
   event_count_code: LEMMA sourceCount.tsum(nnEvent(E,x))=eventCount(codedEvents(E,code),x)
+
   event_probability_image: LEMMA compatible(code,LAMBDA(t:T):probLaw(E(t)),
     LAMBDA(n:nat):probLaw(codedEvents(E,code)(n)))
+
   probability_sum_code: LEMMA sourceCount.tsum(LAMBDA(t:T):probLaw(E(t)))=
     targetCount.tsum(LAMBDA(n:nat):probLaw(codedEvents(E,code)(n)))
+
   count_function_code: LEMMA (LAMBDA(x:X):sourceCount.tsum(nnEvent(E,x)))=
     (LAMBDA(x:X):eventCount(codedEvents(E,code),x))
+
   lintegral_tsum_indicators: THEOREM FORALL(code:Code):
     lintegral(LAMBDA(x:X):sourceCount.tsum(nnEvent(E,x)))=
     sourceCount.tsum(LAMBDA(t:T):probLaw(E(t)))
+
 END ppg_coded_event_integral

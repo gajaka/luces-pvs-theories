@@ -19,17 +19,22 @@ BEGIN
   enumeration: VAR SeqProbabilityEnumeration
   B: VAR UniversalLabels
   p: VAR [C->real]
+
   component_singleton_subset: LEMMA compOf(vars,B,c)(a) IMPLIES
     subset?(sets[C].singleton(a),compOf(vars,B,c))
+
   component_nonnegative: LEMMA (FORALL(i:C):baseProbability(bad)(i)<=p(i)) IMPLIES
     nonnegativeOn(p,compOf(vars,B,c))
+
   global_count_le_total: LEMMA mt_wf(vars,bad) AND
     (FORALL(i:C):baseProbability(bad)(i)<=p(i)) IMPLIES
     ele(randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a),
       properFamilyTotal(p,B,sets[C].singleton(a)))
+
   randomInitExpectedResamplingCount_le_componentBudget: THEOREM mt_wf(vars,bad) AND
     (FORALL(i:C):baseProbability(bad)(i)<=p(i)) AND compOf(vars,B,c)(a) AND
     StrictCriterion(p,compOf(vars,B,c)) IMPLIES
     ele(randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a),
       ennFinite(max(0,stableBudget(p,compOf(vars,B,c),sets[C].singleton(a)))))
+
 END ppg_shearer_component_expectation

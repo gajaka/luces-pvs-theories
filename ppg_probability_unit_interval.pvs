@@ -11,21 +11,38 @@ ppg_probability_unit_interval: THEORY
 BEGIN
   IMPORTING ppg_nasa_sigma[real],lebesgue@lebesgue_def,
     measure_integration@measure_contraction[real,cal_M]
+
   unitInterval: closed_interval = closed(0,1)
+
   completedSigma: MACRO MeasurableSpace = cal_M
+
   borelSigma: MACRO MeasurableSpace = real_borel
+
   unit_interval_eq: LEMMA unitInterval={x:real|0<=x AND x<=1}
+
   unit_interval_measurable: LEMMA cal_M(unitInterval)
+
   unit_interval_mass: LEMMA lambda_(unitInterval)=(TRUE,1)
+
   lebCut: generalized_measure_def[real,cal_M].finite_measure = fm_contraction(lambda_,unitInterval)
+
   cut_normalized: LEMMA lebCut(fullset[real])=1
+
   IMPORTING ppg_probability_map[real,real,completedSigma,borelSigma]
+
   cutLaw: SourceLaw = lebCut
+
   borel_event_completed: LEMMA FORALL(E:(borelSigma)):completedSigma(E)
+
   identity_preimage: LEMMA FORALL(E:set[real]): inverseImage(LAMBDA(x:real):x,E)=E
+
   forgetCompletion: MeasurableMap = LAMBDA(x:real):x
+
   borelUniform: TargetLaw = pushforward(cutLaw,forgetCompletion)
+
   borel_cut_measurable: LEMMA FORALL(E:(borelSigma)):cal_M(sets[real].intersection(unitInterval,E))
+
   borel_uniform_apply: THEOREM FORALL(E:(borelSigma)):
     borelUniform(E)=lambda_(sets[real].intersection(unitInterval,E))`2
+
 END ppg_probability_unit_interval

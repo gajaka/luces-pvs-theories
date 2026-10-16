@@ -15,20 +15,28 @@ BEGIN
   v: VAR V
   n, N: VAR nat
   idx: VAR [LogSpace -> nat]
+
   TableCoordinates(coordinates)(p: [nat, V]): ppg_measurable_space[Value].MeasurableSpace =
     coordinates(p`2)
+
   StateSigma(coordinates): ppg_measurable_space[MTState].MeasurableSpace =
     ppg_measurable_product[LogSpace, V, Value, domain].productSigma(coordinates)
+
   TableSigma(coordinates): ppg_measurable_space[LogSpace].MeasurableSpace =
     ppg_measurable_product[LogSpace, [nat, V], Value, TableDomain].productSigma(TableCoordinates(coordinates))
+
   measurable_atIdx: LEMMA measurable(TableSigma(coordinates), coordinates(v),
     LAMBDA (omega: LogSpace): atIdx(omega, v, n))
+
   measurable_freshState: THEOREM measurable(TableSigma(coordinates), StateSigma(coordinates),
     LAMBDA (omega: LogSpace): freshState(omega, n))
+
   measurable_initialStateFromLog: THEOREM measurable(TableSigma(coordinates), StateSigma(coordinates),
     initialStateFromLog)
+
   measurable_eval_bounded: THEOREM measurable(TableSigma(coordinates), fullset[set[nat]], idx) AND
     (FORALL (omega: LogSpace): idx(omega) <= N) IMPLIES
       measurable(TableSigma(coordinates), coordinates(v),
         LAMBDA (omega: LogSpace): atIdx(omega, v, idx(omega)))
+
 END ppg_mt_log_measurable

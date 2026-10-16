@@ -22,20 +22,25 @@ BEGIN
   p,x: VAR [C->nonneg_real]
   edges: VAR [MTState,MTState->bool]
   s: VAR MTState
+
   exists_MTGood_of_mt_budget: THEOREM mt_wf(vars,bad) AND
     (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND
     budget(vars,labelUniverse(enumeration),p,x) IMPLIES
     EXISTS(z:MTState):MTGood(bad,z)
+
   mtRepairGraph_globally_repairable_of_randomInitETLog_lt_top: THEOREM
     mt_wf(vars,bad) AND ennFinite?(randomInitETLog(vars,bad,fallback,enumeration)) IMPLIES
     globally_repairable(mtRepairGraph(vars,bad,fallback,enumeration,edges))
+
   mtRepairGraph_globally_repairable: THEOREM mt_wf(vars,bad) AND
     (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND
     budget(vars,labelUniverse(enumeration),p,x) IMPLIES
     globally_repairable(mtRepairGraph(vars,bad,fallback,enumeration,edges))
+
   mtRepairGraph_repair_possible: THEOREM mt_wf(vars,bad) AND
     (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND
     budget(vars,labelUniverse(enumeration),p,x) AND
     isolated(mtRepairGraph(vars,bad,fallback,enumeration,edges),s) IMPLIES
     repair_possible(mtRepairGraph(vars,bad,fallback,enumeration,edges),s)
+
 END ppg_mt_budget_repair

@@ -13,12 +13,16 @@ BEGIN
   threshold, d, idx: VAR nat
   t, parent: VAR WTree
   cs: VAR list[WTree]
+
   toGT_dom_footprintCountBeyondAt: THEOREM footprintCountBeyondAt(vars, x, threshold, d, t) =
     card(intersection(toGT_dom(t), {w: Addr | threshold < d + length(w) AND vars(toGT_lab(t, w))(x)}))
+
   toGT_domChildren_footprintCountBeyondAt: THEOREM dropList(roseChildren(parent), idx) = cs IMPLIES
     footprintCountBeyondListAt(vars, x, threshold, d + 1, cs) =
       card(intersection(toGT_domChildren(cs, idx), {w: Addr | threshold < d + length(w) AND vars(toGT_lab(parent, w))(x)}))
+
   toGT_dom_footprintCountBeyondAt_root: THEOREM
     card(intersection(toGT_dom(t), {w: Addr | threshold < length(w) AND vars(toGT_lab(t, w))(x)})) =
       footprintCountBeyondAt(vars, x, threshold, 0, t)
+
 END ppg_rose_address_count

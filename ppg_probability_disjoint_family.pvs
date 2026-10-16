@@ -7,25 +7,33 @@ ppg_probability_disjoint_family[I, Value, K: TYPE, domain: [I -> set[Value]],
 BEGIN
   IMPORTING ppg_probability_supported_events[I, Value, domain, spaces, coins],
             ppg_probability_event_product[FullBlock, K, tableSigma]
+
   blockUnion(F: set[K], blk: [K -> set[I]]): set[I] =
     {i: I | EXISTS (k: K): F(k) AND blk(k)(i)}
+
   pairwiseDisjoint(F: set[K], blk: [K -> set[I]]): bool =
     FORALL (i, j: K): F(i) AND F(j) AND i /= j IMPLIES disjoint?(blk(i), blk(j))
+
   complete_event_depends: LEMMA FORALL (F: set[I], A: TableEvent):
     dependsOn(F, A) IMPLIES dependsOn(F, completeEvent(A))
+
   finite_meet_depends: LEMMA FORALL (F: set[K], blk: [K -> set[I]], E: EventFamily):
     (FORALL (k: K): F(k) IMPLIES dependsOn(blk(k), E(k))) IMPLIES
       dependsOn(blockUnion(F, blk), finiteMeet(F, E))
+
   block_union_disjoint: LEMMA FORALL (F, H: set[K], blk: [K -> set[I]], i: K):
     pairwiseDisjoint(F, blk) AND subset?(H, F) AND F(i) AND NOT H(i) IMPLIES
       disjoint?(blk(i), blockUnion(H, blk))
+
   disjoint_family_factorizing: LEMMA FORALL (F: finite_set[K], blk: [K -> set[I]], E: EventFamily):
     pairwiseDisjoint(F, blk) AND
     (FORALL (k: K): F(k) IMPLIES dependsOn(blk(k), E(k))) IMPLIES
       factorizing?(infiniteLaw, F, completeFamily(E))
+
   infinitePi_iInter_eq_prod_of_dependsOn: THEOREM FORALL
     (F: finite_set[K], blk: [K -> set[I]], E: EventFamily):
     pairwiseDisjoint(F, blk) AND
     (FORALL (k: K): F(k) IMPLIES dependsOn(blk(k), E(k)) AND tableSigma(E(k))) IMPLIES
       infiniteLaw(finiteMeet(F, E)) = product(F, eventFactors(infiniteLaw, completeFamily(E)))
+
 END ppg_probability_disjoint_family

@@ -20,28 +20,45 @@ BEGIN
   M: VAR Model
   n,T: VAR nat
   omega: VAR Omega
+
   processMeasurable(SY,X): bool = FORALL(n:nat):measurable(ambient,SY,X(n))
+
   activeEvents(M,X): [nat->set[Omega]] = LAMBDA(n:nat):activeEvent(M,X,n)
+
   runningEvent(M,X,n): set[Omega] = prefixEvents(activeEvents(M,X),n+1)
+
   runningEvents(M,X): [nat->set[Omega]] = LAMBDA(n:nat):runningEvent(M,X,n)
+
   hitCount(M,X,omega): ENN = activeCount(runningEvents(M,X),omega)
+
   active_event_measurable: LEMMA singletonMeasurable(SY) AND processMeasurable(SY,X)
     IMPLIES ambient(activeEvent(M,X,n))
+
   running_event_membership: LEMMA runningEvent(M,X,n)(omega) IFF
     (FORALL(k:nat):k<=n IMPLIES NOT M`good(X(k)(omega)))
+
   runningEvent_measurable: THEOREM singletonMeasurable(SY) AND processMeasurable(SY,X)
     IMPLIES ambient(runningEvent(M,X,n))
+
   running_subset_active: LEMMA runningEvent(M,X,n)(omega) IMPLIES activeEvent(M,X,n)(omega)
+
   good_stops_running: LEMMA M`good(X(T)(omega)) AND T<=n IMPLIES NOT runningEvent(M,X,n)(omega)
+
   before_good_running: LEMMA (FORALL(k:nat):k<T IMPLIES NOT M`good(X(k)(omega))) AND n<T
     IMPLIES runningEvent(M,X,n)(omega)
+
   hitCount_le_activeCount: THEOREM
     ele(hitCount(M,X,omega),activeCount(activeEvents(M,X),omega))
+
   hitCount_le_of_good: THEOREM M`good(X(T)(omega)) IMPLIES ele(hitCount(M,X,omega),ennFinite(T))
+
   never_good_infinite: LEMMA (FORALL(n:nat):NOT M`good(X(n)(omega))) IMPLIES
     hitCount(M,X,omega)=ennInfinity
+
   hitCount_lt_top_iff_exists_good: THEOREM ennFinite?(hitCount(M,X,omega)) IFF
     (EXISTS(T:nat):M`good(X(T)(omega)))
+
   hitCount_eq_first_good: THEOREM M`good(X(T)(omega)) AND
     (FORALL(k:nat):k<T IMPLIES NOT M`good(X(k)(omega))) IMPLIES hitCount(M,X,omega)=ennFinite(T)
+
 END ppg_finite_process_stopping

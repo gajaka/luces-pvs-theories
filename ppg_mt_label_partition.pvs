@@ -8,7 +8,9 @@ ppg_mt_label_partition[C,V,Value:TYPE,domain:[V->set[Value]]]: THEORY
 BEGIN
   IMPORTING ppg_mt_extended_count[C,V,Value,domain], ppg_list_sets[C],
     ppg_nn_indicator[C], ppg_nonneg_tsum[C] AS labelTotals
+
   LabelEnumeration: TYPE = {xs:list[C]|completeEnumeration(xs)}
+
   vars: VAR CertVars
   bad: VAR [C,MTState->bool]
   fallback,a: VAR C
@@ -16,18 +18,24 @@ BEGIN
   initial: VAR MTState
   omega: VAR LogSpace
   s: VAR nat
+
   labelUniverse(enumeration): finite_set[C] = ppg_list_sets[C].listSet(enumeration)
+
   label_universe_full: LEMMA labelUniverse(enumeration)(a)
+
   selectedLabels(vars,bad,fallback,enumeration,initial,omega,s): set[C] =
     {a:C|resamplingEvent(vars,bad,fallback,enumeration,LAMBDA(omega:LogSpace):initial,a,s)(omega)}
+
   selected_label_filter: LEMMA
     intersection(labelUniverse(enumeration),selectedLabels(vars,bad,fallback,enumeration,initial,omega,s))=
     IF RunningUntil(vars,bad,fallback,enumeration,initial,omega,s+1)
       THEN singleton[C](realC(vars,bad,fallback,enumeration,initial,omega,s))
       ELSE emptyset[C] ENDIF
+
   runningUntil_indicator_eq_sum_resamplingEvent: THEOREM
     ennFinite(IF RunningUntil(vars,bad,fallback,enumeration,initial,omega,s+1) THEN 1 ELSE 0 ENDIF)=
     labelTotals.esum(labelUniverse(enumeration),LAMBDA(a:C):ennFinite(
       IF resamplingEvent(vars,bad,fallback,enumeration,LAMBDA(omega:LogSpace):initial,a,s)(omega)
       THEN 1 ELSE 0 ENDIF))
+
 END ppg_mt_label_partition

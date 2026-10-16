@@ -18,10 +18,13 @@ BEGIN
   enumeration: VAR list[C]
   s: VAR MTState
   edges: VAR [MTState, MTState -> bool]
+
   mt_goodCount_zero_iff_noReachableGood: THEOREM mt_wf(vars, bad) AND completeEnumeration(enumeration) IMPLIES
     (goodCount(fullset[MTState], mtSat(bad), events) = 0 IFF
       NoReachableGood(mtRepairGraph(vars, bad, fallback, enumeration, edges), s))
+
   mt_goodCount_pos_supplies_repair: THEOREM mt_wf(vars, bad) AND completeEnumeration(enumeration) AND
     goodCount(fullset[MTState], mtSat(bad), events) > 0 IMPLIES
       EXISTS (w: MTState): mtReach(vars, bad, fallback, enumeration)(s, w) AND MTGood(bad, w)
+
 END ppg_mt_finite_infeasibility

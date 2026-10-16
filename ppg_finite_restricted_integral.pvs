@@ -14,18 +14,33 @@ BEGIN
   f,g: VAR NativeFunction
   c: VAR real
   omega: VAR Omega
+
   restricted(A,f): NativeFunction = phi(A)*f
+
   setIntegral(A,f): real = integral(restricted(A,f))
+
   restricted_value: LEMMA restricted(A,f)(omega)=IF A(omega) THEN f(omega) ELSE 0 ENDIF
+
   restricted_add: LEMMA restricted(A,f+g)=restricted(A,f)+restricted(A,g)
+
   restricted_scale: LEMMA restricted(A,c*f)=c*restricted(A,f)
+
   restricted_diff: LEMMA restricted(A,f-g)=restricted(A,f)-restricted(A,g)
+
   restricted_full: LEMMA restricted(fullset[Omega],f)=f
+
   set_integral_add: LEMMA setIntegral(A,f+g)=setIntegral(A,f)+setIntegral(A,g)
+
   set_integral_scale: LEMMA setIntegral(A,c*f)=c*setIntegral(A,f)
+
   set_integral_diff: LEMMA setIntegral(A,f-g)=setIntegral(A,f)-setIntegral(A,g)
+
   set_integral_full: LEMMA setIntegral(fullset[Omega],f)=integral(f)
+
   native_indicator_mean: LEMMA integral(indicator(A))=mu(A)
+
   restricted_constant: LEMMA restricted(A,constant(c))=c*indicator(A)
+
   set_integral_constant: LEMMA setIntegral(A,constant(c))=c*mu(A)
+
 END ppg_finite_restricted_integral

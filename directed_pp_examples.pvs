@@ -1,30 +1,43 @@
 % Concrete checks for directed edges, singleton paths, and graph extension.
 directed_pp_examples: THEORY
 BEGIN
+
   Node: TYPE = below(2)
+
   IMPORTING directed_pp_graph[Node]
 
   healthy(x: Node): bool = TRUE
+
   related(x, y: Node): bool = TRUE
+
   forward_graph: Graph =
     (# vertices := LAMBDA (x: Node): TRUE,
        edges := LAMBDA (x, y: Node): x = 0 AND y = 1 #)
+
   no_edges: Graph =
     (# vertices := LAMBDA (x: Node): TRUE,
        edges := LAMBDA (x, y: Node): FALSE #)
+
   forward_walk: Prewalk = (# length := 2, seq := LAMBDA (i: below(2)): i #)
+
   backward_walk: Prewalk = (# length := 2, seq := LAMBDA (i: below(2)): 1 - i #)
+
   singleton_walk: Prewalk = (# length := 1, seq := LAMBDA (i: below(1)): 0 #)
 
   forward_graph_valid: THEOREM pp_valid(forward_graph, related, healthy)
+
   direction_matters: THEOREM
     pp_path(forward_graph, related, healthy, forward_walk) AND
       NOT is_walk(forward_graph, backward_walk)
+
   singleton_needs_no_edge: THEOREM
     pp_path(no_edges, related, healthy, singleton_walk)
+
   unhealthy_singleton_rejected: THEOREM
     NOT pp_walk(no_edges, related, LAMBDA (x: Node): FALSE, singleton_walk)
+
   graph_extension_preserves_singleton: THEOREM
     pp_transform(no_edges, forward_graph, related, healthy) AND
       pp_walk(forward_graph, related, healthy, singleton_walk)
+
 END directed_pp_examples

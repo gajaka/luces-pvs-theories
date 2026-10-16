@@ -19,22 +19,35 @@ BEGIN
   cs: VAR list[WTree]
   a, b: VAR C
   p, q: VAR [C -> nonneg_real]
+
   prod_list(ns: list[nonneg_real]): nonneg_real = scalar.fold(ns, LAMBDA (r: nonneg_real): r)
+
   % The fold visits nodes, so equal labels contribute separate factors.
   weight(p): [WTree -> nonneg_real] = ppg_mt_rose_adt_reduce[C, nonneg_real].reduce(
     LAMBDA (a: C, ns: list[nonneg_real]): p(a) * prod_list(ns))
+
   weight_children: THEOREM weight(p)(roseNode(a, cs)) = p(a) * prod_list(map(weight(p))(cs))
+
   weight_node_fold: LEMMA weight(p)(roseNode(a, cs)) = p(a) * trees.fold(cs, weight(p))
+
   weight_unfold: LEMMA weight(p)(t) = p(roseLabel(t)) * trees.fold(roseChildren(t), weight(p))
+
   weight_singleton: THEOREM weight(p)(roseNode(a, null)) = p(a)
+
   product_mono: LEMMA FORALL (f, g: [WTree -> nonneg_real]):
     every(LAMBDA (c: WTree): f(c) <= g(c))(cs) IMPLIES trees.fold(cs, f) <= trees.fold(cs, g)
+
   weight_mono: THEOREM FORALL (p, q: [C -> nonneg_real]):
     (FORALL (a: C): p(a) <= q(a)) IMPLIES FORALL (t: WTree): weight(p)(t) <= weight(q)(t)
+
   countLabel(a): [WTree -> nat] = reduce_nat(LAMBDA (b: C, ns: list[nat]):
     (IF b = a THEN 1 ELSE 0 ENDIF) + ppg_tree_lists[WTree].natSum(ns))
+
   countLabelList(a, cs): nat = ppg_tree_lists[WTree].natSum(map(countLabel(a))(cs))
+
   countLabel_node: LEMMA countLabel(a)(roseNode(b, cs)) =
     (IF b = a THEN 1 ELSE 0 ENDIF) + countLabelList(a, cs)
+
   countLabelList_eq_sum: THEOREM countLabelList(a, cs) = ppg_tree_lists[WTree].natSum(map(countLabel(a))(cs))
+
 END ppg_rose_weight

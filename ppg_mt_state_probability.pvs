@@ -11,23 +11,33 @@ ppg_mt_state_probability[C, V, Value: TYPE, domain: [V -> set[Value]],
 BEGIN
   IMPORTING ppg_mt_read_probability[C, V, Value, domain, spaces, laws],
             ppg_probability_push_compose
+
   full_universe: LEMMA universe = fullset[V]
+
   stateDecode(x: StateBlock(universe)): MTState = LAMBDA (v: V): x(v)
+
   state_decode_coordinate: LEMMA FORALL (v: V):
     ppg_measurable_map[StateBlock(universe), (domain(v))].measurable(
       StateBlockSigma(universe), spaces(v), LAMBDA (x: StateBlock(universe)): stateDecode(x)(v))
+
   state_target_sigma: LEMMA
     ppg_measurable_dependent_product[StateBlock(universe), V, Value, domain].nativeProduct(spaces) =
       NativeStateSigma(spaces)
+
   state_decode_measurable: LEMMA ppg_measurable_map[StateBlock(universe), MTState].measurable(
     StateBlockSigma(universe), NativeStateSigma(spaces), stateDecode)
+
   stateMeasure: ppg_probability_measure[MTState, NativeStateSigma(spaces)].Probability =
     ppg_probability_map[StateBlock(universe), MTState, StateBlockSigma(universe), NativeStateSigma(spaces)].pushforward(
       ppg_probability_finite_product[V, Value, domain, spaces, laws].finiteLaw(universe), stateDecode)
+
   readAtLaw(n: Counter): ppg_probability_measure[MTState, NativeStateSigma(spaces)].Probability =
     ppg_probability_map[LogSpace, MTState, NativeTableSigma(spaces), NativeStateSigma(spaces)].pushforward(
       logMeasure, readAt(n))
+
   readAt_decode: LEMMA FORALL (n: Counter):
     (LAMBDA (omega: LogSpace): stateDecode(readBlock(universe, n)(omega))) = readAt(n)
+
   logMeasure_map_readAt_eq_pi: THEOREM FORALL (n: Counter): readAtLaw(n) = stateMeasure
+
 END ppg_mt_state_probability

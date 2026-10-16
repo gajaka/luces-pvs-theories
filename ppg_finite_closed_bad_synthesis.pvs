@@ -10,8 +10,11 @@ BEGIN
   IMPORTING ppg_finite_closed_bad[State,universe],ppg_finite_potential_accessible[State,universe]
   M: VAR Model
   U: VAR set[State]
+
   checkedClosedBad_synthesize_none: THEOREM Stochastic(M) AND Absorbing(M) AND
     checkClosedBad(M,U) IMPLIES synthesize(M)=bottom[Witness]
+
   checkedClosedBad_det_zero: THEOREM Stochastic(M) AND Absorbing(M) AND
     checkClosedBad(M,U) IMPLIES stateDeterminant(systemMatrix(M))=0
+
 END ppg_finite_closed_bad_synthesis

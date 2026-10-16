@@ -13,12 +13,17 @@ BEGIN
   p,x: VAR [C->nonneg_real]
   D: VAR nat
   a: VAR C
+
   pegdenWeight(vars,U,p,D,a): RECURSIVE nonneg_real = IF D=0 THEN p(a)
     ELSE p(a)*pegdenPolynomial(vars,U,LAMBDA(b:C):pegdenWeight(vars,U,p,D-1,b),a)
     ENDIF MEASURE D
+
   weight_zero: LEMMA pegdenWeight(vars,U,p,0,a)=p(a)
+
   weight_succ: LEMMA pegdenWeight(vars,U,p,D+1,a)=
     p(a)*pegdenPolynomial(vars,U,LAMBDA(b:C):pegdenWeight(vars,U,p,D,b),a)
+
   weight_le: THEOREM FORALL(D:nat,vars:CertVars,U:finite_set[C],p,x:[C->nonneg_real]):
     pegdenBudget(vars,U,p,x) IMPLIES FORALL(a:C):pegdenWeight(vars,U,p,D,a)<=x(a)
+
 END ppg_pegden_weight

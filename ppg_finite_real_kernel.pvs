@@ -14,19 +14,29 @@ BEGIN
   K: VAR Square
   i,k: VAR nat
   s: VAR State
+
   native_positive_entry_all: LEMMA entry(nativePositive(A))(i,k)=nativeEntries(A)(i,k)
+
   decodedColumn(K,i): r_Vector = LAMBDA(s:State):entry(K)(index(s),i)
+
   decoded_extension: LEMMA rows(K)=dimension IMPLIES
     stateExtension(decodedColumn(K,i))=(LAMBDA(k:nat):entry(K)(k,i))
+
   column_product_extension: LEMMA rows(K)=dimension IMPLIES
     (LAMBDA(k:nat):entry(nativePositive(A))(index(s),k)*entry(K)(k,i))=
     stateExtension(LAMBDA(t:State):A(s,t)*decodedColumn(K,i)(t))
+
   real_product_column: LEMMA rows(K)=dimension AND i<dimension IMPLIES
     entry(nativePositive(A)*K)(index(s),i)=r_matVec(A,decodedColumn(K,i))(s)
+
   decoded_column_zero: LEMMA rows(K)=dimension AND decodedColumn(K,i)=(LAMBDA(s:State):0)
     IMPLIES zeroColumn(K,i)
+
   PositiveModel: TYPE = {M:Model|0<nm.rows(nativeMatrix(systemMatrix(M)))}
+
   M: VAR PositiveModel
+
   accessible_kernel_zero: LEMMA Stochastic(M) AND Accessible(M) AND rows(K)=dimension AND
     i<dimension AND zeroColumn(nativePositive(systemMatrix(M))*K,i) IMPLIES zeroColumn(K,i)
+
 END ppg_finite_real_kernel

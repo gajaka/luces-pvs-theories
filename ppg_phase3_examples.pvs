@@ -1,40 +1,60 @@
 % The second resampling uses slot one of a different variable, not global slot two.
 ppg_phase3_examples: THEORY
 BEGIN
+
   Coordinate: TYPE = below(2)
+
   domain(v: Coordinate): set[nat] = {x: nat | x <= IF v = 0 THEN 1 ELSE 2 ENDIF}
+
   IMPORTING ppg_mt_correspondence[bool, Coordinate, nat, domain],
     ppg_mt_trajectory_measurable[bool, Coordinate, nat, domain]
+
   footprints(c: bool): finite_set[Coordinate] = IF c THEN singleton(0) ELSE singleton(1) ENDIF
+
   badEvent(c: bool, s: MTState): bool = IF c THEN s(0) = 0 ELSE s(1) = 0 ENDIF
+
   scan: list[bool] = cons(TRUE, cons(FALSE, null))
+
   initial: MTState = LAMBDA (v: Coordinate): 0
+
   samples: LogSpace = LAMBDA (p: [nat, Coordinate]):
     IF p`2 = 0 THEN IF p`1 = 0 THEN 0 ELSE 1 ENDIF
     ELSE IF p`1 = 1 THEN 2 ELSE 0 ENDIF ENDIF
+
   process_well_formed: THEOREM mt_wf(footprints, badEvent)
+
   enumeration_complete: THEOREM completeEnumeration(scan)
+
   initial_matches_slot_zero: THEOREM initialAligned(initial, samples)
+
   first_step: THEOREM
     randStep(footprints, badEvent, TRUE, scan, initial, samples, 1)`1(0) = 1 AND
     randStep(footprints, badEvent, TRUE, scan, initial, samples, 1)`1(1) = 0 AND
     randStep(footprints, badEvent, TRUE, scan, initial, samples, 1)`2(0) = 1 AND
     randStep(footprints, badEvent, TRUE, scan, initial, samples, 1)`2(1) = 0
+
   second_step_uses_local_slot: THEOREM
     randStep(footprints, badEvent, TRUE, scan, initial, samples, 2)`1(1) = 2 AND
     randStep(footprints, badEvent, TRUE, scan, initial, samples, 2)`2(0) = 1 AND
     randStep(footprints, badEvent, TRUE, scan, initial, samples, 2)`2(1) = 1 AND samples(2, 1) = 0
+
   reaches_good_state: THEOREM MTGood(badEvent,
     randTraj(footprints, badEvent, TRUE, scan, initial, samples, 2))
+
   generated_tree_check: THEOREM tauCheck(footprints, badEvent,
     tau_C(footprints, shiftedC(footprints, badEvent, TRUE, scan, initial, samples), 2), samples)
+
   coordinates(v: Coordinate): ppg_measurable_space[nat].MeasurableSpace = fullset[set[nat]]
+
   bad_events_measurable: THEOREM measurableBad(coordinates, badEvent)
+
   slot_zero_run_measurable: THEOREM FORALL (t: nat):
     stepMeasurable(coordinates, LAMBDA (omega: LogSpace):
       randStep(footprints, badEvent, TRUE, scan, initialStateFromLog(omega), omega, t))
+
   % Measurability alone does not require initialization to ignore future samples.
   future_slot_run_measurable: THEOREM FORALL (t: nat):
     stepMeasurable(coordinates, LAMBDA (omega: LogSpace):
       randStep(footprints, badEvent, TRUE, scan, freshState(omega, 7), omega, t))
+
 END ppg_phase3_examples

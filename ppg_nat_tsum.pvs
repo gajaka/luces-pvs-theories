@@ -4,10 +4,16 @@ BEGIN
   IMPORTING ppg_nat_range, ppg_nonneg_tsum[nat]
   k: VAR nat
   f: VAR [nat -> nonneg_real]
+
   natStages: [nat -> finite_set[nat]] = natRange
+
   nat_stages_increasing: LEMMA increasing(natStages)
+
   nat_stages_cover: LEMMA family(natStages)(k)
+
   nat_stages_support: LEMMA supportIn(f, natStages)
+
   tsum_eq_iSup_nat: THEOREM tsum(f) =
     iSupNN(LAMBDA (n: nat): sums.sum(natRange(n), f))
+
 END ppg_nat_tsum

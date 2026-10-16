@@ -12,26 +12,41 @@ BEGIN
   IMPORTING ppg_shearer_sets[C,G]
   B,J,K: VAR finite_set[C]
   b: VAR C
+
   closed(B,J): finite_set[C] = intersection(B,
     {b:C|J(b) OR EXISTS(a:C):J(a) AND G(a,b)})
+
   outside(B,J): finite_set[C] = difference(B,closed(B,J))
+
   successors(B,J): finite_set[finite_set[C]] = independentSubsets(closed(B,J))
+
   mem_outside: THEOREM outside(B,J)(b) IFF
     B(b) AND NOT J(b) AND (FORALL(a:C):J(a) IMPLIES NOT G(a,b))
+
   closed_subset: THEOREM subset?(closed(B,J),B)
+
   outside_subset: THEOREM subset?(outside(B,J),B)
+
   closed_empty: THEOREM closed(B,emptyset[C])=emptyset[C]
+
   outside_empty: THEOREM outside(B,emptyset[C])=B
+
   independent_union: LEMMA Independent(union(J,K)) IFF
     Independent(J) AND Independent(K) AND noCrossEdges(J,K)
+
   extension_subset_outside: LEMMA Independent(J) IMPLIES
     ((subset?(K,difference(B,J)) AND Independent(union(J,K))) IFF
       subset?(K,outside(B,J)) AND Independent(K))
+
   independent_extension_filter: THEOREM Independent(J) IMPLIES
     intersection(subsets(difference(B,J)),LAMBDA(K:finite_set[C]):Independent(union(J,K)))=
       independentSubsets(outside(B,J))
+
   mem_successors: THEOREM successors(B,J)(K) IFF
     subset?(K,closed(B,J)) AND Independent(K)
+
   empty_mem_successors: THEOREM successors(B,J)(emptyset[C])
+
   successors_empty: THEOREM successors(B,emptyset[C])=singleton(emptyset[C])
+
 END ppg_shearer_closed

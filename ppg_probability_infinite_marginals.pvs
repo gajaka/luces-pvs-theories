@@ -7,12 +7,17 @@ ppg_probability_infinite_marginals[I, Value: TYPE, domain: [I -> set[Value]],
 BEGIN
   IMPORTING ppg_probability_infinite_product[I, Value, domain, spaces, coins],
             ppg_probability_finite_marginals[I, Value, domain, spaces, coins]
+
   infinite_finite_marginal: THEOREM FORALL (F: finite_set[I]):
     marginal(fullset[I], F)(infiniteLaw) = finiteLaw(F)
+
   infinite_coordinate_mass: THEOREM FORALL (i: I, B: (spaces(i))):
     infiniteLaw(blockCylinder(fullset[I], i, B)) = coins(i)(B)
+
   infiniteCoordinateLaw(i: I): CoordinateLaw(i) =
     ppg_probability_map[FullBlock, (domain(i)), tableSigma, spaces(i)].pushforward(
       infiniteLaw, LAMBDA (x: FullBlock): x(i))
+
   infinite_coordinate_marginal: THEOREM FORALL (i: I): infiniteCoordinateLaw(i) = coins(i)
+
 END ppg_probability_infinite_marginals

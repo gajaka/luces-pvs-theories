@@ -9,12 +9,16 @@ BEGIN
   IMPORTING ppg_mt_log_family[C,V,Value,C,domain,spaces,laws]
   F,G: VAR set[[nat,V]]
   A,B: VAR (NativeTableSigma(spaces))
+
   log_preimage_measurable: LEMMA tableSigma(
     ppg_measurable_map[FullBlock,LogSpace].inverseImage(logMap,A))
+
   log_inter_preimage: LEMMA
     ppg_measurable_map[FullBlock,LogSpace].inverseImage(logMap,intersection(A,B))=
       intersection(ppg_measurable_map[FullBlock,LogSpace].inverseImage(logMap,A),
         ppg_measurable_map[FullBlock,LogSpace].inverseImage(logMap,B))
+
   log_inter_independent: THEOREM disjoint?(F,G) AND logDepends(F,A) AND logDepends(G,B) IMPLIES
     logMeasure(intersection(A,B))=logMeasure(A)*logMeasure(B)
+
 END ppg_mt_log_pair_independence

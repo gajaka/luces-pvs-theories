@@ -19,9 +19,11 @@ BEGIN
 %% ═══════════════════════════════════════════════════════════
 
   N: posnat = 867
+
   M: posnat = 205
 
   Source: TYPE = below(N)
+
   Target: TYPE = below(M)
 
   Plan: TYPE = [Source, Target -> nonneg_real]
@@ -32,6 +34,7 @@ BEGIN
   MetricIndex: TYPE = below(4)
 
   spectral_metric?(k: MetricIndex): bool = (k = 0 OR k = 1)
+
   control_metric?(k: MetricIndex): bool = (k = 2 OR k = 3)
 
 %% ═══════════════════════════════════════════════════════════
@@ -39,13 +42,17 @@ BEGIN
 %% ═══════════════════════════════════════════════════════════
 
   nnz(p: Plan): nat
+
   monge_fraction(p: Plan): nonneg_real
+
   rank_correlation(p: Plan): real
 
   vertex_bound: nat = N + M - 1
 
   is_vertex(p: Plan): bool = nnz(p) = vertex_bound
+
   near_monge(p: Plan): bool = monge_fraction(p) > 93/100
+
   rank_preserving(p: Plan): bool = rank_correlation(p) > 9/10
 
 %% ═══════════════════════════════════════════════════════════
@@ -67,20 +74,29 @@ BEGIN
 
   % Sparsity: stated per metric individually
   ax_vertex_eucl_spec: AXIOM is_vertex(optimal_plan(0))
+
   ax_vertex_var_weight: AXIOM is_vertex(optimal_plan(1))
+
   ax_vertex_fisher_ctrl: AXIOM is_vertex(optimal_plan(2))
+
   ax_vertex_eucl_ctrl: AXIOM is_vertex(optimal_plan(3))
 
   % Near-Monge: stated per metric individually
   ax_monge_eucl_spec: AXIOM near_monge(optimal_plan(0))
+
   ax_monge_var_weight: AXIOM near_monge(optimal_plan(1))
+
   ax_monge_fisher_ctrl: AXIOM near_monge(optimal_plan(2))
+
   ax_monge_eucl_ctrl: AXIOM near_monge(optimal_plan(3))
 
   % Rank: holds for spectral, fails for control
   ax_rank_eucl_spec: AXIOM rank_preserving(optimal_plan(0))
+
   ax_rank_var_weight: AXIOM rank_preserving(optimal_plan(1))
+
   ax_rank_fisher_ctrl_fails: AXIOM NOT rank_preserving(optimal_plan(2))
+
   ax_rank_eucl_ctrl_fails: AXIOM NOT rank_preserving(optimal_plan(3))
 
 %% ═══════════════════════════════════════════════════════════

@@ -18,28 +18,38 @@ BEGIN
   bad: VAR NativeBad
   fallback: VAR C
   enumeration: VAR FullEnumeration
+
   randomCountFunction(vars,bad,fallback,enumeration)(omega:LogSpace): ENN =
     randomInitTLog(vars,bad,fallback,enumeration,omega)
+
   % Reaching one good state suffices; later unstopped states are irrelevant.
   terminationEvent(vars,bad,fallback,enumeration): set[LogSpace] =
     {omega:LogSpace|EXISTS(N:nat):MTGood(bad,
       randTraj(vars,bad,fallback,enumeration,initialStateFromLog(omega),omega,N))}
+
   native_random_count_measurable: LEMMA measurable(NativeTableSigma(spaces),ENNSigma,
     randomCountFunction(vars,bad,fallback,enumeration))
+
   finite_event_termination: LEMMA
     finiteEvent(randomCountFunction(vars,bad,fallback,enumeration))=
     terminationEvent(vars,bad,fallback,enumeration)
+
   termination_event_measurable: LEMMA
     NativeTableSigma(spaces)(terminationEvent(vars,bad,fallback,enumeration))
+
   ae_randomInitTLog_lt_top: THEOREM ennFinite?(randomInitETLog(vars,bad,fallback,enumeration)) IMPLIES
     ae?[LogSpace,asNasa(NativeTableSigma(spaces)),nasaLaw](
       {omega:LogSpace|ennFinite?(randomInitTLog(vars,bad,fallback,enumeration,omega))})
+
   ae_randomInit_exists_good: THEOREM ennFinite?(randomInitETLog(vars,bad,fallback,enumeration)) IMPLIES
     ae?[LogSpace,asNasa(NativeTableSigma(spaces)),nasaLaw](terminationEvent(vars,bad,fallback,enumeration))
+
   logMeasure_randomInit_termination_eq_one: THEOREM
     ennFinite?(randomInitETLog(vars,bad,fallback,enumeration)) IMPLIES
     logMeasure(terminationEvent(vars,bad,fallback,enumeration))=1
+
   exists_MTGood_of_randomInitETLog_lt_top: THEOREM
     ennFinite?(randomInitETLog(vars,bad,fallback,enumeration)) IMPLIES
     EXISTS(z:MTState):MTGood(bad,z)
+
 END ppg_mt_termination

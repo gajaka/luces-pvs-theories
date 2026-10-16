@@ -6,30 +6,50 @@ BEGIN
   IMPORTING ppg_measurable_cylinder[I, Value, domain, spaces], ppg_measurable_block_map
   F, G: VAR set[I]
   x, z: VAR FullBlock
+
   putBlock(F, x)(y: Block(F)): FullBlock =
     LAMBDA (i: (fullset[I])): IF F(i) THEN y(i) ELSE x(i) ENDIF
+
   freezeTable(F, x)(z): FullBlock =
     LAMBDA (i: (fullset[I])): IF F(i) THEN x(i) ELSE z(i) ENDIF
+
   agreeOn(F, x, z): bool = FORALL (i: I): F(i) IMPLIES x(i) = z(i)
+
   dependsOn(F: set[I], A: TableEvent): bool = FORALL (x, z: FullBlock):
     agreeOn(F, x, z) IMPLIES A(x) = A(z)
+
   put_block_coordinates: LEMMA FORALL (y: Block(F), i: (F)): putBlock(F, x)(y)(i) = y(i)
+
   put_block_outside: LEMMA FORALL (y: Block(F), i: I): NOT F(i) IMPLIES putBlock(F, x)(y)(i) = x(i)
+
   put_block_agreement: LEMMA FORALL (y: Block(G)): disjoint?(F, G) IMPLIES
     agreeOn(F, putBlock(G, x)(y), x)
+
   put_block_empty: LEMMA FORALL (y: Block(emptyset[I])): putBlock(emptyset[I], x)(y) = x
+
   freeze_empty: LEMMA freezeTable(emptyset[I], x)(z) = z
+
   freeze_agreement: LEMMA agreeOn(F, x, z) IMPLIES freezeTable(F, x)(z) = z
+
   freeze_same: LEMMA agreeOn(F, x, z) IMPLIES freezeTable(F, x) = freezeTable(F, z)
+
   freeze_nested: LEMMA subset?(F, G) IMPLIES freezeTable(F, x)(freezeTable(G, x)(z)) = freezeTable(G, x)(z)
+
   agree_symmetric: LEMMA agreeOn(F, x, z) IFF agreeOn(F, z, x)
+
   agree_subset: LEMMA subset?(F, G) AND agreeOn(G, x, z) IMPLIES agreeOn(F, x, z)
+
   agree_transitive: LEMMA FORALL (w: FullBlock):
     agreeOn(F, x, z) AND agreeOn(F, z, w) IMPLIES agreeOn(F, x, w)
+
   depends_superset: LEMMA FORALL (A: TableEvent): dependsOn(F, A) AND subset?(F, G) IMPLIES dependsOn(G, A)
+
   cylinder_depends: LEMMA FORALL (B: set[Block(F)]): dependsOn(F, tableCylinder(F, B))
+
   depends_freeze: LEMMA FORALL (A: TableEvent): dependsOn(G, A) AND subset?(G, F) IMPLIES
     A(freezeTable(F, x)(z)) = A(x)
+
   put_block_measurable: THEOREM ppg_measurable_map[Block(F), FullBlock].measurable(
     blockSigma(F), tableSigma, putBlock(F, x))
+
 END ppg_measurable_block_update

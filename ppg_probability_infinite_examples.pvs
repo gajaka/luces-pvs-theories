@@ -2,16 +2,24 @@
 ppg_probability_infinite_examples: THEORY
 BEGIN
   IMPORTING ppg_measurable_space, ppg_probability_dirac
+
   domain(i: nat): set[nat] = fullset[nat]
+
   spaces(i: nat): ppg_measurable_space[(domain(i))].MeasurableSpace = fullset[set[(domain(i))]]
+
   coins(i: nat): ppg_probability_measure[(domain(i)), spaces(i)].Probability =
     ppg_probability_dirac[(domain(i)), spaces(i)].dirac(i + 2)
+
   IMPORTING ppg_probability_infinite_marginals[nat, nat, domain, spaces, coins],
             ppg_probability_infinite_independence[nat, nat, domain, singleton[nat](0), singleton[nat](1), spaces, coins]
+
   coordinate_event(n: nat): (tableSigma) = {x: FullBlock | x(n) = n + 2}
+
   coordinate_mass_one: THEOREM FORALL (n: nat): infiniteLaw(coordinate_event(n)) = 1
+
   different_coordinates_independent: THEOREM FORALL
     (B: (blockSigma(singleton[nat](0))), D: (blockSigma(singleton[nat](1)))):
       infiniteLaw(intersection(tableCylinder(singleton[nat](0), B), tableCylinder(singleton[nat](1), D))) =
         infiniteLaw(tableCylinder(singleton[nat](0), B)) * infiniteLaw(tableCylinder(singleton[nat](1), D))
+
 END ppg_probability_infinite_examples

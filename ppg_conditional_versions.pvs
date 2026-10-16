@@ -11,29 +11,47 @@ ppg_conditional_versions[Omega: TYPE,
 BEGIN
   IMPORTING ppg_finite_restricted_integral[Omega,S,measureLaw],
     measure_integration@measure_space_def[Omega,asNasa(H)] AS historySpace
+
   historyMeasurable(g:NativeFunction): bool = historySpace.measurable_function?(g)
+
   HistoryFunction: TYPE = (historyMeasurable)
+
   f,k: VAR NativeFunction
   g,h: VAR HistoryFunction
   A: VAR (H)
   c: VAR real
   omega: VAR Omega
+
   historyEvent(A): (S) = A
+
   conditionalVersion(f,g): bool = FORALL(A:(H)):
     setIntegral(historyEvent(A),f)=setIntegral(historyEvent(A),g)
+
   historyAdd(g,h): HistoryFunction = g+h
+
   historyScale(c,g): HistoryFunction = c*g
+
   historyDiff(g,h): HistoryFunction = g-h
+
   history_event_value: LEMMA historyEvent(A)=A
+
   history_add_value: LEMMA historyAdd(g,h)(omega)=g(omega)+h(omega)
+
   history_scale_value: LEMMA historyScale(c,g)(omega)=c*g(omega)
+
   history_diff_value: LEMMA historyDiff(g,h)(omega)=g(omega)-h(omega)
+
   conditional_reflexive: LEMMA conditionalVersion(g,g)
+
   conditional_add: LEMMA conditionalVersion(f,g) AND conditionalVersion(k,h)
     IMPLIES conditionalVersion(f+k,historyAdd(g,h))
+
   conditional_scale: LEMMA conditionalVersion(f,g) IMPLIES
     conditionalVersion(c*f,historyScale(c,g))
+
   conditional_diff: LEMMA conditionalVersion(f,g) AND conditionalVersion(k,h)
     IMPLIES conditionalVersion(f-k,historyDiff(g,h))
+
   conditional_total_integral: LEMMA conditionalVersion(f,g) IMPLIES integral(f)=integral(g)
+
 END ppg_conditional_versions

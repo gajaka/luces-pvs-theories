@@ -4,11 +4,18 @@ BEGIN
   IMPORTING ppg_probability_finite_empty,
             ppg_probability_block_sections[Empty, Empty, domain, emptyset[Empty], emptyset[Empty],
               spaces, coins]
+
   empty_blocks_disjoint: LEMMA disjoint?(emptyset[Empty], emptyset[Empty])
+
   fullEvent: (blockSigma(U)) = fullset[UnionBlock]
+
   section_mean_one: LEMMA expectation(blockFunction(fullEvent)) = 1
+
   section_value_one: LEMMA FORALL (x: LeftBlock): blockSectionMass(fullEvent, x) = 1
+
   repeatedFull: [nat -> (blockSigma(U))] = LAMBDA (n: nat): fullEvent
+
   empty_block_witness: THEOREM EXISTS (x: LeftBlock):
     FORALL (n: nat): 1 / 2 <= blockSectionMass(repeatedFull(n), x)
+
 END ppg_probability_sections_empty

@@ -21,26 +21,38 @@ BEGIN
   n,T: VAR nat
   s: VAR State
   omega: VAR Omega
+
   stoppedValue(M,f,X,n):[Omega->real] = LAMBDA(omega:Omega):
     IF runningEvent(M,X,n)(omega) THEN f(X(n)(omega)) ELSE 0 ENDIF
+
   runningEvent_succ: THEOREM runningEvent(M,X,n+1)=
     intersection(runningEvent(M,X,n),activeEvent(M,X,n+1))
+
   runningEvent_zero: LEMMA runningEvent(M,X,0)=activeEvent(M,X,0)
+
   running_history_step: LEMMA singletonMeasurable(SY) AND adapted(H,SY,X) AND
     H(n)(runningEvent(M,X,n)) IMPLIES H(n+1)(runningEvent(M,X,n+1))
+
   runningEvent_measurable_history: THEOREM singletonMeasurable(SY) AND adapted(H,SY,X)
     IMPLIES H(n)(runningEvent(M,X,n))
+
   stoppedValue_initial: THEOREM Equations(M,f) IMPLIES
     stoppedValue(M,f,X,0)=(LAMBDA(omega:Omega):f(X(0)(omega)))
+
   stoppedValue_shift: THEOREM Equations(M,f) IMPLIES
     stoppedValue(M,f,X,n+1)=(LAMBDA(omega:Omega):
       IF runningEvent(M,X,n)(omega) THEN f(X(n+1)(omega)) ELSE 0 ENDIF)
+
   stoppedValue_nonnegative: THEOREM (FORALL(s:State):0<=f(s)) IMPLIES
     0<=stoppedValue(M,f,X,n)(omega)
+
   stoppedValue_norm_le_sum: THEOREM (FORALL(s:State):0<=f(s)) IMPLIES
     abs(stoppedValue(M,f,X,n)(omega))<=fsum(universe,LAMBDA(s:State):f(s))
+
   equations_real_bad: THEOREM Equations(M,f) AND NOT M`good(s) IMPLIES
     fsum(universe,LAMBDA(t:State):M`transition(s,t)*f(t))+1=f(s)
+
   stoppedValue_zero_after_good: THEOREM M`good(X(T)(omega)) AND T<=n IMPLIES
     stoppedValue(M,f,X,n)(omega)=0
+
 END ppg_finite_stopped_value

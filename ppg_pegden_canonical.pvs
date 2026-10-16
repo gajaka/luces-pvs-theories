@@ -17,14 +17,18 @@ BEGIN
   U: VAR finite_set[C]
   n: VAR nat
   t: VAR WTree
+
   pegden_fuel_children_valid: LEMMA fullUniverse(U) AND
     (FORALL(c:WTree):fullUniverse(U) AND wellFormed(vars)(c) AND depthSeparated(vars,c) IMPLIES
       pegdenTreesUpTo(vars,U,n,roseLabel(c))(canonicalFuel(n,c))) AND
     wellFormed(vars)(t) AND depthSeparated(vars,t) IMPLIES
       choiceValid(labelSet(t),LAMBDA(b:C):pegdenTreesUpTo(vars,U,n,b),LAMBDA(b:C):canonicalFuel(n,childFor(t,b)))
+
   canonicalizeFuel_mem_treesUpTo: THEOREM FORALL(n:nat,vars:CertVars,U:finite_set[C]):FORALL(t:WTree):
     fullUniverse(U) AND wellFormed(vars)(t) AND depthSeparated(vars,t) IMPLIES
       pegdenTreesUpTo(vars,U,n,roseLabel(t))(canonicalFuel(n,t))
+
   canonicalize_mem_treesUpTo: THEOREM fullUniverse(U) AND wellFormed(vars)(t) AND depthSeparated(vars,t) IMPLIES
     pegdenTreesUpTo(vars,U,depth(t),roseLabel(t))(canonicalize(t))
+
 END ppg_pegden_canonical

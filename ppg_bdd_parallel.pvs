@@ -7,8 +7,10 @@ BEGIN
   sat: VAR [C, [V -> Value] -> bool]
   c: VAR C
   i, j: VAR [V -> Value]
+
   safe_parallel_units: THEOREM Local(vars, sat) AND
     (FORALL (v: V): NOT componentFootprint(vars, B, c)(v) IMPLIES i(v) = j(v)) IMPLIES
       (FORALL (d: C): B(d) AND NOT SameComponent(vars, B)(c, d) IMPLIES (sat(d, i) IFF sat(d, j))) AND
       card(connectedComponents(vars, B)) = card(groups(vars, B))
+
 END ppg_bdd_parallel

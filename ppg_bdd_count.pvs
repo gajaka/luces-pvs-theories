@@ -6,14 +6,23 @@ BEGIN
   B: VAR finite_set[C]
   c, d: VAR C
   K, L: VAR finite_set[C]
+
   sameComponent_of_compOf_eq: THEOREM
     B(c) AND compOf(vars, B, c) = compOf(vars, B, d) IMPLIES SameComponent(vars, B)(c, d)
+
   connectedComponent_nonempty: LEMMA connectedComponents(vars, B)(K) IMPLIES nonempty?(K)
+
   compGroup(vars, B)(K: (connectedComponents(vars, B))): (groups(vars, B)) =
     compOf(vars, B, choose(K))
+
   compGroup_identity: LEMMA FORALL (K: (connectedComponents(vars, B))): compGroup(vars, B)(K) = K
+
   compGroup_injective: THEOREM injective?(compGroup(vars, B))
+
   compGroup_surjective: THEOREM surjective?(compGroup(vars, B))
+
   compGroup_bijective: THEOREM bijective?(compGroup(vars, B))
+
   card_bddComponents_eq_card_compOf_image: THEOREM card(connectedComponents(vars, B)) = card(groups(vars, B))
+
 END ppg_bdd_count

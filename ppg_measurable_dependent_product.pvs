@@ -3,28 +3,42 @@ ppg_measurable_dependent_product[A, I, Value: TYPE, domain: [I -> set[Value]]]: 
 BEGIN
   IMPORTING ppg_measurable_product[A, I, Value, domain],
             ppg_measurable_subtype, ppg_measurable_subtype_map
+
   CoordinateSpaces: TYPE = [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]
+
   spaces: VAR CoordinateSpaces
   SA: VAR ppg_measurable_space[A].MeasurableSpace
   f: VAR [A -> Pi]
+
   ambientCoordinates(spaces)(i: I): ppg_measurable_space[Value].MeasurableSpace =
     ppg_measurable_subtype[Value, domain(i)].ambientSpace(spaces(i))
+
   nativeCylinder(i: I, B: set[(domain(i))]): set[Pi] = {p: Pi | B(p(i))}
+
   nativeCylinders(spaces): set[set[Pi]] = {E: set[Pi] |
     EXISTS (i: I, B: set[(domain(i))]): spaces(i)(B) AND E = nativeCylinder(i, B)}
+
   nativeProduct(spaces): ppg_measurable_space[Pi].MeasurableSpace = generated(nativeCylinders(spaces))
+
   cylinder_trace: LEMMA FORALL (i: I, B: set[Value]): cylinder(i, B) =
     nativeCylinder(i, ppg_measurable_subtype[Value, domain(i)].trace(B))
+
   nativeCylinder_representative: LEMMA FORALL (i: I, B: set[(domain(i))]): nativeCylinder(i, B) =
     cylinder(i, ppg_measurable_subtype[Value, domain(i)].representative(B))
+
   cylinders_native_eq: LEMMA cylinders(ambientCoordinates(spaces)) = nativeCylinders(spaces)
+
   product_native_eq: LEMMA productSigma(ambientCoordinates(spaces)) = nativeProduct(spaces)
+
   native_cylinder_measurable: LEMMA FORALL (i: I, B: set[(domain(i))]):
     spaces(i)(B) IMPLIES nativeProduct(spaces)(nativeCylinder(i, B))
+
   native_coordinate_measurable: LEMMA FORALL (i: I):
     ppg_measurable_map[Pi, (domain(i))].measurable(nativeProduct(spaces), spaces(i),
       LAMBDA (p: Pi): p(i))
+
   native_product_measurable: LEMMA
     (FORALL (i: I): ppg_measurable_map[A, (domain(i))].measurable(SA, spaces(i),
       LAMBDA (a: A): f(a)(i))) IMPLIES measurable(SA, nativeProduct(spaces), f)
+
 END ppg_measurable_dependent_product

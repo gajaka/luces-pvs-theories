@@ -7,11 +7,16 @@ ppg_probability_cylinder_independence[I, Value: TYPE, domain: [I -> set[Value]],
 BEGIN
   IMPORTING ppg_probability_cylinder_content[I, Value, domain, spaces, coins],
             ppg_probability_finite_union[I, Value, domain, F, G, spaces, coins]
+
   union_support: LEMMA U = union(F, G)
+
   lift_left: LEMMA FORALL (B: (blockSigma(F))): liftEvent(U, F, B) = leftLift(B)
+
   lift_right: LEMMA FORALL (D: (blockSigma(G))): liftEvent(U, G, D) = rightLift(D)
+
   cylinder_independence: THEOREM FORALL (B: (blockSigma(F)), D: (blockSigma(G))):
     disjoint?(F, G) IMPLIES
       content(intersection(tableCylinder(F, B), tableCylinder(G, D))) =
         finiteLaw(F)(B) * finiteLaw(G)(D)
+
 END ppg_probability_cylinder_independence

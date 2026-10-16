@@ -14,14 +14,21 @@ BEGIN
     ppg_real_sum[C], ppg_real_sum[finite_set[C]]
   B,K: VAR finite_set[C]
   p: VAR [C->real]
+
   bddSingletonBudgets(p,B)(a:C): real = stableBudget(p,B,sets[C].singleton(a))
+
   componentBudget(p)(K): real = ppg_finite_sum[C].fsum(K,bddSingletonBudgets(p,K))
+
   label_fsum_fold: LEMMA ppg_finite_sum[C].fsum=ppg_monoid_sum[C,real,0,LAMBDA(x,y:real):x+y].sum
+
   group_fsum_fold: LEMMA ppg_finite_sum[finite_set[C]].fsum=
     ppg_monoid_sum[finite_set[C],real,0,LAMBDA(x,y:real):x+y].sum
+
   component_sum_local: LEMMA StrictCriterion(p,B) AND groups(vars,B)(K) IMPLIES
     ppg_finite_sum[C].fsum(K,bddSingletonBudgets(p,B))=componentBudget(p)(K)
+
   sum_stableBudget_eq_sum_componentBudgets: THEOREM StrictCriterion(p,B) IMPLIES
     ppg_finite_sum[C].fsum(B,bddSingletonBudgets(p,B))=
     ppg_finite_sum[finite_set[C]].fsum(groups(vars,B),componentBudget(p))
+
 END ppg_shearer_component_budgets

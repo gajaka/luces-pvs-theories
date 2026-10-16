@@ -1,10 +1,15 @@
 % A positive lower bound stays positive through any finite number of selections.
 ppg_positive_halving: THEORY
 BEGIN
+
   halfRate(e: posreal, n: nat): RECURSIVE posreal =
     IF n = 0 THEN e ELSE halfRate(e, n - 1) / 2 ENDIF MEASURE n
+
   e: VAR posreal
   n: VAR nat
+
   rate_zero: LEMMA halfRate(e, 0) = e
+
   rate_succ: LEMMA halfRate(e, n + 1) = halfRate(e, n) / 2
+
 END ppg_positive_halving

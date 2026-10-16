@@ -5,30 +5,50 @@ BEGIN
   G, D: VAR set[Event]
   A, B: VAR Event
   E: VAR Family
+
   hull(G): set[Event] =
     {A: Event | FORALL (D: set[Event]): dynkin?(D) AND subset?(G, D) IMPLIES D(A)}
+
   hull_contains: LEMMA subset?(G, hull(G))
+
   hull_member: LEMMA G(A) IMPLIES hull(G)(A)
+
   hull_least: LEMMA dynkin?(D) AND subset?(G, D) IMPLIES subset?(hull(G), D)
+
   hull_minimal_member: LEMMA dynkin?(D) AND subset?(G, D) AND hull(G)(A) IMPLIES D(A)
+
   hull_dynkin: LEMMA dynkin?(hull(G))
+
   meetFamily(A, E): Family = LAMBDA (n: nat): intersection(A, E(n))
+
   meet_full: LEMMA intersection(A, fullset[X]) = A
+
   meet_difference: LEMMA FORALL (C: Event):
     intersection(A, difference(B, C)) = difference(intersection(A, B), intersection(A, C))
+
   meet_subset: LEMMA FORALL (C: Event): subset?(B, C) IMPLIES
     subset?(intersection(A, B), intersection(A, C))
+
   meet_increasing: LEMMA increasingEvents(E) IMPLIES increasingEvents(meetFamily(A, E))
+
   meet_union: LEMMA intersection(A, countableUnion(E)) = countableUnion(meetFamily(A, E))
+
   meetClass(D, A): set[Event] = {B: Event | D(B) AND D(intersection(A, B))}
+
   meet_class_dynkin: LEMMA dynkin?(D) AND D(A) IMPLIES dynkin?(meetClass(D, A))
+
   generator_meet_class: LEMMA intersectionClosed?(G) AND G(A)
     IMPLIES subset?(G, meetClass(hull(G), A))
+
   generator_meet_hull: LEMMA intersectionClosed?(G) AND G(A) AND hull(G)(B)
     IMPLIES hull(G)(intersection(A, B))
+
   hull_meet_class: LEMMA intersectionClosed?(G) AND hull(G)(A)
     IMPLIES subset?(G, meetClass(hull(G), A))
+
   hull_intersection: LEMMA intersectionClosed?(G) IMPLIES intersectionClosed?(hull(G))
+
   pi_lambda: THEOREM intersectionClosed?(G) AND dynkin?(D) AND subset?(G, D)
     IMPLIES subset?(generated(G), D)
+
 END ppg_dynkin_generated

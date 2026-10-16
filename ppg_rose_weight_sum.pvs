@@ -18,18 +18,27 @@ BEGIN
   D: VAR nat
   a: VAR C
   p: VAR [C -> nonneg_real]
+
   enum_mass(vars,U,p,D,a): nonneg_real = treeSums.sum(wtreesUpTo(vars,U,D,a),weight(p))
+
   mtWeight(vars,U,p,D,a): RECURSIVE nonneg_real = IF D=0 THEN p(a)
     ELSE p(a)*indices.sum(plusNeighbors(vars,U,a),LAMBDA(b:C):1+mtWeight(vars,U,p,D-1,b))
     ENDIF MEASURE D
+
   mtWeight_zero: LEMMA mtWeight(vars,U,p,0,a)=p(a)
+
   mtWeight_succ: LEMMA mtWeight(vars,U,p,D+1,a)=p(a)*indices.sum(plusNeighbors(vars,U,a),
     LAMBDA(b:C):1+mtWeight(vars,U,p,D,b))
+
   enum_mass_zero: LEMMA enum_mass(vars,U,p,0,a)=p(a)
+
   root_mass_function: LEMMA
     (LAMBDA(S:finite_set[C]):treeSums.sum(rootFamily(a,S,LAMBDA(b:C):wtreesUpTo(vars,U,D,b)),weight(p))) =
     (LAMBDA(S:finite_set[C]):p(a)*indices.sum(S,LAMBDA(b:C):enum_mass(vars,U,p,D,b)))
+
   enum_mass_succ: LEMMA enum_mass(vars,U,p,D+1,a)=p(a)*indices.sum(plusNeighbors(vars,U,a),
     LAMBDA(b:C):1+enum_mass(vars,U,p,D,b))
+
   sum_wtreesUpTo_weight: THEOREM enum_mass(vars,U,p,D,a)=mtWeight(vars,U,p,D,a)
+
 END ppg_rose_weight_sum

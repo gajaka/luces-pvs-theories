@@ -9,59 +9,85 @@
 ppg_bdd[C: TYPE, V: TYPE]: THEORY
 BEGIN
   IMPORTING ppg_finite_product[C]
+
   CertVars: TYPE = [C -> finite_set[V]]
+
   vars: VAR CertVars
   B: VAR finite_set[C]
   c, d, e: VAR C
   v: VAR V
   p, x: VAR [C -> real]
+
   dependent(vars, c, d): bool = EXISTS v: vars(c)(v) AND vars(d)(v)
+
   CoupledIn(vars, B)(c, d): bool = B(c) AND B(d) AND dependent(vars, c, d)
+
   SameComponent(vars, B): equivalence[C] = EquivClos(CoupledIn(vars, B))
+
   componentFootprint(vars, B, c): set[V] =
     {v: V | EXISTS (d: C): B(d) AND SameComponent(vars, B)(c, d) AND vars(d)(v)}
+
   compOf(vars, B, c): finite_set[C] =
     intersection(B, {d: C | SameComponent(vars, B)(c, d)})
+
   neighbors(vars, B, c): finite_set[C] =
     intersection(B, {d: C | d /= c AND dependent(vars, c, d)})
+
   lll_condition_at(p, x, vars, B, c): bool =
     p(c) <= x(c) * product(neighbors(vars, B, c), LAMBDA (d: C): 1 - x(d))
+
   lll_feasible(p, x, vars, B): bool =
     (FORALL (c: C): B(c) IMPLIES 0 <= x(c) AND x(c) < 1) AND
     (FORALL (c: C): B(c) IMPLIES lll_condition_at(p, x, vars, B, c))
 
   sameComponent_equivalence: THEOREM equivalence?(SameComponent(vars, B))
+
   sameComponent_refl: LEMMA SameComponent(vars, B)(c, c)
+
   sameComponent_symm: LEMMA SameComponent(vars, B)(c, d) IMPLIES SameComponent(vars, B)(d, c)
+
   sameComponent_trans: LEMMA
     SameComponent(vars, B)(c, d) AND SameComponent(vars, B)(d, e)
     IMPLIES SameComponent(vars, B)(c, e)
+
   sameComponent_of_coupled: THEOREM
     CoupledIn(vars, B)(c, d) IMPLIES SameComponent(vars, B)(c, d)
+
   sameComponent_row_eq: LEMMA
     SameComponent(vars, B)(c, d) IMPLIES
       (LAMBDA (e: C): SameComponent(vars, B)(c, e)) =
       (LAMBDA (e: C): SameComponent(vars, B)(d, e))
+
   vars_subset_own_footprint: THEOREM
     B(c) IMPLIES subset?(vars(c), componentFootprint(vars, B, c))
+
   footprint_disjoint_of_diff_component: THEOREM
     NOT SameComponent(vars, B)(c, d) IMPLIES
       intersection(componentFootprint(vars, B, c), componentFootprint(vars, B, d)) = emptyset[V]
+
   componentFootprint_eq_of_sameComponent: THEOREM
     SameComponent(vars, B)(c, d) IMPLIES componentFootprint(vars, B, c) = componentFootprint(vars, B, d)
+
   mem_compOf_self: THEOREM B(c) IMPLIES compOf(vars, B, c)(c)
+
   compOf_subset: THEOREM subset?(compOf(vars, B, c), B)
+
   compOf_eq_of_sameComponent: THEOREM
     SameComponent(vars, B)(c, d) IMPLIES compOf(vars, B, c) = compOf(vars, B, d)
+
   neighbors_eq_neighbors_compOf: THEOREM
     B(c) IMPLIES neighbors(vars, B, c) = neighbors(vars, compOf(vars, B, c), c)
+
   lll_condition_localizes: THEOREM
     B(c) IMPLIES
       (lll_condition_at(p, x, vars, B, c) IFF lll_condition_at(p, x, vars, compOf(vars, B, c), c))
+
   lll_condition_component_member: LEMMA
     compOf(vars, B, d)(c) IMPLIES
       (lll_condition_at(p, x, vars, B, c) IFF lll_condition_at(p, x, vars, compOf(vars, B, d), c))
+
   lll_feasible_iff_componentwise: THEOREM
     lll_feasible(p, x, vars, B) IFF
       FORALL (c: C): B(c) IMPLIES lll_feasible(p, x, vars, compOf(vars, B, c))
+
 END ppg_bdd

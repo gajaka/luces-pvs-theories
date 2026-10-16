@@ -22,35 +22,50 @@ BEGIN
   F: VAR finite_set[LayerSeq]
   D: VAR nat
   p: VAR [C->real]
+
   clippedWeight(p)(L): nonneg_real = max(0,sequenceWeight(p)(L))
+
   properWeights(p,B,J)(L): nonneg_real =
     IF properFamily(B,J)(L) THEN clippedWeight(p)(L) ELSE 0 ENDIF
+
   properFamilyWeight(p,B,J)(L): ENN = ennFinite(properWeights(p,B,J)(L))
+
   properFamilyTotal(p,B,J): ENN = tsum(properWeights(p,B,J))
+
   properWeight_partial_sum: LEMMA
     esum(F,properFamilyWeight(p,B,J))=ennFinite(sums.sum(F,properWeights(p,B,J)))
+
   proper_filter_sum: LEMMA sums.sum(F,properWeights(p,B,J))=
     sums.sum(intersection(F,properFamily(B,J)),clippedWeight(p))
+
   clippedWeight_padTo: LEMMA clippedWeight(p)(padTo(D,L))=clippedWeight(p)(L)
+
   padding_image_sum: LEMMA (FORALL(L:LayerSeq):F(L) IMPLIES proper(L)) IMPLIES
     sums.sum(image[LayerSeq,LayerSeq](LAMBDA(L:LayerSeq):padTo(D,L),F),clippedWeight(p))=
       sums.sum(F,clippedWeight(p))
+
   stable_sequences_nonnegative: LEMMA subset?(J,B) AND Independent(J) AND
     nonnegativeOn(p,B) AND stableSequences(B,D,J)(L) IMPLIES 0<=sequenceWeight(p)(L)
+
   padded_family_subset: LEMMA
     (FORALL(L:LayerSeq):F(L) IMPLIES stableSequences(B,D,J)(padTo(D,L))) IMPLIES
     subset?(image[LayerSeq,LayerSeq](LAMBDA(L:LayerSeq):padTo(D,L),F),stableSequences(B,D,J))
+
   finite_proper_sum_le: LEMMA subset?(J,B) AND Independent(J) AND
     nonnegativeOn(p,B) AND StrictCriterion(p,B) AND
     (FORALL(L:LayerSeq):F(L) IMPLIES properFamily(B,J)(L)) IMPLIES
       sums.sum(F,clippedWeight(p))<=stableBudget(p,B,J)
+
   finite_family_sum_le: LEMMA subset?(J,B) AND Independent(J) AND
     nonnegativeOn(p,B) AND StrictCriterion(p,B) IMPLIES
       sums.sum(F,properWeights(p,B,J))<=stableBudget(p,B,J)
+
   tsum_properFamilyWeight_le: THEOREM subset?(J,B) AND Independent(J) AND
     nonnegativeOn(p,B) AND StrictCriterion(p,B) IMPLIES
       ele(properFamilyTotal(p,B,J),ennFinite(max(0,stableBudget(p,B,J))))
+
   tsum_properFamilyWeight_lt_top: THEOREM subset?(J,B) AND Independent(J) AND
     nonnegativeOn(p,B) AND StrictCriterion(p,B) IMPLIES
       ele(properFamilyTotal(p,B,J),ennInfinity) AND properFamilyTotal(p,B,J)/=ennInfinity
+
 END ppg_shearer_family

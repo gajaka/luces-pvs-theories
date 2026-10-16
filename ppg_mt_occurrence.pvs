@@ -18,37 +18,51 @@ BEGIN
   n, s, t: VAR nat
   W: VAR WTree
   Clog, Dlog: VAR [nat -> C]
+
   randomInitWitness(vars, bad, fallback, enumeration, omega, s): WTree =
     resamplingWitness(vars, bad, fallback, enumeration, initialStateFromLog(omega), omega, s)
+
   randomInitWitness_label: THEOREM roseLabel(randomInitWitness(vars, bad, fallback, enumeration, omega, s)) =
     realC(vars, bad, fallback, enumeration, initialStateFromLog(omega), omega, s)
+
   witness_history_congr: LEMMA historyAgrees(Clog, Dlog, t) IMPLIES
     realWitness(vars, Clog, t) = realWitness(vars, Dlog, t)
+
   decodeWitness(vars, fallback, s)(w: list[C]): WTree =
     realWitness(vars, LAMBDA(k:nat):readHistory(fallback,w,k), s + 1)
+
   witness_factors_through_history: LEMMA
     (LAMBDA(omega:LogSpace):randomInitWitness(vars,bad,fallback,enumeration,omega,s)) =
     (LAMBDA(omega:LogSpace):decodeWitness(vars,fallback,s)(
       history(shiftedC(vars,bad,fallback,enumeration,initialStateFromLog(omega),omega),s+2)))
+
   selected_history_measurable: LEMMA measurableBad(coordinates,bad) IMPLIES
     coordinateMeasurable(TableSigma(coordinates), LAMBDA(omega:LogSpace):
       shiftedC(vars,bad,fallback,enumeration,initialStateFromLog(omega),omega))
+
   decode_witness_measurable: LEMMA
     measurable(fullset[set[list[C]]],fullset[set[WTree]],decodeWitness(vars,fallback,s))
+
   measurable_randomInitWitness: THEOREM completeEnumeration(enumeration) AND measurableBad(coordinates,bad) IMPLIES
     measurable(TableSigma(coordinates),fullset[set[WTree]],
       LAMBDA(omega:LogSpace):randomInitWitness(vars,bad,fallback,enumeration,omega,s))
+
   measurableSet_randomInitWitness_eq: THEOREM completeEnumeration(enumeration) AND measurableBad(coordinates,bad) IMPLIES
     TableSigma(coordinates)({omega:LogSpace|randomInitWitness(vars,bad,fallback,enumeration,omega,s)=W})
+
   witnessOccurrence(vars,bad,fallback,enumeration,a,W): set[LogSpace] = {omega:LogSpace|
     EXISTS(s:nat):randomInitResamplingEvent(vars,bad,fallback,enumeration,a,s)(omega) AND
       randomInitWitness(vars,bad,fallback,enumeration,omega,s)=W}
+
   witnessOccurrence_eq_iUnion: THEOREM witnessOccurrence(vars,bad,fallback,enumeration,a,W) =
     countableUnion(LAMBDA(s:nat):intersection(randomInitResamplingEvent(vars,bad,fallback,enumeration,a,s),
       {omega:LogSpace|randomInitWitness(vars,bad,fallback,enumeration,omega,s)=W}))
+
   measurable_occurrence_component: LEMMA completeEnumeration(enumeration) AND measurableBad(coordinates,bad) IMPLIES
     TableSigma(coordinates)(intersection(randomInitResamplingEvent(vars,bad,fallback,enumeration,a,s),
       {omega:LogSpace|randomInitWitness(vars,bad,fallback,enumeration,omega,s)=W}))
+
   measurableSet_witnessOccurrence: THEOREM completeEnumeration(enumeration) AND measurableBad(coordinates,bad) IMPLIES
     TableSigma(coordinates)(witnessOccurrence(vars,bad,fallback,enumeration,a,W))
+
 END ppg_mt_occurrence

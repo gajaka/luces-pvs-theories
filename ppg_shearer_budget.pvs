@@ -15,32 +15,51 @@ BEGIN
             ppg_real_division_sum[finite_set[C]]
   B,J,K: VAR finite_set[C]
   p: VAR [C->real]
+
   nonnegativeOn(p,B): bool = FORALL(i:C):B(i) IMPLIES 0<=p(i)
+
   clip(p)(i:C): nonneg_real = max(0,p(i))
+
   stableBudget(p,B,J): real = div0(coefficient(p,B,J),polynomial(p,B))
+
   budgetWeights(p,B): [finite_set[C]->real] = LAMBDA(K:finite_set[C]):stableBudget(p,B,K)
+
   nonnegative_subset: LEMMA nonnegativeOn(p,B) AND subset?(J,B) IMPLIES nonnegativeOn(p,J)
+
   product_nonnegative: LEMMA nonnegativeOn(p,J) IMPLIES 0<=product(J,p)
+
   nonnegative_times: LEMMA FORALL(x,y:real):0<=x AND 0<=y IMPLIES 0<=x*y
+
   coefficient_nonneg: THEOREM nonnegativeOn(p,B) AND StrictCriterion(p,B) IMPLIES
     0<=coefficient(p,B,J)
+
   coefficient_independent_mask: LEMMA
     mask(Independent,LAMBDA(K:finite_set[C]):coefficient(p,B,K))=
       (LAMBDA(K:finite_set[C]):coefficient(p,B,K))
+
   coefficient_recurrence_independent: THEOREM subset?(J,B) AND Independent(J) IMPLIES
     coefficient(p,B,J)=product(J,p)*
       ppg_finite_sum[finite_set[C]].fsum(successors(B,J),LAMBDA(K:finite_set[C]):coefficient(p,B,K))
+
   strict_polynomial_positive: LEMMA StrictCriterion(p,B) IMPLIES 0<polynomial(p,B)
+
   stableBudget_nonneg: THEOREM nonnegativeOn(p,B) AND StrictCriterion(p,B) IMPLIES
     0<=stableBudget(p,B,J)
+
   stableBudget_empty: THEOREM StrictCriterion(p,B) IMPLIES stableBudget(p,B,emptyset[C])=1
+
   stableBudget_recurrence: THEOREM subset?(J,B) AND Independent(J) IMPLIES
     stableBudget(p,B,J)=product(J,p)*
       ppg_finite_sum[finite_set[C]].fsum(successors(B,J),budgetWeights(p,B))
+
   one_le_split: LEMMA FORALL(a,b,c:real):a=1 AND b>=0 AND c=a+b IMPLIES 1<=c
+
   budgetWeights_empty: LEMMA StrictCriterion(p,B) IMPLIES budgetWeights(p,B)(emptyset[C])=1
+
   successor_sum_at_least_one: LEMMA nonnegativeOn(p,B) AND StrictCriterion(p,B) IMPLIES
     1<=ppg_finite_sum[finite_set[C]].fsum(successors(B,J),budgetWeights(p,B))
+
   prod_le_stableBudget: THEOREM subset?(J,B) AND Independent(J) AND
     nonnegativeOn(p,B) AND StrictCriterion(p,B) IMPLIES product(J,p)<=stableBudget(p,B,J)
+
 END ppg_shearer_budget

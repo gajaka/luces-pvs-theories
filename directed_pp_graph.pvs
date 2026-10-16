@@ -46,9 +46,9 @@ BEGIN
   pp_valid_weak(G, rr_rel): bool =
     FORALL (x, y: V): G`edges(x, y) IMPLIES pp_edge_weak(rr_rel, x, y)
 
-
   % A dependent record packages the positive length and its finite sequence.
   Prewalk: TYPE = [# length: posnat, seq: [below(length) -> V] #]
+
   pw: VAR Prewalk
   G1, G2, G3, S: VAR Graph
 
@@ -68,6 +68,7 @@ BEGIN
     (FORALL (i, j: below(pw`length)): pw`seq(i) = pw`seq(j) IMPLIES i = j)
 
   pw_start(pw): V = pw`seq(0)
+
   pw_end(pw): V = pw`seq(pw`length - 1)
 
   is_subgraph(S, G): bool =

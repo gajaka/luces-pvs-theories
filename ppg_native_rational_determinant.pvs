@@ -9,23 +9,34 @@ BEGIN
   IMPORTING ppg_native_rational_matrix
   A: VAR RationalMatrix
   N,k: VAR nat
+
   minor(A:RationalMatrix,i,j:nat): RationalMatrix = np.remove(A,i,j)
+
   cofactorTerm(A,k): real = (-1)^k*nm.entry(A)(0,k)*np.det(minor(A,0,k))
+
   cofactor_rational_step: LEMMA
     (FORALL(B:RationalMatrix):nm.rows(B)<=N IMPLIES rational_pred(np.det(B))) AND
     1<nm.rows(A) AND 1<nm.columns(A) AND nm.rows(A)<=N+1 IMPLIES
     rational_pred(cofactorTerm(A,k))
+
   smallRational(N): bool = FORALL(B:RationalMatrix):
     nm.rows(B)<=N IMPLIES rational_pred(np.det(B))
+
   CofactorInput(N:nat): TYPE = {B:RationalMatrix|
     1<nm.rows(B) AND 1<nm.columns(B) AND nm.rows(B)<=N+1}
+
   cofactorSequence(N:{N:nat|smallRational(N)},A:CofactorInput(N))(k:nat): rat =
     cofactorTerm(A,k)
+
   rows_zero_null: LEMMA nm.rows(A)=0 IMPLIES null?(A)
+
   det_expansion: LEMMA np.det(A)=
     IF null?(A) OR nm.rows(A)/=nm.columns(A) THEN 0
     ELSIF nm.rows(A)=1 THEN nm.entry(A)(0,0)
     ELSE ns.sigma(0,nm.columns(A)-1,LAMBDA(k:nat):cofactorTerm(A,k)) ENDIF
+
   det_rational_bounded: THEOREM smallRational(N)
+
   nativeDeterminant(A): rat = np.det(A)
+
 END ppg_native_rational_determinant

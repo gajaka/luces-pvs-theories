@@ -16,40 +16,68 @@ BEGIN
   p: VAR ProbabilityVector
   lam,eps: VAR real
   i: VAR EventIndex
+
   Lam_of(H,p): set[real] = {lam:real|0<lam AND NOT Interior(H,ray(p,lam))}
+
   indices_nonempty: LEMMA NOT sets[EventIndex].empty?(indices)
+
   singleton_sum: LEMMA FORALL(f:[EventIndex->real]):fsum(singleton[EventIndex](i),f)=f(i)
+
   sum_pos_of_mem_Ioo: THEOREM vectorDomain(p) IMPLIES 0<fsum(indices,p)
+
   sum_point_le: LEMMA vectorDomain(p) IMPLIES p(i)<=fsum(indices,p)
+
   ray_sum: LEMMA fsum(indices,ray(p,lam))=lam*fsum(indices,p)
+
   Lam_of_nonempty: THEOREM vectorDomain(p) IMPLIES sets[real].nonempty?(Lam_of(H,p))
+
   small_coordinate: LEMMA vectorDomain(p) AND 0<lam AND lam*fsum(indices,p)<1 IMPLIES
     0<lam*p(i) AND lam*p(i)<1
+
   small_scale_interior: LEMMA vectorDomain(p) AND 0<lam AND lam<1/fsum(indices,p) IMPLIES Interior(H,ray(p,lam))
+
   Lam_of_lower_bound: THEOREM vectorDomain(p) AND Lam_of(H,p)(lam) IMPLIES 1/fsum(indices,p)<=lam
+
   Lam_bound_all: LEMMA vectorDomain(p) IMPLIES FORALL(w:real):Lam_of(H,p)(w) IMPLIES 1/fsum(indices,p)<=w
+
   Lam_below_bounded: LEMMA vectorDomain(p) IMPLIES orderInf.below_bounded(Lam_of(H,p))
+
   glb_maximal: LEMMA FORALL(E:set[real],x,y:real):
     greatest_lower_bound(<=)(x,E) AND (FORALL(z:real):E(z) IMPLIES y<=z) IMPLIES y<=x
+
   no_small_is_lower: LEMMA FORALL(E:set[real],a:real):
     (NOT EXISTS(z:real):E(z) AND z<a) IMPLIES FORALL(z:real):E(z) IMPLIES a<=z
+
   glb_approached: LEMMA FORALL(E:set[real],x,a:real):
     greatest_lower_bound(<=)(x,E) AND x<a IMPLIES EXISTS(z:real):E(z) AND z<a
+
   rayInf(H:Bigraph,p0:{p:ProbabilityVector|vectorDomain(p)}): real = orderInf.inf(Lam_of(H,p0))
+
   ray_inf_glb: LEMMA FORALL(p0:{p:ProbabilityVector|vectorDomain(p)}):
     greatest_lower_bound(<=)(rayInf(H,p0),Lam_of(H,p0))
+
   ray_inf_lower: LEMMA vectorDomain(p) IMPLIES 1/fsum(indices,p)<=rayInf(H,p)
+
   ray_inf_below: LEMMA vectorDomain(p) AND Lam_of(H,p)(lam) IMPLIES rayInf(H,p)<=lam
+
   ray_inf_approached: LEMMA vectorDomain(p) AND rayInf(H,p)<lam IMPLIES
     EXISTS(w:real):Lam_of(H,p)(w) AND w<lam
+
   Lam_of_sInf_pos: THEOREM vectorDomain(p) IMPLIES 0<rayInf(H,p)
+
   scale_below: LEMMA FORALL(x:posreal):0<eps AND eps<1 IMPLIES 0<(1-eps)*x AND (1-eps)*x<x
+
   scale_above: LEMMA FORALL(x:posreal):0<eps IMPLIES x<(1+eps)*x
+
   boundary_lower: THEOREM vectorDomain(p) AND 0<eps AND eps<1 IMPLIES
     Interior(H,ray(p,(1-eps)*rayInf(H,p)))
+
   boundary_upper: THEOREM vectorDomain(p) AND nonemptyDependencies(H) AND 0<eps AND eps<1 IMPLIES
     NOT Interior(H,ray(p,(1+eps)*rayInf(H,p)))
+
   ray_assoc: LEMMA FORALL(a,b:real):ray(ray(p,a),b)=ray(p,b*a)
+
   lll_variable_lemma10: THEOREM vectorDomain(p) AND nonemptyDependencies(H) IMPLIES
     EXISTS(lam:real):0<lam AND Boundary(H,ray(p,lam))
+
 END ppg_vlll_boundary

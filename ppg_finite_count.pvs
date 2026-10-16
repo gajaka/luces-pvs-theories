@@ -7,25 +7,35 @@ BEGIN
   sat: VAR [C, State -> bool]
   A, B, D: VAR finite_set[C]
   z: VAR State
+
   goodStates(allowed, sat, B): finite_set[State] =
     intersection(universe, {z: State | goodTest(allowed, sat, B, z)})
+
   goodCount(allowed, sat, B): nat = card(goodStates(allowed, sat, B))
+
   coverCheck(allowed, sat, B)(reject: [State -> C]): bool =
     FORALL z: allowed(z) IMPLIES B(reject(z)) AND NOT sat(reject(z), z)
 
   mem_goodStates: THEOREM
     goodStates(allowed, sat, B)(z) IFF goodTest(allowed, sat, B, z)
+
   goodStates_nonempty_iff: THEOREM
     nonempty?(goodStates(allowed, sat, B)) IFF Satisfiable(allowed, sat, B)
+
   goodCount_pos_iff: THEOREM
     goodCount(allowed, sat, B) > 0 IFF Satisfiable(allowed, sat, B)
+
   goodCount_zero_iff: THEOREM
     goodCount(allowed, sat, B) = 0 IFF Infeasible(allowed, sat, B)
+
   goodStates_mono_obligations: THEOREM
     subset?(A, D) IMPLIES subset?(goodStates(allowed, sat, D), goodStates(allowed, sat, A))
+
   goodCount_antitone_obligations: THEOREM
     subset?(A, D) IMPLIES goodCount(allowed, sat, D) <= goodCount(allowed, sat, A)
+
   coverCheck_sound: THEOREM
     FORALL (reject: [State -> C]):
       coverCheck(allowed, sat, B)(reject) IMPLIES Infeasible(allowed, sat, B)
+
 END ppg_finite_count

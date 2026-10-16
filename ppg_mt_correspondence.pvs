@@ -23,37 +23,49 @@ BEGIN
   t, s: VAR nat
   w: VAR Addr
   v: VAR V
+
   actualUses(vars, bad, fallback, enumeration, initial, omega, s, v): finite_set[nat] =
     filteredRange(LAMBDA (n: nat): vars(realC(vars, bad, fallback, enumeration, initial, omega, n))(v), s)
+
   randStep_count_eq_filter_card: THEOREM
     randStep(vars, bad, fallback, enumeration, initial, omega, s)`2(v) =
       card(actualUses(vars, bad, fallback, enumeration, initial, omega, s, v))
+
   shiftedC(vars, bad, fallback, enumeration, initial, omega)(s): C =
     realC(vars, bad, fallback, enumeration, initial, omega, msub(s, 1))
+
   shiftedC_succ: THEOREM shiftedC(vars, bad, fallback, enumeration, initial, omega)(s + 1) =
     realC(vars, bad, fallback, enumeration, initial, omega, s)
+
   shifted_priorUses: LEMMA LET Clog = shiftedC(vars, bad, fallback, enumeration, initial, omega) IN
     priorUses(vars, Clog, t, w, v) =
       actualUses(vars, bad, fallback, enumeration, initial, omega, localIndex(vars, Clog, t, w), v)
+
   localCount_eq_randStep_count: THEOREM
     LET Clog = shiftedC(vars, bad, fallback, enumeration, initial, omega), T = tau_C(vars, Clog, t) IN
     T`dom(w) AND vars(T`lab(w))(v) IMPLIES localCount(vars, T, w, v) =
       randStep(vars, bad, fallback, enumeration, initial, omega, localIndex(vars, Clog, t, w))`2(v)
+
   initialAligned(initial, omega): bool = FORALL (v: V): initial(v) = atIdx(omega, v, 0)
+
   randStep_state_eq_atIdx: THEOREM initialAligned(initial, omega) IMPLIES
     randStep(vars, bad, fallback, enumeration, initial, omega, t)`1(v) =
       atIdx(omega, v, randStep(vars, bad, fallback, enumeration, initial, omega, t)`2(v))
+
   RunningUntil(vars, bad, fallback, enumeration, initial, omega, t): bool =
     FORALL (s: nat): s < t IMPLIES
       bad(realC(vars, bad, fallback, enumeration, initial, omega, s),
         randStep(vars, bad, fallback, enumeration, initial, omega, s)`1)
+
   checkState_agrees_at_birth: LEMMA
     LET Clog = shiftedC(vars, bad, fallback, enumeration, initial, omega), T = tau_C(vars, Clog, t) IN
     initialAligned(initial, omega) AND T`dom(w) AND vars(T`lab(w))(v) IMPLIES
       checkState(vars, T, omega, w)(v) =
         randStep(vars, bad, fallback, enumeration, initial, omega, localIndex(vars, Clog, t, w))`1(v)
+
   tauCheck_holds_of_real_trajectory: THEOREM mt_wf(vars, bad) AND 1 <= t AND
     initialAligned(initial, omega) AND RunningUntil(vars, bad, fallback, enumeration, initial, omega, t)
     IMPLIES tauCheck(vars, bad,
       tau_C(vars, shiftedC(vars, bad, fallback, enumeration, initial, omega), t), omega)
+
 END ppg_mt_correspondence

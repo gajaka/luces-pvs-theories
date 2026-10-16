@@ -18,7 +18,9 @@ BEGIN
   X: VAR AdaptedProcess
   n: VAR nat
   omega: VAR Omega
+
   SolvingVector(M:Model): TYPE = {f:Vector|Equations(M,f)}
+
   stoppedRow(M,f,X,n):
     ppg_conditional_versions[Omega,S,measureLaw,history(n)].HistoryFunction =
     ppg_conditional_indicator[Omega,S,measureLaw,history(n)].historyRestricted(
@@ -26,18 +28,24 @@ BEGIN
       ppg_finite_history_value[State,Omega,universe,S,measureLaw,history(n)].historyValue(
         ppg_finite_conditional_value[State,Omega,universe,S,measureLaw,history(n)].localValue(M,f),
         historyCurrent(X,n)))
+
   stopped_row_at: LEMMA stoppedRow(M,f,X,n)(omega)=
     IF runningEvent(M,X,n)(omega) THEN
       fsum(universe,LAMBDA(t:State):M`transition(X(n)(omega),t)*f(t)) ELSE 0 ENDIF
+
   stopped_row_equation: LEMMA Equations(M,f) IMPLIES
     stoppedRow(M,f,X,n)+indicator(runningAmbient(M,X,n))=stoppedNativeValue(M,f,X,n)
+
   stopped_next_version: LEMMA FORALL(M:Model,f:SolvingVector(M),X:Realization(M),n:nat):
     ppg_conditional_versions[Omega,S,measureLaw,history(n)].conditionalVersion(
       stoppedNativeValue(M,f,X,n+1),stoppedRow(M,f,X,n))
+
   stoppedNext(M:Model,f:SolvingVector(M),X:Realization(M),n:nat):
     ppg_conditional_unique[Omega,S,measureLaw,history(n)].AdmissibleFunction =
     stoppedNativeValue(M,f,X,n+1)
+
   stoppedValue_conditional_exact: THEOREM FORALL(M:Model,f:SolvingVector(M),X:Realization(M),n:nat):
     ae_eq?(ppg_conditional_unique[Omega,S,measureLaw,history(n)].conditionalExpectation(
       stoppedNext(M,f,X,n))+indicator(runningAmbient(M,X,n)),stoppedNativeValue(M,f,X,n))
+
 END ppg_finite_stopped_conditional

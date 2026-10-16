@@ -2,46 +2,62 @@
 % Reachability is supplied by the model; no closure law is assumed.
 ppg_repair_semantics[State: TYPE]: THEORY
 BEGIN
+
   RepairGraph: TYPE = [# edges: [State, State -> bool],
                          reach_rel: [State, State -> bool],
                          invariant_holds: [State -> bool] #]
+
   G: VAR RepairGraph
   v, w, x, y: VAR State
 
   isolated(G, v): bool = NOT G`invariant_holds(v)
+
   active_edge(G, x, y): bool =
     G`edges(x, y) AND G`invariant_holds(x) AND G`invariant_holds(y)
+
   repair_candidates(G, v, w): bool =
     w /= v AND G`reach_rel(v, w) AND G`invariant_holds(w)
+
   repair_possible(G, v): bool =
     isolated(G, v) AND EXISTS w: repair_candidates(G, v, w)
+
   repair_target(G)(v: {z: State | repair_possible(G, z)}): State =
     choose({w: State | repair_candidates(G, v, w)})
+
   route_repairable(G, x, v, y): bool =
     isolated(G, v) AND G`edges(x, v) AND G`edges(v, y) AND
     EXISTS w: repair_candidates(G, v, w) AND G`edges(x, w) AND G`edges(w, y)
+
   globally_repairable(G): bool =
     FORALL v: isolated(G, v) IMPLIES repair_possible(G, v)
 
   repair_target_valid: THEOREM
     FORALL (G: RepairGraph), (v: {z: State | repair_possible(G, z)}):
       repair_candidates(G, v, repair_target(G)(v))
+
   repair_candidates_exist: THEOREM
     repair_possible(G, v) IMPLIES EXISTS w: repair_candidates(G, v, w)
+
   repair_locality: THEOREM
     v /= w AND G`invariant_holds(w) IMPLIES G`invariant_holds(w)
+
   healthy_self_stable: THEOREM
     G`invariant_holds(v) AND (G`invariant_holds(v) IMPLIES G`reach_rel(v, v))
     IMPLIES G`reach_rel(v, v)
+
   route_bypass: THEOREM
     route_repairable(G, x, v, y) AND G`invariant_holds(x) AND G`invariant_holds(y)
     IMPLIES EXISTS w: active_edge(G, x, w) AND active_edge(G, w, y)
+
   global_means_candidates: THEOREM
     globally_repairable(G) AND isolated(G, v) IMPLIES
       EXISTS w: repair_candidates(G, v, w)
+
   repair_no_cascade: THEOREM
     v /= w AND G`invariant_holds(w) IMPLIES G`invariant_holds(w)
+
   active_independent_of_isolated: THEOREM
     G`edges(x, w) AND G`invariant_holds(x) AND G`invariant_holds(w)
     IMPLIES active_edge(G, x, w)
+
 END ppg_repair_semantics

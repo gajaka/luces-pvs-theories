@@ -5,12 +5,18 @@ BEGIN
   S: VAR finite_set[D]
   T: VAR finite_set[R]
   f: VAR [D -> R]
+
   injOn(f, S): bool = FORALL (x, y: D): S(x) AND S(y) AND f(x) = f(y) IMPLIES x = y
+
   image_empty: LEMMA image(f, emptyset[D]) = emptyset[R]
+
   image_add: LEMMA FORALL (e: D): image(f, add(e, S)) = add(f(e), image(f, S))
+
   card_image_injOn: LEMMA injOn(f, S) IMPLIES card(image(f, S)) = card(S)
+
   card_bijection: LEMMA
     injOn(f, S) AND (FORALL (x: D): S(x) IMPLIES T(f(x))) AND
     (FORALL (y: R): T(y) IMPLIES EXISTS (x: D): S(x) AND f(x) = y)
     IMPLIES card(S) = card(T)
+
 END ppg_finite_bijection

@@ -7,21 +7,33 @@ BEGIN
   x: VAR X
   y: VAR Y
   E: VAR set[[X, Y]]
+
   insertLeft(x)(y): [X, Y] = (x, y)
+
   insertRight(y)(x): [X, Y] = (x, y)
+
   sectionLeft(E, x): set[Y] = {y: Y | E(x, y)}
+
   sectionRight(E, y): set[X] = {x: X | E(x, y)}
+
   pair_source_irrelevant: LEMMA
     ppg_measurable_pair[X, X, Y].pairSigma(SX, SY) =
       ppg_measurable_pair[Y, X, Y].pairSigma(SX, SY)
+
   left_insertion_measurable: LEMMA
     measurable(SY, ppg_measurable_pair[Y, X, Y].pairSigma(SX, SY), insertLeft(x))
+
   right_insertion_measurable: LEMMA
     measurable(SX, ppg_measurable_pair[X, X, Y].pairSigma(SX, SY), insertRight(y))
+
   left_section_preimage: LEMMA sectionLeft(E, x) = inverseImage(insertLeft(x), E)
+
   right_section_preimage: LEMMA sectionRight(E, y) = inverseImage(insertRight(y), E)
+
   left_section_measurable: LEMMA
     ppg_measurable_pair[X, X, Y].pairSigma(SX, SY)(E) IMPLIES SY(sectionLeft(E, x))
+
   right_section_measurable: LEMMA
     ppg_measurable_pair[X, X, Y].pairSigma(SX, SY)(E) IMPLIES SX(sectionRight(E, y))
+
 END ppg_pair_sections

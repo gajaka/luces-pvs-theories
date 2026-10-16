@@ -3,16 +3,26 @@ ppg_finite_support_sequence[I: TYPE]: THEORY
 BEGIN
   K: VAR [nat -> finite_set[I]]
   n: VAR nat
+
   supportPrefix(K, n): RECURSIVE finite_set[I] =
     IF n = 0 THEN emptyset[I]
     ELSE union(supportPrefix(K, n - 1), K(n - 1)) ENDIF MEASURE n
+
   prefix_zero: LEMMA supportPrefix(K, 0) = emptyset[I]
+
   prefix_succ: LEMMA supportPrefix(K, n + 1) = union(supportPrefix(K, n), K(n))
+
   prefix_contains: LEMMA subset?(K(n), supportPrefix(K, n + 1))
+
   prefix_step_inclusion: LEMMA subset?(supportPrefix(K, n), supportPrefix(K, n + 1))
+
   prefix_monotone: LEMMA FORALL (n, m: nat): m <= n IMPLIES
     subset?(supportPrefix(K, m), supportPrefix(K, n))
+
   newCoordinates(K, n): finite_set[I] = difference(supportPrefix(K, n + 1), supportPrefix(K, n))
+
   new_coordinates_disjoint: LEMMA disjoint?(supportPrefix(K, n), newCoordinates(K, n))
+
   new_coordinates_union: LEMMA union(supportPrefix(K, n), newCoordinates(K, n)) = supportPrefix(K, n + 1)
+
 END ppg_finite_support_sequence

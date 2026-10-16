@@ -10,33 +10,58 @@ BEGIN
   IMPORTING ppg_rose_structure[C,V], ppg_list_maps[WTree,C], ppg_list_maps[C,WTree]
   t, c, c1, c2: VAR WTree
   a, b: VAR C
+
   labelSet(t): finite_set[C] = ppg_list_sets[C].listSet(map(roseLabel)(roseChildren(t)))
+
   mem_labelSet_iff: THEOREM labelSet(t)(b) IFF
     EXISTS (c: WTree): member(c, roseChildren(t)) AND roseLabel(c) = b
+
   labelSet_of_child: LEMMA member(c, roseChildren(t)) IMPLIES labelSet(t)(roseLabel(c))
+
   childSet(t,b): finite_set[WTree] = intersection(ppg_list_sets[WTree].listSet(roseChildren(t)), LAMBDA (c: WTree): roseLabel(c) = b)
+
   childSet_member: LEMMA childSet(t,b)(c) IFF member(c, roseChildren(t)) AND roseLabel(c) = b
+
   childSet_nonempty: LEMMA labelSet(t)(b) IMPLIES nonempty?(childSet(t,b))
+
   childOf(t)(b: (labelSet(t))): {c: WTree | member(c, roseChildren(t)) AND roseLabel(c) = b} =
     choose(childSet(t,b))
+
   childOf_mem: THEOREM FORALL (b: (labelSet(t))): member(childOf(t)(b), roseChildren(t))
+
   childOf_label: THEOREM FORALL (b: (labelSet(t))): roseLabel(childOf(t)(b)) = b
+
   proper_nodup_labels: THEOREM proper(t) IMPLIES ppg_list_sets[C].nodup(map(roseLabel)(roseChildren(t)))
+
   proper_nodup_children: THEOREM proper(t) IMPLIES ppg_list_sets[WTree].nodup(roseChildren(t))
+
   eq_of_mem_children_label_eq: THEOREM proper(t) AND member(c1, roseChildren(t)) AND
     member(c2, roseChildren(t)) AND roseLabel(c1) = roseLabel(c2) IMPLIES c1 = c2
+
   childOf_eq_self_of_mem: THEOREM proper(t) AND member(c, roseChildren(t)) IMPLIES
     childOf(t)(roseLabel(c)) = c
+
   childFor(t, b): WTree = IF labelSet(t)(b) THEN childOf(t)(b) ELSE t ENDIF
+
   orderedChildren(t): list[WTree] = map(LAMBDA (b: C): childFor(t, b))(ppg_list_sets[C].setList(labelSet(t)))
+
   childFor_mem: LEMMA labelSet(t)(b) IMPLIES member(childFor(t,b), roseChildren(t))
+
   childFor_label: LEMMA labelSet(t)(b) IMPLIES roseLabel(childFor(t,b)) = b
+
   childFor_injective: LEMMA labelSet(t)(a) AND labelSet(t)(b) AND childFor(t,a) = childFor(t,b) IMPLIES a = b
+
   childFor_self: LEMMA proper(t) AND member(c, roseChildren(t)) IMPLIES childFor(t, roseLabel(c)) = c
+
   ordered_member: LEMMA proper(t) IMPLIES
     (member(c, orderedChildren(t)) IFF member(c, roseChildren(t)))
+
   ordered_nodup: LEMMA ppg_list_sets[WTree].nodup(orderedChildren(t))
+
   ordered_labels: LEMMA map(roseLabel)(orderedChildren(t)) = ppg_list_sets[C].setList(labelSet(t))
+
   ordered_set: LEMMA proper(t) IMPLIES ppg_list_sets[WTree].listSet(orderedChildren(t)) = ppg_list_sets[WTree].listSet(roseChildren(t))
+
   children_perm_labelSet_attach: THEOREM proper(t) IMPLIES ppg_list_sets[WTree].perm(roseChildren(t), orderedChildren(t))
+
 END ppg_rose_child_choice

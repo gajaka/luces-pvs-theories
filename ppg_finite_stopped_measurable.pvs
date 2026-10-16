@@ -18,13 +18,18 @@ BEGIN
   R: VAR ppg_measurable_space[real].MeasurableSpace
   B: VAR set[real]
   n: VAR nat
+
   value_preimage: LEMMA realMap.inverseImage((LAMBDA(omega:Omega):f(X(n)(omega))),B)=
     ppg_measurable_map[Omega,State].inverseImage(X(n),{s:State|B(f(s))})
+
   finite_state_value_measurable: LEMMA singletonMeasurable(SY) AND processMeasurable(SY,X)
     IMPLIES realMap.measurable(ambient,R,(LAMBDA(omega:Omega):f(X(n)(omega))))
+
   stopped_value_branch: LEMMA stoppedValue(M,f,X,n)=
     realMap.branch(runningEvent(M,X,n),(LAMBDA(omega:Omega):f(X(n)(omega))),
       (LAMBDA(omega:Omega):0))
+
   stoppedValue_measurable: THEOREM singletonMeasurable(SY) AND processMeasurable(SY,X)
     IMPLIES realMap.measurable(ambient,R,stoppedValue(M,f,X,n))
+
 END ppg_finite_stopped_measurable

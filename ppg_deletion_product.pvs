@@ -9,18 +9,29 @@ BEGIN
   a: VAR C
   w: VAR [finite_set[C]->real]
   f: VAR [C->real]
+
   LowerDeletion(B,w,f): bool = FORALL(T:finite_set[C]):subset?(T,B) IMPLIES
     FORALL(a:C):T(a) IMPLIES f(a)*w(remove(a,T))<=w(T)
+
   lowerDeletion_at: LEMMA LowerDeletion(B,w,f) AND subset?(F,B) AND F(a) IMPLIES
     f(a)*w(remove(a,F))<=w(F)
+
   erased_subset: LEMMA subset?(F,B) IMPLIES subset?(remove(a,F),B)
+
   erased_difference_member: LEMMA F(a) AND subset?(R,remove(a,F)) IMPLIES difference(F,R)(a)
+
   remove_difference: LEMMA remove(a,difference(F,R))=difference(remove(a,F),R)
+
   difference_same: LEMMA difference(F,F)=emptyset[C]
+
   product_empty_value: LEMMA product(emptyset[C],f)=1
+
   chosen_factor_nonnegative: LEMMA NonnegativeFactors(f,B) AND subset?(F,B) AND F(a) IMPLIES 0<=f(a)
+
   product_scale_chain: LEMMA FORALL(a,b,c,d:real):0<=a AND b<=c AND a*c<=d IMPLIES a*b<=d
+
   product_telescope: THEOREM FORALL(F,B,R:finite_set[C],w:[finite_set[C]->real],f:[C->real]):
     LowerDeletion(B,w,f) AND NonnegativeFactors(f,B) AND subset?(F,B) AND subset?(R,F) IMPLIES
       product(difference(F,R),f)*w(R)<=w(F)
+
 END ppg_deletion_product

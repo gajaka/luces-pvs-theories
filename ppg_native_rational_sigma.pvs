@@ -9,8 +9,13 @@ BEGIN
   IMPORTING reals@sigma[nat] AS ns
   F: VAR [nat->rat]
   N: VAR nat
+
   nativeSum(F,N): real = ns.sigma(0,N,F)
+
   native_sum_zero: LEMMA nativeSum(F,0)=F(0)
+
   native_sum_succ: LEMMA nativeSum(F,N+1)=F(N+1)+nativeSum(F,N)
+
   native_sum_rational: THEOREM rational_pred(nativeSum(F,N))
+
 END ppg_native_rational_sigma

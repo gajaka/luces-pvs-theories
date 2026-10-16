@@ -10,11 +10,16 @@ BEGIN
   vars: VAR CertVars
   Clog, Dlog: VAR [nat -> C]
   t, n, k: VAR nat
+
   historyAgrees(Clog, Dlog, t): bool =
     FORALL (k: nat): k <= t IMPLIES Clog(k) = Dlog(k)
+
   backward_index_bound: LEMMA msub(msub(t, 1), n) <= t
+
   tauBuild_congr_of_eq_upto: THEOREM historyAgrees(Clog, Dlog, t) IMPLIES
     tau_build(vars, Clog, t, n) = tau_build(vars, Dlog, t, n)
+
   tauC_congr_of_eq_upto: THEOREM historyAgrees(Clog, Dlog, t) IMPLIES
     tau_C(vars, Clog, t) = tau_C(vars, Dlog, t)
+
 END ppg_mt_history_congruence

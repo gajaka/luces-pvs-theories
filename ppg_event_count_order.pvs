@@ -12,28 +12,42 @@ BEGIN
   N,T: VAR nat
   b: VAR nonneg_real
   omega: VAR Omega
+
   eventIndicator(E,omega): [nat->nonneg_real] = LAMBDA(n:nat):IF E(n)(omega) THEN 1 ELSE 0 ENDIF
+
   activeCount(E,omega): ENN = tsum(eventIndicator(E,omega))
+
   nn_sum_real: LEMMA sums.sum(A,f)=fsum(A,LAMBDA(n:nat):f(n))
+
   event_finite_card: LEMMA sums.sum(A,eventIndicator(E,omega))=
     card(intersection(A,{n:nat|E(n)(omega)}))
+
   range_card: LEMMA card(natRange(N))=N
+
   active_count_bound: LEMMA ele(activeCount(E,omega),ennFinite(b)) IFF
     (FORALL(A:finite_set[nat]):sums.sum(A,eventIndicator(E,omega))<=b)
+
   active_count_mono: LEMMA (FORALL(n:nat):E(n)(omega) IMPLIES F(n)(omega)) IMPLIES
     ele(activeCount(E,omega),activeCount(F,omega))
+
   stopped_finite_bound: LEMMA (FORALL(n:nat):T<=n IMPLIES NOT E(n)(omega)) IMPLIES
     sums.sum(A,eventIndicator(E,omega))<=T
+
   active_count_stopped: LEMMA (FORALL(n:nat):T<=n IMPLIES NOT E(n)(omega)) IMPLIES
     ele(activeCount(E,omega),ennFinite(T))
+
   before_prefix_sum: LEMMA (FORALL(n:nat):n<T IMPLIES E(n)(omega)) IMPLIES
     sums.sum(natRange(T),eventIndicator(E,omega))=T
+
   active_count_lower: LEMMA (FORALL(n:nat):n<T IMPLIES E(n)(omega)) IMPLIES
     ele(ennFinite(T),activeCount(E,omega))
+
   active_count_all_infinite: LEMMA (FORALL(n:nat):E(n)(omega)) IMPLIES
     activeCount(E,omega)=ennInfinity
+
   active_count_first: LEMMA
     (FORALL(n:nat):n<T IMPLIES E(n)(omega)) AND
     (FORALL(n:nat):T<=n IMPLIES NOT E(n)(omega)) IMPLIES
       activeCount(E,omega)=ennFinite(T)
+
 END ppg_event_count_order

@@ -12,14 +12,20 @@ BEGIN
   T: VAR GTree
   d, t: VAR nat
   Clog: VAR [nat -> C]
+
   original_depth_nodup: LEMMA SameDepthIndependent(vars, T) IMPLIES Nodup(domainBag(T`dom, T`lab, d))
+
   original_depth_separated: LEMMA FORALL (a, b: C): SameDepthIndependent(vars, T) AND
     domainBag(T`dom, T`lab, d)(a) > 0 AND domainBag(T`dom, T`lab, d)(b) > 0 AND a /= b IMPLIES
       NOT dependent?(vars)(a, b)
+
   reconstructed_depth_properties: LEMMA gt_valid?(T) AND SameDepthIndependent(vars, T) IMPLIES
     depthNodup(toWTree(T, null)) AND depthSeparated(vars, toWTree(T, null))
+
   toWTree_sameDepthIndependent: THEOREM gt_valid?(T) AND T`dom(null) AND SameDepthIndependent(vars, T) IMPLIES
     SameDepthIndependent(vars, toGrowingTree(toWTree(T, null)))
+
   tauC_toWTree_sameDepthIndependent: THEOREM SameDepthIndependent(vars,
     toGrowingTree(toWTree(tau_C(vars, Clog, t), null)))
+
 END ppg_mt_depth_independence_bridge

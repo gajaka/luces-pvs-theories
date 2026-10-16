@@ -13,44 +13,72 @@ ppg_hls_parameters: THEORY
 BEGIN
   a,b,d,c: VAR real
   k,n: VAR nat
+
   % Lean's total division returns zero at a zero denominator.
   div0(x,y:real): real = IF y=0 THEN 0 ELSE x/y ENDIF
+
   savingFraction(a,b,d): real = div0(d*d,8*a*b)
+
   primeWeight(a,b,d): real = a-div0(d*d,8*b)
+
   reducedWeight(a,d): real = a-d*d/17
+
   positive_product: LEMMA 0<a AND 0<b IMPLIES 0<a*b
+
   square_nonnegative: LEMMA 0<=d*d
+
   overlap_sq_le_product: THEOREM 0<=d AND d<=a AND d<=b IMPLIES d*d<=a*b
+
   savingFraction_nonneg: THEOREM 0<a AND 0<b IMPLIES 0<=savingFraction(a,b,d)
+
   savingFraction_le: THEOREM 0<a AND 0<b AND 0<=d AND d<=a AND d<=b IMPLIES
     savingFraction(a,b,d)<=1/8
+
   primeWeight_eq_mul: THEOREM a/=0 AND b/=0 IMPLIES
     primeWeight(a,b,d)=a*(1-savingFraction(a,b,d))
+
   primeWeight_pos: THEOREM 0<a AND 0<b AND 0<=d AND d<=a AND d<=b IMPLIES
     0<primeWeight(a,b,d)
+
   primeWeight_le_reducedWeight: THEOREM 0<b AND b<=1 IMPLIES primeWeight(a,b,d)<=reducedWeight(a,d)
+
   reducedWeight_pos: THEOREM 0<a AND 0<b AND b<=1 AND 0<=d AND d<=a AND d<=b IMPLIES
     0<reducedWeight(a,d)
+
   reducedWeight_le: THEOREM reducedWeight(a,d)<=a
+
   reducedWeight_lt: THEOREM 0<d IMPLIES reducedWeight(a,d)<a
+
   nonnegative_product: LEMMA 0<=a AND 0<=b IMPLIES 0<=a*b
+
   overlap_sq_le_right: LEMMA 0<=d AND d<=b AND b<=1 IMPLIES d*d<=b
+
   % Clearing a positive denominator exposes the nonnegative terms in the split bound.
   split_gap_identity: LEMMA b/=0 IMPLIES
     8*17*17*b*(reducedWeight(a,d)+reducedWeight(b,d)*(reducedWeight(a,d)-primeWeight(a,b,d))-a)=
     d*d*(17*(b-d*d)+136*b*(1-b)+8*b*d*d)
+
   pair_gap_identity: LEMMA a/=0 AND b/=0 IMPLIES
     16*a*b*(a*b*(1-2*savingFraction(a,b,d))*(1-2*savingFraction(b,a,d))-(a*b-d*d/2))=d*d*d*d
+
   splitWeight_dominates: THEOREM 0<b AND b<=1 AND 0<=d AND d<=b IMPLIES
     a<=reducedWeight(a,d)+reducedWeight(b,d)*(reducedWeight(a,d)-primeWeight(a,b,d))
+
   pair_saving_le_discounted: THEOREM 0<a AND 0<b IMPLIES
     a*b-d*d/2<=a*b*(1-2*savingFraction(a,b,d))*(1-2*savingFraction(b,a,d))
+
   power_succ: LEMMA expt(a,n+1)=a*expt(a,n)
+
   power_nonnegative: LEMMA 0<=a IMPLIES 0<=expt(a,n)
+
   power_monotone_base: LEMMA 0<=a AND a<=b IMPLIES expt(a,n)<=expt(b,n)
+
   power_square_identity: LEMMA expt(a*a,k)=expt(a,2*k)
+
   power_antitone_index: LEMMA 0<=a AND a<=1 AND n<=k IMPLIES expt(a,k)<=expt(a,n)
+
   % On [0,1], increasing the exponent decreases the power, also at the endpoints.
   half_cover_discount: THEOREM 0<=c AND c<=1/2 AND n<=2*k IMPLIES
     expt(1-2*c,k)<=expt(1-c,n)
+
 END ppg_hls_parameters

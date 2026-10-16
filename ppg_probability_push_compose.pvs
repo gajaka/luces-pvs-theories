@@ -10,8 +10,10 @@ BEGIN
   mu: VAR ppg_probability_measure[X, SX].Probability
   f: VAR {f: [X -> Y] | ppg_measurable_map[X, Y].measurable(SX, SY, f)}
   g: VAR {g: [Y -> Z] | ppg_measurable_map[Y, Z].measurable(SY, SZ, g)}
+
   pushforward_compose: THEOREM
     ppg_probability_map[Y, Z, SY, SZ].pushforward(
       ppg_probability_map[X, Y, SX, SY].pushforward(mu, f), g) =
     ppg_probability_map[X, Z, SX, SZ].pushforward(mu, LAMBDA (x: X): g(f(x)))
+
 END ppg_probability_push_compose

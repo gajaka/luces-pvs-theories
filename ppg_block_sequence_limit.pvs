@@ -4,22 +4,33 @@ ppg_block_sequence_limit[I, Value: TYPE, domain: [I -> set[Value]],
   spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]]: THEORY
 BEGIN
   IMPORTING ppg_measurable_block_update[I, Value, domain, spaces]
+
   Supports: TYPE = [nat -> set[I]]
+
   Tables: TYPE = [nat -> FullBlock]
+
   H: VAR Supports
   S: VAR Tables
   base: VAR FullBlock
+
   covered(H: Supports, i: I): bool = EXISTS (n: nat): H(n)(i)
+
   witnessStage(H: Supports, i: I): nat =
     IF covered(H, i) THEN choose({n: nat | H(n)(i)}) ELSE 0 ENDIF
+
   stage_contains: LEMMA FORALL (i: I): covered(H, i) IMPLIES H(witnessStage(H, i))(i)
+
   compatibleTables(H, S): bool = FORALL (m, n: nat):
     m <= n IMPLIES agreeOn(H(m), S(m), S(n))
+
   limitTable(H, S, base): FullBlock = LAMBDA (i: (fullset[I])):
     IF covered(H, i) THEN S(witnessStage(H, i))(i) ELSE base(i) ENDIF
+
   limit_agrees: THEOREM compatibleTables(H, S) IMPLIES
     FORALL (n: nat): agreeOn(H(n), limitTable(H, S, base), S(n))
+
   limit_local_event: THEOREM compatibleTables(H, S) IMPLIES
     FORALL (n: nat, A: TableEvent): dependsOn(H(n), A) AND A(S(n)) IMPLIES
       A(limitTable(H, S, base))
+
 END ppg_block_sequence_limit

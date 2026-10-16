@@ -5,9 +5,15 @@ BEGIN
   IMPORTING ppg_probability_unique[X, S]
   mu: VAR Probability
   A, B: VAR (S)
+
   disjoint_union_difference: LEMMA disjoint?(A, B) IMPLIES difference(union(A, B), A) = B
+
   probability_union: LEMMA disjoint?(A, B) IMPLIES mu(union(A, B)) = mu(A) + mu(B)
+
   probability_monotone: LEMMA subset?(A, B) IMPLIES mu(A) <= mu(B)
+
   probability_complement: LEMMA mu(complement(A)) + mu(A) = 1
+
   probability_bound: LEMMA mu(A) <= 1
+
 END ppg_probability_set_laws

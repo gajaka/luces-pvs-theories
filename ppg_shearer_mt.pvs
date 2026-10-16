@@ -22,21 +22,30 @@ BEGIN
   enumeration: VAR list[C]
   initial: VAR MTState
   edges: VAR [MTState,MTState->bool]
+
   marginalUpper(bad,p): bool = FORALL(a:C):mass(stateEvents(bad)(a))<=p(a)
+
   marginalUpper_on: LEMMA marginalUpper(bad,p) IMPLIES
     FORALL(a:C):B(a) IMPLIES mass(stateEvents(bad)(a))<=p(a)
+
   good_event_measurable: LEMMA NativeStateSigma(spaces)({s:MTState|MTGood(bad,s)})
+
   goodStateProbability(bad): nnreal = stateMeasure({s:MTState|MTGood(bad,s)})
+
   mt_good_event_lower_bound: THEOREM mt_wf(vars,bad) AND
     marginalUpper(bad,p) AND StrictCriterion(p,B) IMPLIES
       polynomial(p,B)<=goodStateProbability(bad)
+
   exists_MTGood: THEOREM mt_wf(vars,bad) AND
     marginalUpper(bad,p) AND StrictCriterion(p,B) IMPLIES
       EXISTS(s:MTState):MTGood(bad,s)
+
   exists_mtReach_good: THEOREM mt_wf(vars,bad) AND completeEnumeration(enumeration) AND
     marginalUpper(bad,p) AND StrictCriterion(p,B) IMPLIES
       EXISTS(w:MTState):mtReach(vars,bad,fallback,enumeration)(initial,w) AND MTGood(bad,w)
+
   mtRepairGraph_globally_repairable: THEOREM mt_wf(vars,bad) AND completeEnumeration(enumeration) AND
     marginalUpper(bad,p) AND StrictCriterion(p,B) IMPLIES
       globally_repairable(mtRepairGraph(vars,bad,fallback,enumeration,edges))
+
 END ppg_shearer_mt

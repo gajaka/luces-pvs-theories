@@ -22,40 +22,56 @@ BEGIN
   v, v1, v2: VAR V
   a: VAR C
   omega, omega1, omega2: VAR LogSpace
+
   localSet(vars, T, w, v): finite_set[Addr] =
     intersection(T`dom, {u: Addr | length(w) < length(u) AND vars(T`lab(u))(v)})
+
   localCount(vars, T, w, v): nat = card(localSet(vars, T, w, v))
+
   localSet_singleton_empty: LEMMA localSet(vars, gt_singleton(a), w, v) = emptyset[Addr]
+
   localCount_singleton_zero: LEMMA localCount(vars, gt_singleton(a), w, v) = 0
+
   checkState(vars, T, omega, w): MTState =
     LAMBDA (v: V): atIdx(omega, v, localCount(vars, T, w, v))
+
   tauCheck(vars, bad, T, omega): bool = FORALL (w: Addr):
     T`dom(w) IMPLIES bad(T`lab(w), checkState(vars, T, omega, w))
+
   checkState_bad_depends_only_on_indices: THEOREM mt_wf(vars, bad) AND
     (FORALL (v: V): vars(a)(v) IMPLIES
       omega1(localCount(vars, T, w, v), v) = omega2(localCount(vars, T, w, v), v))
     IMPLIES (bad(a, checkState(vars, T, omega1, w)) IFF
              bad(a, checkState(vars, T, omega2, w)))
+
   localSet_strict_subset: LEMMA T`dom(w2) AND vars(T`lab(w2))(v) AND length(w1) < length(w2)
     IMPLIES strict_subset?(localSet(vars, T, w2, v), localSet(vars, T, w1, v))
+
   localCount_strict_anti: THEOREM
     T`dom(w1) AND T`dom(w2) AND vars(T`lab(w1))(v) AND vars(T`lab(w2))(v) AND
       length(w1) < length(w2) IMPLIES localCount(vars, T, w2, v) < localCount(vars, T, w1, v)
+
   localCount_ne_of_ne_general: THEOREM SameDepthIndependent(vars, T) AND
     T`dom(w1) AND T`dom(w2) AND w1 /= w2 AND vars(T`lab(w1))(v) AND vars(T`lab(w2))(v)
     IMPLIES localCount(vars, T, w1, v) /= localCount(vars, T, w2, v)
+
   checkState_indices_injective_general: THEOREM SameDepthIndependent(vars, T) AND
     T`dom(w1) AND T`dom(w2) AND vars(T`lab(w1))(v1) AND vars(T`lab(w2))(v2) AND
     v1 = v2 AND localCount(vars, T, w1, v1) = localCount(vars, T, w2, v2) IMPLIES w1 = w2
+
   vertexIdx(vars, T, w): finite_set[[nat, V]] =
     image[V, [nat, V]](LAMBDA (v: V): (localCount(vars, T, w, v), v), vars(T`lab(w)))
+
   vertexIdx_member: LEMMA FORALL (p: [nat, V]): vertexIdx(vars, T, w)(p) IFF
     vars(T`lab(w))(p`2) AND p`1 = localCount(vars, T, w, p`2)
+
   vertexIdx_disjoint_general: THEOREM SameDepthIndependent(vars, T) AND
     T`dom(w1) AND T`dom(w2) AND w1 /= w2 IMPLIES
       disjoint?(vertexIdx(vars, T, w1), vertexIdx(vars, T, w2))
+
   checkState_event_dependsOn: THEOREM mt_wf(vars, bad) AND
     (FORALL (p: [nat, V]): vertexIdx(vars, T, w)(p) IMPLIES omega1(p) = omega2(p))
     IMPLIES (bad(T`lab(w), checkState(vars, T, omega1, w)) IFF
              bad(T`lab(w), checkState(vars, T, omega2, w)))
+
 END ppg_mt_check

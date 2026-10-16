@@ -14,15 +14,20 @@ BEGIN
   enumeration: VAR list[C]
   s, z: VAR MTState
   edges: VAR [MTState, MTState -> bool]
+
   mtReach(vars, bad, fallback, enumeration)(s, z): bool =
     EXISTS (omega: LogSpace, t: nat): randTraj(vars, bad, fallback, enumeration, s, omega, t) = z
+
   mtRepairGraph(vars, bad, fallback, enumeration, edges): RepairGraph =
     (# edges := edges, reach_rel := mtReach(vars, bad, fallback, enumeration),
        invariant_holds := LAMBDA (z: MTState): MTGood(bad, z) #)
+
   mtReach_refl: THEOREM mtReach(vars, bad, fallback, enumeration)(s, s)
+
   mtRepairGraph_repair_target_spec: THEOREM
     repair_possible(mtRepairGraph(vars, bad, fallback, enumeration, edges), s) IMPLIES
     LET target = repair_target(mtRepairGraph(vars, bad, fallback, enumeration, edges))(s) IN
     EXISTS (omega: LogSpace, t: nat): randTraj(vars, bad, fallback, enumeration, s, omega, t) = target AND
       MTGood(bad, target) AND target /= s
+
 END ppg_mt_reach

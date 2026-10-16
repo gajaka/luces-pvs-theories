@@ -1,15 +1,27 @@
 % Inclusive self-neighbors still allow repeated-label chains with no variables.
 ppg_rose_weight_empty_vars: THEORY
 BEGIN
+
   Empty: TYPE = {b:bool | FALSE}
+
   IMPORTING ppg_rose_canonical_enum[bool,Empty], ppg_rose_weight_sum[bool,Empty]
+
   noVars: CertVars = LAMBDA(a:bool):emptyset[Empty]
+
   leaf: WTree = roseNode[bool](TRUE,null)
+
   chain: WTree = roseNode[bool](TRUE,cons(leaf,null))
+
   p: VAR [bool -> nonneg_real]
+
   chain_valid: THEOREM wellFormed(noVars)(chain) AND proper(chain)
+
   inclusive_neighbors: THEOREM plusNeighbors(noVars,fullset[bool],TRUE)=singleton(TRUE)
+
   chain_in_enumeration: THEOREM wtreesUpTo(noVars,fullset[bool],1,TRUE)(canonicalize(chain))
+
   chain_weight: THEOREM weight(p)(canonicalize(chain))=p(TRUE)*p(TRUE)
+
   depth_one_mass: THEOREM enum_mass(noVars,fullset[bool],p,1,TRUE)=p(TRUE)*(1+p(TRUE))
+
 END ppg_rose_weight_empty_vars

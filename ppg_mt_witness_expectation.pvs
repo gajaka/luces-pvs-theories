@@ -21,21 +21,29 @@ BEGIN
   enumeration: VAR FullEnumeration
   W: VAR WTree
   omega: VAR LogSpace
+
   native_occurrence_measurable: LEMMA
     NativeTableSigma(spaces)(witnessOccurrence(vars,bad,fallback,enumeration,a,W))
+
   occurrenceEvents(vars,bad,fallback,enumeration,a): [WTree->(NativeTableSigma(spaces))] =
     LAMBDA(W:WTree):witnessOccurrence(vars,bad,fallback,enumeration,a,W)
+
   eventLabelCode(enumeration)(c:C): nat = firstIndex(c,enumeration)
+
   witnessCode(enumeration): Code = treeCode(eventLabelCode(enumeration))
+
   occurrence_indicator_function: LEMMA
     nnEvent(occurrenceEvents(vars,bad,fallback,enumeration,a),omega)=
     occurrenceWeightNN(vars,bad,fallback,enumeration,omega,a)
+
   witness_count_function: LEMMA
     (LAMBDA(omega:LogSpace):randomInitResamplingCount(vars,bad,fallback,enumeration,omega,a))=
     (LAMBDA(omega:LogSpace):ppg_nonneg_tsum[WTree].tsum(
       nnEvent(occurrenceEvents(vars,bad,fallback,enumeration,a),omega)))
+
   randomInitExpectedResamplingCount_eq_tsum_witnessOccurrence: THEOREM
     randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a)=
       ppg_nonneg_tsum[WTree].tsum(LAMBDA(W:WTree):
         logMeasure(occurrenceEvents(vars,bad,fallback,enumeration,a)(W)))
+
 END ppg_mt_witness_expectation

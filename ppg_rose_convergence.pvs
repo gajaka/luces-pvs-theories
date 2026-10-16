@@ -17,9 +17,13 @@ BEGIN
   p,x: VAR [C -> nonneg_real]
   D: VAR nat
   a: VAR C
+
   budget(vars,U,p,x): bool = (FORALL(a:C):p(a)<=x(a)) AND
     (FORALL(a:C):p(a)*indices.sum(plusNeighbors(vars,U,a),LAMBDA(b:C):1+x(b))<=x(a))
+
   mtWeight_le: THEOREM budget(vars,U,p,x) IMPLIES mtWeight(vars,U,p,D,a)<=x(a)
+
   sum_mtWeight_le: THEOREM budget(vars,U,p,x) IMPLIES
     labelSums.sum(F,LAMBDA(a:C):mtWeight(vars,U,p,D,a))<=labelSums.sum(F,x)
+
 END ppg_rose_convergence

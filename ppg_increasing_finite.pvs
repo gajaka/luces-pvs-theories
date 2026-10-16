@@ -4,11 +4,17 @@ BEGIN
   IMPORTING ppg_finite_induction[T]
   E: VAR [nat -> finite_set[T]]
   F: VAR finite_set[T]
+
   increasing(E): bool = FORALL(m,n:nat,t:T):m<=n AND E(m)(t) IMPLIES E(n)(t)
+
   family(E)(t:T): bool = EXISTS(n:nat):E(n)(t)
+
   stage_in_family: LEMMA FORALL(n:nat,t:T):E(n)(t) IMPLIES family(E)(t)
+
   cover_add: LEMMA FORALL(e:T,m,n:nat):increasing(E) AND subset?(F,E(m)) AND E(n)(e)
     IMPLIES subset?(add(e,F),E(max(m,n)))
+
   finite_cover: THEOREM increasing(E) AND (FORALL(t:T):F(t) IMPLIES family(E)(t))
     IMPLIES EXISTS(n:nat):subset?(F,E(n))
+
 END ppg_increasing_finite

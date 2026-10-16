@@ -6,34 +6,54 @@ BEGIN
   A, B: VAR Event
   E: VAR Family
   n: VAR nat
+
   increasingEvents(E): bool =
     FORALL (n, m: nat): n <= m IMPLIES subset?(E(n), E(m))
+
   dynkin?(D): bool = D(fullset[X]) AND
     (FORALL (A, B: Event): D(A) AND D(B) AND subset?(A, B)
       IMPLIES D(difference(B, A))) AND
     (FORALL (E: Family): increasingEvents(E) AND (FORALL (n: nat): D(E(n)))
       IMPLIES D(countableUnion(E)))
+
   intersectionClosed?(D): bool =
     FORALL (A, B: Event): D(A) AND D(B) IMPLIES D(intersection(A, B))
+
   prefix(E, n): Event = {x: X | EXISTS (k: nat): k < n AND E(k)(x)}
+
   prefix_zero: LEMMA prefix(E, 0) = emptyset[X]
+
   prefix_successor: LEMMA prefix(E, n + 1) = union(prefix(E, n), E(n))
+
   prefix_increasing: LEMMA increasingEvents(LAMBDA (n: nat): prefix(E, n))
+
   prefix_union: LEMMA countableUnion(LAMBDA (n: nat): prefix(E, n)) = countableUnion(E)
+
   difference_self: LEMMA difference(A, A) = emptyset[X]
+
   difference_full: LEMMA difference(fullset[X], A) = complement(A)
+
   union_complements: LEMMA
     complement(intersection(complement(A), complement(B))) = union(A, B)
+
   dynkin_union_increasing: LEMMA dynkin?(D) AND increasingEvents(E) AND
     (FORALL (n: nat): D(E(n))) IMPLIES D(countableUnion(E))
+
   dynkin_full: LEMMA dynkin?(D) IMPLIES D(fullset[X])
+
   dynkin_difference: LEMMA dynkin?(D) AND D(A) AND D(B) AND subset?(A, B)
     IMPLIES D(difference(B, A))
+
   dynkin_empty: LEMMA dynkin?(D) IMPLIES D(emptyset[X])
+
   dynkin_complement: LEMMA dynkin?(D) AND D(A) IMPLIES D(complement(A))
+
   dynkin_binary_union: LEMMA dynkin?(D) AND intersectionClosed?(D) AND D(A) AND D(B)
     IMPLIES D(union(A, B))
+
   dynkin_prefix: LEMMA dynkin?(D) AND intersectionClosed?(D) AND
     (FORALL (m: nat): D(E(m))) IMPLIES D(prefix(E, n))
+
   dynkin_sigma: LEMMA dynkin?(D) AND intersectionClosed?(D) IMPLIES sigma?(D)
+
 END ppg_dynkin_system

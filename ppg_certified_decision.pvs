@@ -6,10 +6,12 @@ BEGIN
   sat: VAR [C, State -> bool]
   B: VAR finite_set[C]
   criterion: VAR bool
+
   FeasibilityResult(allowed, sat, B): TYPE =
     {r: SearchResult | CASES r OF
        none: Infeasible(allowed, sat, B),
        some(z): goodTest(allowed, sat, B, z) ENDCASES}
+
   solve(allowed, sat, B)
     (states: {ss: list[State] | FORALL (z: State): allowed(z) IMPLIES member(z, ss)}):
       FeasibilityResult(allowed, sat, B) = search(allowed, sat, B, states)
@@ -17,9 +19,11 @@ BEGIN
   feasibilityResult_isWitness_iff: THEOREM
     FORALL (r: FeasibilityResult(allowed, sat, B)):
       some?(r) IFF Satisfiable(allowed, sat, B)
+
   solve_isWitness_iff: THEOREM
     FORALL (states: {ss: list[State] | FORALL (z: State): allowed(z) IMPLIES member(z, ss)}):
       some?(solve(allowed, sat, B)(states)) IFF Satisfiable(allowed, sat, B)
+
   solve_isRefuted_iff: THEOREM
     FORALL (states: {ss: list[State] | FORALL (z: State): allowed(z) IMPLIES member(z, ss)}):
       NOT some?(solve(allowed, sat, B)(states)) IFF Infeasible(allowed, sat, B)
@@ -30,6 +34,7 @@ BEGIN
         none?(r`outcome) AND Infeasible(allowed, sat, B)
       ELSE some?(r`outcome) AND goodTest(allowed, sat, B, value(r`outcome)) AND
         (criterion IFF r`region = region_certified) ENDIF}
+
   assess(allowed, sat, B, criterion)
     (states: {ss: list[State] | FORALL (z: State): allowed(z) IMPLIES member(z, ss)}):
       AssessmentResult(allowed, sat, B, criterion) =
@@ -41,10 +46,13 @@ BEGIN
   assessmentResult_gap_sound: THEOREM
     FORALL (r: AssessmentResult(allowed, sat, B, criterion)):
       r`region = region_gap IMPLIES Gap(allowed, sat, B, criterion)
+
   assessmentResult_impossible_sound: THEOREM
     FORALL (r: AssessmentResult(allowed, sat, B, criterion)):
       r`region = region_impossible IMPLIES Infeasible(allowed, sat, B)
+
   assessmentResult_certified_sound: THEOREM
     FORALL (r: AssessmentResult(allowed, sat, B, criterion)):
       r`region = region_certified IMPLIES criterion AND Satisfiable(allowed, sat, B)
+
 END ppg_certified_decision

@@ -5,26 +5,42 @@ ppg_measurable_block_box[I, Value: TYPE, domain: [I -> set[Value]],
 BEGIN
   IMPORTING ppg_measurable_block[I, Value, domain, spaces],
             ppg_finite_induction[I]
+
   CoordinateEvents: TYPE = [i: I -> (spaces(i))]
+
   F, H: VAR set[I]
   E: VAR CoordinateEvents
+
   blockBox(F, E): set[Block(F)] =
     {x: Block(F) | FORALL (i: (F)): E(i)(x(i))}
+
   boxOn(F, H, E): set[Block(F)] =
     {x: Block(F) | FORALL (i: (F)): H(i) IMPLIES E(i)(x(i))}
+
   box_on_empty: LEMMA boxOn(F, emptyset[I], E) = fullset[Block(F)]
+
   box_on_add_inside: LEMMA FORALL (i: (F)):
     boxOn(F, add(i, H), E) = intersection(blockCylinder(F, i, E(i)), boxOn(F, H, E))
+
   box_on_add_outside: LEMMA FORALL (i: I): NOT F(i) IMPLIES
     boxOn(F, add(i, H), E) = boxOn(F, H, E)
+
   box_on_measurable: LEMMA FORALL (H: finite_set[I]): blockSigma(F)(boxOn(F, H, E))
+
   block_box_on: LEMMA blockBox(F, E) = boxOn(F, F, E)
+
   block_box_measurable: LEMMA FORALL (F: finite_set[I]): blockSigma(F)(blockBox(F, E))
+
   block_box_empty: LEMMA blockBox(emptyset[I], E) = fullset[Block(emptyset[I])]
+
   fullEvents: CoordinateEvents = LAMBDA (i: I): fullset[(domain(i))]
+
   block_box_full: LEMMA blockBox(F, fullEvents) = fullset[Block(F)]
+
   atCoordinate(i: I, B: (spaces(i))): CoordinateEvents =
     LAMBDA (j: I): IF j = i THEN B ELSE fullset[(domain(j))] ENDIF
+
   box_at_coordinate: LEMMA FORALL (i: (F), B: (spaces(i))):
     blockBox(F, atCoordinate(i, B)) = blockCylinder(F, i, B)
+
 END ppg_measurable_block_box

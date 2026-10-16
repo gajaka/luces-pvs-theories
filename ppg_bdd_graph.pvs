@@ -5,28 +5,42 @@ BEGIN
   vars: VAR CertVars
   B: VAR finite_set[C]
   c, d: VAR C
+
   bddAdj(vars, B)(c, d): bool = B(c) AND B(d) AND c /= d AND dependent(vars, c, d)
+
   bddGraph_adj_iff: THEOREM B(c) AND B(d) IMPLIES
     (bddAdj(vars, B)(c, d) IFF c /= d AND dependent(vars, c, d))
+
   adj_imp_dependent: THEOREM bddAdj(vars, B)(c, d) IMPLIES dependent(vars, c, d)
+
   bddAdj_symmetric: LEMMA symmetric?(bddAdj(vars, B))
+
   dependent_imp_reflTransGen_adj: THEOREM
     B(c) AND B(d) AND dependent(vars, c, d) IMPLIES Reach(bddAdj(vars, B))(c, d)
+
   reflTransGen_adj_eq_reflTransGen_dependent: THEOREM
     Reach(bddAdj(vars, B)) = Reach(CoupledIn(vars, B))
+
   reachable_imp_sameComponent: THEOREM
     Reach(bddAdj(vars, B))(c, d) IMPLIES SameComponent(vars, B)(c, d)
+
   sameComponent_mem_or_eq: THEOREM
     SameComponent(vars, B)(c, d) IMPLIES (B(c) AND B(d)) OR c = d
+
   sameComponent_imp_reachable: THEOREM
     SameComponent(vars, B)(c, d) IMPLIES Reach(bddAdj(vars, B))(c, d)
+
   reachable_iff_sameComponent: THEOREM
     Reach(bddAdj(vars, B))(c, d) IFF SameComponent(vars, B)(c, d)
 
   % Equivalence classes give a concrete representation of the graph quotient.
   graphClass(vars, B, c): finite_set[C] = intersection(B, {d: C | Reach(bddAdj(vars, B))(c, d)})
+
   connectedComponents(vars, B): finite_set[finite_set[C]] =
     image[C, finite_set[C]](LAMBDA (c: C): graphClass(vars, B, c), B)
+
   graphClass_eq_compOf: LEMMA graphClass(vars, B, c) = compOf(vars, B, c)
+
   connectedComponents_eq_groups: LEMMA connectedComponents(vars, B) = groups(vars, B)
+
 END ppg_bdd_graph

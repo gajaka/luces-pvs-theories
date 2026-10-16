@@ -18,20 +18,28 @@ BEGIN
   f: VAR Vector
   X: VAR AdaptedProcess
   n,N: VAR nat
+
   stoppedMean(M,f,X,n): real = integral(stoppedNativeValue(M,f,X,n))
+
   runningSchedule(M,X): [nat->(S)] = LAMBDA(n:nat):runningAmbient(M,X,n)
+
   stopped_mean_nonnegative: LEMMA Stochastic(M) AND Equations(M,f) IMPLIES
     0<=stoppedMean(M,f,X,n)
+
   integrated_real_exact: LEMMA FORALL(M:Model,f:SolvingVector(M),X:Realization(M),n:nat):
     mass(runningAmbient(M,X,n))+stoppedMean(M,f,X,n+1)=stoppedMean(M,f,X,n)
+
   horizon_real_exact: LEMMA FORALL(M:Model,f:SolvingVector(M),X:Realization(M),N:nat):
     massPrefix(runningSchedule(M,X),N)+stoppedMean(M,f,X,N)=stoppedMean(M,f,X,0)
+
   stoppedValue_integrated_exact: THEOREM FORALL(M:Model,f:SolvingVector(M),X:Realization(M),n:nat):
     Stochastic(M) IMPLIES
       eadd(ennFinite(mass(runningAmbient(M,X,n))),ofReal(stoppedMean(M,f,X,n+1)))=
         ofReal(stoppedMean(M,f,X,n))
+
   finite_horizon_exact: THEOREM FORALL(M:Model,f:SolvingVector(M),X:Realization(M),N:nat):
     Stochastic(M) IMPLIES
       eadd(ennFinite(massPrefix(runningSchedule(M,X),N)),ofReal(stoppedMean(M,f,X,N)))=
         ofReal(integral(integrableValue(f,ambientState(X,0))))
+
 END ppg_finite_stopped_telescope

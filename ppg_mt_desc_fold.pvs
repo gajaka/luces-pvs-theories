@@ -6,7 +6,9 @@ BEGIN
   T: VAR GTree
   v: VAR Addr
   f: VAR [Addr -> R]
+
   descendants_fold_step: THEOREM gt_valid?(T) AND T`dom(v) IMPLIES
     foldSums.sum(descendants(T, v), f) =
       op(f(v), foldSums.sum(childSet(T, v), LAMBDA (u: Addr): foldSums.sum(descendants(T, u), f)))
+
 END ppg_mt_desc_fold

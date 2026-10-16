@@ -7,23 +7,30 @@ ppg_probability_finite_consistency[I, Value: TYPE, domain: [I -> set[Value]],
 BEGIN
   IMPORTING ppg_probability_finite_product[I, Value, domain, spaces, coins],
             ppg_probability_block_unique[I, Value, domain, spaces], ppg_real_product[I]
+
   finite_law_unique: THEOREM FORALL (F: finite_set[I], mu: BlockLaw(F)):
     (FORALL (E: CoordinateEvents):
       mu(blockBox(F, E)) = product(F, LAMBDA (i: I): coins(i)(E(i))))
       IMPLIES mu = finiteLaw(F)
+
   restrictedEvents(G: set[I], E: CoordinateEvents): CoordinateEvents =
     LAMBDA (i: I): IF G(i) THEN E(i) ELSE fullset[(domain(i))] ENDIF
+
   restriction_box: LEMMA FORALL (F: set[I], G: {G: set[I] | subset?(G, F)},
     E: CoordinateEvents):
     {x: Block(F) | blockBox(G, E)(restrictBlock(F, G)(x))} =
       blockBox(F, restrictedEvents(G, E))
+
   restricted_factors: LEMMA FORALL (G: set[I], E: CoordinateEvents):
     (LAMBDA (i: I): coins(i)(restrictedEvents(G, E)(i))) =
       (LAMBDA (i: I): IF G(i) THEN coins(i)(E(i)) ELSE 1 ENDIF)
+
   finite_marginal_box: LEMMA FORALL (F: finite_set[I],
     G: {G: finite_set[I] | subset?(G, F)}, E: CoordinateEvents):
     marginal(F, G)(finiteLaw(F))(blockBox(G, E)) = finiteLaw(G)(blockBox(G, E))
+
   finite_marginal: THEOREM FORALL (F: finite_set[I],
     G: {G: finite_set[I] | subset?(G, F)}):
     marginal(F, G)(finiteLaw(F)) = finiteLaw(G)
+
 END ppg_probability_finite_consistency

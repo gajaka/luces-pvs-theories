@@ -14,28 +14,43 @@ BEGIN
   B: VAR NonsingularStateMatrix
   v: VAR StateVector
   s: VAR State
+
   productArray(A,v)(i,j:nat): real = IF i>dimension OR j>1 THEN 0 ELSE
     sigma(0,dimension-1,LAMBDA(k:nat):nativeEntries(A)(i,k)*stateExtension(v)(k)) ENDIF
+
   sourceProduct(A,v): FullMatrix = nativePositive(A)*sourceColumn(A,v)
+
   source_product_form: LEMMA sourceProduct(A,v)=form_matrix(productArray(A,v),dimension,1)
+
   source_product_sigma_entry: LEMMA entry(sourceProduct(A,v))(index(s),0)=
     sigma(0,dimension-1,LAMBDA(k:nat):nativeEntries(A)(index(s),k)*stateExtension(v)(k))
+
   source_product_entry: LEMMA entry(sourceProduct(A,v))(index(s),0)=matVec(A,v)(s)
+
   native_nonsingular_dimensions: LEMMA rows(nativeNonsingular(B))=dimension AND
     columns(nativeNonsingular(B))=dimension
+
   cramer_column_dimensions: LEMMA
     rows(columnMatrix(nativeNonsingular(B),columnCramer(nativeNonsingular(B),stateExtension(v))))=dimension AND
     columns(columnMatrix(nativeNonsingular(B),columnCramer(nativeNonsingular(B),stateExtension(v))))=1
+
   cramer_column_representation: LEMMA sourceColumn(B,cramerValue(B,v))=
     columnMatrix(nativeNonsingular(B),columnCramer(nativeNonsingular(B),stateExtension(v)))
+
   cramer_solves: THEOREM FORALL(A:StateMatrix,v:StateVector):stateDeterminant(A)/=0 IMPLIES
     matVec(A,cramerValue(A,v))=v
+
   M: VAR Model
+
   potential_solves: THEOREM stateDeterminant(systemMatrix(M))/=0 IMPLIES
     matVec(systemMatrix(M),potential(M))=systemRHS(M)
+
   potential_equations: THEOREM stateDeterminant(systemMatrix(M))/=0 IMPLIES Equations(M,potential(M))
+
   candidate_checked: THEOREM Stochastic(M) AND Absorbing(M) AND
     stateDeterminant(systemMatrix(M))/=0 IMPLIES check(M,candidate(M))
+
   synthesize_eq_some_candidate: THEOREM Stochastic(M) AND Absorbing(M) AND
     stateDeterminant(systemMatrix(M))/=0 IMPLIES synthesize(M)=up[Witness](candidate(M))
+
 END ppg_finite_cramer_system

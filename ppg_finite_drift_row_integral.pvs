@@ -11,11 +11,17 @@ ppg_finite_drift_row_integral[State: TYPE,
   M:Model,W:checkedWitness(M),s:State]: THEORY
 BEGIN
   IMPORTING ppg_finite_atomic_integral[State,universe,rowVector(M,W,s)]
+
   nativePotential: NativeFunction = finiteIntegrable(potentialWeights(M,W))
+
   native_potential_at: LEMMA FORALL(t:State):nativePotential(t)=W`potential(t)
+
   native_potential_eq: LEMMA nativePotential=(LAMBDA(t:State):W`potential(t))
+
   potential_product_eq: LEMMA
     (LAMBDA(t:State):potentialWeights(M,W)(t)*rowVector(M,W,s)(t))=
     (LAMBDA(t:State):M`transition(s,t)*W`potential(t))
+
   rowPMF_integral: THEOREM expectation(nativePotential)=localExpectation(M,W,s)
+
 END ppg_finite_drift_row_integral

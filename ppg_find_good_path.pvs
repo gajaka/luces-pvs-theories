@@ -6,6 +6,7 @@ BEGIN
   good: VAR set[State]
   enumeration: VAR list[State]
   v: VAR State
+
   findGoodPath(step, good)
     (enumeration: {es: list[State] | FORALL (w: State): member(w, es)},
      v: {z: State | EXISTS (w: State): Reach(step)(z, w) AND good(w)}):
@@ -13,8 +14,10 @@ BEGIN
     LET budget = findFirst(LAMBDA (n: nat): NOT null?(boundedPaths(step, good, enumeration, n, v))),
         candidates = boundedPaths(step, good, enumeration, budget, v)
     IN car(candidates)
+
   findGoodPath_valid: THEOREM FORALL
     (enumeration: {es: list[State] | FORALL (w: State): member(w, es)},
      v: {z: State | EXISTS (w: State): Reach(step)(z, w) AND good(w)}):
       GoodPath(step, good, v, findGoodPath(step, good)(enumeration, v))
+
 END ppg_find_good_path

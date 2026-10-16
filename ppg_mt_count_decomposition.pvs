@@ -17,42 +17,60 @@ BEGIN
   initial: VAR MTState
   omega: VAR LogSpace
   s,n: VAR nat
+
   runEvents(vars,bad,fallback,enumeration,initial): [nat->set[LogSpace]] =
     LAMBDA(s:nat):runningEvent(vars,bad,fallback,enumeration,LAMBDA(omega:LogSpace):initial,s+1)
+
   selectedEvents(vars,bad,fallback,enumeration,initial,a): [nat->set[LogSpace]] =
     LAMBDA(s:nat):resamplingEvent(vars,bad,fallback,enumeration,LAMBDA(omega:LogSpace):initial,a,s)
+
   activeStepValue(vars,bad,fallback,enumeration,initial,omega)(s): nonneg_real =
     IF RunningUntil(vars,bad,fallback,enumeration,initial,omega,s+1) THEN 1 ELSE 0 ENDIF
+
   selectedStepValue(vars,bad,fallback,enumeration,initial,omega,a)(s): nonneg_real =
     IF selectedEvents(vars,bad,fallback,enumeration,initial,a)(s)(omega) THEN 1 ELSE 0 ENDIF
+
   prefixRows(vars,bad,fallback,enumeration,initial,omega)(a:C,n:nat): nonneg_real =
     countPrefix(selectedEvents(vars,bad,fallback,enumeration,initial,a),omega,n)
+
   running_step_partition: LEMMA activeStepValue(vars,bad,fallback,enumeration,initial,omega)(s)=
     tSum.sum(labelUniverse(enumeration),LAMBDA(a:C):selectedStepValue(vars,bad,fallback,enumeration,initial,omega,a)(s))
+
   step_partition_function: LEMMA activeStepValue(vars,bad,fallback,enumeration,initial,omega)=
     (LAMBDA(s:nat):tSum.sum(labelUniverse(enumeration),LAMBDA(a:C):selectedStepValue(vars,bad,fallback,enumeration,initial,omega,a)(s)))
+
   running_prefix_indicator: LEMMA nSum.sum(natRange(n),activeStepValue(vars,bad,fallback,enumeration,initial,omega))=
     countPrefix(runEvents(vars,bad,fallback,enumeration,initial),omega,n)
+
   selected_prefix_indicator: LEMMA nSum.sum(natRange(n),selectedStepValue(vars,bad,fallback,enumeration,initial,omega,a))=
     prefixRows(vars,bad,fallback,enumeration,initial,omega)(a,n)
+
   selected_prefix_function: LEMMA
     (LAMBDA(a:C):nSum.sum(natRange(n),selectedStepValue(vars,bad,fallback,enumeration,initial,omega,a)))=
     (LAMBDA(a:C):prefixRows(vars,bad,fallback,enumeration,initial,omega)(a,n))
+
   prefix_partition: LEMMA countPrefix(runEvents(vars,bad,fallback,enumeration,initial),omega,n)=
     tSum.sum(labelUniverse(enumeration),LAMBDA(a:C):prefixRows(vars,bad,fallback,enumeration,initial,omega)(a,n))
+
   prefix_partition_function: LEMMA
     (LAMBDA(n:nat):countPrefix(runEvents(vars,bad,fallback,enumeration,initial),omega,n))=
     stageSum(labelUniverse(enumeration),prefixRows(vars,bad,fallback,enumeration,initial,omega))
+
   prefix_rows_monotone: LEMMA rowMonotone(prefixRows(vars,bad,fallback,enumeration,initial,omega))
+
   running_count_sup: LEMMA TLog(vars,bad,fallback,enumeration,initial,omega)=
     natSup(LAMBDA(n:nat):countPrefix(runEvents(vars,bad,fallback,enumeration,initial),omega,n))
+
   selected_sup_function: LEMMA
     (LAMBDA(a:C):resamplingCount(vars,bad,fallback,enumeration,initial,omega,a))=
     (LAMBDA(a:C):natSup(LAMBDA(n:nat):prefixRows(vars,bad,fallback,enumeration,initial,omega)(a,n)))
+
   TLog_eq_sum_resamplingCount: THEOREM TLog(vars,bad,fallback,enumeration,initial,omega)=
     ppg_nonneg_tsum[C].esum(labelUniverse(enumeration),
       LAMBDA(a:C):resamplingCount(vars,bad,fallback,enumeration,initial,omega,a))
+
   randomInitTLog_eq_sum_resamplingCount: THEOREM randomInitTLog(vars,bad,fallback,enumeration,omega)=
     ppg_nonneg_tsum[C].esum(labelUniverse(enumeration),
       LAMBDA(a:C):randomInitResamplingCount(vars,bad,fallback,enumeration,omega,a))
+
 END ppg_mt_count_decomposition

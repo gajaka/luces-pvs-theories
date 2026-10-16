@@ -20,15 +20,22 @@ BEGIN
   B: VAR UniversalLabels
   p: VAR [C->real]
   e: VAR real
+
   full_label_member: LEMMA B(a)
+
   slack_native_nonnegative: LEMMA (FORALL(i:C):baseProbability(bad)(i)<=p(i)) IMPLIES nonnegativeOn(p,B)
+
   slack_native_strict: LEMMA (FORALL(i:C):baseProbability(bad)(i)<=p(i)) AND 0<e AND
     StrictCriterion(dilated(e,p),B) IMPLIES StrictCriterion(p,B)
+
   slack_budget_functions: LEMMA singletonBudget(p,B)=singletonBudgets(p,B)
+
   randomInitExpectedResamplingCount_le_inv_slack: THEOREM mt_wf(vars,bad) AND
     (FORALL(i:C):baseProbability(bad)(i)<=p(i)) AND 0<e AND StrictCriterion(dilated(e,p),B) IMPLIES
     ele(randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a),ofReal(div0(1,e)))
+
   randomInitETLog_le_card_div_slack: THEOREM mt_wf(vars,bad) AND
     (FORALL(i:C):baseProbability(bad)(i)<=p(i)) AND 0<e AND StrictCriterion(dilated(e,p),B) IMPLIES
     ele(randomInitETLog(vars,bad,fallback,enumeration),ofReal(div0(card(B),e)))
+
 END ppg_shearer_slack_expectation

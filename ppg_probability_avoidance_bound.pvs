@@ -14,13 +14,21 @@ BEGIN
   a: VAR K
   B: VAR set[X]
   E: VAR (S)
+
   allMeasurable(A): bool = FORALL(a:K):S(A(a))
+
   weights(A)(a:K): real = mass(A(a))
+
   cut_lower: LEMMA mass(B)-mass(E)<=mass(difference(B,E))
+
   avoidance_step_lower: LEMMA allMeasurable(A) IMPLIES
     mass(all_pass(A,F))-mass(A(a))<=mass(all_pass(A,add(a,F)))
+
   avoidance_sum_lower: THEOREM allMeasurable(A) IMPLIES
     1-fsum(F,weights(A))<=mass(all_pass(A,F))
+
   avoidance_meet_eq: LEMMA all_pass(A,F)=finiteMeet(F,LAMBDA(a:K):complement(A(a)))
+
   avoidance_measurable: LEMMA allMeasurable(A) IMPLIES S(all_pass(A,F))
+
 END ppg_probability_avoidance_bound

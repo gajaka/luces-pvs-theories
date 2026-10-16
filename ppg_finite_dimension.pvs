@@ -1,13 +1,17 @@
 % A finite coordinate isomorphism is a witness of real vector-space dimension.
 ppg_finite_dimension[T, Index: TYPE]: THEORY
 BEGIN
+
   Vector: TYPE = [T -> real]
+
   Coefficients: TYPE = [Index -> real]
+
   space: VAR set[Vector]
   I: VAR finite_set[Index]
   encode: VAR [Vector -> Coefficients]
   decode: VAR [Coefficients -> Vector]
   n: VAR nat
+
   CoordinateIsomorphism(space, I, encode, decode): bool =
     (FORALL (a: Coefficients): space(decode(a))) AND
     (FORALL (x: Vector): space(x) IMPLIES decode(encode(x)) = x) AND
@@ -19,6 +23,8 @@ BEGIN
     (FORALL (a, b: Coefficients, r: real):
       decode(LAMBDA (k: Index): a(k) + r * b(k)) =
         (LAMBDA (t: T): decode(a)(t) + r * decode(b)(t)))
+
   HasFiniteDimension(space, n): bool =
     EXISTS I, encode, decode: card(I) = n AND CoordinateIsomorphism(space, I, encode, decode)
+
 END ppg_finite_dimension

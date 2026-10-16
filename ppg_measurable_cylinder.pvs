@@ -4,49 +4,70 @@ ppg_measurable_cylinder[I, Value: TYPE, domain: [I -> set[Value]],
   spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]]: THEORY
 BEGIN
   IMPORTING ppg_measurable_block_restriction[I, Value, domain, spaces]
+
   FullBlock: TYPE = Block(fullset[I])
+
   TableEvent: TYPE = set[FullBlock]
+
   tableSigma: ppg_measurable_space[FullBlock].MeasurableSpace = blockSigma(fullset[I])
+
   union_contains: LEMMA FORALL (F, G: set[I]):
     subset?(F, union(F, G)) AND subset?(G, union(F, G))
+
   tableCylinder(F: set[I], B: set[Block(F)]): TableEvent =
     {x: FullBlock | B(restrictBlock(fullset[I], F)(x))}
+
   liftEvent(H: set[I], F: {F: set[I] | subset?(F, H)}, B: set[Block(F)]): set[Block(H)] =
     {x: Block(H) | B(restrictBlock(H, F)(x))}
+
   cylinder_measurable: LEMMA FORALL (F: set[I], B: (blockSigma(F))):
     tableSigma(tableCylinder(F, B))
+
   lift_measurable: LEMMA FORALL (H: set[I], F: {F: set[I] | subset?(F, H)},
     B: (blockSigma(F))): blockSigma(H)(liftEvent(H, F, B))
+
   union_base_measurable: LEMMA FORALL (F, G: set[I], B: (blockSigma(F)), D: (blockSigma(G))):
     blockSigma(union(F, G))(union(liftEvent(union(F, G), F, B), liftEvent(union(F, G), G, D)))
+
   intersection_base_measurable: LEMMA FORALL (F, G: set[I], B: (blockSigma(F)), D: (blockSigma(G))):
     blockSigma(union(F, G))(intersection(liftEvent(union(F, G), F, B),
                                          liftEvent(union(F, G), G, D)))
+
   cylinder_empty: LEMMA FORALL (F: set[I]):
     tableCylinder(F, emptyset[Block(F)]) = emptyset[FullBlock]
+
   cylinder_full: LEMMA FORALL (F: set[I]):
     tableCylinder(F, fullset[Block(F)]) = fullset[FullBlock]
+
   cylinder_complement: LEMMA FORALL (F: set[I], B: set[Block(F)]):
     tableCylinder(F, complement(B)) = complement(tableCylinder(F, B))
+
   cylinder_union_same: LEMMA FORALL (F: set[I], B, D: set[Block(F)]):
     tableCylinder(F, union(B, D)) = union(tableCylinder(F, B), tableCylinder(F, D))
+
   cylinder_intersection_same: LEMMA FORALL (F: set[I], B, D: set[Block(F)]):
     tableCylinder(F, intersection(B, D)) =
       intersection(tableCylinder(F, B), tableCylinder(F, D))
+
   cylinder_difference_same: LEMMA FORALL (F: set[I], B, D: set[Block(F)]):
     tableCylinder(F, difference(B, D)) = difference(tableCylinder(F, B), tableCylinder(F, D))
+
   cylinder_lift: LEMMA FORALL (H: set[I], F: {F: set[I] | subset?(F, H)},
     B: set[Block(F)]): tableCylinder(H, liftEvent(H, F, B)) = tableCylinder(F, B)
+
   cylinder_union: LEMMA FORALL (F, G: set[I], B: set[Block(F)], D: set[Block(G)]):
     union(tableCylinder(F, B), tableCylinder(G, D)) =
       tableCylinder(union(F, G), union(liftEvent(union(F, G), F, B),
                                       liftEvent(union(F, G), G, D)))
+
   cylinder_intersection: LEMMA FORALL (F, G: set[I], B: set[Block(F)], D: set[Block(G)]):
     intersection(tableCylinder(F, B), tableCylinder(G, D)) =
       tableCylinder(union(F, G), intersection(liftEvent(union(F, G), F, B),
                                              liftEvent(union(F, G), G, D)))
+
   cylinder_difference: LEMMA FORALL (F, G: set[I], B: set[Block(F)], D: set[Block(G)]):
     difference(tableCylinder(F, B), tableCylinder(G, D)) =
       tableCylinder(union(F, G), difference(liftEvent(union(F, G), F, B),
                                            liftEvent(union(F, G), G, D)))
+
 END ppg_measurable_cylinder

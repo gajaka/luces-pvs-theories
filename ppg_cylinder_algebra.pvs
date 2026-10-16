@@ -5,28 +5,45 @@ ppg_cylinder_algebra[I, Value: TYPE, domain: [I -> set[Value]],
 BEGIN
   IMPORTING ppg_measurable_cylinder[I, Value, domain, spaces],
             measure_integration@subset_algebra_def[FullBlock]
+
   Cylinders: set[TableEvent] = {A: TableEvent |
     EXISTS (F: finite_set[I], B: (blockSigma(F))): A = tableCylinder(F, B)}
+
   cylinder_member: LEMMA FORALL (F: finite_set[I], B: (blockSigma(F))):
     Cylinders(tableCylinder(F, B))
+
   cylinders_empty: LEMMA Cylinders(emptyset[FullBlock])
+
   cylinders_full: LEMMA Cylinders(fullset[FullBlock])
+
   cylinders_complement: LEMMA FORALL (A: (Cylinders)): Cylinders(complement(A))
+
   cylinders_union: LEMMA FORALL (A, B: (Cylinders)): Cylinders(union(A, B))
+
   cylinders_intersection: LEMMA FORALL (A, B: (Cylinders)): Cylinders(intersection(A, B))
+
   cylinders_difference: LEMMA FORALL (A, B: (Cylinders)): Cylinders(difference(A, B))
+
   cylinders_algebra: THEOREM subset_algebra?(Cylinders)
+
   cylinders_measurable: LEMMA subset?(Cylinders, tableSigma)
+
   fullGenerators: set[TableEvent] = {A: TableEvent |
     EXISTS (i: (fullset[I]), B: (spaces(i))): A = blockCylinder(fullset[I], i, B)}
+
   full_generators_native: LEMMA fullGenerators =
     ppg_measurable_dependent_product[bool, (fullset[I]), Value,
       LAMBDA (i: (fullset[I])): domain(i)].nativeCylinders(
         LAMBDA (i: (fullset[I])): spaces(i))
+
   table_sigma_generators: LEMMA tableSigma = generated(fullGenerators)
+
   singleton_cylinder: LEMMA FORALL (i: (fullset[I]), B: (spaces(i))):
     tableCylinder(singleton[I](i), blockCylinder(singleton[I](i), i, B)) =
       blockCylinder(fullset[I], i, B)
+
   full_generators_finite: LEMMA subset?(fullGenerators, Cylinders)
+
   cylinders_generate_native: THEOREM generated(Cylinders) = tableSigma
+
 END ppg_cylinder_algebra

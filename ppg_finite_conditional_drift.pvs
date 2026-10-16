@@ -17,32 +17,48 @@ BEGIN
     ppg_finite_integral_order[Omega,S,measureLaw]
   M: VAR Model
   X: VAR HistoryStateMap
+
   checkedWitness(M:Model): TYPE = {W:Witness|check(M,W)}
+
   currentBadEvent(M,X): (S) = stateMap.inverseImage(X,{s:State|NOT M`good(s)})
+
   activeValue(M,X): HistoryFunction =
     historyValue(LAMBDA(s:State):IF M`good(s) THEN 0 ELSE 1 ENDIF,X)
+
   currentPotential(W:Witness,X): HistoryFunction = historyValue(W`potential,X)
+
   rowPotential(M:Model,W:Witness,X): HistoryFunction =
     historyValue(localValue(M,W`potential),X)
+
   nextPotential(M:Model,W:Witness,p:RealizedPair(M)): AdmissibleFunction =
     nextValue(M,p,W`potential)
+
   history_bad_event: LEMMA H(currentBadEvent(M,X))
+
   active_value_indicator: LEMMA activeValue(M,X)=indicator(currentBadEvent(M,X))
+
   current_potential_nonnegative: LEMMA FORALL(M:Model,W:checkedWitness(M),
     X:HistoryStateMap,omega:Omega):0<=currentPotential(W,X)(omega)
+
   checked_row_decrease: LEMMA FORALL(M:Model,W:checkedWitness(M),X:HistoryStateMap,
     omega:Omega):rowPotential(M,W,X)(omega)+rate(W)*activeValue(M,X)(omega)
       <=currentPotential(W,X)(omega)
+
   conditional_potential_version: LEMMA FORALL(M:Model,W:Witness,p:RealizedPair(M)):
     conditionalVersion(nextPotential(M,W,p),rowPotential(M,W,p`current))
+
   conditional_potential_decrease: THEOREM FORALL(M:Model,W:checkedWitness(M),
     p:RealizedPair(M)):ae_le?(conditionalExpectation(nextPotential(M,W,p))+
       rate(W)*activeValue(M,p`current),currentPotential(W,p`current))
+
   potential_total_integral: LEMMA FORALL(M:Model,W:Witness,p:RealizedPair(M)):
     integral(nextPotential(M,W,p))=integral(rowPotential(M,W,p`current))
+
   active_value_integral: LEMMA integral(activeValue(M,X))=mu(currentBadEvent(M,X))
+
   integrated_potential_decrease: THEOREM FORALL(M:Model,W:checkedWitness(M),
     p:RealizedPair(M)):
     integral(nextPotential(M,W,p))+rate(W)*mu(currentBadEvent(M,p`current))
       <=integral(currentPotential(W,p`current))
+
 END ppg_finite_conditional_drift

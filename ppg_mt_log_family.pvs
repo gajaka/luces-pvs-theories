@@ -13,25 +13,33 @@ BEGIN
             ppg_probability_disjoint_family[[nat, V], Value, K, TableDomain,
               TableSpaces(spaces), coinLaw(spaces, laws)],
             ppg_probability_event_product[LogSpace, K, NativeTableSigma(spaces)]
+
   LogEvents: TYPE = [K -> (NativeTableSigma(spaces))]
+
   logDepends(F: set[[nat, V]], A: set[LogSpace]): bool =
     FORALL (omega1, omega2: LogSpace):
       (FORALL (p: [nat, V]): F(p) IMPLIES omega1(p) = omega2(p)) IMPLIES A(omega1) = A(omega2)
+
   pullbackEvents(E: LogEvents): [K -> (tableSigma)] = LAMBDA (k: K):
     ppg_measurable_map[FullBlock, LogSpace].inverseImage(logMap, E(k))
+
   log_depends_preimage: LEMMA FORALL (F: set[[nat, V]], A: set[LogSpace]):
     logDepends(F, A) IMPLIES dependsOn(F,
       ppg_measurable_map[FullBlock, LogSpace].inverseImage(logMap, A))
+
   log_finite_meet_preimage: LEMMA FORALL (F: set[K], E: LogEvents):
     ppg_measurable_map[FullBlock, LogSpace].inverseImage(logMap,
       ppg_finite_events[LogSpace, K, NativeTableSigma(spaces)].finiteMeet(F, E)) =
         ppg_finite_events[FullBlock, K, tableSigma].finiteMeet(F, pullbackEvents(E))
+
   log_event_factors: LEMMA FORALL (E: LogEvents):
     ppg_probability_event_product[LogSpace, K, NativeTableSigma(spaces)].eventFactors(logMeasure, E) =
       ppg_probability_event_product[FullBlock, K, tableSigma].eventFactors(infiniteLaw, pullbackEvents(E))
+
   log_finite_product: THEOREM FORALL (F: finite_set[K], blk: [K -> set[[nat, V]]], E: LogEvents):
     pairwiseDisjoint(F, blk) AND
     (FORALL (k: K): F(k) IMPLIES logDepends(blk(k), E(k))) IMPLIES
       logMeasure(ppg_finite_events[LogSpace, K, NativeTableSigma(spaces)].finiteMeet(F, E)) =
         product(F, ppg_probability_event_product[LogSpace, K, NativeTableSigma(spaces)].eventFactors(logMeasure, E))
+
 END ppg_mt_log_family

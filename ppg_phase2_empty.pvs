@@ -1,11 +1,17 @@
 % Feasibility on an empty state carrier has no witness, even without obligations.
 ppg_phase2_empty: THEORY
 BEGIN
+
   EmptyState: TYPE = {b: bool | FALSE}
+
   emptyUniverse: finite_set[EmptyState] = emptyset[EmptyState]
+
   IMPORTING ppg_infeasibility_counting[EmptyState, bool, emptyUniverse]
+
   no_state_feasible: THEOREM FORALL (allowed: set[EmptyState], sat: [bool, EmptyState -> bool], B: finite_set[bool]):
     Infeasible(allowed, sat, B)
+
   empty_count_zero: THEOREM FORALL (allowed: set[EmptyState], sat: [bool, EmptyState -> bool], B: finite_set[bool]):
     exactGoodCount(allowed, sat, B) = 0
+
 END ppg_phase2_empty

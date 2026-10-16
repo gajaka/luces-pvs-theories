@@ -15,29 +15,45 @@ BEGIN
   a: VAR C
   u, v, w: VAR Addr
   n, t, k, k1, k2: VAR nat
+
   attachAt_preserves_valid: THEOREM gt_valid?(T) IMPLIES gt_valid?(attach_at(vars, T, a))
+
   tauBuild_valid: THEOREM gt_valid?(tau_build(vars, Clog, t, n))
+
   tauC_valid: THEOREM gt_valid?(tau_C(vars, Clog, t))
+
   valid_parent_mem: LEMMA gt_valid?(T) AND T`dom(snoc(u, k)) IMPLIES T`dom(u)
+
   edgeCompatible(vars, T): bool = FORALL (u: Addr, k: nat):
     T`dom(u) AND T`dom(snoc(u, k)) IMPLIES
       T`lab(u) = T`lab(snoc(u, k)) OR dependent?(vars)(T`lab(u), T`lab(snoc(u, k)))
+
   attachChild_preserves_edges: LEMMA gt_valid?(T) AND edgeCompatible(vars, T) AND
     T`dom(v) AND (T`lab(v) = a OR dependent?(vars)(T`lab(v), a)) IMPLIES
       edgeCompatible(vars, attach_child(T, v, a))
+
   attachAt_preserves_edges: LEMMA gt_valid?(T) AND edgeCompatible(vars, T) IMPLIES
     edgeCompatible(vars, attach_at(vars, T, a))
+
   tauBuild_edges: LEMMA edgeCompatible(vars, tau_build(vars, Clog, t, n))
+
   tauC_child_wellformed: THEOREM tau_C(vars, Clog, t)`dom(u) AND
     tau_C(vars, Clog, t)`dom(snoc(u, k)) IMPLIES
       tau_C(vars, Clog, t)`lab(u) = tau_C(vars, Clog, t)`lab(snoc(u, k)) OR
         dependent?(vars)(tau_C(vars, Clog, t)`lab(u), tau_C(vars, Clog, t)`lab(snoc(u, k)))
+
   tauC_siblings_proper: THEOREM k1 /= k2 AND tau_C(vars, Clog, t)`dom(snoc(v, k1)) AND
     tau_C(vars, Clog, t)`dom(snoc(v, k2)) IMPLIES
       tau_C(vars, Clog, t)`lab(snoc(v, k1)) /= tau_C(vars, Clog, t)`lab(snoc(v, k2))
+
   tauBuild_root_mem: THEOREM tau_build(vars, Clog, t, n)`dom(null)
+
   tauC_root_mem: THEOREM tau_C(vars, Clog, t)`dom(null)
+
   attachAt_root_label: LEMMA attach_at(vars, T, a)`lab(null) = T`lab(null)
+
   tauBuild_root_label: LEMMA tau_build(vars, Clog, t, n)`lab(null) = Clog(t)
+
   tauC_root_label: THEOREM tau_C(vars, Clog, t)`lab(null) = Clog(t)
+
 END ppg_mt_real_structure

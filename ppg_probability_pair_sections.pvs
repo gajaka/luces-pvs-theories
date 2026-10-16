@@ -11,20 +11,32 @@ BEGIN
             ppg_probability_set_laws[Y, SY], ppg_measurable_sequence[[X, Y]]
   E, D: VAR (JointSpace)
   x: VAR X
+
   section_native: LEMMA SY(x_section(E)(x))
+
   sectionMass(E)(x): real = beta(x_section(E)(x))
+
   section_mass_function_eq: LEMMA sectionMass(E) = beta o x_section(E)
+
   section_mass_bounds: LEMMA 0 <= sectionMass(E)(x) AND sectionMass(E)(x) <= 1
+
   section_mass_integrable: LEMMA integrable?[X, asNasa(SX), nasaLaw](sectionMass(E))
+
   sectionFunction(E): UnitFunction = sectionMass(E)
+
   section_function_mass: THEOREM expectation(sectionFunction(E)) = productLaw(alpha, beta)(E)
+
   section_mass_monotone: LEMMA subset?(E, D) IMPLIES sectionMass(E)(x) <= sectionMass(D)(x)
+
   pairSequenceMass(A: [nat -> (JointSpace)]): UnitSequence =
     LAMBDA (n: nat): sectionFunction(A(n))
+
   sections_decreasing: LEMMA FORALL (A: [nat -> (JointSpace)]):
     decreasingEvents[[X, Y]](A) IMPLIES pointwiseDecreasing(pairSequenceMass(A))
+
   positive_sections_witness: THEOREM FORALL (A: [nat -> (JointSpace)], e: posreal):
     decreasingEvents[[X, Y]](A) AND
     (FORALL (n: nat): e <= productLaw(alpha, beta)(A(n))) IMPLIES
       EXISTS (x: X): FORALL (n: nat): e / 2 <= sectionMass(A(n))(x)
+
 END ppg_probability_pair_sections

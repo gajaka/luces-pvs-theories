@@ -11,33 +11,49 @@ BEGIN
   cs, rest: VAR list[WTree]
   d, idx: VAR nat
   b, a: VAR C
+
   depthCount(t, d, b): RECURSIVE nat =
     IF d = 0 THEN IF roseLabel(t) = b THEN 1 ELSE 0 ENDIF
     ELSE ppg_tree_lists[WTree].natSum(map(LAMBDA (c: WTree): depthCount(c, d - 1, b))(roseChildren(t)))
     ENDIF MEASURE d
+
   labelsAtDepth(t, d): [C -> nat] = LAMBDA (b: C): depthCount(t, d, b)
+
   labelsAtDepthChildren(cs, d): [C -> nat] =
     LAMBDA (b: C): ppg_tree_lists[WTree].natSum(map(LAMBDA (c: WTree): depthCount(c, d, b))(cs))
+
   labels_zero: LEMMA labelsAtDepth(t, 0)(b) = IF roseLabel(t) = b THEN 1 ELSE 0 ENDIF
+
   labels_succ: LEMMA labelsAtDepth(t, d + 1) = labelsAtDepthChildren(roseChildren(t), d)
+
   children_nil: LEMMA labelsAtDepthChildren(null[WTree], d)(b) = 0
+
   children_cons: LEMMA labelsAtDepthChildren(cons(c, rest), d)(b) =
     labelsAtDepth(c, d)(b) + labelsAtDepthChildren(rest, d)(b)
+
   children_bridge: LEMMA FORALL (cs: list[WTree]): FORALL (d: nat, b: C):
     (FORALL (t: WTree): labelsAtDepth(t, d)(b) =
        domainBag(toGT_dom(t), LAMBDA (w: Addr): toGT_lab(t, w), d)(b)) IMPLIES
     FORALL (whole: WTree, idx: nat): dropList(roseChildren(whole), idx) = cs IMPLIES
       labelsAtDepthChildren(cs, d)(b) =
         domainBag(toGT_domChildren(cs, idx), LAMBDA (w: Addr): toGT_lab(whole, w), d + 1)(b)
+
   depth_count_eq: LEMMA FORALL (d: nat): FORALL (t: WTree, b: C):
     labelsAtDepth(t, d)(b) = domainBag(toGT_dom(t), LAMBDA (w: Addr): toGT_lab(t, w), d)(b)
+
   labelsAtDepth_eq_domFilter_map: THEOREM labelsAtDepth(t, d) =
     domainBag(toGT_dom(t), LAMBDA (w: Addr): toGT_lab(t, w), d)
+
   labelsAtDepthChildren_eq_domFilter_map: THEOREM FORALL (whole: WTree):
     dropList(roseChildren(whole), idx) = cs IMPLIES labelsAtDepthChildren(cs, d) =
       domainBag(toGT_domChildren(cs, idx), LAMBDA (w: Addr): toGT_lab(whole, w), d + 1)
+
   depth_finite: THEOREM finiteSupport(labelsAtDepth(t, d))
+
   children_finite: THEOREM finiteSupport(labelsAtDepthChildren(cs, d))
+
   labelsAtDepth_finite: JUDGEMENT labelsAtDepth(t, d) HAS_TYPE Multiset
+
   labelsAtDepthChildren_finite: JUDGEMENT labelsAtDepthChildren(cs, d) HAS_TYPE Multiset
+
 END ppg_rose_depth_labels

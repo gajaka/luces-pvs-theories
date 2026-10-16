@@ -13,10 +13,17 @@ BEGIN
   IMPORTING ppg_probability_outer[X,S,mu]
   A,B: VAR set[X]
   E: VAR (S)
+
   intersection_in_right: LEMMA subset?(intersection(A,B),B)
+
   union_without_right: LEMMA subset?(difference(union(A,B),B),A)
+
   left_in_union: LEMMA subset?(A,union(A,B))
+
   measurable_gain_bound: THEOREM subset?(difference(B,E),A) IMPLIES mass(B)<=mass(A)+mu(E)
+
   mass_one_if_contains: LEMMA mu(E)=1 AND subset?(E,A) IMPLIES mass(A)=1
+
   mass_zero_extension: LEMMA mu(E)=0 IMPLIES mass(union(A,E))=mass(A)
+
 END ppg_probability_outer_step

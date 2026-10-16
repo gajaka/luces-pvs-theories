@@ -8,13 +8,20 @@ ppg_native_rational_matrix: THEORY
 BEGIN
   IMPORTING matrices@matrices AS nm,matrices@matrix_props AS np,
     ppg_native_rational_sigma
+
   rationalMatrix(A:nm.Matrix): bool =
     FORALL(r,c:nat):rational_pred(nm.entry(A)(r,c))
+
   RationalMatrix: TYPE = (rationalMatrix)
+
   A: VAR RationalMatrix
   i,j,m,n: VAR nat
   F: VAR [[nat,nat]->rat]
+
   rational_entry: LEMMA rational_pred(nm.entry(A)(i,j))
+
   rational_form: LEMMA rationalMatrix(nm.form_matrix(F,m,n))
+
   rational_remove: LEMMA rationalMatrix(np.remove(A,i,j))
+
 END ppg_native_rational_matrix

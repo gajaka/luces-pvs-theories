@@ -5,12 +5,19 @@ BEGIN
   S,F: VAR finite_set[T]
   A: VAR set[T]
   f,g: VAR [T -> nonneg_real]
+
   sum_mono: LEMMA (FORALL(x:T):S(x) IMPLIES f(x)<=g(x)) IMPLIES sums.sum(S,f)<=sums.sum(S,g)
+
   product_mono: LEMMA (FORALL(x:T):S(x) IMPLIES f(x)<=g(x)) IMPLIES products.sum(S,f)<=products.sum(S,g)
+
   sum_subset: LEMMA subset?(F,S) IMPLIES sums.sum(F,f)<=sums.sum(S,f)
+
   filter_add: LEMMA FORALL(e:T):intersection(add(e,S),A)=
     IF A(e) THEN add(e,intersection(S,A)) ELSE intersection(S,A) ENDIF
+
   sum_zero: LEMMA sums.sum(S,LAMBDA(t:T):0)=0
+
   sum_filter_zero: LEMMA (FORALL(x:T):NOT A(x) IMPLIES f(x)=0) IMPLIES
     sums.sum(F,f)=sums.sum(intersection(F,A),f)
+
 END ppg_nonneg_order

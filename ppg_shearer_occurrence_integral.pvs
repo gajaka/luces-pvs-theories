@@ -17,17 +17,25 @@ BEGIN
   enumeration: VAR FullEnumeration
   L: VAR LayerSeq
   omega: VAR LogSpace
+
   native_sequence_measurable: LEMMA NativeTableSigma(spaces)(sequenceOccurrence(bad,fallback,enumeration,a,L))
+
   sequenceEvents(bad,fallback,enumeration,a): [LayerSeq->(NativeTableSigma(spaces))] =
     LAMBDA(L:LayerSeq):sequenceOccurrence(bad,fallback,enumeration,a,L)
+
   eventLabelCode(enumeration)(c:C): nat = firstIndex(c,enumeration)
+
   layerSequenceCode(enumeration): Code = sequenceCode(eventLabelCode(enumeration))
+
   sequence_indicator_event: LEMMA nnEvent(sequenceEvents(bad,fallback,enumeration,a),omega)=
     sequenceWeightsNN(bad,fallback,enumeration,omega,a)
+
   sequence_count_function: LEMMA
     (LAMBDA(omega:LogSpace):randomInitResamplingCount(vars,bad,fallback,enumeration,omega,a))=
     (LAMBDA(omega:LogSpace):ppg_nonneg_tsum[LayerSeq].tsum(nnEvent(sequenceEvents(bad,fallback,enumeration,a),omega)))
+
   randomInitExpectedResamplingCount_eq_tsum_sequenceOccurrence: THEOREM
     randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a)=
       ppg_nonneg_tsum[LayerSeq].tsum(LAMBDA(L:LayerSeq):logMeasure(sequenceEvents(bad,fallback,enumeration,a)(L)))
+
 END ppg_shearer_occurrence_integral

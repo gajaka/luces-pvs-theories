@@ -10,50 +10,80 @@ BEGIN
             ppg_block_sequence_limit[I, Value, domain, spaces],
             ppg_finite_support_sequence[I], ppg_positive_halving,
             ppg_measurable_sequence[FullBlock]
+
   CylinderSequence: TYPE = [nat -> (Cylinders)]
+
   E: VAR CylinderSequence
   e: VAR posreal
   n: VAR nat
   x: VAR FullBlock
+
   supportOf(E, n): finite_set[I] = ppg_probability_cylinder_content[I, Value, domain, spaces, coins].representation(E(n))`1
+
   scope(E, n): finite_set[I] = supportPrefix(LAMBDA (k: nat): supportOf(E, k), n)
+
   newScope(E, n): finite_set[I] = newCoordinates(LAMBDA (k: nat): supportOf(E, k), n)
+
   scope_zero: LEMMA scope(E, 0) = emptyset[I]
+
   scope_monotone: LEMMA FORALL (m: nat): m <= n IMPLIES subset?(scope(E, m), scope(E, n))
+
   scope_contains: LEMMA subset?(ppg_probability_cylinder_content[I, Value, domain, spaces, coins].representation(E(n))`1, scope(E, n + 1))
+
   scope_new_disjoint: LEMMA disjoint?(scope(E, n), newScope(E, n))
+
   scope_new_union: LEMMA union(scope(E, n), newScope(E, n)) = scope(E, n + 1)
+
   event_depends_scope: LEMMA dependsOn(scope(E, n + 1), E(n))
+
   good(E, e, n, x): bool = FORALL (m: nat):
     halfRate(e, n) <= ppg_probability_cylinder_freeze[I, Value, domain, spaces, coins].conditionalMass(scope(E, n), x, E(m))
+
   nextCandidates(E, e, n, x): set[FullBlock] =
     {z: FullBlock | agreeOn(scope(E, n), z, x) AND good(E, e, n + 1, z)}
+
   candidate_exists: THEOREM decreasingEvents[FullBlock](E) AND good(E, e, n, x) IMPLIES
     nonempty?(nextCandidates(E, e, n, x))
+
   step(E, e, n, x): FullBlock =
     IF nonempty?(nextCandidates(E, e, n, x)) THEN choose(nextCandidates(E, e, n, x)) ELSE x ENDIF
+
   step_agrees: LEMMA agreeOn(scope(E, n), step(E, e, n, x), x)
+
   step_good: LEMMA decreasingEvents[FullBlock](E) AND good(E, e, n, x) IMPLIES
     good(E, e, n + 1, step(E, e, n, x))
+
   selected(E, e, n): RECURSIVE FullBlock =
     IF n = 0 THEN ppg_probability_cylinder_coherence[I, Value, domain, spaces, coins].anchor ELSE step(E, e, n - 1, selected(E, e, n - 1)) ENDIF MEASURE n
+
   selected_zero: LEMMA selected(E, e, 0) = ppg_probability_cylinder_coherence[I, Value, domain, spaces, coins].anchor
+
   selected_succ: LEMMA selected(E, e, n + 1) = step(E, e, n, selected(E, e, n))
+
   selected_next_agrees: LEMMA agreeOn(scope(E, n), selected(E, e, n + 1), selected(E, e, n))
+
   selected_good: THEOREM FORALL (n: nat): decreasingEvents[FullBlock](E) AND
     (FORALL (m: nat): e <= ppg_probability_cylinder_content[I, Value, domain, spaces, coins].content(E(m))) IMPLIES good(E, e, n, selected(E, e, n))
+
   selected_later_agrees: THEOREM FORALL (n, m: nat): m <= n IMPLIES
     agreeOn(scope(E, m), selected(E, e, m), selected(E, e, n))
+
   selected_compatible: LEMMA compatibleTables(LAMBDA (n: nat): scope(E, n),
     LAMBDA (n: nat): selected(E, e, n))
+
   constructedTable(E, e): FullBlock = limitTable(LAMBDA (n: nat): scope(E, n),
     LAMBDA (n: nat): selected(E, e, n), ppg_probability_cylinder_coherence[I, Value, domain, spaces, coins].anchor)
+
   constructed_agrees: LEMMA agreeOn(scope(E, n), constructedTable(E, e), selected(E, e, n))
+
   selected_event: LEMMA decreasingEvents[FullBlock](E) AND
     (FORALL (m: nat): e <= ppg_probability_cylinder_content[I, Value, domain, spaces, coins].content(E(m))) IMPLIES E(n)(selected(E, e, n + 1))
+
   constructed_event: THEOREM decreasingEvents[FullBlock](E) AND
     (FORALL (m: nat): e <= ppg_probability_cylinder_content[I, Value, domain, spaces, coins].content(E(m))) IMPLIES E(n)(constructedTable(E, e))
+
   common_cylinder_point: THEOREM decreasingEvents[FullBlock](E) AND
     (FORALL (n: nat): e <= ppg_probability_cylinder_content[I, Value, domain, spaces, coins].content(E(n))) IMPLIES
       EXISTS (x: FullBlock): FORALL (n: nat): E(n)(x)
+
 END ppg_probability_cylinder_selection

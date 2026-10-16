@@ -5,32 +5,52 @@ BEGIN
   S: VAR set[set[X]]
   E: VAR Family
   G: VAR set[set[X]]
+
   empty_event: LEMMA FORALL (B: set[X]): empty?(B) IMPLIES B = emptyset[X]
+
   sequence_union: LEMMA countableUnion(E) = IUnion(E)
+
   sequence_range_union: LEMMA Union(image(E)(fullset[nat])) = countableUnion(E)
+
   naturals_countable: LEMMA is_countable[nat](fullset[nat])
+
   sequenceIndex(E: Family, B: (image(E)(fullset[nat]))): nat =
     choose({n: nat | E(n) = B})
+
   sequenceIndex_value: LEMMA FORALL (B: (image(E)(fullset[nat]))):
     E(sequenceIndex(E, B)) = B
+
   sequence_range_countable: LEMMA is_countable[set[X]](image(E)(fullset[nat]))
+
   enumerate(G: set[set[X]], f: (injective?[(G), nat]))(n: nat): Event =
     IF EXISTS (B: (G)): f(B) = n
     THEN choose({B: (G) | f(B) = n}) ELSE emptyset[X] ENDIF
+
   enumerate_at: LEMMA FORALL (f: (injective?[(G), nat]), B: (G)):
     enumerate(G, f)(f(B)) = B
+
   enumerate_member_or_empty: LEMMA FORALL (f: (injective?[(G), nat]), n: nat):
     empty?(enumerate(G, f)(n)) OR G(enumerate(G, f)(n))
+
   enumerate_union: LEMMA FORALL (f: (injective?[(G), nat])):
     Union(G) = countableUnion(enumerate(G, f))
+
   countable_union_sequence: LEMMA is_countable[set[X]](G) IMPLIES
     EXISTS (E: Family): Union(G) = countableUnion(E) AND
       FORALL (n: nat): empty?(E(n)) OR G(E(n))
+
   sequential_to_nasa: LEMMA sigma?(S) IMPLIES sigma_algebra?(S)
+
   nasa_to_sequential: LEMMA sigma_algebra?(S) IMPLIES sigma?(S)
+
   sigma_equivalence: LEMMA sigma?(S) IFF sigma_algebra?(S)
+
   asNasa(S: MeasurableSpace): sigma_algebra = S
+
   asProject(S: sigma_algebra): MeasurableSpace = S
+
   nasa_roundtrip: LEMMA FORALL (S: sigma_algebra): asNasa(asProject(S)) = S
+
   project_roundtrip: LEMMA FORALL (S: MeasurableSpace): asProject(asNasa(S)) = S
+
 END ppg_nasa_sigma

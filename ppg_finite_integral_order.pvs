@@ -9,10 +9,14 @@ ppg_finite_integral_order[Omega: TYPE,
 BEGIN
   IMPORTING ppg_finite_measure_integral[Omega,S,measureLaw]
   f,g,h,c: VAR NativeFunction
+
   native_pointwise_monotone: LEMMA
     (FORALL(omega:Omega):f(omega)<=g(omega)) IMPLIES integral(f)<=integral(g)
+
   ae_bound_substitute: LEMMA ae_eq?(f,g) AND
     (FORALL(omega:Omega):g(omega)+c(omega)<=h(omega)) IMPLIES ae_le?(f+c,h)
+
   integral_ae_budget: LEMMA ae_le?(f+c,h) IMPLIES
     integral(f)+integral(c)<=integral(h)
+
 END ppg_finite_integral_order

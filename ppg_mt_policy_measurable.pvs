@@ -8,7 +8,9 @@
 ppg_mt_policy_measurable[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
 BEGIN
   IMPORTING ppg_mt_log_measurable[C, V, Value, domain]
+
   StatePair: TYPE = [MTState, MTState]
+
   IMPORTING ppg_mt_measurable_state[StatePair, C, V, Value, domain],
     ppg_measurable_pair[StatePair, MTState, MTState],
     ppg_measurable_compose[StatePair, MTState, C], ppg_measurable_map[MTState, C]
@@ -19,24 +21,32 @@ BEGIN
   vars: VAR CertVars
   pick: VAR [MTState -> C]
   F: VAR finite_set[V]
+
   measurableBad(coordinates, bad): bool =
     FORALL (c: C): StateSigma(coordinates)({s: MTState | bad(c, s)})
+
   StatePairSigma(coordinates): ppg_measurable_space[StatePair].MeasurableSpace =
     pairSigma(StateSigma(coordinates), StateSigma(coordinates))
+
   measurable_pickFromList: THEOREM measurableBad(coordinates, bad) IMPLIES
     measurable(StateSigma(coordinates), fullset[set[C]],
       LAMBDA (s: MTState): pickFromList(bad, fallback, enumeration, s))
+
   measurable_pickFirstViolated: THEOREM measurableBad(coordinates, bad) IMPLIES
     measurable(StateSigma(coordinates), fullset[set[C]],
       LAMBDA (s: MTState): pickFirstViolated(bad, fallback, enumeration, s))
+
   measurable_resample_fixed: THEOREM
     measurable(StatePairSigma(coordinates), StateSigma(coordinates),
       LAMBDA (p: StatePair): resample(F, p`1, p`2))
+
   measurable_pick_equality: LEMMA
     measurable(StateSigma(coordinates), fullset[set[C]], pick) IMPLIES
       StatePairSigma(coordinates)({p: StatePair | pick(p`1) = c})
+
   measurable_resampleChain: THEOREM
     measurable(StateSigma(coordinates), fullset[set[C]], pick) IMPLIES
       measurable(StatePairSigma(coordinates), StateSigma(coordinates),
         LAMBDA (p: StatePair): resampleChain(vars, pick, enumeration, p`1, p`2))
+
 END ppg_mt_policy_measurable

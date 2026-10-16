@@ -8,17 +8,24 @@ BEGIN
   A: VAR set[Y]
   y: VAR Y
   n: VAR nat
+
   codedFiber(f, code, A, n): set[X] = {x: X | A(f(x)) AND code(f(x)) = n}
+
   codedFiber_witness: LEMMA injective?(code) AND A(y) AND code(y) = n IMPLIES
     codedFiber(f, code, A, n) = inverseImage(f, singleton[Y](y))
+
   codedFiber_empty: LEMMA NOT (EXISTS (y: Y): A(y) AND code(y) = n) IMPLIES
     codedFiber(f, code, A, n) = emptyset[X]
+
   codedFiber_measurable: LEMMA injective?(code) AND
     (FORALL (y: Y): SX(inverseImage(f, singleton[Y](y)))) IMPLIES
     SX(codedFiber(f, code, A, n))
+
   coded_fibers_union: LEMMA inverseImage(f, A) =
     countableUnion(LAMBDA (n: nat): codedFiber(f, code, A, n))
+
   measurable_from_fibers: THEOREM injective?(code) AND
     (FORALL (y: Y): SX(inverseImage(f, singleton[Y](y)))) IMPLIES
     measurable(SX, fullset[set[Y]], f)
+
 END ppg_countable_discrete

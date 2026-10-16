@@ -8,15 +8,23 @@ BEGIN
   IMPORTING ppg_probability_cylinder_continuity[I, Value, domain, spaces, coins],
             ppg_probability_premeasure_extension[FullBlock, Cylinders, content],
             ppg_probability_unique[FullBlock, tableSigma]
+
   native_table_sigma: LEMMA nativeSigma = tableSigma
+
   extension_probability: LEMMA
     ppg_probability_measure[FullBlock, tableSigma].probability?(extension)
+
   infiniteLaw: ppg_probability_measure[FullBlock, tableSigma].Probability = extension
+
   infinite_compatible: THEOREM FORALL (A: (Cylinders)): infiniteLaw(A) = content(A)
+
   infinite_cylinder_mass: THEOREM FORALL (F: finite_set[I], B: (blockSigma(F))):
     infiniteLaw(tableCylinder(F, B)) = finiteLaw(F)(B)
+
   cylinders_intersection_closed: LEMMA intersectionClosed?(Cylinders)
+
   infinite_law_unique: THEOREM FORALL (beta:
     ppg_probability_measure[FullBlock, tableSigma].Probability):
       (FORALL (A: (Cylinders)): beta(A) = content(A)) IMPLIES beta = infiniteLaw
+
 END ppg_probability_infinite_product

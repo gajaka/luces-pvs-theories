@@ -21,28 +21,42 @@ BEGIN
   Q: VAR [nat,C->bool]
   bad: VAR [C,MTState->bool]
   omega: VAR LogSpace
+
   depthLabelProfile(T): finite_set[[nat,C]] = image[Addr,[nat,C]](LAMBDA(w:Addr):(length(w),T`lab(w)),T`dom)
+
   sameLayers(T,U): bool = FORALL(d:nat):treeLayer(T,d)=treeLayer(U,d)
+
   profile_member: LEMMA depthLabelProfile(T)((d,a)) IFF treeLayer(T,d)(a)
+
   depthLabelProfile_eq_of_layer_labels_eq: THEOREM sameLayers(T,U) IMPLIES depthLabelProfile(T)=depthLabelProfile(U)
+
   depth_label_injective: LEMMA SameDepthIndependent(vars,T) AND T`dom(w) AND T`dom(u) AND
     (length(w),T`lab(w))=(length(u),T`lab(u)) IMPLIES w=u
+
   selected_profile_image: LEMMA
     image[Addr,[nat,C]](LAMBDA(w:Addr):(length(w),T`lab(w)),intersection(T`dom,LAMBDA(w:Addr):Q(length(w),T`lab(w))))=
       intersection(depthLabelProfile(T),LAMBDA(z:[nat,C]):Q(z`1,z`2))
+
   card_filter_eq_card_depthLabelProfile: THEOREM SameDepthIndependent(vars,T) IMPLIES
     card(intersection(T`dom,LAMBDA(w:Addr):Q(length(w),T`lab(w))))=
       card(intersection(depthLabelProfile(T),LAMBDA(z:[nat,C]):Q(z`1,z`2)))
+
   localCount_eq_of_layer_labels_eq: THEOREM SameDepthIndependent(vars,T) AND SameDepthIndependent(vars,U) AND
     sameLayers(T,U) AND length(w)=length(u) IMPLIES localCount(vars,T,w,v)=localCount(vars,U,u,v)
+
   checkState_eq_of_layers: LEMMA SameDepthIndependent(vars,T) AND SameDepthIndependent(vars,U) AND
     sameLayers(T,U) AND length(w)=length(u) IMPLIES checkState(vars,T,omega,w)=checkState(vars,U,omega,u)
+
   matching_layer_vertex: LEMMA sameLayers(T,U) AND U`dom(u) IMPLIES
     EXISTS(w:Addr):T`dom(w) AND length(w)=length(u) AND T`lab(w)=U`lab(u)
+
   check_profile_transfer: LEMMA SameDepthIndependent(vars,T) AND SameDepthIndependent(vars,U) AND
     sameLayers(T,U) AND tauCheck(vars,bad,T,omega) IMPLIES tauCheck(vars,bad,U,omega)
+
   tauCheck_congr_of_layer_labels_eq: THEOREM SameDepthIndependent(vars,T) AND SameDepthIndependent(vars,U) AND
     sameLayers(T,U) IMPLIES (tauCheck(vars,bad,T,omega) IFF tauCheck(vars,bad,U,omega))
+
   tauCheck_congr_of_treeLayers_eq: THEOREM SameDepthIndependent(vars,T) AND SameDepthIndependent(vars,U) AND
     treeLayers(T)=treeLayers(U) IMPLIES (tauCheck(vars,bad,T,omega) IFF tauCheck(vars,bad,U,omega))
+
 END ppg_shearer_check_profile

@@ -17,20 +17,26 @@ BEGIN
   enumeration: VAR ComponentEnumeration
   K: VAR finite_set[C]
   B: VAR UniversalLabels
+
   randomInitExpectedSetResamplingCount(bad,fallback,enumeration,K): ENN =
     lintegral(LAMBDA(omega:LogSpace):randomInitSetResamplingCount(bad,fallback,enumeration,K,omega))
+
   native_count_sum_function: LEMMA
     (LAMBDA(omega:LogSpace):randomInitSetResamplingCount(bad,fallback,enumeration,K,omega))=
     (LAMBDA(omega:LogSpace):ppg_nonneg_tsum[C].esum(K,
       LAMBDA(a:C):eventCount(randomLabelEvents(vars,bad,fallback,enumeration)(a),omega)))
+
   randomInitExpectedSetResamplingCount_eq_sum: THEOREM
     randomInitExpectedSetResamplingCount(bad,fallback,enumeration,K)=
     ppg_nonneg_tsum[C].esum(K,LAMBDA(a:C):randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a))
+
   component_expectation_sum: LEMMA
     (LAMBDA(K:finite_set[C]):randomInitExpectedSetResamplingCount(bad,fallback,enumeration,K))=
     (LAMBDA(K:finite_set[C]):ppg_nonneg_tsum[C].esum(K,
       LAMBDA(a:C):randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a)))
+
   randomInitETLog_eq_sum_componentExpectations: THEOREM randomInitETLog(vars,bad,fallback,enumeration)=
     ppg_nonneg_tsum[finite_set[C]].esum(groups(vars,B),
       LAMBDA(K:finite_set[C]):randomInitExpectedSetResamplingCount(bad,fallback,enumeration,K))
+
 END ppg_shearer_component_integral

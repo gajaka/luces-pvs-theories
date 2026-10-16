@@ -10,25 +10,39 @@ BEGIN
   B: VAR Nonsingular
   F: VAR [nat->real]
   i,j,r,c: VAR nat
+
   transpose_square: LEMMA rows(transpose(A))=rows(A) AND
     columns(transpose(A))=rows(A)
+
   transpose_nonsingular: LEMMA det(transpose(B))/=0
+
   row_matrix_positive: LEMMA fullmatrix?(rowMatrix(rows(A),F)) AND
     0<rows(rowMatrix(rows(A),F)) AND 0<columns(rowMatrix(rows(A),F))
+
   columnMatrix(A,F): PosFullMatrix = transpose(rowMatrix(rows(A),F))
+
   column_matrix_dimensions: LEMMA rows(columnMatrix(A,F))=rows(A) AND
     columns(columnMatrix(A,F))=1
+
   column_matrix_entry: LEMMA i<rows(A) IMPLIES entry(columnMatrix(A,F))(i,0)=F(i)
+
   columnReplacement(A,F,i): Square =
     transpose(replace_row(i,array2list[real](rows(A))(F))(transpose(A)))
+
   column_replacement_dimensions: LEMMA rows(columnReplacement(A,F,i))=rows(A)
+
   column_replacement_entry: LEMMA r<rows(A) AND c<rows(A) IMPLIES
     entry(columnReplacement(A,F,i))(r,c)=IF c=i THEN F(r) ELSE entry(A)(r,c) ENDIF
+
   column_replacement_determinant: LEMMA det(columnReplacement(A,F,i))=
     det(replace_row(i,array2list[real](rows(A))(F))(transpose(A)))
+
   columnCramer(B,F)(i): real = IF i<rows(B) THEN
     det(columnReplacement(B,F,i))/det(B) ELSE 0 ENDIF
+
   column_cramer_row_coordinate: LEMMA
     columnCramer(B,F)=cramerCoefficients(transpose(B),F)
+
   column_cramer_equation: THEOREM B*columnMatrix(B,columnCramer(B,F))=columnMatrix(B,F)
+
 END ppg_native_cramer_columns

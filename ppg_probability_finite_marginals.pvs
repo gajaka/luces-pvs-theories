@@ -7,14 +7,19 @@ ppg_probability_finite_marginals[I, Value: TYPE, domain: [I -> set[Value]],
 BEGIN
   IMPORTING ppg_probability_finite_product[I, Value, domain, spaces, coins],
             ppg_finite_product_factors[I]
+
   coordinate_factors: LEMMA FORALL (i: I, B: (spaces(i))):
     (LAMBDA (j: I): coins(j)(atCoordinate(i, B)(j))) =
       (LAMBDA (j: I): IF j = i THEN coins(i)(B) ELSE 1 ENDIF)
+
   finite_coordinate_mass: LEMMA FORALL (F: finite_set[I], i: (F), B: (spaces(i))):
     finiteLaw(F)(blockCylinder(F, i, B)) = coins(i)(B)
+
   coordinateLaw(F: finite_set[I], i: (F)): CoordinateLaw(i) =
     ppg_probability_map[Block(F), (domain(i)), blockSigma(F), spaces(i)].pushforward(
       finiteLaw(F), LAMBDA (x: Block(F)): x(i))
+
   finite_coordinate_marginal: LEMMA FORALL (F: finite_set[I], i: (F)):
     coordinateLaw(F, i) = coins(i)
+
 END ppg_probability_finite_marginals

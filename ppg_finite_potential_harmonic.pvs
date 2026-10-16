@@ -18,36 +18,55 @@ BEGIN
   matrix: VAR Matrix
   s,t: VAR State
   c: VAR rat
+
   row_constant_sum: LEMMA Stochastic(M) IMPLIES
     rational.sum(universe,LAMBDA(u:State):M`transition(s,u)*c)=c
+
   offset_coefficients: LEMMA (LAMBDA(u:State):M`transition(s,u)*(f(u)-c))=
     (LAMBDA(u:State):M`transition(s,u)*f(u)-M`transition(s,u)*c)
+
   offset_sum_zero: LEMMA Stochastic(M) AND f(s)=c AND f(s)=successorValue(M,f,s)
     IMPLIES rational.sum(universe,LAMBDA(u:State):M`transition(s,u)*(f(u)-c))=0
+
   offset_nonnegative: LEMMA Stochastic(M) AND (FORALL(u:State):c<=f(u)) IMPLIES
     0<=M`transition(s,t)*(f(t)-c)
+
   minimum_step: THEOREM Stochastic(M) AND (FORALL(u:State):c<=f(u)) AND f(s)=c AND
     f(s)=successorValue(M,f,s) AND 0<M`transition(s,t) IMPLIES f(t)=c
+
   levelSet(f,c): set[State] = {u:State|f(u)=c}
+
   negative_minimum_inductive: LEMMA Stochastic(M) AND Harmonic(M,f) AND
     (FORALL(u:State):c<=f(u)) AND c<0 IMPLIES
     InductiveSet(positiveStep(M),levelSet(f,c))
+
   harmonic_minimum_reaches: LEMMA Stochastic(M) AND Harmonic(M,f) AND
     (FORALL(u:State):c<=f(u)) AND c<0 AND f(s)=c AND
     Reach(positiveStep(M))(s,t) IMPLIES f(t)=c
+
   harmonic_nonnegative: THEOREM Stochastic(M) AND Accessible(M) AND Harmonic(M,f)
     IMPLIES 0<=f(s)
+
   negativeVector(f): Vector = LAMBDA(s:State):-f(s)
+
   successor_negative: LEMMA successorValue(M,negativeVector(f),s)=-successorValue(M,f,s)
+
   harmonic_neg: THEOREM Harmonic(M,f) IMPLIES Harmonic(M,negativeVector(f))
+
   harmonic_zero: THEOREM Stochastic(M) AND Accessible(M) AND Harmonic(M,f) IMPLIES
     f=(LAMBDA(s:State):0)
+
   differenceVector(f,g): Vector = LAMBDA(s:State):f(s)-g(s)
+
   difference_products: LEMMA (LAMBDA(t:State):matrix(s,t)*differenceVector(f,g)(t))=
     (LAMBDA(t:State):matrix(s,t)*f(t)-matrix(s,t)*g(t))
+
   matVec_difference: LEMMA matVec(matrix,differenceVector(f,g))=
     differenceVector(matVec(matrix,f),matVec(matrix,g))
+
   difference_zero_iff: LEMMA differenceVector(f,g)=(LAMBDA(s:State):0) IFF f=g
+
   matrix_injective: THEOREM Stochastic(M) AND Accessible(M) IMPLIES
     (FORALL(f,g:Vector):matVec(systemMatrix(M),f)=matVec(systemMatrix(M),g) IMPLIES f=g)
+
 END ppg_finite_potential_harmonic

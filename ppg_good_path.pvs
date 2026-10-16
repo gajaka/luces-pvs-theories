@@ -6,23 +6,33 @@ BEGIN
   good: VAR set[State]
   v, w: VAR State
   trace, rest: VAR list[State]
+
   list_cases: LEMMA trace = null OR EXISTS w, rest: trace = cons(w, rest)
+
   GoodPath(step, good, v, trace): RECURSIVE bool = CASES trace OF
     null: good(v),
     cons(w, rest): step(v, w) AND GoodPath(step, good, w, rest)
   ENDCASES MEASURE length(trace)
+
   pathTarget(v, trace): RECURSIVE State = CASES trace OF
     null: v,
     cons(w, rest): pathTarget(w, rest)
   ENDCASES MEASURE length(trace)
+
   pathTarget_cons: LEMMA pathTarget(v, cons(w, trace)) = pathTarget(w, trace)
+
   goodPath_target: THEOREM GoodPath(step, good, v, trace) IMPLIES
     Reach(step)(v, pathTarget(v, trace)) AND good(pathTarget(v, trace))
+
   goodPath_single: LEMMA step(v, w) AND good(w) IMPLIES GoodPath(step, good, v, cons(w, null))
+
   goodPath_append: LEMMA GoodPath(step, LAMBDA (z: State): z = w, v, trace) AND GoodPath(step, good, w, rest)
     IMPLIES GoodPath(step, good, v, append(trace, rest))
+
   reach_has_path: LEMMA Reach(step)(v, w) IMPLIES
     EXISTS trace: GoodPath(step, LAMBDA (z: State): z = w, v, trace)
+
   reachable_good_iff_goodPath: THEOREM
     (EXISTS w: Reach(step)(v, w) AND good(w)) IFF EXISTS trace: GoodPath(step, good, v, trace)
+
 END ppg_good_path

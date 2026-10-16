@@ -6,9 +6,14 @@ BEGIN
   S, A, B: VAR finite_set[T]
   f: VAR [T -> real]
   x: VAR T
+
   fsum_eq_sum: LEMMA fsum(S, f) = additive.sum(S, f)
+
   fsum_diff_subset: LEMMA subset?(A, B) IMPLIES
     fsum(B, f) = fsum(A, f) + fsum(difference(B, A), f)
+
   fsum_add: LEMMA fsum(add(x, S), f) = fsum(S, f) + IF S(x) THEN 0 ELSE f(x) ENDIF
+
   fsum_disj_union: LEMMA disjoint?(A, B) IMPLIES fsum(union(A, B), f) = fsum(A, f) + fsum(B, f)
+
 END ppg_real_sum

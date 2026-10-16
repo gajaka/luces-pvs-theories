@@ -21,67 +21,94 @@ BEGIN
   omega: VAR LogSpace
   t, s: VAR nat
   P: VAR pred[nat]
+
   prefix_forall_succ: LEMMA (FORALL(s:nat):s<t+1 IMPLIES P(s)) IFF
     ((FORALL(s:nat):s<t IMPLIES P(s)) AND P(t))
+
   scanBad(bad, fallback, enumeration): set[MTState] =
     {om: MTState | bad(pickFromList(bad, fallback, enumeration, om), om)}
+
   scanBad_nil: LEMMA scanBad(bad, fallback, null) = {om: MTState | bad(fallback, om)}
+
   scanBad_cons: LEMMA scanBad(bad, fallback, cons(a, enumeration)) =
     union({om: MTState | bad(a, om)}, scanBad(bad, fallback, enumeration))
+
   measurable_scanBad: LEMMA measurableBad(coordinates, bad) IMPLIES
     StateSigma(coordinates)(scanBad(bad, fallback, enumeration))
+
   labelEvent(vars, bad, fallback, enumeration, init, a, s): set[LogSpace] =
     {omega: LogSpace | realC(vars, bad, fallback, enumeration, init(omega), omega, s) = a}
+
   violatedAtEvent(vars, bad, fallback, enumeration, init, s): set[LogSpace] =
     {omega: LogSpace | bad(realC(vars, bad, fallback, enumeration, init(omega), omega, s),
       randStep(vars, bad, fallback, enumeration, init(omega), omega, s)`1)}
+
   runningEvent(vars, bad, fallback, enumeration, init, t): set[LogSpace] =
     {omega: LogSpace | RunningUntil(vars, bad, fallback, enumeration, init(omega), omega, t)}
+
   resamplingEvent(vars, bad, fallback, enumeration, init, a, s): set[LogSpace] =
     intersection(runningEvent(vars, bad, fallback, enumeration, init, s + 1),
       labelEvent(vars, bad, fallback, enumeration, init, a, s))
+
   violatedAt_preimage: LEMMA violatedAtEvent(vars, bad, fallback, enumeration, init, s) =
     inverseImage(LAMBDA (omega: LogSpace):
       randStep(vars, bad, fallback, enumeration, init(omega), omega, s)`1,
       scanBad(bad, fallback, enumeration))
+
   runningEvent_zero: LEMMA runningEvent(vars, bad, fallback, enumeration, init, 0) = fullset[LogSpace]
+
   runningEvent_succ: LEMMA runningEvent(vars, bad, fallback, enumeration, init, t + 1) =
     intersection(runningEvent(vars, bad, fallback, enumeration, init, t),
       violatedAtEvent(vars, bad, fallback, enumeration, init, t))
+
   measurable_realC_of_measurable_init: THEOREM measurableBad(coordinates, bad) AND
     measurable(TableSigma(coordinates), StateSigma(coordinates), init) IMPLIES
     measurable(TableSigma(coordinates), fullset[set[C]], LAMBDA (omega: LogSpace):
       realC(vars, bad, fallback, enumeration, init(omega), omega, s))
+
   measurable_labelEvent: LEMMA measurableBad(coordinates, bad) AND
     measurable(TableSigma(coordinates), StateSigma(coordinates), init) IMPLIES
     TableSigma(coordinates)(labelEvent(vars, bad, fallback, enumeration, init, a, s))
+
   measurableSet_violatedAt_of_measurable_init: THEOREM measurableBad(coordinates, bad) AND
     measurable(TableSigma(coordinates), StateSigma(coordinates), init) IMPLIES
     TableSigma(coordinates)(violatedAtEvent(vars, bad, fallback, enumeration, init, s))
+
   measurableSet_runningUntil_of_measurable_init: THEOREM measurableBad(coordinates, bad) AND
     measurable(TableSigma(coordinates), StateSigma(coordinates), init) IMPLIES
     TableSigma(coordinates)(runningEvent(vars, bad, fallback, enumeration, init, t))
+
   measurableSet_resamplingEvent_of_measurable_init: LEMMA measurableBad(coordinates, bad) AND
     measurable(TableSigma(coordinates), StateSigma(coordinates), init) IMPLIES
     TableSigma(coordinates)(resamplingEvent(vars, bad, fallback, enumeration, init, a, s))
+
   measurableSet_violatedAt: THEOREM measurableBad(coordinates, bad) IMPLIES
     TableSigma(coordinates)(violatedAtEvent(vars, bad, fallback, enumeration, LAMBDA (omega: LogSpace): initial, s))
+
   measurableSet_runningUntil: THEOREM measurableBad(coordinates, bad) IMPLIES
     TableSigma(coordinates)(runningEvent(vars, bad, fallback, enumeration, LAMBDA (omega: LogSpace): initial, t))
+
   measurableSet_realC_eq: THEOREM measurableBad(coordinates, bad) IMPLIES
     TableSigma(coordinates)(labelEvent(vars, bad, fallback, enumeration, LAMBDA (omega: LogSpace): initial, a, s))
+
   measurableSet_resamplingEvent: THEOREM measurableBad(coordinates, bad) IMPLIES
     TableSigma(coordinates)(resamplingEvent(vars, bad, fallback, enumeration, LAMBDA (omega: LogSpace): initial, a, s))
+
   randomInitRunningEvent(vars, bad, fallback, enumeration, t): set[LogSpace] =
     runningEvent(vars, bad, fallback, enumeration, initialStateFromLog, t)
+
   randomInitResamplingEvent(vars, bad, fallback, enumeration, a, s): set[LogSpace] =
     resamplingEvent(vars, bad, fallback, enumeration, initialStateFromLog, a, s)
+
   measurableSet_randomInitRunningEvent: THEOREM measurableBad(coordinates, bad) IMPLIES
     TableSigma(coordinates)(randomInitRunningEvent(vars, bad, fallback, enumeration, t))
+
   measurableSet_randomInitResamplingEvent: THEOREM measurableBad(coordinates, bad) IMPLIES
     TableSigma(coordinates)(randomInitResamplingEvent(vars, bad, fallback, enumeration, a, s))
+
   tauCheck_holds_of_randomInit_trajectory: THEOREM mt_wf(vars, bad) AND 1 <= t AND
     randomInitRunningEvent(vars, bad, fallback, enumeration, t)(omega) IMPLIES
     tauCheck(vars, bad, tau_C(vars,
       shiftedC(vars, bad, fallback, enumeration, initialStateFromLog(omega), omega), t), omega)
+
 END ppg_mt_stopped_events

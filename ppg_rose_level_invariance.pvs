@@ -15,13 +15,18 @@ BEGIN
   g: VAR [nat, C -> R]
   f: VAR [WTree -> WTree]
   d, n: VAR nat
+
   hom_unfold: LEMMA nodeHom(h, g) IMPLIES h(d, t) =
     op(g(d, roseLabel(t)), treeLists.fold(roseChildren(t), LAMBDA (c: WTree): h(d + 1, c)))
+
   rebuild_hom: LEMMA nodeHom(h, g) AND proper(t) AND
     (FORALL (c: WTree): member(c, roseChildren(t)) IMPLIES h(d + 1, f(c)) = h(d + 1, c))
     IMPLIES h(d, rebuild(t, f)) = h(d, t)
+
   canonicalFuel_hom: THEOREM nodeHom(h, g) AND proper(t) AND depth(t) <= n IMPLIES
     h(d, canonicalFuel(n, t)) = h(d, t)
+
   canonicalize_hom: THEOREM nodeHom(h, g) AND proper(t) IMPLIES
     h(d, canonicalize(t)) = h(d, t)
+
 END ppg_rose_level_invariance

@@ -14,42 +14,70 @@ ppg_hls_matching[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
   (FORALL(i,j:C):A(i,j)=A(j,i))},p:[C->real]]: THEORY
 BEGIN
   IMPORTING ppg_hls_parameters
+
   % Non-fixed pairs must be edges of the dependency graph G.
   DependencyMatching: TYPE = {mate:[C->C]|
     (FORALL(i:C):mate(mate(i))=i) AND
     (FORALL(i:C):mate(i)/=i IMPLIES G(i,mate(i)))}
+
   OverlapData: TYPE = [#mate:DependencyMatching,delta:[C->real]#]
+
   overlapBounds(p:[C->real],D:OverlapData): bool =
     (FORALL(i:C):D`delta(D`mate(i))=D`delta(i)) AND
     (FORALL(i:C):D`mate(i)=i IMPLIES D`delta(i)=0) AND
     (FORALL(i:C):0<=D`delta(i)) AND
     (FORALL(i:C):D`delta(i)<=p(i))
+
   OverlapBounds: TYPE = {D:OverlapData|overlapBounds(p,D)}
+
   D: VAR OverlapBounds
   i: VAR C
+
   reduced(D)(i): real = reducedWeight(p(i),D`delta(i))
+
   prime(D)(i): real = primeWeight(p(i),p(D`mate(i)),D`delta(i))
+
   discount(D)(i): real = savingFraction(p(i),p(D`mate(i)),D`delta(i))
+
   splitUp(D)(i): real = prime(D)(i)
+
   splitDown(D)(i): real = reduced(D)(i)-prime(D)(i)
+
   overlap_symmetric: LEMMA D`delta(D`mate(i))=D`delta(i)
+
   overlap_unmatched: LEMMA D`mate(i)=i IMPLIES D`delta(i)=0
+
   overlap_nonnegative: LEMMA 0<=D`delta(i)
+
   overlap_le_prob: LEMMA D`delta(i)<=p(i)
+
   mate_le_prob: THEOREM D`delta(i)<=p(D`mate(i))
+
   reduced_le: THEOREM reduced(D)(i)<=p(i)
+
   reduced_eq_unmatched: THEOREM D`mate(i)=i IMPLIES reduced(D)(i)=p(i)
+
   reduced_lt_of_overlap: THEOREM 0<D`delta(i) IMPLIES reduced(D)(i)<p(i)
+
   reduced_pos: THEOREM (FORALL(j:C):0<p(j)) AND (FORALL(j:C):p(j)<=1) IMPLIES 0<reduced(D)(i)
+
   prime_pos: THEOREM (FORALL(j:C):0<p(j)) IMPLIES 0<prime(D)(i)
+
   discount_nonneg: THEOREM (FORALL(j:C):0<p(j)) IMPLIES 0<=discount(D)(i)
+
   discount_le: THEOREM (FORALL(j:C):0<p(j)) IMPLIES discount(D)(i)<=1/8
+
   prime_eq_mul: THEOREM (FORALL(j:C):0<p(j)) IMPLIES prime(D)(i)=p(i)*(1-discount(D)(i))
+
   splitDown_nonneg: THEOREM (FORALL(j:C):0<p(j)) AND (FORALL(j:C):p(j)<=1) IMPLIES 0<=splitDown(D)(i)
+
   split_sum: THEOREM splitUp(D)(i)+splitDown(D)(i)=reduced(D)(i)
+
   split_dominates: THEOREM (FORALL(j:C):0<p(j)) AND (FORALL(j:C):p(j)<=1) IMPLIES
     p(i)<=reduced(D)(i)+reduced(D)(D`mate(i))*splitDown(D)(i)
+
   four_choices_dominate: THEOREM (FORALL(j:C):0<p(j)) AND (FORALL(j:C):p(j)<=1) IMPLIES
     p(i)<=splitUp(D)(i)+splitDown(D)(i)+splitDown(D)(i)*splitUp(D)(D`mate(i))+
       splitDown(D)(i)*splitDown(D)(D`mate(i))
+
 END ppg_hls_matching

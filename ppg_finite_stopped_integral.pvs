@@ -19,17 +19,27 @@ BEGIN
   X: VAR AdaptedProcess
   n: VAR nat
   omega: VAR Omega
+
   full_state_singletons: LEMMA singletonMeasurable(fullStateSigma)
+
   adapted_process_measurable: LEMMA processMeasurable(fullStateSigma,X)
+
   runningAmbient(M,X,n): (S) = runningEvent(M,X,n)
+
   runningHistory(M,X,n): (history(n)) = runningAmbient(M,X,n)
+
   stoppedNativeValue(M,f,X,n): NativeFunction =
     restricted(runningAmbient(M,X,n),integrableValue(f,ambientState(X,n)))
+
   stopped_native_function: LEMMA stoppedNativeValue(M,f,X,n)=stoppedValue(M,f,X,n)
+
   stoppedValue_integrable: THEOREM EXISTS(g:NativeFunction):g=stoppedValue(M,f,X,n)
+
   stopped_native_initial: LEMMA Equations(M,f) IMPLIES
     stoppedNativeValue(M,f,X,0)=integrableValue(f,ambientState(X,0))
+
   stopped_native_shift: LEMMA Equations(M,f) IMPLIES
     stoppedNativeValue(M,f,X,n+1)=
       restricted(runningAmbient(M,X,n),integrableValue(f,ambientState(X,n+1)))
+
 END ppg_finite_stopped_integral

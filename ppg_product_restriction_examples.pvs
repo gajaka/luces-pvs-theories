@@ -1,29 +1,47 @@
 % Disjoint blocks, different coordinate domains, and the empty block.
 ppg_product_restriction_examples: THEORY
 BEGIN
+
   Coordinate: TYPE = below(2)
+
   domain(i: Coordinate): set[nat] = {n: nat | n <= IF i = 0 THEN 1 ELSE 2 ENDIF}
+
   leftBlock: set[Coordinate] = singleton[Coordinate](0)
+
   rightBlock: set[Coordinate] = singleton[Coordinate](1)
+
   IMPORTING ppg_product_restriction[Coordinate, nat, domain, leftBlock]
+
   Assignment: TYPE = [i: Coordinate -> (domain(i))]
+
   base: Assignment = LAMBDA (i: Coordinate): 0
+
   rightValue: [i: (rightBlock) -> (domain(i))] = LAMBDA (i: (rightBlock)): 2
+
   leftEvent: set[Assignment] = {x: Assignment | x(0) = 1}
+
   emptyValue: [i: (emptyset[Coordinate]) -> (domain(i))] =
     LAMBDA (i: (emptyset[Coordinate])): 0
+
   coordinates(i: Coordinate): ppg_measurable_space[nat].MeasurableSpace = fullset[set[nat]]
+
   different_domains_preserved: THEOREM
     updateBlock(base, rightBlock, rightValue)(0) = 0 AND
     updateBlock(base, rightBlock, rightValue)(1) = 2
+
   left_block_unaffected: THEOREM
     restrict(updateBlock(base, rightBlock, rightValue)) = restrict(base)
+
   empty_update_identity: THEOREM FORALL (x: Assignment):
     updateBlock(x, emptyset[Coordinate], emptyValue) = x
+
   left_event_depends_on_block: THEOREM dependsOn(leftEvent)
+
   left_event_factors: THEOREM
     leftEvent = {x: Assignment | blockEvent(base, leftEvent)(restrict(x))}
+
   extension_measurable: THEOREM measurable(blockSigma(coordinates),
     productSigma[Partial, Coordinate, nat, domain](coordinates),
     LAMBDA (y: Partial): extendDefault(base, y))
+
 END ppg_product_restriction_examples

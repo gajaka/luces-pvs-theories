@@ -22,21 +22,30 @@ BEGIN
   w: VAR Addr
   Clog: VAR [nat -> C]
   t: VAR nat
+
   baseEvent(bad: NativeBad, a: C): (NativeStateSigma(spaces)) = {s: MTState | bad(a, s)}
+
   labelFactors(bad, T): [Addr -> real] = LAMBDA (w: Addr): stateMeasure(baseEvent(bad, T`lab(w)))
+
   checkState_readAt: LEMMA (LAMBDA (omega: LogSpace): checkState(vars, T, omega, w)) =
     readAt(LAMBDA (v: V): localCount(vars, T, w, v))
+
   check_event_preimage: LEMMA checkEvents(vars, bad, T)(w) =
     ppg_measurable_map[LogSpace, MTState].inverseImage(
       readAt(LAMBDA (v: V): localCount(vars, T, w, v)), baseEvent(bad, T`lab(w)))
+
   logMeasure_checkState_eq_pi: THEOREM
     logMeasure(checkEvents(vars, bad, T)(w)) = stateMeasure(baseEvent(bad, T`lab(w)))
+
   check_event_factors_eq_labels: LEMMA
     ppg_probability_event_product[LogSpace, Addr, NativeTableSigma(spaces)].eventFactors(
       logMeasure, checkEvents(vars, bad, T)) = labelFactors(bad, T)
+
   finite_tree_check_product_p: THEOREM mt_wf(vars, bad) AND SameDepthIndependent(vars, T) IMPLIES
     logMeasure({omega: LogSpace | tauCheck(vars, bad, T, omega)}) = product(T`dom, labelFactors(bad, T))
+
   logMeasure_tauCheck_eq_prod_p: THEOREM mt_wf(vars, bad) IMPLIES
     logMeasure({omega: LogSpace | tauCheck(vars, bad, tau_C(vars, Clog, t), omega)}) =
       product(tau_C(vars, Clog, t)`dom, labelFactors(bad, tau_C(vars, Clog, t)))
+
 END ppg_mt_finite_check_probability

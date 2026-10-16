@@ -8,13 +8,20 @@ BEGIN
   IMPORTING ppg_probability_cylinder_content[I, Value, domain, spaces, coins],
             ppg_content_countadd[FullBlock, Cylinders],
             ppg_probability_continuity[FullBlock, tableSigma]
+
   content_additive: LEMMA additiveMass?(content)
+
   content_premeasure: THEOREM continuousEmpty?(content) IMPLIES
     generalized_measure_def[FullBlock, Cylinders].finite_measure?(content)
+
   compatible?(mu: Probability): bool = FORALL (A: (Cylinders)): mu(A) = content(A)
+
   cylinder_sequence_measurable: LEMMA FORALL (E: [nat -> (Cylinders)], n: nat): tableSigma(E(n))
+
   compatible_sequence_mass: LEMMA FORALL (mu: Probability, E: [nat -> (Cylinders)]):
     compatible?(mu) IMPLIES content o E = mu o E
+
   compatible_continuity: THEOREM FORALL (mu: Probability): compatible?(mu) IMPLIES
     continuousEmpty?(content)
+
 END ppg_probability_cylinder_premeasure

@@ -6,13 +6,18 @@ BEGIN
   IMPORTING ppg_finite_induction[T]
   A: VAR finite_set[T]
   p: VAR pred[T]
+
   finiteAll(A,p): RECURSIVE bool =
     IF empty?(A) THEN TRUE
     ELSE p(choose(A)) AND finiteAll(rest(A),p) ENDIF
     MEASURE card(A)
+
   finite_all_empty: LEMMA finiteAll(emptyset[T],p)
+
   finite_all_step: LEMMA NOT empty?(A) IMPLIES
     (finiteAll(A,p) IFF p(choose(A)) AND finiteAll(rest(A),p))
+
   finite_all_iff: THEOREM finiteAll(A,p) IFF
     (FORALL(x:T):A(x) IMPLIES p(x))
+
 END ppg_finite_all

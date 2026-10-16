@@ -17,35 +17,48 @@ BEGIN
   IMPORTING ppg_mt_check_measurable[C, V, Value, domain],
             ppg_mt_check_birth[C, V, Value, domain],
             ppg_mt_log_family[C, V, Value, list[nat], domain, spaces, laws]
+
   NativeBad: TYPE = {bad: [C, MTState -> bool] |
     FORALL (a: C): NativeStateSigma(spaces)({s: MTState | bad(a, s)})}
+
   vars: VAR CertVars
   bad: VAR NativeBad
   T: VAR GTree
   w: VAR Addr
   Clog: VAR [nat -> C]
   t: VAR nat
+
   native_bad_ambient: LEMMA measurableBad(variableAmbient(spaces), bad)
+
   native_check_event_measurable: LEMMA NativeTableSigma(spaces)(
     {omega: LogSpace | bad(T`lab(w), checkState(vars, T, omega, w))})
+
   checkEvents(vars, bad, T): LogEvents = LAMBDA (w: Addr):
     {omega: LogSpace | bad(T`lab(w), checkState(vars, T, omega, w))}
+
   checkBlocks(vars, T)(w: Addr): set[[nat, V]] = vertexIdx(vars, T, w)
+
   check_event_depends: LEMMA mt_wf(vars, bad) IMPLIES
     logDepends(checkBlocks(vars, T)(w), checkEvents(vars, bad, T)(w))
+
   check_blocks_disjoint: LEMMA SameDepthIndependent(vars, T) IMPLIES
     pairwiseDisjoint(T`dom, checkBlocks(vars, T))
+
   tauCheck_event_eq: LEMMA {omega: LogSpace | tauCheck(vars, bad, T, omega)} =
     ppg_finite_events[LogSpace, Addr, NativeTableSigma(spaces)].finiteMeet(T`dom, checkEvents(vars, bad, T))
+
   tauCheck_measurable: LEMMA NativeTableSigma(spaces)(
     {omega: LogSpace | tauCheck(vars, bad, T, omega)})
+
   tree_check_product: THEOREM mt_wf(vars, bad) AND SameDepthIndependent(vars, T) IMPLIES
     logMeasure({omega: LogSpace | tauCheck(vars, bad, T, omega)}) =
       product(T`dom, ppg_probability_event_product[LogSpace, Addr, NativeTableSigma(spaces)].eventFactors(
         logMeasure, checkEvents(vars, bad, T)))
+
   logMeasure_tauCheck_eq_prod: THEOREM mt_wf(vars, bad) IMPLIES
     logMeasure({omega: LogSpace | tauCheck(vars, bad, tau_C(vars, Clog, t), omega)}) =
       product(tau_C(vars, Clog, t)`dom,
         ppg_probability_event_product[LogSpace, Addr, NativeTableSigma(spaces)].eventFactors(
           logMeasure, checkEvents(vars, bad, tau_C(vars, Clog, t))))
+
 END ppg_mt_check_probability

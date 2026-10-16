@@ -15,25 +15,32 @@ BEGIN
   initial: VAR MTState
   omega: VAR LogSpace
   n, t, s: VAR nat
+
   randC(vars, bad, fallback, enumeration, initial, omega)(t): C =
     pickFirstViolated(bad, fallback, enumeration,
       randTraj(vars, bad, fallback, enumeration, initial, omega, t))
+
   TLOG(vars, bad, fallback, enumeration, initial, omega, n): nat =
     card(filteredRange(LAMBDA (t: nat):
       NOT MTGood(bad, randTraj(vars, bad, fallback, enumeration, initial, omega, t)), n))
+
   genuineAt(vars, bad, fallback, enumeration, initial, omega, a, n): finite_set[nat] =
     filteredRange(LAMBDA (t: nat): 0 < t AND
       NOT MTGood(bad, randTraj(vars, bad, fallback, enumeration, initial, omega, t)) AND
       randC(vars, bad, fallback, enumeration, initial, omega)(t) = a, n)
+
   genuineAt_member: LEMMA genuineAt(vars, bad, fallback, enumeration, initial, omega, a, n)(t) IFF
     t < n AND 0 < t AND
     NOT MTGood(bad, randTraj(vars, bad, fallback, enumeration, initial, omega, t)) AND
     randC(vars, bad, fallback, enumeration, initial, omega)(t) = a
+
   genuineAt_trees_injective: LEMMA
     treeImage.injOn(LAMBDA (t: nat): tau_C(vars, randC(vars, bad, fallback, enumeration, initial, omega), t),
       genuineAt(vars, bad, fallback, enumeration, initial, omega, a, n))
+
   card_genuineAt_eq_card_trees: THEOREM
     card(genuineAt(vars, bad, fallback, enumeration, initial, omega, a, n)) =
     card(image(LAMBDA (t: nat): tau_C(vars, randC(vars, bad, fallback, enumeration, initial, omega), t),
       genuineAt(vars, bad, fallback, enumeration, initial, omega, a, n)))
+
 END ppg_mt_genuine_count

@@ -20,12 +20,16 @@ BEGIN
   enumeration: VAR {xs:list[C]|completeEnumeration(xs)}
   p,x: VAR [C->nonneg_real]
   edges: VAR [MTState,MTState->bool]
+
   ae_randomInit_exists_good: THEOREM mt_wf(vars,bad) AND pegdenUpper(bad,p) AND
     pegdenBudget(vars,labelUniverse(enumeration),p,x) IMPLIES
       ae?[LogSpace,asNasa(NativeTableSigma(spaces)),nasaLaw](terminationEvent(vars,bad,fallback,enumeration))
+
   exists_MTGood: THEOREM mt_wf(vars,bad) AND pegdenUpper(bad,p) AND
     pegdenBudget(vars,labelUniverse(enumeration),p,x) IMPLIES EXISTS(z:MTState):MTGood(bad,z)
+
   mtRepairGraph_globally_repairable: THEOREM mt_wf(vars,bad) AND pegdenUpper(bad,p) AND
     pegdenBudget(vars,labelUniverse(enumeration),p,x) IMPLIES
       globally_repairable(mtRepairGraph(vars,bad,fallback,enumeration,edges))
+
 END ppg_pegden_termination

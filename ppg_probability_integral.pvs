@@ -4,31 +4,51 @@ ppg_probability_integral[X: TYPE,
   (IMPORTING ppg_probability_measure[X, S]) probLaw: Probability]: THEORY
 BEGIN
   IMPORTING ppg_probability_continuity[X, S]
+
   nasaLaw: generalized_measure_def[X, asNasa(S)].measure_type =
     generalized_measure_def[X, asNasa(S)].to_measure(probLaw)
+
   nasa_law_eq: LEMMA nasaLaw = generalized_measure_def[X, asNasa(S)].to_measure(probLaw)
+
   IMPORTING measure_integration@integral[X, asNasa(S), nasaLaw]
+
   NativeFunction: TYPE = integrable[X, asNasa(S), nasaLaw]
+
   expectation(f: NativeFunction): real = integral(f)
+
   native_function_measurable: LEMMA FORALL (f: NativeFunction):
     measurable_function?[X, asNasa(S)](f)
+
   native_event_finite: LEMMA FORALL (A: (S)): mu_fin?(A)
+
   native_event_mass: LEMMA FORALL (A: (S)):
     measure_props[X, asNasa(S), nasaLaw].mu(A) = probLaw(A)
+
   indicator(A: (S)): NativeFunction = phi(A)
+
   constant(c: real): NativeFunction = c * indicator(fullset[X])
+
   indicator_value: LEMMA FORALL (A: (S), x: X):
     indicator(A)(x) = IF A(x) THEN 1 ELSE 0 ENDIF
+
   constant_value: LEMMA FORALL (c: real, x: X): constant(c)(x) = c
+
   expectation_indicator: LEMMA FORALL (A: (S)): expectation(indicator(A)) = probLaw(A)
+
   expectation_constant: LEMMA FORALL (c: real): expectation(constant(c)) = c
+
   expectation_add: LEMMA FORALL (f, g: NativeFunction):
     expectation(f + g) = expectation(f) + expectation(g)
+
   expectation_scale: LEMMA FORALL (c: real, f: NativeFunction):
     expectation(c * f) = c * expectation(f)
+
   empty_negligible: LEMMA negligible_set?[X, asNasa(S), nasaLaw](emptyset[X])
+
   pointwise_ae_le: LEMMA FORALL (f, g: [X -> real]):
     (FORALL (x: X): f(x) <= g(x)) IMPLIES ae_le?(f, g)
+
   expectation_monotone: THEOREM FORALL (f, g: NativeFunction):
     (FORALL (x: X): f(x) <= g(x)) IMPLIES expectation(f) <= expectation(g)
+
 END ppg_probability_integral

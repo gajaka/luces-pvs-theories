@@ -12,41 +12,61 @@ BEGIN
             ppg_mt_log_family[C, V, Value, V, domain, spaces, laws],
             ppg_probability_finite_consistency[V, Value, domain, spaces, laws] AS stateProduct,
             ppg_measurable_block_map, ppg_measurable_compose
+
   StateBlock(F: set[V]): TYPE = ppg_measurable_block[V, Value, domain, spaces].Block(F)
+
   StateBlockSigma(F: set[V]): ppg_measurable_space[StateBlock(F)].MeasurableSpace = ppg_measurable_block[V, Value, domain, spaces].blockSigma(F)
+
   state_block_sigma_eq: LEMMA FORALL (F: set[V]): StateBlockSigma(F) =
     ppg_measurable_block[V, Value, domain, spaces].blockSigma(F)
+
   log_entry_domain: LEMMA FORALL (omega: LogSpace, p: [nat, V]): domain(p`2)(omega(p))
+
   StateBlockLaw(F: set[V]): TYPE = ppg_probability_block_restriction[V, Value, domain, spaces].BlockLaw(F)
+
   StateEvents: TYPE = ppg_measurable_block_box[V, Value, domain, spaces].CoordinateEvents
+
   native_readAt_measurable: LEMMA FORALL (n: Counter):
     ppg_measurable_map[LogSpace, MTState].measurable(
       NativeTableSigma(spaces), NativeStateSigma(spaces), readAt(n))
+
   native_read_coordinate: LEMMA FORALL (n: Counter, v: V):
     ppg_measurable_map[LogSpace, (domain(v))].measurable(
       NativeTableSigma(spaces), spaces(v), LAMBDA (omega: LogSpace): readAt(n)(omega)(v))
+
   readBlock(F: set[V], n: Counter)(omega: LogSpace): StateBlock(F) =
     LAMBDA (v: (F)): readAt(n)(omega)(v)
+
   read_block_measurable: LEMMA FORALL (F: set[V], n: Counter):
     ppg_measurable_map[LogSpace, StateBlock(F)].measurable(
       NativeTableSigma(spaces), StateBlockSigma(F), readBlock(F, n))
+
   readBlockLaw(F: finite_set[V], n: Counter): StateBlockLaw(F) =
     ppg_probability_map[LogSpace, StateBlock(F), NativeTableSigma(spaces), StateBlockSigma(F)].pushforward(
       logMeasure, readBlock(F, n))
+
   readEvents(n: Counter, E: StateEvents): LogEvents =
     LAMBDA (v: V): log_coin_event(n(v), v, E(v))
+
   readBlocks(n: Counter)(v: V): set[[nat, V]] = singleton[[nat, V]]((n(v), v))
+
   read_blocks_disjoint: LEMMA FORALL (F: set[V], n: Counter): pairwiseDisjoint(F, readBlocks(n))
+
   read_events_depend: LEMMA FORALL (n: Counter, E: StateEvents, v: V):
     logDepends(readBlocks(n)(v), readEvents(n, E)(v))
+
   read_box_preimage: LEMMA FORALL (F: set[V], n: Counter, E: StateEvents):
     ppg_measurable_map[LogSpace, StateBlock(F)].inverseImage(readBlock(F, n), ppg_measurable_block_box[V, Value, domain, spaces].blockBox(F, E)) =
       ppg_finite_events[LogSpace, V, NativeTableSigma(spaces)].finiteMeet(F, readEvents(n, E))
+
   read_event_factors: LEMMA FORALL (n: Counter, E: StateEvents):
     ppg_probability_event_product[LogSpace, V, NativeTableSigma(spaces)].eventFactors(logMeasure, readEvents(n, E)) =
       LAMBDA (v: V): laws(v)(E(v))
+
   read_block_box_mass: LEMMA FORALL (F: finite_set[V], n: Counter, E: StateEvents):
     readBlockLaw(F, n)(ppg_measurable_block_box[V, Value, domain, spaces].blockBox(F, E)) = product(F, LAMBDA (v: V): laws(v)(E(v)))
+
   read_block_marginal: THEOREM FORALL (F: finite_set[V], n: Counter):
     readBlockLaw(F, n) = ppg_probability_finite_product[V, Value, domain, spaces, laws].finiteLaw(F)
+
 END ppg_mt_read_probability

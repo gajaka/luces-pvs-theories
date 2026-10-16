@@ -20,53 +20,69 @@ BEGIN
   project: VAR [State -> Abstract]
   u, v, w: VAR State
   a: VAR Abstract
+
   StepSimulation(step, good, astep, agood, project): bool =
     (FORALL u, w: step(u, w) IMPLIES astep(project(u), project(w))) AND
     (FORALL w: good(w) IMPLIES agood(project(w)))
+
   ExactAbstraction(step, good, astep, agood, project): bool =
     StepSimulation(step, good, astep, agood, project) AND
     (FORALL u, a: astep(project(u), a) IMPLIES EXISTS w: step(u, w) AND project(w) = a) AND
     (FORALL w: agood(project(w)) IMPLIES good(w))
+
   concreteGraph(step, good): ppg_repair_semantics[State].RepairGraph =
     (# edges := step, reach_rel := concrete.Reach(step), invariant_holds := good #)
+
   abstractGraph(astep, agood): ppg_repair_semantics[Abstract].RepairGraph =
     (# edges := astep, reach_rel := abstract.Reach(astep), invariant_holds := agood #)
+
   simulation_maps_reachable: THEOREM
     StepSimulation(step, good, astep, agood, project) AND concrete.Reach(step)(v, w)
     IMPLIES abstract.Reach(astep)(project(v), project(w))
+
   simulation_maps_reachable_good: THEOREM
     StepSimulation(step, good, astep, agood, project) AND
     (EXISTS w: concrete.Reach(step)(v, w) AND good(w)) IMPLIES
       EXISTS a: abstract.Reach(astep)(project(v), a) AND agood(a)
+
   simulation_pulls_back_refutation: THEOREM
     StepSimulation(step, good, astep, agood, project) AND
     abstract.InvariantRefutation(astep, agood, project(v), I) IMPLIES
       concrete.InvariantRefutation(step, good, v, LAMBDA (w: State): I(project(w)))
+
   simulation_refutes_concrete: THEOREM
     StepSimulation(step, good, astep, agood, project) AND
     (NOT EXISTS a: abstract.Reach(astep)(project(v), a) AND agood(a)) IMPLIES
       NOT EXISTS w: concrete.Reach(step)(v, w) AND good(w)
+
   exactAbstraction_good_iff: THEOREM
     ExactAbstraction(step, good, astep, agood, project) IMPLIES (good(w) IFF agood(project(w)))
+
   exactAbstraction_good_constant_on_fibers: THEOREM
     ExactAbstraction(step, good, astep, agood, project) AND project(u) = project(w) IMPLIES (good(u) IFF good(w))
+
   exactAbstraction_lifts_reachable: THEOREM
     ExactAbstraction(step, good, astep, agood, project) AND abstract.Reach(astep)(project(v), a) IMPLIES
       EXISTS w: concrete.Reach(step)(v, w) AND project(w) = a
+
   exactAbstraction_reachable_good_iff: THEOREM
     ExactAbstraction(step, good, astep, agood, project) IMPLIES
       ((EXISTS w: concrete.Reach(step)(v, w) AND good(w)) IFF
         EXISTS a: abstract.Reach(astep)(project(v), a) AND agood(a))
+
   exactAbstraction_unreachable_iff: THEOREM
     ExactAbstraction(step, good, astep, agood, project) IMPLIES
       ((NOT EXISTS w: concrete.Reach(step)(v, w) AND good(w)) IFF
         NOT EXISTS a: abstract.Reach(astep)(project(v), a) AND agood(a))
+
   exactAbstraction_noReachableGood_iff: THEOREM
     ExactAbstraction(step, good, astep, agood, project) IMPLIES
       (ppg_infeasibility[State, bool].NoReachableGood(concreteGraph(step, good), v) IFF
         ppg_infeasibility[Abstract, bool].NoReachableGood(abstractGraph(astep, agood), project(v)))
+
   exactAbstraction_repair_possible_iff: THEOREM
     ExactAbstraction(step, good, astep, agood, project) AND ppg_repair_semantics[State].isolated(concreteGraph(step, good), v) IMPLIES
       (ppg_repair_semantics[State].repair_possible(concreteGraph(step, good), v) IFF
         ppg_repair_semantics[Abstract].repair_possible(abstractGraph(astep, agood), project(v)))
+
 END ppg_step_abstraction

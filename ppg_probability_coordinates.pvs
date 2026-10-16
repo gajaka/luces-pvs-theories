@@ -2,19 +2,28 @@
 ppg_probability_coordinates[I, Value: TYPE, domain: [I -> set[Value]]]: THEORY
 BEGIN
   IMPORTING ppg_measurable_space, ppg_probability_measure
+
   CoordinateSpaces: TYPE =
     [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]
+
   ProbabilityFamily(spaces: CoordinateSpaces): TYPE =
     [i: I -> ppg_probability_measure[(domain(i)), spaces(i)].Probability]
+
   Pi: TYPE = [i: I -> (domain(i))]
+
   spaces: VAR CoordinateSpaces
   i: VAR I
+
   basePoint(spaces: CoordinateSpaces, laws: ProbabilityFamily(spaces)): Pi = LAMBDA (i: I):
     ppg_probability_measure[(domain(i)), spaces(i)].basePoint(laws(i))
+
   coordinate_nonempty: LEMMA FORALL (spaces: CoordinateSpaces, laws: ProbabilityFamily(spaces), i: I):
     nonempty?(domain(i))
+
   basePoint_in_domain: LEMMA FORALL (spaces: CoordinateSpaces, laws: ProbabilityFamily(spaces)):
     domain(i)(basePoint(spaces, laws)(i))
+
   product_inhabited: LEMMA FORALL (spaces: CoordinateSpaces, laws: ProbabilityFamily(spaces)):
     EXISTS (x: Pi): x = basePoint(spaces, laws)
+
 END ppg_probability_coordinates

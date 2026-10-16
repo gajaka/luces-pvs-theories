@@ -1,19 +1,30 @@
 % Boundary times reconstruct leaves, and actual Boolean logs enter the family.
 ppg_mt_real_examples: THEORY
 BEGIN
+
   Empty: TYPE = {b: bool | FALSE}
+
   IMPORTING ppg_mt_real_witness[bool, Empty]
   vars: VAR CertVars
   Clog: VAR [nat -> bool]
   t: VAR nat
+
   U: finite_set[bool] = add(TRUE, singleton(FALSE))
+
   empty_footprints: CertVars = LAMBDA (b: bool): emptyset[Empty]
+
   full_labels: LEMMA fullUniverse(U)
+
   singleton_children: LEMMA FORALL (a: bool): childSet(gt_singleton(a), null) = emptyset[Addr]
+
   singleton_reconstruction: THEOREM FORALL (a: bool, n: nat):
     toWTreeFuel(gt_singleton(a), n, null) = roseNode(a, null)
+
   zero_time_reconstruction: THEOREM toWTree(tau_C(vars, Clog, 0), null) = roseNode(Clog(0), null)
+
   first_time_reconstruction: THEOREM toWTree(tau_C(vars, Clog, 1), null) = roseNode(Clog(1), null)
+
   constant_log_in_family: THEOREM witnessFamily(empty_footprints, U, TRUE)
     (realWitness(empty_footprints, LAMBDA (n: nat): TRUE, t))
+
 END ppg_mt_real_examples

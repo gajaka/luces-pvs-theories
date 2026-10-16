@@ -10,18 +10,27 @@ BEGIN
   A: VAR set[ENN]
   x,y: VAR ENN
   a,b: VAR nonneg_real
+
   lowerFinite(A): set[nonneg_real] = {a:nonneg_real|
     EXISTS(x:ENN):A(x) AND ele(ennFinite(a),x)}
+
   extendedSup(A): ENN = sSup(lowerFinite(A))
+
   lower_finite_member: LEMMA A(x) AND ele(ennFinite(a),x) IMPLIES lowerFinite(A)(a)
+
   finite_tests: LEMMA
     (FORALL(a:nonneg_real):ele(ennFinite(a),x) IMPLIES a<=b) IFF ele(x,ennFinite(b))
+
   lower_finite_bound: LEMMA
     (FORALL(a:nonneg_real):lowerFinite(A)(a) IMPLIES a<=b) IFF
     (FORALL(x:ENN):A(x) IMPLIES ele(x,ennFinite(b)))
+
   extended_sup_finite_bound: LEMMA ele(extendedSup(A),ennFinite(b)) IFF
     (FORALL(x:ENN):A(x) IMPLIES ele(x,ennFinite(b)))
+
   extended_sup_upper: THEOREM A(x) IMPLIES ele(x,extendedSup(A))
+
   extended_sup_least: THEOREM
     (FORALL(x:ENN):A(x) IMPLIES ele(x,y)) IMPLIES ele(extendedSup(A),y)
+
 END ppg_enn_complete_sup

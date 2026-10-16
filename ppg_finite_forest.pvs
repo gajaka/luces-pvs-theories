@@ -12,39 +12,63 @@ BEGIN
   label: VAR [T -> I]
   P: VAR pred[T]
   Q: VAR [I,T -> bool]
+
   familyProperty(S,F,Q): bool = FORALL(k:I,c:T): S(k) AND F(k)(c) IMPLIES Q(k,c)
+
   family_rest: LEMMA familyProperty(S,F,Q) IMPLIES familyProperty(rest(S),F,Q)
+
   family_at: LEMMA familyProperty(S,F,Q) AND S(k) AND F(k)(c) IMPLIES Q(k,c)
+
   choiceValid(S,F,f): bool = FORALL(k:I): S(k) IMPLIES F(k)(f(k))
+
   choice_rest: LEMMA choiceValid(S,F,f) IMPLIES choiceValid(rest(S),F,f)
+
   choice_at: LEMMA choiceValid(S,F,f) AND S(k) IMPLIES F(k)(f(k))
+
   consFamily(c,H): finite_set[list[T]] = image[list[T],list[T]](LAMBDA(xs:list[T]):cons(c,xs),H)
+
   consFamily_member: LEMMA consFamily(c,H)(xs) IFF EXISTS(ys:list[T]): H(ys) AND xs=cons(c,ys)
+
   consFamily_disjoint: LEMMA c/=d IMPLIES disjoint?(consFamily(c,H),consFamily(d,H))
+
   cons_injective: LEMMA cons(c,xs)=cons(c,ys) IMPLIES xs=ys
+
   forest(S,F): RECURSIVE finite_set[list[T]] = IF empty?(S) THEN singleton(null[T]) ELSE
     biUnion(F(choose(S)),LAMBDA(c:T):consFamily(c,forest(rest(S),F))) ENDIF MEASURE card(S)
+
   forest_empty: LEMMA forest(emptyset[I],F)=singleton(null[T])
+
   forest_step: LEMMA NOT empty?(S) IMPLIES forest(S,F)=
     biUnion(F(choose(S)),LAMBDA(c:T):consFamily(c,forest(rest(S),F)))
+
   forest_member_step: LEMMA FORALL(SS:non_empty_finite_set[I]): forest(SS,F)(xs) IFF
     EXISTS(c:T,ys:list[T]): F(choose(SS))(c) AND forest(rest(SS),F)(ys) AND xs=cons(c,ys)
+
   forest_intro: LEMMA FORALL(SS:non_empty_finite_set[I]): F(choose(SS))(c) AND forest(rest(SS),F)(ys)
     IMPLIES forest(SS,F)(cons(c,ys))
+
   forest_every: LEMMA forest(S,F)(xs) AND familyProperty(S,F,LAMBDA(k:I,c:T):P(c))
     IMPLIES every(P)(xs)
+
   forest_labels: LEMMA forest(S,F)(xs) AND familyProperty(S,F,LAMBDA(k:I,c:T):label(c)=k)
     IMPLIES map(label)(xs)=ppg_list_sets[I].setList(S)
+
   forest_attach: LEMMA choiceValid(S,F,f)
     IMPLIES forest(S,F)(map(f)(ppg_list_sets[I].setList(S)))
+
   map_update_rest: LEMMA FORALL(SS:non_empty_finite_set[I]):
     map(LAMBDA(k:I):IF k=choose(SS) THEN c ELSE f(k) ENDIF)(ppg_list_sets[I].setList(rest(SS))) =
       map(f)(ppg_list_sets[I].setList(rest(SS)))
+
   update_valid: LEMMA FORALL(SS:non_empty_finite_set[I]): choiceValid(rest(SS),F,f) AND F(choose(SS))(c)
     IMPLIES choiceValid(SS,F,LAMBDA(k:I):IF k=choose(SS) THEN c ELSE f(k) ENDIF)
+
   forest_choice: LEMMA FORALL(base:[I -> T]): forest(S,F)(xs) IMPLIES
     EXISTS(f:[I -> T]): choiceValid(S,F,f) AND xs=map(f)(ppg_list_sets[I].setList(S))
+
   attach_injective: LEMMA map(f)(ppg_list_sets[I].setList(S))=map(g)(ppg_list_sets[I].setList(S))
     IMPLIES FORALL(k:I): S(k) IMPLIES f(k)=g(k)
+
   forest_mono: LEMMA familyProperty(S,F,LAMBDA(k:I,c:T):G(k)(c)) IMPLIES subset?(forest(S,F),forest(S,G))
+
 END ppg_finite_forest

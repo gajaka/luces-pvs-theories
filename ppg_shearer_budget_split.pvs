@@ -13,14 +13,21 @@ BEGIN
   IMPORTING ppg_shearer_budget[C,G]
   S,T,J: VAR finite_set[C]
   p: VAR [C->real]
+
   outside_union: THEOREM subset?(J,S) AND disjoint?(S,T) AND noCrossEdges(S,T) IMPLIES
     outside(union(S,T),J)=union(outside(S,J),T)
+
   root_subset_union: LEMMA subset?(J,S) IMPLIES subset?(J,union(S,T))
+
   outside_separated: LEMMA disjoint?(S,T) AND noCrossEdges(S,T) IMPLIES
     disjoint?(outside(S,J),T) AND noCrossEdges(outside(S,J),T)
+
   coefficient_union: THEOREM subset?(J,S) AND disjoint?(S,T) AND noCrossEdges(S,T) IMPLIES
     coefficient(p,union(S,T),J)=coefficient(p,S,J)*polynomial(p,T)
+
   div0_cancel: LEMMA FORALL(a,b,c:real):c/=0 IMPLIES div0(a*c,b*c)=div0(a,b)
+
   stableBudget_union: THEOREM subset?(J,S) AND disjoint?(S,T) AND noCrossEdges(S,T) AND
     polynomial(p,T)/=0 IMPLIES stableBudget(p,union(S,T),J)=stableBudget(p,S,J)
+
 END ppg_shearer_budget_split

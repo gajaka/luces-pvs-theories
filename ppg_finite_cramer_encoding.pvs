@@ -7,34 +7,52 @@ ppg_finite_cramer_encoding[State: TYPE,
   universe:{U:finite_set[State]|FORALL(s:State):U(s)}]: THEORY
 BEGIN
   IMPORTING ppg_finite_native_sum[State,universe],ppg_native_cramer_columns
+
   PositiveMatrix: TYPE = {A:StateMatrix|0<nm.rows(nativeMatrix(A))}
+
   NonsingularStateMatrix: TYPE = {A:PositiveMatrix|stateDeterminant(A)/=0}
+
   A: VAR PositiveMatrix
   B: VAR NonsingularStateMatrix
   v: VAR StateVector
   i,j,r,c: VAR Index
+
   native_matrix_representation: LEMMA nativeMatrix(A)=form_matrix(nativeEntries(A),dimension,dimension)
+
   nativePositive(A): Square = nativeMatrix(A)
+
   native_positive_dimensions: LEMMA nm.rows(nativePositive(A))=dimension AND
     nm.columns(nativePositive(A))=dimension
+
   native_positive_entry: LEMMA nm.entry(nativePositive(A))(i,j)=A(state(i),state(j))
+
   native_positive_determinant: LEMMA np.det(nativePositive(A))=stateDeterminant(A)
+
   nativeNonsingular(B): Nonsingular = nativePositive(B)
+
   sourceColumn(A,v): PosFullMatrix = columnMatrix(nativePositive(A),stateExtension(v))
+
   source_column_dimensions: LEMMA rows(sourceColumn(A,v))=dimension AND
     columns(sourceColumn(A,v))=1
+
   source_column_entry: LEMMA entry(sourceColumn(A,v))(i,0)=v(state(i))
+
   source_column_form: LEMMA sourceColumn(A,v)=
     form_matrix(LAMBDA(i,j:nat):stateExtension(v)(i),dimension,1)
+
   native_replaced_dimensions: LEMMA
     rows(columnReplacement(nativePositive(A),stateExtension(v),i))=dimension AND
     columns(columnReplacement(nativePositive(A),stateExtension(v),i))=dimension
+
   native_replaced_entry: LEMMA
     entry(columnReplacement(nativePositive(A),stateExtension(v),i))(r,c)=
       replaceColumn(A,v,state(i))(state(r),state(c))
+
   native_replaced_column: LEMMA
     nativePositive(replaceColumn(A,v,state(i)))=
       columnReplacement(nativePositive(A),stateExtension(v),i)
+
   native_cramer_coordinate: LEMMA
     columnCramer(nativeNonsingular(B),stateExtension(v))(i)=cramerValue(B,v)(state(i))
+
 END ppg_finite_cramer_encoding

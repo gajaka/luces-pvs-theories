@@ -18,19 +18,26 @@ BEGIN
   n, d: VAR nat
   h: VAR [nat, WTree -> R]
   g: VAR [nat, C -> R]
+
   nodeHom(h, g): bool = FORALL (d: nat, a: C, cs: list[WTree]):
     h(d, roseNode(a, cs)) = op(g(d, a), treeLists.fold(cs, LAMBDA (c: WTree): h(d + 1, c)))
+
   node_hom_leaf: LEMMA nodeHom(h, g) IMPLIES h(d, roseNode(T`lab(v), null)) = g(d, T`lab(v))
+
   reconstruction_fold_step: LEMMA nodeHom(h, g) IMPLIES
     h(d, toWTreeFuel(T, n + 1, v)) = op(g(d, T`lab(v)),
       addressSums.sum(childSet(T, v), LAMBDA (u: Addr): h(d + 1, toWTreeFuel(T, n, u))))
+
   child_fuel_bound: LEMMA childSet(T, v)(u) AND
     (FORALL (w: Addr): T`dom(w) IMPLIES length(w) <= length(v) + n + 1)
     IMPLIES FORALL (w: Addr): T`dom(w) IMPLIES length(w) <= length(u) + n
+
   toWTreeFuel_fold: THEOREM nodeHom(h, g) AND gt_valid?(T) AND T`dom(v) AND
     (FORALL (w: Addr): T`dom(w) IMPLIES length(w) <= length(v) + n)
     IMPLIES h(length(v), toWTreeFuel(T, n, v)) =
       addressSums.sum(descendants(T, v), LAMBDA (w: Addr): g(length(w), T`lab(w)))
+
   toWTree_fold: THEOREM nodeHom(h, g) AND gt_valid?(T) IMPLIES
     h(0, toWTree(T, null)) = addressSums.sum(T`dom, LAMBDA (w: Addr): g(length(w), T`lab(w)))
+
 END ppg_mt_reconstruction_fold

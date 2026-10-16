@@ -14,9 +14,14 @@ BEGIN
   IMPORTING ppg_finite_rational_matrix[State,universe]
   M: VAR Model
   W: VAR Witness
+
   potential(M): StateVector = cramerValue(systemMatrix(M),systemRHS(M))
+
   candidate(M): Witness = (# potential:=potential(M),delta:=1 #)
+
   synthesize(M): lift[Witness] = IF check(M,candidate(M)) THEN up[Witness](candidate(M))
     ELSE bottom[Witness] ENDIF
+
   synthesize_sound: THEOREM synthesize(M)=up[Witness](W) IMPLIES check(M,W)
+
 END ppg_finite_potential_synthesis

@@ -12,20 +12,29 @@
 ppg_shearer_witness[C,V:TYPE,(IMPORTING ppg_bdd[C,V]) vars:CertVars]: THEORY
 BEGIN
   IMPORTING ppg_shearer_tree_layers[C,V,vars], ppg_mt_real_structure[C,V]
+
   UniversalLabels: TYPE = {B:finite_set[C]|FORALL(a:C):B(a)}
+
   B: VAR UniversalLabels
   T: VAR GTree
   a,b: VAR C
   J: VAR Layer
   d,t: VAR nat
   Clog: VAR [nat->C]
+
   dependencyGraph_adj_neighbor: THEOREM dependencyGraph(a,b) IFF a/=b AND dependent?(vars)(a,b)
+
   treeLayer_independent: THEOREM SameDepthIndependent(vars,T) IMPLIES Independent(treeLayer(T,d))
+
   closed_compatible: LEMMA B(b) AND J(a) AND (a=b OR dependent?(vars)(a,b)) IMPLIES closed(B,J)(b)
+
   treeLayer_succ_subset_closed: THEOREM gt_valid?(T) AND edgeCompatible(vars,T) IMPLIES
     subset?(treeLayer(T,d+1),closed(B,treeLayer(T,d)))
+
   treeLayer_succ_mem_successors: THEOREM gt_valid?(T) AND SameDepthIndependent(vars,T) AND
     edgeCompatible(vars,T) IMPLIES successors(B,treeLayer(T,d))(treeLayer(T,d+1))
+
   treeLayers_mem_properFamily: THEOREM
     properFamily(B,sets[C].singleton(Clog(t)))(treeLayers(tau_C(vars,Clog,t)))
+
 END ppg_shearer_witness

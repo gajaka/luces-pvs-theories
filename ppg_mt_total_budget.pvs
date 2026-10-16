@@ -20,12 +20,15 @@ BEGIN
   fallback: VAR C
   enumeration: VAR {xs:list[C]|completeEnumeration(xs)}
   p,x: VAR [C->nonneg_real]
+
   randomInitETLog_le_sum: THEOREM mt_wf(vars,bad) AND
     (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND
     budget(vars,labelUniverse(enumeration),p,x) IMPLIES
     ele(randomInitETLog(vars,bad,fallback,enumeration),ennFinite(tSum.sum(labelUniverse(enumeration),x)))
+
   randomInitETLog_lt_top: THEOREM mt_wf(vars,bad) AND
     (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND
     budget(vars,labelUniverse(enumeration),p,x) IMPLIES
     ennFinite?(randomInitETLog(vars,bad,fallback,enumeration))
+
 END ppg_mt_total_budget

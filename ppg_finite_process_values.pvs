@@ -17,15 +17,24 @@ BEGIN
   t: VAR State
   M: VAR Model
   W: VAR Witness
+
   stateIndicator(X,t)(omega:Omega): real = IF X(omega)=t THEN 1 ELSE 0 ENDIF
+
   stateExpansion(f,X): [Omega->real] = LAMBDA(omega:Omega):
     fsum(universe,LAMBDA(t:State):f(t)*stateIndicator(X,t)(omega))
+
   full_contains: LEMMA universe(t)
+
   indicator_coefficients: LEMMA
     (LAMBDA(t:State):f(t)*stateIndicator(X,t)(omega))=
     (LAMBDA(t:State):IF t=X(omega) THEN f(t) ELSE 0 ENDIF)
+
   finite_value_expansion: THEOREM (LAMBDA(omega:Omega):f(X(omega)))=stateExpansion(f,X)
+
   rate(W): nonneg_real = IF 0<=W`delta THEN W`delta ELSE 0 ENDIF
+
   rate_coe: THEOREM check(M,W) IMPLIES rate(W)=W`delta
+
   rate_positive: THEOREM check(M,W) IMPLIES 0<rate(W)
+
 END ppg_finite_process_values

@@ -20,16 +20,22 @@ BEGIN
   h: VAR [Layer->R]
   g: VAR [nat->Layer]
   d,n,k: VAR nat
+
   depth_slice_fold: LEMMA SameDepthIndependent(vars,T) IMPLIES
     addresses.sum(treeSlice(T,d),LAMBDA(w:Addr):f(length(w),T`lab(w)))=
       labels.sum(treeLayer(T,d),LAMBDA(a:C):f(d,a))
+
   fold_dom_eq_fold_layers: THEOREM SameDepthIndependent(vars,T) IMPLIES
     addresses.sum(T`dom,LAMBDA(w:Addr):f(length(w),T`lab(w)))=
       depths.sum(natRange(treeDepth(T)+1),LAMBDA(d:nat):labels.sum(treeLayer(T,d),LAMBDA(a:C):f(d,a)))
+
   window_snoc: LEMMA layerWindow(g,n+1,k)=
     append[Layer](layerWindow(g,n,k),cons[Layer](g(k+n+1),null[Layer]))
+
   fold_window: LEMMA FORALL(g:[nat->Layer]):layers.fold(layerWindow(g,n,k),h)=
     depths.sum(natRange(n+1),LAMBDA(d:nat):h(g(k+d)))
+
   fold_map_treeLayers: THEOREM layers.fold(treeLayers(T),h)=
     depths.sum(natRange(treeDepth(T)+1),LAMBDA(d:nat):h(treeLayer(T,d)))
+
 END ppg_shearer_profile_fold

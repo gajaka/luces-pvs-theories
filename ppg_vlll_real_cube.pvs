@@ -12,56 +12,90 @@
 ppg_vlll_real_cube[m:nat]: THEORY
 BEGIN
   IMPORTING ppg_vlll_cube[m],ppg_vlll_cylinder[m] AS geometric
+
   CubeCoordinate: TYPE = ppg_vlll_cube[m].Coordinate
+
   PlainCube: TYPE = geometric.CubeState
+
   cubeDecode(x:MTState): PlainCube = LAMBDA(j:CubeCoordinate):x(j)
+
   cubeEncode(x:PlainCube): MTState = LAMBDA(j:CubeCoordinate):intoFull(x(j))
+
   cube_decode_encode: LEMMA FORALL(x:PlainCube):cubeDecode(cubeEncode(x))=x
+
   cube_encode_decode: LEMMA FORALL(x:MTState):cubeEncode(cubeDecode(x))=x
+
   IMPORTING ppg_measurable_map[MTState,PlainCube]
+
   plainSigma: ppg_measurable_space[PlainCube].MeasurableSpace =
     ppg_measurable_map[MTState,PlainCube].imageSigma(NativeStateSigma(cubeSpaces),cubeDecode)
+
   cube_decode_measurable: LEMMA ppg_measurable_map[MTState,PlainCube].measurable(
     NativeStateSigma(cubeSpaces),plainSigma,cubeDecode)
+
   IMPORTING ppg_probability_map[MTState,PlainCube,NativeStateSigma(cubeSpaces),plainSigma]
+
   plainLaw: ppg_probability_measure[PlainCube,plainSigma].Probability =
     ppg_probability_map[MTState,PlainCube,NativeStateSigma(cubeSpaces),plainSigma].pushforward(stateMeasure,cubeDecode)
+
   plainEvent(j:CubeCoordinate,E:set[real]): set[PlainCube] = {x:PlainCube|E(x(j))}
+
   plain_event_preimage: LEMMA FORALL(j:CubeCoordinate,E:(borelSigma)):
     ppg_measurable_map[MTState,PlainCube].inverseImage(cubeDecode,plainEvent(j,E))=coordinateEvent(j,E)
+
   plain_event_measurable: LEMMA FORALL(j:CubeCoordinate,E:(borelSigma)):plainSigma(plainEvent(j,E))
+
   plain_event_law: LEMMA FORALL(j:CubeCoordinate,E:(borelSigma)):plainLaw(plainEvent(j,E))=borelUniform(E)
 
   plainGenerators: set[set[PlainCube]] = {A:set[PlainCube]|EXISTS(j:CubeCoordinate,E:(borelSigma)):A=plainEvent(j,E)}
+
   plainProductSigma: ppg_measurable_space[PlainCube].MeasurableSpace =
     ppg_measurable_space[PlainCube].generated(plainGenerators)
+
   plain_generator_member: LEMMA FORALL(j:CubeCoordinate,E:(borelSigma)):plainGenerators(plainEvent(j,E))
+
   plain_product_event: LEMMA FORALL(j:CubeCoordinate,E:(borelSigma)):plainProductSigma(plainEvent(j,E))
+
   plain_generators_measurable: LEMMA sets[set[PlainCube]].subset?(plainGenerators,plainSigma)
+
   plain_sigma_lower: LEMMA sets[set[PlainCube]].subset?(plainProductSigma,plainSigma)
+
   encode_coordinate_preimage: LEMMA FORALL(j:CubeCoordinate,B:set[FullReal]):
     ppg_measurable_map[PlainCube,FullReal].inverseImage(LAMBDA(x:PlainCube):cubeEncode(x)(j),B)=
     plainEvent(j,ppg_measurable_map[real,FullReal].inverseImage(intoFull,B))
+
   IMPORTING ppg_measurable_dependent_product[PlainCube,CubeCoordinate,real,realDomain]
+
   cube_encode_coordinate_measurable: LEMMA FORALL(j:CubeCoordinate):
     ppg_measurable_map[PlainCube,FullReal].measurable(plainProductSigma,fullSpace,
       LAMBDA(x:PlainCube):cubeEncode(x)(j))
+
   encode_target_sigma: LEMMA
     ppg_measurable_dependent_product[PlainCube,CubeCoordinate,real,realDomain].nativeProduct(cubeSpaces)=NativeStateSigma(cubeSpaces)
+
   cube_encode_measurable: LEMMA ppg_measurable_map[PlainCube,MTState].measurable(
     plainProductSigma,NativeStateSigma(cubeSpaces),cubeEncode)
+
   decode_encode_preimage: LEMMA FORALL(A:set[PlainCube]):
     ppg_measurable_map[PlainCube,MTState].inverseImage(cubeEncode,
       ppg_measurable_map[MTState,PlainCube].inverseImage(cubeDecode,A))=A
+
   plain_sigma_upper: LEMMA sets[set[PlainCube]].subset?(plainSigma,plainProductSigma)
+
   plain_sigma_eq_product: THEOREM plainSigma=plainProductSigma
 
   IMPORTING ppg_probability_outer[PlainCube,plainSigma,plainLaw] AS outer,
     ppg_probability_outer_step[PlainCube,plainSigma,plainLaw] AS growth
+
   plainMass(A:set[PlainCube]): nonneg_real = outer.mass(A)
+
   plainMass_event: LEMMA FORALL(j:CubeCoordinate,E:(borelSigma)):plainMass(plainEvent(j,E))=borelUniform(E)
+
   plainMass_slice: LEMMA FORALL(j:CubeCoordinate,s,t:real):
     0<=s AND s<=t AND t<=1 IMPLIES plainMass(plainEvent(j,intervalSlice(s,t)))=t-s
+
   plainMass_zero: LEMMA FORALL(j:CubeCoordinate):plainMass(plainEvent(j,halfLine(0)))=0
+
   plainMass_one: LEMMA FORALL(j:CubeCoordinate):plainMass(plainEvent(j,halfLine(1)))=1
+
 END ppg_vlll_real_cube

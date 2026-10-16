@@ -9,43 +9,70 @@ ppg_finite_atomic_probability[T: TYPE,
   universe:{U:finite_set[T]|FORALL(x:T):U(x)}]: THEORY
 BEGIN
   IMPORTING ppg_measurable_space[T],ppg_finite_series[T]
+
   fullSigma: MACRO MeasurableSpace = fullset[set[T]]
+
   IMPORTING ppg_probability_dirac[T,fullSigma]
+
   WeightVector: TYPE = [T->nonneg_real]
+
   w: VAR WeightVector
   A: VAR (fullSigma)
   x: VAR T
   E: VAR disjoint_indexed_measurable
+
   full_sigma: LEMMA sigma?[T](fullset[set[T]])
+
   atomicMass(w)(A:(fullSigma)): nonneg_real =
     fsum(universe,LAMBDA(x:T):IF A(x) THEN w(x) ELSE 0 ENDIF)
+
   atomSequences(w,E): [T->sequence[real]] = LAMBDA(x:T):
     LAMBDA(n:nat):w(x)*pointMass(x)(E(n))
+
   atomLimits(w,E): [T->real] = LAMBDA(x:T):w(x)*pointMass(x)(IUnion(E))
+
   sequence_scale_eta: LEMMA FORALL(a:sequence[real],c:real):
     c*a=(LAMBDA(n:nat):c*a(n))
+
   full_contains: LEMMA universe(x)
+
   weighted_event_fun: LEMMA
     (LAMBDA(x:T):IF A(x) THEN w(x) ELSE 0 ENDIF)=
     (LAMBDA(x:T):w(x)*pointMass(x)(A))
+
   atom_sequence_scal: LEMMA atomSequences(w,E)(x)=w(x)*(pointMass(x) o E)
+
   atom_sequence_converges: LEMMA
     convergence(series(atomSequences(w,E)(x)),atomLimits(w,E)(x))
+
   atomic_mass_sequence: LEMMA atomicMass(w) o E=rowSum(universe,atomSequences(w,E))
+
   atomic_mass_union: LEMMA atomicMass(w)(IUnion(E))=fsum(universe,atomLimits(w,E))
+
   atomic_mass_empty: LEMMA atomicMass(w)(emptyset[T])=0
+
   atomic_mass_full: LEMMA atomicMass(w)(fullset[T])=fsum(universe,LAMBDA(x:T):w(x))
+
   atomic_mass_additive: LEMMA
     convergence(series(atomicMass(w) o E),atomicMass(w)(IUnion(E)))
+
   atomic_finite_measure: THEOREM finite_measure?(atomicMass(w))
+
   atomic_probability: THEOREM fsum(universe,LAMBDA(x:T):w(x))=1 IMPLIES
     probability?(atomicMass(w))
+
   NormalizedWeights: TYPE = {w:WeightVector|fsum(universe,LAMBDA(x:T):w(x))=1}
+
   atomicLaw(w0:NormalizedWeights): Probability = atomicMass(w0)
+
   atomic_law_at: LEMMA FORALL(w0:NormalizedWeights):
     atomicLaw(w0)(A)=fsum(universe,LAMBDA(x:T):IF A(x) THEN w0(x) ELSE 0 ENDIF)
+
   off_singleton_zero: LEMMA
     fsum(remove(x,universe),LAMBDA(y:T):IF singleton[T](x)(y) THEN w(y) ELSE 0 ENDIF)=0
+
   atomic_singleton_mass: LEMMA atomicMass(w)(singleton[T](x))=w(x)
+
   atomic_singleton: LEMMA FORALL(w0:NormalizedWeights):atomicLaw(w0)(singleton[T](x))=w0(x)
+
 END ppg_finite_atomic_probability

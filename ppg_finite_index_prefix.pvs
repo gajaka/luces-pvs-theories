@@ -9,21 +9,34 @@ BEGIN
   IMPORTING ppg_finite_state_index[State,universe]
   F: VAR [nat->real]
   k: VAR nat
+
   prefixSet(k): finite_set[Index] = intersection(indexUniverse,{i:Index|i<k})
+
   prefixSum(F,k): RECURSIVE real =
     IF k=0 THEN 0 ELSE prefixSum(F,k-1)+F(k-1) ENDIF MEASURE k
+
   prefix_set_zero: LEMMA prefixSet(0)=emptyset[Index]
+
   prefix_set_succ: LEMMA k<dimension IMPLIES prefixSet(k+1)=add(k,prefixSet(k))
+
   prefix_set_full: LEMMA prefixSet(dimension)=indexUniverse
+
   prefix_index_absent: LEMMA k<dimension IMPLIES NOT prefixSet(k)(k)
+
   prefix_sum_zero: LEMMA prefixSum(F,0)=0
+
   prefix_sum_succ: LEMMA prefixSum(F,k+1)=prefixSum(F,k)+F(k)
+
   prefix_set_sum_zero: LEMMA ppg_finite_sum[Index].fsum(prefixSet(0),LAMBDA(i:Index):F(i))=0
+
   prefix_set_sum_succ: LEMMA k<dimension IMPLIES
     ppg_finite_sum[Index].fsum(prefixSet(k+1),LAMBDA(i:Index):F(i))=
       ppg_finite_sum[Index].fsum(prefixSet(k),LAMBDA(i:Index):F(i))+F(k)
+
   prefix_set_sum: LEMMA k<=dimension IMPLIES
     ppg_finite_sum[Index].fsum(prefixSet(k),LAMBDA(i:Index):F(i))=prefixSum(F,k)
+
   full_index_sum: THEOREM
     ppg_finite_sum[Index].fsum(indexUniverse,LAMBDA(i:Index):F(i))=prefixSum(F,dimension)
+
 END ppg_finite_index_prefix

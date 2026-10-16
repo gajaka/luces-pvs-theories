@@ -15,11 +15,15 @@ BEGIN
   p: VAR [C -> nonneg_real]
   v, w: VAR Addr
   n: VAR nat
+
   weight_hom: LEMMA weightFold.nodeHom(LAMBDA (d: nat, t: WTree): weight(p)(t),
     LAMBDA (d: nat, a: C): p(a))
+
   toWTreeFuel_weight_eq_prod: THEOREM gt_valid?(T) AND T`dom(v) AND
     (FORALL (w: Addr): T`dom(w) IMPLIES length(w) <= length(v) + n) IMPLIES
     weight(p)(toWTreeFuel(T, n, v)) = products.sum(descendants(T, v), LAMBDA (w: Addr): p(T`lab(w)))
+
   toWTree_weight_eq_prod: THEOREM gt_valid?(T) AND T`dom(null) IMPLIES
     weight(p)(toWTree(T, null)) = products.sum(T`dom, LAMBDA (w: Addr): p(T`lab(w)))
+
 END ppg_mt_reconstruction_weight

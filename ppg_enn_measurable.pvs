@@ -7,17 +7,25 @@ BEGIN
   b: VAR nonneg_real
   f: VAR [X -> ENN]
   u: VAR [nat -> [X -> nat]]
+
   upperRay(b): set[ENN] = {z: ENN | ele(z, ennFinite(b))}
+
   upperRays: set[set[ENN]] = {A: set[ENN] | EXISTS (b: nonneg_real): A = upperRay(b)}
+
   ENNSigma: ppg_measurable_space[ENN].MeasurableSpace = generated(upperRays)
+
   upper_ray_measurable: LEMMA ENNSigma(upperRay(b))
+
   measurable_enn_from_rays: LEMMA
     (FORALL (b: nonneg_real): SX(inverseImage(f, upperRay(b)))) IMPLIES
       measurable(SX, ENNSigma, f)
+
   isup_nat_preimage: LEMMA
     inverseImage(LAMBDA (x: X): iSupNN(LAMBDA (n: nat): u(n)(x)), upperRay(b)) =
     countableIntersection(LAMBDA (n: nat): inverseImage(u(n), {k: nat | k <= b}))
+
   measurable_iSup_nat: THEOREM
     (FORALL (n: nat): measurable(SX, fullset[set[nat]], u(n))) IMPLIES
       measurable(SX, ENNSigma, LAMBDA (x: X): iSupNN(LAMBDA (n: nat): u(n)(x)))
+
 END ppg_enn_measurable

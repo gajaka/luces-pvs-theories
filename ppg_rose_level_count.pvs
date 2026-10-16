@@ -9,7 +9,9 @@ ppg_rose_level_count[C, V: TYPE]: THEORY
 BEGIN
   IMPORTING ppg_rose_level_invariance[C, V, nat, 0, LAMBDA (a, b: nat): a + b],
     ppg_rose_count_fold[C]
+
   LevelCount: TYPE = [nat -> nat]
+
   IMPORTING ppg_mt_rose_adt_reduce[C, LevelCount],
     ppg_list_fold[LevelCount, nat, 0, LAMBDA (a, b: nat): a + b] AS functionLists,
     ppg_list_fold_map[WTree, LevelCount, nat, 0, LAMBDA (a, b: nat): a + b] AS functionMap,
@@ -20,23 +22,32 @@ BEGIN
   t: VAR WTree
   a: VAR C
   cs: VAR list[WTree]
+
   levelValues(vars, x, threshold): [WTree -> LevelCount] =
     ppg_mt_rose_adt_reduce[C, LevelCount].reduce(LAMBDA (a: C, bs: list[LevelCount]):
       LAMBDA (d: nat): (IF threshold < d AND vars(a)(x) THEN 1 ELSE 0 ENDIF) +
         functionLists.fold(bs, LAMBDA (f: LevelCount): f(d + 1)))
+
   footprintCountBeyondAt(vars, x, threshold, d, t): nat = levelValues(vars, x, threshold)(t)(d)
+
   footprintCountBeyondListAt(vars, x, threshold, d, cs): nat =
     treeLists.fold(cs, LAMBDA (c: WTree): footprintCountBeyondAt(vars, x, threshold, d, c))
+
   beyond_node: LEMMA footprintCountBeyondAt(vars, x, threshold, d, roseNode(a, cs)) =
     (IF threshold < d AND vars(a)(x) THEN 1 ELSE 0 ENDIF) +
       footprintCountBeyondListAt(vars, x, threshold, d + 1, cs)
+
   footprintCountBeyondListAt_eq_sum: THEOREM footprintCountBeyondListAt(vars, x, threshold, d, cs) =
     ppg_tree_lists[WTree].natSum(map(LAMBDA (c: WTree): footprintCountBeyondAt(vars, x, threshold, d, c))(cs))
+
   beyond_hom: LEMMA nodeHom(
     LAMBDA (d: nat, t: WTree): footprintCountBeyondAt(vars, x, threshold, d, t),
     LAMBDA (d: nat, a: C): IF threshold < d AND vars(a)(x) THEN 1 ELSE 0 ENDIF)
+
   canonicalizeFuel_footprintCountBeyondAt: THEOREM proper(t) AND depth(t) <= n IMPLIES
     footprintCountBeyondAt(vars, x, threshold, d, canonicalFuel(n, t)) = footprintCountBeyondAt(vars, x, threshold, d, t)
+
   canonicalize_footprintCountBeyond: THEOREM proper(t) IMPLIES
     footprintCountBeyondAt(vars, x, threshold, 0, canonicalize(t)) = footprintCountBeyondAt(vars, x, threshold, 0, t)
+
 END ppg_rose_level_count

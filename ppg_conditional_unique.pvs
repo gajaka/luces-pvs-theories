@@ -18,23 +18,36 @@ BEGIN
   f: VAR NativeFunction
   g,h: VAR HistoryFunction
   omega: VAR Omega
+
   greaterEvent(g,h): (H) = {omega:Omega|h(omega)<g(omega)}
+
   greater_event_value: LEMMA greaterEvent(g,h)(omega) IFF h(omega)<g(omega)
+
   greater_event_zero: LEMMA conditionalVersion(f,g) AND conditionalVersion(f,h)
     IMPLIES mu(historyEvent(greaterEvent(g,h)))=0
+
   greater_event_null: LEMMA conditionalVersion(f,g) AND conditionalVersion(f,h)
     IMPLIES null_set?(historyEvent(greaterEvent(g,h)))
+
   different_event_union: LEMMA {omega:Omega|g(omega)/=h(omega)}=
     union(greaterEvent(g,h),greaterEvent(h,g))
+
   conditional_unique: THEOREM conditionalVersion(f,g) AND conditionalVersion(f,h)
     IMPLIES ae_eq?(g,h)
+
   hasConditionalVersion(f): bool = EXISTS(g:HistoryFunction):conditionalVersion(f,g)
+
   AdmissibleFunction: TYPE = (hasConditionalVersion)
+
   conditionalExpectation(f:AdmissibleFunction): {g:HistoryFunction|conditionalVersion(f,g)} =
     choose({g:HistoryFunction|conditionalVersion(f,g)})
+
   conditional_version_admissible: LEMMA conditionalVersion(f,g) IMPLIES hasConditionalVersion(f)
+
   conditional_expectation_version: LEMMA FORALL(f:AdmissibleFunction):
     conditionalVersion(f,conditionalExpectation(f))
+
   conditional_expectation_unique: THEOREM FORALL(f:AdmissibleFunction,g:HistoryFunction):
     conditionalVersion(f,g) IMPLIES ae_eq?(conditionalExpectation(f),g)
+
 END ppg_conditional_unique

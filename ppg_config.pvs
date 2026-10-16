@@ -5,6 +5,7 @@ BEGIN
 
   PPGConfig: TYPE = [# le_eq: equivalence[V], f_abs: [V -> V],
                        g_con: [V -> V], invariant: [V -> bool] #]
+
   cfg: VAR PPGConfig
   le_eq: VAR [V, V -> bool]
   f_abs, g_con: VAR [V -> V]
@@ -15,6 +16,7 @@ BEGIN
     RR(le_eq, le_eq, f_abs, g_con)((x, y))
 
   config_rr(cfg, x, y): bool = rr_rel_hom(cfg`le_eq, cfg`f_abs, cfg`g_con, x, y)
+
   config_valid(cfg, G): bool =
     pp_valid(G, LAMBDA (x, y: V): config_rr(cfg, x, y), cfg`invariant)
 
@@ -44,4 +46,5 @@ BEGIN
   graph_valid_of_concrete_edges: THEOREM
     (FORALL (x, y: V): G`edges(x, y) IMPLIES pp_edge_concrete(cfg, x, y))
       IMPLIES config_valid(cfg, G)
+
 END ppg_config

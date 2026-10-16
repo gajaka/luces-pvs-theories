@@ -10,10 +10,15 @@ ppg_mt_state_marginals[C,V,Value:TYPE,domain:[V->set[Value]],
 BEGIN
   IMPORTING ppg_mt_state_probability[C,V,Value,domain,universe,spaces,laws],
     ppg_probability_finite_marginals[V,Value,domain,spaces,laws]
+
   stateCylinder(v:(universe),E:(spaces(v))): set[MTState] = {s:MTState|E(s(v))}
+
   state_cylinder_measurable: LEMMA FORALL(v:(universe),E:(spaces(v))): NativeStateSigma(spaces)(stateCylinder(v,E))
+
   state_cylinder_preimage: LEMMA FORALL(v:(universe),E:(spaces(v))):
     ppg_measurable_map[StateBlock(universe),MTState].inverseImage(stateDecode,stateCylinder(v,E))=
     ppg_measurable_block[V,Value,domain,spaces].blockCylinder(universe,v,E)
+
   state_coordinate_mass: THEOREM FORALL(v:(universe),E:(spaces(v))): stateMeasure(stateCylinder(v,E))=laws(v)(E)
+
 END ppg_mt_state_marginals

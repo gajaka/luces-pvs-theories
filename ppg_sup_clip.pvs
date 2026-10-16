@@ -4,23 +4,35 @@ BEGIN
   IMPORTING ppg_nonneg_tsum[nat], ppg_enn_order, metric_space@convergence_aux
   u: VAR [nat -> nonneg_real]
   a,b: VAR nonneg_real
+
   sup_approx: LEMMA ele(ennFinite(a),iSupNN(u)) AND b<a IMPLIES
     EXISTS (n: nat): b<u(n)
+
   sup_upper: LEMMA FORALL (n: nat): ele(ennFinite(u(n)),iSupNN(u))
+
   clip(u,a)(n: nat): nonneg_real = min(a,u(n))
+
   clip_nonnegative: LEMMA FORALL (n: nat): 0<=clip(u,a)(n)
+
   clip_upper: LEMMA FORALL (n: nat): clip(u,a)(n)<=a
+
   clip_increasing: LEMMA (FORALL (i,j: nat): i<=j IMPLIES u(i)<=u(j)) IMPLIES
     FORALL (i,j: nat): i<=j IMPLIES clip(u,a)(i)<=clip(u,a)(j)
+
   clip_bound_separates: LEMMA FORALL (c: real):
     ele(ennFinite(a),iSupNN(u)) AND
     (FORALL (n: nat): clip(u,a)(n)<=c) IMPLIES a<=c
+
   nat_image_nonempty: LEMMA nonempty?[real](image[nat,real](u,fullset[nat]))
+
   clip_lub: LEMMA ele(ennFinite(a),iSupNN(u)) IMPLIES
     least_upper_bound?(a,image[nat,real](clip(u,a),fullset[nat]))
+
   clip_converges: THEOREM ele(ennFinite(a),iSupNN(u)) AND
     (FORALL (i,j: nat): i<=j IMPLIES u(i)<=u(j)) IMPLIES
     converges_upto?(clip(u,a),a)
+
   converging_bound: LEMMA converges_upto?(u,a) AND
     (FORALL (n: nat): u(n)<=b) IMPLIES a<=b
+
 END ppg_sup_clip

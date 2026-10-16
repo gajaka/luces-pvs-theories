@@ -17,26 +17,33 @@ BEGIN
   h: VAR [nat, WTree -> R]
   g: VAR [nat, C -> R]
   f, q: VAR [Addr -> R]
+
   prepend_fold: LEMMA (FORALL (w: Addr): f(cons(idx, w)) = q(w)) IMPLIES
     addressSums.sum(prepend(idx, D), f) = addressSums.sum(D, q)
+
   forest_value_fold: LEMMA dropList(roseChildren(parent), idx) = cons(c, rest) IMPLIES
     addressSums.sum(toGT_domChildren(cons(c, rest), idx),
       LAMBDA (w: Addr): g(d + length(w), toGT_lab(parent, w))) =
     op(addressSums.sum(toGT_dom(c), LAMBDA (w: Addr): g(d + 1 + length(w), toGT_lab(c, w))),
       addressSums.sum(toGT_domChildren(rest, idx + 1), LAMBDA (w: Addr): g(d + length(w), toGT_lab(parent, w))))
+
   forest_fold: LEMMA
     (FORALL (c: WTree): member(c, cs) IMPLIES
       h(d + 1, c) = addressSums.sum(toGT_dom(c), LAMBDA (w: Addr): g(d + 1 + length(w), toGT_lab(c, w)))) AND
     dropList(roseChildren(parent), idx) = cs IMPLIES
     treeLists.fold(cs, LAMBDA (c: WTree): h(d + 1, c)) =
       addressSums.sum(toGT_domChildren(cs, idx), LAMBDA (w: Addr): g(d + length(w), toGT_lab(parent, w)))
+
   root_fold: LEMMA addressSums.sum(toGT_dom(roseNode(a, cs)),
     LAMBDA (w: Addr): g(d + length(w), toGT_lab(roseNode(a, cs), w))) =
     op(g(d, a), addressSums.sum(toGT_domChildren(cs, 0),
       LAMBDA (w: Addr): g(d + length(w), toGT_lab(roseNode(a, cs), w))))
+
   toGT_fold: THEOREM nodeHom(h, g) IMPLIES h(d, t) =
     addressSums.sum(toGT_dom(t), LAMBDA (w: Addr): g(d + length(w), toGT_lab(t, w)))
+
   toGT_children_fold: THEOREM nodeHom(h, g) AND dropList(roseChildren(parent), idx) = cs IMPLIES
     treeLists.fold(cs, LAMBDA (c: WTree): h(d + 1, c)) =
       addressSums.sum(toGT_domChildren(cs, idx), LAMBDA (w: Addr): g(d + length(w), toGT_lab(parent, w)))
+
 END ppg_rose_address_fold

@@ -12,14 +12,22 @@ BEGIN
   rows: VAR [T->NonnegativeFunction]
   g: VAR NonnegativeFunction
   x: VAR X
+
   rowValue(rows,x)(t:T): nonneg_real = rows(t)(x)
+
   nativeSum(A,rows): RECURSIVE NonnegativeFunction = IF empty?(A) THEN nnConstant(0)
     ELSE rows(choose(A))+nativeSum(rest(A),rows) ENDIF MEASURE card(A)
+
   native_sum_empty: LEMMA nativeSum(emptyset[T],rows)=nnConstant(0)
+
   native_sum_value: LEMMA nativeSum(A,rows)(x)=sums.sum(A,rowValue(rows,x))
+
   native_sum_mean: LEMMA mean(nativeSum(A,rows))=sums.sum(A,LAMBDA(t:T):mean(rows(t)))
+
   native_sum_function_eq: LEMMA (FORALL(x:X):g(x)=sums.sum(A,rowValue(rows,x))) IMPLIES
     g=nativeSum(A,rows)
+
   native_sum_mean_of_values: THEOREM (FORALL(x:X):g(x)=sums.sum(A,rowValue(rows,x))) IMPLIES
     mean(g)=sums.sum(A,LAMBDA(t:T):mean(rows(t)))
+
 END ppg_finite_integral

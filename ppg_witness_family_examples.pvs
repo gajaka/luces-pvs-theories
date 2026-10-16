@@ -1,22 +1,40 @@
 % A self-neighbor family can have zero, bounded, or infinite total weight.
 ppg_witness_family_examples: THEORY
 BEGIN
+
   Empty: TYPE = {b:bool | FALSE}
+
   IMPORTING ppg_rose_witness_family[bool,Empty]
+
   universe: finite_set[bool] = fullset[bool]
+
   noVars: CertVars = LAMBDA(a:bool):emptyset[Empty]
+
   zero: [bool -> nonneg_real] = LAMBDA(a:bool):0
+
   ones: [bool -> nonneg_real] = LAMBDA(a:bool):1
+
   quarter: [bool -> nonneg_real] = LAMBDA(a:bool):1/4
+
   half: [bool -> nonneg_real] = LAMBDA(a:bool):1/2
+
   D: VAR nat
   a: VAR bool
+
   self_neighbors: LEMMA plusNeighbors(noVars,universe,a)=singleton(a)
+
   zero_budget: LEMMA budget(noVars,universe,zero,zero)
+
   zero_total: THEOREM familyTotal(noVars,universe,zero,a)=ennFinite(0)
+
   quarter_budget: LEMMA budget(noVars,universe,quarter,half)
+
   quarter_total_bound: THEOREM ele(familyTotal(noVars,universe,quarter,a),ennFinite(1/2))
+
   unit_depth_mass: LEMMA mtWeight(noVars,universe,ones,D,a)=D+1
+
   unit_family_unbounded: THEOREM familyTotal(noVars,universe,ones,a)=ennInfinity
+
   wrong_root_zero: THEOREM witnessFamilyWeight(noVars,universe,ones,TRUE)(roseNode[bool](FALSE,null))=ennFinite(0)
+
 END ppg_witness_family_examples

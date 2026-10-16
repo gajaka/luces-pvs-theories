@@ -14,16 +14,25 @@ BEGIN
   k: VAR nat
   i,j: VAR Index
   s: VAR State
+
   prefix_native_sum: LEMMA prefixSum(F,k)=rowSum(F,k)
+
   stateExtension(f)(k): real = IF k<dimension THEN f(state(k)) ELSE 0 ENDIF
+
   state_extension_index: LEMMA stateExtension(f)(i)=f(state(i))
+
   state_extension_restricted: LEMMA
     (LAMBDA(i:Index):stateExtension(f)(i))=(LAMBDA(i:Index):f(state(i)))
+
   native_state_sum: THEOREM rowSum(stateExtension(f),dimension)=
     ppg_finite_sum[State].fsum(universe,f)
+
   state_dimension_positive: LEMMA FORALL(s:State):0<dimension
+
   state_index_equal: LEMMA state(i)=state(j) IFF i=j
+
   state_product_extension: LEMMA
     (LAMBDA(k:nat):nativeEntries(A)(index(s),k)*stateExtension(f)(k))=
     stateExtension(LAMBDA(t:State):A(s,t)*f(t))
+
 END ppg_finite_native_sum

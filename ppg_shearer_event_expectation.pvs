@@ -19,25 +19,33 @@ BEGIN
   B: VAR UniversalLabels
   L: VAR LayerSeq
   p: VAR [C->real]
+
   native_event_prob_bounds: LEMMA (FORALL(c:C):baseProbability(bad)(c)<=p(c)) IMPLIES
     (FORALL(c:C):0<=p(c) AND baseProbability(bad)(c)<=p(c))
+
   bounds_nonnegative_on: LEMMA (FORALL(c:C):0<=p(c) AND baseProbability(bad)(c)<=p(c)) IMPLIES
     nonnegativeOn(p,B)
+
   singleton_conditions: LEMMA subset?(sets[C].singleton(a),B) AND
     Independent(sets[C].singleton(a))
+
   logMeasure_sequenceOccurrence_le_properFamilyWeight: THEOREM mt_wf(vars,bad) AND
     (FORALL(c:C):0<=p(c) AND baseProbability(bad)(c)<=p(c)) IMPLIES
     logMeasure(sequenceEvent(bad,fallback,enumeration,a,L))<=properWeights(p,B,sets[C].singleton(a))(L)
+
   randomInitExpectedResamplingCount_le_tsum_properFamilyWeight: THEOREM mt_wf(vars,bad) AND
     (FORALL(c:C):0<=p(c) AND baseProbability(bad)(c)<=p(c)) IMPLIES
     ele(randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a),
       properFamilyTotal(p,B,sets[C].singleton(a)))
+
   randomInitExpectedResamplingCount_le_stableBudget_of_measure_le: THEOREM mt_wf(vars,bad) AND
     (FORALL(c:C):0<=p(c) AND baseProbability(bad)(c)<=p(c)) AND StrictCriterion(p,B) IMPLIES
     ele(randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a),
       ennFinite(max(0,stableBudget(p,B,sets[C].singleton(a)))))
+
   randomInitExpectedResamplingCount_le_stableBudget: THEOREM mt_wf(vars,bad) AND
     (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND StrictCriterion(p,B) IMPLIES
     ele(randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a),
       ennFinite(max(0,stableBudget(p,B,sets[C].singleton(a)))))
+
 END ppg_shearer_event_expectation

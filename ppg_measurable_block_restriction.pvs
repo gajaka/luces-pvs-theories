@@ -4,20 +4,27 @@ ppg_measurable_block_restriction[I, Value: TYPE, domain: [I -> set[Value]],
   spaces: [i: I -> ppg_measurable_space[(domain(i))].MeasurableSpace]]: THEORY
 BEGIN
   IMPORTING ppg_measurable_block[I, Value, domain, spaces], ppg_measurable_block_map
+
   restrictBlock(F: set[I], G: {G: set[I] | subset?(G, F)})(x: Block(F)): Block(G) =
     LAMBDA (i: (G)): x(i)
+
   restrict_block_measurable: LEMMA FORALL (F: set[I], G: {G: set[I] | subset?(G, F)}):
     ppg_measurable_map[Block(F), Block(G)].measurable(
       blockSigma(F), blockSigma(G), restrictBlock(F, G))
+
   restrict_block_identity: LEMMA FORALL (F: set[I], x: Block(F)):
     restrictBlock(F, F)(x) = x
+
   restrict_block_compose: LEMMA FORALL (F: set[I], G: {G: set[I] | subset?(G, F)},
     H: {H: set[I] | subset?(H, G)}, x: Block(F)):
     restrictBlock(G, H)(restrictBlock(F, G)(x)) = restrictBlock(F, H)(x)
+
   restrict_identity_preimage: LEMMA FORALL (F: set[I], B: set[Block(F)]):
     {x: Block(F) | B(restrictBlock(F, F)(x))} = B
+
   restrict_compose_preimage: LEMMA FORALL (F: set[I], G: {G: set[I] | subset?(G, F)},
     H: {H: set[I] | subset?(H, G)}, B: set[Block(H)]):
     {x: Block(F) | B(restrictBlock(G, H)(restrictBlock(F, G)(x)))} =
       {x: Block(F) | B(restrictBlock(F, H)(x))}
+
 END ppg_measurable_block_restriction

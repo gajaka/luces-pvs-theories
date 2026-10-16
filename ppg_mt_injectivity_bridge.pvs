@@ -13,9 +13,13 @@ BEGIN
   t, t1, t2: VAR nat
   a: VAR C
   p: VAR [C -> nonneg_real]
+
   realWitness_count: LEMMA countLabel(a)(realWitness(vars, Clog, t)) = count_label(tau_C(vars, Clog, t), a)
+
   tauC_canonicalize_toWTree_ne_of_lt: THEOREM 0 < t1 AND 0 < t2 AND t1 < t2 AND Clog(t1) = Clog(t2)
     IMPLIES realWitness(vars, Clog, t1) /= realWitness(vars, Clog, t2)
+
   realWitness_weight_product: THEOREM weight(p)(realWitness(vars, Clog, t)) =
     products.sum(tau_C(vars, Clog, t)`dom, LAMBDA (w: Addr): p(tau_C(vars, Clog, t)`lab(w)))
+
 END ppg_mt_injectivity_bridge

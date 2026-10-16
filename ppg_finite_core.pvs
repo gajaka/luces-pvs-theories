@@ -6,13 +6,19 @@ BEGIN
   allowed: VAR set[State]
   sat: VAR [C, State -> bool]
   B, K: VAR finite_set[C]
+
   coreCheck(allowed, sat, K): bool =
     goodCount(allowed, sat, K) = 0 AND
       FORALL (c: C): K(c) IMPLIES goodCount(allowed, sat, remove(c, K)) > 0
+
   minimalCores(allowed, sat, B): finite_set[finite_set[C]] =
     intersection(powerset(B), {K: finite_set[C] | coreCheck(allowed, sat, K)})
+
   coreCheck_eq_true_iff: THEOREM coreCheck(allowed, sat, K) IFF MinimalCore(allowed, sat, K)
+
   mem_minimalCores_iff: THEOREM
     minimalCores(allowed, sat, B)(K) IFF subset?(K, B) AND MinimalCore(allowed, sat, K)
+
   minimalCores_nonempty_iff: THEOREM nonempty?(minimalCores(allowed, sat, B)) IFF Infeasible(allowed, sat, B)
+
 END ppg_finite_core

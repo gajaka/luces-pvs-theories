@@ -19,33 +19,44 @@ BEGIN
   B,T,U,J: VAR finite_set[C]
   a: VAR C
   p: VAR [C->real]
+
   all_measurable(A): bool = FORALL(a:C):S(A(a))
+
   Lopsidependence(A,p,B): bool = FORALL(a:C):B(a) IMPLIES
     FORALL(J:finite_set[C]):subset?(J,B) AND
       (FORALL(j:C):J(j) IMPLIES j/=a AND NOT G(a,j)) IMPLIES
         mass(intersection(A(a),all_pass(A,J)))<=p(a)*passProbability(mass,A,J)
+
   remote_side: LEMMA subset?(T,B) AND T(a) IMPLIES B(a) AND
     subset?(remote(T,a),B) AND
     (FORALL(j:C):remote(T,a)(j) IMPLIES j/=a AND NOT G(a,j))
+
   remote_lopsidependence: LEMMA Lopsidependence(A,p,B) AND subset?(T,B) AND T(a) IMPLIES
     mass(intersection(A(a),all_pass(A,remote(T,a))))<=p(a)*passProbability(mass,A,remote(T,a))
+
   deleted_intersection_subset: LEMMA
     subset?(intersection(all_pass(A,remove(a,T)),A(a)),intersection(A(a),all_pass(A,remote(T,a))))
+
   fundamental_probability_inequality: THEOREM
     all_measurable(A) AND Lopsidependence(A,p,B) AND subset?(T,B) AND T(a) IMPLIES
       passProbability(mass,A,remove(a,T))-p(a)*passProbability(mass,A,remote(T,a))<=
         passProbability(mass,A,T)
+
   shearer_recurrences: LEMMA all_measurable(A) AND Lopsidependence(A,p,B) AND
     (FORALL(a:C):B(a) IMPLIES 0<=p(a)) AND StrictCriterion(p,B) IMPLIES
       Recurrences(B,p,LAMBDA(T:finite_set[C]):passProbability(mass,A,T),
         LAMBDA(T:finite_set[C]):polynomial(p,T),remote)
+
   good_event_lower_bound: THEOREM all_measurable(A) AND Lopsidependence(A,p,B) AND
     (FORALL(a:C):B(a) IMPLIES 0<=p(a)) AND StrictCriterion(p,B) AND subset?(T,B) IMPLIES
       polynomial(p,T)<=passProbability(mass,A,T)
+
   positive_probability: THEOREM all_measurable(A) AND Lopsidependence(A,p,B) AND
     (FORALL(a:C):B(a) IMPLIES 0<=p(a)) AND StrictCriterion(p,B) IMPLIES
       0<passProbability(mass,A,B)
+
   good_state_exists: THEOREM all_measurable(A) AND Lopsidependence(A,p,B) AND
     (FORALL(a:C):B(a) IMPLIES 0<=p(a)) AND StrictCriterion(p,B) IMPLIES
       EXISTS(w:X):all_pass(A,B)(w)
+
 END ppg_shearer_probability

@@ -13,16 +13,20 @@ BEGIN
   sat: VAR [C, [V -> Value] -> bool]
   c, d: VAR C
   i, j: VAR [V -> Value]
+
   Local(vars, sat): bool =
     FORALL c, i, j: (FORALL (v: V): vars(c)(v) IMPLIES i(v) = j(v))
       IMPLIES (sat(c, i) IFF sat(c, j))
+
   repair_noninterference: THEOREM
     Local(vars, sat) AND B(d) AND NOT SameComponent(vars, B)(c, d) AND
     (FORALL (v: V): NOT componentFootprint(vars, B, c)(v) IMPLIES i(v) = j(v))
     IMPLIES (sat(d, i) IFF sat(d, j))
+
   repair_noninterference_all: THEOREM
     Local(vars, sat) AND
     (FORALL (v: V): NOT componentFootprint(vars, B, c)(v) IMPLIES i(v) = j(v))
     IMPLIES FORALL d: B(d) AND NOT SameComponent(vars, B)(c, d)
       IMPLIES (sat(d, i) IFF sat(d, j))
+
 END ppg_bdd_locality

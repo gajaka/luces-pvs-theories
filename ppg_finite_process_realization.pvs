@@ -14,30 +14,47 @@ BEGIN
   IMPORTING ppg_finite_process_integral[State,Omega,universe,S,measureLaw],
     ppg_finite_process_history[State,Omega,universe,S],
     ppg_finite_conditional_drift AS allSteps
+
   AdaptedProcess: TYPE = {X:Process|adapted(history,fullStateSigma,X)}
+
   X: VAR AdaptedProcess
   M: VAR Model
   W: VAR Witness
   n: VAR nat
   omega: VAR Omega
+
   ambientState(X,n): StateMap = X(n)
+
   historyCurrent(X,n): ppg_finite_history_value[State,Omega,universe,S,measureLaw,history(n)].HistoryStateMap = X(n)
+
   stepPair(X,n): ppg_finite_conditional_value[State,Omega,universe,S,measureLaw,history(n)].Pair =
     (# current:=historyCurrent(X,n),next:=ambientState(X,n+1) #)
+
   TransitionProcess(M,X): bool = FORALL(n:nat):
     ppg_finite_conditional_value[State,Omega,universe,S,measureLaw,history(n)].realized(M,stepPair(X,n))
+
   Realization(M:Model): TYPE = {X:AdaptedProcess|TransitionProcess(M,X)}
+
   realizedStep(M:Model,X:Realization(M),n:nat): ppg_finite_conditional_value[State,Omega,universe,S,measureLaw,history(n)].RealizedPair(M) =
     stepPair(X,n)
+
   potentialValue(W,X,n): NativeFunction = integrableValue(W`potential,ambientState(X,n))
+
   activeProcessEvent(M,X,n): (S) = ppg_finite_conditional_drift[State,Omega,universe,S,measureLaw,history(n)].currentBadEvent(M,historyCurrent(X,n))
+
   ambient_state_at: LEMMA ambientState(X,n)(omega)=X(n)(omega)
+
   history_current_at: LEMMA historyCurrent(X,n)(omega)=X(n)(omega)
+
   potential_value_at: LEMMA potentialValue(W,X,n)(omega)=W`potential(X(n)(omega))
+
   active_process_event_at: LEMMA activeProcessEvent(M,X,n)(omega) IFF
     NOT M`good(X(n)(omega))
+
   step_current_potential: LEMMA
     ppg_finite_conditional_drift[State,Omega,universe,S,measureLaw,history(n)].currentPotential(W,historyCurrent(X,n))=potentialValue(W,X,n)
+
   step_next_potential: LEMMA FORALL(M:Model,W:Witness,X:Realization(M),n:nat):
     ppg_finite_conditional_drift[State,Omega,universe,S,measureLaw,history(n)].nextPotential(M,W,realizedStep(M,X,n))=potentialValue(W,X,n+1)
+
 END ppg_finite_process_realization

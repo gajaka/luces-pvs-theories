@@ -7,26 +7,39 @@ BEGIN
   mu, nu: VAR Probability
   A, B: VAR (S)
   E: VAR [nat -> (S)]
+
   nasa_space_eq: LEMMA asNasa(S) = S
+
   law_finite: LEMMA generalized_measure_def[X, asNasa(S)].finite_measure?(mu)
+
   difference_measurable: LEMMA S(difference(B, A))
+
   nested_difference_mass: LEMMA subset?(A, B) IMPLIES
     mu(B) = mu(A) + mu(difference(B, A))
+
   increasing_union_mass: LEMMA increasingEvents(E) IMPLIES
     convergence_sequences.convergence(mu o E, mu(countableUnion(E)))
+
   equal_union_mass: LEMMA increasingEvents(E) AND
     (FORALL (n: nat): mu(E(n)) = nu(E(n))) IMPLIES
       mu(countableUnion(E)) = nu(countableUnion(E))
+
   agreement(mu, nu): set[Event] = {A: Event | S(A) AND mu(A) = nu(A)}
+
   agreement_full: LEMMA agreement(mu, nu)(fullset[X])
+
   agreement_difference: LEMMA FORALL (A, B: Event):
     agreement(mu, nu)(A) AND agreement(mu, nu)(B) AND subset?(A, B)
       IMPLIES agreement(mu, nu)(difference(B, A))
+
   agreement_union: LEMMA FORALL (E: Family): increasingEvents(E) AND
     (FORALL (n: nat): agreement(mu, nu)(E(n)))
       IMPLIES agreement(mu, nu)(countableUnion(E))
+
   agreement_dynkin: LEMMA dynkin?(agreement(mu, nu))
+
   probability_unique: THEOREM FORALL (G: set[Event]):
     intersectionClosed?(G) AND subset?(G, S) AND S = generated(G) AND
     (FORALL (A: (S)): G(A) IMPLIES mu(A) = nu(A)) IMPLIES mu = nu
+
 END ppg_probability_unique

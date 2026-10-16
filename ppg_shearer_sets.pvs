@@ -12,40 +12,65 @@ BEGIN
   IMPORTING ppg_powerset_sum[C]
   S,T,I,R: VAR finite_set[C]
   a: VAR C
+
   Independent(T): bool = FORALL(i,j:C):T(i) AND T(j) IMPLIES NOT G(i,j)
+
   independentSubsets(T): finite_set[finite_set[C]] = intersection(subsets(T),Independent)
+
   remote(T,a): finite_set[C] = intersection(T,{b:C|b/=a AND NOT G(a,b)})
+
   noCrossEdges(S,T): bool = FORALL(i,j:C):S(i) AND T(j) IMPLIES NOT G(i,j)
+
   no_cross_at_left: LEMMA S(a) AND noCrossEdges(S,T) IMPLIES
     (FORALL(b:C):T(b) IMPLIES NOT G(a,b))
+
   separated_left_subset: LEMMA disjoint?(S,T) AND noCrossEdges(S,T) AND subset?(R,S) IMPLIES
     disjoint?(R,T) AND noCrossEdges(R,T)
+
   left_not_right: LEMMA disjoint?(S,T) AND S(a) IMPLIES NOT T(a)
+
   remove_union_left: LEMMA NOT T(a) IMPLIES remove(a,union(S,T))=union(remove(a,S),T)
+
   remove_card_lt: LEMMA S(a) IMPLIES card(remove(a,S))<card(S)
+
   independent_empty: THEOREM Independent(emptyset[C])
+
   independent_mono: THEOREM Independent(T) AND subset?(S,T) IMPLIES Independent(S)
+
   independent_insert: THEOREM Independent(add(a,T)) IFF
     Independent(T) AND (FORALL(b:C):T(b) IMPLIES NOT G(a,b))
+
   remote_subset_erase: THEOREM subset?(remote(T,a),remove(a,T))
+
   remote_subset: THEOREM subset?(remote(T,a),T)
+
   subsets_membership: LEMMA subsets(T)(I) IFF subset?(I,T)
+
   subset_remote_member: LEMMA FORALL(b:C):subset?(I,remote(T,a)) AND I(b) IMPLIES
     T(b) AND b/=a AND NOT G(a,b)
+
   subset_remote_from: LEMMA NOT T(a) AND subset?(I,T) AND
     (FORALL(b:C):I(b) IMPLIES NOT G(a,b)) IMPLIES subset?(I,remote(T,a))
+
   subset_remote_to: LEMMA subset?(I,remote(T,a)) IMPLIES
     subset?(I,T) AND (FORALL(b:C):I(b) IMPLIES NOT G(a,b))
+
   independent_insert_filter: THEOREM NOT T(a) IMPLIES
     intersection(subsets(T),LAMBDA(I:finite_set[C]):Independent(add(a,I)))=
     independentSubsets(remote(T,a))
+
   remote_erase: THEOREM remote(remove(a,T),a)=remote(T,a)
+
   remote_union: THEOREM NOT T(a) AND (FORALL(b:C):T(b) IMPLIES NOT G(a,b)) IMPLIES
     remote(union(S,T),a)=union(remote(S,a),T)
+
   remote_card_lt: LEMMA S(a) IMPLIES card(remote(S,a))<card(S)
+
   subset_union_partition: LEMMA subset?(I,union(S,T)) IMPLIES
     I=union(intersection(I,S),intersection(I,T))
+
   intersections_separated: LEMMA disjoint?(S,T) AND noCrossEdges(S,T) IMPLIES
     disjoint?(intersection(I,S),intersection(I,T)) AND
     noCrossEdges(intersection(I,S),intersection(I,T))
+
 END ppg_shearer_sets

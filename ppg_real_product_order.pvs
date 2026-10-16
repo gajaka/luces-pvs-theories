@@ -8,20 +8,36 @@ BEGIN
   IMPORTING ppg_real_product[T],ppg_nonneg_real_product[T]
   F,G: VAR finite_set[T]
   f: VAR [T->real]
+
   NonnegativeFactors(f,F): bool = FORALL(i:T):F(i) IMPLIES 0<=f(i)
+
   PositiveFactors(f,F): bool = FORALL(i:T):F(i) IMPLIES 0<f(i)
+
   UnitFactors(f,F): bool = FORALL(i:T):F(i) IMPLIES 0<=f(i) AND f(i)<=1
+
   clipFactors(f)(i:T): nonneg_real = max(0,f(i))
+
   factor_subset_nonnegative: LEMMA subset?(G,F) AND NonnegativeFactors(f,F) IMPLIES NonnegativeFactors(f,G)
+
   factor_subset_positive: LEMMA subset?(G,F) AND PositiveFactors(f,F) IMPLIES PositiveFactors(f,G)
+
   factor_subset_unit: LEMMA subset?(G,F) AND UnitFactors(f,F) IMPLIES UnitFactors(f,G)
+
   rest_factor_subset: LEMMA subset?(rest(F),F)
+
   product_cap_scalar: LEMMA FORALL(a,b:real):0<=a AND b<=1 IMPLIES a*b<=a
+
   unit_product_scalar: LEMMA FORALL(a,b:real):0<=a AND a<=1 AND 0<=b AND b<=1 IMPLIES
     0<=a*b AND a*b<=1
+
   product_nonnegative: LEMMA NonnegativeFactors(f,F) IMPLIES 0<=product(F,f)
+
   product_positive: LEMMA PositiveFactors(f,F) IMPLIES 0<product(F,f)
+
   product_unit_bound: LEMMA UnitFactors(f,F) IMPLIES 0<=product(F,f) AND product(F,f)<=1
+
   subset_difference_split: LEMMA subset?(G,F) IMPLIES union(G,difference(F,G))=F AND disjoint?(G,difference(F,G))
+
   product_subset_order: LEMMA subset?(G,F) AND UnitFactors(f,F) IMPLIES product(F,f)<=product(G,f)
+
 END ppg_real_product_order

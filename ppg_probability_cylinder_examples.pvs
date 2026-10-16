@@ -4,16 +4,21 @@ BEGIN
   IMPORTING ppg_probability_finite_examples,
             ppg_probability_cylinder_independence[nat, nat, domain,
               singleton[nat](2), singleton[nat](7), spaces, coins]
+
   seven_cylinder_mass: LEMMA
     content(tableCylinder(F, blockCylinder(F, 7, eventAtSeven))) = 1
+
   support_enlargement: LEMMA FORALL (B: (blockSigma(singleton[nat](7)))):
     content(tableCylinder(singleton[nat](7), B)) =
       content(tableCylinder(F, liftEvent(F, singleton[nat](7), B)))
+
   native_sigma_generated: LEMMA generated(Cylinders) = tableSigma
+
   disjoint_cylinder_mass: LEMMA FORALL
     (B: (blockSigma(singleton[nat](2))), D: (blockSigma(singleton[nat](7)))):
     content(intersection(tableCylinder(singleton[nat](2), B),
                          tableCylinder(singleton[nat](7), D))) =
       content(tableCylinder(singleton[nat](2), B)) *
         content(tableCylinder(singleton[nat](7), D))
+
 END ppg_probability_cylinder_examples

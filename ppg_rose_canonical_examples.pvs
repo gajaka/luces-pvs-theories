@@ -2,29 +2,53 @@
 ppg_rose_canonical_examples: THEORY
 BEGIN
   IMPORTING ppg_rose_canonical_enum[bool,bool], ppg_rose_weight_sum[bool,bool], ppg_rose_equality[bool]
+
   leaf(b:bool): WTree = roseNode[bool](b,null)
+
   first: WTree = roseNode[bool](FALSE,cons(leaf(TRUE),cons(leaf(FALSE),null)))
+
   second: WTree = roseNode[bool](FALSE,cons(leaf(FALSE),cons(leaf(TRUE),null)))
+
   duplicate: WTree = roseNode[bool](FALSE,cons(leaf(TRUE),cons(leaf(TRUE),null)))
+
   allVars: CertVars = LAMBDA(a:bool):fullset[bool]
+
   p: VAR [bool -> nonneg_real]
   b: VAR bool
+
   first_label: LEMMA roseLabel(first)=FALSE
+
   plus_single: LEMMA plusNeighbors(allVars,singleton(TRUE),TRUE)=singleton(TRUE)
+
   both_proper: THEOREM proper(first) AND proper(second)
+
   both_wellFormed: THEOREM wellFormed(allVars)(first) AND wellFormed(allVars)(second)
+
   both_depth: THEOREM depth(first)=1 AND depth(second)=1
+
   leaf_members: LEMMA member(leaf(b),roseChildren(first)) AND member(leaf(b),roseChildren(second))
+
   first_child: LEMMA childFor(first,b)=leaf(b)
+
   second_child: LEMMA childFor(second,b)=leaf(b)
+
   both_labelSet: LEMMA labelSet(first)=fullset[bool] AND labelSet(second)=fullset[bool]
+
   reordered_canonical: THEOREM canonicalize(first)=canonicalize(second)
+
   repeated_label_weight: THEOREM weight(p)(first)=p(FALSE)*p(TRUE)*p(FALSE)
+
   canonical_weight: THEOREM weight(p)(canonicalize(first))=p(FALSE)*p(TRUE)*p(FALSE)
+
   repeated_label_count: THEOREM countLabel(FALSE)(canonicalize(first))=2
+
   canonical_member: THEOREM wtreesUpTo(allVars,fullset[bool],1,FALSE)(canonicalize(first))
+
   duplicate_not_proper: THEOREM NOT proper(duplicate)
+
   single_label_weight_sum: THEOREM enum_mass(allVars,singleton(TRUE),p,2,TRUE)=
     p(TRUE)*(1+p(TRUE)*(1+p(TRUE)))
+
   comparison_distinguishes_order: THEOREM NOT beq(first)(second)
+
 END ppg_rose_canonical_examples

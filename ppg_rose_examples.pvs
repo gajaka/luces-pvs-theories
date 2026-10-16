@@ -2,20 +2,34 @@
 ppg_rose_examples: THEORY
 BEGIN
   IMPORTING ppg_rose_countable[nat], ppg_rose_to_growing[nat, bool]
+
   code(n: nat): nat = n
+
   leaf(n: nat): WTree = roseNode[nat](n, null)
+
   fork: WTree = roseNode[nat](7, cons(roseNode[nat](8, cons(leaf(9), null)), cons(leaf(10), null)))
+
   flat: WTree = roseNode[nat](7, cons(leaf(8), cons(leaf(9), null)))
+
   chain: WTree = roseNode[nat](7, cons(roseNode[nat](8, cons(leaf(9), null)), null))
+
   nat_labels_countable: THEOREM countable_labels
+
   nat_trees_countable: THEOREM EXISTS (e: [WTree -> nat]): injective?(e)
+
   fork_size: THEOREM treeSize(fork) = 4
+
   branching_codes_differ: THEOREM treeCode(code)(flat) /= treeCode(code)(chain)
+
   fork_domain: THEOREM toGT_dom(fork) =
     add[Addr](null[nat], add[Addr](cons[nat](0, null[nat]),
       add[Addr](cons[nat](0, cons[nat](0, null[nat])), singleton[Addr](cons[nat](1, null[nat])))))
+
   fork_labels: THEOREM toGT_lab(fork, cons(0, cons(0, null[ nat ]))) = 9 AND
     toGT_lab(fork, cons(1, null[ nat ])) = 10
+
   missing_child_fallback: THEOREM toGT_lab(fork, cons(1, cons(5, null[ nat ]))) = 10
+
   fork_valid: THEOREM gt_valid?(toGrowingTree(fork))
+
 END ppg_rose_examples

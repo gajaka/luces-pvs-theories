@@ -5,27 +5,44 @@ ppg_probability_map[X, Y: TYPE,
   SY: ppg_measurable_space[Y].MeasurableSpace]: THEORY
 BEGIN
   IMPORTING ppg_probability_measure[X, SX], ppg_probability_measure[Y, SY]
+
   SourceLaw: TYPE = ppg_probability_measure[X, SX].Probability
+
   TargetLaw: TYPE = ppg_probability_measure[Y, SY].Probability
+
   MeasurableMap: TYPE = {f: [X -> Y] | measurable(SX, SY, f)}
+
   mu: VAR SourceLaw
   f: VAR MeasurableMap
   B: VAR (SY)
+
   TargetFamily: TYPE = generalized_measure_def[Y, SY].disjoint_indexed_measurable
+
   E: VAR TargetFamily
+
   preimageFamily(f, E): [nat -> (SX)] =
     LAMBDA (n: nat): inverseImage(f, E(n))
+
   preimageFamily_disjoint: LEMMA
     generalized_measure_def[X, SX].disjoint_indexed_measurable?(preimageFamily(f, E))
+
   preimageFamily_union: LEMMA
     IUnion(preimageFamily(f, E)) = inverseImage(f, IUnion(E))
+
   imageMass(mu, f)(B): nnreal = mu(inverseImage(f, B))
+
   imageMass_empty: LEMMA imageMass(mu, f)(emptyset[Y]) = 0
+
   imageMass_full: LEMMA imageMass(mu, f)(fullset[Y]) = 1
+
   imageMass_additive: LEMMA SY(IUnion(E)) IMPLIES
     convergence(series(imageMass(mu, f) o E), imageMass(mu, f)(IUnion(E)))
+
   imageMass_probability: LEMMA
     ppg_probability_measure[Y, SY].probability?(imageMass(mu, f))
+
   pushforward(mu, f): TargetLaw = imageMass(mu, f)
+
   pushforward_apply: LEMMA pushforward(mu, f)(B) = mu(inverseImage(f, B))
+
 END ppg_probability_map

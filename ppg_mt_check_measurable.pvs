@@ -15,12 +15,17 @@ BEGIN
   T: VAR GTree
   w: VAR Addr
   n: VAR Counter
+
   readAt(n)(omega: LogSpace): MTState = LAMBDA (v: V): atIdx(omega, v, n(v))
+
   measurable_readAt: THEOREM
     measurable(TableSigma(coordinates), StateSigma(coordinates), readAt(n))
+
   measurable_checkState: LEMMA
     measurable(TableSigma(coordinates), StateSigma(coordinates),
       LAMBDA (omega: LogSpace): checkState(vars, T, omega, w))
+
   measurableSet_checkState_event: THEOREM measurableBad(coordinates, bad) IMPLIES
     TableSigma(coordinates)({omega: LogSpace | bad(T`lab(w), checkState(vars, T, omega, w))})
+
 END ppg_mt_check_measurable

@@ -69,6 +69,7 @@ BEGIN
 
   % Source and sink intensities
   source_strength(p): nonneg_real
+
   sink_strength(p): nonneg_real
 
   %% ─────────────────────────────────────────────────────────────────
@@ -77,14 +78,17 @@ BEGIN
 
   % Curvature thresholds
   kappa_high: posreal   % above this: not balanced (empirical ~ 500)
+
   kappa_low: posreal    % below this: balanced candidate (empirical ~ 5)
 
   % Source/sink strength thresholds
   sigma_high: posreal   % above this: forces unbalanced (strong source/sink)
+
   sigma_low: nonneg_real % below this: negligible source/sink
 
   % Deviation thresholds for regime classification
   epsilon: posreal      % below this: balanced
+
   eta: posreal          % above this: unbalanced
 
   % Excess mass threshold
@@ -95,7 +99,9 @@ BEGIN
 
   % Ordering constraints
   ax_threshold_ordering: AXIOM kappa_low < kappa_high
+
   ax_regime_ordering: AXIOM epsilon < eta
+
   ax_sigma_ordering: AXIOM sigma_low < sigma_high
 
   %% ─────────────────────────────────────────────────────────────────
@@ -104,8 +110,11 @@ BEGIN
 
   % Weights (positive reals)
   alpha: posreal  % curvature weight
+
   beta: posreal   % incoherence penalty
+
   gamma: posreal  % reversal penalty
+
   delta: posreal  % source/sink weight
 
   % Deviation from balanced OT: single scalar summarizing path quality
@@ -154,7 +163,9 @@ BEGIN
   %% ─────────────────────────────────────────────────────────────────
 
   balanced_regime?(p): bool = Dev(p) <= epsilon
+
   transitional_regime?(p): bool = epsilon < Dev(p) AND Dev(p) <= eta
+
   unbalanced_regime?(p): bool = Dev(p) > eta
 
   %% ─────────────────────────────────────────────────────────────────
@@ -276,6 +287,7 @@ BEGIN
 
   % Dawn is source-dominated (solar spectrum appearing)
   dawn?(p): bool
+
   % Dusk is sink-dominated (solar spectrum disappearing)
   dusk?(p): bool
 

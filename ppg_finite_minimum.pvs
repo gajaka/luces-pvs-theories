@@ -2,15 +2,20 @@
 ppg_finite_minimum[T: TYPE]: THEORY
 BEGIN
   P: VAR pred[finite_set[T]]
+
   cardinalities(P)(B: (P)): (nonempty?[nat]) =
     {n: nat | EXISTS (K: finite_set[T]): P(K) AND card(K) = n}
+
   minimum_card_witness: LEMMA
     FORALL (B: finite_set[T]): P(B) IMPLIES
       EXISTS (K: finite_set[T]): P(K) AND
         FORALL (R: finite_set[T]): P(R) IMPLIES card(K) <= card(R)
+
   proper_subset_witness: LEMMA
     FORALL (A, B: set[T]): strict_subset?(A, B) IMPLIES
       EXISTS (x: T): B(x) AND NOT A(x)
+
   relative_complement_twice: LEMMA
     FORALL (A, B: set[T]): subset?(A, B) IMPLIES difference(B, difference(B, A)) = A
+
 END ppg_finite_minimum

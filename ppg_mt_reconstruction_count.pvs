@@ -13,12 +13,17 @@ BEGIN
   a: VAR C
   v, w: VAR Addr
   n: VAR nat
+
   count_hom: LEMMA countFold.nodeHom(LAMBDA (d: nat, t: WTree): countLabel(a)(t),
     LAMBDA (d: nat, b: C): IF b = a THEN 1 ELSE 0 ENDIF)
+
   descendants_labelled_root: LEMMA intersection(descendants(T, null), {w: Addr | T`lab(w) = a}) = labelled(T, a)
+
   toWTreeFuel_countLabel: THEOREM gt_valid?(T) AND T`dom(v) AND
     (FORALL (w: Addr): T`dom(w) IMPLIES length(w) <= length(v) + n) IMPLIES
     countLabel(a)(toWTreeFuel(T, n, v)) = card(intersection(descendants(T, v), {w: Addr | T`lab(w) = a}))
+
   toWTree_countLabel: THEOREM gt_valid?(T) AND T`dom(null) IMPLIES
     countLabel(a)(toWTree(T, null)) = count_label(T, a)
+
 END ppg_mt_reconstruction_count

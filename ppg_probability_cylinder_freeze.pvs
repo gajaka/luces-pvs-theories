@@ -11,32 +11,53 @@ BEGIN
   x, z: VAR FullBlock
   A, B: VAR (Cylinders)
   R: VAR CylinderData
+
   freeSupport(F, R): finite_set[I] = difference(R`1, F)
+
   sliceEvent(F, x, R): (blockSigma(freeSupport(F, R))) =
     {y: Block(freeSupport(F, R)) | dataCylinder(R)(putBlock(freeSupport(F, R), x)(y))}
+
   freezeEvent(F: set[I], x: FullBlock, A: TableEvent): TableEvent =
     {z: FullBlock | A(freezeTable(F, x)(z))}
+
   freeze_data: LEMMA freezeEvent(F, x, dataCylinder(R)) =
     tableCylinder(freeSupport(F, R), sliceEvent(F, x, R))
+
   freeze_cylinder_member: LEMMA Cylinders(freezeEvent(F, x, A))
+
   frozen(F, x, A): (Cylinders) = freezeEvent(F, x, A)
+
   frozen_data: LEMMA frozen(F, x, dataCylinder(R)) =
     tableCylinder(freeSupport(F, R), sliceEvent(F, x, R))
+
   frozen_monotone: LEMMA subset?(A, B) IMPLIES subset?(frozen(F, x, A), frozen(F, x, B))
+
   frozen_empty_coordinates: LEMMA frozen(emptyset[I], x, A) = A
+
   frozen_agrees: LEMMA agreeOn(F, x, z) IMPLIES frozen(F, x, A) = frozen(F, z, A)
+
   representation_depends: LEMMA dependsOn(representation(A)`1, A)
+
   frozen_decides: LEMMA dependsOn(G, A) AND subset?(G, F) IMPLIES
     frozen(F, x, A) = IF A(x) THEN fullset[FullBlock] ELSE emptyset[FullBlock] ENDIF
+
   conditionalMass(F, x, A): nnreal = content(frozen(F, x, A))
+
   conditional_mass_base: LEMMA conditionalMass(F, x, A) =
     finiteLaw(freeSupport(F, representation(A)))(sliceEvent(F, x, representation(A)))
+
   conditional_mass_empty: LEMMA conditionalMass(emptyset[I], x, A) = content(A)
+
   conditional_mass_monotone: LEMMA subset?(A, B) IMPLIES conditionalMass(F, x, A) <= conditionalMass(F, x, B)
+
   conditional_mass_bound: LEMMA conditionalMass(F, x, A) <= 1
+
   conditional_mass_agrees: LEMMA agreeOn(F, x, z) IMPLIES conditionalMass(F, x, A) = conditionalMass(F, z, A)
+
   conditional_mass_decides: LEMMA dependsOn(G, A) AND subset?(G, F) IMPLIES
     conditionalMass(F, x, A) = IF A(x) THEN 1 ELSE 0 ENDIF
+
   positive_conditional_decides: THEOREM subset?(representation(A)`1, F) AND
     conditionalMass(F, x, A) > 0 IMPLIES A(x)
+
 END ppg_probability_cylinder_freeze

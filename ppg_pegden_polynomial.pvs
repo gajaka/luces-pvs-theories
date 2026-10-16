@@ -17,32 +17,52 @@ BEGIN
   U,T,F: VAR finite_set[C]
   a: VAR C
   p,x,y: VAR [C->nonneg_real]
+
   PegdenIndependent(vars,T): bool = FORALL(a,b:C):T(a) AND T(b) AND a/=b IMPLIES NOT dependent?(vars)(a,b)
+
   independentSubsets(vars,U,a): finite_set[finite_set[C]] =
     intersection(subsets(plusNeighbors(vars,U,a)),LAMBDA(T:finite_set[C]):PegdenIndependent(vars,T))
+
   pegdenPolynomial(vars,U,x,a): nonneg_real =
     subsetsSum.sum(independentSubsets(vars,U,a),LAMBDA(T:finite_set[C]):products.sum(T,x))
+
   pegdenBudget(vars,U,p,x): bool = FORALL(a:C):p(a)*pegdenPolynomial(vars,U,x,a)<=x(a)
+
   nonnegative_multiplication_monoid: LEMMA identity?(LAMBDA(a,b:nonneg_real):a*b)(1) AND
     associative?(LAMBDA(a,b:nonneg_real):a*b) AND commutative?(LAMBDA(a,b:nonneg_real):a*b)
+
   independent_empty: THEOREM PegdenIndependent(vars,emptyset[C])
+
   independent_singleton: THEOREM PegdenIndependent(vars,singleton(a))
+
   independent_mono: THEOREM PegdenIndependent(vars,F) AND subset?(T,F) IMPLIES PegdenIndependent(vars,T)
+
   mem_independentSubsets: THEOREM independentSubsets(vars,U,a)(T) IFF
     subset?(T,plusNeighbors(vars,U,a)) AND PegdenIndependent(vars,T)
+
   empty_mem_independentSubsets: THEOREM independentSubsets(vars,U,a)(emptyset[C])
+
   independentSubsets_subset: LEMMA subset?(independentSubsets(vars,U,a),subsets(plusNeighbors(vars,U,a)))
+
   empty_singleton_subset: LEMMA subset?(sets[finite_set[C]].singleton(emptyset[C]),independentSubsets(vars,U,a))
+
   subset_product_mono: LEMMA (FORALL(b:C):x(b)<=y(b)) IMPLIES products.sum(T,x)<=products.sum(T,y)
+
   polynomial_mono: THEOREM (FORALL(b:C):x(b)<=y(b)) IMPLIES
     pegdenPolynomial(vars,U,x,a)<=pegdenPolynomial(vars,U,y,a)
+
   one_le_polynomial: THEOREM 1<=pegdenPolynomial(vars,U,x,a)
+
   polynomial_le_prod_one_add: THEOREM pegdenPolynomial(vars,U,x,a)<=
     products.sum(plusNeighbors(vars,U,a),LAMBDA(b:C):1+x(b))
+
   product_budget_implies: THEOREM
     (FORALL(a:C):p(a)*products.sum(plusNeighbors(vars,U,a),LAMBDA(b:C):1+x(b))<=x(a)) IMPLIES
       pegdenBudget(vars,U,p,x)
+
   budget_marginal: LEMMA pegdenBudget(vars,U,p,x) IMPLIES p(a)<=x(a)
+
   budget_step: LEMMA pegdenBudget(vars,U,p,x) AND (FORALL(b:C):y(b)<=x(b)) IMPLIES
     p(a)*pegdenPolynomial(vars,U,y,a)<=x(a)
+
 END ppg_pegden_polynomial

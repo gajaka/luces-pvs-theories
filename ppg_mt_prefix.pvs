@@ -4,18 +4,28 @@ BEGIN
   IMPORTING ppg_mt_real_structure[C, V]
   T: VAR GTree
   r, w, x: VAR Addr
+
   address_nil_length: LEMMA length(null[nat]) = 0
+
   reverse_cons_snoc: LEMMA FORALL (k: nat): reverse(cons(k, r)) = snoc(reverse(r), k)
+
   prefixesRev(r): RECURSIVE finite_set[Addr] = CASES r OF
     null: singleton(null[nat]),
     cons(k, rest): add(reverse(r), prefixesRev(rest)) ENDCASES MEASURE length(r)
+
   prefixesRev_length: LEMMA prefixesRev(r)(x) IMPLIES length(x) <= length(r)
+
   prefixesRev_fresh: LEMMA FORALL (k: nat): NOT prefixesRev(r)(reverse(cons(k, r)))
+
   prefixesRev_card: LEMMA card(prefixesRev(r)) = length(r) + 1
+
   prefixesRev_subset: LEMMA gt_valid?(T) AND T`dom(reverse(r)) IMPLIES
     subset?(prefixesRev(r), T`dom)
+
   exists_prefix_finset: THEOREM gt_valid?(T) AND T`dom(w) IMPLIES
     EXISTS (S: finite_set[Addr]): subset?(S, T`dom) AND card(S) = length(w) + 1 AND
       FORALL (x: Addr): S(x) IMPLIES length(x) <= length(w)
+
   length_lt_card: THEOREM gt_valid?(T) AND T`dom(w) IMPLIES length(w) < card(T`dom)
+
 END ppg_mt_prefix

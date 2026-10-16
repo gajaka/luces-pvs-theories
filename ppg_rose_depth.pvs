@@ -5,16 +5,27 @@ BEGIN
   t, c: VAR WTree
   cs: VAR list[WTree]
   a: VAR C
+
   height(ns: list[nat]): RECURSIVE nat = CASES ns OF null: 0,
     cons(n, rest): max(1 + n, height(rest)) ENDCASES MEASURE length(ns)
+
   depth: [WTree -> nat] = reduce_nat(LAMBDA (a: C, ns: list[nat]): height(ns))
+
   depthList(cs): nat = height(map(depth)(cs))
+
   depth_node: LEMMA depth(roseNode(a, cs)) = depthList(cs)
+
   depth_nil: THEOREM depth(roseNode(a, null)) = 0
+
   depthList_nil: LEMMA depthList(null[WTree]) = 0
+
   depthList_cons: LEMMA FORALL (rest: list[WTree]):
     depthList(cons(c, rest)) = max(1 + depth(c), depthList(rest))
+
   depth_lt_depthList: THEOREM member(c, cs) IMPLIES depth(c) < depthList(cs)
+
   depth_child_lt: THEOREM member(c, roseChildren(t)) IMPLIES depth(c) < depth(t)
+
   depth_zero_children: LEMMA depth(t) = 0 IMPLIES roseChildren(t) = null
+
 END ppg_rose_depth

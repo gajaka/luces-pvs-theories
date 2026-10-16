@@ -9,8 +9,13 @@ BEGIN
   P: VAR set[T]
   f: VAR [T->real]
   x: VAR T
+
   mask(P,f)(x): real = IF P(x) THEN f(x) ELSE 0 ENDIF
+
   mask_on_filter: LEMMA fsum(intersection(A,P),mask(P,f))=fsum(intersection(A,P),f)
+
   mask_off_filter: LEMMA fsum(difference(A,intersection(A,P)),mask(P,f))=0
+
   fsum_filter: THEOREM fsum(intersection(A,P),f)=fsum(A,mask(P,f))
+
 END ppg_real_filter

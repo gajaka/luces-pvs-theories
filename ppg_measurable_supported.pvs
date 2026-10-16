@@ -5,25 +5,37 @@ ppg_measurable_supported[I, Value: TYPE, domain: [I -> set[Value]], F: set[I],
 BEGIN
   IMPORTING ppg_cylinder_algebra[I, Value, domain, spaces],
             ppg_dynkin_system[FullBlock], ppg_measurable_block_map
+
   supportedGenerators: set[TableEvent] = {A: TableEvent |
     EXISTS (H: finite_set[I], B: (blockSigma(H))):
       subset?(H, F) AND A = tableCylinder(H, B)}
+
   supportedSigma: ppg_measurable_space[FullBlock].MeasurableSpace = generated(supportedGenerators)
+
   supported_member: LEMMA FORALL (H: finite_set[I], B: (blockSigma(H))):
     subset?(H, F) IMPLIES supportedGenerators(tableCylinder(H, B))
+
   supported_intersection: LEMMA FORALL (A, B: (supportedGenerators)):
     supportedGenerators(intersection(A, B))
+
   supported_intersection_closed: LEMMA intersectionClosed?(supportedGenerators)
+
   supported_generators_measurable: LEMMA subset?(supportedGenerators, tableSigma)
+
   supported_sigma_measurable: LEMMA subset?(supportedSigma, tableSigma)
+
   supported_coordinate: LEMMA FORALL (i: (F), B: (spaces(i))):
     supportedSigma(blockCylinder(fullset[I], i, B))
+
   supported_coordinate_measurable: LEMMA FORALL (i: (F)):
     ppg_measurable_map[FullBlock, (domain(i))].measurable(
       supportedSigma, spaces(i), LAMBDA (x: FullBlock): x(i))
+
   supported_restriction_measurable: LEMMA
     ppg_measurable_map[FullBlock, Block(F)].measurable(
       supportedSigma, blockSigma(F), restrictBlock(fullset[I], F))
+
   supported_cylinder: THEOREM FORALL (B: (blockSigma(F))):
     supportedSigma(tableCylinder(F, B))
+
 END ppg_measurable_supported

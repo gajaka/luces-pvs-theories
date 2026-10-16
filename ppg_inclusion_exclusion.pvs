@@ -14,33 +14,53 @@ BEGIN
   B, K: VAR finite_set[C]
   events: VAR [C, State -> bool]
   z: VAR State
+
   common(U, events, K): finite_set[State] =
     intersection(U, {z: State | FORALL (c: C): K(c) IMPLIES events(c, z)})
+
   survivors(U, events, B): finite_set[State] =
     intersection(U, {z: State | FORALL (c: C): B(c) IMPLIES NOT events(c, z)})
+
   commonIndicator(events, K, z): real = IF FORALL (c: C): K(c) IMPLIES events(c, z) THEN 1 ELSE 0 ENDIF
+
   commonTerm(U, events, K): real = paritySign(card(K)) * card(common(U, events, K))
+
   allIntersections(U, events, B): real = families.fsum(subsets(B), LAMBDA (K: finite_set[C]): commonTerm(U, events, K))
+
   nonemptySubsets(B): finite_set[finite_set[C]] = remove(emptyset[C], subsets(B))
+
   unionCorrection(U, events, B): real = families.fsum(nonemptySubsets(B),
     LAMBDA (K: finite_set[C]): paritySign(card(K) + 1) * card(common(U, events, K)))
 
   common_empty: LEMMA common(U, events, emptyset[C]) = U
+
   common_card: LEMMA card(common(U, events, K)) = states.fsum(U, LAMBDA (z: State): commonIndicator(events, K, z))
+
   point_term: LEMMA paritySign(card(K)) * commonIndicator(events, K, z) =
     alternatingTerm(LAMBDA (c: C): events(c, z), K)
+
   commonTerm_sum: LEMMA commonTerm(U, events, K) =
     states.fsum(U, LAMBDA (z: State): alternatingTerm(LAMBDA (c: C): events(c, z), K))
+
   intersections_sum_pointwise: LEMMA allIntersections(U, events, B) =
     states.fsum(U, LAMBDA (z: State): alternatingSum(LAMBDA (c: C): events(c, z), B))
+
   allIntersections_count: THEOREM allIntersections(U, events, B) = card(survivors(U, events, B))
+
   nonemptySubsets_member: LEMMA nonemptySubsets(B)(K) IFF subset?(K, B) AND nonempty?(K)
+
   subsets_include_empty: LEMMA subsets(B)(emptyset[C])
+
   nonemptySubsets_diff: LEMMA nonemptySubsets(B) = difference(subsets(B), singleton(emptyset[C]))
+
   commonTerm_empty: LEMMA commonTerm(U, events, emptyset[C]) = card(U)
+
   allIntersections_split: LEMMA allIntersections(U, events, B) = card(U) +
     families.fsum(nonemptySubsets(B), LAMBDA (K: finite_set[C]): commonTerm(U, events, K))
+
   unionCorrection_neg: LEMMA unionCorrection(U, events, B) =
     -families.fsum(nonemptySubsets(B), LAMBDA (K: finite_set[C]): commonTerm(U, events, K))
+
   inclusion_exclusion_survivors: THEOREM card(U) - unionCorrection(U, events, B) = card(survivors(U, events, B))
+
 END ppg_inclusion_exclusion

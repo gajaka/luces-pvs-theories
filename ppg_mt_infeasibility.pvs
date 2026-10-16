@@ -19,25 +19,34 @@ BEGIN
   s, z: VAR MTState
   edges: VAR [MTState, MTState -> bool]
   K: VAR finite_set[C]
+
   mtSat(bad)(c: C, z): bool = NOT bad(c, z)
+
   mt_satisfiable_iff_good_exists: THEOREM
     Satisfiable(fullset[MTState], mtSat(bad), events) IFF EXISTS (z: MTState): MTGood(bad, z)
+
   mt_reachable_good_iff_good_exists: THEOREM mt_wf(vars, bad) AND completeEnumeration(enumeration) IMPLIES
     ((EXISTS (w: MTState): mtReach(vars, bad, fallback, enumeration)(s, w) AND MTGood(bad, w)) IFF
       EXISTS (z: MTState): MTGood(bad, z))
+
   mt_noReachableGood_iff_infeasible: THEOREM mt_wf(vars, bad) AND completeEnumeration(enumeration) IMPLIES
     (NoReachableGood(mtRepairGraph(vars, bad, fallback, enumeration, edges), s) IFF
       Infeasible(fullset[MTState], mtSat(bad), events))
+
   mt_no_repair_iff_infeasible: THEOREM mt_wf(vars, bad) AND completeEnumeration(enumeration) AND
     isolated(mtRepairGraph(vars, bad, fallback, enumeration, edges), s) IMPLIES
     (NOT repair_possible(mtRepairGraph(vars, bad, fallback, enumeration, edges), s) IFF
       Infeasible(fullset[MTState], mtSat(bad), events))
+
   mt_infeasible_iff_minimalCore_exists: THEOREM
     Infeasible(fullset[MTState], mtSat(bad), events) IFF
       EXISTS (K: finite_set[C]): MinimalCore(fullset[MTState], mtSat(bad), K)
+
   mt_core_noReachableGood: THEOREM mt_wf(vars, bad) AND completeEnumeration(enumeration) AND
     MinimalCore(fullset[MTState], mtSat(bad), K) IMPLIES
       NoReachableGood(mtRepairGraph(vars, bad, fallback, enumeration, edges), s)
+
   mt_good_exists_excludes_all_cores: THEOREM (EXISTS (z: MTState): MTGood(bad, z)) IMPLIES
     NOT MinimalCore(fullset[MTState], mtSat(bad), K)
+
 END ppg_mt_infeasibility

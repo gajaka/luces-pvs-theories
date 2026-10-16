@@ -14,22 +14,33 @@ BEGIN
   R: VAR [nat->(S)]
   E: VAR [C->[nat->(S)]]
   n,i,j: VAR nat
+
   partitionPrefixes(A,R,E): bool = FORALL(x:X,n:nat):countPrefix(R,x,n)=
     labels.sum(A,LAMBDA(a:C):countPrefix(E(a),x,n))
+
   approxRows(E,n)(a:C): NonnegativeFunction = countApprox(E(a),n)
+
   meanRows(E)(a:C,n:nat): nonneg_real = mean(countApprox(E(a),n))
+
   prefix_mean_partition: LEMMA partitionPrefixes(A,R,E) IMPLIES
     mean(countApprox(R,n))=labels.sum(A,LAMBDA(a:C):meanRows(E)(a,n))
+
   prefix_mean_function: LEMMA partitionPrefixes(A,R,E) IMPLIES
     (LAMBDA(n:nat):mean(countApprox(R,n)))=stageSum(A,meanRows(E))
+
   mean_prefix_mono: LEMMA i<=j IMPLIES mean(countApprox(R,i))<=mean(countApprox(R,j))
+
   mean_rows_monotone: LEMMA rowMonotone(meanRows(E))
+
   means_sup_count: LEMMA lintegral(LAMBDA(x:X):eventCount(R,x))=
     natSup(LAMBDA(n:nat):mean(countApprox(R,n)))
+
   event_integral_function: LEMMA
     (LAMBDA(a:C):lintegral(LAMBDA(x:X):eventCount(E(a),x)))=
     (LAMBDA(a:C):natSup(LAMBDA(n:nat):meanRows(E)(a,n)))
+
   lintegral_partition: THEOREM partitionPrefixes(A,R,E) IMPLIES
     lintegral(LAMBDA(x:X):eventCount(R,x))=
     ppg_nonneg_tsum[C].esum(A,LAMBDA(a:C):lintegral(LAMBDA(x:X):eventCount(E(a),x)))
+
 END ppg_event_partition_integral

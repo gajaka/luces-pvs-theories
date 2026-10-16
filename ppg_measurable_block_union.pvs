@@ -5,38 +5,64 @@ ppg_measurable_block_union[I, Value: TYPE, domain: [I -> set[Value]], F, G: set[
 BEGIN
   IMPORTING ppg_measurable_block_restriction[I, Value, domain, spaces],
             ppg_measurable_block_map, ppg_measurable_compose
+
   U: set[I] = union(F, G)
+
   LeftBlock: TYPE = Block(F)
+
   RightBlock: TYPE = Block(G)
+
   UnionBlock: TYPE = Block(U)
+
   BlockPair: TYPE = [LeftBlock, RightBlock]
+
   IMPORTING ppg_measurable_pair[BlockPair, LeftBlock, RightBlock],
             ppg_measurable_pair[UnionBlock, LeftBlock, RightBlock]
+
   pairSpace: ppg_measurable_space[BlockPair].MeasurableSpace =
     ppg_measurable_pair[BlockPair, LeftBlock, RightBlock].pairSigma(blockSigma(F), blockSigma(G))
+
   join(p: BlockPair): UnionBlock =
     LAMBDA (i: (U)): IF F(i) THEN p`1(i) ELSE p`2(i) ENDIF
+
   leftPart(x: UnionBlock): LeftBlock = LAMBDA (i: (F)): x(i)
+
   rightPart(x: UnionBlock): RightBlock = LAMBDA (i: (G)): x(i)
+
   splitBlock(x: UnionBlock): BlockPair = (leftPart(x), rightPart(x))
+
   p: VAR BlockPair
   x: VAR UnionBlock
+
   left_join: LEMMA leftPart(join(p)) = p`1
+
   right_join: LEMMA disjoint?(F, G) IMPLIES rightPart(join(p)) = p`2
+
   join_split: LEMMA join(splitBlock(x)) = x
+
   split_join: LEMMA disjoint?(F, G) IMPLIES splitBlock(join(p)) = p
+
   left_part_restrict: LEMMA leftPart(x) = restrictBlock(U, F)(x)
+
   right_part_restrict: LEMMA rightPart(x) = restrictBlock(U, G)(x)
+
   left_part_measurable: LEMMA measurable(blockSigma(U), blockSigma(F), leftPart)
+
   right_part_measurable: LEMMA measurable(blockSigma(U), blockSigma(G), rightPart)
+
   left_pair_coordinate: LEMMA FORALL (i: (F)):
     ppg_measurable_map[BlockPair, (domain(i))].measurable(
       pairSpace, spaces(i), LAMBDA (p: BlockPair): p`1(i))
+
   right_pair_coordinate: LEMMA FORALL (i: (G)):
     ppg_measurable_map[BlockPair, (domain(i))].measurable(
       pairSpace, spaces(i), LAMBDA (p: BlockPair): p`2(i))
+
   join_measurable: LEMMA measurable(pairSpace, blockSigma(U), join)
+
   pair_space_source: LEMMA pairSpace =
     ppg_measurable_pair[UnionBlock, LeftBlock, RightBlock].pairSigma(blockSigma(F), blockSigma(G))
+
   split_measurable: LEMMA measurable(blockSigma(U), pairSpace, splitBlock)
+
 END ppg_measurable_block_union

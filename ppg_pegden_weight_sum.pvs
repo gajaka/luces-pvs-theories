@@ -15,18 +15,27 @@ BEGIN
   p: VAR [C->nonneg_real]
   D: VAR nat
   a: VAR C
+
   pegdenMass(vars,U,p,D,a): nonneg_real = treeSums.sum(pegdenTreesUpTo(vars,U,D,a),weight(p))
+
   nonnegative_addition_monoid: LEMMA identity?(LAMBDA(a,b:nonneg_real):a+b)(0) AND
     associative?(LAMBDA(a,b:nonneg_real):a+b) AND commutative?(LAMBDA(a,b:nonneg_real):a+b)
+
   pegden_mass_zero: LEMMA pegdenMass(vars,U,p,0,a)=p(a)
+
   pegden_root_mass_function: LEMMA
     (LAMBDA(S:finite_set[C]):treeSums.sum(rootFamily(a,S,LAMBDA(b:C):pegdenTreesUpTo(vars,U,D,b)),weight(p)))=
     (LAMBDA(S:finite_set[C]):p(a)*products.sum(S,LAMBDA(b:C):pegdenMass(vars,U,p,D,b)))
+
   pegden_mass_succ: LEMMA pegdenMass(vars,U,p,D+1,a)=
     p(a)*pegdenPolynomial(vars,U,LAMBDA(b:C):pegdenMass(vars,U,p,D,b),a)
+
   stage_functions_equal: LEMMA (FORALL(a:C):pegdenMass(vars,U,p,D,a)=pegdenWeight(vars,U,p,D,a)) IMPLIES
     (LAMBDA(a:C):pegdenMass(vars,U,p,D,a))=(LAMBDA(a:C):pegdenWeight(vars,U,p,D,a))
+
   pegden_mass_eq_weight: THEOREM FORALL(D:nat,vars:CertVars,U:finite_set[C],p:[C->nonneg_real]):
     FORALL(a:C):pegdenMass(vars,U,p,D,a)=pegdenWeight(vars,U,p,D,a)
+
   sum_treesUpTo_weight_le: THEOREM pegdenMass(vars,U,p,D,a)<=pegdenWeight(vars,U,p,D,a)
+
 END ppg_pegden_weight_sum

@@ -11,46 +11,80 @@
 % Lean counterpart: Pegden.TernaryExample in PPGraphMoserTardosPegden.lean.
 ppg_pegden_ternary_frame: THEORY
 BEGIN
+
   UnitIndex: TYPE = {b:bool|b}
+
   Ternary: TYPE = below(3)
+
   valueDomain(v:UnitIndex): set[Ternary] = fullset[Ternary]
+
   IMPORTING ppg_pegden_weight_sum[bool,UnitIndex],ppg_mt_semantics[bool,UnitIndex,Ternary,valueDomain],reals@sq
+
   unitUniverse: finite_set[UnitIndex] = singleton[UnitIndex](TRUE)
+
   labels: finite_set[bool] = add(TRUE,singleton(FALSE))
+
   allVars: CertVars = LAMBDA(i:bool):unitUniverse
+
   labelValue(i:bool): Ternary = IF i THEN 1 ELSE 0 ENDIF
+
   ternaryBad(i:bool,z:MTState): bool = z(TRUE)=labelValue(i)
+
   goodState: MTState = LAMBDA(v:UnitIndex):2
+
   ones(i:bool): nonneg_real = 1
+
   thirds(i:bool): nonneg_real = 1/3
+
   threeSubsets: finite_set[finite_set[bool]] =
     sets[finite_set[bool]].add(emptyset[bool],sets[finite_set[bool]].add(singleton(FALSE),
       sets[finite_set[bool]].singleton(singleton(TRUE))))
+
   i,j: VAR bool
   T: VAR finite_set[bool]
   x: VAR [bool->nonneg_real]
+
   full_unit_universe: LEMMA unitUniverse=fullset[UnitIndex]
+
   labels_full: LEMMA labels=fullset[bool]
+
   all_neighbor: THEOREM dependent?(allVars)(i,j)
+
   plusNeighbors_eq_univ: THEOREM plusNeighbors(allVars,labels,i)=labels
+
   bool_set_shape: LEMMA T=IF T(TRUE) THEN IF T(FALSE) THEN labels ELSE singleton(TRUE) ENDIF
     ELSE IF T(FALSE) THEN singleton(FALSE) ELSE emptyset[bool] ENDIF ENDIF
+
   independent_at_pair: LEMMA PegdenIndependent(allVars,T) IMPLIES NOT (T(TRUE) AND T(FALSE))
+
   independence_test: LEMMA PegdenIndependent(allVars,T) IFF NOT (T(TRUE) AND T(FALSE))
+
   labels_split: LEMMA labels=add(TRUE,singleton(FALSE))
+
   labels_card: LEMMA card(labels)=2
+
   subset_shapes_distinct: LEMMA emptyset[bool]/=singleton(FALSE) AND emptyset[bool]/=singleton(TRUE) AND
     singleton(FALSE)/=singleton(TRUE) AND labels/=emptyset[bool] AND
     labels/=singleton(FALSE) AND labels/=singleton(TRUE)
+
   independentSubsets_eq: THEOREM independentSubsets(allVars,labels,i)=threeSubsets
+
   polynomial_formula: LEMMA pegdenPolynomial(allVars,labels,x,i)=1+x(FALSE)+x(TRUE)
+
   polynomial_one: THEOREM pegdenPolynomial(allVars,labels,ones,i)=3
+
   criterion: THEOREM thirds(i)*pegdenPolynomial(allVars,labels,ones,i)<=ones(i)
+
   good_target: THEOREM NOT ternaryBad(i,goodState)
+
   ternary_well_formed: LEMMA mt_wf(allVars,ternaryBad)
+
   two_label_product: LEMMA products.sum(labels,x)=x(TRUE)*x(FALSE)
+
   scalar_product_obstruction: LEMMA FORALL(a,b:nonneg_real):
     NOT ((1+a)*(1+b)<=3*a AND (1+a)*(1+b)<=3*b)
+
   no_old_product_budget: THEOREM NOT EXISTS(x:[bool->nonneg_real]):FORALL(i:bool):
     thirds(i)*products.sum(plusNeighbors(allVars,labels,i),LAMBDA(j:bool):1+x(j))<=x(i)
+
 END ppg_pegden_ternary_frame

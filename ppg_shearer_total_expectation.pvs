@@ -19,18 +19,25 @@ BEGIN
   enumeration: VAR SeqProbabilityEnumeration
   B: VAR UniversalLabels
   p: VAR [C->real]
+
   singletonBudget(p,B)(a:C): real = stableBudget(p,B,sets[C].singleton(a))
+
   full_label_universe: LEMMA labelUniverse(enumeration)=B
+
   singleton_budgets_nonnegative: LEMMA (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND
     StrictCriterion(p,B) IMPLIES FORALL(a:C):0<=singletonBudget(p,B)(a)
+
   total_clipped_budgets: LEMMA (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND
     StrictCriterion(p,B) IMPLIES
     sums.sum(B,LAMBDA(a:C):max(0,singletonBudget(p,B)(a)))=max(0,fsum(B,singletonBudget(p,B)))
+
   randomInitETLog_le_sum_stableBudget: THEOREM mt_wf(vars,bad) AND
     (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND StrictCriterion(p,B) IMPLIES
     ele(randomInitETLog(vars,bad,fallback,enumeration),
       ennFinite(max(0,fsum(B,singletonBudget(p,B)))))
+
   randomInitETLog_lt_top: THEOREM mt_wf(vars,bad) AND
     (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND StrictCriterion(p,B) IMPLIES
     ennFinite?(randomInitETLog(vars,bad,fallback,enumeration))
+
 END ppg_shearer_total_expectation

@@ -8,21 +8,33 @@ ppg_filtration[Omega,State: TYPE,
   ambient: ppg_measurable_space[Omega].MeasurableSpace]: THEORY
 BEGIN
   IMPORTING ppg_measurable_map[Omega,State]
+
   StateSpace: TYPE = ppg_measurable_space[State].MeasurableSpace
+
   HistoryLaw(H:[nat->ppg_measurable_space[Omega].MeasurableSpace]): bool =
     (FORALL(n:nat):subset?(H(n),ambient)) AND
     (FORALL(i,j:nat):i<=j IMPLIES subset?(H(i),H(j)))
+
   Filtration: TYPE = (HistoryLaw)
+
   Process: TYPE = [nat->[Omega->State]]
+
   H: VAR Filtration
   X: VAR Process
   SY: VAR StateSpace
   n,i,j: VAR nat
   A: VAR set[State]
+
   adapted(H,SY,X): bool = FORALL(n:nat):measurable(H(n),SY,X(n))
+
   history_ambient: LEMMA subset?(H(n),ambient)
+
   history_increasing: LEMMA i<=j IMPLIES subset?(H(i),H(j))
+
   adapted_at: LEMMA adapted(H,SY,X) IMPLIES measurable(H(n),SY,X(n))
+
   adapted_measurable: LEMMA adapted(H,SY,X) IMPLIES measurable(ambient,SY,X(n))
+
   adapted_event: LEMMA adapted(H,SY,X) AND SY(A) IMPLIES H(n)(inverseImage(X(n),A))
+
 END ppg_filtration

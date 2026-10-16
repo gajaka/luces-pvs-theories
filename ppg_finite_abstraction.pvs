@@ -13,14 +13,18 @@ BEGIN
   a: VAR Abstract
   K: VAR finite_set[Abstract]
   family: VAR finite_set[finite_set[Abstract]]
+
   abstractImpossibleTest(astep, agood, project, v): bool = checker.unreachableTest(astep, agood, project(v))
+
   familyIntersection(family): finite_set[Abstract] =
     intersection(universe, {a: Abstract | FORALL (K: finite_set[Abstract]): family(K) IMPLIES K(a)})
+
   RefutationResult: DATATYPE
   BEGIN
     noRefutation: noRefutation?
     refutation(certificate: finite_set[Abstract]): refutation?
   END RefutationResult
+
   abstractRefutationSearch(astep, agood, project, v): RefutationResult =
     LET family = checker.refutingInvariants(astep, agood, project(v)) IN
       IF nonempty?(family) THEN refutation(familyIntersection(family)) ELSE noRefutation ENDIF
@@ -28,50 +32,64 @@ BEGIN
   abstractImpossibleTest_sound: THEOREM
     StepSimulation(step, good, astep, agood, project) AND abstractImpossibleTest(astep, agood, project, v) IMPLIES
       ppg_infeasibility[State, bool].NoReachableGood(concreteGraph(step, good), v)
+
   abstractImpossibleTest_exact_iff: THEOREM
     ExactAbstraction(step, good, astep, agood, project) IMPLIES
       (abstractImpossibleTest(astep, agood, project, v) IFF
         ppg_infeasibility[State, bool].NoReachableGood(concreteGraph(step, good), v))
+
   abstractImpossibleTest_false_iff: THEOREM
     ExactAbstraction(step, good, astep, agood, project) IMPLIES
       (NOT abstractImpossibleTest(astep, agood, project, v) IFF
         EXISTS w: concrete.Reach(step)(v, w) AND good(w))
+
   abstractImpossibleTest_false_iff_repair: THEOREM
     ExactAbstraction(step, good, astep, agood, project) AND ppg_repair_semantics[State].isolated(concreteGraph(step, good), v)
     IMPLIES (NOT abstractImpossibleTest(astep, agood, project, v) IFF
       ppg_repair_semantics[State].repair_possible(concreteGraph(step, good), v))
+
   refuting_membership: LEMMA
     checker.refutingInvariants(astep, agood, a)(K) IFF checker.invariantCheck(astep, agood, a, K)
+
   invariantCheck_inf: THEOREM nonempty?(family) AND
     (FORALL K: family(K) IMPLIES checker.invariantCheck(astep, agood, a, K)) IMPLIES
       checker.invariantCheck(astep, agood, a, familyIntersection(family))
+
   abstractRefutationSearch_some_checked: THEOREM
     abstractRefutationSearch(astep, agood, project, v) = refutation(K) IMPLIES
       checker.invariantCheck(astep, agood, project(v), K)
+
   abstractRefutationSearch_some_refutes: THEOREM
     StepSimulation(step, good, astep, agood, project) AND
     abstractRefutationSearch(astep, agood, project, v) = refutation(K) IMPLIES
       concrete.InvariantRefutation(step, good, v, LAMBDA (w: State): K(project(w)))
+
   abstractRefutationSearch_none_iff: THEOREM
     abstractRefutationSearch(astep, agood, project, v) = noRefutation IFF
       FORALL K: NOT checker.invariantCheck(astep, agood, project(v), K)
+
   abstractRefutationSearch_complete: THEOREM
     ExactAbstraction(step, good, astep, agood, project) AND
     ppg_infeasibility[State, bool].NoReachableGood(concreteGraph(step, good), v) IMPLIES
       EXISTS K: abstractRefutationSearch(astep, agood, project, v) = refutation(K)
+
   abstractRefutationSearch_none_iff_reachable_good: THEOREM
     ExactAbstraction(step, good, astep, agood, project) IMPLIES
       (abstractRefutationSearch(astep, agood, project, v) = noRefutation IFF
         EXISTS w: concrete.Reach(step)(v, w) AND good(w))
+
   AbstractDecision(step, good, astep, agood, project, v): TYPE =
     {r: RefutationResult | CASES r OF
       noRefutation: EXISTS w: concrete.Reach(step)(v, w) AND good(w),
       refutation(K): checker.invariantCheck(astep, agood, project(v), K)
     ENDCASES}
+
   decideByAbstraction(step, good, astep, agood)
     (project: {p: [State -> Abstract] | ExactAbstraction(step, good, astep, agood, p)}, v):
       AbstractDecision(step, good, astep, agood, project, v) = abstractRefutationSearch(astep, agood, project, v)
+
   abstractDecision_impossible_sound: THEOREM
     StepSimulation(step, good, astep, agood, project) AND checker.invariantCheck(astep, agood, project(v), K) IMPLIES
       ppg_infeasibility[State, bool].NoReachableGood(concreteGraph(step, good), v)
+
 END ppg_finite_abstraction

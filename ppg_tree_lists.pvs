@@ -6,34 +6,48 @@ BEGIN
   n: VAR nat
   f: VAR [T -> nat]
   Q: VAR pred[T]
+
   natSum(ns: list[nat]): RECURSIVE nat =
     CASES ns OF null: 0, cons(a, rest): a + natSum(rest) ENDCASES
     MEASURE length(ns)
+
   list_cases: LEMMA xs = null OR EXISTS (h: T, rest: list[T]): xs = cons(h, rest)
+
   cons_equal: LEMMA FORALL (x, y: T, xs, ys: list[T]):
     (cons(x, xs) = cons(y, ys)) IFF (x = y AND xs = ys)
+
   list_member_sum: LEMMA member(x, xs) IMPLIES f(x) <= natSum(map(f)(xs))
+
   every_member_elim: LEMMA every(Q)(xs) AND member(x, xs) IMPLIES Q(x)
+
   every_map_nat: LEMMA FORALL (P: pred[nat]):
     every(P)(map(f)(xs)) = every(LAMBDA (x: T): P(f(x)))(xs)
+
   map_nat_cons: LEMMA FORALL (h: T, rest: list[T]):
     map(f)(cons(h, rest)) = cons(f(h), map(f)(rest))
+
   local_head_injective: LEMMA FORALL (h, y: T):
     (FORALL (x: T): member(x, cons(h, xs)) IMPLIES FORALL (z: T): f(x) = f(z) IMPLIES x = z)
     AND f(h) = f(y) IMPLIES h = y
+
   local_tail_injective: LEMMA FORALL (h: T):
     (FORALL (x: T): member(x, cons(h, xs)) IMPLIES FORALL (z: T): f(x) = f(z) IMPLIES x = z)
     IMPLIES (FORALL (x: T): member(x, xs) IMPLIES FORALL (z: T): f(x) = f(z) IMPLIES x = z)
+
   local_map_cancel: LEMMA
     (FORALL (x: T): member(x, xs) IMPLIES
       FORALL (y: T): f(x) = f(y) IMPLIES x = y) AND
     map(f)(xs) = map(f)(ys) IMPLIES xs = ys
+
   dropList(xs, n): RECURSIVE list[T] =
     IF n = 0 OR null?(xs) THEN xs ELSE dropList(cdr(xs), n - 1) ENDIF
     MEASURE n
+
   drop_eq_cons_bound: LEMMA FORALL (rest: list[T]):
     dropList(xs, n) = cons(x, rest) IMPLIES n < length(xs)
+
   get_and_drop_succ_of_drop_eq_cons: THEOREM FORALL (rest: list[T]):
     dropList(xs, n) = cons(x, rest) IMPLIES
       n < length(xs) AND nth(xs, n) = x AND dropList(xs, n + 1) = rest
+
 END ppg_tree_lists

@@ -18,16 +18,21 @@ BEGIN
   s: VAR nat
   U: VAR finite_set[C]
   W: VAR WTree
+
   actual_raw_separated: LEMMA depthSeparated(vars,rawShape(vars,bad,fallback,enumeration,omega,s))
+
   actual_raw_properties: LEMMA
     wellFormed(vars)(rawShape(vars,bad,fallback,enumeration,omega,s)) AND
     roseLabel(rawShape(vars,bad,fallback,enumeration,omega,s))=
       realC(vars,bad,fallback,enumeration,initialStateFromLog(omega),omega,s)
+
   actual_witness_pegden: LEMMA fullUniverse(U) IMPLIES
     pegdenTreesUpTo(vars,U,depth(rawShape(vars,bad,fallback,enumeration,omega,s)),
       realC(vars,bad,fallback,enumeration,initialStateFromLog(omega),omega,s))
       (randomInitWitness(vars,bad,fallback,enumeration,omega,s))
+
   witnessOccurrence_nonempty_mem_treesUpTo: THEOREM fullUniverse(U) AND
     nonempty?(witnessOccurrence(vars,bad,fallback,enumeration,a,W)) IMPLIES
       EXISTS(D:nat):pegdenTreesUpTo(vars,U,D,a)(W)
+
 END ppg_pegden_occurrence

@@ -19,11 +19,14 @@ BEGIN
   s,r: VAR nat
   L: VAR LayerSeq
   p: VAR [C->real]
+
   sequenceOccurrence_subset_tauCheck_of_representative: THEOREM mt_wf(vars,bad) AND
     randomInitSequence(bad,fallback,enumeration,rep,r)=L IMPLIES
     subset?(sequenceOccurrence(bad,fallback,enumeration,a,L),
       {omega:LogSpace|tauCheck(vars,bad,rawTree(vars,bad,fallback,enumeration,rep,r),omega)})
+
   randomInitSequence_weight_eq_prod: THEOREM sequenceWeight(p)(randomInitSequence(bad,fallback,enumeration,omega,s))=
     product(rawTree(vars,bad,fallback,enumeration,omega,s)`dom,
       LAMBDA(w:Addr):p(rawTree(vars,bad,fallback,enumeration,omega,s)`lab(w)))
+
 END ppg_shearer_sequence_representative

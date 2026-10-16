@@ -6,16 +6,26 @@ BEGIN
   x: VAR X
   k: VAR nat
   E: VAR disjoint_indexed_measurable
+
   pointMass(x)(A: (S)): nnreal = IF A(x) THEN 1 ELSE 0 ENDIF
+
   measurable_sequence_union: LEMMA S(IUnion(E))
+
   pointMass_disjoint_at: LEMMA E(k)(x) IMPLIES
     (LAMBDA (n: nat): pointMass(x)(E(n))) = spike(k, 1)
+
   pointMass_absent: LEMMA NOT IUnion(E)(x) IMPLIES
     (LAMBDA (n: nat): pointMass(x)(E(n))) = (LAMBDA (n: nat): 0)
+
   pointMass_additive: LEMMA
     convergence(series(pointMass(x) o E), pointMass(x)(IUnion(E)))
+
   pointMass_probability: LEMMA probability?(pointMass(x))
+
   dirac(x): Probability = pointMass(x)
+
   dirac_at: LEMMA FORALL (A: (S)): dirac(x)(A) = IF A(x) THEN 1 ELSE 0 ENDIF
+
   probability_exists: LEMMA FORALL (x: X): EXISTS (mu: Probability): mu = dirac(x)
+
 END ppg_probability_dirac

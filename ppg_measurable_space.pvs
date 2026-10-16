@@ -1,31 +1,53 @@
 % Sigma algebras use countable unions indexed by the natural numbers.
 ppg_measurable_space[X: TYPE]: THEORY
 BEGIN
+
   Event: TYPE = set[X]
+
   Family: TYPE = [nat -> Event]
+
   countableUnion(E: Family): Event = {x: X | EXISTS (n: nat): E(n)(x)}
+
   sigma?(S: set[Event]): bool = S(emptyset[X]) AND
     (FORALL (A: Event): S(A) IMPLIES S(complement(A))) AND
     (FORALL (E: Family): (FORALL (n: nat): S(E(n))) IMPLIES S(countableUnion(E)))
+
   MeasurableSpace: TYPE+ = (sigma?) CONTAINING fullset[Event]
+
   S: VAR MeasurableSpace
   A, B: VAR Event
   E: VAR Family
   n: VAR nat
+
   measurable_empty: LEMMA S(emptyset[X])
+
   measurable_complement: LEMMA S(A) IMPLIES S(complement(A))
+
   measurable_countable_union: LEMMA (FORALL (n: nat): S(E(n))) IMPLIES S(countableUnion(E))
+
   complement_empty: LEMMA complement(emptyset[X]) = fullset[X]
+
   measurable_full: LEMMA S(fullset[X])
+
   binaryUnionFamily(A, B): Family = LAMBDA (n: nat): IF n = 0 THEN A ELSE B ENDIF
+
   binary_union_eq: LEMMA countableUnion(binaryUnionFamily(A, B)) = union(A, B)
+
   measurable_union: LEMMA S(A) AND S(B) IMPLIES S(union(A, B))
+
   intersection_complements: LEMMA intersection(A, B) = complement(union(complement(A), complement(B)))
+
   measurable_intersection: LEMMA S(A) AND S(B) IMPLIES S(intersection(A, B))
+
   G: VAR set[Event]
+
   generated(G): MeasurableSpace =
     {A: Event | FORALL (S: MeasurableSpace): subset?(G, S) IMPLIES S(A)}
+
   generated_contains: LEMMA subset?(G, generated(G))
+
   generated_least: LEMMA subset?(G, S) IMPLIES subset?(generated(G), S)
+
   generated_idempotent: LEMMA generated(S) = S
+
 END ppg_measurable_space

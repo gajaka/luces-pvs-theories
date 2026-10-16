@@ -19,35 +19,54 @@ BEGIN
   p: VAR [C->real]
   S,T,I,B: VAR finite_set[C]
   a: VAR C
+
   negWeight(p)(i:C): real = -p(i)
+
   term(p)(I): real = product(I,negWeight(p))
+
   lifted(p)(I): real = IF Independent(I) THEN term(p)(I) ELSE 0 ENDIF
+
   polynomial(p,T): real = fsum(independentSubsets(T),term(p))
+
   % Every induced-subgraph polynomial participates in the strict criterion.
   StrictCriterion(p,T): bool = FORALL(U:finite_set[C]):subset?(U,T) IMPLIES 0<polynomial(p,U)
+
   polynomial_unfiltered: LEMMA polynomial(p,T)=fsum(subsets(T),lifted(p))
+
   term_empty: LEMMA term(p)(emptyset[C])=1
+
   term_insert: LEMMA NOT I(a) IMPLIES term(p)(add(a,I))=-p(a)*term(p)(I)
+
   polynomial_empty: THEOREM polynomial(p,emptyset[C])=1
+
   inserted_term: LEMMA NOT T(a) AND subset?(I,T) IMPLIES
     lifted(p)(add(a,I))=-p(a)*mask(LAMBDA(K:finite_set[C]):Independent(add(a,K)),term(p))(I)
+
   inserted_sum: LEMMA NOT T(a) IMPLIES
     fsum(subsets(T),LAMBDA(I:finite_set[C]):lifted(p)(add(a,I)))=-p(a)*polynomial(p,remote(T,a))
+
   polynomial_insert: THEOREM NOT T(a) IMPLIES
     polynomial(p,add(a,T))=polynomial(p,T)-p(a)*polynomial(p,remote(T,a))
+
   polynomial_delete: THEOREM T(a) IMPLIES
     polynomial(p,T)=polynomial(p,remove(a,T))-p(a)*polynomial(p,remote(T,a))
+
   factor_step: LEMMA S(a) AND disjoint?(S,T) AND noCrossEdges(S,T) AND
     polynomial(p,union(remove(a,S),T))=polynomial(p,remove(a,S))*polynomial(p,T) AND
     polynomial(p,union(remote(S,a),T))=polynomial(p,remote(S,a))*polynomial(p,T) IMPLIES
     polynomial(p,union(S,T))=polynomial(p,S)*polynomial(p,T)
+
   polynomial_union: THEOREM disjoint?(S,T) AND
     noCrossEdges(S,T) IMPLIES
     polynomial(p,union(S,T))=polynomial(p,S)*polynomial(p,T)
+
   strictCriterion_mono: THEOREM StrictCriterion(p,T) AND subset?(S,T) IMPLIES StrictCriterion(p,S)
+
   strictCriterion_union_intro: LEMMA disjoint?(S,T) AND noCrossEdges(S,T) AND
     StrictCriterion(p,S) AND StrictCriterion(p,T) IMPLIES StrictCriterion(p,union(S,T))
+
   strictCriterion_union_iff: THEOREM disjoint?(S,T) AND
     noCrossEdges(S,T) IMPLIES
     (StrictCriterion(p,union(S,T)) IFF StrictCriterion(p,S) AND StrictCriterion(p,T))
+
 END ppg_shearer_polynomial

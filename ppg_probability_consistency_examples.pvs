@@ -2,15 +2,22 @@
 ppg_probability_consistency_examples: THEORY
 BEGIN
   IMPORTING ppg_probability_finite_examples
+
   preferSeven(H: non_empty_finite_set[nat]): (H) =
     IF H(7) THEN 7 ELSE choose(H) ENDIF
+
   IMPORTING ppg_probability_finite_choice[nat, nat, domain, spaces, coins, preferSeven],
             ppg_probability_finite_union[nat, nat, domain, singleton[nat](2),
               singleton[nat](7), spaces, coins]
+
   selection_independent: LEMMA selectedLaw(F) = finiteLaw(F)
+
   subblock_marginal: LEMMA marginal(F, singleton[nat](7))(finiteLaw(F)) =
     finiteLaw(singleton[nat](7))
+
   empty_marginal: LEMMA marginal(F, emptyset[nat])(finiteLaw(F)) = emptyLaw
+
   disjoint_join: LEMMA unionLaw(finiteLaw(singleton[nat](2)), finiteLaw(singleton[nat](7))) =
     finiteLaw(U)
+
 END ppg_probability_consistency_examples

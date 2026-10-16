@@ -3,15 +3,24 @@ ppg_nat_range: THEORY
 BEGIN
   n, k: VAR nat
   P: VAR pred[nat]
+
   natRange(n): RECURSIVE finite_set[nat] =
     IF n = 0 THEN emptyset ELSE add(n - 1, natRange(n - 1)) ENDIF MEASURE n
+
   natRange_zero: LEMMA natRange(0) = emptyset[nat]
+
   natRange_succ: LEMMA natRange(n + 1) = add(n, natRange(n))
+
   natRange_member: LEMMA natRange(n)(k) IFF k < n
+
   filteredRange(P, n): finite_set[nat] = intersection(natRange(n), P)
+
   filteredRange_zero: LEMMA filteredRange(P, 0) = emptyset[nat]
+
   filteredRange_succ: LEMMA filteredRange(P, n + 1) =
     IF P(n) THEN add(n, filteredRange(P, n)) ELSE filteredRange(P, n) ENDIF
+
   filteredRange_card_succ: LEMMA card(filteredRange(P, n + 1)) =
     card(filteredRange(P, n)) + IF P(n) THEN 1 ELSE 0 ENDIF
+
 END ppg_nat_range

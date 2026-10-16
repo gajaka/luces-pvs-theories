@@ -7,23 +7,33 @@ ppg_probability_cylinder_coherence[I, Value: TYPE, domain: [I -> set[Value]],
 BEGIN
   IMPORTING ppg_measurable_cylinder[I, Value, domain, spaces],
             ppg_probability_finite_consistency[I, Value, domain, spaces, coins]
+
   anchor: FullBlock = LAMBDA (i: (fullset[I])):
     ppg_probability_measure[(domain(i)), spaces(i)].basePoint(coins(i))
+
   extendBlock(F: set[I])(x: Block(F)): FullBlock =
     LAMBDA (i: (fullset[I])): IF F(i) THEN x(i) ELSE anchor(i) ENDIF
+
   restrict_extend: LEMMA FORALL (F: set[I], x: Block(F)):
     restrictBlock(fullset[I], F)(extendBlock(F)(x)) = x
+
   restriction_surjective: LEMMA FORALL (F: set[I], x: Block(F)):
     EXISTS (y: FullBlock): restrictBlock(fullset[I], F)(y) = x
+
   cylinder_equality_reflects: LEMMA FORALL (F: set[I], B, D: set[Block(F)]):
     tableCylinder(F, B) = tableCylinder(F, D) IMPLIES B = D
+
   cylinder_subset_reflects: LEMMA FORALL (F: set[I], B, D: set[Block(F)]):
     subset?(tableCylinder(F, B), tableCylinder(F, D)) IMPLIES subset?(B, D)
+
   cylinder_disjoint_reflects: LEMMA FORALL (F: set[I], B, D: set[Block(F)]):
     disjoint?(tableCylinder(F, B), tableCylinder(F, D)) IMPLIES disjoint?(B, D)
+
   lift_mass: LEMMA FORALL (H: finite_set[I], F: {F: finite_set[I] | subset?(F, H)},
     B: (blockSigma(F))): finiteLaw(H)(liftEvent(H, F, B)) = finiteLaw(F)(B)
+
   cylinder_mass_coherent: THEOREM FORALL (F, G: finite_set[I],
     B: (blockSigma(F)), D: (blockSigma(G))):
     tableCylinder(F, B) = tableCylinder(G, D) IMPLIES finiteLaw(F)(B) = finiteLaw(G)(D)
+
 END ppg_probability_cylinder_coherence

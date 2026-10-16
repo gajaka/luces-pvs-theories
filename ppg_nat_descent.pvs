@@ -4,8 +4,11 @@ BEGIN
   r: VAR [nat -> nat]
   P: VAR pred[nat]
   n, m: VAR nat
+
   descent_bound: LEMMA m <= n + 1 AND (FORALL (t: nat): t <= n IMPLIES r(t + 1) < r(t))
     IMPLIES r(m) + m <= r(0)
+
   exists_stop_before_rank: LEMMA (FORALL (t: nat): NOT P(t) IMPLIES r(t + 1) < r(t))
     IMPLIES EXISTS (t: nat): t <= r(0) AND P(t)
+
 END ppg_nat_descent

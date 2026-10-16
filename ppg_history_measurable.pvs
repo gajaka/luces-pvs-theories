@@ -8,15 +8,24 @@ BEGIN
   w, rest: VAR list[C]
   a: VAR C
   n: VAR nat
+
   coordinateMeasurable(SX, E): bool = FORALL(k:nat):
     measurable(SX, fullset[set[C]], LAMBDA(x:X):E(x)(k))
+
   historyFiber(E, n, w): set[X] = inverseImage(LAMBDA(x:X):history(E(x),n), singleton[list[C]](w))
+
   historyFiber_zero: LEMMA historyFiber(E, 0, w) = IF null?(w) THEN fullset[X] ELSE emptyset[X] ENDIF
+
   historyFiber_succ_nil: LEMMA historyFiber(E, n + 1, null) = emptyset[X]
+
   historyFiber_succ_cons: LEMMA historyFiber(E, n + 1, cons(a, rest)) =
     intersection(inverseImage(LAMBDA(x:X):E(x)(n),singleton[C](a)),historyFiber(E,n,rest))
+
   historyFiber_measurable: LEMMA coordinateMeasurable(SX, E) IMPLIES SX(historyFiber(E,n,w))
+
   history_word_code_injective: LEMMA injective?(code) IMPLIES injective?(LAMBDA(w:list[C]):wordCode(code,w))
+
   history_measurable: THEOREM injective?(code) AND coordinateMeasurable(SX,E) IMPLIES
     measurable(SX, fullset[set[list[C]]], LAMBDA(x:X):history(E(x),n))
+
 END ppg_history_measurable

@@ -17,18 +17,24 @@ BEGIN
   d, idx: VAR nat
   cs: VAR list[WTree]
   w: VAR Addr
+
   checkOK_iff_toGT_dom: THEOREM checkOK(vars, bad, omega, whole, d, t) IFF
     FORALL (w: Addr): toGT_dom(t)(w) IMPLIES
       bad(toGT_lab(t, w), checkStateAt(vars, omega, whole, d + length(w)))
+
   checkOKList_iff_toGT_domChildren: THEOREM dropList(roseChildren(parent), idx) = cs IMPLIES
     (checkOKList(vars, bad, omega, whole, d + 1, cs) IFF
       FORALL (w: Addr): toGT_domChildren(cs, idx)(w) IMPLIES
         bad(toGT_lab(parent, w), checkStateAt(vars, omega, whole, d + length(w))))
+
   checkState_toGrowingTree: LEMMA checkState(vars, toGrowingTree(t), omega, w) =
     checkStateAt(vars, omega, t, length(w))
+
   toGrowingTree_checks_congr: LEMMA
     andSets.sum(toGT_dom(t), LAMBDA (w: Addr): bad(toGT_lab(t, w), checkState(vars, toGrowingTree(t), omega, w))) =
     andSets.sum(toGT_dom(t), LAMBDA (w: Addr): bad(toGT_lab(t, w), checkStateAt(vars, omega, t, length(w))))
+
   tauCheck_toGrowingTree_iff_tauCheck: THEOREM
     tauCheck(vars, bad, toGrowingTree(t), omega) IFF roseTauCheck(vars, bad, omega, t)
+
 END ppg_rose_address_check

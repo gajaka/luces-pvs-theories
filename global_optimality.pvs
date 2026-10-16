@@ -91,22 +91,29 @@ BEGIN
   %% ─────────────────────────────────────────────────────────────────
 
   NIGHT: State
+
   DAWN: State
+
   DAY: State
+
   DUSK: State
 
   % Regimes are distinct
   ax_distinct_night_day: AXIOM NIGHT /= DAY
+
   ax_distinct_night_dawn: AXIOM NIGHT /= DAWN
+
   ax_distinct_day_dusk: AXIOM DAY /= DUSK
 
   % DAWN is an interpolation point on NIGHT --> DAY geodesic
   t_dawn: {x: real | x >= 0 AND x <= 1}
+
   ax_dawn_interp: AXIOM
     DAWN = interp(NIGHT, DAY, t_dawn)
 
   % DUSK is an interpolation point on DAY --> NIGHT geodesic
   t_dusk: {x: real | x >= 0 AND x <= 1}
+
   ax_dusk_interp: AXIOM
     DUSK = interp(DAY, NIGHT, t_dusk)
 
@@ -132,6 +139,7 @@ BEGIN
 
   % A9: Full path (NIGHT-->DAY) is near-optimal (empirical: <5% excess)
   epsilon_global: nonneg_real
+
   ax_global_near_optimal: AXIOM
     excess(NIGHT, DAY) <= epsilon_global
 

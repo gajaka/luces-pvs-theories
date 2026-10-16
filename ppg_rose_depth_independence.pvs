@@ -11,15 +11,21 @@ BEGIN
   vars: VAR CertVars
   u, v: VAR Addr
   d: VAR nat
+
   depthNodup(t): bool = FORALL (d: nat): Nodup(labelsAtDepth(t, d))
+
   depthSeparated(vars, t): bool = FORALL (d: nat, a, b: C):
     labelsAtDepth(t, d)(a) > 0 AND labelsAtDepth(t, d)(b) > 0 AND a /= b
       IMPLIES NOT dependent?(vars)(a, b)
+
   depth_label_member: LEMMA toGT_dom(t)(u) IMPLIES
     labelsAtDepth(t, length(u))(toGT_lab(t, u)) > 0
+
   depth_label_injective: LEMMA Nodup(labelsAtDepth(t, d)) AND
     toGT_dom(t)(u) AND toGT_dom(t)(v) AND length(u) = d AND length(v) = d AND u /= v
       IMPLIES toGT_lab(t, u) /= toGT_lab(t, v)
+
   toGrowingTree_sameDepthIndependent_of_labelsAtDepth: THEOREM
     depthNodup(t) AND depthSeparated(vars, t) IMPLIES SameDepthIndependent(vars, toGrowingTree(t))
+
 END ppg_rose_depth_independence

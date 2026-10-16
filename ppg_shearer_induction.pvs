@@ -20,6 +20,7 @@ BEGIN
   p: VAR [C->real]
   P,q: VAR [finite_set[C]->real]
   R: VAR [finite_set[C],C->finite_set[C]]
+
   % These are the five source hypotheses, with no normalization yet.
   Recurrences(B,p,P,q,R): bool =
     (FORALL(a:C):B(a) IMPLIES 0<=p(a)) AND
@@ -30,28 +31,38 @@ BEGIN
       q(S)=q(remove(a,S))-p(a)*q(R(S,a))) AND
     (FORALL(S:finite_set[C],a:C):subset?(S,B) AND S(a) IMPLIES
       P(remove(a,S))-p(a)*P(R(S,a))<=P(S))
+
   erase_smaller: LEMMA S(a) IMPLIES card(remove(a,S))<card(S)
+
   subset_erase_of_omission: LEMMA subset?(T,S) AND NOT T(a) IMPLIES subset?(T,remove(a,S))
+
   erase_witness: LEMMA subset?(T,S) AND T/=S IMPLIES
     EXISTS(a:C):S(a) AND subset?(T,remove(a,S))
+
   step_conditions: LEMMA Recurrences(B,p,P,q,R) AND subset?(S,B) AND S(a) AND
     subset?(T,remove(a,S)) IMPLIES
     0<=p(a) AND 0<q(S) AND 0<q(remove(a,S)) AND 0<q(T) AND
     subset?(R(S,a),remove(a,S)) AND subset?(remove(a,S),B) AND
     q(S)=q(remove(a,S))-p(a)*q(R(S,a)) AND
     P(remove(a,S))-p(a)*P(R(S,a))<=P(S)
+
   cross_ratio_le: THEOREM
     FORALL(B:finite_set[C],p:[C->real],P,q:[finite_set[C]->real],R:[finite_set[C],C->finite_set[C]]):
     Recurrences(B,p,P,q,R) IMPLIES FORALL(S,T:finite_set[C]):
     subset?(S,B) AND subset?(T,S) IMPLIES q(S)*P(T)<=P(S)*q(T)
+
   ratio_mono: THEOREM Recurrences(B,p,P,q,R) AND subset?(S,B) AND subset?(T,S) IMPLIES
     div0(P(T),q(T))<=div0(P(S),q(S))
+
   % The homogeneous comparison with T=empty gives the absolute bound.
   probability_ge: THEOREM Recurrences(B,p,P,q,R) AND
     P(emptyset[C])=1 AND q(emptyset[C])=1 AND subset?(S,B) IMPLIES q(S)<=P(S)
+
   probability_pos: THEOREM Recurrences(B,p,P,q,R) AND
     P(emptyset[C])=1 AND q(emptyset[C])=1 AND subset?(S,B) IMPLIES 0<P(S)
+
   conditional_ratio_le: THEOREM Recurrences(B,p,P,q,R) AND
     P(emptyset[C])=1 AND q(emptyset[C])=1 AND subset?(S,B) AND subset?(T,S) IMPLIES
     div0(q(S),q(T))<=div0(P(S),P(T))
+
 END ppg_shearer_induction

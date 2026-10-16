@@ -13,10 +13,15 @@
 ppg_mt_random_process[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
 BEGIN
   IMPORTING ppg_mt_semantics[C, V, Value, domain]
+
   TableDomain(p: [nat, V]): set[Value] = domain(p`2)
+
   LogSpace: TYPE = [p: [nat, V] -> (TableDomain(p))]
+
   Counter: TYPE = [V -> nat]
+
   StepState: TYPE = [MTState, Counter]
+
   vars: VAR CertVars
   bad: VAR [C, MTState -> bool]
   fallback, c: VAR C
@@ -27,33 +32,47 @@ BEGIN
   t, n: VAR nat
   cnt: VAR Counter
   pick: VAR [MTState -> C]
+
   freshState(omega, t): MTState = LAMBDA (v: V): omega(t, v)
+
   atIdx(omega, v, n): (domain(v)) = omega(n, v)
+
   drawFrom(omega, cnt): MTState = LAMBDA (v: V): atIdx(omega, v, cnt(v))
+
   initialStateFromLog(omega): MTState = freshState(omega, 0)
+
   initialStateFromLog_eq_atIdx: THEOREM initialStateFromLog(omega)(v) = atIdx(omega, v, 0)
+
   constantLog(om): LogSpace = LAMBDA (p: [nat, V]): om(p`2)
+
   drawFrom_constantLog: THEOREM drawFrom(constantLog(om), cnt) = om
+
   resample_eq_target_of_eq: THEOREM FORALL (F: finite_set[V]):
     om(v) = fresh(v) IMPLIES resample(F, om, fresh)(v) = fresh(v)
+
   pickFromList(bad, fallback, enumeration, om): RECURSIVE C =
     CASES enumeration OF
       null: fallback,
       cons(c, rest): IF bad(c, om) THEN c ELSE pickFromList(bad, fallback, rest, om) ENDIF
     ENDCASES MEASURE length(enumeration)
+
   pickFromList_mem_or_default: THEOREM
     member(pickFromList(bad, fallback, enumeration, om), enumeration) OR
       pickFromList(bad, fallback, enumeration, om) = fallback
+
   pickFirstViolated(bad, fallback, enumeration, om): C =
     pickFromList(bad, fallback, enumeration, om)
+
   resampleChain(vars, pick, enumeration, om, fresh): RECURSIVE MTState =
     CASES enumeration OF
       null: om,
       cons(c, rest): IF pick(om) = c THEN resample(vars(c), om, fresh)
         ELSE resampleChain(vars, pick, rest, om, fresh) ENDIF
     ENDCASES MEASURE length(enumeration)
+
   resampleChain_eq_of_mem: THEOREM member(pick(om), enumeration) IMPLIES
     resampleChain(vars, pick, enumeration, om, fresh) = resample(vars(pick(om)), om, fresh)
+
   randStep(vars, bad, fallback, enumeration, initial, omega, t): RECURSIVE StepState =
     IF t = 0 THEN (initial, LAMBDA (v: V): 0) ELSE
       LET prev = randStep(vars, bad, fallback, enumeration, initial, omega, t - 1),
@@ -61,31 +80,42 @@ BEGIN
       (resample(F, prev`1, drawFrom(omega, LAMBDA (v: V): prev`2(v) + 1)),
        LAMBDA (v: V): IF F(v) THEN prev`2(v) + 1 ELSE prev`2(v) ENDIF)
     ENDIF MEASURE t
+
   randStep_zero: LEMMA randStep(vars, bad, fallback, enumeration, initial, omega, 0) =
     (initial, LAMBDA (v: V): 0)
+
   randStep_succ: LEMMA randStep(vars, bad, fallback, enumeration, initial, omega, t + 1) =
     LET prev = randStep(vars, bad, fallback, enumeration, initial, omega, t),
         F = vars(pickFirstViolated(bad, fallback, enumeration, prev`1)) IN
     (resample(F, prev`1, drawFrom(omega, LAMBDA (v: V): prev`2(v) + 1)),
      LAMBDA (v: V): IF F(v) THEN prev`2(v) + 1 ELSE prev`2(v) ENDIF)
+
   randCount_le: THEOREM randStep(vars, bad, fallback, enumeration, initial, omega, t)`2(v) <= t
+
   randTraj(vars, bad, fallback, enumeration, initial, omega, t): MTState =
     randStep(vars, bad, fallback, enumeration, initial, omega, t)`1
+
   randTraj_constantLog_succ: THEOREM
     randTraj(vars, bad, fallback, enumeration, initial, constantLog(om), t + 1) =
       resample(vars(pickFirstViolated(bad, fallback, enumeration,
         randTraj(vars, bad, fallback, enumeration, initial, constantLog(om), t))),
         randTraj(vars, bad, fallback, enumeration, initial, constantLog(om), t), om)
+
   agreesThrough(omega1, omega2, t): bool =
     FORALL (v: V, n: nat): n <= t IMPLIES omega1(n, v) = omega2(n, v)
+
   agreesThrough_mono: LEMMA agreesThrough(omega1, omega2, t + 1) IMPLIES
     agreesThrough(omega1, omega2, t)
+
   drawFrom_agrees: LEMMA agreesThrough(omega1, omega2, t) AND
     (FORALL (v: V): cnt(v) <= t) IMPLIES drawFrom(omega1, cnt) = drawFrom(omega2, cnt)
+
   randStep_depends_on_past: THEOREM agreesThrough(omega1, omega2, t) IMPLIES
     randStep(vars, bad, fallback, enumeration, initial, omega1, t) =
     randStep(vars, bad, fallback, enumeration, initial, omega2, t)
+
   randTraj_depends_on_past: THEOREM agreesThrough(omega1, omega2, t) IMPLIES
     randTraj(vars, bad, fallback, enumeration, initial, omega1, t) =
     randTraj(vars, bad, fallback, enumeration, initial, omega2, t)
+
 END ppg_mt_random_process

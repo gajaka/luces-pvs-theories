@@ -24,20 +24,27 @@ BEGIN
   enumeration: VAR {xs:list[C]|completeEnumeration(xs)}
   W: VAR WTree
   p,x: VAR [C->nonneg_real]
+
   pegdenUpper(bad,p): bool = FORALL(c:C):baseProbability(bad)(c)<=p(c)
+
   logMeasure_witnessOccurrence_le_familyWeight: THEOREM mt_wf(vars,bad) AND pegdenUpper(bad,p) IMPLIES
     logMeasure(occurrenceEvents(vars,bad,fallback,enumeration,a)(W))<=
       pegdenFamilyWeightNN(vars,labelUniverse(enumeration),p,a)(W)
+
   pegden_expected_count_le_family: LEMMA mt_wf(vars,bad) AND pegdenUpper(bad,p) IMPLIES
     ele(randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a),
       pegdenFamilyTotal(vars,labelUniverse(enumeration),p,a))
+
   randomInitExpectedResamplingCount_le: THEOREM mt_wf(vars,bad) AND pegdenUpper(bad,p) AND
     pegdenBudget(vars,labelUniverse(enumeration),p,x) IMPLIES
       ele(randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a),ennFinite(x(a)))
+
   randomInitETLog_le_sum: THEOREM mt_wf(vars,bad) AND pegdenUpper(bad,p) AND
     pegdenBudget(vars,labelUniverse(enumeration),p,x) IMPLIES
       ele(randomInitETLog(vars,bad,fallback,enumeration),ennFinite(sums.sum(labelUniverse(enumeration),x)))
+
   randomInitETLog_lt_top: THEOREM mt_wf(vars,bad) AND pegdenUpper(bad,p) AND
     pegdenBudget(vars,labelUniverse(enumeration),p,x) IMPLIES
       ennFinite?(randomInitETLog(vars,bad,fallback,enumeration))
+
 END ppg_pegden_expectation
