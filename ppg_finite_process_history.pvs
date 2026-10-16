@@ -1,0 +1,30 @@
+% The adapted field of a transition realization suffices for these
+% measurability results. No property of its conditional transition law,
+% measure, potential or drift is used here.
+% Measurable singletons make every subset of the finite state space
+% measurable, including the set of states at which repair is active.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Lean counterparts: realization_measurable and
+% activeEvent_measurable_history in PPGraphFiniteDriftProcess.lean.
+ppg_finite_process_history[State,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  (IMPORTING ppg_measurable_space[Omega])
+  ambient: ppg_measurable_space[Omega].MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_filtration[Omega,State,ambient],
+    ppg_finite_sigma[State,universe],ppg_finite_drift[State,universe]
+  SY: VAR StateSpace
+  H: VAR Filtration
+  X: VAR Process
+  M: VAR Model
+  n: VAR nat
+  singletonMeasurable(SY): bool = FORALL(t:State):SY(singleton[State](t))
+  badStates(M): set[State] = {t:State|NOT M`good(t)}
+  activeEvent(M,X,n): set[Omega] = {omega:Omega|NOT M`good(X(n)(omega))}
+  bad_states_measurable: LEMMA singletonMeasurable(SY) IMPLIES SY(badStates(M))
+  activeEvent_preimage: LEMMA activeEvent(M,X,n)=inverseImage(X(n),badStates(M))
+  realization_measurable: THEOREM adapted(H,SY,X) IMPLIES measurable(ambient,SY,X(n))
+  activeEvent_measurable_history: THEOREM singletonMeasurable(SY) AND adapted(H,SY,X)
+    IMPLIES H(n)(activeEvent(M,X,n))
+END ppg_finite_process_history
