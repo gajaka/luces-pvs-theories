@@ -1,0 +1,32 @@
+% A local charge of delta times the active-event mass telescopes over
+% finite horizons. Nonnegative terminal budgets may then be discarded.
+% Monotone convergence bounds the unrestricted expected event count.
+%
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964, additive drift.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_count_budget[Omega: TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_finite_measure_count[Omega,S,measureLaw]
+  E: VAR [nat->(S)]
+  budget: VAR [nat->nonneg_real]
+  delta: VAR posreal
+  N: VAR nat
+  massPrefix(E,N): nonneg_real = mean(countApprox(E,N))
+  BudgetLaw(E,budget,delta): bool = FORALL(n:nat):
+    delta*mass(E(n))+budget(n+1)<=budget(n)
+  expectedCount(E): ENN = lintegral(LAMBDA(omega:Omega):eventCount(E,omega))
+  mass_prefix_zero: LEMMA massPrefix(E,0)=0
+  mass_prefix_succ: LEMMA massPrefix(E,N+1)=massPrefix(E,N)+mass(E(N))
+  sum_mass_add_budget_le: THEOREM BudgetLaw(E,budget,delta) IMPLIES
+    delta*massPrefix(E,N)+budget(N)<=budget(0)
+  prefix_budget_le: LEMMA BudgetLaw(E,budget,delta) IMPLIES
+    delta*massPrefix(E,N)<=budget(0)
+  prefix_divide_le: LEMMA BudgetLaw(E,budget,delta) IMPLIES
+    massPrefix(E,N)<=budget(0)/delta
+  expected_count_budget: THEOREM BudgetLaw(E,budget,delta) IMPLIES
+    ele(expectedCount(E),ennFinite(budget(0)/delta))
+  expected_count_finite: THEOREM BudgetLaw(E,budget,delta) IMPLIES
+    ennFinite?(expectedCount(E))
+END ppg_finite_count_budget

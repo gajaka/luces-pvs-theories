@@ -1,0 +1,31 @@
+% Nonnegative extended integration under an arbitrary finite measure.
+% Integrable minorants give the extended integral; increasing finite
+% approximations recover counts whose expectation may be infinite.
+% Zero total mass and empty outcome carriers are permitted.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_finite_measure_count[X: TYPE,
+  (IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) measureLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_finite_monotone_integral[X,S,measureLaw], ppg_event_count[X]
+  E: VAR [nat -> (S)]
+  n,i,j: VAR nat
+  x: VAR X
+  countApprox(E,n): RECURSIVE NonnegativeFunction =
+    IF n=0 THEN nnConstant(0)
+    ELSE countApprox(E,n-1)+nnIndicator(E(n-1)) ENDIF MEASURE n
+  prefix_zero: LEMMA countApprox(E,0)=nnConstant(0)
+  prefix_succ: LEMMA countApprox(E,n+1)=countApprox(E,n)+nnIndicator(E(n))
+  prefix_value: LEMMA countApprox(E,n)(x)=countPrefix(E,x,n)
+  prefix_mean: LEMMA mean(countApprox(E,n))=
+    sums.sum(natRange(n),LAMBDA(k:nat):mass(E(k)))
+  count_prefix_monotone: LEMMA i<=j IMPLIES countPrefix(E,x,i)<=countPrefix(E,x,j)
+  prefix_monotone: LEMMA monotoneFamily(LAMBDA(n:nat):countApprox(E,n))
+  prefix_sup: LEMMA supFunction(LAMBDA(n:nat):countApprox(E,n))=(LAMBDA(x:X):eventCount(E,x))
+  prefix_mean_function: LEMMA (LAMBDA(n:nat):mean(countApprox(E,n)))=
+    (LAMBDA(n:nat):sums.sum(natRange(n),LAMBDA(k:nat):mass(E(k))))
+  lintegral_eventCount: THEOREM lintegral(LAMBDA(x:X):eventCount(E,x))=
+    tsum(LAMBDA(k:nat):mass(E(k)))
+END ppg_finite_measure_count

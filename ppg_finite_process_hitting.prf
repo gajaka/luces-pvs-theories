@@ -1,0 +1,1461 @@
+(|ppg_finite_process_hitting|
+ (|active_schedule_events| 0
+  (|active_schedule_events-1| NIL 4001158306
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma") (APPLY-EXTENSIONALITY :HIDE? T)
+     (APPLY-EXTENSIONALITY :HIDE? T) (AUTO-REWRITE "active_schedule_at")
+     (GRIND :DEFS ("activeEvents" "activeEvent") :EXCLUDE
+      ("integrable?" "sigma?" "allFinite" "lintegral" "mass" "ENNSigma")))
+    NIL)
+   ((|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|activeEvents| CONST-DECL "[nat -> set[Omega]]"
+     |ppg_finite_process_stopping| NIL)
+    (|activeSchedule| CONST-DECL "[nat -> (S)]"
+     |ppg_finite_process_expectation| NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|historyCurrent| CONST-DECL "ppg_finite_history_value
+    [State, Omega, universe, S, measureLaw, history(n)].HistoryStateMap"
+     |ppg_finite_process_realization| NIL)
+    (|currentBadEvent| CONST-DECL "(S)" |ppg_finite_conditional_drift| NIL)
+    (|activeProcessEvent| CONST-DECL "(S)" |ppg_finite_process_realization|
+     NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|activeEvent| CONST-DECL "set[Omega]" |ppg_finite_process_history| NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   SHOSTAK))
+ (|active_count_event_count| 0
+  (|active_count_event_count-1| NIL 4001158306
+   (""
+    (THEN (SKOSIMP*) (EXPAND "activeCount") (EXPAND "eventCount")
+     (EXPAND "eventIndicator") (ASSERT))
+    NIL)
+   ((|eventCount| CONST-DECL "ENN" |ppg_event_count| NIL)
+    (|eventIndicator| CONST-DECL "[nat -> nonneg_real]" |ppg_event_count_order|
+     NIL)
+    (|activeCount| CONST-DECL "ENN" |ppg_event_count_order| NIL))
+   SHOSTAK))
+ (|hit_count_below_active| 0
+  (|hit_count_below_active-1| NIL 4001158306
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma")
+     (LEMMA "hitCount_le_activeCount" ("M" "M!1" "X" "X!1" "omega" "omega!1"))
+     (LEMMA "active_schedule_events" ("M" "M!1" "X" "X!1"))
+     (LEMMA "active_count_event_count"
+      ("E" "activeSchedule(M!1,X!1)" "omega" "omega!1"))
+     (ASSERT))
+    NIL)
+   ((|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|hitCount_le_activeCount| FORMULA-DECL NIL |ppg_finite_process_stopping|
+     NIL)
+    (|activeSchedule| CONST-DECL "[nat -> (S)]"
+     |ppg_finite_process_expectation| NIL)
+    (|active_count_event_count| FORMULA-DECL NIL |ppg_finite_process_hitting|
+     NIL)
+    (|active_schedule_events| FORMULA-DECL NIL |ppg_finite_process_hitting|
+     NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   SHOSTAK))
+ (|hit_integral_below_active| 0
+  (|hit_integral_below_active-1| NIL 4001158306
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma")
+     (LEMMA "lintegral_monotone"
+      ("f" "LAMBDA(omega:Omega):hitCount(M!1,X!1,omega)" "h"
+       "LAMBDA(omega:Omega):eventCount(activeSchedule(M!1,X!1),omega)"))
+     (LEMMA "hit_count_below_active" ("M" "M!1" "X" "X!1"))
+     (EXPAND "expectedHitCount") (EXPAND "expectedCount")
+     (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+      ("integrable?" "sigma?" "allFinite" "lintegral" "mass" "ENNSigma")))
+    NIL)
+   ((|activeSchedule| CONST-DECL "[nat -> (S)]"
+     |ppg_finite_process_expectation| NIL)
+    (|eventCount| CONST-DECL "ENN" |ppg_event_count| NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|hitCount| CONST-DECL "ENN" |ppg_finite_process_stopping| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|lintegral_monotone| FORMULA-DECL NIL |ppg_finite_extended_integral| NIL)
+    (|expectedHitCount| CONST-DECL "ENN" |ppg_finite_process_hitting| NIL)
+    (|expectedCount| CONST-DECL "ENN" |ppg_finite_count_budget| NIL)
+    (|hit_count_below_active| FORMULA-DECL NIL |ppg_finite_process_hitting|
+     NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   SHOSTAK))
+ (|expectedHitCount_le| 0
+  (|expectedHitCount_le-1| NIL 4001158306
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma")
+     (LEMMA "hit_integral_below_active" ("M" "M!1" "X" "X!1"))
+     (LEMMA "expectedActiveCount_le" ("M" "M!1" "W" "W!1" "X" "X!1"))
+     (LEMMA "ele_transitive"
+      ("x" "expectedHitCount(M!1,X!1)" "y"
+       "expectedCount(activeSchedule(M!1,X!1))" "z"
+       "ennFinite(potentialMean(M!1,W!1,X!1,0)/positiveRate(M!1,W!1))"))
+     (ASSERT))
+    NIL)
+   ((|Realization| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|TransitionProcess| CONST-DECL "bool" |ppg_finite_process_realization|
+     NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|hit_integral_below_active| FORMULA-DECL NIL |ppg_finite_process_hitting|
+     NIL)
+    (|nnreal_div_posreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|positiveRate| CONST-DECL "posreal" |ppg_finite_process_expectation| NIL)
+    (|posreal| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|potentialMean| CONST-DECL "nonneg_real" |ppg_finite_process_expectation|
+     NIL)
+    (/ CONST-DECL "[numfield, nznum -> numfield]" |number_fields| NIL)
+    (|nznum| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|activeSchedule| CONST-DECL "[nat -> (S)]"
+     |ppg_finite_process_expectation| NIL)
+    (|expectedCount| CONST-DECL "ENN" |ppg_finite_count_budget| NIL)
+    (|expectedHitCount| CONST-DECL "ENN" |ppg_finite_process_hitting| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|ele_transitive| FORMULA-DECL NIL |ppg_enn_add| NIL)
+    (|expectedActiveCount_le| FORMULA-DECL NIL |ppg_finite_process_expectation|
+     NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|check| CONST-DECL "bool" |ppg_finite_drift| NIL)
+    (|AcceptedWitness| TYPE-EQ-DECL NIL |ppg_finite_process_expectation| NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   SHOSTAK))
+ (|expectedHitCount_lt_top| 0
+  (|expectedHitCount_lt_top-1| NIL 4001158306
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma")
+     (LEMMA "expectedHitCount_le" ("M" "M!1" "W" "W!1" "X" "X!1"))
+     (GRIND :DEFS ("ele") :EXCLUDE
+      ("integrable?" "sigma?" "allFinite" "lintegral" "mass" "ENNSigma")))
+    NIL)
+   ((|Realization| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|TransitionProcess| CONST-DECL "bool" |ppg_finite_process_realization|
+     NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|AcceptedWitness| TYPE-EQ-DECL NIL |ppg_finite_process_expectation| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|check| CONST-DECL "bool" |ppg_finite_drift| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|expectedHitCount_le| FORMULA-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|real_div_nzreal_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnreal_div_posreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|positiveRate| CONST-DECL "posreal" |ppg_finite_process_expectation| NIL)
+    (|potentialMean| CONST-DECL "nonneg_real" |ppg_finite_process_expectation|
+     NIL)
+    (|integral| CONST-DECL "real" |integral| |measure_integration|)
+    (|potentialValue| CONST-DECL "NativeFunction"
+     |ppg_finite_process_realization| NIL)
+    (|ambientState| CONST-DECL "StateMap" |ppg_finite_process_realization| NIL)
+    (|expectedHitCount| CONST-DECL "ENN" |ppg_finite_process_hitting| NIL)
+    (|hitCount| CONST-DECL "ENN" |ppg_finite_process_stopping| NIL)
+    (|activeCount| CONST-DECL "ENN" |ppg_event_count_order| NIL)
+    (|tsum| CONST-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (|bounded| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|finiteValues| CONST-DECL "set[nonneg_real]" |ppg_nonneg_tsum| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   SHOSTAK))
+ (|potentialAt_TCC1| 0
+  (|potentialAt_TCC1-1| NIL 4001158306
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma") (TYPEPRED "W!1")
+     (LEMMA "potential_nonnegative" ("M" "M!1" "W" "W!1" "s" "s0!1")) (ASSERT))
+    NIL)
+   ((|AcceptedWitness| TYPE-EQ-DECL NIL |ppg_finite_process_expectation| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|check| CONST-DECL "bool" |ppg_finite_drift| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|potential_nonnegative| FORMULA-DECL NIL |ppg_finite_drift| NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   NIL (|potentialAt| SUBTYPE "W`potential(s0)" "nonneg_real" (37 68 37 83))))
+ (|fixed_potential_function| 0
+  (|fixed_potential_function-1| NIL 4001158306
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma") (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "potential_value_at" ("W" "W!1" "X" "X!1" "n" "0" "omega" "x!1"))
+     (LEMMA "constant_value" ("c" "W!1`potential(s0!1)" "x" "x!1"))
+     (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+      ("integrable?" "sigma?" "allFinite" "lintegral" "mass" "ENNSigma")))
+    NIL)
+   ((|constant| CONST-DECL "NativeFunction" |ppg_finite_measure_integral| NIL)
+    (|potentialValue| CONST-DECL "NativeFunction"
+     |ppg_finite_process_realization| NIL)
+    (|NativeFunction| TYPE-EQ-DECL NIL |ppg_finite_measure_integral| NIL)
+    (|integrable?| CONST-DECL "bool" |integral| |measure_integration|)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|constant_value| FORMULA-DECL NIL |ppg_finite_measure_integral| NIL)
+    (|potential_value_at| FORMULA-DECL NIL |ppg_finite_process_realization|
+     NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   SHOSTAK))
+ (|fixed_initial_mean_TCC1| 0
+  (|fixed_initial_mean_TCC1-1| NIL 4001158306
+   (""
+    (THEN (LEMMA "measurable_full[Omega]" ("S" "S"))
+     (GRIND :DEFS NIL :EXCLUDE
+      ("integrable?" "sigma?" "allFinite" "lintegral" "mass" "ENNSigma")))
+    NIL)
+   ((|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|measurable_full| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT "measurable_set[Omega, asNasa(S)]"
+     |ppg_finite_process_hitting| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(asNasa(S))"
+     |ppg_finite_process_hitting| NIL))
+   NIL
+   (|fixed_initial_mean| SUBTYPE "fullset[Omega]"
+    "(ppg_finite_process_hitting.S)" (41 9 41 23))))
+ (|fixed_initial_mean| 0
+  (|fixed_initial_mean-1| NIL 4001158307
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma")
+     (LEMMA "fixed_potential_function" ("W" "W!1" "X" "X!1" "s0" "s0!1"))
+     (LEMMA "expectation_constant" ("c" "W!1`potential(s0!1)"))
+     (EXPAND "potentialMean") (EXPAND "expectation") (EXPAND "potentialAt")
+     (ASSERT))
+    NIL)
+   ((|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|AcceptedWitness| TYPE-EQ-DECL NIL |ppg_finite_process_expectation| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|check| CONST-DECL "bool" |ppg_finite_drift| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|fixed_potential_function| FORMULA-DECL NIL |ppg_finite_process_hitting|
+     NIL)
+    (|potentialMean| CONST-DECL "nonneg_real" |ppg_finite_process_expectation|
+     NIL)
+    (|potentialAt| CONST-DECL "nonneg_real" |ppg_finite_process_hitting| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT "measurable_set[Omega, asNasa(S)]"
+     |ppg_finite_process_hitting| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(asNasa(S))"
+     |ppg_finite_process_hitting| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|expectation| CONST-DECL "real" |ppg_finite_expectation| NIL)
+    (|expectation_constant| FORMULA-DECL NIL |ppg_finite_expectation| NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   SHOSTAK))
+ (|expectedHitCount_fixed_le| 0
+  (|expectedHitCount_fixed_le-1| NIL 4001158307
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma")
+     (LEMMA "expectedHitCount_le" ("M" "M!1" "W" "W!1" "X" "X!1"))
+     (LEMMA "fixed_initial_mean" ("M" "M!1" "W" "W!1" "X" "X!1" "s0" "s0!1"))
+     (ASSERT))
+    NIL)
+   ((|Realization| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|TransitionProcess| CONST-DECL "bool" |ppg_finite_process_realization|
+     NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|AcceptedWitness| TYPE-EQ-DECL NIL |ppg_finite_process_expectation| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|check| CONST-DECL "bool" |ppg_finite_drift| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|expectedHitCount_le| FORMULA-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(asNasa(S))"
+     |ppg_finite_process_hitting| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT "measurable_set[Omega, asNasa(S)]"
+     |ppg_finite_process_hitting| NIL)
+    (|nnreal_div_posreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|fixed_initial_mean| FORMULA-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   SHOSTAK))
+ (|process_measurable_TCC1| 0
+  (|process_measurable_TCC1-1| NIL 4001158306 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |countable_props|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |sigma_countable|
+     |sigma_set|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |ppg_finite_process_hitting|
+     NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL))
+   NIL
+   (|process_measurable| SUBTYPE "fullset[set[State]]"
+    "StateSpace[Omega, State, S]" (14 70 14 89))))
+ (|process_measurable| 0
+  (|process_measurable-1| NIL 4001158307
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma") (TYPEPRED "X!1")
+     (EXPAND "processMeasurable") (SKOSIMP*)
+     (LEMMA "adapted_measurable"
+      ("H" "history" "SY" "fullStateSigma" "X" "X!1" "n" "n!1"))
+     (ASSERT))
+    NIL)
+   ((|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|adapted_measurable| FORMULA-DECL NIL |ppg_filtration| NIL)
+    (|processMeasurable| CONST-DECL "bool" |ppg_finite_process_stopping| NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   SHOSTAK))
+ (|hit_measurable| 0
+  (|hit_measurable-1| NIL 4001158307
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma")
+     (LEMMA "process_measurable" ("X" "X!1"))
+     (LEMMA "measurable_hitCount" ("SY" "fullStateSigma" "M" "M!1" "X" "X!1"))
+     (GRIND :DEFS ("singletonMeasurable" "fullset") :EXCLUDE
+      ("integrable?" "sigma?" "allFinite" "lintegral" "mass" "ENNSigma")))
+    NIL)
+   ((|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|process_measurable| FORMULA-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |ppg_finite_process_hitting| NIL)
+    (|singletonMeasurable| CONST-DECL "bool" |ppg_finite_process_history| NIL)
+    (|measurable_hitCount| FORMULA-DECL NIL
+     |ppg_finite_process_count_measurable| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   SHOSTAK))
+ (|success_event_finite| 0
+  (|success_event_finite-1| NIL 4001158307
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma") (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "hitCount_lt_top_iff_exists_good"
+      ("M" "M!1" "X" "X!1" "omega" "x!1"))
+     (EXPAND "successEvent") (EXPAND "finiteEvent")
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|hitCount| CONST-DECL "ENN" |ppg_finite_process_stopping| NIL)
+    (|finiteEvent| CONST-DECL "set[X]" |ppg_enn_finiteness| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|successEvent| CONST-DECL "set[Omega]" |ppg_finite_process_hitting| NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|hitCount_lt_top_iff_exists_good| FORMULA-DECL NIL
+     |ppg_finite_process_stopping| NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   SHOSTAK))
+ (|success_measurable| 0
+  (|success_measurable-1| NIL 4001158307
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma")
+     (LEMMA "hit_measurable" ("M" "M!1" "X" "X!1"))
+     (LEMMA "measurable_finite_event"
+      ("S" "S" "f" "LAMBDA(omega:Omega):hitCount(M!1,X!1,omega)"))
+     (LEMMA "success_event_finite" ("M" "M!1" "X" "X!1")) (ASSERT))
+    NIL)
+   ((|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|hit_measurable| FORMULA-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|success_event_finite| FORMULA-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|measurable_finite_event| FORMULA-DECL NIL |ppg_enn_finiteness| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|hitCount| CONST-DECL "ENN" |ppg_finite_process_stopping| NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   SHOSTAK))
+ (|measurableSuccess_TCC1| 0
+  (|measurableSuccess_TCC1-1| NIL 4001158306
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma")
+     (LEMMA "success_measurable" ("M" "M!1" "X" "X!1")) (ASSERT))
+    NIL)
+   ((|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|success_measurable| FORMULA-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   NIL
+   (|measurableSuccess| SUBTYPE "successEvent(M, X)"
+    "(ppg_finite_process_hitting.S)" (51 32 51 49))))
+ (|success_complement_infinite| 0
+  (|success_complement_infinite-1| NIL 4001158307
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma")
+     (LEMMA "success_event_finite" ("M" "M!1" "X" "X!1"))
+     (EXPAND "measurableSuccess") (EXPAND "infiniteEvent") (ASSERT))
+    NIL)
+   ((|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|success_event_finite| FORMULA-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|infiniteEvent| CONST-DECL "set[X]" |ppg_enn_finiteness| NIL)
+    (|measurableSuccess| CONST-DECL "(S)" |ppg_finite_process_hitting| NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   SHOSTAK))
+ (|ae_exists_good| 0
+  (|ae_exists_good-1| NIL 4001158307
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma")
+     (LEMMA "hit_measurable" ("M" "M!1" "X" "X!1"))
+     (LEMMA "expectedHitCount_lt_top" ("M" "M!1" "W" "W!1" "X" "X!1"))
+     (LEMMA "finite_integral_ae"
+      ("f" "LAMBDA(omega:Omega):hitCount(M!1,X!1,omega)"))
+     (LEMMA "success_event_finite" ("M" "M!1" "X" "X!1"))
+     (EXPAND "expectedHitCount") (ASSERT))
+    NIL)
+   ((|Realization| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|TransitionProcess| CONST-DECL "bool" |ppg_finite_process_realization|
+     NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|hit_measurable| FORMULA-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|hitCount| CONST-DECL "ENN" |ppg_finite_process_stopping| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|finite_integral_ae| FORMULA-DECL NIL |ppg_finite_integral_finiteness|
+     NIL)
+    (|expectedHitCount| CONST-DECL "ENN" |ppg_finite_process_hitting| NIL)
+    (|success_event_finite| FORMULA-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|expectedHitCount_lt_top| FORMULA-DECL NIL |ppg_finite_process_hitting|
+     NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|check| CONST-DECL "bool" |ppg_finite_drift| NIL)
+    (|AcceptedWitness| TYPE-EQ-DECL NIL |ppg_finite_process_expectation| NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   SHOSTAK))
+ (|success_mass_full_TCC1| 0
+  (|success_mass_full_TCC1-1| NIL 4001158306
+   (""
+    (THEN (LEMMA "measurable_full[Omega]" ("S" "S"))
+     (GRIND :DEFS NIL :EXCLUDE
+      ("integrable?" "sigma?" "allFinite" "lintegral" "mass" "ENNSigma")))
+    NIL)
+   ((|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|measurable_full| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT "measurable_set[Omega, asNasa(S)]"
+     |ppg_finite_process_hitting| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(asNasa(S))"
+     |ppg_finite_process_hitting| NIL))
+   NIL
+   (|success_mass_full| SUBTYPE "fullset[Omega]"
+    "(ppg_finite_process_hitting.S)" (57 38 57 52))))
+ (|success_mass_full| 0
+  (|success_mass_full-1| NIL 4001158307
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma")
+     (LEMMA "expectedHitCount_lt_top" ("M" "M!1" "W" "W!1" "X" "X!1"))
+     (LEMMA "success_complement_infinite" ("M" "M!1" "X" "X!1"))
+     (LEMMA "mass_complement" ("A" "measurableSuccess(M!1,X!1)"))
+     (LEMMA "subset_reflexive[Omega]"
+      ("a" "complement(measurableSuccess(M!1,X!1))"))
+     (SPREAD
+      (LEMMA "null_measurable_infinite_subset"
+       ("f" "LAMBDA(omega:Omega):hitCount(M!1,X!1,omega)" "A"
+        "complement(measurableSuccess(M!1,X!1))"))
+      ((THEN (EXPAND "expectedHitCount") (ASSERT))
+       (THEN (TYPEPRED "measurableSuccess(M!1,X!1)")
+        (LEMMA "measurable_complement[Omega]"
+         ("S" "S" "A" "measurableSuccess(M!1,X!1)"))
+        (ASSERT)))))
+    NIL)
+   ((|Realization| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|TransitionProcess| CONST-DECL "bool" |ppg_finite_process_realization|
+     NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|AcceptedWitness| TYPE-EQ-DECL NIL |ppg_finite_process_expectation| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|check| CONST-DECL "bool" |ppg_finite_drift| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|expectedHitCount_lt_top| FORMULA-DECL NIL |ppg_finite_process_hitting|
+     NIL)
+    (|measurableSuccess| CONST-DECL "(S)" |ppg_finite_process_hitting| NIL)
+    (|mass_complement| FORMULA-DECL NIL |ppg_finite_expectation| NIL)
+    (|hitCount| CONST-DECL "ENN" |ppg_finite_process_stopping| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|null_measurable_infinite_subset| FORMULA-DECL NIL
+     |ppg_finite_integral_finiteness| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(asNasa(S))"
+     |ppg_finite_process_hitting| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT "measurable_set[Omega, asNasa(S)]"
+     |ppg_finite_process_hitting| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|expectedHitCount| CONST-DECL "ENN" |ppg_finite_process_hitting| NIL)
+    (|subset_reflexive| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|complement| CONST-DECL "set" |sets| NIL)
+    (|success_complement_infinite| FORMULA-DECL NIL
+     |ppg_finite_process_hitting| NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   SHOSTAK))
+ (|measure_success_eq_one| 0
+  (|measure_success_eq_one-1| NIL 4001158307
+   (""
+    (THEN (SKOSIMP*) (LEMMA "full_state_sigma")
+     (LEMMA "success_mass_full" ("M" "M!1" "W" "W!1" "X" "X!1")) (ASSERT))
+    NIL)
+   ((|Realization| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|TransitionProcess| CONST-DECL "bool" |ppg_finite_process_realization|
+     NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|AcceptedWitness| TYPE-EQ-DECL NIL |ppg_finite_process_expectation| NIL)
+    (|history| FORMAL-CONST-DECL "Filtration" |ppg_finite_process_hitting| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|check| CONST-DECL "bool" |ppg_finite_drift| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|success_mass_full| FORMULA-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT "measurable_set[Omega, asNasa(S)]"
+     |ppg_finite_process_hitting| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(asNasa(S))"
+     |ppg_finite_process_hitting| NIL)
+    (|full_state_sigma| FORMULA-DECL NIL |ppg_finite_process_integral| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_hitting| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_hitting| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_finite_process_hitting| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|measureLaw| FORMAL-CONST-DECL "FiniteLaw" |ppg_finite_process_hitting|
+     NIL))
+   SHOSTAK)))
+

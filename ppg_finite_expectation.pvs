@@ -1,0 +1,28 @@
+% The finite measure is retained in indicator and constant integrals.
+% No normalization or positive-total-mass assumption is required.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_expectation[X: TYPE,
+  (IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) measureLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_finite_integral_order[X,S,measureLaw],
+    ppg_finite_restricted_integral[X,S,measureLaw]
+  mass(A:(S)): nonneg_real = measureLaw(A)`2
+  mass_native: LEMMA FORALL(A:(S)):mass(A)=mu(A)
+  expectation(f:NativeFunction): real = integral(f)
+  native_function_measurable: LEMMA FORALL(f:NativeFunction):
+    measurable_function?[X,asNasa(S)](f)
+  expectation_indicator: LEMMA FORALL(A:(S)):expectation(indicator(A))=mass(A)
+  expectation_constant: LEMMA FORALL(c:real):
+    expectation(constant(c))=c*mass(fullset[X])
+  expectation_add: LEMMA FORALL(f,g:NativeFunction):
+    expectation(f+g)=expectation(f)+expectation(g)
+  expectation_scale: LEMMA FORALL(c:real,f:NativeFunction):
+    expectation(c*f)=c*expectation(f)
+  expectation_monotone: THEOREM FORALL(f,g:NativeFunction):
+    (FORALL(x:X):f(x)<=g(x)) IMPLIES expectation(f)<=expectation(g)
+  indicator_complement_sum: LEMMA FORALL(A:(S)):
+    indicator(A)+indicator(complement(A))=constant(1)
+  mass_complement: LEMMA FORALL(A:(S)):mass(A)+mass(complement(A))=mass(fullset[X])
+END ppg_finite_expectation

@@ -1,0 +1,49 @@
+% Nonnegative extended integration under an arbitrary finite measure.
+% Integrable minorants give the extended integral; increasing finite
+% approximations recover counts whose expectation may be infinite.
+% Zero total mass and empty outcome carriers are permitted.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_finite_extended_integral[X: TYPE,
+  (IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) measureLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_finite_expectation[X, S, measureLaw], ppg_enn_order
+  NonnegativeFunction: TYPE =
+    {g: NativeFunction | FORALL (x: X): 0 <= g(x)}
+  f,h: VAR [X -> ENN]
+  g,k: VAR NonnegativeFunction
+  b: VAR nonneg_real
+  nonnegative_expectation: LEMMA 0 <= expectation(g)
+  mean(g): nonneg_real = expectation(g)
+  embed(g)(x: X): ENN = ennFinite(g(x))
+  minorant(g,f): bool = FORALL (x: X): ele(embed(g)(x), f(x))
+  lowerValues(f): set[nonneg_real] =
+    {r: nonneg_real | EXISTS (g: NonnegativeFunction):
+      minorant(g,f) AND r=mean(g)}
+  lintegral(f): ENN = sSup(lowerValues(f))
+  lower_values_member: LEMMA minorant(g,f) IMPLIES lowerValues(f)(mean(g))
+  lintegral_finite_bound: LEMMA ele(lintegral(f),ennFinite(b)) IFF
+    FORALL (g: NonnegativeFunction): minorant(g,f) IMPLIES mean(g)<=b
+  minorant_integral_le: LEMMA minorant(g,f) IMPLIES
+    ele(ennFinite(mean(g)),lintegral(f))
+  mean_monotone: LEMMA (FORALL (x: X): g(x)<=k(x)) IMPLIES mean(g)<=mean(k)
+  lintegral_embed: THEOREM lintegral(embed(g))=ennFinite(mean(g))
+  lintegral_monotone: THEOREM (FORALL (x: X): ele(f(x),h(x))) IMPLIES
+    ele(lintegral(f),lintegral(h))
+  nonnegative_constant: LEMMA FORALL (c: nonneg_real):
+    FORALL (x: X): 0<=constant(c)(x)
+  zero_function: NonnegativeFunction = constant(0)
+  lintegral_zero: LEMMA lintegral(LAMBDA (x: X): ennFinite(0))=ennFinite(0)
+  nnConstant(c: nonneg_real): NonnegativeFunction = constant(c)
+  nnIndicator(A: (S)): NonnegativeFunction = indicator(A)
+  embedded_constant: LEMMA FORALL (c: nonneg_real):
+    embed(nnConstant(c))=(LAMBDA (x: X): ennFinite(c))
+  embedded_indicator: LEMMA FORALL (A: (S)):
+    embed(nnIndicator(A))=(LAMBDA (x: X): ennFinite(IF A(x) THEN 1 ELSE 0 ENDIF))
+  lintegral_constant: LEMMA FORALL (c: nonneg_real):
+    lintegral(LAMBDA (x: X): ennFinite(c))=ennFinite(c*mass(fullset[X]))
+  lintegral_indicator: LEMMA FORALL (A: (S)):
+    lintegral(LAMBDA (x: X): ennFinite(IF A(x) THEN 1 ELSE 0 ENDIF))=ennFinite(mass(A))
+END ppg_finite_extended_integral
