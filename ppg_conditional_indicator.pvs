@@ -1,0 +1,35 @@
+% Restricting a conditional version by a history-measurable event
+% preserves every history-event integral. Its canonical representative
+% is therefore the corresponding restricted version almost everywhere.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_conditional_indicator[Omega: TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw,
+  H:{H:MeasurableSpace|subset?(H,S)}]: THEORY
+BEGIN
+  IMPORTING ppg_conditional_ae_versions[Omega,S,measureLaw,H],
+    measure_integration@measure_space[Omega,asNasa(H)] AS historyFunctions
+  E,A: VAR (H)
+  f,k,h: VAR NativeFunction
+  g: VAR HistoryFunction
+  B,C: VAR (S)
+  omega: VAR Omega
+  real_function_eq: LEMMA FORALL(f,k:[Omega->real]):
+    f=k IFF (FORALL(x:Omega):f(x)=k(x))
+  history_phi: LEMMA indicator(historyEvent(E))=historyFunctions.phi(E)
+  historyIndicator(E): HistoryFunction = indicator(historyEvent(E))
+  historyRestricted(E,g): HistoryFunction = restricted(historyEvent(E),g)
+  restricted_intersection: LEMMA restricted(B,restricted(C,f))=
+    restricted(intersection(B,C),f)
+  history_intersection: LEMMA H(intersection(A,E))
+  conditional_indicator_version: THEOREM conditionalVersion(f,g) IMPLIES
+    conditionalVersion(restricted(historyEvent(E),f),historyRestricted(E,g))
+  restrictedAdmissible(E:(H),f:{f:NativeFunction|hasConditionalVersion(f)}): AdmissibleFunction =
+    restricted(historyEvent(E),f)
+  ae_add_identity: LEMMA ae_eq?(f,g) AND
+    g+k=h IMPLIES ae_eq?(f+k,h)
+  conditional_indicator: THEOREM FORALL(E:(H),f:AdmissibleFunction):
+    ae_eq?(conditionalExpectation(restrictedAdmissible(E,f)),
+      historyRestricted(E,conditionalExpectation(f)))
+END ppg_conditional_indicator

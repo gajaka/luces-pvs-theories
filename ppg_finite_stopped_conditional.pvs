@@ -1,0 +1,43 @@
+% Conditional transition indicators determine the next finite state value.
+% Restriction by the current running event then gives the exact stopped
+% decrease: one unit on that event and zero outside it. Version existence
+% is constructed before the canonical conditional expectation is used.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Exercise 10.22(a), American Mathematical Society, 2017.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_stopped_conditional[State,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw,
+  (IMPORTING ppg_filtration[Omega,State,S]) history:Filtration]: THEORY
+BEGIN
+  IMPORTING ppg_finite_stopped_integral[State,Omega,universe,S,measureLaw,history]
+  M: VAR Model
+  f: VAR Vector
+  X: VAR AdaptedProcess
+  n: VAR nat
+  omega: VAR Omega
+  SolvingVector(M:Model): TYPE = {f:Vector|Equations(M,f)}
+  stoppedRow(M,f,X,n):
+    ppg_conditional_versions[Omega,S,measureLaw,history(n)].HistoryFunction =
+    ppg_conditional_indicator[Omega,S,measureLaw,history(n)].historyRestricted(
+      runningHistory(M,X,n),
+      ppg_finite_history_value[State,Omega,universe,S,measureLaw,history(n)].historyValue(
+        ppg_finite_conditional_value[State,Omega,universe,S,measureLaw,history(n)].localValue(M,f),
+        historyCurrent(X,n)))
+  stopped_row_at: LEMMA stoppedRow(M,f,X,n)(omega)=
+    IF runningEvent(M,X,n)(omega) THEN
+      fsum(universe,LAMBDA(t:State):M`transition(X(n)(omega),t)*f(t)) ELSE 0 ENDIF
+  stopped_row_equation: LEMMA Equations(M,f) IMPLIES
+    stoppedRow(M,f,X,n)+indicator(runningAmbient(M,X,n))=stoppedNativeValue(M,f,X,n)
+  stopped_next_version: LEMMA FORALL(M:Model,f:SolvingVector(M),X:Realization(M),n:nat):
+    ppg_conditional_versions[Omega,S,measureLaw,history(n)].conditionalVersion(
+      stoppedNativeValue(M,f,X,n+1),stoppedRow(M,f,X,n))
+  stoppedNext(M:Model,f:SolvingVector(M),X:Realization(M),n:nat):
+    ppg_conditional_unique[Omega,S,measureLaw,history(n)].AdmissibleFunction =
+    stoppedNativeValue(M,f,X,n+1)
+  stoppedValue_conditional_exact: THEOREM FORALL(M:Model,f:SolvingVector(M),X:Realization(M),n:nat):
+    ae_eq?(ppg_conditional_unique[Omega,S,measureLaw,history(n)].conditionalExpectation(
+      stoppedNext(M,f,X,n))+indicator(runningAmbient(M,X,n)),stoppedNativeValue(M,f,X,n))
+END ppg_finite_stopped_conditional
