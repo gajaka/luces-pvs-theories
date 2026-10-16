@@ -1,0 +1,42 @@
+% A nonzero determinant supplies a native left inverse. Multiplication
+% constructs a row solution, and the row determinant identity identifies
+% its coordinates with Cramer's quotients. No chosen solver replaces the
+% determinant definition.
+%
+% Sheldon Axler, Linear Algebra Done Right, fourth edition, Chapter 9.
+ppg_native_cramer_inverse: THEORY
+BEGIN
+  IMPORTING ppg_native_cramer_product, matrices@matrix_inv
+  Nonsingular: TYPE = {A:Square|det(A)/=0}
+  A: VAR Nonsingular
+  F,G: VAR [nat->real]
+  i,j: VAR nat
+  row_matrix_nonempty: LEMMA NOT null?(rowMatrix(rows(A),G))
+  inverse_dimensions: LEMMA rows(left_inv(A))=rows(A) AND
+    columns(left_inv(A))=rows(A) AND left_inv(A)*A=Id(rows(A))
+  solutionMatrix(A,G): FullMatrix = rowMatrix(rows(A),G)*left_inv(A)
+  solution_dimensions: LEMMA rows(solutionMatrix(A,G))=1 AND
+    columns(solutionMatrix(A,G))=rows(A)
+  solution_matrix_equation: LEMMA solutionMatrix(A,G)*A=rowMatrix(rows(A),G)
+  row_matrix_reconstruct: LEMMA FORALL(A:Square,R:FullMatrix):
+    rows(R)=1 AND columns(R)=rows(A) IMPLIES
+    rowMatrix(rows(A),LAMBDA(j:nat):entry(R)(0,j))=R
+  solutionCoefficients(A,G)(j): real = entry(solutionMatrix(A,G))(0,j)
+  solution_row_representation: LEMMA rowMatrix(rows(A),solutionCoefficients(A,G))=solutionMatrix(A,G)
+  solution_row_equation: LEMMA rowMatrix(rows(A),solutionCoefficients(A,G))*A=rowMatrix(rows(A),G)
+  solution_cramer_coordinate: THEOREM i<rows(A) IMPLIES
+    det(replace_row(i,array2list[real](rows(A))(G))(A))/det(A)=solutionCoefficients(A,G)(i)
+  row_matrix_congr: LEMMA FORALL(A:Square,F,G:[nat->real]):
+    (FORALL(i:below(rows(A))):F(i)=G(i)) IMPLIES
+      rowMatrix(rows(A),F)=rowMatrix(rows(A),G)
+  cramerCoefficients(A,G)(i): real = IF i<rows(A) THEN
+    det(replace_row(i,array2list[real](rows(A))(G))(A))/det(A) ELSE 0 ENDIF
+  cramer_solution_coordinate: LEMMA i<rows(A) IMPLIES
+    cramerCoefficients(A,G)(i)=solutionCoefficients(A,G)(i)
+  cramer_row_representation: LEMMA
+    rowMatrix(rows(A),cramerCoefficients(A,G))=solutionMatrix(A,G)
+  cramer_row_equation: THEOREM
+    rowMatrix(rows(A),cramerCoefficients(A,G))*A=rowMatrix(rows(A),G)
+  row_solution_unique_coordinate: THEOREM rowMatrix(rows(A),F)*A=rowMatrix(rows(A),G) AND
+    i<rows(A) IMPLIES F(i)=cramerCoefficients(A,G)(i)
+END ppg_native_cramer_inverse
