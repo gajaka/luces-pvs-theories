@@ -1,0 +1,10 @@
+% Enlarging the index set and its component sets enlarges their finite union.
+ppg_finite_bind_order[A,B:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_bind[A,B]
+  S,T: VAR finite_set[A]
+  F,G: VAR [A->finite_set[B]]
+  familiesBelow(S,F,G): bool = FORALL(k:A):S(k) IMPLIES subset?(F(k),G(k))
+  bind_subset: THEOREM subset?(S,T) AND familiesBelow(S,F,G) IMPLIES
+    subset?(biUnion(S,F),biUnion(T,G))
+END ppg_finite_bind_order

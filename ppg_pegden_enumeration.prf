@@ -1,0 +1,313 @@
+(|ppg_pegden_enumeration|
+ (|pegdenTreesUpTo_TCC1| 0
+  (|pegdenTreesUpTo_TCC1-1| NIL 4001125511 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|pegdenTreesUpTo| SUBTYPE "D - 1" "nat" (21 56 21 59))))
+ (|pegdenTreesUpTo_TCC2| 0
+  (|pegdenTreesUpTo_TCC2-1| NIL 4001125511 ("" (TERMINATION-TCC) NIL NIL) NIL
+   NIL
+   (|pegdenTreesUpTo| TERMINATION "pegdenTreesUpTo(vars, U, D - 1, b)" "NIL"
+    (21 33 21 62))))
+ (|pegden_enum_zero| 0
+  (|pegden_enum_zero-1| NIL 4001125511
+   ("" (THEN (SKOSIMP*) (EXPAND "pegdenTreesUpTo" 1 1) (ASSERT)) NIL) NIL
+   SHOSTAK))
+ (|pegden_enum_succ| 0
+  (|pegden_enum_succ-1| NIL 4001125511
+   ("" (THEN (SKOSIMP*) (EXPAND "pegdenTreesUpTo" 1 1) (ASSERT)) NIL) NIL
+   SHOSTAK))
+ (|pegden_member_succ| 0
+  (|pegden_member_succ-1| NIL 4001125511
+   (""
+    (THEN (SKOSIMP*) (REWRITE "pegden_enum_succ" 1)
+     (REWRITE "enumBind.biUnion_member" 1) (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|biUnion_member| FORMULA-DECL NIL |ppg_finite_bind| NIL)
+    (|rootFamily| CONST-DECL "finite_set[WTree[C]]" |ppg_rose_attach| NIL)
+    (|independentSubsets| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_pegden_polynomial| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL))
+   SHOSTAK))
+ (|pegden_enum_intro| 0
+  (|pegden_enum_intro-1| NIL 4001125511
+   (""
+    (THEN (SKOSIMP*) (REWRITE "pegden_member_succ" 1) (INST + "S!1") (ASSERT))
+    NIL)
+   ((|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL))
+   SHOSTAK))
+ (|family_property_subset| 0
+  (|family_property_subset-1| NIL 4001125511
+   (""
+    (THEN (SKOSIMP*) (LABEL "FG" -1) (EXPAND "familyProperty") (SKOSIMP*)
+     (INST "FG" "k!1") (EXPAND "subset?" "FG") (INST "FG" "c!1")
+     (EXPAND "member") (ASSERT))
+    NIL)
+   ((|familyProperty| CONST-DECL "bool" |ppg_finite_forest| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL))
+   SHOSTAK))
+ (|root_families_subset| 0
+  (|root_families_subset-1| NIL 4001125511
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "family_property_subset" ("S" "S!1" "F" "F!1" "G" "G!1"))
+     (LEMMA "rootFamily_mono" ("a" "a!1" "S" "S!1" "F" "F!1" "G" "G!1"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|rootFamily_mono| FORMULA-DECL NIL |ppg_rose_attach| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|root_indices_below| 0
+  (|root_indices_below-1| NIL 4001125511
+   (""
+    (THEN (SKOSIMP*) (LABEL "FG" -1) (EXPAND "bindOrder.familiesBelow")
+     (SKOSIMP*)
+     (LEMMA "root_families_subset" ("a" "a!1" "S" "k!1" "F" "F!1" "G" "G!1"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|familiesBelow| CONST-DECL "bool" |ppg_finite_bind_order| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|pegden_old_step| 0
+  (|pegden_old_step-1| NIL 4001125511
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "root_indices_below"
+      ("vars" "vars!1" "U" "U!1" "a" "a!1" "F"
+       "LAMBDA(b:C):pegdenTreesUpTo(vars!1,U!1,D!1,b)" "G"
+       "LAMBDA(b:C):wtreesUpTo(vars!1,U!1,D!1,b)"))
+     (LEMMA "independentSubsets_subset" ("vars" "vars!1" "U" "U!1" "a" "a!1"))
+     (LEMMA "bindOrder.bind_subset"
+      ("S" "independentSubsets(vars!1,U!1,a!1)" "T"
+       "subsets(plusNeighbors(vars!1,U!1,a!1))" "F"
+       "LAMBDA(S:finite_set[C]):rootFamily(a!1,S,LAMBDA(b:C):pegdenTreesUpTo(vars!1,U!1,D!1,b))"
+       "G"
+       "LAMBDA(S:finite_set[C]):rootFamily(a!1,S,LAMBDA(b:C):wtreesUpTo(vars!1,U!1,D!1,b))"))
+     (REWRITE "pegden_enum_succ" 1) (REWRITE "enum_succ" 1)
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|independentSubsets_subset| FORMULA-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|enum_succ| FORMULA-DECL NIL |ppg_rose_enumeration| NIL)
+    (|bind_subset| FORMULA-DECL NIL |ppg_finite_bind_order| NIL)
+    (|rootFamily| CONST-DECL "finite_set[WTree[C]]" |ppg_rose_attach| NIL)
+    (|independentSubsets| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_pegden_polynomial| NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|plusNeighbors| CONST-DECL "finite_set[C]" |ppg_rose_enumeration| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|wtreesUpTo| DEF-DECL "finite_set[WTree[C]]" |ppg_rose_enumeration| NIL))
+   SHOSTAK))
+ (|treesUpTo_subset| 0
+  (|treesUpTo_subset-1| NIL 4001125511
+   (""
+    (THEN
+     (SPREAD (INDUCT "D")
+      ((THEN (SKOSIMP*) (REWRITE "pegden_enum_zero") (REWRITE "enum_zero")
+        (LEMMA "subset_reflexive[WTree]") (GRIND :DEFS NIL :IF-MATCH ALL))
+       (THEN (SKOSIMP*) (LABEL "IH" -1) (INST "IH" "vars!1" "U!1")
+        (LEMMA "pegden_old_step"
+         ("vars" "vars!1" "U" "U!1" "D" "j!1" "a" "a!1"))
+        (GRIND :DEFS NIL :IF-MATCH NIL)))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|wtreesUpTo| DEF-DECL "finite_set[WTree[C]]" |ppg_rose_enumeration| NIL)
+    (|subset_reflexive| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|roseNode| ADT-CONSTRUCTOR-DECL "[[C, list[ppg_mt_rose]] -> (roseNode?)]"
+     |ppg_mt_rose_adt| NIL)
+    (|roseNode?| ADT-RECOGNIZER-DECL "[ppg_mt_rose -> boolean]"
+     |ppg_mt_rose_adt| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|enum_zero| FORMULA-DECL NIL |ppg_rose_enumeration| NIL))
+   SHOSTAK))
+ (|pegden_label| 0
+  (|pegden_label-1| NIL 4001125511
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "treesUpTo_subset" ("D" "D!1" "vars" "vars!1" "U" "U!1" "a" "a!1"))
+     (LABEL "SUB" -1) (EXPAND "subset?" "SUB") (INST "SUB" "t!1")
+     (EXPAND "member")
+     (LEMMA "mem_wtreesUpTo_label"
+      ("vars" "vars!1" "U" "U!1" "D" "D!1" "a" "a!1" "t" "t!1"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|mem_wtreesUpTo_label| FORMULA-DECL NIL |ppg_rose_enumeration| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL))
+   SHOSTAK))
+ (|pegden_rooted| 0
+  (|pegden_rooted-1| NIL 4001125511
+   (""
+    (THEN (SKOSIMP*) (EXPAND "rooted") (EXPAND "familyProperty") (SKOSIMP*)
+     (LEMMA "pegden_label"
+      ("vars" "vars!1" "U" "U!1" "D" "D!1" "a" "k!1" "t" "c!1"))
+     (ASSERT))
+    NIL)
+   ((|familyProperty| CONST-DECL "bool" |ppg_finite_forest| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|rooted| CONST-DECL "bool" |ppg_rose_attach| NIL))
+   SHOSTAK))
+ (|pegden_leaf| 0
+  (|pegden_leaf-1| NIL 4001125511
+   (""
+    (THEN
+     (SPREAD (INDUCT "D")
+      ((THEN (SKOSIMP*) (REWRITE "pegden_enum_zero" 1) (EXPAND "singleton")
+        (EXPAND "member") (ASSERT))
+       (THEN (SKOSIMP*) (REWRITE "pegden_member_succ" 1) (INST + "emptyset[C]")
+        (LEMMA "empty_mem_independentSubsets"
+         ("vars" "vars!1" "U" "U!1" "a" "a!1"))
+        (REWRITE "rootFamily_empty" 1) (EXPAND "singleton") (EXPAND "member")
+        (GRIND :DEFS NIL :IF-MATCH NIL)))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|roseNode?| ADT-RECOGNIZER-DECL "[ppg_mt_rose -> boolean]"
+     |ppg_mt_rose_adt| NIL)
+    (|roseNode| ADT-CONSTRUCTOR-DECL "[[C, list[ppg_mt_rose]] -> (roseNode?)]"
+     |ppg_mt_rose_adt| NIL)
+    (|empty_mem_independentSubsets| FORMULA-DECL NIL |ppg_pegden_polynomial|
+     NIL)
+    (|rootFamily_empty| FORMULA-DECL NIL |ppg_rose_attach| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL))
+   SHOSTAK))
+ (|pegden_mono_step| 0
+  (|pegden_mono_step-1| NIL 4001125511
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "root_indices_below"
+      ("vars" "vars!1" "U" "U!1" "a" "a!1" "F"
+       "LAMBDA(b:C):pegdenTreesUpTo(vars!1,U!1,D!1,b)" "G"
+       "LAMBDA(b:C):pegdenTreesUpTo(vars!1,U!1,E!1,b)"))
+     (LEMMA "subset_reflexive[finite_set[C]]"
+      ("a" "independentSubsets(vars!1,U!1,a!1)"))
+     (LEMMA "bindOrder.bind_subset"
+      ("S" "independentSubsets(vars!1,U!1,a!1)" "T"
+       "independentSubsets(vars!1,U!1,a!1)" "F"
+       "LAMBDA(S:finite_set[C]):rootFamily(a!1,S,LAMBDA(b:C):pegdenTreesUpTo(vars!1,U!1,D!1,b))"
+       "G"
+       "LAMBDA(S:finite_set[C]):rootFamily(a!1,S,LAMBDA(b:C):pegdenTreesUpTo(vars!1,U!1,E!1,b))"))
+     (REWRITE "pegden_enum_succ" 1) (REWRITE "pegden_enum_succ" 1)
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|independentSubsets| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_pegden_polynomial| NIL)
+    (|subset_reflexive| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|bind_subset| FORMULA-DECL NIL |ppg_finite_bind_order| NIL)
+    (|rootFamily| CONST-DECL "finite_set[WTree[C]]" |ppg_rose_attach| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL))
+   SHOSTAK))
+ (|treesUpTo_mono| 0
+  (|treesUpTo_mono-1| NIL 4001125511
+   (""
+    (THEN
+     (SPREAD (INDUCT "D")
+      ((THEN (SKOSIMP*) (REWRITE "pegden_enum_zero" 1)
+        (LEMMA "pegden_leaf" ("vars" "vars!1" "U" "U!1" "D" "1" "a" "a!1"))
+        (EXPAND "subset?") (EXPAND "singleton") (EXPAND "member")
+        (GRIND :DEFS NIL :IF-MATCH NIL))
+       (THEN (SKOSIMP*) (LABEL "IH" -1) (INST "IH" "vars!1" "U!1")
+        (LEMMA "pegden_mono_step"
+         ("vars" "vars!1" "U" "U!1" "D" "j!1" "E" "j!1+1" "a" "a!1"))
+        (GRIND :DEFS NIL :IF-MATCH NIL)))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL))
+   SHOSTAK))
+ (|treesUpTo_mono_le| 0
+  (|treesUpTo_mono_le-1| NIL 4001125511
+   (""
+    (THEN
+     (SPREAD (INDUCT "E")
+      ((THEN (SKOSIMP*)
+        (LEMMA "subset_reflexive[WTree]"
+         ("a" "pegdenTreesUpTo(vars!1,U!1,D!1,a!1)"))
+        (ASSERT))
+       (THEN (SKOSIMP*) (LABEL "IH" -1)
+        (SPREAD (CASE "D!1=j!1+1")
+         ((THEN
+           (LEMMA "subset_reflexive[WTree]"
+            ("a" "pegdenTreesUpTo(vars!1,U!1,D!1,a!1)"))
+           (GRIND :DEFS NIL :IF-MATCH NIL))
+          (THEN (INST "IH" "D!1" "U!1" "a!1" "vars!1")
+           (LEMMA "treesUpTo_mono"
+            ("vars" "vars!1" "U" "U!1" "D" "j!1" "a" "a!1"))
+           (LEMMA "subset_transitive[WTree]"
+            ("a" "pegdenTreesUpTo(vars!1,U!1,D!1,a!1)" "b"
+             "pegdenTreesUpTo(vars!1,U!1,j!1,a!1)" "c"
+             "pegdenTreesUpTo(vars!1,U!1,j!1+1,a!1)"))
+           (GRIND :DEFS NIL :IF-MATCH NIL))))))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|subset_reflexive| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_transitive| FORMULA-DECL NIL |sets_lemmas| NIL))
+   SHOSTAK))
+ (|treesUpTo_succ_disjoint| 0
+  (|treesUpTo_succ_disjoint-1| NIL 4001125511
+   (""
+    (THEN (SKOSIMP*) (EXPAND "enumBind.disjointFamily") (SKOSIMP*)
+     (LEMMA "pegden_rooted" ("vars" "vars!1" "U" "U!1" "D" "D!1" "S" "a!2"))
+     (LEMMA "pegden_rooted" ("vars" "vars!1" "U" "U!1" "D" "D!1" "S" "c!1"))
+     (LEMMA "rootFamily_disjoint"
+      ("a" "a!1" "S1" "a!2" "S2" "c!1" "F"
+       "LAMBDA(b:C):pegdenTreesUpTo(vars!1,U!1,D!1,b)"))
+     (ASSERT))
+    NIL)
+   ((|rootFamily_disjoint| FORMULA-DECL NIL |ppg_rose_attach| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|disjointFamily| CONST-DECL "bool" |ppg_finite_bind| NIL))
+   SHOSTAK)))
+
