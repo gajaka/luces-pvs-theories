@@ -1,0 +1,22 @@
+% The stopped count is the existing countable indicator sum. Its
+% measurability follows from measurable finite prefixes and their
+% increasing supremum, including paths on which the count is infinite.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Lean counterpart: measurable_hitCount in PPGraphFiniteDriftProcess.lean.
+ppg_finite_process_count_measurable[State,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  (IMPORTING ppg_measurable_space[Omega])
+  ambient: ppg_measurable_space[Omega].MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_finite_process_stopping[State,Omega,universe,ambient],ppg_event_count[Omega]
+  SY: VAR StateSpace
+  M: VAR Model
+  X: VAR Process
+  omega: VAR Omega
+  hit_count_event_count: LEMMA hitCount(M,X,omega)=eventCount(runningEvents(M,X),omega)
+  hit_count_function: LEMMA (LAMBDA(omega:Omega):hitCount(M,X,omega))=
+    (LAMBDA(omega:Omega):eventCount(runningEvents(M,X),omega))
+  measurable_hitCount: THEOREM singletonMeasurable(SY) AND processMeasurable(SY,X)
+    IMPLIES measurable(ambient,ENNSigma,LAMBDA(omega:Omega):hitCount(M,X,omega))
+END ppg_finite_process_count_measurable
