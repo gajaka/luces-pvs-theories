@@ -1,0 +1,105 @@
+(|ppg_finite_all|
+ (|finiteAll_TCC1| 0
+  (|finiteAll_TCC1-1| NIL 4001142277 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_finite_all| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|finiteAll| SUBTYPE "A" "(sets[ppg_finite_all.T].nonempty?)"
+    (11 18 11 19))))
+ (|finiteAll_TCC2| 0
+  (|finiteAll_TCC2-1| NIL 4001142277
+   (""
+    (THEN (SKOSIMP*) (LEMMA "card_rest[T]" ("S" "A!1"))
+     (GRIND :EXCLUDE ("card" "is_finite")))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|card_rest| FORMULA-DECL NIL |finite_sets| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_finite_all| NIL))
+   NIL
+   (|finiteAll| TERMINATION "finiteAll(rest[T](A), p)"
+    #A((3) BASE-CHAR . "NIL") (11 26 11 46))))
+ (|finite_all_empty| 0
+  (|finite_all_empty-1| NIL 4001142277
+   ("" (THEN (EXPAND "finiteAll") (GRIND)) NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finiteAll| DEF-DECL "bool" |ppg_finite_all| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL))
+   SHOSTAK))
+ (|finite_all_step| 0
+  (|finite_all_step-1| NIL 4001142277
+   ("" (THEN (SKOSIMP*) (EXPAND "finiteAll" + 1) (PROP)) NIL)
+   ((|finiteAll| DEF-DECL "bool" |ppg_finite_all| NIL)) SHOSTAK))
+ (|finite_all_iff| 0
+  (|finite_all_iff-1| NIL 4001142277
+   ("" (INDUCT "A" :NAME "finite_set_induction_rest")
+    (("1" (SKOSIMP*)
+      (("1" (REWRITE "finite_all_empty") (("1" (GRIND) NIL NIL)) NIL)) NIL)
+     ("2" (SKOSIMP*)
+      (("2" (INST -1 "p!1")
+        (("2" (TYPEPRED "SS!1")
+          (("2" (EXPAND "finiteAll" + 1)
+            (("2"
+              (GRIND :IF-MATCH NIL :EXCLUDE ("finiteAll" "is_finite" "card"))
+              (("1" (INST -4 "x!2")
+                (("1" (GRIND :IF-MATCH NIL :DEFS NIL) NIL NIL)) NIL)
+               ("2" (INST -5 "choose(SS!1)")
+                (("2"
+                  (GRIND :IF-MATCH NIL :EXCLUDE
+                   ("finiteAll" "is_finite" "card"))
+                  NIL NIL))
+                NIL)
+               ("3" (GRIND :EXCLUDE ("finiteAll" "is_finite" "card")) NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (IFF CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|finiteAll| DEF-DECL "bool" |ppg_finite_all| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_finite_all| NIL)
+    (|finite_set_induction_rest| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (|finite_all_empty| FORMULA-DECL NIL |ppg_finite_all| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|choose| CONST-DECL "(p)" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK)))
+

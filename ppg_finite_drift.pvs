@@ -1,0 +1,65 @@
+% A finite drift certificate consists of a nonnegative rational potential
+% and a positive rational decrement. The checker verifies each transition
+% row and each local decrease by finite rational computations. Rejection
+% concerns the supplied witness; it does not assert infeasibility.
+%
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964, additive drift.
+% Lean counterpart: PPGraphFiniteDrift.lean. The finite carrier may be
+% empty. The normalization and decrease conditions retain their original
+% quantifiers; termination and expected duration are not certificate data.
+ppg_finite_drift[State: TYPE,
+  universe: {U:finite_set[State]|FORALL(s:State):U(s)}]: THEORY
+BEGIN
+  IMPORTING ppg_rational_sum[State],ppg_finite_all[State]
+  Model: TYPE = [# transition:[State,State->rat], good:pred[State] #]
+  Witness: TYPE = [# potential:[State->rat], delta:rat #]
+  M: VAR Model
+  W: VAR Witness
+  s,t: VAR State
+  universe_member: LEMMA universe(s)
+  localExpectation(M,W,s): rat =
+    rational.sum(universe,LAMBDA(t:State):M`transition(s,t)*W`potential(t))
+  Conditions(M,W): bool =
+    (FORALL(s,t:State):0<=M`transition(s,t)) AND
+    (FORALL(s:State):rational.sum(universe,LAMBDA(t:State):M`transition(s,t))=1) AND
+    (FORALL(s:State):0<=W`potential(s)) AND
+    (FORALL(s:State):M`good(s) IMPLIES W`potential(s)=0) AND
+    0<W`delta AND
+    (FORALL(s:State):localExpectation(M,W,s)+
+      (IF M`good(s) THEN 0 ELSE W`delta ENDIF)<=W`potential(s))
+  check(M,W): bool =
+    finiteAll(universe,LAMBDA(s:State):finiteAll(universe,
+      LAMBDA(t:State):0<=M`transition(s,t))) AND
+    finiteAll(universe,LAMBDA(s:State):
+      rational.sum(universe,LAMBDA(t:State):M`transition(s,t))=1) AND
+    finiteAll(universe,LAMBDA(s:State):0<=W`potential(s)) AND
+    finiteAll(universe,LAMBDA(s:State):M`good(s) IMPLIES W`potential(s)=0) AND
+    0<W`delta AND
+    finiteAll(universe,LAMBDA(s:State):localExpectation(M,W,s)+
+      (IF M`good(s) THEN 0 ELSE W`delta ENDIF)<=W`potential(s))
+  check_eq_true_iff: THEOREM check(M,W) IFF Conditions(M,W)
+  check_sound: THEOREM check(M,W) IMPLIES Conditions(M,W)
+  check_complete: THEOREM Conditions(M,W) IMPLIES check(M,W)
+  transition_nonnegative: THEOREM check(M,W) IMPLIES 0<=M`transition(s,t)
+  transition_normalized: THEOREM check(M,W) IMPLIES
+    rational.sum(universe,LAMBDA(t:State):M`transition(s,t))=1
+  potential_nonnegative: THEOREM check(M,W) IMPLIES 0<=W`potential(s)
+  potential_zero_of_good: THEOREM check(M,W) AND M`good(s) IMPLIES W`potential(s)=0
+  delta_positive: THEOREM check(M,W) IMPLIES 0<W`delta
+  local_decrease: THEOREM check(M,W) IMPLIES localExpectation(M,W,s)+
+    (IF M`good(s) THEN 0 ELSE W`delta ENDIF)<=W`potential(s)
+  checked_product_nonnegative: LEMMA check(M,W) IMPLIES
+    0<=M`transition(s,t)*W`potential(t)
+  localExpectation_nonnegative: THEOREM check(M,W) IMPLIES 0<=localExpectation(M,W,s)
+  potential_ge_delta_of_bad: THEOREM check(M,W) AND NOT M`good(s) IMPLIES
+    W`delta<=W`potential(s)
+  checked_product_bound: LEMMA check(M,W) IMPLIES
+    M`transition(s,t)*W`potential(t)<=localExpectation(M,W,s)
+  transition_zero_good_bad: THEOREM check(M,W) AND M`good(s) AND NOT M`good(t) IMPLIES
+    M`transition(s,t)=0
+  real_localExpectation: THEOREM localExpectation(M,W,s)=
+    fsum(universe,LAMBDA(t:State):M`transition(s,t)*W`potential(t))
+  real_local_decrease: THEOREM check(M,W) IMPLIES
+    fsum(universe,LAMBDA(t:State):M`transition(s,t)*W`potential(t))+
+      (IF M`good(s) THEN 0 ELSE W`delta ENDIF)<=W`potential(s)
+END ppg_finite_drift

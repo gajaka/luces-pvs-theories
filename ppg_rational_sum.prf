@@ -1,0 +1,57 @@
+(|ppg_rational_sum|
+ (|rational_TCC1| 0
+  (|rational_TCC1-1| NIL 4001142277 ("" (THEN (SUBTYPE-TCC)) NIL) NIL NIL
+   (|rational| SUBTYPE "LAMBDA (a, b: rat): a + b"
+    "{op: [rat, rat -> rat] | booleans.AND(operator_defs[rat].identity?(ppg_rational_sum.op)(0), booleans.AND(operator_defs[rat].associative?(ppg_rational_sum.op), operator_defs[rat].commutative?(ppg_rational_sum.op)))}"
+    (7 27 7 46))))
+ (|real_sum_eq| 0
+  (|real_sum_eq-1| NIL 4001142277
+   (""
+    (THEN
+     (SPREAD (INDUCT "A" :NAME "finite_set_induction_rest")
+      ((THEN (AUTO-REWRITE "fsum_empty" "rational.sum_emptyset")
+        (GRIND :EXCLUDE ("fsum" "sum")))
+       (THEN (SKOSIMP*) (INST -1 "f!1") (TYPEPRED "SS!1")
+        (LEMMA "rational.sum_rest" ("S" "SS!1" "f" "f!1"))
+        (LEMMA "fsum_step" ("S" "SS!1" "f" "LAMBDA(x:T):f!1(x)"))
+        (GRIND :EXCLUDE ("fsum" "sum" "rest" "is_finite")))
+       (GRIND) (GRIND) (GRIND))))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|fsum| DEF-DECL "real" |ppg_finite_sum| NIL)
+    (|finite_set_induction_rest| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (|sum_emptyset| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|fsum_empty| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|sum_rest| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|fsum_step| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|rational_sum_nonnegative| 0
+  (|rational_sum_nonnegative-1| NIL 4001142277
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fsum_nonnegative" ("S" "A!1" "f" "LAMBDA(x:T):f!1(x)"))
+     (LEMMA "real_sum_eq" ("A" "A!1" "f" "f!1")) (GRIND :DEFS NIL))
+    NIL)
+   ((|fsum_nonnegative| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|rational_member_bound| 0
+  (|rational_member_bound-1| NIL 4001142277
+   (""
+    (THEN (SKOSIMP*) (LABEL "NN" -2)
+     (LEMMA "rational.sum_x" ("S" "A!1" "f" "f!1")) (INST -1 "x!1")
+     (LEMMA "rational_sum_nonnegative" ("A" "remove(x!1,A!1)" "f" "f!1"))
+     (SPREAD (CASE "FORALL(y:T):remove(x!1,A!1)(y) IMPLIES 0<=f!1(y)")
+      ((THEN (ASSERT))
+       (THEN (SKOSIMP*) (EXPAND "remove") (EXPAND "member") (INST "NN" "y!1")
+        (GRIND :IF-MATCH NIL :DEFS NIL)))))
+    NIL)
+   ((|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|sum_x| FORMULA-DECL NIL |ppg_monoid_sum| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,16 @@
+% Rational addition remains rational at each step of the finite sum.
+% Its inclusion into the reals commutes with the same choose/rest
+% recursion. Order bounds therefore follow from the real finite sum.
+ppg_rational_sum[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_real_sum[T],
+    ppg_monoid_sum[T,rat,0,LAMBDA(a,b:rat):a+b] AS rational
+  A: VAR finite_set[T]
+  f: VAR [T->rat]
+  x: VAR T
+  real_sum_eq: LEMMA rational.sum(A,f)=fsum(A,LAMBDA(x:T):f(x))
+  rational_sum_nonnegative: LEMMA
+    (FORALL(x:T):A(x) IMPLIES 0<=f(x)) IMPLIES 0<=rational.sum(A,f)
+  rational_member_bound: LEMMA A(x) AND
+    (FORALL(y:T):A(y) IMPLIES 0<=f(y)) IMPLIES f(x)<=rational.sum(A,f)
+END ppg_rational_sum
