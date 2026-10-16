@@ -1,0 +1,44 @@
+% Row reduction of the transposed matrix exposes a zero row when its
+% determinant is zero. Transposing the invertible row transformation
+% supplies a nonzero column in the original matrix's real kernel.
+%
+% Sheldon Axler, Linear Algebra Done Right, fourth edition, Chapters 3 and 9.
+ppg_native_singular_kernel: THEORY
+BEGIN
+  IMPORTING ppg_native_cramer_columns
+  M,N: VAR Matrix
+  A: VAR Square
+  i: VAR nat
+  zeroColumn(M,i): bool = FORALL(r:nat):entry(M)(r,i)=0
+  zeroRow(M,i): bool = FORALL(c:nat):entry(M)(i,c)=0
+  zero_column_vector: LEMMA zeroColumn(M,i) IMPLIES col(M)(i)=zero(rows(M))
+  zero_column_product: LEMMA zeroColumn(N,i) IMPLIES zeroColumn(M*N,i)
+  zero_row_transpose: LEMMA zeroRow(A,i) IMPLIES zeroColumn(transpose(A),i)
+  reduction(A): [# ans:SquareMatrix(rows(A)),multip:SquareMatrix(rows(A)),
+    inv:SquareMatrix(rows(A)) #] = diag(true,true,transpose(A))
+  reduction_dimensions: LEMMA rows(reduction(A)`ans)=rows(A) AND
+    columns(reduction(A)`ans)=rows(A) AND rows(reduction(A)`multip)=rows(A) AND
+    columns(reduction(A)`multip)=rows(A) AND rows(reduction(A)`inv)=rows(A) AND
+    columns(reduction(A)`inv)=rows(A)
+  reduction_properties: LEMMA reduction(A)`multip*transpose(A)=reduction(A)`ans AND
+    reduction(A)`multip*reduction(A)`inv=Id(rows(A)) AND
+    reduction(A)`inv*reduction(A)`multip=Id(rows(A))
+  reduction_zero_row: LEMMA det(A)=0 IMPLIES
+    EXISTS(i:nat):i<rows(A) AND zeroRow(reduction(A)`ans,i)
+  kernelMatrix(A): Square = transpose(reduction(A)`multip)
+  kernel_dimensions: LEMMA rows(kernelMatrix(A))=rows(A) AND columns(kernelMatrix(A))=rows(A)
+  kernel_matrix_equation: LEMMA A*kernelMatrix(A)=transpose(reduction(A)`ans)
+  kernel_factor_inverse: LEMMA transpose(reduction(A)`inv)*kernelMatrix(A)=Id(rows(A))
+  kernel_column_nonzero: LEMMA i<rows(A) IMPLIES NOT zeroColumn(kernelMatrix(A),i)
+  squareProductArray(P,Q:Square)(r,c:nat): real =
+    IF r>rows(P) OR c>rows(Q) THEN 0 ELSE
+      sigma(0,rows(P)-1,LAMBDA(k:nat):entry(P)(r,k)*entry(Q)(k,c)) ENDIF
+  square_product_form: LEMMA FORALL(P,Q:Square):rows(P)=rows(Q) IMPLIES
+    P*Q=form_matrix(squareProductArray(P,Q),rows(P),rows(Q))
+  square_product_row_sum: LEMMA FORALL(P,Q:Square,r,c:nat):rows(P)=rows(Q) AND
+    r<rows(P) AND c<columns(Q) IMPLIES
+    entry(P*Q)(r,c)=rowSum(LAMBDA(k:nat):entry(P)(r,k)*entry(Q)(k,c),rows(P))
+  singular_kernel_column: THEOREM det(A)=0 IMPLIES EXISTS(K:Square,i:nat):
+    rows(K)=rows(A) AND columns(K)=rows(A) AND i<rows(A) AND
+    zeroColumn(A*K,i) AND NOT zeroColumn(K,i)
+END ppg_native_singular_kernel
