@@ -1,0 +1,110 @@
+(|ppg_enn_complete_sup|
+ (|lower_finite_member| 0
+  (|lower_finite_member-1| NIL 4001145084
+   ("" (THEN (SKOSIMP*) (EXPAND "lowerFinite") (INST + "x!1") (ASSERT)) NIL)
+   ((|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL))
+   SHOSTAK))
+ (|finite_tests| 0
+  (|finite_tests-1| NIL 4001144992
+   (""
+    (THEN
+     (SPREAD (INDUCT "x")
+      ((THEN (SKOSIMP*) (EXPAND "ele") (GRIND))
+       (THEN (SKOSIMP*) (EXPAND "ele") (INST -1 "b!1+1") (ASSERT)))))
+    NIL)
+   ((|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ppg_ennreal_induction| FORMULA-DECL NIL |ppg_ennreal_adt| NIL))
+   SHOSTAK))
+ (|lower_finite_bound| 0
+  (|lower_finite_bound-1| NIL 4001144992
+   (""
+    (THEN (SKOSIMP*)
+     (SPREAD (SPLIT)
+      ((THEN (SKOSIMP*) (LABEL "LOW" -1)
+        (LEMMA "finite_tests" ("x" "x!1" "b" "b!1"))
+        (SPREAD
+         (CASE "FORALL(a:nonneg_real):ele(ennFinite(a),x!1) IMPLIES a<=b!1")
+         ((THEN (ASSERT))
+          (THEN (SKOSIMP*)
+           (LEMMA "lower_finite_member" ("A" "A!1" "a" "a!1" "x" "x!1"))
+           (INST "LOW" "a!1") (ASSERT)))))
+       (THEN (SKOSIMP*) (LABEL "UP" -1) (EXPAND "lowerFinite") (SKOSIMP*)
+        (INST "UP" "x!1")
+        (LEMMA "ele_transitive"
+         ("x" "ennFinite(a!1)" "y" "x!1" "z" "ennFinite(b!1)"))
+        (LEMMA "finite_le" ("a" "a!1" "b" "b!1"))
+        (GRIND :DEFS NIL :IF-MATCH NIL)))))
+    NIL)
+   ((|finite_le| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (|ele_transitive| FORMULA-DECL NIL |ppg_enn_add| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL))
+   SHOSTAK))
+ (|extended_sup_finite_bound| 0
+  (|extended_sup_finite_bound-1| NIL 4001144992
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "sup_finite_bound" ("A" "lowerFinite(A!1)" "b" "b!1"))
+     (LEMMA "lower_finite_bound" ("A" "A!1" "b" "b!1")) (EXPAND "extendedSup")
+     (PROP))
+    NIL)
+   ((|sup_finite_bound| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL))
+   SHOSTAK))
+ (|extended_sup_upper| 0
+  (|extended_sup_upper-1| NIL 4001144992
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "finite_bounds_order" ("x" "x!1" "y" "extendedSup(A!1)"))
+     (LEMMA "extended_sup_finite_bound" ("A" "A!1"))
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL)
+   ((|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|finite_bounds_order| FORMULA-DECL NIL |ppg_enn_order| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL))
+   SHOSTAK))
+ (|extended_sup_least| 0
+  (|extended_sup_least-1| NIL 4001144992
+   (""
+    (THEN (SKOSIMP*) (LABEL "ALL" -1)
+     (LEMMA "finite_bounds_order" ("x" "extendedSup(A!1)" "y" "y!1"))
+     (SPREAD
+      (CASE
+          "FORALL(b:nonneg_real):ele(y!1,ennFinite(b)) IMPLIES ele(extendedSup(A!1),ennFinite(b))")
+      ((THEN (ASSERT))
+       (THEN (SKOSIMP*)
+        (LEMMA "extended_sup_finite_bound" ("A" "A!1" "b" "b!1"))
+        (SPREAD (CASE "FORALL(x:ENN):A!1(x) IMPLIES ele(x,ennFinite(b!1))")
+         ((THEN (ASSERT))
+          (THEN (SKOSIMP*) (INST "ALL" "x!1")
+           (LEMMA "ele_transitive" ("x" "x!1" "y" "y!1" "z" "ennFinite(b!1)"))
+           (ASSERT))))))))
+    NIL)
+   ((ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|finite_bounds_order| FORMULA-DECL NIL |ppg_enn_order| NIL)
+    (|ele_transitive| FORMULA-DECL NIL |ppg_enn_add| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,209 @@
+(|ppg_additive_drift_budget|
+ (|costPrefix_TCC1| 0
+  (|costPrefix_TCC1-1| NIL 4001145210 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL (|costPrefix| SUBTYPE "N - 1" "nat" (17 30 17 33))))
+ (|costPrefix_TCC2| 0
+  (|costPrefix_TCC2-1| NIL 4001145210 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|costPrefix| TERMINATION "costPrefix(cost, N - 1)"
+    #A((3) BASE-CHAR . "NIL") (17 14 17 34))))
+ (|cost_prefix_zero| 0
+  (|cost_prefix_zero-1| NIL 4001145210
+   ("" (THEN (EXPAND "costPrefix") (ASSERT)) NIL)
+   ((|costPrefix| DEF-DECL "ENN" |ppg_additive_drift_budget| NIL)) SHOSTAK))
+ (|cost_prefix_succ| 0
+  (|cost_prefix_succ-1| NIL 4001145210
+   ("" (THEN (SKOSIMP*) (EXPAND "costPrefix" 1 1) (ASSERT)) NIL)
+   ((|costPrefix| DEF-DECL "ENN" |ppg_additive_drift_budget| NIL)) SHOSTAK))
+ (|eadd_right_nonnegative| 0
+  (|eadd_right_nonnegative-1| NIL 4001145210 ("" (THEN (GRIND)) NIL)
+   ((|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL))
+   SHOSTAK))
+ (|sum_cost_add_budget_le| 0
+  (|sum_cost_add_budget_le-1| NIL 4001145210
+   ("" (INDUCT "N")
+    (("1" (SKOSIMP*)
+      (("1" (AUTO-REWRITE "cost_prefix_zero" "eadd_zero_left" "ele_refl")
+        (("1" (ASSERT) NIL NIL)) NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (LABEL "STEPS" -2)
+        (("2" (INST -1 "budget!1" "cost!1")
+          (("2" (ASSERT)
+            (("2" (EXPAND "BudgetSteps" "STEPS")
+              (("2" (INST "STEPS" "j!1")
+                (("2" (LEMMA "cost_prefix_succ" ("cost" "cost!1" "N" "j!1"))
+                  (("2"
+                    (LEMMA "eadd_associative"
+                     ("x" "costPrefix(cost!1,j!1)" "y" "cost!1(j!1)" "z"
+                      "budget!1(j!1+1)"))
+                    (("2"
+                      (LEMMA "eadd_monotone"
+                       ("x" "costPrefix(cost!1,j!1)" "y"
+                        "costPrefix(cost!1,j!1)" "z"
+                        "eadd(cost!1(j!1),budget!1(j!1+1))" "w"
+                        "budget!1(j!1)"))
+                      (("2" (LEMMA "ele_refl" ("x" "costPrefix(cost!1,j!1)"))
+                        (("2"
+                          (LEMMA "ele_transitive"
+                           ("x"
+                            "eadd(costPrefix(cost!1,j!1+1),budget!1(j!1+1))"
+                            "y" "eadd(costPrefix(cost!1,j!1),budget!1(j!1))"
+                            "z" "budget!1(0)"))
+                          (("2" (PROP)
+                            (("1" (ASSERT) NIL NIL) ("2" (ASSERT) NIL NIL)
+                             ("3" (ASSERT) NIL NIL) ("4" (ASSERT) NIL NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|BudgetSteps| CONST-DECL "bool" |ppg_additive_drift_budget| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|costPrefix| DEF-DECL "ENN" |ppg_additive_drift_budget| NIL)
+    (|nat_induction| FORMULA-DECL NIL |naturalnumbers| NIL)
+    (|cost_prefix_zero| FORMULA-DECL NIL |ppg_additive_drift_budget| NIL)
+    (|eadd_zero_left| FORMULA-DECL NIL |ppg_enn_add| NIL)
+    (|ele_refl| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|eadd_associative| FORMULA-DECL NIL |ppg_enn_add| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|ele_transitive| FORMULA-DECL NIL |ppg_enn_add| NIL)
+    (|eadd_monotone| FORMULA-DECL NIL |ppg_enn_add| NIL)
+    (|cost_prefix_succ| FORMULA-DECL NIL |ppg_additive_drift_budget| NIL))
+   SHOSTAK))
+ (|prefix_bound| 0
+  (|prefix_bound-1| NIL 4001145210
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "sum_cost_add_budget_le"
+      ("cost" "cost!1" "budget" "budget!1" "N" "N!1"))
+     (LEMMA "eadd_right_nonnegative"
+      ("x" "costPrefix(cost!1,N!1)" "y" "budget!1(N!1)"))
+     (LEMMA "ele_transitive"
+      ("x" "costPrefix(cost!1,N!1)" "y"
+       "eadd(costPrefix(cost!1,N!1),budget!1(N!1))" "z" "budget!1(0)"))
+     (PROP))
+    NIL)
+   ((|eadd_right_nonnegative| FORMULA-DECL NIL |ppg_additive_drift_budget| NIL)
+    (|costPrefix| DEF-DECL "ENN" |ppg_additive_drift_budget| NIL)
+    (|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|ele_transitive| FORMULA-DECL NIL |ppg_enn_add| NIL)
+    (|sum_cost_add_budget_le| FORMULA-DECL NIL |ppg_additive_drift_budget| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL))
+   SHOSTAK))
+ (|tsum_cost_le_budget| 0
+  (|tsum_cost_le_budget-1| NIL 4001145210
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "extended_sup_least"
+       ("A" "prefixValues(cost!1)" "y" "budget!1(0)"))
+      (("" (EXPAND "costTotal")
+        ((""
+          (CASE
+              "FORALL(x:ENN):prefixValues(cost!1)(x) IMPLIES ele(x,budget!1(0))")
+          (("1" (PROP) NIL NIL)
+           ("2" (SKOSIMP*)
+            (("2" (EXPAND "prefixValues")
+              (("2" (SKOSIMP*)
+                (("2"
+                  (LEMMA "prefix_bound"
+                   ("cost" "cost!1" "budget" "budget!1" "N" "N!1"))
+                  (("2" (GRIND :DEFS NIL) NIL NIL)) NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|costTotal| CONST-DECL "ENN" |ppg_additive_drift_budget| NIL)
+    (|prefix_bound| FORMULA-DECL NIL |ppg_additive_drift_budget| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|extended_sup_least| FORMULA-DECL NIL |ppg_enn_complete_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|prefixValues| CONST-DECL "set[ENN]" |ppg_additive_drift_budget| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,32 @@
+% The local cost is paid from the decrease in the remaining budget.
+% Finite horizons retain the terminal budget. Taking the supremum of
+% nonnegative partial sums then bounds the full cost, including infinity.
+%
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964, additive drift.
+% Lean counterparts: sum_cost_add_budget_le and tsum_cost_le_budget in
+% PPGraphAdditiveDrift.lean. Neither the costs nor the budgets are
+% required to be finite, and no termination hypothesis is used.
+ppg_additive_drift_budget: THEORY
+BEGIN
+  IMPORTING ppg_enn_complete_sup
+  cost,budget: VAR [nat->ENN]
+  N: VAR nat
+  x,y: VAR ENN
+  costPrefix(cost,N): RECURSIVE ENN =
+    IF N=0 THEN ennFinite(0)
+    ELSE eadd(costPrefix(cost,N-1),cost(N-1)) ENDIF
+    MEASURE N
+  BudgetSteps(cost,budget): bool = FORALL(n:nat):
+    ele(eadd(cost(n),budget(n+1)),budget(n))
+  prefixValues(cost): set[ENN] = {x:ENN|EXISTS(N:nat):x=costPrefix(cost,N)}
+  costTotal(cost): ENN = extendedSup(prefixValues(cost))
+  cost_prefix_zero: LEMMA costPrefix(cost,0)=ennFinite(0)
+  cost_prefix_succ: LEMMA costPrefix(cost,N+1)=eadd(costPrefix(cost,N),cost(N))
+  eadd_right_nonnegative: LEMMA ele(x,eadd(x,y))
+  sum_cost_add_budget_le: THEOREM BudgetSteps(cost,budget) IMPLIES
+    ele(eadd(costPrefix(cost,N),budget(N)),budget(0))
+  prefix_bound: LEMMA BudgetSteps(cost,budget) IMPLIES
+    ele(costPrefix(cost,N),budget(0))
+  tsum_cost_le_budget: THEOREM BudgetSteps(cost,budget) IMPLIES
+    ele(costTotal(cost),budget(0))
+END ppg_additive_drift_budget
