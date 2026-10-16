@@ -1,0 +1,95 @@
+(|ppg_pegden_weight|
+ (|pegdenWeight_TCC1| 0
+  (|pegdenWeight_TCC1-1| NIL 4001125211 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL (|pegdenWeight| SUBTYPE "D - 1" "nat" (17 72 17 75))))
+ (|pegdenWeight_TCC2| 0
+  (|pegdenWeight_TCC2-1| NIL 4001125211 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|pegdenWeight| TERMINATION "pegdenWeight(vars, U, p, D - 1, b)"
+    #A((3) BASE-CHAR . "NIL") (17 50 17 78))))
+ (|weight_zero| 0
+  (|weight_zero-1| NIL 4001125211
+   ("" (THEN (SKOSIMP*) (EXPAND "pegdenWeight" 1) (ASSERT)) NIL)
+   ((|pegdenWeight| DEF-DECL "nonneg_real" |ppg_pegden_weight| NIL)) SHOSTAK))
+ (|weight_succ| 0
+  (|weight_succ-1| NIL 4001125211
+   ("" (THEN (SKOSIMP*) (EXPAND "pegdenWeight" 1 1) (ASSERT)) NIL)
+   ((|pegdenWeight| DEF-DECL "nonneg_real" |ppg_pegden_weight| NIL)) SHOSTAK))
+ (|weight_le| 0
+  (|weight_le-1| NIL 4001125211
+   ("" (INDUCT "D")
+    (("1" (SKOSIMP*)
+      (("1" (REWRITE "weight_zero" 1)
+        (("1"
+          (LEMMA "budget_marginal"
+           ("vars" "vars!1" "U" "U!1" "p" "p!1" "x" "x!1" "a" "a!1"))
+          (("1" (GRIND :DEFS NIL :IF-MATCH NIL) NIL NIL)) NIL))
+        NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (LABEL "IH" -1)
+        (("2" (INST "IH" "vars!1" "U!1" "p!1" "x!1")
+          (("2" (REWRITE "weight_succ" 1)
+            (("2"
+              (LEMMA "budget_step"
+               ("vars" "vars!1" "U" "U!1" "p" "p!1" "x" "x!1" "y"
+                "LAMBDA(b:C):pegdenWeight(vars!1,U!1,p!1,j!1,b)" "a" "a!1"))
+              (("2" (GRIND :DEFS NIL :IF-MATCH NIL) NIL NIL)) NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_pegden_weight| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_pegden_weight| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|pegdenBudget| CONST-DECL "bool" |ppg_pegden_polynomial| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|pegdenWeight| DEF-DECL "nonneg_real" |ppg_pegden_weight| NIL)
+    (|nat_induction| FORMULA-DECL NIL |naturalnumbers| NIL)
+    (|weight_zero| FORMULA-DECL NIL |ppg_pegden_weight| NIL)
+    (|budget_marginal| FORMULA-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|weight_succ| FORMULA-DECL NIL |ppg_pegden_weight| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|budget_step| FORMULA-DECL NIL |ppg_pegden_polynomial| NIL))
+   SHOSTAK)))
+

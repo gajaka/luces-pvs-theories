@@ -1,0 +1,545 @@
+(|ppg_pegden_polynomial|
+ (|pegdenPolynomial_TCC1| 0
+  (|pegdenPolynomial_TCC1-1| NIL 4001124983 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL))
+   NIL
+   (|pegdenPolynomial| SUBTYPE "LAMBDA (x, y: nonneg_real): x * y"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_pegden_polynomial.op)(1), booleans.AND(operator_defs[nonneg_real].associative?(ppg_pegden_polynomial.op), operator_defs[nonneg_real].commutative?(ppg_pegden_polynomial.op)))}"
+    (24 72 24 84))))
+ (|pegdenPolynomial_TCC2| 0
+  (|pegdenPolynomial_TCC2-1| NIL 4001125139 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL))
+   NIL
+   (|pegdenPolynomial| SUBTYPE "LAMBDA (a, b: nonneg_real): a + b"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_pegden_polynomial.op)(0), booleans.AND(operator_defs[nonneg_real].associative?(ppg_pegden_polynomial.op), operator_defs[nonneg_real].commutative?(ppg_pegden_polynomial.op)))}"
+    (24 4 24 18))))
+ (|nonnegative_multiplication_monoid| 0
+  (|nonnegative_multiplication_monoid-1| NIL 4001125139
+   ("" (THEN (SUBTYPE-TCC)) NIL)
+   ((|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   SHOSTAK))
+ (|independent_empty| 0
+  (|independent_empty-1| NIL 4001124983
+   (""
+    (THEN (SKOSIMP*) (EXPAND "PegdenIndependent") (EXPAND "emptyset")
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|emptyset| CONST-DECL "set" |sets| NIL)
+    (|PegdenIndependent| CONST-DECL "bool" |ppg_pegden_polynomial| NIL))
+   SHOSTAK))
+ (|independent_singleton| 0
+  (|independent_singleton-1| NIL 4001124983
+   (""
+    (THEN (SKOSIMP*) (EXPAND "PegdenIndependent") (EXPAND "singleton")
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|PegdenIndependent| CONST-DECL "bool" |ppg_pegden_polynomial| NIL))
+   SHOSTAK))
+ (|independent_mono| 0
+  (|independent_mono-1| NIL 4001124983
+   (""
+    (THEN (SKOSIMP*) (EXPAND "PegdenIndependent") (EXPAND "subset?")
+     (EXPAND "member") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|PegdenIndependent| CONST-DECL "bool" |ppg_pegden_polynomial| NIL))
+   SHOSTAK))
+ (|mem_independentSubsets| 0
+  (|mem_independentSubsets-1| NIL 4001124983
+   (""
+    (THEN (SKOSIMP*) (EXPAND "independentSubsets") (EXPAND "intersection")
+     (EXPAND "subsets") (EXPAND "powerset") (EXPAND "member")
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|intersection| CONST-DECL "set" |sets| NIL)
+    (|powerset| CONST-DECL "setofsets" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|independentSubsets| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_pegden_polynomial| NIL))
+   SHOSTAK))
+ (|empty_mem_independentSubsets| 0
+  (|empty_mem_independentSubsets-1| NIL 4001124983
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "mem_independentSubsets"
+      ("vars" "vars!1" "U" "U!1" "a" "a!1" "T" "emptyset[C]"))
+     (LEMMA "independent_empty" ("vars" "vars!1"))
+     (LEMMA "subset_emptyset[C]" ("a" "plusNeighbors(vars!1,U!1,a!1)"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|independent_empty| FORMULA-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|subset_emptyset| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|plusNeighbors| CONST-DECL "finite_set[C]" |ppg_rose_enumeration| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|mem_independentSubsets| FORMULA-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[C]" |ppg_pegden_polynomial|
+     NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL))
+   SHOSTAK))
+ (|independentSubsets_subset| 0
+  (|independentSubsets_subset-1| NIL 4001124983
+   (""
+    (THEN (SKOSIMP*) (EXPAND "independentSubsets") (EXPAND "subset?")
+     (EXPAND "intersection") (EXPAND "member") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|independentSubsets| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_pegden_polynomial| NIL))
+   SHOSTAK))
+ (|empty_singleton_subset| 0
+  (|empty_singleton_subset-1| NIL 4001124983
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "empty_mem_independentSubsets"
+      ("vars" "vars!1" "U" "U!1" "a" "a!1"))
+     (EXPAND "subset?") (EXPAND "singleton") (EXPAND "member")
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[C]" |ppg_pegden_polynomial|
+     NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|empty_mem_independentSubsets| FORMULA-DECL NIL |ppg_pegden_polynomial|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL))
+   SHOSTAK))
+ (|subset_product_mono_TCC1| 0
+  (|subset_product_mono_TCC1-1| NIL 4001124983 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL))
+   NIL
+   (|subset_product_mono| SUBTYPE "LAMBDA (x, y: nonneg_real): x * y"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_pegden_polynomial.op)(1), booleans.AND(operator_defs[nonneg_real].associative?(ppg_pegden_polynomial.op), operator_defs[nonneg_real].commutative?(ppg_pegden_polynomial.op)))}"
+    (36 62 36 74))))
+ (|subset_product_mono| 0
+  (|subset_product_mono-1| NIL 4001124983
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "labelOrder.product_mono" ("S" "T!1" "f" "x!1" "g" "y!1"))
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|product_mono| FORMULA-DECL NIL |ppg_nonneg_order| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL))
+   SHOSTAK))
+ (|polynomial_mono| 0
+  (|polynomial_mono-1| NIL 4001124983
+   ("" (SKOSIMP*)
+    (("" (LABEL "XY" -1)
+      (("" (LEMMA "nonnegative_multiplication_monoid")
+        (("" (FLATTEN)
+          (("" (EXPAND "pegdenPolynomial")
+            ((""
+              (LEMMA "subsetOrder.sum_mono"
+               ("S" "independentSubsets(vars!1,U!1,a!1)" "f"
+                "LAMBDA(T:finite_set[C]):products.sum(T,x!1)" "g"
+                "LAMBDA(T:finite_set[C]):products.sum(T,y!1)"))
+              (("1" (SPLIT -1)
+                (("1" (PROPAX) NIL NIL)
+                 ("2" (SKOSIMP*)
+                  (("2"
+                    (LEMMA "subset_product_mono"
+                     ("T" "x!2" "x" "x!1" "y" "y!1"))
+                    (("2" (GRIND :DEFS NIL :IF-MATCH NIL) NIL NIL)) NIL))
+                  NIL))
+                NIL)
+               ("2" (ASSERT) NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|nonnegative_multiplication_monoid| FORMULA-DECL NIL
+     |ppg_pegden_polynomial| NIL)
+    (|pegdenPolynomial| CONST-DECL "nonneg_real" |ppg_pegden_polynomial| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|subset_product_mono| FORMULA-DECL NIL |ppg_pegden_polynomial| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|independentSubsets| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_pegden_polynomial| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|sum_mono| FORMULA-DECL NIL |ppg_nonneg_order| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL))
+   SHOSTAK))
+ (|one_le_polynomial| 0
+  (|one_le_polynomial-1| NIL 4001124983
+   ("" (SKOSIMP*)
+    (("" (LEMMA "empty_singleton_subset" ("vars" "vars!1" "U" "U!1" "a" "a!1"))
+      ((""
+        (LEMMA "subsetOrder.sum_subset"
+         ("F" "sets[finite_set[C]].singleton(emptyset[C])" "S"
+          "independentSubsets(vars!1,U!1,a!1)" "f"
+          "LAMBDA(T:finite_set[C]):products.sum(T,x!1)"))
+        (("1"
+          (LEMMA "ppg_nonneg_folds[finite_set[C]].sum_singleton"
+           ("x" "emptyset[C]" "f"
+            "LAMBDA(T:finite_set[C]):products.sum(T,x!1)"))
+          (("1" (LEMMA "ppg_nonneg_folds[C].product_empty" ("f" "x!1"))
+            (("1" (EXPAND "pegdenPolynomial")
+              (("1" (LEMMA "nonnegative_multiplication_monoid")
+                (("1" (GRIND :DEFS NIL :IF-MATCH NIL) NIL NIL)) NIL))
+              NIL))
+            NIL))
+          NIL)
+         ("2"
+          (LEMMA "ppg_nonneg_folds[finite_set[C]].sum_singleton"
+           ("x" "emptyset[C]" "f"
+            "LAMBDA(T:finite_set[C]):products.sum(T,x!1)"))
+          (("1" (LEMMA "ppg_nonneg_folds[C].product_empty" ("f" "x!1"))
+            (("1" (EXPAND "pegdenPolynomial")
+              (("1" (LEMMA "nonnegative_multiplication_monoid")
+                (("1" (PROPAX) NIL NIL)) NIL))
+              NIL))
+            NIL)
+           ("2" (LEMMA "ppg_nonneg_folds[C].product_empty" ("f" "x!1"))
+            (("2" (EXPAND "pegdenPolynomial")
+              (("2" (LEMMA "nonnegative_multiplication_monoid")
+                (("2" (PROPAX) NIL NIL)) NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[C]" |ppg_pegden_polynomial|
+     NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[finite_set[C]]" |ppg_pegden_polynomial| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|sum_subset| FORMULA-DECL NIL |ppg_nonneg_order| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|independentSubsets| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_pegden_polynomial| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|product_empty| FORMULA-DECL NIL |ppg_nonneg_folds| NIL)
+    (|nonnegative_multiplication_monoid| FORMULA-DECL NIL
+     |ppg_pegden_polynomial| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT
+     "(partial_order?[set[finite_set[C]]])" |ppg_pegden_polynomial| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|pegdenPolynomial| CONST-DECL "nonneg_real" |ppg_pegden_polynomial| NIL)
+    (|sum_singleton| FORMULA-DECL NIL |ppg_nonneg_folds| NIL)
+    (|empty_singleton_subset| FORMULA-DECL NIL |ppg_pegden_polynomial| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL))
+   SHOSTAK))
+ (|polynomial_le_prod_one_add| 0
+  (|polynomial_le_prod_one_add-1| NIL 4001124983
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "independentSubsets_subset" ("vars" "vars!1" "U" "U!1" "a" "a!1"))
+      ((""
+        (LEMMA "subsetOrder.sum_subset"
+         ("F" "independentSubsets(vars!1,U!1,a!1)" "S"
+          "subsets(plusNeighbors(vars!1,U!1,a!1))" "f"
+          "LAMBDA(T:finite_set[C]):products.sum(T,x!1)"))
+        (("1"
+          (LEMMA "sum_product_subsets"
+           ("S" "plusNeighbors(vars!1,U!1,a!1)" "f" "x!1"))
+          (("1" (EXPAND "pegdenPolynomial")
+            (("1" (LEMMA "nonnegative_multiplication_monoid")
+              (("1" (GRIND :DEFS NIL :IF-MATCH NIL) NIL NIL)) NIL))
+            NIL))
+          NIL)
+         ("2"
+          (LEMMA "sum_product_subsets"
+           ("S" "plusNeighbors(vars!1,U!1,a!1)" "f" "x!1"))
+          (("2" (EXPAND "pegdenPolynomial")
+            (("2" (LEMMA "nonnegative_multiplication_monoid")
+              (("2" (PROPAX) NIL NIL)) NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|sum_subset| FORMULA-DECL NIL |ppg_nonneg_order| NIL)
+    (|independentSubsets| CONST-DECL "finite_set[finite_set[C]]"
+     |ppg_pegden_polynomial| NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|plusNeighbors| CONST-DECL "finite_set[C]" |ppg_rose_enumeration| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|pegdenPolynomial| CONST-DECL "nonneg_real" |ppg_pegden_polynomial| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posreal_plus_nnreal_is_posreal| APPLICATION-JUDGEMENT "posreal"
+     |real_types| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT
+     "(partial_order?[set[finite_set[C]]])" |ppg_pegden_polynomial| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nonnegative_multiplication_monoid| FORMULA-DECL NIL
+     |ppg_pegden_polynomial| NIL)
+    (|sum_product_subsets| FORMULA-DECL NIL |ppg_subsets_product| NIL)
+    (|independentSubsets_subset| FORMULA-DECL NIL |ppg_pegden_polynomial| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL))
+   SHOSTAK))
+ (|product_budget_implies| 0
+  (|product_budget_implies-1| NIL 4001124983
+   ("" (SKOSIMP*)
+    (("" (LABEL "OLD" -1)
+      (("" (EXPAND "pegdenBudget")
+        (("" (SKOSIMP*)
+          (("" (INST "OLD" "a!1")
+            ((""
+              (LEMMA "polynomial_le_prod_one_add"
+               ("vars" "vars!1" "U" "U!1" "x" "x!1" "a" "a!1"))
+              ((""
+                (LEMMA "both_sides_times_pos_le2_imp"
+                 ("nnw" "p!1(a!1)" "x" "pegdenPolynomial(vars!1,U!1,x!1,a!1)"
+                  "y"
+                  "products.sum(plusNeighbors(vars!1,U!1,a!1),LAMBDA(b:C):1+x!1(b))"))
+                (("1" (LEMMA "nonnegative_multiplication_monoid")
+                  (("1" (GRIND :DEFS NIL :IF-MATCH NIL) NIL NIL)) NIL)
+                 ("2" (LEMMA "nonnegative_multiplication_monoid")
+                  (("2" (PROPAX) NIL NIL)) NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|pegdenBudget| CONST-DECL "bool" |ppg_pegden_polynomial| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posreal_plus_nnreal_is_posreal| APPLICATION-JUDGEMENT "posreal"
+     |real_types| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|both_sides_times_pos_le2_imp| FORMULA-DECL NIL |extra_real_props| NIL)
+    (|pegdenPolynomial| CONST-DECL "nonneg_real" |ppg_pegden_polynomial| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|plusNeighbors| CONST-DECL "finite_set[C]" |ppg_rose_enumeration| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nonnegative_multiplication_monoid| FORMULA-DECL NIL
+     |ppg_pegden_polynomial| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|polynomial_le_prod_one_add| FORMULA-DECL NIL |ppg_pegden_polynomial|
+     NIL))
+   SHOSTAK))
+ (|budget_marginal| 0
+  (|budget_marginal-1| NIL 4001124983
+   (""
+    (THEN (SKOSIMP*) (LABEL "BD" -1) (EXPAND "pegdenBudget" "BD")
+     (INST "BD" "a!1")
+     (LEMMA "one_le_polynomial"
+      ("vars" "vars!1" "U" "U!1" "x" "x!1" "a" "a!1"))
+     (LEMMA "both_sides_times_pos_le2_imp"
+      ("nnw" "p!1(a!1)" "x" "1" "y" "pegdenPolynomial(vars!1,U!1,x!1,a!1)"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|pegdenBudget| CONST-DECL "bool" |ppg_pegden_polynomial| NIL)
+    (|one_le_polynomial| FORMULA-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|pegdenPolynomial| CONST-DECL "nonneg_real" |ppg_pegden_polynomial| NIL)
+    (|both_sides_times_pos_le2_imp| FORMULA-DECL NIL |extra_real_props| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL))
+   SHOSTAK))
+ (|budget_step| 0
+  (|budget_step-1| NIL 4001124983
+   (""
+    (THEN (SKOSIMP*) (LABEL "BD" -1)
+     (LEMMA "polynomial_mono"
+      ("vars" "vars!1" "U" "U!1" "x" "y!1" "y" "x!1" "a" "a!1"))
+     (EXPAND "pegdenBudget" "BD") (INST "BD" "a!1")
+     (LEMMA "both_sides_times_pos_le2_imp"
+      ("nnw" "p!1(a!1)" "x" "pegdenPolynomial(vars!1,U!1,y!1,a!1)" "y"
+       "pegdenPolynomial(vars!1,U!1,x!1,a!1)"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|polynomial_mono| FORMULA-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|pegdenPolynomial| CONST-DECL "nonneg_real" |ppg_pegden_polynomial| NIL)
+    (|both_sides_times_pos_le2_imp| FORMULA-DECL NIL |extra_real_props| NIL)
+    (|pegdenBudget| CONST-DECL "bool" |ppg_pegden_polynomial| NIL))
+   SHOSTAK)))
+

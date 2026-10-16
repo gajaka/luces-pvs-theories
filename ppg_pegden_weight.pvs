@@ -1,0 +1,24 @@
+% A depth bound starts with the root probability and adds independent
+% child-label sets at each step. Pegden's budget bounds every stage by
+% induction. Zero probabilities and zero budgets are allowed throughout.
+%
+% Wesley Pegden, "An extension of the Moser-Tardos algorithmic local
+% lemma", Theorem 1.4. https://arxiv.org/abs/1102.2853
+% Lean counterpart: Pegden.weight_le in PPGraphMoserTardosPegden.lean.
+ppg_pegden_weight[C,V:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_pegden_polynomial[C,V]
+  vars: VAR CertVars
+  U: VAR finite_set[C]
+  p,x: VAR [C->nonneg_real]
+  D: VAR nat
+  a: VAR C
+  pegdenWeight(vars,U,p,D,a): RECURSIVE nonneg_real = IF D=0 THEN p(a)
+    ELSE p(a)*pegdenPolynomial(vars,U,LAMBDA(b:C):pegdenWeight(vars,U,p,D-1,b),a)
+    ENDIF MEASURE D
+  weight_zero: LEMMA pegdenWeight(vars,U,p,0,a)=p(a)
+  weight_succ: LEMMA pegdenWeight(vars,U,p,D+1,a)=
+    p(a)*pegdenPolynomial(vars,U,LAMBDA(b:C):pegdenWeight(vars,U,p,D,b),a)
+  weight_le: THEOREM FORALL(D:nat,vars:CertVars,U:finite_set[C],p,x:[C->nonneg_real]):
+    pegdenBudget(vars,U,p,x) IMPLIES FORALL(a:C):pegdenWeight(vars,U,p,D,a)<=x(a)
+END ppg_pegden_weight
