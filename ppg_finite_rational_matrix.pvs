@@ -1,0 +1,38 @@
+% The state-index bijection transports rational matrices to the native
+% matrix representation. The empty determinant is set to one, matching
+% the finite-type convention; positive dimensions use the proved rational
+% native cofactor determinant. Cramer coordinates replace one column.
+%
+% Sheldon Axler, Linear Algebra Done Right, fourth edition, Springer, 2024.
+% https://linear.axler.net/
+% Matrix representation for PPGraphFinitePotential.lean.
+ppg_finite_rational_matrix[State: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_state_index[State,universe],ppg_native_rational_determinant
+  StateMatrix: TYPE = ppg_finite_potential_system[State,universe].Matrix
+  StateVector: TYPE = ppg_finite_potential_system[State,universe].Vector
+  A: VAR StateMatrix
+  v: VAR StateVector
+  i,j: VAR Index
+  s,r,t: VAR State
+  nativeEntries(A)(i,j:nat): rat = IF i<dimension AND j<dimension THEN
+    A(state(i),state(j)) ELSE 0 ENDIF
+  nativeMatrix(A): RationalMatrix = nm.form_matrix(nativeEntries(A),dimension,dimension)
+  native_matrix_entry: LEMMA nm.entry(nativeMatrix(A))(i,j)=encodeMatrix(A)(i,j)
+  native_matrix_rows: LEMMA nm.rows(nativeMatrix(A))=dimension
+  native_matrix_columns: LEMMA nm.columns(nativeMatrix(A))=dimension
+  stateDeterminant(A): rat = IF dimension=0 THEN 1 ELSE nativeDeterminant(nativeMatrix(A)) ENDIF
+  state_determinant_empty: LEMMA dimension=0 IMPLIES stateDeterminant(A)=1
+  state_determinant_positive: LEMMA 0<dimension IMPLIES
+    stateDeterminant(A)=nativeDeterminant(nativeMatrix(A))
+  replaceColumn(A:StateMatrix,v:StateVector,target:State): StateMatrix =
+    LAMBDA(r,t:State):IF t=target THEN v(r) ELSE A(r,t) ENDIF
+  replace_column_entry: LEMMA replaceColumn(A,v,s)(r,t)=IF t=s THEN v(r) ELSE A(r,t) ENDIF
+  cramer(A:StateMatrix,v:StateVector)(s:State): rat = stateDeterminant(replaceColumn(A,v,s))
+  cramerValue(A,v): StateVector = LAMBDA(s:State):IF stateDeterminant(A)=0 THEN 0
+    ELSE cramer(A,v)(s)/stateDeterminant(A) ENDIF
+  cramer_value_zero: LEMMA stateDeterminant(A)=0 IMPLIES cramerValue(A,v)(s)=0
+  cramer_value_nonzero: LEMMA stateDeterminant(A)/=0 IMPLIES
+    cramerValue(A,v)(s)=cramer(A,v)(s)/stateDeterminant(A)
+END ppg_finite_rational_matrix

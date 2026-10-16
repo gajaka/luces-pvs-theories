@@ -1,0 +1,22 @@
+% The candidate is computed by rational Cramer coordinates with unit
+% decrement. Synthesis returns it only when the original exact checker
+% accepts it. A failed attempt returns no witness.
+%
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Section 7.1.1 and Exercise 7.25.
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Exercise 10.22.
+% Lean counterparts: potential, candidate, synthesize and synthesize_sound
+% in PPGraphFinitePotential.lean.
+ppg_finite_potential_synthesis[State: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_rational_matrix[State,universe]
+  M: VAR Model
+  W: VAR Witness
+  potential(M): StateVector = cramerValue(systemMatrix(M),systemRHS(M))
+  candidate(M): Witness = (# potential:=potential(M),delta:=1 #)
+  synthesize(M): lift[Witness] = IF check(M,candidate(M)) THEN up[Witness](candidate(M))
+    ELSE bottom[Witness] ENDIF
+  synthesize_sound: THEOREM synthesize(M)=up[Witness](W) IMPLIES check(M,W)
+END ppg_finite_potential_synthesis
