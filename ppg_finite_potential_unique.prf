@@ -1,0 +1,689 @@
+(|ppg_finite_potential_unique|
+ (|source_product_dimensions| 0
+  (|source_product_dimensions-1| NIL 4001169374
+   (""
+    (THEN (SKOSIMP*) (LEMMA "source_product_form" ("A" "A!1" "v" "v!1"))
+     (LEMMA "rows_form_matrix"
+      ("F" "productArray(A!1,v!1)" "m" "dimension" "n" "1"))
+     (LEMMA "columns_form_matrix"
+      ("F" "productArray(A!1,v!1)" "m" "dimension" "n" "1"))
+     (LEMMA "native_matrix_rows" ("A" "A!1")) (TYPEPRED "A!1")
+     (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+      ("sourceProduct" "form_matrix" "rows" "columns" "dimension")))
+    NIL)
+   ((|productArray| CONST-DECL "real" |ppg_finite_cramer_system| NIL)
+    (|dimension| CONST-DECL "nat" |ppg_finite_state_index| NIL)
+    (|rows_form_matrix| FORMULA-DECL NIL |matrices| |matrices|)
+    (|native_matrix_rows| FORMULA-DECL NIL |ppg_finite_rational_matrix| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|form_matrix_square| APPLICATION-JUDGEMENT "FullMatrix" |matrices|
+     |matrices|)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|columns_form_matrix| FORMULA-DECL NIL |matrices| |matrices|)
+    (|source_product_form| FORMULA-DECL NIL |ppg_finite_cramer_system| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|StateMatrix| TYPE-EQ-DECL NIL |ppg_finite_rational_matrix| NIL)
+    (< CONST-DECL "bool" |reals| NIL) (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|Matrix| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|rows| CONST-DECL "nat" |matrices| |matrices|)
+    (|rationalMatrix| CONST-DECL "bool" |ppg_native_rational_matrix| NIL)
+    (|RationalMatrix| TYPE-EQ-DECL NIL |ppg_native_rational_matrix| NIL)
+    (|nativeMatrix| CONST-DECL "RationalMatrix" |ppg_finite_rational_matrix|
+     NIL)
+    (|PositiveMatrix| TYPE-EQ-DECL NIL |ppg_finite_cramer_encoding| NIL)
+    (|StateVector| TYPE-EQ-DECL NIL |ppg_finite_rational_matrix| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_unique| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_unique| NIL))
+   SHOSTAK))
+ (|source_equation_encoding| 0
+  (|source_equation_encoding-1| NIL 4001169374
+   ("" (SKOSIMP*)
+    (("" (LEMMA "source_product_dimensions" ("A" "A!1" "v" "f!1"))
+      (("" (LEMMA "source_column_dimensions" ("A" "A!1" "v" "v!1"))
+        (("" (REWRITE "full_matrix_eq" +)
+          (("" (FLATTEN)
+            (("" (ASSERT)
+              (("" (SKOSIMP*)
+                (("" (CASE "j!1=0")
+                  (("1" (ASSERT)
+                    (("1"
+                      (LEMMA "source_product_entry"
+                       ("A" "A!1" "v" "f!1" "s" "state(i!1)"))
+                      (("1"
+                        (LEMMA "source_column_entry"
+                         ("A" "A!1" "v" "v!1" "i" "i!1"))
+                        (("1" (LEMMA "index_state" ("i" "i!1"))
+                          (("1"
+                            (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+                             ("sourceProduct" "sourceColumn" "matVec" "rows"
+                              "columns" "entry" "dimension" "state" "index"))
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL)
+                   ("2" (ASSERT) NIL NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|source_column_dimensions| FORMULA-DECL NIL |ppg_finite_cramer_encoding|
+     NIL)
+    (|source_column_entry| FORMULA-DECL NIL |ppg_finite_cramer_encoding| NIL)
+    (|index_state| FORMULA-DECL NIL |ppg_finite_state_index| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|source_product_entry| FORMULA-DECL NIL |ppg_finite_cramer_system| NIL)
+    (|Index| TYPE-EQ-DECL NIL |ppg_finite_state_index| NIL)
+    (|dimension| CONST-DECL "nat" |ppg_finite_state_index| NIL)
+    (|index| CONST-DECL "Index" |ppg_finite_state_index| NIL)
+    (|state| CONST-DECL "{s: State | index(s) = i}" |ppg_finite_state_index|
+     NIL)
+    (|sourceColumn| CONST-DECL "PosFullMatrix" |ppg_finite_cramer_encoding|
+     NIL)
+    (|PosFullMatrix| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|columns| DEF-DECL "{c: nat |
+   (FORALL (i: below(length(M))): length(nth(M, i)) <= c) AND
+    (null?(M) AND c = 0 OR
+      EXISTS (i: below(length(M))): length(nth(M, i)) = c)}"
+     |matrices| |matrices|)
+    (<= CONST-DECL "bool" |reals| NIL) (> CONST-DECL "bool" |reals| NIL)
+    (|sourceProduct| CONST-DECL "FullMatrix" |ppg_finite_cramer_system| NIL)
+    (|FullMatrix| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|nth| DEF-DECL "T" |list_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|length| DEF-DECL "nat" |list_props| NIL)
+    (|null?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (OR CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|full_matrix_eq| FORMULA-DECL NIL |matrices| |matrices|)
+    (|source_product_dimensions| FORMULA-DECL NIL |ppg_finite_potential_unique|
+     NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_unique| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_unique| NIL)
+    (|StateMatrix| TYPE-EQ-DECL NIL |ppg_finite_rational_matrix| NIL)
+    (< CONST-DECL "bool" |reals| NIL) (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|Matrix| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|rows| CONST-DECL "nat" |matrices| |matrices|)
+    (|rationalMatrix| CONST-DECL "bool" |ppg_native_rational_matrix| NIL)
+    (|RationalMatrix| TYPE-EQ-DECL NIL |ppg_native_rational_matrix| NIL)
+    (|nativeMatrix| CONST-DECL "RationalMatrix" |ppg_finite_rational_matrix|
+     NIL)
+    (|PositiveMatrix| TYPE-EQ-DECL NIL |ppg_finite_cramer_encoding| NIL)
+    (|StateVector| TYPE-EQ-DECL NIL |ppg_finite_rational_matrix| NIL))
+   SHOSTAK))
+ (|source_matrix_nonempty| 0
+  (|source_matrix_nonempty-1| NIL 4001169374
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "nativePositive(A!1)")
+     (GRIND :DEFS ("rows" "length") :IF-MATCH NIL :EXCLUDE
+      ("nativePositive" "columns")))
+    NIL)
+   ((|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_unique| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_unique| NIL)
+    (|StateMatrix| TYPE-EQ-DECL NIL |ppg_finite_rational_matrix| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|Matrix| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|rows| CONST-DECL "nat" |matrices| |matrices|)
+    (|rationalMatrix| CONST-DECL "bool" |ppg_native_rational_matrix| NIL)
+    (|RationalMatrix| TYPE-EQ-DECL NIL |ppg_native_rational_matrix| NIL)
+    (|nativeMatrix| CONST-DECL "RationalMatrix" |ppg_finite_rational_matrix|
+     NIL)
+    (|PositiveMatrix| TYPE-EQ-DECL NIL |ppg_finite_cramer_encoding| NIL)
+    (OR CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|null?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|length| DEF-DECL "nat" |list_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|nth| DEF-DECL "T" |list_props| NIL)
+    (|FullMatrix| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (> CONST-DECL "bool" |reals| NIL) (<= CONST-DECL "bool" |reals| NIL)
+    (|columns| DEF-DECL "{c: nat |
+   (FORALL (i: below(length(M))): length(nth(M, i)) <= c) AND
+    (null?(M) AND c = 0 OR
+      EXISTS (i: below(length(M))): length(nth(M, i)) = c)}"
+     |matrices| |matrices|)
+    (|PosFullMatrix| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|Square| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|nativePositive| CONST-DECL "Square" |ppg_finite_cramer_encoding| NIL))
+   SHOSTAK))
+ (|source_left_inverse| 0
+  (|source_left_inverse-1| NIL 4001169374
+   ("" (SKOSIMP*)
+    (("" (LEMMA "native_nonsingular_dimensions" ("B" "B!1"))
+      (("" (LEMMA "source_column_dimensions" ("A" "B!1" "v" "v!1"))
+        (("" (LEMMA "source_matrix_nonempty" ("A" "B!1"))
+          (("" (LEMMA "native_matrix_rows" ("A" "B!1"))
+            (("" (TYPEPRED "B!1")
+              (("" (TYPEPRED "left_inv(nativeNonsingular(B!1))")
+                ((""
+                  (LEMMA "matrix_mult_assoc"
+                   ("M" "left_inv(nativeNonsingular(B!1))" "N"
+                    "nativePositive(B!1)" "A" "sourceColumn(B!1,v!1)"))
+                  ((""
+                    (LEMMA "mult_Id_left"
+                     ("D1" "sourceColumn(B!1,v!1)" "pm" "dimension"))
+                    (("1" (EXPAND "sourceProduct")
+                      (("1" (EXPAND "nativeNonsingular")
+                        (("1"
+                          (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+                           ("nativePositive" "left_inv" "sourceColumn" "rows"
+                            "columns" "dimension" "*" "Id"))
+                          NIL NIL))
+                        NIL))
+                      NIL)
+                     ("2" (EXPAND "sourceProduct")
+                      (("2" (EXPAND "nativeNonsingular")
+                        (("2"
+                          (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+                           ("nativePositive" "left_inv" "sourceColumn" "rows"
+                            "columns" "dimension" "*" "Id"))
+                          NIL NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|StateVector| TYPE-EQ-DECL NIL |ppg_finite_rational_matrix| NIL)
+    (|source_column_dimensions| FORMULA-DECL NIL |ppg_finite_cramer_encoding|
+     NIL)
+    (|native_matrix_rows| FORMULA-DECL NIL |ppg_finite_rational_matrix| NIL)
+    (|nativeNonsingular| CONST-DECL "Nonsingular" |ppg_finite_cramer_encoding|
+     NIL)
+    (|Nonsingular| TYPE-EQ-DECL NIL |ppg_native_cramer_inverse| NIL)
+    (|left_inv| CONST-DECL "{Q: SquareMatrix(rows(S)) | Q * S = Id(rows(S))}"
+     |matrix_inv| |matrices|)
+    (|Id| CONST-DECL "{M: SquareMatrix(pm) |
+   (FORALL (i, j):
+      entry(M)(i, j) = IF i < pm AND i = j THEN 1 ELSE 0 ENDIF)
+    AND
+    (FORALL (pn: posnat, N: MatrixMN(pm, pn)): M * N = N) AND
+     (FORALL (pn: posnat, N: MatrixMN(pn, pm)): N * M = N)}"
+     |matrices| |matrices|)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (* CONST-DECL "{A: MatrixMN(rows(M), columns(N)) |
+   FORALL (i, j): entry(A)(i, j) = row(M)(i) * col(N)(j)}"
+       |matrices| |matrices|)
+    (|col| DEF-DECL "VectorN(rows(M))" |matrices| |matrices|)
+    (|VectorN| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|row| CONST-DECL "Vector" |matrices| |matrices|)
+    (* CONST-DECL "real" |matrices| |matrices|)
+    (|Vector| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|entry| CONST-DECL "real" |matrices| |matrices|)
+    (|MatrixMN| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|SquareMatrix| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|det| DEF-DECL "real" |matrix_props| |matrices|)
+    (|Square| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|PosFullMatrix| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|columns| DEF-DECL "{c: nat |
+   (FORALL (i: below(length(M))): length(nth(M, i)) <= c) AND
+    (null?(M) AND c = 0 OR
+      EXISTS (i: below(length(M))): length(nth(M, i)) = c)}"
+     |matrices| |matrices|)
+    (<= CONST-DECL "bool" |reals| NIL) (> CONST-DECL "bool" |reals| NIL)
+    (|FullMatrix| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|nth| DEF-DECL "T" |list_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|length| DEF-DECL "nat" |list_props| NIL)
+    (|null?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (OR CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|dimension| CONST-DECL "nat" |ppg_finite_state_index| NIL)
+    (|mult_Id_left| FORMULA-DECL NIL |matrices| |matrices|)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|mult_full| APPLICATION-JUDGEMENT "FullMatrix" |matrices| |matrices|)
+    (|sourceProduct| CONST-DECL "FullMatrix" |ppg_finite_cramer_system| NIL)
+    (|matrix_mult_assoc| FORMULA-DECL NIL |matrices| |matrices|)
+    (|sourceColumn| CONST-DECL "PosFullMatrix" |ppg_finite_cramer_encoding|
+     NIL)
+    (|nativePositive| CONST-DECL "Square" |ppg_finite_cramer_encoding| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|source_matrix_nonempty| FORMULA-DECL NIL |ppg_finite_potential_unique|
+     NIL)
+    (|native_nonsingular_dimensions| FORMULA-DECL NIL
+     |ppg_finite_cramer_system| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|StateMatrix| TYPE-EQ-DECL NIL |ppg_finite_rational_matrix| NIL)
+    (< CONST-DECL "bool" |reals| NIL) (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|Matrix| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|rows| CONST-DECL "nat" |matrices| |matrices|)
+    (|rationalMatrix| CONST-DECL "bool" |ppg_native_rational_matrix| NIL)
+    (|RationalMatrix| TYPE-EQ-DECL NIL |ppg_native_rational_matrix| NIL)
+    (|nativeMatrix| CONST-DECL "RationalMatrix" |ppg_finite_rational_matrix|
+     NIL)
+    (|PositiveMatrix| TYPE-EQ-DECL NIL |ppg_finite_cramer_encoding| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|stateDeterminant| CONST-DECL "rat" |ppg_finite_rational_matrix| NIL)
+    (|NonsingularStateMatrix| TYPE-EQ-DECL NIL |ppg_finite_cramer_encoding|
+     NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_unique| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_unique| NIL))
+   SHOSTAK))
+ (|matvec_injective_of_det| 0
+  (|matvec_injective_of_det-1| NIL 4001169374
+   ("" (SKOSIMP*)
+    (("" (REWRITE "vector_eq_iff" 2)
+      (("" (SKOSIMP*)
+        (("" (LEMMA "state_dimension_positive" ("s" "s!1"))
+          (("" (LEMMA "native_matrix_rows" ("A" "A!1"))
+            ((""
+              (LEMMA "source_equation_encoding"
+               ("A" "A!1" "f" "f!1" "v" "matVec(A!1,g!1)"))
+              (("1"
+                (LEMMA "source_equation_encoding"
+                 ("A" "A!1" "f" "g!1" "v" "matVec(A!1,g!1)"))
+                (("1" (LEMMA "source_left_inverse" ("B" "A!1" "v" "f!1"))
+                  (("1" (LEMMA "source_left_inverse" ("B" "A!1" "v" "g!1"))
+                    (("1"
+                      (LEMMA "source_column_entry"
+                       ("A" "A!1" "v" "f!1" "i" "index(s!1)"))
+                      (("1"
+                        (LEMMA "source_column_entry"
+                         ("A" "A!1" "v" "g!1" "i" "index(s!1)"))
+                        (("1" (LEMMA "state_index" ("s" "s!1"))
+                          (("1"
+                            (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+                             ("nativePositive" "nativeNonsingular" "left_inv"
+                              "sourceProduct" "sourceColumn" "matVec"
+                              "stateDeterminant" "rows" "columns" "entry"
+                              "dimension" "state" "index" "*"))
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL)
+                   ("2" (LEMMA "source_left_inverse" ("B" "A!1" "v" "g!1"))
+                    (("1"
+                      (LEMMA "source_column_entry"
+                       ("A" "A!1" "v" "f!1" "i" "index(s!1)"))
+                      (("1"
+                        (LEMMA "source_column_entry"
+                         ("A" "A!1" "v" "g!1" "i" "index(s!1)"))
+                        (("1" (LEMMA "state_index" ("s" "s!1"))
+                          (("1"
+                            (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+                             ("nativePositive" "nativeNonsingular" "left_inv"
+                              "sourceProduct" "sourceColumn" "matVec"
+                              "stateDeterminant" "rows" "columns" "entry"
+                              "dimension" "state" "index" "*"))
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL)
+                     ("2"
+                      (LEMMA "source_column_entry"
+                       ("A" "A!1" "v" "f!1" "i" "index(s!1)"))
+                      (("2"
+                        (LEMMA "source_column_entry"
+                         ("A" "A!1" "v" "g!1" "i" "index(s!1)"))
+                        (("2" (LEMMA "state_index" ("s" "s!1"))
+                          (("2"
+                            (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+                             ("nativePositive" "nativeNonsingular" "left_inv"
+                              "sourceProduct" "sourceColumn" "matVec"
+                              "stateDeterminant" "rows" "columns" "entry"
+                              "dimension" "state" "index" "*"))
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL)
+               ("2"
+                (LEMMA "source_equation_encoding"
+                 ("A" "A!1" "f" "g!1" "v" "matVec(A!1,g!1)"))
+                (("1" (LEMMA "source_left_inverse" ("B" "A!1" "v" "f!1"))
+                  (("1" (LEMMA "source_left_inverse" ("B" "A!1" "v" "g!1"))
+                    (("1"
+                      (LEMMA "source_column_entry"
+                       ("A" "A!1" "v" "f!1" "i" "index(s!1)"))
+                      (("1"
+                        (LEMMA "source_column_entry"
+                         ("A" "A!1" "v" "g!1" "i" "index(s!1)"))
+                        (("1" (LEMMA "state_index" ("s" "s!1"))
+                          (("1"
+                            (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+                             ("nativePositive" "nativeNonsingular" "left_inv"
+                              "sourceProduct" "sourceColumn" "matVec"
+                              "stateDeterminant" "rows" "columns" "entry"
+                              "dimension" "state" "index" "*"))
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL)
+                   ("2" (LEMMA "source_left_inverse" ("B" "A!1" "v" "g!1"))
+                    (("1"
+                      (LEMMA "source_column_entry"
+                       ("A" "A!1" "v" "f!1" "i" "index(s!1)"))
+                      (("1"
+                        (LEMMA "source_column_entry"
+                         ("A" "A!1" "v" "g!1" "i" "index(s!1)"))
+                        (("1" (LEMMA "state_index" ("s" "s!1"))
+                          (("1"
+                            (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+                             ("nativePositive" "nativeNonsingular" "left_inv"
+                              "sourceProduct" "sourceColumn" "matVec"
+                              "stateDeterminant" "rows" "columns" "entry"
+                              "dimension" "state" "index" "*"))
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL)
+                     ("2"
+                      (LEMMA "source_column_entry"
+                       ("A" "A!1" "v" "f!1" "i" "index(s!1)"))
+                      (("2"
+                        (LEMMA "source_column_entry"
+                         ("A" "A!1" "v" "g!1" "i" "index(s!1)"))
+                        (("2" (LEMMA "state_index" ("s" "s!1"))
+                          (("2"
+                            (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+                             ("nativePositive" "nativeNonsingular" "left_inv"
+                              "sourceProduct" "sourceColumn" "matVec"
+                              "stateDeterminant" "rows" "columns" "entry"
+                              "dimension" "state" "index" "*"))
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL)
+                 ("2" (LEMMA "source_left_inverse" ("B" "A!1" "v" "f!1"))
+                  (("1" (LEMMA "source_left_inverse" ("B" "A!1" "v" "g!1"))
+                    (("1"
+                      (LEMMA "source_column_entry"
+                       ("A" "A!1" "v" "f!1" "i" "index(s!1)"))
+                      (("1"
+                        (LEMMA "source_column_entry"
+                         ("A" "A!1" "v" "g!1" "i" "index(s!1)"))
+                        (("1" (LEMMA "state_index" ("s" "s!1"))
+                          (("1"
+                            (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+                             ("nativePositive" "nativeNonsingular" "left_inv"
+                              "sourceProduct" "sourceColumn" "matVec"
+                              "stateDeterminant" "rows" "columns" "entry"
+                              "dimension" "state" "index" "*"))
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL)
+                   ("2" (LEMMA "source_left_inverse" ("B" "A!1" "v" "g!1"))
+                    (("1"
+                      (LEMMA "source_column_entry"
+                       ("A" "A!1" "v" "f!1" "i" "index(s!1)"))
+                      (("1"
+                        (LEMMA "source_column_entry"
+                         ("A" "A!1" "v" "g!1" "i" "index(s!1)"))
+                        (("1" (LEMMA "state_index" ("s" "s!1"))
+                          (("1"
+                            (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+                             ("nativePositive" "nativeNonsingular" "left_inv"
+                              "sourceProduct" "sourceColumn" "matVec"
+                              "stateDeterminant" "rows" "columns" "entry"
+                              "dimension" "state" "index" "*"))
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL)
+                     ("2"
+                      (LEMMA "source_column_entry"
+                       ("A" "A!1" "v" "f!1" "i" "index(s!1)"))
+                      (("1"
+                        (LEMMA "source_column_entry"
+                         ("A" "A!1" "v" "g!1" "i" "index(s!1)"))
+                        (("1" (LEMMA "state_index" ("s" "s!1"))
+                          (("1"
+                            (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+                             ("nativePositive" "nativeNonsingular" "left_inv"
+                              "sourceProduct" "sourceColumn" "matVec"
+                              "stateDeterminant" "rows" "columns" "entry"
+                              "dimension" "state" "index" "*"))
+                            NIL NIL))
+                          NIL))
+                        NIL)
+                       ("2"
+                        (LEMMA "source_column_entry"
+                         ("A" "A!1" "v" "g!1" "i" "index(s!1)"))
+                        (("1" (LEMMA "state_index" ("s" "s!1"))
+                          (("1"
+                            (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+                             ("nativePositive" "nativeNonsingular" "left_inv"
+                              "sourceProduct" "sourceColumn" "matVec"
+                              "stateDeterminant" "rows" "columns" "entry"
+                              "dimension" "state" "index" "*"))
+                            NIL NIL))
+                          NIL)
+                         ("2" (LEMMA "state_index" ("s" "s!1"))
+                          (("2"
+                            (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+                             ("nativePositive" "nativeNonsingular" "left_inv"
+                              "sourceProduct" "sourceColumn" "matVec"
+                              "stateDeterminant" "rows" "columns" "entry"
+                              "dimension" "state" "index" "*"))
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|StateMatrix| TYPE-EQ-DECL NIL |ppg_finite_rational_matrix| NIL)
+    (|native_matrix_rows| FORMULA-DECL NIL |ppg_finite_rational_matrix| NIL)
+    (|mult_full| APPLICATION-JUDGEMENT "FullMatrix" |matrices| |matrices|)
+    (|state_index| FORMULA-DECL NIL |ppg_finite_state_index| NIL)
+    (|source_column_entry| FORMULA-DECL NIL |ppg_finite_cramer_encoding| NIL)
+    (|dimension| CONST-DECL "nat" |ppg_finite_state_index| NIL)
+    (|Index| TYPE-EQ-DECL NIL |ppg_finite_state_index| NIL)
+    (|index| CONST-DECL "Index" |ppg_finite_state_index| NIL)
+    (|source_left_inverse| FORMULA-DECL NIL |ppg_finite_potential_unique| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|stateDeterminant| CONST-DECL "rat" |ppg_finite_rational_matrix| NIL)
+    (|NonsingularStateMatrix| TYPE-EQ-DECL NIL |ppg_finite_cramer_encoding|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|matVec| CONST-DECL "Vector" |ppg_finite_potential_system| NIL)
+    (|Matrix| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|PositiveMatrix| TYPE-EQ-DECL NIL |ppg_finite_cramer_encoding| NIL)
+    (|nativeMatrix| CONST-DECL "RationalMatrix" |ppg_finite_rational_matrix|
+     NIL)
+    (|RationalMatrix| TYPE-EQ-DECL NIL |ppg_native_rational_matrix| NIL)
+    (|rationalMatrix| CONST-DECL "bool" |ppg_native_rational_matrix| NIL)
+    (|rows| CONST-DECL "nat" |matrices| |matrices|)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|Matrix| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL) (< CONST-DECL "bool" |reals| NIL)
+    (|source_equation_encoding| FORMULA-DECL NIL |ppg_finite_potential_unique|
+     NIL)
+    (|state_dimension_positive| FORMULA-DECL NIL |ppg_finite_native_sum| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_unique| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_unique| NIL)
+    (|StateVector| TYPE-EQ-DECL NIL |ppg_finite_rational_matrix| NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|vector_eq_iff| FORMULA-DECL NIL |ppg_finite_potential_system| NIL))
+   SHOSTAK))
+ (|solution_unique| 0
+  (|solution_unique-1| NIL 4001169374
+   (""
+    (THEN (SKOSIMP*) (LEMMA "matrix_equations_iff" ("M" "M!1" "f" "f!1"))
+     (LEMMA "potential_solves" ("M" "M!1"))
+     (LEMMA "matvec_injective_of_det"
+      ("A" "systemMatrix(M!1)" "f" "f!1" "g" "potential(M!1)"))
+     (GRIND :DEFS NIL :IF-MATCH NIL :EXCLUDE
+      ("potential" "matVec" "stateDeterminant" "systemMatrix" "systemRHS"
+       "Equations")))
+    NIL)
+   ((|potential_solves| FORMULA-DECL NIL |ppg_finite_cramer_system| NIL)
+    (|potential| CONST-DECL "StateVector" |ppg_finite_potential_synthesis| NIL)
+    (|systemMatrix| CONST-DECL "Matrix" |ppg_finite_potential_system| NIL)
+    (|Matrix| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|StateMatrix| TYPE-EQ-DECL NIL |ppg_finite_rational_matrix| NIL)
+    (|matvec_injective_of_det| FORMULA-DECL NIL |ppg_finite_potential_unique|
+     NIL)
+    (|matrix_equations_iff| FORMULA-DECL NIL |ppg_finite_potential_system| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|StateVector| TYPE-EQ-DECL NIL |ppg_finite_rational_matrix| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_unique| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_unique| NIL))
+   SHOSTAK)))
+

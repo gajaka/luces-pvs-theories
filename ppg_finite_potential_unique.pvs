@@ -1,0 +1,25 @@
+% Encoding a state equation as a column equation preserves its values.
+% A native left inverse cancels the system matrix, so a nonzero determinant
+% makes the rational state solution unique. No stochastic or absorption
+% hypothesis is needed for this uniqueness argument.
+%
+% Sheldon Axler, Linear Algebra Done Right, fourth edition, Chapters 3 and 9.
+% Lean counterpart: solution_unique in PPGraphFinitePotential.lean.
+ppg_finite_potential_unique[State: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_cramer_system[State,universe]
+  A: VAR PositiveMatrix
+  B: VAR NonsingularStateMatrix
+  f,v: VAR StateVector
+  source_product_dimensions: LEMMA rows(sourceProduct(A,v))=dimension AND
+    columns(sourceProduct(A,v))=1
+  source_equation_encoding: LEMMA matVec(A,f)=v IMPLIES sourceProduct(A,f)=sourceColumn(A,v)
+  source_matrix_nonempty: LEMMA NOT null?(nativePositive(A))
+  source_left_inverse: LEMMA left_inv(nativeNonsingular(B))*sourceProduct(B,v)=sourceColumn(B,v)
+  matvec_injective_of_det: THEOREM FORALL(A:StateMatrix,f,g:StateVector):
+    stateDeterminant(A)/=0 AND matVec(A,f)=matVec(A,g) IMPLIES f=g
+  M: VAR Model
+  solution_unique: THEOREM stateDeterminant(systemMatrix(M))/=0 AND Equations(M,f)
+    IMPLIES f=potential(M)
+END ppg_finite_potential_unique
