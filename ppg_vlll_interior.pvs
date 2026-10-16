@@ -1,0 +1,87 @@
+% Interior quantifies over every measurable cylinder family with the
+% prescribed masses. The finite union bound supplies the small-mass
+% region. Enlarging each event to a larger prescribed mass shows that
+% interior is downward closed along a positive ray.
+%
+% Kun He, Liang Li, Xingwu Liu, Yuyi Wang and Mingji Xia,
+% "Variable Version Lovasz Local Lemma: Beyond Shearer's Bound",
+% FOCS 2017, Section 3, Definitions 1--3 and Lemma 10.
+% https://arxiv.org/abs/1709.05143
+% Lean counterpart: Interior and interior_mono_ray in PPGraphVariableLLL.lean.
+ppg_vlll_interior[n,m:nat]: THEORY
+BEGIN
+  IMPORTING ppg_vlll_growth[m]
+  EventIndex: TYPE = below(n)
+  IMPORTING ppg_real_sum[EventIndex],ppg_sum_order[EventIndex]
+  Bigraph: TYPE = [EventIndex->finite_set[CubeCoordinate]]
+  CylinderFamily: TYPE = [EventIndex->set[PlainCube]]
+  ProbabilityVector: TYPE = [EventIndex->real]
+  H: VAR Bigraph
+  A,B: VAR CylinderFamily
+  p,q: VAR ProbabilityVector
+  i: VAR EventIndex
+  lam1,lam2: VAR real
+  indices: finite_set[EventIndex] = fullset[EventIndex]
+  goodEvent(A): set[PlainCube] = {x:PlainCube|FORALL(i:EventIndex):NOT A(i)(x)}
+  ConformsWith(H,A): bool = FORALL(i:EventIndex):
+    plainSigma(A(i)) AND geometric.IsCylinderOver(H(i),A(i))
+  vectorDomain(p): bool = FORALL(i:EventIndex):0<p(i) AND p(i)<1
+  Interior(H,p): bool = vectorDomain(p) AND
+    FORALL(A:CylinderFamily):ConformsWith(H,A) AND
+      (FORALL(i:EventIndex):plainMass(A(i))=p(i)) IMPLIES 0<plainMass(goodEvent(A))
+  Exterior(H,p): bool = NOT Interior(H,p)
+  ray(p,lam1): ProbabilityVector = LAMBDA(i:EventIndex):lam1*p(i)
+  Boundary(H,p): bool = FORALL(eps:real):0<eps AND eps<1 IMPLIES
+    Interior(H,ray(p,1-eps)) AND NOT Interior(H,ray(p,1+eps))
+  interior_domain: LEMMA Interior(H,p) IMPLIES vectorDomain(p)
+  interior_good: LEMMA Interior(H,p) AND ConformsWith(H,A) AND
+    (FORALL(i:EventIndex):plainMass(A(i))=p(i)) IMPLIES 0<plainMass(goodEvent(A))
+  domain_positive: LEMMA vectorDomain(p) IMPLIES FORALL(i:EventIndex):0<p(i)
+  interior_ray_upper: LEMMA Interior(H,ray(p,lam1)) IMPLIES FORALL(i:EventIndex):lam1*p(i)<=1
+  nonemptyDependencies(H): bool = FORALL(i:EventIndex):sets[CubeCoordinate].nonempty?(H(i))
+  IMPORTING ppg_probability_avoidance_bound[PlainCube,EventIndex,plainSigma,plainLaw] AS ub
+  good_event_eq: LEMMA goodEvent(A)=ppg_event_avoidance[PlainCube,EventIndex].all_pass(A,indices)
+  conforms_measurable: LEMMA ConformsWith(H,A) IMPLIES ub.allMeasurable(A)
+  weights_eq: LEMMA (FORALL(i:EventIndex):plainMass(A(i))=p(i)) IMPLIES ub.weights(A)=p
+  not_interior_of_ge_one: THEOREM 1<=p(i) IMPLIES NOT Interior(H,p)
+  interior_of_sum_lt_one: THEOREM vectorDomain(p) AND fsum(indices,p)<1 IMPLIES Interior(H,p)
+
+  ChoiceEvent: TYPE = set[PlainCube]
+  grownEvent(A0:set[PlainCube],S:finite_set[CubeCoordinate],target:real): set[PlainCube] =
+    epsilon[ChoiceEvent](LAMBDA(B0:ChoiceEvent):plainSigma(B0) AND
+      geometric.IsCylinderOver(S,B0) AND sets[PlainCube].subset?(A0,B0) AND plainMass(B0)=target)
+  enlargement_exists: LEMMA FORALL(A0:(plainSigma),S:finite_set[CubeCoordinate],target:real):
+    geometric.IsCylinderOver(S,A0) AND sets[CubeCoordinate].nonempty?(S) AND plainMass(A0)<=target AND target<=1 IMPLIES
+      EXISTS(B0:ChoiceEvent):plainSigma(B0) AND geometric.IsCylinderOver(S,B0) AND
+        sets[PlainCube].subset?(A0,B0) AND plainMass(B0)=target
+  grown_event_spec: LEMMA FORALL(A0:(plainSigma),S:finite_set[CubeCoordinate],target:real):
+    geometric.IsCylinderOver(S,A0) AND sets[CubeCoordinate].nonempty?(S) AND plainMass(A0)<=target AND target<=1 IMPLIES
+      plainSigma(grownEvent(A0,S,target)) AND geometric.IsCylinderOver(S,grownEvent(A0,S,target)) AND
+      sets[PlainCube].subset?(A0,grownEvent(A0,S,target)) AND plainMass(grownEvent(A0,S,target))=target
+  enlargedFamily(H,A,q): CylinderFamily = LAMBDA(i:EventIndex):grownEvent(A(i),H(i),q(i))
+  family_extension_at: LEMMA ConformsWith(H,A) AND nonemptyDependencies(H) AND
+    (FORALL(k:EventIndex):plainMass(A(k))<=q(k) AND q(k)<=1) IMPLIES
+      plainSigma(grownEvent(A(i),H(i),q(i))) AND
+      geometric.IsCylinderOver(H(i),grownEvent(A(i),H(i),q(i))) AND
+      sets[PlainCube].subset?(A(i),grownEvent(A(i),H(i),q(i))) AND plainMass(grownEvent(A(i),H(i),q(i)))=q(i)
+  family_extension: LEMMA ConformsWith(H,A) AND nonemptyDependencies(H) AND
+    (FORALL(i:EventIndex):plainMass(A(i))<=q(i) AND q(i)<=1) IMPLIES
+      ConformsWith(H,enlargedFamily(H,A,q)) AND
+      (FORALL(i:EventIndex):sets[PlainCube].subset?(A(i),enlargedFamily(H,A,q)(i)) AND
+        plainMass(enlargedFamily(H,A,q)(i))=q(i))
+  good_event_mono: LEMMA (FORALL(i:EventIndex):sets[PlainCube].subset?(A(i),B(i))) IMPLIES
+    sets[PlainCube].subset?(goodEvent(B),goodEvent(A))
+  domain_downward: LEMMA vectorDomain(q) AND (FORALL(i:EventIndex):0<p(i) AND p(i)<=q(i)) IMPLIES vectorDomain(p)
+  mass_comparison: LEMMA vectorDomain(q) AND (FORALL(i:EventIndex):0<p(i) AND p(i)<=q(i)) AND
+    (FORALL(i:EventIndex):plainMass(A(i))=p(i)) IMPLIES
+      FORALL(i:EventIndex):plainMass(A(i))<=q(i) AND q(i)<=1
+  extension_mass_vector: LEMMA (FORALL(i:EventIndex):sets[PlainCube].subset?(A(i),B(i)) AND plainMass(B(i))=q(i)) IMPLIES
+    FORALL(i:EventIndex):plainMass(B(i))=q(i)
+  extension_subset_vector: LEMMA (FORALL(i:EventIndex):sets[PlainCube].subset?(A(i),B(i)) AND plainMass(B(i))=q(i)) IMPLIES
+    FORALL(i:EventIndex):sets[PlainCube].subset?(A(i),B(i))
+  interior_downward: LEMMA nonemptyDependencies(H) AND Interior(H,q) AND
+    (FORALL(i:EventIndex):0<p(i) AND p(i)<=q(i)) IMPLIES Interior(H,p)
+  interior_mono_ray: THEOREM (FORALL(i:EventIndex):0<p(i)) AND nonemptyDependencies(H) AND
+    0<lam1 AND lam1<=lam2 AND (FORALL(i:EventIndex):lam2*p(i)<=1) AND Interior(H,ray(p,lam2)) IMPLIES
+      Interior(H,ray(p,lam1))
+END ppg_vlll_interior
