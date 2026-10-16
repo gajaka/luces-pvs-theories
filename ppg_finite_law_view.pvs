@@ -1,0 +1,22 @@
+% For a measure, finite total mass is equivalent to finite mass on every
+% measurable event. The resulting finite-law view is the original native
+% measure itself; it includes the zero measure and changes no masses.
+%
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_finite_law_view[X: TYPE,
+  (IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING measure_integration@measure_def[X,asNasa(S)]
+  m: VAR measure_type
+  A: VAR (asNasa(S))
+  full_measurable: LEMMA asNasa(S)(fullset[X])
+  fullFinite(m): bool = m(fullset[X])`1
+  allFinite(m): bool = FORALL(A:(asNasa(S))):m(A)`1
+  full_implies_all: LEMMA fullFinite(m) IMPLIES allFinite(m)
+  all_implies_full: LEMMA allFinite(m) IMPLIES fullFinite(m)
+  finite_law_iff: THEOREM fullFinite(m) IFF allFinite(m)
+  FiniteLaw: TYPE = (allFinite)
+  asFiniteLaw(m:{m:measure_type|fullFinite(m)}): FiniteLaw = m
+  finite_law_eq: LEMMA FORALL(m:{m:measure_type|fullFinite(m)}):asFiniteLaw(m)=m
+  finite_event_flag: LEMMA FORALL(m:FiniteLaw):m(A)`1
+END ppg_finite_law_view

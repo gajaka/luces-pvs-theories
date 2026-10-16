@@ -1,0 +1,19 @@
+% Indicator functions of measurable events are integrable under a finite
+% measure. Finite linear combinations remain native integrable functions.
+% The measure is not normalized; zero total mass is allowed.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Native integral: David Lester's NASAlib construction, following
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_finite_measure_integral[X: TYPE,
+  (IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) measureLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING measure_integration@integral[X,asNasa(S),measureLaw]
+  NativeFunction: TYPE = integrable[X,asNasa(S),measureLaw]
+  native_event_finite: LEMMA FORALL(A:(S)):mu_fin?(A)
+  indicator(A:(S)): NativeFunction = phi(A)
+  constant(c:real): NativeFunction = c*indicator(fullset[X])
+  indicator_value: LEMMA FORALL(A:(S),x:X):indicator(A)(x)=IF A(x) THEN 1 ELSE 0 ENDIF
+  constant_value: LEMMA FORALL(c:real,x:X):constant(c)(x)=c
+END ppg_finite_measure_integral
