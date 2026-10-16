@@ -1,0 +1,34 @@
+% Native matrix multiplication is the same finite row combination used
+% in the determinant argument. A solution of x A = b therefore determines
+% each coordinate of x by the corresponding row replacement determinant.
+%
+% Sheldon Axler, Linear Algebra Done Right, fourth edition, Chapter 9.
+ppg_native_cramer_product: THEORY
+BEGIN
+  IMPORTING ppg_native_cramer_rows
+  A: VAR Square
+  F,G: VAR [nat->real]
+  N,i,j: VAR nat
+  row_sum_sigma: LEMMA rowSum(F,N)=sigma(0,N-1,F)
+  rowMatrix(N:posnat,F): MatrixMN(1,N) =
+    form_matrix(LAMBDA(i,j:nat):F(j),1,N)
+  row_matrix_dimensions: LEMMA rows(rowMatrix(rows(A),F))=1 AND
+    columns(rowMatrix(rows(A),F))=rows(A)
+  row_matrix_entry: LEMMA j<rows(A) IMPLIES entry(rowMatrix(rows(A),F))(0,j)=F(j)
+  square_matrix_representation: LEMMA A=form_matrix(entry(A),rows(A),rows(A))
+  productEntries(A,F)(r,j:nat): real =
+    IF r>1 OR j>rows(A) THEN 0 ELSE
+      sigma(0,rows(A)-1,LAMBDA(k:nat):F(k)*entry(A)(k,j)) ENDIF
+  row_product_matrix: LEMMA rowMatrix(rows(A),F)*A=
+    form_matrix(productEntries(A,F),1,rows(A))
+  row_product_dimensions: LEMMA rows(rowMatrix(rows(A),F)*A)=1 AND
+    columns(rowMatrix(rows(A),F)*A)=rows(A)
+  row_product_entry: LEMMA j<rows(A) IMPLIES
+    entry(rowMatrix(rows(A),F)*A)(0,j)=
+      rowSum(LAMBDA(k:nat):F(k)*entry(A)(k,j),rows(A))
+  partial_row_product: LEMMA partialRow(A,F,rows(A))=row(rowMatrix(rows(A),F)*A)(0)
+  array_vector_access: LEMMA j<N IMPLIES access(array2list[real](N)(F))(j)=F(j)
+  row_matrix_row: LEMMA row(rowMatrix(rows(A),F))(0)=array2list[real](rows(A))(F)
+  row_solution_coordinate: THEOREM rowMatrix(rows(A),F)*A=rowMatrix(rows(A),G) AND
+    i<rows(A) IMPLIES det(replace_row(i,array2list[real](rows(A))(G))(A))=F(i)*det(A)
+END ppg_native_cramer_product
