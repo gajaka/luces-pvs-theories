@@ -1,0 +1,165 @@
+(|ppg_pegden_canonical|
+ (|pegden_fuel_children_valid| 0
+  (|pegden_fuel_children_valid-1| NIL 4001126413
+   (""
+    (THEN (SKOSIMP*) (LABEL "IH" -2) (EXPAND "choiceValid" 1) (SKOSIMP*)
+     (LEMMA "childFor_mem" ("t" "t!1" "b" "k!1"))
+     (LEMMA "childFor_label" ("t" "t!1" "b" "k!1"))
+     (LEMMA "wellFormed_child"
+      ("vars" "vars!1" "t" "t!1" "c" "childFor(t!1,k!1)"))
+     (LEMMA "depthIndependent_child"
+      ("vars" "vars!1" "t" "t!1" "c" "childFor(t!1,k!1)"))
+     (INST "IH" "childFor(t!1,k!1)") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|choiceValid| CONST-DECL "bool" |ppg_finite_forest| NIL)
+    (|childFor_mem| FORMULA-DECL NIL |ppg_rose_child_choice| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_pegden_canonical| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_pegden_canonical| NIL)
+    (|wellFormed_child| FORMULA-DECL NIL |ppg_rose_structure| NIL)
+    (|childFor| CONST-DECL "WTree" |ppg_rose_child_choice| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|depthIndependent_child| FORMULA-DECL NIL |ppg_pegden_depth| NIL)
+    (|childFor_label| FORMULA-DECL NIL |ppg_rose_child_choice| NIL))
+   SHOSTAK))
+ (|canonicalizeFuel_mem_treesUpTo| 0
+  (|canonicalizeFuel_mem_treesUpTo-1| NIL 4001126413
+   ("" (INDUCT "n")
+    (("1" (SKOSIMP*)
+      (("1" (REWRITE "canonicalFuel_zero" 1)
+        (("1" (REWRITE "pegden_enum_zero" 1)
+          (("1" (EXPAND "singleton") (("1" (PROPAX) NIL NIL)) NIL)) NIL))
+        NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (LABEL "IH" -1)
+        (("2" (INST "IH" "vars!1" "U!1")
+          (("2" (REWRITE "canonicalFuel_succ" 1)
+            (("2" (REWRITE "canonical_rebuild_attach" 1)
+              (("2"
+                (LEMMA "labelSet_neighbors"
+                 ("vars" "vars!1" "U" "U!1" "t" "t!1"))
+                (("2"
+                  (LEMMA "depthIndependent_labelSet"
+                   ("vars" "vars!1" "t" "t!1"))
+                  (("2"
+                    (LEMMA "mem_independentSubsets"
+                     ("vars" "vars!1" "U" "U!1" "a" "roseLabel(t!1)" "T"
+                      "labelSet(t!1)"))
+                    (("2"
+                      (LEMMA "pegden_fuel_children_valid"
+                       ("vars" "vars!1" "U" "U!1" "n" "j!1" "t" "t!1"))
+                      (("2"
+                        (LEMMA "rootFamily_attach"
+                         ("a" "roseLabel(t!1)" "S" "labelSet(t!1)" "F"
+                          "LAMBDA(b:C):pegdenTreesUpTo(vars!1,U!1,j!1,b)" "f"
+                          "LAMBDA(b:C):canonicalFuel(j!1,childFor(t!1,b))"))
+                        (("2"
+                          (LEMMA "pegden_enum_intro"
+                           ("vars" "vars!1" "U" "U!1" "D" "j!1" "a"
+                            "roseLabel(t!1)" "S" "labelSet(t!1)" "t"
+                            "attach(roseLabel(t!1),labelSet(t!1),LAMBDA(b:C):canonicalFuel(j!1,childFor(t!1,b)))"))
+                          (("2" (GRIND :DEFS NIL :IF-MATCH NIL) NIL NIL)) NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_pegden_canonical| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_pegden_canonical| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|fullUniverse| CONST-DECL "bool" |ppg_rose_canonical_enum| NIL)
+    (|wellFormed| CONST-DECL "[WTree -> bool]" |ppg_rose_structure| NIL)
+    (|depthSeparated| CONST-DECL "bool" |ppg_rose_depth_independence| NIL)
+    (|pegdenTreesUpTo| DEF-DECL "finite_set[WTree[C]]" |ppg_pegden_enumeration|
+     NIL)
+    (|roseLabel| ADT-ACCESSOR-DECL "[ppg_mt_rose -> C]" |ppg_mt_rose_adt| NIL)
+    (|canonicalFuel| DEF-DECL "WTree" |ppg_rose_canonical_core| NIL)
+    (|nat_induction| FORMULA-DECL NIL |naturalnumbers| NIL)
+    (|canonicalFuel_zero| FORMULA-DECL NIL |ppg_rose_canonical_core| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[WTree[C]]" |ppg_pegden_canonical| NIL)
+    (|pegden_enum_zero| FORMULA-DECL NIL |ppg_pegden_enumeration| NIL)
+    (|canonicalFuel_succ| FORMULA-DECL NIL |ppg_rose_canonical_core| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|labelSet_neighbors| FORMULA-DECL NIL |ppg_rose_canonical_enum| NIL)
+    (|labelSet| CONST-DECL "finite_set[C]" |ppg_rose_child_choice| NIL)
+    (|mem_independentSubsets| FORMULA-DECL NIL |ppg_pegden_polynomial| NIL)
+    (|childFor| CONST-DECL "WTree" |ppg_rose_child_choice| NIL)
+    (|rootFamily_attach| FORMULA-DECL NIL |ppg_rose_attach| NIL)
+    (|pegden_enum_intro| FORMULA-DECL NIL |ppg_pegden_enumeration| NIL)
+    (|attach| CONST-DECL "WTree" |ppg_rose_attach| NIL)
+    (|pegden_fuel_children_valid| FORMULA-DECL NIL |ppg_pegden_canonical| NIL)
+    (|depthIndependent_labelSet| FORMULA-DECL NIL |ppg_pegden_depth| NIL)
+    (|canonical_rebuild_attach| FORMULA-DECL NIL |ppg_rose_canonical_enum|
+     NIL))
+   SHOSTAK))
+ (|canonicalize_mem_treesUpTo| 0
+  (|canonicalize_mem_treesUpTo-1| NIL 4001126413
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "canonicalizeFuel_mem_treesUpTo"
+      ("vars" "vars!1" "U" "U!1" "n" "depth(t!1)" "t" "t!1"))
+     (EXPAND "canonicalize") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|canonicalize| CONST-DECL "WTree" |ppg_rose_canonical_core| NIL)
+    (|canonicalizeFuel_mem_treesUpTo| FORMULA-DECL NIL |ppg_pegden_canonical|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_pegden_canonical| NIL)
+    (|ppg_mt_rose| TYPE-DECL NIL |ppg_mt_rose_adt| NIL)
+    (|WTree| TYPE-EQ-DECL NIL |ppg_rose_size| NIL)
+    (|depth| CONST-DECL "[WTree -> nat]" |ppg_rose_depth| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_pegden_canonical| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL))
+   SHOSTAK)))
+
