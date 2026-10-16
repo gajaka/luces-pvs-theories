@@ -1,0 +1,31 @@
+% Avoiding good states through time N is equivalent to a first-hit
+% count strictly greater than N. On the extended nonnegative reals,
+% that strict comparison is expressed by failure of the reverse bound.
+% The proof uses only paths and finite prefixes, without a measure.
+%
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Section 7.1.1, Cambridge University Press, 2017.
+ppg_finite_hit_tail[State,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  (IMPORTING ppg_measurable_space[Omega])
+  ambient:ppg_measurable_space[Omega].MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_finite_process_stopping[State,Omega,universe,ambient]
+  M: VAR Model
+  X: VAR Process
+  n,N: VAR nat
+  omega: VAR Omega
+
+  running_prefix_member: LEMMA runningEvent(M,X,N)(omega) AND n<=N IMPLIES
+    runningEvent(M,X,n)(omega)
+
+  running_count_lower: LEMMA runningEvent(M,X,N)(omega) IMPLIES
+    ele(ennFinite(N+1),hitCount(M,X,omega))
+
+  running_count_gt: LEMMA runningEvent(M,X,N)(omega) IFF
+    NOT ele(hitCount(M,X,omega),ennFinite(N))
+
+  runningEvent_eq_hitCount_gt: THEOREM runningEvent(M,X,N)=
+    {omega:Omega|NOT ele(hitCount(M,X,omega),ennFinite(N))}
+
+END ppg_finite_hit_tail

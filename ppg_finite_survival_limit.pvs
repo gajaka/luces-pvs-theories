@@ -1,0 +1,19 @@
+% The uniform block bound is dominated by a geometric sequence. Its
+% limit follows without an accessibility or termination assumption.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Lemma 1.13, American Mathematical Society, 2017.
+ppg_finite_survival_limit[State: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_survival[State,universe],ppg_real_geometric_limit
+  M: VAR Model
+  L: VAR nat
+  b: VAR rat
+  s: VAR State
+
+  survival_blocks_tendsto_zero: THEOREM Stochastic(M) AND 0<=b AND b<1 AND
+    (FORALL(t:State):survival(M,L,t)<=b) IMPLIES
+      convergence?(LAMBDA(k:nat):survival(M,k*L,s),0)
+
+END ppg_finite_survival_limit

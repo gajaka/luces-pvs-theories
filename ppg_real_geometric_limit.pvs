@@ -1,0 +1,32 @@
+% A convergent geometric series has terms tending to zero. The proof
+% extracts one term from the finite-tail Cauchy criterion. It then uses
+% the same epsilon definition for real and metric convergence.
+%
+% Walter Rudin, Principles of Mathematical Analysis, third edition,
+% Chapter 3, McGraw-Hill, 1976.
+ppg_real_geometric_limit: THEORY
+BEGIN
+  IMPORTING series@series,metric_space@convergence_aux
+  a,u,v: VAR [nat->real]
+  b,c: VAR real
+  n: VAR nat
+
+  real_convergence_equivalence: LEMMA convergence_sequences.convergence(u,c) IFF
+    convergence?(u,c)
+
+  zero_squeeze: LEMMA convergence_sequences.convergence(v,0) AND
+    (FORALL(n:nat):0<=u(n) AND u(n)<=v(n)) IMPLIES convergence_sequences.convergence(u,0)
+
+  native_sigma_singleton: LEMMA reals@sigma[nat].sigma(n,n,a)=a(n)
+
+  convergent_series_terms_zero: LEMMA
+    convergence_sequences.convergent?(series(a)) IMPLIES
+      convergence_sequences.convergence(a,0)
+
+  geometric_series_convergent: LEMMA abs(b)<1 IMPLIES
+    convergence_sequences.convergent?(series(geometric(b)))
+
+  geometric_zero_limit: LEMMA 0<=b AND b<1 IMPLIES
+    convergence_sequences.convergence(LAMBDA(n:nat):expt(b,n),0)
+
+END ppg_real_geometric_limit
