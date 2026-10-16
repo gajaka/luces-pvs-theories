@@ -1,0 +1,97 @@
+(|ppg_native_rational_sigma|
+ (|ns_TCC1| 0
+  (|ns_TCC1-1| NIL 4001160689 ("" (ASSUMING-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|integer| NONEMPTY-TYPE-FROM-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|ns| ASSUMING "reals@sigma[nat]"
+    "connected_domain: ASSUMPTION (FORALL (x, y: sigma.T), (z: integers.integer): booleans.IMPLIES(booleans.AND(reals.<=(x, z), reals.<=(z, y)), sigma.T_pred(z)))"
+    (9 12 9 28))))
+ (|nativeSum_TCC1| 0
+  (|nativeSum_TCC1-1| NIL 4001160689 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL (|nativeSum| SUBTYPE "0" "T_low[nat]" (12 34 12 35))))
+ (|nativeSum_TCC2| 0
+  (|nativeSum_TCC2-1| NIL 4001160689 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|nativeSum| SUBTYPE "N" "T_high[nat]" (12 36 12 37))))
+ (|native_sum_zero| 0
+  (|native_sum_zero-1| NIL 4001160695
+   (""
+    (THEN (SKOSIMP*) (EXPAND "nativeSum") (EXPAND "ns.sigma")
+     (EXPAND "ns.sigma") (ASSERT))
+    NIL)
+   ((|sigma| DEF-DECL "real" |sigma| |reals|)
+    (|nativeSum| CONST-DECL "real" |ppg_native_rational_sigma| NIL))
+   SHOSTAK))
+ (|native_sum_succ| 0
+  (|native_sum_succ-1| NIL 4001160695
+   ("" (THEN (SKOSIMP*) (EXPAND "nativeSum") (EXPAND "ns.sigma" + 1) (ASSERT))
+    NIL)
+   ((|sigma| DEF-DECL "real" |sigma| |reals|)
+    (|nativeSum| CONST-DECL "real" |ppg_native_rational_sigma| NIL))
+   SHOSTAK))
+ (|native_sum_rational| 0
+  (|native_sum_rational-1| NIL 4001160695
+   ("" (INDUCT "N")
+    (("1" (SKOSIMP*)
+      (("1" (REWRITE "native_sum_zero") (("1" (ASSERT) NIL NIL)) NIL)) NIL)
+     ("2" (SKOSIMP*)
+      (("2" (INST -1 "F!1")
+        (("2" (REWRITE "native_sum_succ")
+          (("2"
+            (LEMMA "rationals.closed_plus"
+             ("x" "F!1(j!1+1)" "y" "nativeSum(F!1,j!1)"))
+            (("1" (ASSERT) NIL NIL) ("2" (PROPAX) NIL NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|nativeSum| CONST-DECL "real" |ppg_native_rational_sigma| NIL)
+    (|nat_induction| FORMULA-DECL NIL |naturalnumbers| NIL)
+    (|native_sum_zero| FORMULA-DECL NIL |ppg_native_rational_sigma| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|closed_plus| FORMULA-DECL NIL |rationals| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|native_sum_succ| FORMULA-DECL NIL |ppg_native_rational_sigma| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_plus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   SHOSTAK)))
+

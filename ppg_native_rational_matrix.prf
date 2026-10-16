@@ -1,0 +1,133 @@
+(|ppg_native_rational_matrix|
+ (|rational_entry| 0
+  (|rational_entry-1| NIL 4001160912
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "A!1") (EXPAND "rationalMatrix")
+     (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+      ("nm.entry" "nm.rows" "nm.columns" "rational_pred")))
+    NIL)
+   ((|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|Matrix| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|rationalMatrix| CONST-DECL "bool" |ppg_native_rational_matrix| NIL)
+    (|RationalMatrix| TYPE-EQ-DECL NIL |ppg_native_rational_matrix| NIL))
+   SHOSTAK))
+ (|rational_form| 0
+  (|rational_form-1| NIL 4001160695
+   (""
+    (THEN (SKOSIMP*) (EXPAND "rationalMatrix") (SKOSIMP*)
+     (LEMMA "nm.entry_form_matrix"
+      ("F" "F!1" "m" "m!1" "n" "n!1" "i" "r!1" "j" "c!1"))
+     (GRIND :DEFS NIL :EXCLUDE ("nm.form_matrix" "nm.entry")))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|form_matrix_square| APPLICATION-JUDGEMENT "FullMatrix" |matrices|
+     |matrices|)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|entry_form_matrix| FORMULA-DECL NIL |matrices| |matrices|)
+    (|rationalMatrix| CONST-DECL "bool" |ppg_native_rational_matrix| NIL))
+   SHOSTAK))
+ (|rational_remove| 0
+  (|rational_remove-1| NIL 4001160695
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "A!1") (TYPEPRED "np.remove(A!1,i!1,j!1)")
+     (EXPAND "rationalMatrix") (SKOSIMP*)
+     (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+      ("np.remove" "nm.entry" "nm.rows" "nm.columns")))
+    NIL)
+   ((|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|rows| CONST-DECL "nat" |matrices| |matrices|)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|length| DEF-DECL "nat" |list_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|nth| DEF-DECL "T" |list_props| NIL)
+    (OR CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|null?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|columns| DEF-DECL "{c: nat |
+   (FORALL (i: below(length(M))): length(nth(M, i)) <= c) AND
+    (null?(M) AND c = 0 OR
+      EXISTS (i: below(length(M))): length(nth(M, i)) = c)}"
+     |matrices| |matrices|)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|entry| CONST-DECL "real" |matrices| |matrices|)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|remove| CONST-DECL "{N |
+   (rows(M) > 1 AND columns(M) > 1 IMPLIES
+     (rows(N) = rows(M) - 1 AND columns(N) = columns(M) - 1))
+    AND
+    (FORALL (m, n):
+       LET newm = IF m >= i OR i >= rows(M) THEN m + 1 ELSE m ENDIF,
+           newn = IF n >= j OR j >= columns(M) THEN n + 1 ELSE n ENDIF
+         IN entry(N)(m, n) = entry(M)(newm, newn))}"
+     |matrix_props| |matrices|)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|Matrix| TYPE-EQ-DECL NIL |matrices| |matrices|)
+    (|rationalMatrix| CONST-DECL "bool" |ppg_native_rational_matrix| NIL)
+    (|RationalMatrix| TYPE-EQ-DECL NIL |ppg_native_rational_matrix| NIL))
+   SHOSTAK)))
+
