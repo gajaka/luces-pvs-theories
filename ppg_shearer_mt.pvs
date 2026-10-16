@@ -1,0 +1,42 @@
+% Strict Shearer positivity bounds the probability of an actual good MT
+% state. Disjoint footprints supply the independence premise. A good
+% target then gives an existential repair path by the constant-log proof.
+%
+% Nicholas J. A. Harvey and Jan Vondrak, "Short proofs for generalizations
+% of the Lovasz Local Lemma: Shearer's condition and cluster expansion",
+% Section 2. https://arxiv.org/abs/1711.06797
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2. https://arxiv.org/abs/0903.0544v3
+% Lean counterpart: PPGraphShearerMT.lean.
+ppg_shearer_mt[C,V,Value:TYPE,domain:[V->set[Value]],
+  universe:{F:finite_set[V]|F=fullset[V]},
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain]) spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_bdd[C,V]) vars:CertVars,
+  B:{U:finite_set[C]|U=fullset[C]}]: THEORY
+BEGIN
+  IMPORTING ppg_mt_state_independence[C,V,Value,domain,universe,spaces,laws,vars],
+    ppg_mt_repair_target[C,V,Value,domain,universe]
+  bad: VAR NativeBad
+  p: VAR [C->real]
+  fallback: VAR C
+  enumeration: VAR list[C]
+  initial: VAR MTState
+  edges: VAR [MTState,MTState->bool]
+  marginalUpper(bad,p): bool = FORALL(a:C):mass(stateEvents(bad)(a))<=p(a)
+  marginalUpper_on: LEMMA marginalUpper(bad,p) IMPLIES
+    FORALL(a:C):B(a) IMPLIES mass(stateEvents(bad)(a))<=p(a)
+  good_event_measurable: LEMMA NativeStateSigma(spaces)({s:MTState|MTGood(bad,s)})
+  goodStateProbability(bad): nnreal = stateMeasure({s:MTState|MTGood(bad,s)})
+  mt_good_event_lower_bound: THEOREM mt_wf(vars,bad) AND
+    marginalUpper(bad,p) AND StrictCriterion(p,B) IMPLIES
+      polynomial(p,B)<=goodStateProbability(bad)
+  exists_MTGood: THEOREM mt_wf(vars,bad) AND
+    marginalUpper(bad,p) AND StrictCriterion(p,B) IMPLIES
+      EXISTS(s:MTState):MTGood(bad,s)
+  exists_mtReach_good: THEOREM mt_wf(vars,bad) AND completeEnumeration(enumeration) AND
+    marginalUpper(bad,p) AND StrictCriterion(p,B) IMPLIES
+      EXISTS(w:MTState):mtReach(vars,bad,fallback,enumeration)(initial,w) AND MTGood(bad,w)
+  mtRepairGraph_globally_repairable: THEOREM mt_wf(vars,bad) AND completeEnumeration(enumeration) AND
+    marginalUpper(bad,p) AND StrictCriterion(p,B) IMPLIES
+      globally_repairable(mtRepairGraph(vars,bad,fallback,enumeration,edges))
+END ppg_shearer_mt

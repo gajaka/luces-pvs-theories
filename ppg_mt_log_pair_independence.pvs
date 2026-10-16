@@ -1,0 +1,20 @@
+% Disjoint coordinate sets determine independent measurable table events.
+% This transports the proved product-law identity through the log map.
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2. https://arxiv.org/abs/0903.0544v3
+ppg_mt_log_pair_independence[C,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_mt_log_family[C,V,Value,C,domain,spaces,laws]
+  F,G: VAR set[[nat,V]]
+  A,B: VAR (NativeTableSigma(spaces))
+  log_preimage_measurable: LEMMA tableSigma(
+    ppg_measurable_map[FullBlock,LogSpace].inverseImage(logMap,A))
+  log_inter_preimage: LEMMA
+    ppg_measurable_map[FullBlock,LogSpace].inverseImage(logMap,intersection(A,B))=
+      intersection(ppg_measurable_map[FullBlock,LogSpace].inverseImage(logMap,A),
+        ppg_measurable_map[FullBlock,LogSpace].inverseImage(logMap,B))
+  log_inter_independent: THEOREM disjoint?(F,G) AND logDepends(F,A) AND logDepends(G,B) IMPLIES
+    logMeasure(intersection(A,B))=logMeasure(A)*logMeasure(B)
+END ppg_mt_log_pair_independence

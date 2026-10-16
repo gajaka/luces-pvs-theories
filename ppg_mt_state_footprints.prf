@@ -1,0 +1,71 @@
+(|ppg_mt_state_footprints|
+ (|bad_state_depends| 0
+  (|bad_state_depends-1| NIL 4001093436
+   ("" (THEN (GRIND :DEFS ("mt_wf" "stateDepends" "stateEvents"))) NIL)
+   ((|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|mt_wf| CONST-DECL "bool" |ppg_mt_semantics| NIL))
+   SHOSTAK))
+ (|footprint_subset_union| 0
+  (|footprint_subset_union-1| NIL 4001093525
+   (""
+    (THEN (SKOSIMP*) (EXPAND "subset?") (SKOSIMP*) (EXPAND "member")
+     (EXPAND "footprintUnion") (INST 1 "a!1") (ASSERT))
+    NIL)
+   NIL SHOSTAK))
+ (|bad_equiv_under_union| 0
+  (|bad_equiv_under_union-1| NIL 4001093525
+   (""
+    (THEN (SKOSIMP*) (EXPAND "mt_wf") (INST -1 "a!1" "s!1" "t!1")
+     (LEMMA "footprint_subset_union" ("J" "J!1" "a" "a!1"))
+     (GRIND :DEFS ("subset?")))
+    NIL)
+   ((|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|mt_wf| CONST-DECL "bool" |ppg_mt_semantics| NIL))
+   SHOSTAK))
+ (|nonneighbor_not_dependent| 0
+  (|nonneighbor_not_dependent-1| NIL 4001093525
+   (""
+    (THEN (SKOSIMP*) (EXPAND "independent_side") (INST -1 "j!1")
+     (EXPAND "independent") (ASSERT))
+    NIL)
+   ((|independent| CONST-DECL "bool" |ppg_event_dependence| NIL)
+    (|independent_side| CONST-DECL "bool" |ppg_event_dependence| NIL))
+   SHOSTAK))
+ (|mt_all_pass_depends_on| 0
+  (|mt_all_pass_depends_on-1| NIL 4001093436
+   (""
+    (THEN (SKOSIMP*) (EXPAND "stateDepends") (SKOSIMP*)
+     (LEMMA "bad_equiv_under_union"
+      ("bad" "bad!1" "J" "J!1" "s" "s!1" "t" "t!1"))
+     (EXPAND "all_pass") (EXPAND "stateEvents") (GRIND :DEFS NIL))
+    NIL)
+   ((|all_pass| CONST-DECL "set[X]" |ppg_event_avoidance| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL))
+   SHOSTAK))
+ (|independent_footprints_disjoint| 0
+  (|independent_footprints_disjoint-1| NIL 4001093436
+   (""
+    (THEN (SKOSIMP*) (EXPAND "disjoint?") (EXPAND "empty?")
+     (EXPAND "intersection") (EXPAND "member") (EXPAND "footprintUnion")
+     (SKOSIMP*)
+     (LEMMA "nonneighbor_not_dependent"
+      ("B" "B!1" "J" "J!1" "a" "a!1" "j" "j!1"))
+     (GRIND :DEFS ("dependent")))
+    NIL)
+   ((|independent_side| CONST-DECL "bool" |ppg_event_dependence| NIL)
+    (|independent| CONST-DECL "bool" |ppg_event_dependence| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|dependent| CONST-DECL "bool" |ppg_bdd| NIL))
+   SHOSTAK))
+ (|mt_good_event_univ_eq| 0
+  (|mt_good_event_univ_eq-1| NIL 4001093436
+   (""
+    (THEN (SKOSIMP*) (EXPAND "all_pass") (EXPAND "stateEvents")
+     (EXPAND "MTGood") (APPLY-EXTENSIONALITY) (GRIND :DEFS ("fullset")))
+    NIL)
+   ((|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|MTGood| CONST-DECL "bool" |ppg_mt_selection| NIL)
+    (|all_pass| CONST-DECL "set[X]" |ppg_event_avoidance| NIL))
+   SHOSTAK)))
+
