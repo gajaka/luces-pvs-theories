@@ -1,0 +1,21 @@
+% Extended nonnegative multiplication has 0 * infinity = 0.
+% Finite factors use real multiplication; a positive factor times
+% infinity is infinite. These cases also cover arbitrary measure masses.
+ppg_enn_multiply: THEORY
+BEGIN
+  IMPORTING ppg_enn_sup
+  x,y: VAR ENN
+  a,b: VAR nonneg_real
+  emul(x,y): ENN = CASES x OF
+    ennInfinity: IF y=ennFinite(0) THEN ennFinite(0) ELSE ennInfinity ENDIF,
+    ennFinite(a): CASES y OF
+      ennInfinity: IF a=0 THEN ennFinite(0) ELSE ennInfinity ENDIF,
+      ennFinite(b): ennFinite(a*b)
+    ENDCASES
+  ENDCASES
+  finite_embedding_eq: LEMMA ennFinite(a)=ennFinite(b) IFF a=b
+  emul_finite: LEMMA emul(ennFinite(a),ennFinite(b))=ennFinite(a*b)
+  emul_zero_left: LEMMA emul(ennFinite(0),x)=ennFinite(0)
+  emul_zero_right: LEMMA emul(x,ennFinite(0))=ennFinite(0)
+  emul_commutative: LEMMA emul(x,y)=emul(y,x)
+END ppg_enn_multiply

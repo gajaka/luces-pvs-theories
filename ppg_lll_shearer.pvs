@@ -1,0 +1,56 @@
+% The numerical product criterion gives a positive Shearer polynomial
+% on every induced subset. Its one-element deletion ratios also retain
+% the factors 1-x(i). The argument permits arbitrary signed weights p.
+%
+% Noga Alon and Joel H. Spencer, The Probabilistic Method, 4th ed.,
+% Wiley, 2016, Lemma 5.1.1. The polynomial deletion identity is proved
+% in ppg_shearer_polynomial, following Harvey and Vondrak, Section 2:
+% https://arxiv.org/abs/1711.06797
+ppg_lll_shearer[C:TYPE,G:{H:[C,C->bool]|(FORALL(a:C):NOT H(a,a)) AND
+  (FORALL(a,b:C):H(a,b)=H(b,a))}]: THEORY
+BEGIN
+  IMPORTING ppg_shearer_polynomial[C,G],ppg_deletion_product[C],ppg_lll_shearer_scalar
+  B,S,T: VAR finite_set[C]
+  a: VAR C
+  p,x: VAR [C->real]
+  factors(x)(i:C): real = 1-x(i)
+  GraphNeighbors(B,a): finite_set[C] = intersection(B,{i:C|G(a,i)})
+  GraphFeasible(B,p,x): bool = (FORALL(i:C):B(i) IMPLIES 0<=x(i) AND x(i)<1) AND
+    (FORALL(i:C):B(i) IMPLIES p(i)<=x(i)*product(GraphNeighbors(B,i),factors(x)))
+  polyFunction(p)(T): real = polynomial(p,T)
+  Certificate(p,x,S): bool = 0<polynomial(p,S) AND
+    (FORALL(a:C):S(a) IMPLIES factors(x)(a)*polynomial(p,remove(a,S))<=polynomial(p,S))
+  Below(p,x,B,S): bool = FORALL(T:finite_set[C]):subset?(T,B) AND card(T)<card(S) IMPLIES Certificate(p,x,T)
+  feasible_values: LEMMA GraphFeasible(B,p,x) AND B(a) IMPLIES
+    0<=x(a) AND x(a)<1 AND p(a)<=x(a)*product(GraphNeighbors(B,a),factors(x))
+  feasible_factors: LEMMA GraphFeasible(B,p,x) IMPLIES PositiveFactors(factors(x),B) AND
+    UnitFactors(factors(x),B) AND NonnegativeFactors(factors(x),B)
+  graph_neighbors_subset: LEMMA subset?(GraphNeighbors(B,a),B)
+  local_neighbors_subset: LEMMA subset?(S,B) AND S(a) IMPLIES
+    subset?(difference(remove(a,S),remote(S,a)),GraphNeighbors(B,a))
+  set_member_transfer: LEMMA subset?(S,B) AND S(a) IMPLIES B(a)
+  subset_erase_smaller: LEMMA subset?(S,B) AND S(a) AND subset?(T,remove(a,S)) IMPLIES
+    subset?(T,B) AND card(T)<card(S)
+  below_at: LEMMA Below(p,x,B,S) AND subset?(T,B) AND card(T)<card(S) IMPLIES Certificate(p,x,T)
+  certificate_ratio: LEMMA Certificate(p,x,T) AND T(a) IMPLIES
+    factors(x)(a)*polynomial(p,remove(a,T))<=polynomial(p,T)
+  below_positive: LEMMA Below(p,x,B,S) AND subset?(T,B) AND card(T)<card(S) IMPLIES 0<polynomial(p,T)
+  step_sets: LEMMA subset?(S,B) AND S(a) IMPLIES B(a) AND
+    subset?(remove(a,S),B) AND subset?(remote(S,a),B) AND
+    card(remove(a,S))<card(S) AND card(remote(S,a))<card(S) AND
+    subset?(remote(S,a),remove(a,S)) AND
+    subset?(difference(remove(a,S),remote(S,a)),GraphNeighbors(B,a))
+  below_erase_deletion: LEMMA Below(p,x,B,S) AND subset?(S,B) AND S(a) IMPLIES
+    LowerDeletion(remove(a,S),polyFunction(p),factors(x))
+  step_products: LEMMA GraphFeasible(B,p,x) AND Below(p,x,B,S) AND subset?(S,B) AND S(a) IMPLIES
+    product(difference(remove(a,S),remote(S,a)),factors(x))*polynomial(p,remote(S,a))<=polynomial(p,remove(a,S)) AND
+    product(GraphNeighbors(B,a),factors(x))<=product(difference(remove(a,S),remote(S,a)),factors(x))
+  numeric_step: LEMMA GraphFeasible(B,p,x) AND Below(p,x,B,S) AND subset?(S,B) AND S(a) IMPLIES
+    0<polynomial(p,S) AND factors(x)(a)*polynomial(p,remove(a,S))<=polynomial(p,S)
+  certificate_step: LEMMA GraphFeasible(B,p,x) AND Below(p,x,B,S) AND subset?(S,B) IMPLIES Certificate(p,x,S)
+  local_certificate: THEOREM FORALL(S,B:finite_set[C],p,x:[C->real]):
+    GraphFeasible(B,p,x) AND subset?(S,B) IMPLIES Certificate(p,x,S)
+  graphFeasible_strict: THEOREM GraphFeasible(B,p,x) IMPLIES StrictCriterion(p,B)
+  graphFeasible_deletion: THEOREM GraphFeasible(B,p,x) IMPLIES LowerDeletion(B,polyFunction(p),factors(x))
+  polynomial_product_lower: THEOREM GraphFeasible(B,p,x) IMPLIES product(B,factors(x))<=polynomial(p,B)
+END ppg_lll_shearer

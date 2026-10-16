@@ -1,0 +1,142 @@
+(|ppg_lopsided_numerator|
+ (|numeratorRemote_subset| 0
+  (|numeratorRemote_subset-1| NIL 4001095179
+   (""
+    (THEN
+     (GRIND :DEFS ("numeratorRemote" "subset?" "difference" "member") :EXCLUDE
+      ("is_finite")))
+    NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|numeratorRemote| CONST-DECL "finite_set[C]" |ppg_lopsided_numerator| NIL)
+    (|neighbors| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|dependent| CONST-DECL "bool" |ppg_bdd| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_lopsided_numerator| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_lopsided_numerator| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|numeratorRemote_side| 0
+  (|numeratorRemote_side-1| NIL 4001095179
+   (""
+    (THEN (SKOSIMP*) (EXPAND "independent_side") (SKOSIMP*)
+     (EXPAND "numeratorRemote") (EXPAND "difference") (EXPAND "neighbors")
+     (EXPAND "intersection") (EXPAND "member") (EXPAND "independent")
+     (GRIND :DEFS ("subset?" "member") :EXCLUDE ("is_finite")))
+    NIL)
+   ((|difference| CONST-DECL "set" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|independent| CONST-DECL "bool" |ppg_event_dependence| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_lopsided_numerator| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|neighbors| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[T]"
+     |countable_props| |sets_aux|)
+    (|numeratorRemote| CONST-DECL "finite_set[C]" |ppg_lopsided_numerator| NIL)
+    (|independent_side| CONST-DECL "bool" |ppg_event_dependence| NIL))
+   SHOSTAK))
+ (|numerator_drop| 0
+  (|numerator_drop-1| NIL 4001095179
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "numeratorRemote_subset" ("B" "B!1" "T" "T!1" "i" "i!1"))
+     (LEMMA "all_pass_subset"
+      ("A" "A!1" "U" "numeratorRemote(B!1,T!1,i!1)" "T" "T!1"))
+     (ASSERT)
+     (GRIND :DEFS ("subset?" "member" "intersection") :EXCLUDE ("is_finite")))
+    NIL)
+   ((|all_pass_subset| FORMULA-DECL NIL |ppg_event_avoidance| NIL)
+    (|BadEvents| TYPE-EQ-DECL NIL |ppg_event_avoidance| NIL)
+    (|numeratorRemote| CONST-DECL "finite_set[C]" |ppg_lopsided_numerator| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_lopsided_numerator| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_lopsided_numerator| NIL)
+    (|dependent| CONST-DECL "bool" |ppg_bdd| NIL)
+    (|neighbors| CONST-DECL "finite_set[C]" |ppg_bdd| NIL)
+    (|all_pass| CONST-DECL "set[X]" |ppg_event_avoidance| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[T]"
+     |countable_props| |sets_aux|)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[T]"
+     |countable_props| |sets_aux|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|numeratorRemote_subset| FORMULA-DECL NIL |ppg_lopsided_numerator| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_lopsided_numerator| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|lopsided_numerator_bound| 0
+  (|lopsided_numerator_bound-1| NIL 4001095180
+   (""
+    (THEN (SKOSIMP*) (LABEL "LOP" -1)
+     (LEMMA "numeratorRemote_side" ("B" "B!1" "T" "T!1" "i" "i!1"))
+     (LEMMA "numerator_drop" ("A" "A!1" "B" "B!1" "T" "T!1" "i" "i!1"))
+     (ASSERT)
+     (LEMMA "mass_monotone"
+      ("A" "intersection(A!1(i!1),all_pass(A!1,T!1))" "B"
+       "intersection(A!1(i!1),all_pass(A!1,numeratorRemote(B!1,T!1,i!1)))"))
+     (EXPAND "lll_lopsidependence" "LOP") (INST "LOP" "i!1") (ASSERT)
+     (INST "LOP" "numeratorRemote(B!1,T!1,i!1)") (ASSERT))
+    NIL)
+   ((|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_lopsided_numerator| NIL)
+    (|numeratorRemote_side| FORMULA-DECL NIL |ppg_lopsided_numerator| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|lll_lopsidependence| CONST-DECL "bool" |ppg_event_dependence| NIL)
+    (|mu| FORMAL-CONST-DECL "Probability" |ppg_lopsided_numerator| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_lopsided_numerator| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|numeratorRemote| CONST-DECL "finite_set[C]" |ppg_lopsided_numerator| NIL)
+    (|all_pass| CONST-DECL "set[X]" |ppg_event_avoidance| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|mass_monotone| FORMULA-DECL NIL |ppg_probability_outer| NIL)
+    (|BadEvents| TYPE-EQ-DECL NIL |ppg_event_avoidance| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_lopsided_numerator| NIL)
+    (|numerator_drop| FORMULA-DECL NIL |ppg_lopsided_numerator| NIL))
+   SHOSTAK)))
+

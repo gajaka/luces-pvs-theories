@@ -1,0 +1,64 @@
+(|ppg_enn_event_dependence|
+ (|independence_implies_lopsidependence| 0
+  (|independence_implies_lopsidependence-1| NIL 4001094757
+   (""
+    (THEN (SKOSIMP*) (EXPAND "extended_independence")
+     (EXPAND "extended_lopsidependence") (SKOSIMP*) (INST -1 "a!1") (ASSERT)
+     (INST -1 "J!1") (ASSERT)
+     (LEMMA "ele_refl" ("x" "emul(m!1(A!1(a!1)),m!1(all_pass(A!1,J!1)))"))
+     (ASSERT))
+    NIL)
+   ((|extended_lopsidependence| CONST-DECL "bool" |ppg_enn_event_dependence|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_enn_event_dependence| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|ele_refl| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|emul| CONST-DECL "ENN" |ppg_enn_multiply| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_enn_event_dependence| NIL)
+    (|ExtendedRawMass| TYPE-EQ-DECL NIL |ppg_enn_event_dependence| NIL)
+    (|BadEvents| TYPE-EQ-DECL NIL |ppg_event_avoidance| NIL)
+    (|all_pass| CONST-DECL "set[X]" |ppg_event_avoidance| NIL)
+    (|extended_independence| CONST-DECL "bool" |ppg_enn_event_dependence| NIL))
+   SHOSTAK))
+ (|finite_independence_bridge| 0
+  (|finite_independence_bridge-1| NIL 4001094757
+   (""
+    (THEN (AUTO-REWRITE "finite_embedding_eq") (SKOSIMP*)
+     (EXPAND "lll_independence") (EXPAND "extended_independence")
+     (EXPAND "liftFiniteMass") (EXPAND "emul") (EXPAND "passProbability")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|lll_independence| CONST-DECL "bool" |ppg_event_dependence| NIL)
+    (|liftFiniteMass| CONST-DECL "ExtendedRawMass" |ppg_enn_event_dependence|
+     NIL)
+    (|passProbability| CONST-DECL "nnreal" |ppg_event_avoidance| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|finite_embedding_eq| FORMULA-DECL NIL |ppg_enn_multiply| NIL)
+    (|emul| CONST-DECL "ENN" |ppg_enn_multiply| NIL)
+    (|extended_independence| CONST-DECL "bool" |ppg_enn_event_dependence| NIL))
+   SHOSTAK))
+ (|finite_lopsidependence_bridge| 0
+  (|finite_lopsidependence_bridge-1| NIL 4001094757
+   (""
+    (THEN (SKOSIMP*) (EXPAND "lll_lopsidependence")
+     (EXPAND "extended_lopsidependence") (EXPAND "liftFiniteMass")
+     (EXPAND "emul") (EXPAND "ele") (EXPAND "passProbability")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|extended_lopsidependence| CONST-DECL "bool" |ppg_enn_event_dependence|
+     NIL)
+    (|emul| CONST-DECL "ENN" |ppg_enn_multiply| NIL)
+    (|passProbability| CONST-DECL "nnreal" |ppg_event_avoidance| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|liftFiniteMass| CONST-DECL "ExtendedRawMass" |ppg_enn_event_dependence|
+     NIL)
+    (|lll_lopsidependence| CONST-DECL "bool" |ppg_event_dependence| NIL))
+   SHOSTAK)))
+
