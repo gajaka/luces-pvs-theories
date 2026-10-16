@@ -1,0 +1,37 @@
+% Positive-mass accessibility excludes a real harmonic kernel, hence a
+% singular system matrix. Under absorption, this is exactly the condition
+% for an accepted Cramer candidate and successful synthesis.
+% Failure excludes a global witness for the given transition kernel.
+%
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Section 7.1.1 and Exercise 7.25.
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Exercise 10.22.
+ppg_finite_potential_accessible[State: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_real_kernel[State,universe]
+  M: VAR Model
+  W: VAR Witness
+  det_ne_zero_of_accessible: THEOREM Stochastic(M) AND Accessible(M) IMPLIES
+    stateDeterminant(systemMatrix(M))/=0
+  det_ne_zero_iff_accessible: THEOREM Stochastic(M) AND Absorbing(M) IMPLIES
+    (stateDeterminant(systemMatrix(M))/=0 IFF Accessible(M))
+  candidate_checked_iff_accessible: THEOREM Stochastic(M) AND Absorbing(M) IMPLIES
+    (check(M,candidate(M)) IFF Accessible(M))
+  synthesize_complete: THEOREM Stochastic(M) AND Absorbing(M) AND Accessible(M) IMPLIES
+    synthesize(M)=up[Witness](candidate(M))
+  synthesized_accessible: LEMMA synthesize(M)=up[Witness](W) IMPLIES Accessible(M)
+  synthesize_exists_of_accessible: LEMMA Stochastic(M) AND Absorbing(M) AND Accessible(M)
+    IMPLIES EXISTS(W:Witness):synthesize(M)=up[Witness](W)
+  checked_exists_of_accessible: LEMMA Stochastic(M) AND Absorbing(M) AND Accessible(M)
+    IMPLIES EXISTS(W:Witness):check(M,W)
+  synthesize_iff_accessible: THEOREM Stochastic(M) AND Absorbing(M) IMPLIES
+    ((EXISTS(W:Witness):synthesize(M)=up[Witness](W)) IFF Accessible(M))
+  checked_witness_iff_accessible: THEOREM Stochastic(M) AND Absorbing(M) IMPLIES
+    ((EXISTS(W:Witness):check(M,W)) IFF Accessible(M))
+  synthesize_none_iff_not_accessible: THEOREM Stochastic(M) AND Absorbing(M) IMPLIES
+    (synthesize(M)=bottom[Witness] IFF NOT Accessible(M))
+  synthesize_none_no_global_witness: THEOREM Stochastic(M) AND Absorbing(M) AND
+    synthesize(M)=bottom[Witness] IMPLIES NOT (EXISTS(W:Witness):check(M,W))
+END ppg_finite_potential_accessible
