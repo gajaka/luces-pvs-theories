@@ -1,0 +1,45 @@
+% Replacing a row by a linear combination of the original rows multiplies
+% the determinant by the coefficient of that row. The proof adds the rows
+% one at a time: every other coefficient produces two equal rows.
+%
+% Sheldon Axler, Linear Algebra Done Right, fourth edition, Chapter 9.
+% The determinant and row operations below are the NASAlib definitions.
+ppg_native_cramer_rows: THEORY
+BEGIN
+  IMPORTING matrices@matrix_props, structures@more_list_props[real] AS lists
+  F: VAR [nat->real]
+  N,k,i,j: VAR nat
+  A: VAR Square
+  u,v: VAR Vector
+  r: VAR real
+  rowSum(F,N): RECURSIVE real =
+    IF N=0 THEN 0 ELSE rowSum(F,N-1)+F(N-1) ENDIF MEASURE N
+  row_sum_zero: LEMMA rowSum(F,0)=0
+  row_sum_succ: LEMMA rowSum(F,N+1)=rowSum(F,N)+F(N)
+  vector_access_extensional: LEMMA length(u)=length(v) AND
+    (FORALL(j:below(length(u))):access(u)(j)=access(v)(j)) IMPLIES u=v
+  square_dimensions: LEMMA 0<rows(A) AND columns(A)=rows(A)
+  square_row_length: LEMMA i<rows(A) IMPLIES length(row(A)(i))=rows(A)
+  partialRow(A,F,N): VectorN(rows(A)) =
+    array2list[real](rows(A))(LAMBDA(j:nat):rowSum(LAMBDA(k:nat):F(k)*entry(A)(k,j),N))
+  partial_row_length: LEMMA length(partialRow(A,F,N))=rows(A)
+  partial_row_access: LEMMA j<rows(A) IMPLIES
+    access(partialRow(A,F,N))(j)=rowSum(LAMBDA(k:nat):F(k)*entry(A)(k,j),N)
+  partial_row_zero: LEMMA partialRow(A,F,0)=zero(rows(A))
+  partial_row_succ: LEMMA k<rows(A) IMPLIES
+    partialRow(A,F,k+1)=partialRow(A,F,k)+F(k)*row(A)(k)
+  repeated_row_determinant: LEMMA i<rows(A) AND j<rows(A) AND i/=j IMPLIES
+    det(replace_row(i,row(A)(j))(A))=0
+  scaled_zero_vector: LEMMA 0*row(A)(0)=zero(rows(A))
+  zero_row_determinant: LEMMA i<rows(A) IMPLIES
+    det(replace_row(i,zero(rows(A)))(A))=0
+  partialDet(A,F,i,N): real = det(replace_row(i,partialRow(A,F,N))(A))
+  partial_det_zero: LEMMA i<rows(A) IMPLIES partialDet(A,F,i,0)=0
+  partial_det_succ: LEMMA i<rows(A) AND k<rows(A) IMPLIES
+    partialDet(A,F,i,k+1)=partialDet(A,F,i,k)+
+      F(k)*det(replace_row(i,row(A)(k))(A))
+  partial_det_coordinate: LEMMA N<=rows(A) AND i<rows(A) IMPLIES
+    partialDet(A,F,i,N)=IF i<N THEN F(i)*det(A) ELSE 0 ENDIF
+  row_combination_cramer: THEOREM i<rows(A) IMPLIES
+    det(replace_row(i,partialRow(A,F,rows(A)))(A))=F(i)*det(A)
+END ppg_native_cramer_rows
