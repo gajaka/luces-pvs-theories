@@ -1,0 +1,127 @@
+(|ppg_finite_process_values|
+ (|full_contains| 0
+  (|full_contains-1| NIL 4001145846
+   ("" (THEN (TYPEPRED "universe") (GRIND :DEFS NIL)) NIL)
+   ((|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_values| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_values| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|indicator_coefficients| 0
+  (|indicator_coefficients-1| NIL 4001145846
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "stateIndicator")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_values| NIL)
+    (|stateIndicator| CONST-DECL "real" |ppg_finite_process_values| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_values| NIL))
+   SHOSTAK))
+ (|finite_value_expansion| 0
+  (|finite_value_expansion-1| NIL 4001145846
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "full_contains" ("t" "X!1(x!1)"))
+     (LEMMA "indicator_coefficients" ("f" "f!1" "X" "X!1" "omega" "x!1"))
+     (LEMMA "point_sum_value" ("A" "universe" "f" "f!1" "x" "X!1(x!1)"))
+     (EXPAND "stateExpansion") (EXPAND "pointSum") (ASSERT))
+    NIL)
+   ((|full_contains| FORMULA-DECL NIL |ppg_finite_process_values| NIL)
+    (|point_sum_value| FORMULA-DECL NIL |ppg_finite_point_sum| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_values| NIL)
+    (|pointSum| CONST-DECL "real" |ppg_finite_point_sum| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|indicator_coefficients| FORMULA-DECL NIL |ppg_finite_process_values| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_values| NIL)
+    (|stateExpansion| CONST-DECL "[Omega -> real]" |ppg_finite_process_values|
+     NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_finite_process_values| NIL))
+   SHOSTAK))
+ (|rate_TCC1| 0
+  (|rate_TCC1-1| NIL 4001145846 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL (|rate| SUBTYPE "W`delta" "nonneg_real" (28 44 28 51))))
+ (|rate_coe| 0
+  (|rate_coe-1| NIL 4001145846
+   (""
+    (THEN (SKOSIMP*) (LEMMA "delta_positive" ("M" "M!1" "W" "W!1"))
+     (EXPAND "rate") (ASSERT))
+    NIL)
+   ((|rate| CONST-DECL "nonneg_real" |ppg_finite_process_values| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|delta_positive| FORMULA-DECL NIL |ppg_finite_drift| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_values| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_values| NIL))
+   SHOSTAK))
+ (|rate_positive| 0
+  (|rate_positive-1| NIL 4001145846
+   (""
+    (THEN (SKOSIMP*) (LEMMA "rate_coe" ("M" "M!1" "W" "W!1"))
+     (LEMMA "delta_positive" ("M" "M!1" "W" "W!1")) (ASSERT))
+    NIL)
+   ((|delta_positive| FORMULA-DECL NIL |ppg_finite_drift| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|rate_coe| FORMULA-DECL NIL |ppg_finite_process_values| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_process_values| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_process_values| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,12 @@
+% A finite point sum selects the value at the indicated element when
+% that element belongs to the index set, and otherwise returns zero.
+% The values may be negative; no probability law is involved.
+ppg_finite_point_sum[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_sum[T]
+  A: VAR finite_set[T]
+  f: VAR [T->real]
+  x: VAR T
+  pointSum(A,f,x): real = fsum(A,LAMBDA(t:T):IF t=x THEN f(t) ELSE 0 ENDIF)
+  point_sum_value: THEOREM pointSum(A,f,x)=IF A(x) THEN f(x) ELSE 0 ENDIF
+END ppg_finite_point_sum
