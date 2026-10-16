@@ -1,0 +1,33 @@
+% On a finite carrier, a nonnegative function is the finite sum of its
+% singleton indicators, scaled by its values. Linearity of the native
+% integral gives the usual weighted sum against a finite atomic law.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley,
+% 1995. The function supplied to the integral is identified pointwise
+% with the original potential, rather than bounded by a replacement.
+ppg_finite_atomic_integral[T: TYPE,
+  universe:{U:finite_set[T]|FORALL(x:T):U(x)},
+  (IMPORTING ppg_finite_atomic_probability[T,universe]) weights:NormalizedWeights]: THEORY
+BEGIN
+  IMPORTING ppg_probability_integral[T,fullSigma,atomicLaw(weights)]
+  A: VAR finite_set[T]
+  f: VAR [T->nonneg_real]
+  x,t: VAR T
+  pointNative(f,t): NativeFunction = f(t)*indicator(singleton[T](t))
+  finiteNative(A,f): RECURSIVE NativeFunction =
+    IF empty?(A) THEN constant(0)
+    ELSE pointNative(f,choose(A))+finiteNative(rest(A),f) ENDIF
+    MEASURE card(A)
+  point_native_value: LEMMA pointNative(f,t)(x)=IF singleton[T](x)(t) THEN f(t) ELSE 0 ENDIF
+  point_native_mean: LEMMA expectation(pointNative(f,t))=f(t)*weights(t)
+  finite_native_value: LEMMA finiteNative(A,f)(x)=
+    fsum(A,LAMBDA(t:T):IF singleton[T](x)(t) THEN f(t) ELSE 0 ENDIF)
+  finite_native_mean: LEMMA expectation(finiteNative(A,f))=
+    fsum(A,LAMBDA(t:T):f(t)*weights(t))
+  full_native_value: LEMMA finiteNative(universe,f)(x)=f(x)
+  full_native_function: LEMMA finiteNative(universe,f)=(LAMBDA(x:T):f(x))
+  finiteIntegrable(f): NativeFunction = LAMBDA(x:T):f(x)
+  finite_integrable_value: LEMMA finiteIntegrable(f)(x)=f(x)
+  atomic_integral: THEOREM expectation(finiteIntegrable(f))=
+    fsum(universe,LAMBDA(t:T):f(t)*weights(t))
+END ppg_finite_atomic_integral

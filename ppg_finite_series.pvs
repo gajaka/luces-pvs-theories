@@ -1,0 +1,22 @@
+% A finite sum of convergent series converges to the sum of its limits.
+% Finite-set induction reduces the assertion to the zero series and
+% addition of two convergent sequences. No interchange of infinite
+% index sets is needed.
+%
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_finite_series[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_real_sum[T],ppg_probability_series,analysis@convergence_ops
+  A: VAR finite_set[T]
+  F: VAR [T->sequence[real]]
+  f: VAR [T->real]
+  rowSum(A,F): sequence[real] = LAMBDA(n:nat):fsum(A,LAMBDA(t:T):F(t)(n))
+  row_sum_empty: LEMMA rowSum(emptyset[T],F)=(LAMBDA(n:nat):0)
+  row_sum_step: LEMMA NOT empty?(A) IMPLIES
+    rowSum(A,F)=F(choose(A))+rowSum(rest(A),F)
+  series_row_sum_step: LEMMA NOT empty?(A) IMPLIES
+    series(rowSum(A,F))=series(F(choose(A)))+series(rowSum(rest(A),F))
+  finite_series_convergence: THEOREM
+    (FORALL(t:T):A(t) IMPLIES convergence(series(F(t)),f(t))) IMPLIES
+      convergence(series(rowSum(A,F)),fsum(A,f))
+END ppg_finite_series
