@@ -1,0 +1,17 @@
+% The first N events hold simultaneously on their finite intersection.
+% This form keeps N=0 as the whole outcome space.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_event_prefix[Omega: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_space[Omega]
+  E: VAR [nat->set[Omega]]
+  S: VAR MeasurableSpace
+  N: VAR nat
+  omega: VAR Omega
+  prefixEvents(E,N): RECURSIVE set[Omega] = IF N=0 THEN fullset[Omega]
+    ELSE intersection(prefixEvents(E,N-1),E(N-1)) ENDIF MEASURE N
+  prefix_event_membership: LEMMA prefixEvents(E,N)(omega) IFF
+    (FORALL(k:nat):k<N IMPLIES E(k)(omega))
+  prefix_event_measurable: LEMMA (FORALL(n:nat):S(E(n))) IMPLIES S(prefixEvents(E,N))
+END ppg_event_prefix
