@@ -1,0 +1,44 @@
+% Accessibility follows paths whose transition probabilities are strictly
+% positive. A checked drift witness excludes an inaccessible bad region:
+% a minimum potential in that region cannot decrease by a positive amount.
+%
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Section 7.1.1 and Exercise 7.25.
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Exercise 10.22.
+% Lean counterparts: good_reachesGood, reachesGood_of_step and
+% checked_accessible in PPGraphFinitePotential.lean.
+ppg_finite_potential_reach[State: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_potential_order[State,universe],ppg_reach_algebra[State]
+  M: VAR Model
+  W: VAR Witness
+  f: VAR Vector
+  s,t,m: VAR State
+  c: VAR rat
+  positiveStep(M)(s,t:State): bool = 0<M`transition(s,t)
+  ReachesGood(M,s): bool = EXISTS(g:State):M`good(g) AND Reach(positiveStep(M))(s,g)
+  Accessible(M): bool = FORALL(s:State):ReachesGood(M,s)
+  good_reachesGood: THEOREM M`good(s) IMPLIES ReachesGood(M,s)
+  reachesGood_of_step: THEOREM 0<M`transition(s,t) AND ReachesGood(M,t) IMPLIES
+    ReachesGood(M,s)
+  inaccessibleStates(M): finite_set[State] = intersection(universe,{s:State|NOT ReachesGood(M,s)})
+  inaccessible_state: LEMMA inaccessibleStates(M)(s) IFF NOT ReachesGood(M,s)
+  inaccessible_minimum: LEMMA inaccessibleStates(M)(s) IMPLIES
+    EXISTS(m:State):inaccessibleStates(M)(m) AND
+      FORALL(t:State):inaccessibleStates(M)(t) IMPLIES W`potential(m)<=W`potential(t)
+  checked_stochastic: LEMMA check(M,W) IMPLIES Stochastic(M)
+  inaccessible_positive_step: LEMMA inaccessibleStates(M)(s) AND 0<M`transition(s,t)
+    IMPLIES inaccessibleStates(M)(t)
+  inaccessible_minimum_product: LEMMA check(M,W) AND inaccessibleStates(M)(m) AND
+    (FORALL(t:State):inaccessibleStates(M)(t) IMPLIES W`potential(m)<=W`potential(t)) IMPLIES
+    M`transition(m,t)*W`potential(m)<=M`transition(m,t)*W`potential(t)
+  weighted_row_lower_bound: LEMMA Stochastic(M) AND
+    (FORALL(t:State):M`transition(s,t)*c<=M`transition(s,t)*f(t)) IMPLIES
+    c<=successorValue(M,f,s)
+  inaccessible_minimum_average: LEMMA check(M,W) AND inaccessibleStates(M)(m) AND
+    (FORALL(t:State):inaccessibleStates(M)(t) IMPLIES W`potential(m)<=W`potential(t)) IMPLIES
+    W`potential(m)<=localExpectation(M,W,m)
+  checked_accessible: THEOREM check(M,W) IMPLIES Accessible(M)
+END ppg_finite_potential_reach

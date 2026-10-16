@@ -1,0 +1,307 @@
+(|ppg_finite_potential_order|
+ (|Stochastic_TCC1| 0
+  (|Stochastic_TCC1-1| NIL 4001158819 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|rat_plus_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL))
+   NIL
+   (|Stochastic| SUBTYPE "LAMBDA (a, b: rat): a + b"
+    "{op: [rat, rat -> rat] | booleans.AND(operator_defs[rat].identity?(ppg_finite_potential_order.op)(0), booleans.AND(operator_defs[rat].associative?(ppg_finite_potential_order.op), operator_defs[rat].commutative?(ppg_finite_potential_order.op)))}"
+    (23 21 23 33))))
+ (|nonnegative_scale_monotone| 0
+  (|nonnegative_scale_monotone-1| NIL 4001158819
+   ("" (SKOSIMP*)
+    (("" (CASE "w!1=0")
+      (("1" (ASSERT) NIL NIL)
+       ("2" (LEMMA "both_sides_times_pos_le2" ("pz" "w!1" "x" "a!1" "y" "b!1"))
+        (("1" (ASSERT) NIL NIL) ("2" (ASSERT) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   ((|both_sides_times_pos_le2| FORMULA-DECL NIL |real_props| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|posreal| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   SHOSTAK))
+ (|full_minimum_exists| 0
+  (|full_minimum_exists-1| NIL 4001158819
+   ("" (SKOSIMP*)
+    (("" (LEMMA "minimum_exists" ("S" "universe" "f" "LAMBDA(t:State):f!1(t)"))
+      (("" (CASE "NOT empty?(universe)")
+        (("1" (ASSERT)
+          (("1" (SKOSIMP*)
+            (("1" (INST + "m!1")
+              (("1" (SKOSIMP*)
+                (("1" (LEMMA "universe_member" ("s" "t!1"))
+                  (("1"
+                    (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+                     ("minimum" "argmin" "is_finite"))
+                    NIL NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL)
+         ("2"
+          (GRIND :DEFS ("empty?") :IF-MATCH ALL :EXCLUDE
+           ("minimum" "argmin" "is_finite"))
+          NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|empty?| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|universe_member| FORMULA-DECL NIL |ppg_finite_drift| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|minimum_exists| FORMULA-DECL NIL |ppg_real_minimum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_order| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_order| NIL))
+   SHOSTAK))
+ (|row_lower_bound| 0
+  (|row_lower_bound-1| NIL 4001158819
+   (""
+    (THEN (SKOSIMP*) (EXPAND "Stochastic")
+     (LEMMA "real_sum_eq"
+      ("A" "universe" "f" "LAMBDA(t:State):M!1`transition(s!1,t)"))
+     (LEMMA "real_sum_eq"
+      ("A" "universe" "f" "LAMBDA(t:State):M!1`transition(s!1,t)*f!1(t)"))
+     (LEMMA "fsum_scale_right"
+      ("S" "universe" "f" "LAMBDA(t:State):M!1`transition(s!1,t)" "r" "c!1"))
+     (LEMMA "fsum_mono"
+      ("S" "universe" "f" "LAMBDA(t:State):M!1`transition(s!1,t)*c!1" "g"
+       "LAMBDA(t:State):M!1`transition(s!1,t)*f!1(t)"))
+     (LEMMA "nonnegative_scale_monotone") (EXPAND "successorValue")
+     (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+      ("fsum" "sum" "is_finite" "Stochastic")))
+    NIL)
+   ((|real_sum_eq| FORMULA-DECL NIL |ppg_rational_sum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_order| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_order| NIL)
+    (|fsum_scale_right| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|nonnegative_scale_monotone| FORMULA-DECL NIL |ppg_finite_potential_order|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|successorValue| CONST-DECL "rat" |ppg_finite_potential_system| NIL)
+    (|fsum_mono| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|rat_times_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL))
+   SHOSTAK))
+ (|solution_nonnegative| 0
+  (|solution_nonnegative-1| NIL 4001158819
+   (""
+    (THEN (SKOSIMP*) (LABEL "EQNS" -2)
+     (LEMMA "full_minimum_exists" ("f" "f!1" "s" "s!1"))
+     (LEMMA "universe_member" ("s" "s!1")) (ASSERT) (SKOSIMP*)
+     (LEMMA "row_lower_bound" ("M" "M!1" "f" "f!1" "c" "f!1(m!1)" "s" "m!1"))
+     (EXPAND "Equations" "EQNS")
+     (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+      ("fsum" "sum" "is_finite" "Stochastic" "successorValue")))
+    NIL)
+   ((|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_order| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_order| NIL)
+    (|full_minimum_exists| FORMULA-DECL NIL |ppg_finite_potential_order| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|row_lower_bound| FORMULA-DECL NIL |ppg_finite_potential_order| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|odd_minus_odd_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|even_minus_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|minus_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_u8_u8| APPLICATION-JUDGEMENT "int16" |integertypes| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|rat_minus_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|rat_plus_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|Equations| CONST-DECL "bool" |ppg_finite_potential_system| NIL)
+    (|universe_member| FORMULA-DECL NIL |ppg_finite_drift| NIL))
+   SHOSTAK))
+ (|absorbing_good_product| 0
+  (|absorbing_good_product-1| NIL 4001158819
+   (""
+    (THEN (SKOSIMP*)
+     (GRIND :DEFS ("Absorbing" "Equations") :IF-MATCH ALL :EXCLUDE
+      ("sum" "successorValue" "is_finite")))
+    NIL)
+   ((|rat_times_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|Absorbing| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_order| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_order| NIL)
+    (|Equations| CONST-DECL "bool" |ppg_finite_potential_system| NIL))
+   SHOSTAK))
+ (|absorbing_good_expectation| 0
+  (|absorbing_good_expectation-1| NIL 4001158819
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "absorbing_good_product" ("M" "M!1" "f" "f!1" "s" "s!1"))
+     (LEMMA "real_sum_eq"
+      ("A" "universe" "f" "LAMBDA(t:State):M!1`transition(s!1,t)*f!1(t)"))
+     (LEMMA "fsum_congr"
+      ("S" "universe" "f" "LAMBDA(t:State):M!1`transition(s!1,t)*f!1(t)" "g"
+       "LAMBDA(t:State):0"))
+     (LEMMA "fsum_zero" ("S" "universe")) (EXPAND "successorValue")
+     (GRIND :DEFS ("Absorbing" "Equations") :IF-MATCH ALL :EXCLUDE
+      ("sum" "fsum" "is_finite")))
+    NIL)
+   ((|rat_times_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|real_sum_eq| FORMULA-DECL NIL |ppg_rational_sum| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|fsum_zero| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|Equations| CONST-DECL "bool" |ppg_finite_potential_system| NIL)
+    (|Absorbing| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|successorValue| CONST-DECL "rat" |ppg_finite_potential_system| NIL)
+    (|fsum_congr| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|absorbing_good_product| FORMULA-DECL NIL |ppg_finite_potential_order|
+     NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_order| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_order| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL))
+   SHOSTAK))
+ (|solution_checked| 0
+  (|solution_checked-1| NIL 4001158819
+   (""
+    (THEN (SKOSIMP*) (LEMMA "solution_nonnegative" ("M" "M!1" "f" "f!1"))
+     (LEMMA "absorbing_good_expectation" ("M" "M!1" "f" "f!1"))
+     (LEMMA "check_complete" ("M" "M!1" "W" "(# potential:=f!1,delta:=1 #)"))
+     (EXPAND "Conditions") (EXPAND "Stochastic") (EXPAND "Equations")
+     (EXPAND "localExpectation") (EXPAND "successorValue")
+     (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+      ("sum" "fsum" "is_finite" "Absorbing")))
+    NIL)
+   ((|absorbing_good_expectation| FORMULA-DECL NIL |ppg_finite_potential_order|
+     NIL)
+    (|Conditions| CONST-DECL "bool" |ppg_finite_drift| NIL)
+    (|Equations| CONST-DECL "bool" |ppg_finite_potential_system| NIL)
+    (|rat_times_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|successorValue| CONST-DECL "rat" |ppg_finite_potential_system| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|rat_plus_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|odd_minus_odd_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|even_minus_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|minus_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_u8_u8| APPLICATION-JUDGEMENT "int16" |integertypes| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|rat_minus_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|localExpectation| CONST-DECL "rat" |ppg_finite_drift| NIL)
+    (|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|check_complete| FORMULA-DECL NIL |ppg_finite_drift| NIL)
+    (|solution_nonnegative| FORMULA-DECL NIL |ppg_finite_potential_order| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_potential_order| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_potential_order| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL))
+   SHOSTAK)))
+
