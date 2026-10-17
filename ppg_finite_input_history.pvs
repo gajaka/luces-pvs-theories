@@ -1,0 +1,50 @@
+% Before time n the input history contains exactly the coordinate
+% events at indices smaller than n. The ambient sigma-algebra contains
+% all coordinate events. Neither definition depends on a probability law.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_input_history[Input: TYPE]: THEORY
+BEGIN
+  Sample: TYPE = [nat->Input]
+
+  IMPORTING ppg_measurable_space[Sample] AS historySpace,
+    ppg_measurable_map[Sample,Input] AS historyInputMap
+
+  k,n,i,j: VAR nat
+  B: VAR set[Input]
+  E: VAR set[Sample]
+  G,J: VAR set[set[Sample]]
+
+  coordinateEvent(k,B): set[Sample] = {omega:Sample|B(omega(k))}
+
+  allGenerators: set[set[Sample]] = {E:set[Sample]|
+    EXISTS(k:nat,B:set[Input]):E=coordinateEvent(k,B)}
+
+  prefixGenerators(n): set[set[Sample]] = {E:set[Sample]|
+    EXISTS(k:nat,B:set[Input]):k<n AND E=coordinateEvent(k,B)}
+
+  ambientSigma: historySpace.MeasurableSpace = historySpace.generated(allGenerators)
+
+  inputHistory(n): historySpace.MeasurableSpace = historySpace.generated(prefixGenerators(n))
+
+  generated_mono: LEMMA subset?(G,J) IMPLIES
+    subset?(historySpace.generated(G),historySpace.generated(J))
+
+  prefix_generators_ambient: LEMMA subset?(prefixGenerators(n),allGenerators)
+
+  prefix_generators_mono: LEMMA i<=j IMPLIES subset?(prefixGenerators(i),prefixGenerators(j))
+
+  history_ambient: LEMMA subset?(inputHistory(n),ambientSigma)
+
+  history_increasing: LEMMA i<=j IMPLIES subset?(inputHistory(i),inputHistory(j))
+
+  coordinate_preimage: LEMMA historyInputMap.inverseImage(LAMBDA(omega:Sample):omega(k),B)=
+    coordinateEvent(k,B)
+
+  input_measurable_history: THEOREM k<n IMPLIES
+    historyInputMap.measurable(inputHistory(n),fullset[set[Input]],LAMBDA(omega:Sample):omega(k))
+
+  input_measurable_ambient: LEMMA
+    historyInputMap.measurable(ambientSigma,fullset[set[Input]],LAMBDA(omega:Sample):omega(k))
+
+END ppg_finite_input_history

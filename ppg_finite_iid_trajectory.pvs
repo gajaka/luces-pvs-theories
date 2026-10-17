@@ -1,0 +1,56 @@
+% The state at time n is obtained by applying the update to the first
+% n inputs. Induction shows that this map is measurable for the input
+% history at time n. No input distribution is needed for this result.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_iid_trajectory[State,Input: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_input_history[Input] AS iidHistory,
+    ppg_finite_update[State,Input,universe,inputs],
+    ppg_finite_update_measurable[State,Input,iidHistory.Sample,universe,inputs] AS trajUpdate,
+    ppg_filtration[iidHistory.Sample,State,iidHistory.ambientSigma] AS trajFiltration,
+    ppg_measurable_map[iidHistory.Sample,State] AS trajectoryStateMap,
+    ppg_measurable_map[iidHistory.Sample,Input] AS trajectoryInputMap
+
+  R: VAR Rule
+  s0: VAR State
+  omega: VAR iidHistory.Sample
+  n: VAR nat
+  K,L: VAR ppg_measurable_space[iidHistory.Sample].MeasurableSpace
+  f: VAR [iidHistory.Sample->State]
+
+  input_filtration_law: LEMMA trajFiltration.HistoryLaw(iidHistory.inputHistory)
+
+  inputFiltration: trajFiltration.Filtration = iidHistory.inputHistory
+
+  iidTrajectory(R,s0,n): RECURSIVE [iidHistory.Sample->State] =
+    IF n=0 THEN LAMBDA(omega:iidHistory.Sample):s0
+    ELSE LAMBDA(omega:iidHistory.Sample):
+      R`update(iidTrajectory(R,s0,n-1)(omega),omega(n-1)) ENDIF
+    MEASURE n
+
+  trajectory_zero_function: LEMMA iidTrajectory(R,s0,0)=
+    (LAMBDA(omega:iidHistory.Sample):s0)
+
+  trajectory_step_function: LEMMA iidTrajectory(R,s0,n+1)=
+    (LAMBDA(omega:iidHistory.Sample):R`update(iidTrajectory(R,s0,n)(omega),omega(n)))
+
+  iidTrajectory_zero: THEOREM iidTrajectory(R,s0,0)(omega)=s0
+
+  iidTrajectory_step: THEOREM iidTrajectory(R,s0,n+1)(omega)=
+    R`update(iidTrajectory(R,s0,n)(omega),omega(n))
+
+  measurable_source_mono: LEMMA subset?(K,L) AND
+    trajectoryStateMap.measurable(K,trajUpdate.selectionStateSigma,f) IMPLIES
+    trajectoryStateMap.measurable(L,trajUpdate.selectionStateSigma,f)
+
+  input_measurable_next: LEMMA trajectoryInputMap.measurable(
+    iidHistory.inputHistory(n+1),trajUpdate.selectionInputSigma,
+    LAMBDA(omega:iidHistory.Sample):omega(n))
+
+  iidTrajectory_adapted: THEOREM trajectoryStateMap.measurable(
+    iidHistory.inputHistory(n),trajUpdate.selectionStateSigma,iidTrajectory(R,s0,n))
+
+END ppg_finite_iid_trajectory

@@ -1,0 +1,394 @@
+(|ppg_finite_update_measurable|
+ (|selectionStateSigma_TCC1| 0
+  (|selectionStateSigma_TCC1-1| NIL 4001232281
+   ("" (THEN (GRIND :IF-MATCH NIL :DEFS ("sigma?" "fullset"))) NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set"
+     |ppg_finite_update_measurable| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL))
+   NIL
+   (|selectionStateSigma| SUBTYPE "fullset[set[State]]"
+    "MeasurableSpace[State]" (14 69 14 88))))
+ (|selectionInputSigma_TCC1| 0
+  (|selectionInputSigma_TCC1-1| NIL 4001232281
+   ("" (THEN (GRIND :IF-MATCH NIL :DEFS ("sigma?" "fullset"))) NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set"
+     |ppg_finite_update_measurable| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL))
+   NIL
+   (|selectionInputSigma| SUBTYPE "fullset[set[Input]]"
+    "MeasurableSpace[Input]" (16 69 16 88))))
+ (|selectUpdate_TCC1| 0
+  (|selectUpdate_TCC1-1| NIL 4001231677 ("" (THEN (SUBTYPE-TCC)) NIL)
+   ((|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|selectUpdate| SUBTYPE "A"
+    "(sets[ppg_finite_update_measurable.Input].nonempty?)" (32 51 32 52))))
+ (|selectUpdate_TCC2| 0
+  (|selectUpdate_TCC2-1| NIL 4001231677
+   (""
+    (THEN (SKOSIMP*) (LEMMA "card_rest[Input]" ("S" "A!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE ("card" "is_finite")))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_finite_update_measurable| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_finite_update_measurable| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|card_rest| FORMULA-DECL NIL |finite_sets| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL))
+   NIL
+   (|selectUpdate| TERMINATION "selectUpdate(rest[Input](A), R, X, D)"
+    #A((3) BASE-CHAR . "NIL") (33 8 33 35))))
+ (|select_empty| 0
+  (|select_empty-1| NIL 4001231677
+   (""
+    (THEN (SKOSIMP*) (EXPAND "selectUpdate" 1 1)
+     (GRIND :IF-MATCH NIL :EXCLUDE ("selectUpdate")))
+    NIL)
+   ((|emptyset| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_finite_update_measurable| NIL)
+    (|selectUpdate| DEF-DECL "[Sample -> State]" |ppg_finite_update_measurable|
+     NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set"
+     |ppg_finite_update_measurable| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL))
+   SHOSTAK))
+ (|select_step_TCC1| 0
+  (|select_step_TCC1-1| NIL 4001231677 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|select_step| SUBTYPE "A"
+    "(sets[ppg_finite_update_measurable.Input].nonempty?)" (39 49 39 50))))
+ (|select_step| 0
+  (|select_step-1| NIL 4001231677
+   ("" (THEN (SKOSIMP*) (EXPAND "selectUpdate" 2 1) (ASSERT)) NIL)
+   ((|finite_rest| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_finite_update_measurable| NIL)
+    (|selectUpdate| DEF-DECL "[Sample -> State]" |ppg_finite_update_measurable|
+     NIL))
+   SHOSTAK))
+ (|selected_map_measurable| 0
+  (|selected_map_measurable-1| NIL 4001231677
+   (""
+    (THEN (SKOSIMP*) (LABEL "SOURCE" -1)
+     (EXPAND "selectionStateMap.measurable" "SOURCE")
+     (EXPAND "selectionStateMap.measurable" 1) (SKOSIMP*)
+     (INST "SOURCE" "{s:State|A!1(R!1`update(s,a!1))}") (EXPAND "selectedMap")
+     (EXPAND "selectionStateMap.inverseImage") (EXPAND "selectionStateSigma")
+     (GRIND :IF-MATCH NIL :DEFS ("inverseImage" "fullset") :EXCLUDE
+      ("selectUpdate" "measurable" "generated" "prefixGenerators"
+       "allGenerators" "coordinateEvent" "fsum" "card" "is_finite" "model"
+       "kernel")))
+    NIL)
+   ((|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|selectedMap| CONST-DECL "[Sample -> State]"
+     |ppg_finite_update_measurable| NIL)
+    (|selectionStateSigma| CONST-DECL
+     "ppg_measurable_space[State].MeasurableSpace"
+     |ppg_finite_update_measurable| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_finite_update_measurable| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_update_measurable| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL))
+   SHOSTAK))
+ (|input_event_measurable| 0
+  (|input_event_measurable-1| NIL 4001231677
+   (""
+    (THEN (SKOSIMP*) (EXPAND "selectionInputMap.measurable" -1)
+     (INST -1 "singleton[Input](a!1)") (EXPAND "inputEvent")
+     (EXPAND "selectionInputMap.inverseImage") (EXPAND "selectionInputSigma")
+     (GRIND :IF-MATCH NIL :DEFS ("inverseImage" "singleton" "fullset") :EXCLUDE
+      ("selectUpdate" "measurable" "generated" "prefixGenerators"
+       "allGenerators" "coordinateEvent" "fsum" "card" "is_finite" "model"
+       "kernel")))
+    NIL)
+   ((|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[Input]" |ppg_finite_update_measurable| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|selectionInputSigma| CONST-DECL
+     "ppg_measurable_space[Input].MeasurableSpace"
+     |ppg_finite_update_measurable| NIL)
+    (|inputEvent| CONST-DECL "set[Sample]" |ppg_finite_update_measurable| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL))
+   SHOSTAK))
+ (|selection_value| 0
+  (|selection_value-1| NIL 4001231677
+   (""
+    (INDUCT "A" :NAME "ppg_finite_induction[Input].finite_set_induction_rest")
+    (("1"
+      (GRIND :IF-MATCH NIL :DEFS ("emptyset") :EXCLUDE
+       ("selectUpdate" "measurable" "generated" "prefixGenerators"
+        "allGenerators" "coordinateEvent" "fsum" "card" "is_finite" "model"
+        "kernel"))
+      NIL NIL)
+     ("2" (SKOSIMP*)
+      (("2" (INST -1 "D!1" "R!1" "X!1" "omega!1")
+        (("2" (REWRITE "select_step" 1)
+          (("2" (EXPAND "selectionStateMap.branch")
+            (("2"
+              (GRIND :IF-MATCH NIL :DEFS
+               ("branch" "inputEvent" "selectedMap" "rest" "remove") :EXCLUDE
+               ("selectUpdate" "measurable" "generated" "prefixGenerators"
+                "allGenerators" "coordinateEvent" "fsum" "card" "is_finite"
+                "model" "kernel"))
+              NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Sample| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_update_measurable| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_finite_update_measurable| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|selectUpdate| DEF-DECL "[Sample -> State]" |ppg_finite_update_measurable|
+     NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|finite_set_induction_rest| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|branch| CONST-DECL "Y" |ppg_measurable_map| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|inputEvent| CONST-DECL "set[Sample]" |ppg_finite_update_measurable| NIL)
+    (|selectedMap| CONST-DECL "[Sample -> State]"
+     |ppg_finite_update_measurable| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_finite_update_measurable| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|select_step| FORMULA-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_finite_update_measurable| NIL))
+   SHOSTAK))
+ (|selection_measurable| 0
+  (|selection_measurable-1| NIL 4001231677
+   ("" (SKOSIMP*)
+    (("" (GENERALIZE "A!1" "B")
+      ((""
+        (INDUCT "B" :NAME
+         "ppg_finite_induction[Input].finite_set_induction_rest")
+        (("1" (REWRITE "select_empty") (("1" (PROP) NIL NIL)) NIL)
+         ("2" (SKOSIMP*)
+          (("2" (PROP)
+            (("2" (REWRITE "select_step" 1)
+              (("2"
+                (LEMMA "selected_map_measurable"
+                 ("R" "R!1" "X" "X!1" "a" "choose(SS!1)" "K" "K!1"))
+                (("2"
+                  (LEMMA "input_event_measurable"
+                   ("D" "D!1" "a" "choose(SS!1)" "K" "K!1"))
+                  (("2"
+                    (LEMMA "selectionStateMap.measurable_branch"
+                     ("SX" "K!1" "SY" "selectionStateSigma" "E"
+                      "inputEvent(D!1,choose(SS!1))" "f"
+                      "selectedMap(R!1,X!1,choose(SS!1))" "g"
+                      "selectUpdate(rest(SS!1),R!1,X!1,D!1)"))
+                    (("2"
+                      (GRIND :IF-MATCH NIL :EXCLUDE
+                       ("selectUpdate" "measurable" "generated"
+                        "prefixGenerators" "allGenerators" "coordinateEvent"
+                        "fsum" "card" "is_finite" "model" "kernel"))
+                      NIL NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|finite_set_induction_rest| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (|select_empty| FORMULA-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|choose| CONST-DECL "(p)" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|selected_map_measurable| FORMULA-DECL NIL |ppg_finite_update_measurable|
+     NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|selectedMap| CONST-DECL "[Sample -> State]"
+     |ppg_finite_update_measurable| NIL)
+    (|inputEvent| CONST-DECL "set[Sample]" |ppg_finite_update_measurable| NIL)
+    (|measurable_branch| FORMULA-DECL NIL |ppg_measurable_map| NIL)
+    (|input_event_measurable| FORMULA-DECL NIL |ppg_finite_update_measurable|
+     NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_finite_update_measurable| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|select_step| FORMULA-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|Sample| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|selectionStateSigma| CONST-DECL
+     "ppg_measurable_space[State].MeasurableSpace"
+     |ppg_finite_update_measurable| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|selectionInputSigma| CONST-DECL
+     "ppg_measurable_space[Input].MeasurableSpace"
+     |ppg_finite_update_measurable| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_update_measurable| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_finite_update_measurable| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|selectUpdate| DEF-DECL "[Sample -> State]" |ppg_finite_update_measurable|
+     NIL))
+   SHOSTAK))
+ (|full_selection| 0
+  (|full_selection-1| NIL 4001231677
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "selection_value"
+      ("A" "inputs" "R" "R!1" "X" "X!1" "D" "D!1" "omega" "x!1"))
+     (TYPEPRED "inputs")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("selectUpdate" "measurable" "generated" "prefixGenerators"
+       "allGenerators" "coordinateEvent" "fsum" "card" "is_finite" "model"
+       "kernel")))
+    NIL)
+   ((|selection_value| FORMULA-DECL NIL |ppg_finite_update_measurable| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_update_measurable| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_finite_update_measurable| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|selectUpdate| DEF-DECL "[Sample -> State]" |ppg_finite_update_measurable|
+     NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|Sample| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL))
+   SHOSTAK))
+ (|update_measurable| 0
+  (|update_measurable-1| NIL 4001231677
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "selection_measurable"
+      ("A" "inputs" "R" "R!1" "X" "X!1" "D" "D!1" "K" "K!1"))
+     (LEMMA "full_selection" ("R" "R!1" "X" "X!1" "D" "D!1")) (REPLACE -1)
+     (ASSERT))
+    NIL)
+   ((|full_selection| FORMULA-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|selection_measurable| FORMULA-DECL NIL |ppg_finite_update_measurable|
+     NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_finite_update_measurable| NIL)
+    (|Sample| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_update_measurable| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_update_measurable| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL))
+   SHOSTAK)))
+
