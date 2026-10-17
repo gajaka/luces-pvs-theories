@@ -1,0 +1,75 @@
+% The present input and all earlier inputs belong to disjoint coordinate
+% blocks. The native product law makes the sigma-algebras of these
+% blocks independent. Pullback through the sequence-space isomorphism
+% gives independence from every event in the generated prefix history.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_iid_prefix_independence[State,Input: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)},
+  (IMPORTING ppg_finite_update[State,Input,universe,inputs])
+  R:{R:Rule|Valid(R)},n:nat]: THEORY
+BEGIN
+  IMPORTING ppg_finite_iid_law[State,Input,universe,inputs,R] AS iidPrefixLaw,
+    ppg_finite_input_history[Input] AS iidPrefixHistory
+
+  pastIndices: set[nat] = {k:nat|k<n}
+
+  presentIndices: set[nat] = singleton[nat](n)
+
+  IMPORTING ppg_probability_arbitrary_blocks[nat,Input,iidPrefixLaw.iidDomain,
+      presentIndices,pastIndices,iidPrefixLaw.iidSpaces,iidPrefixLaw.iidCoins] AS iidPrefixBlocks,
+    ppg_measurable_supported[nat,Input,iidPrefixLaw.iidDomain,pastIndices,
+      iidPrefixLaw.iidSpaces] AS iidPrefixPast,
+    ppg_measurable_supported[nat,Input,iidPrefixLaw.iidDomain,presentIndices,
+      iidPrefixLaw.iidSpaces] AS iidPrefixPresent,
+    ppg_measurable_cylinder[nat,Input,iidPrefixLaw.iidDomain,
+      iidPrefixLaw.iidSpaces] AS iidPrefixCylinders,
+    ppg_measurable_map[iidPrefixLaw.NativeTable,iidPrefixHistory.Sample] AS iidPrefixForgetMap,
+    ppg_probability_infinite_product[nat,Input,iidPrefixLaw.iidDomain,iidPrefixLaw.iidSpaces,
+      iidPrefixLaw.iidCoins] AS iidPrefixNativeProduct,
+    ppg_probability_independence[iidPrefixLaw.NativeTable,
+      iidPrefixCylinders.tableSigma] AS iidPrefixProbability
+
+  pastInformation: ppg_measurable_space[iidPrefixLaw.NativeTable].MeasurableSpace =
+    iidPrefixBlocks.GInformation
+
+  presentInformation: ppg_measurable_space[iidPrefixLaw.NativeTable].MeasurableSpace =
+    iidPrefixBlocks.FInformation
+
+  E: VAR set[iidPrefixHistory.Sample]
+  A: VAR (iidPrefixHistory.inputHistory(n))
+  B: VAR set[Input]
+
+  disjoint_indices: LEMMA disjoint?(presentIndices,pastIndices)
+
+  prefix_generator_preimage: LEMMA iidPrefixHistory.prefixGenerators(n)(E) IMPLIES
+    pastInformation(iidPrefixForgetMap.inverseImage(iidPrefixLaw.forget,E))
+
+  history_forget_measurable: LEMMA iidPrefixForgetMap.measurable(
+    pastInformation,iidPrefixHistory.inputHistory(n),iidPrefixLaw.forget)
+
+  prefixEvent(A): (iidPrefixHistory.ambientSigma) = A
+
+  presentEvent(B): (iidPrefixHistory.ambientSigma) = iidPrefixLaw.sequenceCoordinate(n,B)
+
+  jointEvent(A,B): (iidPrefixHistory.ambientSigma) = intersection(presentEvent(B),prefixEvent(A))
+
+  nativePreimage(E:(iidPrefixHistory.ambientSigma)): (iidPrefixCylinders.tableSigma) =
+    iidPrefixForgetMap.inverseImage(iidPrefixLaw.forget,E)
+
+  present_preimage: LEMMA presentInformation(nativePreimage(presentEvent(B)))
+
+  past_preimage: LEMMA pastInformation(nativePreimage(prefixEvent(A)))
+
+  joint_preimage: LEMMA nativePreimage(jointEvent(A,B))=
+    intersection(nativePreimage(presentEvent(B)),nativePreimage(prefixEvent(A)))
+
+  measure_preimage: LEMMA FORALL(E:(iidPrefixHistory.ambientSigma)):
+    iidPrefixLaw.iidProbability(E)=iidPrefixNativeProduct.infiniteLaw(nativePreimage(E))
+
+  iid_input_independent_history: THEOREM
+    iidPrefixLaw.iidProbability(jointEvent(A,B))=
+      iidPrefixLaw.iidProbability(presentEvent(B))*iidPrefixLaw.iidProbability(prefixEvent(A))
+
+END ppg_finite_iid_prefix_independence

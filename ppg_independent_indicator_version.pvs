@@ -1,0 +1,59 @@
+% Independence from every history event makes an event indicator's
+% conditional version constant. The constant is its probability mass.
+% The integral identity proves existence before a canonical conditional
+% expectation is used.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_independent_indicator_version[Omega: TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_probability_measure[Omega,S]) probabilityLaw:Probability,
+  H:{K:MeasurableSpace|subset?(K,S)}]: THEORY
+BEGIN
+  IMPORTING ppg_probability_finite_view[Omega,S] AS indepFiniteView,
+    ppg_finite_law_view[Omega,S] AS indepLawTypes
+
+  measureLaw: indepLawTypes.FiniteLaw = indepFiniteView.nativeLaw(probabilityLaw)
+
+  IMPORTING ppg_conditional_indicator[Omega,S,measureLaw,H] AS indepHistoryIndicator,
+    ppg_conditional_versions[Omega,S,measureLaw,H] AS indepVersions,
+    ppg_conditional_unique[Omega,S,measureLaw,H] AS indepChoice,
+    ppg_finite_restricted_integral[Omega,S,measureLaw] AS indepRestrictions,
+    ppg_finite_measure_integral[Omega,S,measureLaw] AS indepFunctions,
+    measure_integration@integral[Omega,asNasa(S),measureLaw] AS indepNativeIntegral,
+    measure_integration@measure_props[Omega,asNasa(S),measureLaw] AS indepNativeMass
+
+  A: VAR (H)
+  B,E: VAR (S)
+  c: VAR real
+  omega: VAR Omega
+
+  intersectionEvent(A,E): (S) = intersection(indepVersions.historyEvent(A),E)
+
+  independentEvent(E): bool = FORALL(A:(H)):
+    probabilityLaw(intersectionEvent(A,E))=probabilityLaw(indepVersions.historyEvent(A))*probabilityLaw(E)
+
+  historyConstant(c): indepVersions.HistoryFunction = indepVersions.historyScale(
+    c,indepHistoryIndicator.historyIndicator(fullset[Omega]))
+
+  native_probability_value: LEMMA indepNativeMass.mu(E)=probabilityLaw(E)
+
+  restricted_indicator: LEMMA indepRestrictions.restricted(B,indepFunctions.indicator(E))=
+    indepFunctions.indicator(intersection(B,E))
+
+  restricted_indicator_integral: LEMMA
+    indepRestrictions.setIntegral(B,indepFunctions.indicator(E))=probabilityLaw(intersection(B,E))
+
+  history_constant_native: LEMMA historyConstant(c)=indepFunctions.constant(c)
+
+  independent_indicator_version: THEOREM independentEvent(E) IMPLIES
+    indepVersions.conditionalVersion(indepFunctions.indicator(E),historyConstant(probabilityLaw(E)))
+
+  IndependentEvent: TYPE = {E:(S)|independentEvent(E)}
+
+  admissibleIndicator(E:IndependentEvent): indepChoice.AdmissibleFunction =
+    indepFunctions.indicator(E)
+
+  canonical_independent_indicator: THEOREM FORALL(E:IndependentEvent):
+    ae_eq?(indepChoice.conditionalExpectation(admissibleIndicator(E)),historyConstant(probabilityLaw(E)))
+
+END ppg_independent_indicator_version
