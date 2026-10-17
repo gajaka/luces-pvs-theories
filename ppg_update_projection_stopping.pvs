@@ -1,0 +1,36 @@
+% Commutation preserves the good test at every time of the common
+% input sequence. Running events and their full first-hit counts are
+% therefore equal pointwise, before any input measure is considered.
+%
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964.
+ppg_update_projection_stopping[State,Abstract,Input: TYPE,
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_input_update[State,Input,inputs] AS stopProjectSource,
+    ppg_finite_input_update[Abstract,Input,inputs] AS stopProjectTarget,
+    ppg_input_update_stopping[State,Input,inputs] AS stopProjectSourceEvents,
+    ppg_input_update_stopping[Abstract,Input,inputs] AS stopProjectTargetEvents,
+    ppg_finite_update_projection[State,Abstract,Input,inputs] AS stopProjectCommutation,
+    ppg_update_projection_reach[State,Abstract,Input,inputs] AS stopProjectGood,
+    ppg_finite_input_history[Input] AS stopProjectHistory
+
+  R: VAR stopProjectSource.Rule
+  Q: VAR stopProjectTarget.Rule
+  p: VAR [State->Abstract]
+  s0: VAR State
+  n: VAR nat
+  omega: VAR stopProjectHistory.Sample
+
+  active_family_projection: LEMMA stopProjectCommutation.Commutes(R,Q,p) IMPLIES
+    stopProjectSourceEvents.activeEvents(R,s0)=stopProjectTargetEvents.activeEvents(Q,p(s0))
+
+  runningEvent_projection: THEOREM stopProjectCommutation.Commutes(R,Q,p) IMPLIES
+    stopProjectSourceEvents.runningEvent(R,s0,n)=stopProjectTargetEvents.runningEvent(Q,p(s0),n)
+
+  running_family_projection: LEMMA stopProjectCommutation.Commutes(R,Q,p) IMPLIES
+    stopProjectSourceEvents.runningEvents(R,s0)=stopProjectTargetEvents.runningEvents(Q,p(s0))
+
+  hitCount_projection: THEOREM stopProjectCommutation.Commutes(R,Q,p) IMPLIES
+    stopProjectSourceEvents.hitCount(R,s0,omega)=stopProjectTargetEvents.hitCount(Q,p(s0),omega)
+
+END ppg_update_projection_stopping

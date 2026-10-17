@@ -1,0 +1,28 @@
+% The input law depends only on the input masses. To construct it for
+% an arbitrary state carrier, use the finite input carrier itself as an
+% auxiliary state space. Its update and good test do not affect the law.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_update_input_law[State,Input: TYPE,
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)},
+  (IMPORTING ppg_finite_input_update[State,Input,inputs])
+  R:{R:Rule|Valid(R)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_update[Input,Input,inputs,inputs] AS inputLawShadow,
+    ppg_finite_update_law[Input,Input,inputs,inputs] AS inputLawAtoms,
+    ppg_finite_input_history[Input] AS inputLawHistory,
+    ppg_probability_measure[Input,fullset[set[Input]]] AS inputLawProbability
+
+  shadowRule: {Q:inputLawShadow.Rule|inputLawShadow.Valid(Q)} =
+    (# mass:=R`mass,update:=LAMBDA(s,a:Input):a,good:=LAMBDA(s:Input):TRUE #)
+
+  IMPORTING ppg_finite_iid_law[Input,Input,inputs,inputs,shadowRule] AS inputLawProduct,
+    ppg_finite_law_view[inputLawHistory.Sample,inputLawHistory.ambientSigma] AS inputLawNative
+
+  inputPMF: inputLawProbability.Probability = inputLawAtoms.inputPMF(shadowRule)
+
+  iidMeasure: inputLawNative.FiniteLaw = inputLawProduct.iidMeasure
+
+  input_law_value: LEMMA FORALL(a:Input):inputPMF(singleton[Input](a))=R`mass(a)
+
+END ppg_update_input_law

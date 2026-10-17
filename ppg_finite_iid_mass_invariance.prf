@@ -1,0 +1,203 @@
+(|ppg_finite_iid_mass_invariance|
+ (|coordinate_space_equal| 0
+  (|coordinate_space_equal-1| NIL 4001248215
+   (""
+    (THEN (EXPAND "massLeftLaw.coordinateSigma")
+     (EXPAND "massRightLaw.coordinateSigma") (ASSERT))
+    NIL)
+   ((|coordinateSigma| CONST-DECL
+     "ppg_measurable_space[Coordinate].MeasurableSpace" |ppg_finite_iid_law|
+     NIL))
+   SHOSTAK))
+ (|spaces_equal| 0
+  (|spaces_equal-1| NIL 4001247905
+   (""
+    (THEN (EXPAND "massLeftLaw.iidSpaces") (EXPAND "massRightLaw.iidSpaces")
+     (EXPAND "massLeftLaw.coordinateSigma")
+     (EXPAND "massRightLaw.coordinateSigma") (ASSERT))
+    NIL)
+   ((|iidSpaces| CONST-DECL
+     "[n: nat -> ppg_measurable_space[(fullset[Input])].MeasurableSpace]"
+     |ppg_finite_iid_law| NIL)
+    (|coordinateSigma| CONST-DECL
+     "ppg_measurable_space[Coordinate].MeasurableSpace" |ppg_finite_iid_law|
+     NIL))
+   SHOSTAK))
+ (|input_pmf_equal| 0
+  (|input_pmf_equal-1| NIL 4001247905
+   (""
+    (THEN (SKOSIMP*) (EXPAND "sameMass" -1) (EXPAND "massLeftPMF.inputPMF")
+     (EXPAND "massRightPMF.inputPMF") (EXPAND "massLeftPMF.inputWeights")
+     (EXPAND "massRightPMF.inputWeights") (REPLACE -1) (ASSERT))
+    NIL)
+   ((|inputPMF| CONST-DECL "inputLaws.Probability" |ppg_finite_update_law| NIL)
+    (|inputWeights| CONST-DECL "inputAtoms.NormalizedWeights"
+     |ppg_finite_update_law| NIL)
+    (|sameMass| CONST-DECL "bool" |ppg_finite_iid_mass_invariance| NIL))
+   SHOSTAK))
+ (|coordinate_law_equal_TCC1| 0
+  (|coordinate_law_equal_TCC1-1| NIL 4001247905 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|sameMass| CONST-DECL "bool" |ppg_finite_iid_mass_invariance| NIL)
+    (Q FORMAL-CONST-DECL
+     "{Q: ppg_finite_update[Right, Input, rightUniverse, inputs].Rule |
+   ppg_finite_update[Right, Input, rightUniverse, inputs].Valid(Q)}"
+     |ppg_finite_iid_mass_invariance| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_finite_iid_mass_invariance| NIL)
+    (|rightUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Right] | FORALL (s: Right): U(s)}"
+     |ppg_finite_iid_mass_invariance| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_iid_mass_invariance| NIL)
+    (|Right| FORMAL-TYPE-DECL NIL |ppg_finite_iid_mass_invariance| NIL)
+    (|coordinateSigma| CONST-DECL
+     "ppg_measurable_space[Coordinate].MeasurableSpace" |ppg_finite_iid_law|
+     NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}"
+     |ppg_finite_iid_mass_invariance| NIL)
+    (|leftUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Left] | FORALL (s: Left): U(s)}"
+     |ppg_finite_iid_mass_invariance| NIL)
+    (|Left| FORMAL-TYPE-DECL NIL |ppg_finite_iid_mass_invariance| NIL))
+   NIL
+   (|coordinate_law_equal| SUBTYPE
+    "massRightLaw[Right, Input, rightUniverse, inputs, Q].coordinateLaw"
+    "Mass[Coordinate[Left, Input, leftUniverse, inputs, R], coordinateSigma[Left, Input, leftUniverse, inputs, R]]"
+    (29 73 29 99))))
+ (|coordinate_law_equal| 0
+  (|coordinate_law_equal-1| NIL 4001247906
+   (""
+    (THEN (SKOSIMP*) (LEMMA "input_pmf_equal") (ASSERT) (LABEL "PMF" -1)
+     (EXPAND "massLeftLaw.coordinateLaw") (EXPAND "massRightLaw.coordinateLaw")
+     (EXPAND "massLeftLaw.includeInput") (EXPAND "massRightLaw.includeInput")
+     (EXPAND "massLeftLaw.coordinateSigma")
+     (EXPAND "massRightLaw.coordinateSigma") (REPLACE "PMF" :ACTUALS? T)
+     (LEMMA "coordinate_space_equal") (REPLACE -1 :ACTUALS? T)
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("inputPMF" "coordinateLaw" "pushforward" "nativeLaw" "infiniteLaw"
+       "generated" "sigma?" "probability?" "measure?")))
+    NIL)
+   ((|coordinateLaw| CONST-DECL "iidCoordinateProbability.Probability"
+     |ppg_finite_iid_law| NIL)
+    (|coordinate_space_equal| FORMULA-DECL NIL |ppg_finite_iid_mass_invariance|
+     NIL)
+    (|includeInput| CONST-DECL "Coordinate" |ppg_finite_iid_law| NIL)
+    (|input_pmf_equal| FORMULA-DECL NIL |ppg_finite_iid_mass_invariance| NIL))
+   SHOSTAK))
+ (|coins_equal_TCC1| 0
+  (|coins_equal_TCC1-1| NIL 4001247905 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|sameMass| CONST-DECL "bool" |ppg_finite_iid_mass_invariance| NIL)
+    (Q FORMAL-CONST-DECL
+     "{Q: ppg_finite_update[Right, Input, rightUniverse, inputs].Rule |
+   ppg_finite_update[Right, Input, rightUniverse, inputs].Valid(Q)}"
+     |ppg_finite_iid_mass_invariance| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_finite_iid_mass_invariance| NIL)
+    (|rightUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Right] | FORALL (s: Right): U(s)}"
+     |ppg_finite_iid_mass_invariance| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_iid_mass_invariance| NIL)
+    (|Right| FORMAL-TYPE-DECL NIL |ppg_finite_iid_mass_invariance| NIL)
+    (|coordinateSigma| CONST-DECL
+     "ppg_measurable_space[Coordinate].MeasurableSpace" |ppg_finite_iid_law|
+     NIL)
+    (|iidSpaces| CONST-DECL
+     "[n: nat -> ppg_measurable_space[(fullset[Input])].MeasurableSpace]"
+     |ppg_finite_iid_law| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}"
+     |ppg_finite_iid_mass_invariance| NIL)
+    (|leftUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Left] | FORALL (s: Left): U(s)}"
+     |ppg_finite_iid_mass_invariance| NIL)
+    (|Left| FORMAL-TYPE-DECL NIL |ppg_finite_iid_mass_invariance| NIL))
+   NIL
+   (|coins_equal| SUBTYPE
+    "massRightLaw[Right, Input, rightUniverse, inputs, Q].iidCoins"
+    "[n: nat -> Mass[(fullset[Input]), iidSpaces[Left, Input, leftUniverse, inputs, R](n)]]"
+    (31 59 31 80))))
+ (|coins_equal| 0
+  (|coins_equal-1| NIL 4001247906
+   (""
+    (THEN (SKOSIMP*) (LEMMA "coordinate_law_equal") (ASSERT) (LABEL "LAW" -1)
+     (EXPAND "massLeftLaw.iidCoins") (EXPAND "massRightLaw.iidCoins")
+     (REPLACE "LAW" :ACTUALS? T) (ASSERT))
+    NIL)
+   ((|iidCoins| CONST-DECL "[n: nat -> iidBlockBase.CoordinateLaw(n)]"
+     |ppg_finite_iid_law| NIL)
+    (|coordinate_law_equal| FORMULA-DECL NIL |ppg_finite_iid_mass_invariance|
+     NIL))
+   SHOSTAK))
+ (|native_space_equal| 0
+  (|native_space_equal-1| NIL 4001247906
+   (""
+    (THEN (LEMMA "spaces_equal") (EXPAND "massLeftLaw.nativeSigma")
+     (EXPAND "massRightLaw.nativeSigma") (REPLACE -1 :ACTUALS? T) (ASSERT))
+    NIL)
+   ((|spaces_equal| FORMULA-DECL NIL |ppg_finite_iid_mass_invariance| NIL)
+    (|nativeSigma| CONST-DECL
+     "ppg_measurable_space[NativeTable].MeasurableSpace" |ppg_finite_iid_law|
+     NIL))
+   SHOSTAK))
+ (|forget_equal| 0
+  (|forget_equal-1| NIL 4001247906
+   (""
+    (THEN (EXPAND "massLeftLaw.forget") (EXPAND "massRightLaw.forget")
+     (ASSERT))
+    NIL)
+   ((|forget| CONST-DECL "iidSampleHistory.Sample" |ppg_finite_iid_law| NIL))
+   SHOSTAK))
+ (|iid_probability_equal| 0
+  (|iid_probability_equal-1| NIL 4001247906
+   (""
+    (THEN (SKOSIMP*) (LEMMA "spaces_equal") (LABEL "SPACES" -1)
+     (LEMMA "native_space_equal") (LABEL "SIGMA" -1) (LEMMA "forget_equal")
+     (LABEL "FORGET" -1) (LEMMA "coins_equal") (ASSERT) (LABEL "COINS" -1)
+     (EXPAND "massLeftLaw.iidProbability")
+     (EXPAND "massRightLaw.iidProbability") (REPLACE "SPACES" :ACTUALS? T)
+     (REPLACE "SIGMA" :ACTUALS? T) (REPLACE "FORGET" :ACTUALS? T)
+     (REPLACE "COINS" :ACTUALS? T) (ASSERT))
+    NIL)
+   ((|iidProbability| CONST-DECL "iidSequenceProbability.Probability"
+     |ppg_finite_iid_law| NIL)
+    (|coins_equal| FORMULA-DECL NIL |ppg_finite_iid_mass_invariance| NIL)
+    (|forget_equal| FORMULA-DECL NIL |ppg_finite_iid_mass_invariance| NIL)
+    (|native_space_equal| FORMULA-DECL NIL |ppg_finite_iid_mass_invariance|
+     NIL)
+    (|spaces_equal| FORMULA-DECL NIL |ppg_finite_iid_mass_invariance| NIL))
+   SHOSTAK))
+ (|iid_measure_equal| 0
+  (|iid_measure_equal-1| NIL 4001247906
+   (""
+    (THEN (SKOSIMP*) (LEMMA "iid_probability_equal") (ASSERT)
+     (LABEL "PROBABILITY" -1) (EXPAND "massLeftLaw.iidMeasure")
+     (EXPAND "massRightLaw.iidMeasure") (REPLACE "PROBABILITY" :ACTUALS? T)
+     (ASSERT))
+    NIL)
+   ((|iidMeasure| CONST-DECL
+     "ppg_finite_law_view[Sample[Input], iidSampleHistory.ambientSigma].FiniteLaw"
+     |ppg_finite_iid_law| NIL)
+    (|iid_probability_equal| FORMULA-DECL NIL |ppg_finite_iid_mass_invariance|
+     NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,81 @@
+(|ppg_update_input_law|
+ (|inputLawProbability_TCC1| 0
+  (|inputLawProbability_TCC1-1| NIL 4001247877 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |ppg_update_input_law| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_input_law| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL))
+   NIL
+   (|inputLawProbability| SUBTYPE "fullset[set[Input]]"
+    "MeasurableSpace[Input]" (14 34 14 53))))
+ (|shadowRule_TCC1| 0
+  (|shadowRule_TCC1-1| NIL 4001247877
+   (""
+    (THEN (TYPEPRED "R") (EXPAND "inputLawShadow.Valid") (EXPAND "Valid")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("sum" "fsum" "kernel" "model" "is_finite" "card")))
+    NIL)
+   ((R FORMAL-CONST-DECL "{R: Rule | Valid(R)}" |ppg_update_input_law| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_input_update| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}" |ppg_update_input_law|
+     NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_input_law| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_input_law| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_update| NIL))
+   NIL
+   (|shadowRule| SUBTYPE
+    "(# mass := R`mass, update := LAMBDA (s, a: Input): a, good := LAMBDA (s: Input): TRUE #)"
+    "{Q: inputLawShadow[ppg_update_input_law.Input, ppg_update_input_law.Input, ppg_update_input_law.inputs, ppg_update_input_law.inputs].Rule | inputLawShadow[ppg_update_input_law.Input, ppg_update_input_law.Input, ppg_update_input_law.inputs, ppg_update_input_law.inputs].Valid(Q)}"
+    (17 4 17 77))))
+ (|input_law_value_TCC1| 0
+  (|input_law_value_TCC1-1| NIL 4001247877 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[Input]" |ppg_update_input_law| NIL))
+   NIL
+   (|input_law_value| SUBTYPE "singleton[Input](a)"
+    "(sets[set[Input]].fullset)" (26 50 26 69))))
+ (|input_law_value| 0
+  (|input_law_value-1| NIL 4001247877
+   (""
+    (THEN (SKOSIMP*) (EXPAND "inputPMF")
+     (LEMMA "inputLawAtoms.inputPMF_toReal" ("R" "shadowRule" "a" "a!1"))
+     (EXPAND "shadowRule") (ASSERT))
+    NIL)
+   ((|inputPMF_toReal| FORMULA-DECL NIL |ppg_finite_update_law| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (|ValidRule| TYPE-EQ-DECL NIL |ppg_finite_update_law| NIL)
+    (|shadowRule| CONST-DECL
+     "{Q: inputLawShadow.Rule | inputLawShadow.Valid(Q)}"
+     |ppg_update_input_law| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_input_law| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}" |ppg_update_input_law|
+     NIL)
+    (|inputPMF| CONST-DECL "inputLawProbability.Probability"
+     |ppg_update_input_law| NIL))
+   SHOSTAK)))
+

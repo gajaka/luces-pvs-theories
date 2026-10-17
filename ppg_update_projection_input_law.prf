@@ -1,0 +1,64 @@
+(|ppg_update_projection_input_law|
+ (|shadow_rule_equal| 0
+  (|shadow_rule_equal-1| NIL 4001248024
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "inputEqCommutation.mass_function" ("R" "R" "Q" "Q" "p" "p!1"))
+     (ASSERT) (EXPAND "inputEqSource.shadowRule")
+     (EXPAND "inputEqTarget.shadowRule") (REPLACE -1) (ASSERT))
+    NIL)
+   ((|shadowRule| CONST-DECL
+     "{Q: inputLawShadow.Rule | inputLawShadow.Valid(Q)}"
+     |ppg_update_input_law| NIL)
+    (|mass_function| FORMULA-DECL NIL |ppg_finite_update_projection| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_input_update| NIL)
+    (Q FORMAL-CONST-DECL
+     "{Q: ppg_finite_input_update[Abstract, Input, inputs].Rule |
+   ppg_finite_input_update[Abstract, Input, inputs].Valid(Q)}"
+     |ppg_update_projection_input_law| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}"
+     |ppg_update_projection_input_law| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projection_input_law| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projection_input_law| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projection_input_law| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projection_input_law| NIL))
+   SHOSTAK))
+ (|inputPMF_eq| 0
+  (|inputPMF_eq-1| NIL 4001248024
+   (""
+    (THEN (SKOSIMP*) (LEMMA "shadow_rule_equal" ("p" "p!1")) (ASSERT)
+     (LABEL "RULE" -1) (EXPAND "inputEqSource.inputPMF")
+     (EXPAND "inputEqTarget.inputPMF") (REPLACE "RULE" :ACTUALS? T) (ASSERT))
+    NIL)
+   ((|inputPMF| CONST-DECL "inputLawProbability.Probability"
+     |ppg_update_input_law| NIL)
+    (|shadow_rule_equal| FORMULA-DECL NIL |ppg_update_projection_input_law|
+     NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projection_input_law| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projection_input_law| NIL))
+   SHOSTAK))
+ (|iidMeasure_eq| 0
+  (|iidMeasure_eq-1| NIL 4001248024
+   (""
+    (THEN (SKOSIMP*) (LEMMA "shadow_rule_equal" ("p" "p!1")) (ASSERT)
+     (LABEL "RULE" -1) (EXPAND "inputEqSource.iidMeasure")
+     (EXPAND "inputEqTarget.iidMeasure") (REPLACE "RULE" :ACTUALS? T) (ASSERT))
+    NIL)
+   ((|iidMeasure| CONST-DECL "inputLawNative.FiniteLaw" |ppg_update_input_law|
+     NIL)
+    (|shadow_rule_equal| FORMULA-DECL NIL |ppg_update_projection_input_law|
+     NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projection_input_law| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projection_input_law| NIL))
+   SHOSTAK)))
+
