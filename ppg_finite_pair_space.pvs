@@ -1,0 +1,50 @@
+% The product of two finite carriers is finite. Its coordinate singleton
+% cylinders generate the singleton pairs. Measurable coordinate singletons
+% therefore make the binary product sigma algebra full.
+%
+% Paul R. Halmos, Naive Set Theory, Van Nostrand, 1960.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_pair_space[A,X,Y:TYPE,
+  xs:{U:finite_set[X]|FORALL(x:X):U(x)},
+  ys:{U:finite_set[Y]|FORALL(y:Y):U(y)},
+  (IMPORTING ppg_measurable_space[X],ppg_measurable_space[Y])
+  SX:ppg_measurable_space[X].MeasurableSpace,
+  SY:ppg_measurable_space[Y].MeasurableSpace]: THEORY
+BEGIN
+  Pair: TYPE = [X,Y]
+
+  IMPORTING ppg_measurable_pair[A,X,Y] AS pairCoordinates,
+    ppg_measurable_space[Pair] AS pairEvents
+
+  x: VAR X
+  p: VAR Pair
+
+  row(x): finite_set[Pair] = image[Y,Pair](LAMBDA(y:Y):(x,y),ys)
+
+  support: set[Pair] = Union[Pair](image[X,set[Pair]](LAMBDA(x:X):row(x),xs))
+
+  row_finite: LEMMA is_finite(row(x))
+
+  support_finite: LEMMA is_finite(support)
+
+  support_contains: LEMMA support(p)
+
+  universe: {U:finite_set[Pair]|FORALL(p:Pair):U(p)} = support
+
+  jointSigma: MACRO pairEvents.MeasurableSpace = pairCoordinates.pairSigma(SX,SY)
+
+  IMPORTING ppg_finite_sigma[Pair,universe] AS pairFiniteSigma
+
+  pointIntersection(p): set[Pair] = intersection(
+    pairCoordinates.leftCylinder(singleton[X](p`1)),
+    pairCoordinates.rightCylinder(singleton[Y](p`2)))
+
+  point_intersection_singleton: LEMMA pointIntersection(p)=singleton[Pair](p)
+
+  pair_singleton_measurable: LEMMA SX(singleton[X](p`1)) AND SY(singleton[Y](p`2)) IMPLIES
+    jointSigma(singleton[Pair](p))
+
+  pair_sigma_full: THEOREM (FORALL(x:X):SX(singleton[X](x))) AND
+    (FORALL(y:Y):SY(singleton[Y](y))) IMPLIES jointSigma=fullset[set[Pair]]
+
+END ppg_finite_pair_space
