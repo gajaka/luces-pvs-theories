@@ -1,0 +1,59 @@
+% Before stopping, every selected event is violated. A complete finite
+% event order makes this equivalent to the absence of a good state at all
+% earlier times. The stopped potential is zero outside this running event.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Section 2.
+ppg_mt_drift_pointwise[I,V,Value:TYPE,domain:[V->set[Value]],
+  fallback:I,eventOrder:{e:list[I]|FORALL(i:I):member(i,e)}]: THEORY
+BEGIN
+  IMPORTING ppg_mt_random_process[I,V,Value,domain] AS pointwiseRun,
+    ppg_mt_selection[I,V,Value,domain] AS pointwiseSelection,
+    ppg_mt_correspondence[I,V,Value,domain] AS pointwiseRunning,
+    ppg_mt_semantics[I,V,Value,domain] AS pointwiseSemantics
+
+  State: TYPE = pointwiseSemantics.MTState
+
+  ResamplingLog: TYPE = pointwiseRun.LogSpace
+
+  vars: VAR [I->finite_set[V]]
+  bad: VAR [I,State->bool]
+  init: VAR [ResamplingLog->State]
+  potential: VAR [State->nnreal]
+  omega: VAR ResamplingLog
+  n,k: VAR nat
+  M: VAR nnreal
+
+  event_order_complete: LEMMA pointwiseSelection.completeEnumeration(eventOrder)
+
+  selected_bad_iff_not_good: LEMMA
+    bad(pointwiseSelection.realC(vars,bad,fallback,eventOrder,init(omega),omega,n),
+      pointwiseRun.randStep(vars,bad,fallback,eventOrder,init(omega),omega,n)`1) IFF
+    NOT pointwiseSelection.MTGood(bad,
+      pointwiseRun.randTraj(vars,bad,fallback,eventOrder,init(omega),omega,n))
+
+  runningUntil_iff_no_good_before: THEOREM
+    pointwiseRunning.RunningUntil(vars,bad,fallback,eventOrder,init(omega),omega,n) IFF
+      (FORALL(k:nat):k<n IMPLIES NOT pointwiseSelection.MTGood(bad,
+        pointwiseRun.randTraj(vars,bad,fallback,eventOrder,init(omega),omega,k)))
+
+  mtRunningEvent(vars,bad,init,n): set[ResamplingLog] =
+    {omega:ResamplingLog|pointwiseRunning.RunningUntil(vars,bad,fallback,eventOrder,init(omega),omega,n)}
+
+  mtStoppedPotential(vars,bad,init,potential,n,omega): real =
+    IF mtRunningEvent(vars,bad,init,n)(omega)
+      THEN potential(pointwiseRun.randTraj(vars,bad,fallback,eventOrder,init(omega),omega,n))
+      ELSE 0 ENDIF
+
+  mtStoppedPotential_nonneg: THEOREM 0<=mtStoppedPotential(vars,bad,init,potential,n,omega)
+
+  mtStoppedPotential_le: THEOREM (FORALL(s:State):potential(s)<=M) IMPLIES
+    mtStoppedPotential(vars,bad,init,potential,n,omega)<=M
+
+  running_zero: LEMMA mtRunningEvent(vars,bad,init,0)(omega)
+
+  trajectory_zero: LEMMA pointwiseRun.randTraj(vars,bad,fallback,eventOrder,init(omega),omega,0)=init(omega)
+
+  mtStoppedPotential_zero: THEOREM mtStoppedPotential(vars,bad,init,potential,0,omega)=potential(init(omega))
+
+END ppg_mt_drift_pointwise

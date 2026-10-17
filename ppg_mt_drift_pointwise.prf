@@ -1,0 +1,281 @@
+(|ppg_mt_drift_pointwise|
+ (|event_order_complete| 0
+  (|event_order_complete-1| NIL 4001264524
+   (""
+    (THEN (TYPEPRED "eventOrder")
+     (GRIND :IF-MATCH ALL :DEFS ("completeEnumeration") :EXCLUDE
+      ("member" "is_finite" "card")))
+    NIL)
+   ((|eventOrder| FORMAL-CONST-DECL
+     "{e: list[I] | FORALL (i: I): member(i, e)}" |ppg_mt_drift_pointwise| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_drift_pointwise|
+     NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|completeEnumeration| CONST-DECL "bool" |ppg_mt_selection| NIL))
+   SHOSTAK))
+ (|selected_bad_iff_not_good| 0
+  (|selected_bad_iff_not_good-1| NIL 4001264524
+   (""
+    (THEN (SKOSIMP*) (LEMMA "event_order_complete")
+     (LEMMA "pointwiseSelection.randStep_notMem_bad_realC_iff"
+      ("vars" "vars!1" "bad" "bad!1" "fallback" "fallback" "enumeration"
+       "eventOrder" "initial" "init!1(omega!1)" "omega" "omega!1" "t" "n!1"))
+     (EXPAND "pointwiseRun.randTraj")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("randStep" "realC" "MTGood" "is_finite" "card")))
+    NIL)
+   ((|randStep_notMem_bad_realC_iff| FORMULA-DECL NIL |ppg_mt_selection| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|eventOrder| FORMAL-CONST-DECL
+     "{e: list[I] | FORALL (i: I): member(i, e)}" |ppg_mt_drift_pointwise| NIL)
+    (|fallback| FORMAL-CONST-DECL "I" |ppg_mt_drift_pointwise| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_drift_pointwise|
+     NIL)
+    (|randTraj| CONST-DECL "MTState" |ppg_mt_random_process| NIL)
+    (|event_order_complete| FORMULA-DECL NIL |ppg_mt_drift_pointwise| NIL))
+   SHOSTAK))
+ (|runningUntil_iff_no_good_before| 0
+  (|runningUntil_iff_no_good_before-1| NIL 4001264524
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "selected_bad_iff_not_good"
+       ("vars" "vars!1" "bad" "bad!1" "init" "init!1" "omega" "omega!1"))
+      ((""
+        (GRIND :IF-MATCH NIL :DEFS ("RunningUntil") :EXCLUDE
+         ("randStep" "randTraj" "MTGood" "realC" "is_finite" "card"))
+        (("1"
+          (GRIND :IF-MATCH ALL :EXCLUDE
+           ("randStep" "randTraj" "MTGood" "realC" "is_finite" "card"))
+          NIL NIL)
+         ("2"
+          (GRIND :IF-MATCH ALL :EXCLUDE
+           ("randStep" "randTraj" "MTGood" "realC" "is_finite" "card"))
+          NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|RunningUntil| CONST-DECL "bool" |ppg_mt_correspondence| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|selected_bad_iff_not_good| FORMULA-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_drift_pointwise|
+     NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|mtStoppedPotential_nonneg| 0
+  (|mtStoppedPotential_nonneg-1| NIL 4001264524
+   (""
+    (THEN (SKOSIMP*) (EXPAND "mtStoppedPotential")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("mtRunningEvent" "randTraj" "randStep" "realC" "is_finite" "card")))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mtStoppedPotential| CONST-DECL "real" |ppg_mt_drift_pointwise| NIL))
+   SHOSTAK))
+ (|mtStoppedPotential_le| 0
+  (|mtStoppedPotential_le-1| NIL 4001264524
+   (""
+    (THEN (SKOSIMP*) (EXPAND "mtStoppedPotential")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("mtRunningEvent" "randTraj" "randStep" "realC" "is_finite" "card")))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|eventOrder| FORMAL-CONST-DECL
+     "{e: list[I] | FORALL (i: I): member(i, e)}" |ppg_mt_drift_pointwise| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|fallback| FORMAL-CONST-DECL "I" |ppg_mt_drift_pointwise| NIL)
+    (|randTraj| CONST-DECL "MTState" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_drift_pointwise|
+     NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|mtStoppedPotential| CONST-DECL "real" |ppg_mt_drift_pointwise| NIL))
+   SHOSTAK))
+ (|running_zero| 0
+  (|running_zero-1| NIL 4001264524
+   (""
+    (THEN
+     (GRIND :IF-MATCH NIL :DEFS ("mtRunningEvent" "RunningUntil") :EXCLUDE
+      ("randTraj" "randStep" "realC" "is_finite" "card")))
+    NIL)
+   ((|mtRunningEvent| CONST-DECL "set[ResamplingLog]" |ppg_mt_drift_pointwise|
+     NIL)
+    (|RunningUntil| CONST-DECL "bool" |ppg_mt_correspondence| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_drift_pointwise|
+     NIL))
+   SHOSTAK))
+ (|trajectory_zero| 0
+  (|trajectory_zero-1| NIL 4001264524
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "pointwiseRun.randStep_zero"
+      ("vars" "vars!1" "bad" "bad!1" "fallback" "fallback" "enumeration"
+       "eventOrder" "initial" "init!1(omega!1)" "omega" "omega!1"))
+     (EXPAND "pointwiseRun.randTraj")
+     (GRIND :IF-MATCH NIL :EXCLUDE ("randStep" "is_finite" "card")))
+    NIL)
+   ((|randTraj| CONST-DECL "MTState" |ppg_mt_random_process| NIL)
+    (|randStep_zero| FORMULA-DECL NIL |ppg_mt_random_process| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|eventOrder| FORMAL-CONST-DECL
+     "{e: list[I] | FORALL (i: I): member(i, e)}" |ppg_mt_drift_pointwise| NIL)
+    (|fallback| FORMAL-CONST-DECL "I" |ppg_mt_drift_pointwise| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_drift_pointwise|
+     NIL))
+   SHOSTAK))
+ (|mtStoppedPotential_zero| 0
+  (|mtStoppedPotential_zero-1| NIL 4001264524
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "running_zero"
+      ("vars" "vars!1" "bad" "bad!1" "init" "init!1" "omega" "omega!1"))
+     (LEMMA "trajectory_zero"
+      ("vars" "vars!1" "bad" "bad!1" "init" "init!1" "omega" "omega!1"))
+     (GRIND :IF-MATCH NIL :DEFS ("mtStoppedPotential") :EXCLUDE
+      ("mtRunningEvent" "randTraj" "randStep" "realC" "is_finite" "card")))
+    NIL)
+   ((|trajectory_zero| FORMULA-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|mtStoppedPotential| CONST-DECL "real" |ppg_mt_drift_pointwise| NIL)
+    (|running_zero| FORMULA-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_drift_pointwise|
+     NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_mt_drift_pointwise| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK)))
+
