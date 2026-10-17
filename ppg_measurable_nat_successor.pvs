@@ -1,0 +1,16 @@
+% Adding one preserves measurability of a natural-number counter.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_measurable_nat_successor[X: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_map[X,nat] AS successorMaps,
+    ppg_measurable_compose[X,nat,nat] AS successorCompose,
+    ppg_measurable_discrete[nat,nat] AS successorDiscrete
+
+  SX: VAR ppg_measurable_space[X].MeasurableSpace
+  f: VAR [X->nat]
+
+  measurable_successor: THEOREM successorMaps.measurable(SX,fullset[set[nat]],f) IMPLIES
+    successorMaps.measurable(SX,fullset[set[nat]],LAMBDA(x:X):f(x)+1)
+
+END ppg_measurable_nat_successor
