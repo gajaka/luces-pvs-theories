@@ -1,0 +1,191 @@
+(|ppg_discrete_comap|
+ (|invariant_empty| 0
+  (|invariant_empty-1| NIL 4001262514
+   (""
+    (THEN (GRIND :IF-MATCH NIL :DEFS ("fiberInvariant" "emptyset" "member")))
+    NIL)
+   ((|emptyset| CONST-DECL "set" |sets| NIL)
+    (|fiberInvariant| CONST-DECL "bool" |ppg_discrete_comap| NIL))
+   SHOSTAK))
+ (|invariant_complement| 0
+  (|invariant_complement-1| NIL 4001262514
+   (""
+    (THEN (GRIND :IF-MATCH ALL :DEFS ("fiberInvariant" "complement" "member")))
+    NIL)
+   ((|Omega| FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL)
+    (|fiberInvariant| CONST-DECL "bool" |ppg_discrete_comap| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|complement| CONST-DECL "set" |sets| NIL))
+   SHOSTAK))
+ (|invariant_countable_union| 0
+  (|invariant_countable_union-1| NIL 4001262514
+   ("" (SKOSIMP*)
+    (("" (LABEL "FIBERS" -1)
+      ((""
+        (GRIND :IF-MATCH NIL :DEFS
+         ("fiberInvariant" "countableUnion" "member"))
+        (("1" (INST "FIBERS" "n!1")
+          (("1"
+            (GRIND :IF-MATCH ALL :DEFS ("fiberInvariant") :EXCLUDE
+             ("countableUnion"))
+            NIL NIL))
+          NIL)
+         ("2" (INST "FIBERS" "n!1")
+          (("2"
+            (GRIND :IF-MATCH ALL :DEFS ("fiberInvariant") :EXCLUDE
+             ("countableUnion"))
+            NIL NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|Omega| FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL)
+    (|countableUnion| CONST-DECL "Event" |ppg_measurable_space| NIL)
+    (|fiberInvariant| CONST-DECL "bool" |ppg_discrete_comap| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK))
+ (|comap_TCC1| 0
+  (|comap_TCC1-1| NIL 4001262514
+   (""
+    (THEN (SKOSIMP*) (LEMMA "invariant_empty" ("f" "f!1"))
+     (LEMMA "invariant_complement" ("f" "f!1"))
+     (LEMMA "invariant_countable_union" ("f" "f!1"))
+     (GRIND :IF-MATCH ALL :DEFS ("sigma?" "member") :EXCLUDE
+      ("fiberInvariant" "countableUnion")))
+    NIL)
+   ((|invariant_complement| FORMULA-DECL NIL |ppg_discrete_comap| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|invariant_countable_union| FORMULA-DECL NIL |ppg_discrete_comap| NIL)
+    (|invariant_empty| FORMULA-DECL NIL |ppg_discrete_comap| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL))
+   NIL
+   (|comap| SUBTYPE "{A: set[Omega] | fiberInvariant(f, A)}"
+    "MeasurableSpace[Omega]" (26 42 26 76))))
+ (|invariant_preimage| 0
+  (|invariant_preimage-1| NIL 4001262514
+   (""
+    (THEN
+     (GRIND :IF-MATCH NIL :DEFS ("fiberInvariant" "inverseImage" "member")))
+    NIL)
+   ((T FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|fiberInvariant| CONST-DECL "bool" |ppg_discrete_comap| NIL))
+   SHOSTAK))
+ (|image_preimage| 0
+  (|image_preimage-1| NIL 4001262514
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :IF-MATCH ALL :DEFS
+      ("inverseImage" "imageEvent" "fiberInvariant" "member")))
+    NIL)
+   ((|fiberInvariant| CONST-DECL "bool" |ppg_discrete_comap| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|imageEvent| CONST-DECL "set[T]" |ppg_discrete_comap| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL))
+   SHOSTAK))
+ (|comap_preimage| 0
+  (|comap_preimage-1| NIL 4001262514
+   (""
+    (THEN (SKOSIMP*) (LEMMA "invariant_preimage" ("f" "f!1" "B" "B!1"))
+     (EXPAND "comap") (ASSERT))
+    NIL)
+   ((|comap| CONST-DECL "comapEvents.MeasurableSpace" |ppg_discrete_comap| NIL)
+    (|invariant_preimage| FORMULA-DECL NIL |ppg_discrete_comap| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL))
+   SHOSTAK))
+ (|comap_representation| 0
+  (|comap_representation-1| NIL 4001262514
+   ("" (SKOSIMP*)
+    (("" (SPLIT)
+      (("1" (SKOSIMP*)
+        (("1" (LEMMA "image_preimage" ("f" "f!1" "A" "A!1"))
+          (("1" (EXPAND "comap")
+            (("1" (INST 1 "imageEvent(f!1,A!1)") (("1" (ASSERT) NIL NIL)) NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (SKOSIMP*)
+        (("2" (LEMMA "invariant_preimage" ("f" "f!1" "B" "B!1"))
+          (("2" (EXPAND "comap") (("2" (ASSERT) NIL NIL)) NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|invariant_preimage| FORMULA-DECL NIL |ppg_discrete_comap| NIL)
+    (|comap| CONST-DECL "comapEvents.MeasurableSpace" |ppg_discrete_comap| NIL)
+    (|imageEvent| CONST-DECL "set[T]" |ppg_discrete_comap| NIL)
+    (|image_preimage| FORMULA-DECL NIL |ppg_discrete_comap| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL))
+   SHOSTAK))
+ (|comap_measurable_TCC1| 0
+  (|comap_measurable_TCC1-1| NIL 4001262514 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL))
+   NIL
+   (|comap_measurable| SUBTYPE "fullset[set[T]]" "MeasurableSpace[T]"
+    (40 58 40 73))))
+ (|comap_measurable| 0
+  (|comap_measurable-1| NIL 4001262514
+   (""
+    (THEN (SKOSIMP*) (LEMMA "comap_preimage" ("f" "f!1"))
+     (GRIND :IF-MATCH ALL :DEFS ("measurable" "fullset" "member") :EXCLUDE
+      ("comap" "inverseImage")))
+    NIL)
+   ((|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|comap_preimage| FORMULA-DECL NIL |ppg_discrete_comap| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL))
+   SHOSTAK))
+ (|comap_le| 0
+  (|comap_le-1| NIL 4001262514
+   (""
+    (THEN (SKOSIMP*) (EXPAND "subset?") (EXPAND "member") (SKOSIMP*)
+     (LEMMA "comap_representation" ("f" "f!1" "A" "x!1"))
+     (GRIND :IF-MATCH ALL :DEFS ("measurable" "fullset" "member") :EXCLUDE
+      ("comap" "inverseImage" "imageEvent")))
+    NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|comap_representation| FORMULA-DECL NIL |ppg_discrete_comap| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_discrete_comap| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,44 @@
+% Pulling back the full sigma algebra along a discrete-valued map gives
+% exactly the events constant on its fibers. This description also covers
+% empty carriers, and provides a concrete inverse-image representative.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_discrete_comap[Omega,T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_space[Omega] AS comapEvents,
+    ppg_measurable_map[Omega,T] AS comapMaps
+
+  f: VAR [Omega->T]
+  A: VAR set[Omega]
+  B: VAR set[T]
+  E: VAR [nat->set[Omega]]
+  S: VAR comapEvents.MeasurableSpace
+
+  fiberInvariant(f,A): bool = FORALL(x,y:Omega):f(x)=f(y) IMPLIES A(x)=A(y)
+
+  invariant_empty: LEMMA fiberInvariant(f,emptyset[Omega])
+
+  invariant_complement: LEMMA fiberInvariant(f,A) IMPLIES fiberInvariant(f,complement(A))
+
+  invariant_countable_union: LEMMA (FORALL(n:nat):fiberInvariant(f,E(n))) IMPLIES
+    fiberInvariant(f,comapEvents.countableUnion(E))
+
+  comap(f): comapEvents.MeasurableSpace = {A:set[Omega]|fiberInvariant(f,A)}
+
+  imageEvent(f,A): set[T] = {t:T|EXISTS(x:Omega):f(x)=t AND A(x)}
+
+  invariant_preimage: LEMMA fiberInvariant(f,comapMaps.inverseImage(f,B))
+
+  image_preimage: LEMMA fiberInvariant(f,A) IMPLIES
+    comapMaps.inverseImage(f,imageEvent(f,A))=A
+
+  comap_preimage: LEMMA comap(f)(comapMaps.inverseImage(f,B))
+
+  comap_representation: THEOREM comap(f)(A) IFF
+    EXISTS(B:set[T]):A=comapMaps.inverseImage(f,B)
+
+  comap_measurable: THEOREM comapMaps.measurable(comap(f),fullset[set[T]],f)
+
+  comap_le: THEOREM comapMaps.measurable(S,fullset[set[T]],f) IMPLIES subset?(comap(f),S)
+
+END ppg_discrete_comap
