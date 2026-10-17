@@ -1,0 +1,107 @@
+(|ppg_finite_function_space|
+ (|bounded_TCC1| 0
+  (|bounded_TCC1-1| NIL 4001260474
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "valueUniverse")
+     (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite" "card")))
+    NIL)
+   ((|Assignment| TYPE-EQ-DECL NIL |ppg_finite_function_space| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_finite_function_space| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_finite_function_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|valueUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[T] | FORALL (t: T): U(t)}" |ppg_finite_function_space|
+     NIL))
+   NIL
+   (|bounded| SUBTYPE "f"
+    "State[I, T, indexUniverse, LAMBDA (i: I): valueUniverse]" (18 39 18 40))))
+ (|forget_bounded| 0
+  (|forget_bounded-1| NIL 4001260474
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "forget")
+     (EXPAND "bounded") (ASSERT))
+    NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|valueUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[T] | FORALL (t: T): U(t)}" |ppg_finite_function_space|
+     NIL)
+    (|indexUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[I] | FORALL (i: I): U(i)}" |ppg_finite_function_space|
+     NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ppg_finite_function_space| NIL)
+    (|forget| CONST-DECL "Assignment" |ppg_finite_function_space| NIL)
+    (|bounded| CONST-DECL "boundedFunctions.State" |ppg_finite_function_space|
+     NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_finite_function_space| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_finite_function_space| NIL))
+   SHOSTAK))
+ (|assignments_full| 0
+  (|assignments_full-1| NIL 4001260474
+   ("" (SKOSIMP*)
+    (("" (LEMMA "forget_bounded" ("f" "f!1"))
+      (("" (TYPEPRED "boundedFunctions.allStates")
+        (("" (EXPAND "assignments")
+          (("" (EXPAND "image")
+            (("" (INST 1 "bounded(f!1)")
+              (("1"
+                (GRIND :IF-MATCH ALL :EXCLUDE
+                 ("bounded" "forget" "is_finite" "card"))
+                NIL NIL)
+               ("2"
+                (GRIND :IF-MATCH ALL :EXCLUDE
+                 ("bounded" "forget" "is_finite" "card"))
+                NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|valueUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[T] | FORALL (t: T): U(t)}" |ppg_finite_function_space|
+     NIL)
+    (|indexUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[I] | FORALL (i: I): U(i)}" |ppg_finite_function_space|
+     NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|bounded| CONST-DECL "boundedFunctions.State" |ppg_finite_function_space|
+     NIL)
+    (|assignments| CONST-DECL "finite_set[Assignment]"
+     |ppg_finite_function_space| NIL)
+    (|forget_bounded| FORMULA-DECL NIL |ppg_finite_function_space| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_finite_function_space| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_finite_function_space| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ppg_finite_function_space| NIL))
+   SHOSTAK))
+ (|universe_TCC1| 0
+  (|universe_TCC1-1| NIL 4001260474
+   ("" (THEN (SKOSIMP*) (LEMMA "assignments_full" ("f" "f!1")) (ASSERT)) NIL)
+   ((|assignments_full| FORMULA-DECL NIL |ppg_finite_function_space| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_finite_function_space| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_finite_function_space| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ppg_finite_function_space| NIL))
+   NIL
+   (|universe| SUBTYPE "assignments"
+    "{U: finite_sets[Assignment].finite_set | FORALL (f: ppg_finite_function_space.Assignment): U(f)}"
+    (28 67 28 78)))))
+

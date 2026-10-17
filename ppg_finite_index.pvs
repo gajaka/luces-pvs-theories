@@ -1,0 +1,15 @@
+% A finite ordinal is contained in the corresponding finite natural range.
+%
+% Paul R. Halmos, Naive Set Theory, Van Nostrand, 1960.
+ppg_finite_index[n:nat]: THEORY
+BEGIN
+  Index: TYPE = below(n)
+
+  IMPORTING ppg_nat_range,
+    ppg_finite_injection[Index,nat] AS indexInjection
+
+  full_index_finite: LEMMA is_finite(fullset[Index])
+
+  universe: {U:finite_set[Index]|FORALL(i:Index):U(i)} = fullset[Index]
+
+END ppg_finite_index

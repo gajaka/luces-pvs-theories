@@ -1,0 +1,209 @@
+(|ppg_finite_table_fixed_law|
+ (|variables_full| 0
+  (|variables_full-1| NIL 4001260723
+   (""
+    (THEN (TYPEPRED "variables") (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :IF-MATCH ALL :DEFS ("fullset") :EXCLUDE ("is_finite" "card")))
+    NIL)
+   ((|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_finite_table_fixed_law| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_finite_table_fixed_law| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL))
+   SHOSTAK))
+ (|IMP_ppg_mt_state_probability_TCC1| 0
+  (|IMP_ppg_mt_state_probability_TCC1-1| NIL 4001260969
+   ("" (THEN (LEMMA "variables_full") (ASSERT)) NIL)
+   ((|variables_full| FORMULA-DECL NIL |ppg_finite_table_fixed_law| NIL)) NIL
+   (|IMP_ppg_mt_state_probability| SUBTYPE "variables"
+    "{F: finite_sets[ppg_finite_table_fixed_law.V].finite_set | F = sets[ppg_finite_table_fixed_law.V].fullset}"
+    (29 62 29 71))))
+ (|fixed_draw_readAt| 0
+  (|fixed_draw_readAt-1| NIL 4001260723
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :IF-MATCH NIL :DEFS ("fixedDraw" "readAt" "drawFrom" "atIdx")
+      :EXCLUDE ("is_finite" "card")))
+    NIL)
+   ((|drawFrom| CONST-DECL "MTState" |ppg_mt_random_process| NIL)
+    (|atIdx| CONST-DECL "(domain(v))" |ppg_mt_random_process| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_finite_table_fixed_law| NIL)
+    (|fixedDraw| CONST-DECL "[ResamplingLog -> State]"
+     |ppg_finite_table_fixed_law| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|readAt| CONST-DECL "MTState" |ppg_mt_check_measurable| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_table_fixed_law| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_finite_table_fixed_law| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_finite_table_fixed_law| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_finite_table_fixed_law| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_finite_table_fixed_law| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK))
+ (|measurable_fixedDraw| 0
+  (|measurable_fixedDraw-1| NIL 4001260723
+   (""
+    (THEN (SKOSIMP*) (LEMMA "native_readAt_measurable" ("n" "c!1"))
+     (LEMMA "fixed_draw_readAt" ("c" "c!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("measurable" "fixedDraw" "readAt" "is_finite" "card")))
+    NIL)
+   ((|fixed_draw_readAt| FORMULA-DECL NIL |ppg_finite_table_fixed_law| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|nativeProduct| CONST-DECL
+     "ppg_measurable_space[Pi[A, I, Value, domain]].MeasurableSpace"
+     |ppg_measurable_dependent_product| NIL)
+    (|native_readAt_measurable| FORMULA-DECL NIL |ppg_mt_read_probability| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_finite_table_fixed_law| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_finite_table_fixed_law| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_finite_table_fixed_law| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_finite_table_fixed_law| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_finite_table_fixed_law|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_finite_table_fixed_law| NIL))
+   SHOSTAK))
+ (|fixedDrawLaw_TCC1| 0
+  (|fixedDrawLaw_TCC1-1| NIL 4001260723
+   ("" (THEN (SKOSIMP*) (LEMMA "measurable_fixedDraw" ("c" "c!1")) (ASSERT))
+    NIL)
+   ((|measurable_fixedDraw| FORMULA-DECL NIL |ppg_finite_table_fixed_law| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_finite_table_fixed_law| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_finite_table_fixed_law| NIL))
+   NIL
+   (|fixedDrawLaw| SUBTYPE "fixedDraw(c)"
+    "MeasurableMap[ResamplingLog, State, NativeTableSigma[bool, V, Value, LAMBDA (v: V): domains(v)](spaces), NativeStateSigma[bool, V, Value, LAMBDA (v: V): domains(v)](spaces)]"
+    (49 88 49 100))))
+ (|fixedDraw_map| 0
+  (|fixedDraw_map-1| NIL 4001260723
+   (""
+    (THEN (SKOSIMP*) (LEMMA "logMeasure_map_readAt_eq_pi" ("n" "c!1"))
+     (LEMMA "fixed_draw_readAt" ("c" "c!1"))
+     (GRIND :IF-MATCH NIL :DEFS
+      ("fixedDrawLaw" "readAtLaw" "productLaw" "tableLaw") :EXCLUDE
+      ("pushforward" "logMeasure" "stateMeasure" "readAt" "fixedDraw"
+       "measurable" "is_finite" "card")))
+    NIL)
+   ((|fixed_draw_readAt| FORMULA-DECL NIL |ppg_finite_table_fixed_law| NIL)
+    (|productLaw| CONST-DECL
+     "ppg_probability_measure[State, NativeStateSigma(spaces)].Probability"
+     |ppg_finite_table_fixed_law| NIL)
+    (|fixedDrawLaw| CONST-DECL
+     "ppg_probability_measure[State, NativeStateSigma(spaces)].Probability"
+     |ppg_finite_table_fixed_law| NIL)
+    (|tableLaw| CONST-DECL
+     "ppg_probability_measure[ResamplingLog, NativeTableSigma(spaces)].Probability"
+     |ppg_finite_table_fixed_law| NIL)
+    (|readAtLaw| CONST-DECL "ppg_probability_measure
+    [MTState[C, V, Value, domain], NativeStateSigma(spaces)].Probability"
+     |ppg_mt_state_probability| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|logMeasure_map_readAt_eq_pi| FORMULA-DECL NIL |ppg_mt_state_probability|
+     NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_finite_table_fixed_law| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_finite_table_fixed_law| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_finite_table_fixed_law| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_finite_table_fixed_law| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_finite_table_fixed_law| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_finite_table_fixed_law|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_finite_table_fixed_law| NIL))
+   SHOSTAK)))
+

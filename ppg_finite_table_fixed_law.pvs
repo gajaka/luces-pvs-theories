@@ -1,0 +1,53 @@
+% Fixed local indices read independent coordinates of the resampling table.
+% Their joint law is the same finite product law for every choice of indices.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Section 2.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_table_fixed_law[V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING ppg_mt_coordinate_laws[bool,V,Value,LAMBDA(v:V):domains(v)])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  plainDomain: MACRO [V->set[Value]] = LAMBDA(v:V):domains(v)
+
+  IMPORTING ppg_finite_table_core[V,Value,variables,domains] AS fixedTable,
+    ppg_mt_native_spaces[bool,V,Value,plainDomain],
+    ppg_mt_check_measurable[bool,V,Value,plainDomain],
+    ppg_mt_read_probability[bool,V,Value,plainDomain,spaces,laws],
+    ppg_mt_log_probability[bool,V,Value,plainDomain,spaces,laws]
+
+  State: TYPE = fixedTable.State
+
+  ResamplingLog: TYPE = fixedTable.ResamplingLog
+
+  Counter: TYPE = fixedTable.Counter
+
+  variables_full: LEMMA variables=fullset[V]
+
+  IMPORTING ppg_mt_state_probability[bool,V,Value,plainDomain,variables,spaces,laws],
+    ppg_mt_random_process[bool,V,Value,plainDomain]
+
+  tableSigma: MACRO ppg_measurable_space[ResamplingLog].MeasurableSpace = NativeTableSigma(spaces)
+
+  stateSigma: MACRO ppg_measurable_space[State].MeasurableSpace = NativeStateSigma(spaces)
+
+  productLaw: ppg_probability_measure[State,stateSigma].Probability = stateMeasure
+
+  tableLaw: ppg_probability_measure[ResamplingLog,tableSigma].Probability = logMeasure
+
+  c: VAR Counter
+
+  fixedDraw(c): [ResamplingLog->State] = LAMBDA(omega:ResamplingLog):drawFrom(omega,c)
+
+  fixed_draw_readAt: LEMMA fixedDraw(c)=readAt(c)
+
+  measurable_fixedDraw: THEOREM ppg_measurable_map[ResamplingLog,State].measurable(tableSigma,stateSigma,fixedDraw(c))
+
+  fixedDrawLaw(c): ppg_probability_measure[State,stateSigma].Probability =
+    ppg_probability_map[ResamplingLog,State,tableSigma,stateSigma].pushforward(tableLaw,fixedDraw(c))
+
+  fixedDraw_map: THEOREM fixedDrawLaw(c)=productLaw
+
+END ppg_finite_table_fixed_law
