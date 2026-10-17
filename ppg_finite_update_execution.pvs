@@ -1,0 +1,138 @@
+% Fresh draws and the update equation give the conditional transition
+% law at each time of the filtration. Restricting each input indicator
+% by its current-state update event and adding the resulting conditional
+% versions produces the computed row of the transition kernel.
+%
+% No validity assumption on the rational input weights is needed here.
+% The fresh-input law is stated by its history-event integral identity.
+% Conditional versions are constructed before the canonical conditional
+% expectation is chosen on its proved domain of existence.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964.
+ppg_finite_update_execution[State,Input,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)},
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw,
+  (IMPORTING ppg_filtration[Omega,State,S]) history:Filtration]: THEORY
+BEGIN
+  IMPORTING ppg_finite_update[State,Input,universe,inputs],
+    ppg_finite_process_hitting[State,Omega,universe,S,measureLaw,history],
+    ppg_conditional_finite_fold[Input,Omega,S,measureLaw] AS updateFolds,
+    ppg_measurable_map[Omega,Input] AS updateInputMap,
+    ppg_measurable_map[Omega,State] AS updateStateMap,
+    ppg_finite_measure_integral[Omega,S,measureLaw] AS updateNative,
+    ppg_finite_restricted_integral[Omega,S,measureLaw] AS updateRestrictions
+
+  DrawMap: TYPE = {D:[Omega->Input]|updateInputMap.measurable(S,fullset[set[Input]],D)}
+
+  DrawProcess: TYPE = {D:[nat->[Omega->Input]]|FORALL(n:nat):
+    updateInputMap.measurable(S,fullset[set[Input]],D(n))}
+
+  drawState(D:DrawProcess,n:nat): DrawMap = D(n)
+
+  drawEvent(D:DrawMap,a:Input): (S) = updateInputMap.inverseImage(D,singleton[Input](a))
+
+  drawIndicator(D:DrawMap,a:Input)(omega:Omega): real = IF D(omega)=a THEN 1 ELSE 0 ENDIF
+
+  updateIndicator(R:Rule,X:AdaptedProcess,D:DrawProcess,n:nat,t:State): [Omega->real] =
+    LAMBDA(omega:Omega):IF R`update(X(n)(omega),D(n)(omega))=t THEN 1 ELSE 0 ENDIF
+
+  updateEvent(R:Rule,X:AdaptedProcess,n:nat,a:Input,t:State): (history(n)) =
+    updateStateMap.inverseImage(historyCurrent(X,n),{s:State|R`update(s,a)=t})
+
+  freshVersion(R:Rule,X:AdaptedProcess,D:DrawProcess,n:nat): bool = FORALL(a:Input):
+    ppg_conditional_versions[Omega,S,measureLaw,history(n)].conditionalVersion(
+      updateNative.indicator(drawEvent(drawState(D,n),a)),
+      ppg_finite_history_value[State,Omega,universe,S,measureLaw,history(n)].historyValue(
+        LAMBDA(s:State):R`mass(a),historyCurrent(X,n)))
+
+  nativeTerms(R:Rule,X:AdaptedProcess,D:DrawProcess,n:nat,t:State): updateFolds.NativeFamily =
+    LAMBDA(a:Input):updateRestrictions.restricted(
+      ppg_conditional_versions[Omega,S,measureLaw,history(n)].historyEvent(updateEvent(R,X,n,a,t)),
+      updateNative.indicator(drawEvent(drawState(D,n),a)))
+
+  historyTerms(R:Rule,X:AdaptedProcess,n:nat,t:State): updateFolds.HistoryFamily(history(n)) =
+    LAMBDA(a:Input):ppg_conditional_indicator[Omega,S,measureLaw,history(n)].historyRestricted(
+      updateEvent(R,X,n,a,t),
+      ppg_finite_history_value[State,Omega,universe,S,measureLaw,history(n)].historyValue(
+        LAMBDA(s:State):R`mass(a),historyCurrent(X,n)))
+
+  R: VAR Rule
+  X: VAR AdaptedProcess
+  D: VAR DrawProcess
+  n: VAR nat
+  a: VAR Input
+  t: VAR State
+  omega: VAR Omega
+
+  conditional_input_term: LEMMA freshVersion(R,X,D,n) IMPLIES
+    ppg_conditional_versions[Omega,S,measureLaw,history(n)].conditionalVersion(
+      nativeTerms(R,X,D,n,t)(a),historyTerms(R,X,n,t)(a))
+
+  native_term_at: LEMMA nativeTerms(R,X,D,n,t)(a)(omega)=
+    (IF R`update(X(n)(omega),a)=t THEN 1 ELSE 0 ENDIF)*drawIndicator(drawState(D,n),a)(omega)
+
+  history_term_at: LEMMA historyTerms(R,X,n,t)(a)(omega)=
+    IF R`update(X(n)(omega),a)=t THEN R`mass(a) ELSE 0 ENDIF
+
+  native_term_function: LEMMA
+    (LAMBDA(a:Input):nativeTerms(R,X,D,n,t)(a)(omega))=
+    (LAMBDA(a:Input):IF a=D(n)(omega) THEN
+      (IF R`update(X(n)(omega),a)=t THEN 1 ELSE 0 ENDIF) ELSE 0 ENDIF)
+
+  history_term_function: LEMMA
+    (LAMBDA(a:Input):historyTerms(R,X,n,t)(a)(omega))=
+    (LAMBDA(a:Input):IF t=R`update(X(n)(omega),a) THEN R`mass(a) ELSE 0 ENDIF)
+
+  native_sum_update: LEMMA
+    updateFolds.nativeSum(inputs,nativeTerms(R,X,D,n,t))=updateIndicator(R,X,D,n,t)
+
+  history_sum_kernel: LEMMA
+    updateFolds.historySum(history(n),inputs,historyTerms(R,X,n,t))=
+      ppg_finite_conditional_value[State,Omega,universe,S,measureLaw,history(n)].rowCoordinate(
+        model(R),historyCurrent(X,n),t)
+
+  Execution(R,X,D): bool =
+    (FORALL(n:nat,omega:Omega):X(n+1)(omega)=R`update(X(n)(omega),D(n)(omega))) AND
+    (FORALL(n:nat):freshVersion(R,X,D,n))
+
+  step_indicator_function: LEMMA Execution(R,X,D) IMPLIES
+    updateNative.indicator(stateEvent(ambientState(X,n+1),t))=updateIndicator(R,X,D,n,t)
+
+  update_conditional_version: LEMMA Execution(R,X,D) IMPLIES
+    ppg_finite_conditional_value[State,Omega,universe,S,measureLaw,history(n)].TransitionVersions(
+      model(R),historyCurrent(X,n),ambientState(X,n+1))
+
+  execution_process_transition: LEMMA Execution(R,X,D) IMPLIES TransitionProcess(model(R),X)
+
+  ExecutionProcess(R:Rule,D:DrawProcess): TYPE = {X:AdaptedProcess|Execution(R,X,D)}
+
+  executionRealization(R:Rule,D:DrawProcess,X:ExecutionProcess(R,D)): Realization(model(R)) = X
+
+  execution_realization_at: LEMMA FORALL(R:Rule,D:DrawProcess,
+    X:ExecutionProcess(R,D),n:nat,omega:Omega):
+    executionRealization(R,D,X)(n)(omega)=X(n)(omega)
+
+  execution_transition: THEOREM FORALL(R:Rule,D:DrawProcess,
+    X:ExecutionProcess(R,D),n:nat,t:State):
+    ae_eq?(
+      ppg_conditional_unique[Omega,S,measureLaw,history(n)].conditionalExpectation(
+        ppg_finite_conditional_value[State,Omega,universe,S,measureLaw,history(n)].realizedIndicator(
+          model(R),realizedStep(model(R),executionRealization(R,D,X),n),t)),
+      ppg_finite_conditional_value[State,Omega,universe,S,measureLaw,history(n)].rowCoordinate(
+        model(R),historyCurrent(X,n),t))
+
+  toRealization: THEOREM FORALL(R:Rule,D:DrawProcess,X:ExecutionProcess(R,D)):
+    TransitionProcess(model(R),executionRealization(R,D,X))
+
+  execution_expectedHitCount_le: THEOREM FORALL(R:Rule,W:AcceptedWitness(model(R)),
+    D:DrawProcess,X:ExecutionProcess(R,D)):
+    ele(expectedHitCount(model(R),X),ennFinite(potentialMean(model(R),W,X,0)/positiveRate(model(R),W)))
+
+  execution_ae_exists_good: THEOREM FORALL(R:Rule,W:AcceptedWitness(model(R)),
+    D:DrawProcess,X:ExecutionProcess(R,D)):
+    ae?({omega:Omega|EXISTS(T:nat):R`good(X(T)(omega))})
+
+END ppg_finite_update_execution

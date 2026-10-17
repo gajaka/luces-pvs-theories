@@ -1,0 +1,77 @@
+% Conditional versions are closed under a finite sum of integrable
+% functions. The smaller sigma-algebra remains an explicit argument.
+% The empty sum uses its measurable empty-event indicator, so no
+% inhabitant of the index carrier is required.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_conditional_finite_fold[Index,Omega: TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_finite_measure_integral[Omega,S,measureLaw],
+    ppg_finite_sum[Index],
+    ppg_conditional_versions,ppg_conditional_indicator
+
+  HistorySigma: TYPE = {H:ppg_measurable_space[Omega].MeasurableSpace|subset?(H,S)}
+
+  FoldHistoryFunction(H:HistorySigma): TYPE =
+    ppg_conditional_versions[Omega,S,measureLaw,H].HistoryFunction
+
+  NativeFamily: TYPE = [Index->NativeFunction]
+
+  HistoryFamily(H:HistorySigma): TYPE = [Index->FoldHistoryFunction(H)]
+
+  A: VAR finite_set[Index]
+  F: VAR NativeFamily
+  omega: VAR Omega
+
+  omega_function_eq: LEMMA FORALL(f,g:[Omega->real]):
+    f=g IFF (FORALL(omega:Omega):f(omega)=g(omega))
+
+  historyZero(H:HistorySigma): FoldHistoryFunction(H) =
+    ppg_conditional_indicator[Omega,S,measureLaw,H].historyIndicator(emptyset[Omega])
+
+  history_zero_value: LEMMA FORALL(H:HistorySigma,omega:Omega):
+    historyZero(H)(omega)=0
+
+  history_zero_function: LEMMA FORALL(H:HistorySigma):historyZero(H)=constant(0)
+
+  nativeSum(A,F): RECURSIVE NativeFunction =
+    IF empty?(A) THEN constant(0)
+    ELSE F(choose(A))+nativeSum(rest(A),F) ENDIF
+    MEASURE card(A)
+
+  historySum(H:HistorySigma,A:finite_set[Index],G:HistoryFamily(H)):
+    RECURSIVE FoldHistoryFunction(H) =
+    IF empty?(A) THEN historyZero(H)
+    ELSE ppg_conditional_versions[Omega,S,measureLaw,H].historyAdd(
+      G(choose(A)),historySum(H,rest(A),G)) ENDIF
+    MEASURE card(A)
+
+  native_sum_empty: LEMMA empty?(A) IMPLIES nativeSum(A,F)=constant(0)
+
+  native_sum_step: LEMMA NOT empty?(A) IMPLIES
+    nativeSum(A,F)=F(choose(A))+nativeSum(rest(A),F)
+
+  history_sum_empty: LEMMA FORALL(H:HistorySigma,A:finite_set[Index],G:HistoryFamily(H)):
+    empty?(A) IMPLIES historySum(H,A,G)=historyZero(H)
+
+  history_sum_step: LEMMA FORALL(H:HistorySigma,A:finite_set[Index],G:HistoryFamily(H)):
+    NOT empty?(A) IMPLIES historySum(H,A,G)=
+      ppg_conditional_versions[Omega,S,measureLaw,H].historyAdd(
+        G(choose(A)),historySum(H,rest(A),G))
+
+  native_sum_value: LEMMA nativeSum(A,F)(omega)=fsum(A,LAMBDA(i:Index):F(i)(omega))
+
+  history_sum_value: LEMMA FORALL(H:HistorySigma,A:finite_set[Index],
+    G:HistoryFamily(H),omega:Omega):
+    historySum(H,A,G)(omega)=fsum(A,LAMBDA(i:Index):G(i)(omega))
+
+  finite_conditional_fold: THEOREM FORALL(H:HistorySigma,A:finite_set[Index],
+    F:NativeFamily,G:HistoryFamily(H)):
+    (FORALL(i:Index):A(i) IMPLIES
+      ppg_conditional_versions[Omega,S,measureLaw,H].conditionalVersion(F(i),G(i))) IMPLIES
+    ppg_conditional_versions[Omega,S,measureLaw,H].conditionalVersion(
+      nativeSum(A,F),historySum(H,A,G))
+
+END ppg_conditional_finite_fold
