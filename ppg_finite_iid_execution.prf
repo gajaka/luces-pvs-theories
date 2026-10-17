@@ -1,0 +1,678 @@
+(|ppg_finite_iid_execution|
+ (|filtration_value| 0
+  (|filtration_value-1| NIL 4001244974
+   ("" (THEN (EXPAND "iidRunTrajectory.inputFiltration") (ASSERT)) NIL)
+   ((|inputFiltration| CONST-DECL "trajFiltration.Filtration"
+     |ppg_finite_iid_trajectory| NIL))
+   SHOSTAK))
+ (|iidProcess_TCC1| 0
+  (|iidProcess_TCC1-1| NIL 4001244973
+   (""
+    (THEN (EXPAND "iidRunFiltration.adapted") (SKOSIMP*)
+     (LEMMA "iidRunTrajectory.iidTrajectory_adapted"
+      ("R" "R" "s0" "s0" "n" "n!1"))
+     (EXPAND "iidRunTrajectory.inputFiltration") (EXPAND "selectionStateSigma")
+     (ASSERT))
+    NIL)
+   ((|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|iidTrajectory_adapted| FORMULA-DECL NIL |ppg_finite_iid_trajectory| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}" |ppg_finite_iid_execution| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|s0| FORMAL-CONST-DECL "State" |ppg_finite_iid_execution| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_iid_execution| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_finite_iid_execution| NIL)
+    (|selectionStateSigma| CONST-DECL
+     "ppg_measurable_space[State].MeasurableSpace"
+     |ppg_finite_update_measurable| NIL)
+    (|inputFiltration| CONST-DECL "trajFiltration.Filtration"
+     |ppg_finite_iid_trajectory| NIL))
+   NIL
+   (|iidProcess| SUBTYPE
+    "LAMBDA (n: nat): iidRunTrajectory[State, Input, universe, inputs].iidTrajectory(R, s0, n)"
+    "AdaptedProcess[State, Sample[Input], universe, iidRunHistory[Input].ambientSigma, iidRunLaw[State, Input, universe, inputs, R].iidMeasure, iidRunTrajectory[State, Input, universe, inputs].inputFiltration]"
+    (33 4 33 56))))
+ (|iidDraws_TCC1| 0
+  (|iidDraws_TCC1-1| NIL 4001244973
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "iidRunHistory.input_measurable_ambient" ("k" "n!1")) (ASSERT))
+    NIL)
+   ((|input_measurable_ambient| FORMULA-DECL NIL |ppg_finite_input_history|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL))
+   NIL
+   (|iidDraws| SUBTYPE
+    "LAMBDA (n: nat): (LAMBDA (omega: iidRunHistory[Input].Sample): omega(n))"
+    "DrawProcess[State, Input, Sample[Input], universe, inputs, iidRunHistory[Input].ambientSigma, iidRunLaw[State, Input, universe, inputs, R].iidMeasure, iidRunTrajectory[State, Input, universe, inputs].inputFiltration]"
+    (36 4 36 63))))
+ (|draw_event_value| 0
+  (|draw_event_value-1| NIL 4001244974
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (EXPAND "iidRunUpdate.drawEvent") (EXPAND "iidRunUpdate.drawState")
+     (EXPAND "iidDraws") (EXPAND "iidRunLaw.sequenceCoordinate")
+     (EXPAND "iidRunHistory.coordinateEvent")
+     (GRIND :IF-MATCH NIL :DEFS
+      ("ppg_measurable_map[iidRunHistory.Sample,Input].inverseImage"
+       "singleton" "member")
+      :EXCLUDE
+      ("iidProbability" "infiniteLaw" "iidMeasure" "inputPMF" "nativeLaw"
+       "coordinateLaw" "inputHistory" "ambientSigma" "generated" "sigma?"
+       "measure?" "probability?" "iidTrajectory" "model")))
+    NIL)
+   ((|coordinateEvent| CONST-DECL "set[Sample]" |ppg_finite_input_history| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[Input]" |ppg_finite_iid_execution| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|ambientSigma| CONST-DECL "historySpace.MeasurableSpace"
+     |ppg_finite_input_history| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_iid_execution| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_finite_iid_execution| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}" |ppg_finite_iid_execution| NIL)
+    (|iidMeasure| CONST-DECL
+     "ppg_finite_law_view[Sample[Input], iidSampleHistory.ambientSigma].FiniteLaw"
+     |ppg_finite_iid_law| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|inputFiltration| CONST-DECL "trajFiltration.Filtration"
+     |ppg_finite_iid_trajectory| NIL)
+    (|DrawMap| TYPE-EQ-DECL NIL |ppg_finite_update_execution| NIL)
+    (|drawEvent| CONST-DECL "(S)" |ppg_finite_update_execution| NIL)
+    (|DrawProcess| TYPE-EQ-DECL NIL |ppg_finite_update_execution| NIL)
+    (|drawState| CONST-DECL "DrawMap" |ppg_finite_update_execution| NIL)
+    (|iidDraws| CONST-DECL "iidRunUpdate.DrawProcess"
+     |ppg_finite_iid_execution| NIL)
+    (|sequenceCoordinate| CONST-DECL "(iidSampleHistory.ambientSigma)"
+     |ppg_finite_iid_law| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Sample| TYPE-EQ-DECL NIL |ppg_finite_input_history| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|history_mass_function_TCC1| 0
+  (|history_mass_function_TCC1-1| NIL 4001244973
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "iidRunFiltration.history_ambient"
+      ("H" "iidRunTrajectory.inputFiltration" "n" "n!1"))
+     (ASSERT))
+    NIL)
+   ((|history_ambient| FORMULA-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_iid_execution| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_finite_iid_execution| NIL)
+    (|inputFiltration| CONST-DECL "trajFiltration.Filtration"
+     |ppg_finite_iid_trajectory| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|Sample| TYPE-EQ-DECL NIL |ppg_finite_input_history| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ambientSigma| CONST-DECL "historySpace.MeasurableSpace"
+     |ppg_finite_input_history| NIL))
+   NIL
+   (|history_mass_function| SUBTYPE
+    "iidRunTrajectory[State, Input, universe, inputs].inputFiltration(n)"
+    "{H: ppg_measurable_space[Sample[Input]].MeasurableSpace | sets[Event[Sample[Input]]].subset?(H, iidRunHistory[ppg_finite_iid_execution.Input].ambientSigma)}"
+    (42 4 43 103))))
+ (|history_mass_function| 0
+  (|history_mass_function-1| NIL 4001244974
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "iidRunFiltration.history_ambient"
+      ("H" "iidRunTrajectory.inputFiltration" "n" "n!1"))
+     (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA
+      "ppg_finite_history_value[State,iidRunHistory.Sample,universe,iidRunHistory.ambientSigma,iidRunLaw.iidMeasure,iidRunTrajectory.inputFiltration(n!1)].history_value_at"
+      ("f" "LAMBDA(s:State):R`mass(a!1)" "X"
+       "iidRunProcess.historyCurrent(iidProcess,n!1)" "omega" "x!1"))
+     (LEMMA "iidRunFunctions.constant_value" ("c" "R`mass(a!1)" "x" "x!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("iidProbability" "infiniteLaw" "iidMeasure" "inputPMF" "nativeLaw"
+       "coordinateLaw" "inputHistory" "ambientSigma" "generated" "sigma?"
+       "measure?" "probability?" "iidTrajectory" "model")))
+    NIL)
+   ((|constant| CONST-DECL "NativeFunction" |ppg_finite_measure_integral| NIL)
+    (|iidProcess| CONST-DECL "iidRunProcess.AdaptedProcess"
+     |ppg_finite_iid_execution| NIL)
+    (|historyCurrent| CONST-DECL "ppg_finite_history_value
+    [State, Omega, universe, S, measureLaw, history(n)].HistoryStateMap"
+     |ppg_finite_process_realization| NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|historyValue| CONST-DECL "HistoryFunction" |ppg_finite_history_value|
+     NIL)
+    (|HistoryFunction| TYPE-EQ-DECL NIL |ppg_conditional_versions| NIL)
+    (|historyMeasurable| CONST-DECL "bool" |ppg_conditional_versions| NIL)
+    (|NativeFunction| TYPE-EQ-DECL NIL |ppg_finite_measure_integral| NIL)
+    (|integrable?| CONST-DECL "bool" |integral| |measure_integration|)
+    (|HistoryStateMap| TYPE-EQ-DECL NIL |ppg_finite_history_value| NIL)
+    (|StateMap| TYPE-EQ-DECL NIL |ppg_finite_process_integral| NIL)
+    (|iidMeasure| CONST-DECL
+     "ppg_finite_law_view[Sample[Input], iidSampleHistory.ambientSigma].FiniteLaw"
+     |ppg_finite_iid_law| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}" |ppg_finite_iid_execution| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|constant_value| FORMULA-DECL NIL |ppg_finite_measure_integral| NIL)
+    (|integrableValue| CONST-DECL "NativeFunction"
+     |ppg_finite_process_integral| NIL)
+    (* CONST-DECL "[T -> real]" |real_fun_ops| |reals|)
+    (|phi| CONST-DECL "nat" |measure_space| |measure_integration|)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|indicator| CONST-DECL "NativeFunction" |ppg_finite_measure_integral| NIL)
+    (|simple_scal| APPLICATION-JUDGEMENT
+     "simple[Sample[Input], asNasa(iidSampleHistory.ambientSigma)]"
+     |ppg_finite_iid_execution| NIL)
+    (|rat_times_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|phi_is_simple| APPLICATION-JUDGEMENT
+     "simple[Sample[Input], asNasa(iidSampleHistory.ambientSigma)]"
+     |ppg_finite_iid_execution| NIL)
+    (|integrable_scal| APPLICATION-JUDGEMENT
+     "integrable[Sample[Input], asNasa(iidSampleHistory.ambientSigma), iidMeasure]"
+     |ppg_finite_iid_execution| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT
+     "measurable_set[Sample[Input], asNasa(iidSampleHistory.ambientSigma)]"
+     |ppg_finite_iid_execution| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT
+     "(asNasa(iidSampleHistory.ambientSigma))" |ppg_finite_iid_execution| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|history_value_at| FORMULA-DECL NIL |ppg_finite_history_value| NIL)
+    (|history_ambient| FORMULA-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_iid_execution| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_finite_iid_execution| NIL)
+    (|inputFiltration| CONST-DECL "trajFiltration.Filtration"
+     |ppg_finite_iid_trajectory| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|Sample| TYPE-EQ-DECL NIL |ppg_finite_input_history| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ambientSigma| CONST-DECL "historySpace.MeasurableSpace"
+     |ppg_finite_input_history| NIL))
+   SHOSTAK))
+ (|iid_fresh_version| 0
+  (|iid_fresh_version-1| NIL 4001244974
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "iidRunFiltration.history_ambient"
+      ("H" "iidRunTrajectory.inputFiltration" "n" "n!1"))
+     (EXPAND "iidRunUpdate.freshVersion") (SKOSIMP*)
+     (REWRITE "draw_event_value") (REWRITE "history_mass_function")
+     (LEMMA
+      "ppg_finite_iid_fresh[State,Input,universe,inputs,R,n!1].input_fresh_version"
+      ("a" "a!1"))
+     (EXPAND "inputEvent" -1) (LEMMA "filtration_value")
+     (REPLACE -1 :ACTUALS? T) (ASSERT))
+    NIL)
+   ((|freshVersion| CONST-DECL "bool" |ppg_finite_update_execution| NIL)
+    (|draw_event_value| FORMULA-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[Input]" |ppg_finite_iid_execution| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}" |ppg_finite_iid_execution| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|input_fresh_version| FORMULA-DECL NIL |ppg_finite_iid_fresh| NIL)
+    (|filtration_value| FORMULA-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|inputEvent| CONST-DECL "iidFreshIndicator.IndependentEvent"
+     |ppg_finite_iid_fresh| NIL)
+    (|history_mass_function| FORMULA-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|history_ambient| FORMULA-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_iid_execution| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_finite_iid_execution| NIL)
+    (|inputFiltration| CONST-DECL "trajFiltration.Filtration"
+     |ppg_finite_iid_trajectory| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|Sample| TYPE-EQ-DECL NIL |ppg_finite_input_history| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ambientSigma| CONST-DECL "historySpace.MeasurableSpace"
+     |ppg_finite_input_history| NIL))
+   SHOSTAK))
+ (|iidExecution| 0
+  (|iidExecution-1| NIL 4001244974
+   (""
+    (THEN (EXPAND "iidRunUpdate.Execution") (LEMMA "iid_fresh_version")
+     (LEMMA "iidRunTrajectory.iidTrajectory_step" ("R" "R" "s0" "s0"))
+     (EXPAND "iidProcess") (EXPAND "iidDraws")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("iidProbability" "infiniteLaw" "iidMeasure" "inputPMF" "nativeLaw"
+       "coordinateLaw" "inputHistory" "ambientSigma" "generated" "sigma?"
+       "measure?" "probability?" "iidTrajectory" "model")))
+    NIL)
+   ((|Execution| CONST-DECL "bool" |ppg_finite_update_execution| NIL)
+    (|iidTrajectory_step| FORMULA-DECL NIL |ppg_finite_iid_trajectory| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}" |ppg_finite_iid_execution| NIL)
+    (|s0| FORMAL-CONST-DECL "State" |ppg_finite_iid_execution| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_iid_execution| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_finite_iid_execution| NIL)
+    (|iidDraws| CONST-DECL "iidRunUpdate.DrawProcess"
+     |ppg_finite_iid_execution| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|freshVersion| CONST-DECL "bool" |ppg_finite_update_execution| NIL)
+    (|conditionalVersion| CONST-DECL "bool" |ppg_conditional_versions| NIL)
+    (|setIntegral| CONST-DECL "real" |ppg_finite_restricted_integral| NIL)
+    (|integral| CONST-DECL "real" |integral| |measure_integration|)
+    (|restricted| CONST-DECL "NativeFunction" |ppg_finite_restricted_integral|
+     NIL)
+    (|historyEvent| CONST-DECL "(S)" |ppg_conditional_versions| NIL)
+    (|historyValue| CONST-DECL "HistoryFunction" |ppg_finite_history_value|
+     NIL)
+    (|historyCurrent| CONST-DECL "ppg_finite_history_value
+    [State, Omega, universe, S, measureLaw, history(n)].HistoryStateMap"
+     |ppg_finite_process_realization| NIL)
+    (|indicator| CONST-DECL "NativeFunction" |ppg_finite_measure_integral| NIL)
+    (|drawEvent| CONST-DECL "(S)" |ppg_finite_update_execution| NIL)
+    (|drawState| CONST-DECL "DrawMap" |ppg_finite_update_execution| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Sample| TYPE-EQ-DECL NIL |ppg_finite_input_history| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ambientSigma| CONST-DECL "historySpace.MeasurableSpace"
+     |ppg_finite_input_history| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|iidMeasure| CONST-DECL
+     "ppg_finite_law_view[Sample[Input], iidSampleHistory.ambientSigma].FiniteLaw"
+     |ppg_finite_iid_law| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|inputFiltration| CONST-DECL "trajFiltration.Filtration"
+     |ppg_finite_iid_trajectory| NIL)
+    (|iidProcess| CONST-DECL "iidRunProcess.AdaptedProcess"
+     |ppg_finite_iid_execution| NIL)
+    (|iid_fresh_version| FORMULA-DECL NIL |ppg_finite_iid_execution| NIL))
+   SHOSTAK))
+ (|executionProcess_TCC1| 0
+  (|executionProcess_TCC1-1| NIL 4001244973
+   ("" (THEN (LEMMA "iidExecution") (ASSERT)) NIL)
+   ((|iidExecution| FORMULA-DECL NIL |ppg_finite_iid_execution| NIL)) NIL
+   (|executionProcess| SUBTYPE "iidProcess"
+    "ExecutionProcess[ppg_finite_iid_execution.State, ppg_finite_iid_execution.Input, Sample[Input], ppg_finite_iid_execution.universe, ppg_finite_iid_execution.inputs, iidRunHistory[ppg_finite_iid_execution.Input].ambientSigma, iidRunLaw[ppg_finite_iid_execution.State, ppg_finite_iid_execution.Input, ppg_finite_iid_execution.universe, ppg_finite_iid_execution.inputs, ppg_finite_iid_execution.R].iidMeasure, iidRunTrajectory[ppg_finite_iid_execution.State, ppg_finite_iid_execution.Input, ppg_finite_iid_execution.universe, ppg_finite_iid_execution.inputs].inputFiltration](ppg_finite_iid_execution.R, ppg_finite_iid_execution.iidDraws)"
+    (51 64 51 74))))
+ (|iidRealization| 0
+  (|iidRealization-1| NIL 4001244974
+   ("" (THEN (TYPEPRED "iidRealized") (ASSERT)) NIL)
+   ((|iidRealized| CONST-DECL "iidRunProcess.Realization(iidRunRule.model(R))"
+     |ppg_finite_iid_execution| NIL)
+    (|Realization| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|TransitionProcess| CONST-DECL "bool" |ppg_finite_process_realization|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|iidMeasure| CONST-DECL
+     "ppg_finite_law_view[Sample[Input], iidSampleHistory.ambientSigma].FiniteLaw"
+     |ppg_finite_iid_law| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}" |ppg_finite_iid_execution| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|inputFiltration| CONST-DECL "trajFiltration.Filtration"
+     |ppg_finite_iid_trajectory| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_finite_iid_execution| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_iid_execution| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|ambientSigma| CONST-DECL "historySpace.MeasurableSpace"
+     |ppg_finite_input_history| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Sample| TYPE-EQ-DECL NIL |ppg_finite_input_history| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|realization_at| 0
+  (|realization_at-1| NIL 4001244974
+   (""
+    (THEN (SKOSIMP*) (EXPAND "iidRealized")
+     (LEMMA "iidRunUpdate.execution_realization_at"
+      ("R" "R" "D" "iidDraws" "X" "executionProcess" "n" "n!1" "omega"
+       "omega!1"))
+     (EXPAND "executionProcess") (EXPAND "iidProcess") (ASSERT))
+    NIL)
+   ((|execution_realization_at| FORMULA-DECL NIL |ppg_finite_update_execution|
+     NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|DrawProcess| TYPE-EQ-DECL NIL |ppg_finite_update_execution| NIL)
+    (|iidDraws| CONST-DECL "iidRunUpdate.DrawProcess"
+     |ppg_finite_iid_execution| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|Execution| CONST-DECL "bool" |ppg_finite_update_execution| NIL)
+    (|ExecutionProcess| TYPE-EQ-DECL NIL |ppg_finite_update_execution| NIL)
+    (|executionProcess| CONST-DECL "iidRunUpdate.ExecutionProcess(R, iidDraws)"
+     |ppg_finite_iid_execution| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_iid_execution| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Sample| TYPE-EQ-DECL NIL |ppg_finite_input_history| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_finite_iid_execution| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_finite_iid_execution| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ambientSigma| CONST-DECL "historySpace.MeasurableSpace"
+     |ppg_finite_input_history| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}" |ppg_finite_iid_execution| NIL)
+    (|iidMeasure| CONST-DECL
+     "ppg_finite_law_view[Sample[Input], iidSampleHistory.ambientSigma].FiniteLaw"
+     |ppg_finite_iid_law| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|inputFiltration| CONST-DECL "trajFiltration.Filtration"
+     |ppg_finite_iid_trajectory| NIL)
+    (|iidProcess| CONST-DECL "iidRunProcess.AdaptedProcess"
+     |ppg_finite_iid_execution| NIL)
+    (|iidRealized| CONST-DECL "iidRunProcess.Realization(iidRunRule.model(R))"
+     |ppg_finite_iid_execution| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,52 @@
+% The present coordinate is independent of the generated past. Its
+% indicator therefore has the constant conditional version given by
+% the original rational input mass. Existence is proved before the
+% canonical conditional expectation is used.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_iid_fresh[State,Input: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)},
+  (IMPORTING ppg_finite_update[State,Input,universe,inputs])
+  R:{R:Rule|Valid(R)},n:nat]: THEORY
+BEGIN
+  IMPORTING ppg_finite_iid_law[State,Input,universe,inputs,R] AS iidFreshLaw,
+    ppg_finite_input_history[Input] AS iidFreshHistory,
+    ppg_finite_iid_prefix_independence[State,Input,universe,inputs,R,n] AS iidFreshPast,
+    ppg_finite_update_law[State,Input,universe,inputs] AS iidFreshInputLaw
+
+  history_below_ambient: LEMMA subset?(iidFreshHistory.inputHistory(n),iidFreshHistory.ambientSigma)
+
+  IMPORTING ppg_independent_indicator_version[iidFreshHistory.Sample,
+      iidFreshHistory.ambientSigma,iidFreshLaw.iidProbability,
+      iidFreshHistory.inputHistory(n)] AS iidFreshIndicator,
+    ppg_conditional_versions[iidFreshHistory.Sample,iidFreshHistory.ambientSigma,
+      iidFreshLaw.iidMeasure,iidFreshHistory.inputHistory(n)] AS iidFreshVersions,
+    ppg_finite_measure_integral[iidFreshHistory.Sample,iidFreshHistory.ambientSigma,
+      iidFreshLaw.iidMeasure] AS iidFreshFunctions,
+    ppg_conditional_unique[iidFreshHistory.Sample,iidFreshHistory.ambientSigma,
+      iidFreshLaw.iidMeasure,iidFreshHistory.inputHistory(n)] AS iidFreshChoice,
+    measure_integration@measure_theory[iidFreshHistory.Sample,asNasa(iidFreshHistory.ambientSigma),
+      iidFreshLaw.iidMeasure] AS iidFreshAE
+
+  a: VAR Input
+  A: VAR (iidFreshHistory.inputHistory(n))
+
+  measure_view_eq: LEMMA iidFreshIndicator.measureLaw=iidFreshLaw.iidMeasure
+
+  singleton_independent: LEMMA iidFreshIndicator.independentEvent(
+    iidFreshLaw.sequenceCoordinate(n,singleton[Input](a)))
+
+  inputEvent(a): iidFreshIndicator.IndependentEvent =
+    iidFreshLaw.sequenceCoordinate(n,singleton[Input](a))
+
+  input_event_mass: LEMMA iidFreshLaw.iidProbability(inputEvent(a))=R`mass(a)
+
+  input_fresh_version: LEMMA iidFreshVersions.conditionalVersion(
+    iidFreshFunctions.indicator(inputEvent(a)),iidFreshFunctions.constant(R`mass(a)))
+
+  iid_input_fresh: THEOREM iidFreshAE.ae_eq?(
+    iidFreshChoice.conditionalExpectation(iidFreshIndicator.admissibleIndicator(inputEvent(a))),
+    iidFreshFunctions.constant(R`mass(a)))
+
+END ppg_finite_iid_fresh
