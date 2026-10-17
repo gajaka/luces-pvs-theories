@@ -1,0 +1,65 @@
+% A positive reduced step contains a positive input. Applying that
+% same input to a concrete representative lifts the step. Inductive
+% closure then lifts finite paths and preserves reachability of good states.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Section 2.3.1, American Mathematical Society, 2017.
+ppg_update_projection_reach[State,Abstract,Input: TYPE,
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_input_update[State,Input,inputs] AS reachSource,
+    ppg_finite_input_update[Abstract,Input,inputs] AS reachTarget,
+    ppg_finite_update_projection[State,Abstract,Input,inputs] AS reachCommutation,
+    ppg_finite_update_input_support[State,Input,inputs] AS reachSourceInput,
+    ppg_finite_update_input_support[Abstract,Input,inputs] AS reachTargetInput,
+    ppg_update_reach[State,Input,inputs] AS reachSourceEvents,
+    ppg_update_reach[Abstract,Input,inputs] AS reachTargetEvents,
+    ppg_reachability_refutation[State,bool] AS reachSourceRelation,
+    ppg_reachability_refutation[Abstract,bool] AS reachTargetRelation
+
+  R: VAR reachSource.Rule
+  Q: VAR reachTarget.Rule
+  p: VAR [State->Abstract]
+  s,t,s0: VAR State
+  a: VAR Abstract
+
+  sourceReach(R)(s,t): bool = reachSourceRelation.Reach(reachSourceEvents.positiveStep(R))(s,t)
+
+  targetReach(Q)(a,b:Abstract): bool =
+    reachTargetRelation.Reach(reachTargetEvents.positiveStep(Q))(a,b)
+
+  commuting_good: LEMMA reachCommutation.Commutes(R,Q,p) IMPLIES R`good(s)=Q`good(p(s))
+
+  positive_step_lifts: THEOREM reachCommutation.Commutes(R,Q,p) AND
+    reachSource.Valid(R) AND reachTarget.Valid(Q) AND
+    0<reachTarget.kernel(Q,p(s),a) IMPLIES
+    EXISTS(t:State):0<reachSource.kernel(R,s,t) AND p(t)=a
+
+  projectedPath(Q,p,s0): set[State] = {s:State|targetReach(Q)(p(s0),p(s))}
+
+  projected_inductive: LEMMA reachCommutation.Commutes(R,Q,p) AND reachTarget.Valid(Q) IMPLIES
+    reachSourceRelation.InductiveSet(reachSourceEvents.positiveStep(R),projectedPath(Q,p,s0))
+
+  reach_projects: LEMMA reachCommutation.Commutes(R,Q,p) AND reachTarget.Valid(Q) AND
+    sourceReach(R)(s0,t) IMPLIES targetReach(Q)(p(s0),p(t))
+
+  reachable_good_projects: THEOREM reachCommutation.Commutes(R,Q,p) AND reachTarget.Valid(Q) AND
+    reachSourceEvents.ReachesGood(R,s0) IMPLIES reachTargetEvents.ReachesGood(Q,p(s0))
+
+  liftedSet(R,p,s0): set[Abstract] = {a:Abstract|EXISTS(t:State):sourceReach(R)(s0,t) AND p(t)=a}
+
+  lifted_inductive: LEMMA reachCommutation.Commutes(R,Q,p) AND reachSource.Valid(R) AND
+    reachTarget.Valid(Q) IMPLIES
+    reachTargetRelation.InductiveSet(reachTargetEvents.positiveStep(Q),liftedSet(R,p,s0))
+
+  lifted_initial: LEMMA liftedSet(R,p,s0)(p(s0))
+
+  reachable_lifts: THEOREM reachCommutation.Commutes(R,Q,p) AND reachSource.Valid(R) AND
+    reachTarget.Valid(Q) AND targetReach(Q)(p(s0),a) IMPLIES
+    EXISTS(t:State):sourceReach(R)(s0,t) AND p(t)=a
+
+  reachable_good_iff: THEOREM reachCommutation.Commutes(R,Q,p) AND reachSource.Valid(R) AND
+    reachTarget.Valid(Q) IMPLIES
+    (reachSourceEvents.ReachesGood(R,s0) IFF reachTargetEvents.ReachesGood(Q,p(s0)))
+
+END ppg_update_projection_reach

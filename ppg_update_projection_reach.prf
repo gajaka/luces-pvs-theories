@@ -1,0 +1,325 @@
+(|ppg_update_projection_reach|
+ (|commuting_good| 0
+  (|commuting_good-1| NIL 4001246091
+   (""
+    (THEN (SKOSIMP*) (EXPAND "reachCommutation.Commutes" -1) (FLATTEN)
+     (INST -2 "s!1") (ASSERT))
+    NIL)
+   ((|State| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|Commutes| CONST-DECL "bool" |ppg_finite_update_projection| NIL))
+   SHOSTAK))
+ (|positive_step_lifts| 0
+  (|positive_step_lifts-1| NIL 4001246091
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "reachTargetInput.kernel_positive_input"
+      ("R" "Q!1" "s" "p!1(s!1)" "t" "a!1"))
+     (ASSERT) (SKOSIMP*)
+     (LEMMA "reachCommutation.mass_function" ("R" "R!1" "Q" "Q!1" "p" "p!1"))
+     (LEMMA "reachCommutation.update_value"
+      ("R" "R!1" "Q" "Q!1" "p" "p!1" "s" "s!1" "a" "a!2"))
+     (LEMMA "reachSourceInput.kernel_input_bound"
+      ("R" "R!1" "s" "s!1" "a" "a!2"))
+     (INST 1 "R!1`update(s!1,a!2)")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Commutes" "Valid" "Reach" "positiveStep" "sourceReach" "targetReach"
+       "ReachesGood" "kernel" "sum" "fsum" "is_finite" "card")))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|mass_function| FORMULA-DECL NIL |ppg_finite_update_projection| NIL)
+    (|kernel_input_bound| FORMULA-DECL NIL |ppg_finite_update_input_support|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|update_value| FORMULA-DECL NIL |ppg_finite_update_projection| NIL)
+    (|kernel_positive_input| FORMULA-DECL NIL |ppg_finite_update_input_support|
+     NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projection_reach| NIL))
+   SHOSTAK))
+ (|projected_inductive| 0
+  (|projected_inductive-1| NIL 4001246091
+   (""
+    (THEN (SKOSIMP*) (EXPAND "reachSourceRelation.InductiveSet") (SKOSIMP*)
+     (LEMMA "reachCommutation.positive_step_projects"
+      ("R" "R!1" "Q" "Q!1" "p" "p!1" "s" "u!1" "t" "w!1"))
+     (LEMMA "reachTargetRelation.reach_tail"
+      ("step" "reachTargetEvents.positiveStep(Q!1)" "v" "p!1(s0!1)" "u"
+       "p!1(u!1)" "w" "p!1(w!1)"))
+     (EXPAND "projectedPath") (EXPAND "targetReach")
+     (EXPAND "reachSourceEvents.positiveStep")
+     (EXPAND "reachTargetEvents.positiveStep")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Commutes" "Valid" "Reach" "positiveStep" "sourceReach" "targetReach"
+       "ReachesGood" "kernel" "sum" "fsum" "is_finite" "card")))
+    NIL)
+   ((|reach_tail| FORMULA-DECL NIL |ppg_reachability_refutation| NIL)
+    (|positiveStep| CONST-DECL "bool" |ppg_update_reach| NIL)
+    (|targetReach| CONST-DECL "bool" |ppg_update_projection_reach| NIL)
+    (|projectedPath| CONST-DECL "set[State]" |ppg_update_projection_reach| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projection_reach| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|positive_step_projects| FORMULA-DECL NIL |ppg_finite_update_projection|
+     NIL)
+    (|InductiveSet| CONST-DECL "bool" |ppg_reachability_refutation| NIL))
+   SHOSTAK))
+ (|reach_projects| 0
+  (|reach_projects-1| NIL 4001246092
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "projected_inductive" ("R" "R!1" "Q" "Q!1" "p" "p!1" "s0" "s0!1"))
+     (LEMMA "reachTargetRelation.reach_refl"
+      ("step" "reachTargetEvents.positiveStep(Q!1)" "v" "p!1(s0!1)"))
+     (LEMMA "reachSourceRelation.inductiveSet_reachable"
+      ("step" "reachSourceEvents.positiveStep(R!1)" "I"
+       "projectedPath(Q!1,p!1,s0!1)" "v" "s0!1" "w" "t!1"))
+     (EXPAND "projectedPath") (EXPAND "sourceReach") (EXPAND "targetReach")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Commutes" "Valid" "Reach" "positiveStep" "sourceReach" "targetReach"
+       "ReachesGood" "kernel" "sum" "fsum" "is_finite" "card")))
+    NIL)
+   ((|reach_refl| FORMULA-DECL NIL |ppg_reachability_refutation| NIL)
+    (|positiveStep| CONST-DECL "bool" |ppg_update_reach| NIL)
+    (|targetReach| CONST-DECL "bool" |ppg_update_projection_reach| NIL)
+    (|sourceReach| CONST-DECL "bool" |ppg_update_projection_reach| NIL)
+    (|projectedPath| CONST-DECL "set[State]" |ppg_update_projection_reach| NIL)
+    (|inductiveSet_reachable| FORMULA-DECL NIL |ppg_reachability_refutation|
+     NIL)
+    (|projected_inductive| FORMULA-DECL NIL |ppg_update_projection_reach| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projection_reach| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL))
+   SHOSTAK))
+ (|reachable_good_projects| 0
+  (|reachable_good_projects-1| NIL 4001246092
+   (""
+    (THEN (SKOSIMP*) (EXPAND "reachSourceEvents.ReachesGood" -3) (SKOSIMP*)
+     (LEMMA "reach_projects"
+      ("R" "R!1" "Q" "Q!1" "p" "p!1" "s0" "s0!1" "t" "t!1"))
+     (LEMMA "commuting_good" ("R" "R!1" "Q" "Q!1" "p" "p!1" "s" "t!1"))
+     (EXPAND "reachTargetEvents.ReachesGood") (INST 1 "p!1(t!1)")
+     (EXPAND "sourceReach") (EXPAND "targetReach")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Commutes" "Valid" "Reach" "positiveStep" "sourceReach" "targetReach"
+       "ReachesGood" "kernel" "sum" "fsum" "is_finite" "card")))
+    NIL)
+   ((|commuting_good| FORMULA-DECL NIL |ppg_update_projection_reach| NIL)
+    (|targetReach| CONST-DECL "bool" |ppg_update_projection_reach| NIL)
+    (|sourceReach| CONST-DECL "bool" |ppg_update_projection_reach| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projection_reach| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|reach_projects| FORMULA-DECL NIL |ppg_update_projection_reach| NIL)
+    (|ReachesGood| CONST-DECL "bool" |ppg_update_reach| NIL))
+   SHOSTAK))
+ (|lifted_inductive| 0
+  (|lifted_inductive-1| NIL 4001246092
+   (""
+    (THEN (SKOSIMP*) (EXPAND "reachTargetRelation.InductiveSet") (SKOSIMP*)
+     (EXPAND "liftedSet" -4) (SKOSIMP*)
+     (LEMMA "positive_step_lifts"
+      ("R" "R!1" "Q" "Q!1" "p" "p!1" "s" "t!1" "a" "w!1"))
+     (EXPAND "reachTargetEvents.positiveStep") (ASSERT) (SKOSIMP*)
+     (EXPAND "liftedSet" 1) (INST 1 "t!2")
+     (LEMMA "reachSourceRelation.reach_tail"
+      ("step" "reachSourceEvents.positiveStep(R!1)" "v" "s0!1" "u" "t!1" "w"
+       "t!2"))
+     (EXPAND "sourceReach") (EXPAND "reachSourceEvents.positiveStep")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Commutes" "Valid" "Reach" "positiveStep" "sourceReach" "targetReach"
+       "ReachesGood" "kernel" "sum" "fsum" "is_finite" "card")))
+    NIL)
+   ((|positiveStep| CONST-DECL "bool" |ppg_update_reach| NIL)
+    (|sourceReach| CONST-DECL "bool" |ppg_update_projection_reach| NIL)
+    (|reach_tail| FORMULA-DECL NIL |ppg_reachability_refutation| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projection_reach| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|positive_step_lifts| FORMULA-DECL NIL |ppg_update_projection_reach| NIL)
+    (|liftedSet| CONST-DECL "set[Abstract]" |ppg_update_projection_reach| NIL)
+    (|InductiveSet| CONST-DECL "bool" |ppg_reachability_refutation| NIL))
+   SHOSTAK))
+ (|lifted_initial| 0
+  (|lifted_initial-1| NIL 4001246092
+   (""
+    (THEN (SKOSIMP*) (EXPAND "liftedSet") (INST 1 "s0!1")
+     (EXPAND "sourceReach")
+     (LEMMA "reachSourceRelation.reach_refl"
+      ("step" "reachSourceEvents.positiveStep(R!1)" "v" "s0!1"))
+     (ASSERT))
+    NIL)
+   ((|State| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|reach_refl| FORMULA-DECL NIL |ppg_reachability_refutation| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projection_reach| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|positiveStep| CONST-DECL "bool" |ppg_update_reach| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|sourceReach| CONST-DECL "bool" |ppg_update_projection_reach| NIL)
+    (|liftedSet| CONST-DECL "set[Abstract]" |ppg_update_projection_reach| NIL))
+   SHOSTAK))
+ (|reachable_lifts| 0
+  (|reachable_lifts-1| NIL 4001246092
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "lifted_inductive" ("R" "R!1" "Q" "Q!1" "p" "p!1" "s0" "s0!1"))
+     (LEMMA "lifted_initial" ("R" "R!1" "p" "p!1" "s0" "s0!1"))
+     (LEMMA "reachTargetRelation.inductiveSet_reachable"
+      ("step" "reachTargetEvents.positiveStep(Q!1)" "I"
+       "liftedSet(R!1,p!1,s0!1)" "v" "p!1(s0!1)" "w" "a!1"))
+     (EXPAND "targetReach") (EXPAND "liftedSet")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Commutes" "Valid" "Reach" "positiveStep" "sourceReach" "targetReach"
+       "ReachesGood" "kernel" "sum" "fsum" "is_finite" "card")))
+    NIL)
+   ((|lifted_initial| FORMULA-DECL NIL |ppg_update_projection_reach| NIL)
+    (|targetReach| CONST-DECL "bool" |ppg_update_projection_reach| NIL)
+    (|positiveStep| CONST-DECL "bool" |ppg_update_reach| NIL)
+    (|liftedSet| CONST-DECL "set[Abstract]" |ppg_update_projection_reach| NIL)
+    (|inductiveSet_reachable| FORMULA-DECL NIL |ppg_reachability_refutation|
+     NIL)
+    (|lifted_inductive| FORMULA-DECL NIL |ppg_update_projection_reach| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projection_reach| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL))
+   SHOSTAK))
+ (|reachable_good_iff| 0
+  (|reachable_good_iff-1| NIL 4001246092
+   ("" (SKOSIMP*)
+    (("" (SPLIT)
+      (("1" (SKOSIMP*)
+        (("1"
+          (LEMMA "reachable_good_projects"
+           ("R" "R!1" "Q" "Q!1" "p" "p!1" "s0" "s0!1"))
+          (("1" (ASSERT) NIL NIL)) NIL))
+        NIL)
+       ("2" (SKOSIMP*)
+        (("2" (EXPAND "reachTargetEvents.ReachesGood" -1)
+          (("2" (SKOSIMP*)
+            (("2"
+              (LEMMA "reachable_lifts"
+               ("R" "R!1" "Q" "Q!1" "p" "p!1" "s0" "s0!1" "a" "t!1"))
+              (("2" (EXPAND "targetReach")
+                (("2" (ASSERT)
+                  (("2" (SKOSIMP*)
+                    (("2"
+                      (LEMMA "commuting_good"
+                       ("R" "R!1" "Q" "Q!1" "p" "p!1" "s" "t!2"))
+                      (("2" (EXPAND "reachSourceEvents.ReachesGood" 1)
+                        (("2" (INST 1 "t!2")
+                          (("2" (EXPAND "sourceReach") (("2" (ASSERT) NIL NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|targetReach| CONST-DECL "bool" |ppg_update_projection_reach| NIL)
+    (|sourceReach| CONST-DECL "bool" |ppg_update_projection_reach| NIL)
+    (|commuting_good| FORMULA-DECL NIL |ppg_update_projection_reach| NIL)
+    (|reachable_lifts| FORMULA-DECL NIL |ppg_update_projection_reach| NIL)
+    (|ReachesGood| CONST-DECL "bool" |ppg_update_reach| NIL)
+    (|reachable_good_projects| FORMULA-DECL NIL |ppg_update_projection_reach|
+     NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projection_reach| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projection_reach| NIL))
+   SHOSTAK)))
+

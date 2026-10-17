@@ -1,0 +1,38 @@
+% A positive finite input sum contains a positive summand. Thus every
+% positive transition is witnessed by an actual input of positive mass.
+% Under valid masses, that input mass is bounded by its transition fiber.
+%
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Chapter 2, Cambridge University Press, 2017.
+ppg_finite_update_input_support[State,Input: TYPE,
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_input_update[State,Input,inputs] AS supportUpdate,
+    ppg_monoid_sum[Input,rat,0,LAMBDA(a,b:rat):a+b] AS supportSum,
+    ppg_rational_sum[Input] AS supportRational,
+    ppg_finite_sum[Input] AS supportReal
+
+  F: VAR finite_set[Input]
+  f: VAR [Input->rat]
+  R: VAR supportUpdate.Rule
+  s,t: VAR State
+  a: VAR Input
+
+  inputs_member: LEMMA inputs(a)
+
+  sum_zero: LEMMA supportSum.sum(F,LAMBDA(a:Input):0)=0
+
+  sum_positive_term: LEMMA 0<supportSum.sum(F,f) IMPLIES
+    EXISTS(a:Input):F(a) AND 0<f(a)
+
+  kernel_positive_input: LEMMA 0<supportUpdate.kernel(R,s,t) IMPLIES
+    EXISTS(a:Input):0<R`mass(a) AND R`update(s,a)=t
+
+  kernel_terms_nonnegative: LEMMA supportUpdate.Valid(R) IMPLIES
+    FORALL(b:Input):inputs(b) IMPLIES
+      0<=(IF R`update(s,b)=R`update(s,a) THEN R`mass(b) ELSE 0 ENDIF)
+
+  kernel_input_bound: LEMMA supportUpdate.Valid(R) IMPLIES
+    R`mass(a)<=supportUpdate.kernel(R,s,R`update(s,a))
+
+END ppg_finite_update_input_support
