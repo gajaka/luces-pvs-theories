@@ -1,0 +1,104 @@
+% Conditional fiber identities turn a concrete transition realization
+% into a realization of the reduced model under the same finite measure
+% and filtration. Exact tail and mean statements then apply to that
+% constructed process, with their original initial-state hypotheses.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Section 2.3.1 and Exercise 10.22,
+% American Mathematical Society, 2017.
+ppg_finite_lumping_process[State,AbstractState,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  abstractUniverse:{U:finite_set[AbstractState]|FORALL(a:AbstractState):U(a)},
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw,
+  (IMPORTING ppg_filtration[Omega,State,S]) history:Filtration]: THEORY
+BEGIN
+  IMPORTING ppg_finite_lumping_expectation[State,AbstractState,Omega,universe,abstractUniverse,S,measureLaw],
+    ppg_finite_lumping_conditional[State,AbstractState,Omega,universe,abstractUniverse,S,measureLaw] AS projections,
+    ppg_filtration[Omega,State,S] AS concreteHistory,
+    ppg_filtration[Omega,AbstractState,S] AS reducedHistory,
+    ppg_finite_process_realization[State,Omega,universe,S,measureLaw,history] AS concreteRealization,
+    ppg_finite_process_realization[AbstractState,Omega,abstractUniverse,S,measureLaw,history] AS reducedRealization,
+    ppg_finite_process_integral[AbstractState,Omega,abstractUniverse,S,measureLaw] AS reducedIntegral,
+    ppg_finite_stopped_integral[State,Omega,universe,S,measureLaw,history] AS concreteStopped,
+    ppg_finite_stopped_integral[AbstractState,Omega,abstractUniverse,S,measureLaw,history] AS reducedStopped,
+    ppg_general_finite_hit[State,Omega,universe,S,measureLaw,history] AS concreteCompatibility,
+    ppg_general_finite_hit[AbstractState,Omega,abstractUniverse,S,measureLaw,history] AS reducedCompatibility,
+    ppg_finite_process_hitting[State,Omega,universe,S,measureLaw,history] AS concreteHit,
+    ppg_finite_process_hitting[AbstractState,Omega,abstractUniverse,S,measureLaw,history] AS reducedHit,
+    ppg_finite_survival_integral[AbstractState,Omega,abstractUniverse,S,measureLaw,history] AS reducedTail,
+    ppg_finite_potential_expectation[AbstractState,Omega,abstractUniverse,S,measureLaw,history] AS reducedExpectation,
+    ppg_finite_stopped_conditional[AbstractState,Omega,abstractUniverse,S,measureLaw,history] AS reducedEquations,
+    ppg_finite_survival[AbstractState,abstractUniverse] AS reducedSurvival,
+    ppg_finite_survival_certificate[AbstractState,abstractUniverse] AS reducedCertificate,
+    ppg_finite_expectation[Omega,S,measureLaw] AS measureIntegral
+  M: VAR ppg_finite_drift[State,universe].Model
+  N: VAR ppg_finite_drift[AbstractState,abstractUniverse].Model
+  p: VAR [State->AbstractState]
+  X: VAR concreteRealization.AdaptedProcess
+  n: VAR nat
+  omega: VAR Omega
+
+  adapted_projection: LEMMA
+    reducedHistory.adapted(history,reducedIntegral.fullStateSigma,projectProcess(p,X))
+
+  projectedAdapted(p,X): reducedRealization.AdaptedProcess = projectProcess(p,X)
+
+  projected_step_pair: LEMMA reducedRealization.stepPair(projectedAdapted(p,X),n)=
+    projections.projectPair(history(n),p,concreteRealization.stepPair(X,n))
+
+  realization_projected: THEOREM FORALL(M:ppg_finite_drift[State,universe].Model,
+    N:ppg_finite_drift[AbstractState,abstractUniverse].Model,p:[State->AbstractState],
+    X:concreteRealization.Realization(M)):
+    Compatible(M,N,p) IMPLIES reducedRealization.TransitionProcess(N,projectedAdapted(p,X))
+
+  CheckedProjection(M:ppg_finite_drift[State,universe].Model,
+    N:ppg_finite_drift[AbstractState,abstractUniverse].Model): TYPE =
+    {p:[State->AbstractState]|Compatible(M,N,p)}
+
+  projectedRealization(M:ppg_finite_drift[State,universe].Model,
+    N:ppg_finite_drift[AbstractState,abstractUniverse].Model,p:CheckedProjection(M,N),
+    X:concreteRealization.Realization(M)): reducedRealization.Realization(N) = projectedAdapted(p,X)
+
+  projected_realization_at: LEMMA FORALL(M:ppg_finite_drift[State,universe].Model,
+    N:ppg_finite_drift[AbstractState,abstractUniverse].Model,p:CheckedProjection(M,N),
+    X:concreteRealization.Realization(M),n:nat,omega:Omega):
+    projectedRealization(M,N,p,X)(n)(omega)=p(X(n)(omega))
+
+  projected_initial: LEMMA FORALL(M:ppg_finite_drift[State,universe].Model,
+    N:ppg_finite_drift[AbstractState,abstractUniverse].Model,p:CheckedProjection(M,N),
+    X:concreteRealization.Realization(M),a0:AbstractState):
+    (FORALL(omega:Omega):p(X(0)(omega))=a0) IMPLIES
+    (FORALL(omega:Omega):projectedRealization(M,N,p,X)(0)(omega)=a0)
+
+  running_ambient_projection: LEMMA Compatible(M,N,p) IMPLIES
+    concreteStopped.runningAmbient(M,X,n)=reducedStopped.runningAmbient(N,projectedAdapted(p,X),n)
+
+  finite_expected_projection: LEMMA Compatible(M,N,p) IMPLIES
+    concreteHit.expectedHitCount(M,X)=reducedHit.expectedHitCount(N,projectedAdapted(p,X))
+
+  timeout_fixed_projected: THEOREM FORALL(M:ppg_finite_drift[State,universe].Model,
+    N:ppg_finite_drift[AbstractState,abstractUniverse].Model,p:CheckedProjection(M,N),
+    X:concreteRealization.Realization(M),a0:AbstractState,n:nat):
+    measureIntegral.mass(fullset[Omega])=1 AND
+    (FORALL(omega:Omega):p(X(0)(omega))=a0) IMPLIES
+    ennFinite(measureIntegral.mass(concreteStopped.runningAmbient(M,X,n)))=
+      ppg_enn_ofreal.ofReal(reducedSurvival.survival(N,n,a0))
+
+  mean_fixed_projected: THEOREM FORALL(M:ppg_finite_drift[State,universe].Model,
+    N:reducedExpectation.StochasticAbsorbingModel,p:CheckedProjection(M,N),
+    f:reducedEquations.SolvingVector(N),X:concreteRealization.Realization(M),a0:AbstractState):
+    measureIntegral.mass(fullset[Omega])=1 AND
+    (FORALL(omega:Omega):p(X(0)(omega))=a0) IMPLIES
+    concreteHit.expectedHitCount(M,X)=ppg_enn_ofreal.ofReal(f(a0))
+
+  checkedTable_timeout_fixed: THEOREM FORALL(M:ppg_finite_drift[State,universe].Model,
+    N:ppg_finite_drift[AbstractState,abstractUniverse].Model,p:CheckedProjection(M,N),
+    F:reducedCertificate.SurvivalRows,H:nat,X:concreteRealization.Realization(M),a0:AbstractState):
+    reducedCertificate.checkSurvivalTable(N,F,H) AND measureIntegral.mass(fullset[Omega])=1 AND
+    (FORALL(omega:Omega):p(X(0)(omega))=a0) IMPLIES
+    ennFinite(measureIntegral.mass(concreteStopped.runningAmbient(M,X,H)))=
+      ppg_enn_ofreal.ofReal(F(H)(a0))
+
+END ppg_finite_lumping_process
