@@ -1,0 +1,20 @@
+% Division by a positive finite real preserves infinity and divides
+% finite nonnegative values in the real field. Only positive divisors
+% occur in the integer-horizon tail bounds.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_enn_positive_divide: THEORY
+BEGIN
+  IMPORTING ppg_enn_ofreal
+  x: VAR ENN
+  a,b: VAR nonneg_real
+  c: VAR posreal
+
+  dividePositive(x,c): ENN = CASES x OF ennInfinity:ennInfinity,
+    ennFinite(a):ennFinite(a/c) ENDCASES
+
+  finite_value_injective: LEMMA ennFinite(a)=ennFinite(b) IMPLIES a=b
+
+  finite_division: LEMMA dividePositive(ennFinite(a),c)=ennFinite(a/c)
+
+END ppg_enn_positive_divide
