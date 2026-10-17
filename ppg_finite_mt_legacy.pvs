@@ -1,0 +1,110 @@
+% The first-violated policy uses the existing scan of the finite event
+% order. Its raw table run is the original randStep, including every
+% per-variable counter. The two coordinate update presentations agree.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Section 2.
+ppg_finite_mt_legacy[I,V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  events:{U:finite_set[I]|FORALL(i:I):U(i)},
+  fallback:I,eventOrder:{e:list[I]|FORALL(i:I):member(i,e)}]: THEORY
+BEGIN
+  plainDomain: MACRO [V->set[Value]] = LAMBDA(v:V):domains(v)
+
+  IMPORTING ppg_finite_resampling_core[V,Value,variables,domains] AS bridgeCore,
+    ppg_finite_table_core[V,Value,variables,domains] AS bridgeTable,
+    ppg_resampling_selection[I,V,Value,variables,domains,events] AS bridgeSelection,
+    ppg_finite_table_stability[V,Value,variables,domains] AS bridgeStability,
+    ppg_mt_random_process[I,V,Value,plainDomain] AS legacySlots,
+    ppg_mt_selection[I,V,Value,plainDomain] AS legacySelection,
+    ppg_mt_correspondence[I,V,Value,plainDomain] AS legacyRunning,
+    ppg_mt_semantics[I,V,Value,plainDomain] AS legacySemantics,
+    ppg_mt_drift_pointwise[I,V,Value,plainDomain,fallback,eventOrder] AS bridgeRunning,
+    ppg_mt_random_process[bool,V,Value,plainDomain] AS tableSlots
+
+  State: TYPE = bridgeCore.State
+
+  ResamplingLog: TYPE = bridgeTable.ResamplingLog
+
+  B: VAR bridgeSelection.Problem
+  init: VAR bridgeTable.Initializer
+  omega: VAR ResamplingLog
+  s,t: VAR State
+  n,k,m: VAR nat
+  selected: VAR finite_set[V]
+  counter: VAR bridgeTable.Counter
+
+  firstChoice(B)(s): I = legacySlots.pickFirstViolated(B`bad,fallback,eventOrder,s)
+
+  firstPolicy(B): bridgeCore.Policy = bridgeSelection.selectedPolicy(B,firstChoice(B))
+
+  rawFootprint(B): bridgeTable.Footprint = firstPolicy(B)`footprint
+
+  stoppedFootprint(B): bridgeTable.Footprint = LAMBDA(s:State):bridgeCore.activeFootprint(firstPolicy(B),s)
+
+  log_entry_domain: LEMMA FORALL(omega:ResamplingLog,p:[nat,V]):
+    legacySlots.TableDomain(p)(omega(p))
+
+  legacyRun(B,init,omega,n): bridgeTable.RunState =
+    legacySlots.randStep(B`footprint,B`bad,fallback,eventOrder,init(omega),omega,n)
+
+  firstPolicy_good_iff: THEOREM firstPolicy(B)`good(s) IFF legacySelection.MTGood(B`bad,s)
+
+  coordinate_update_legacy: LEMMA
+    bridgeCore.coordinateUpdate(selected,s,t)=legacySemantics.resample(selected,s,t)
+
+  draw_from_legacy: LEMMA tableSlots.drawFrom(omega,counter)=legacySlots.drawFrom(omega,counter)
+
+  raw_footprint: LEMMA rawFootprint(B)(s)=B`footprint(firstChoice(B)(s))
+
+  legacy_zero: LEMMA legacyRun(B,init,omega,0)=(init(omega),LAMBDA(v:V):0)
+
+  legacy_step_advance: LEMMA legacyRun(B,init,omega,n+1)=
+    bridgeStability.advance(rawFootprint(B),legacyRun(B,init,omega,n),omega)
+
+  raw_run_eq_randStep: THEOREM bridgeTable.run(rawFootprint(B),init,omega,n)=legacyRun(B,init,omega,n)
+
+  RawPrefixBad(B,init,omega,n): bool = FORALL(k:nat):k<n IMPLIES
+    NOT legacySelection.MTGood(B`bad,legacyRun(B,init,omega,k)`1)
+
+  StoppedPrefixBad(B,init,omega,n): bool = FORALL(k:nat):k<n IMPLIES
+    NOT firstPolicy(B)`good(bridgeTable.trajectory(stoppedFootprint(B),init,k,omega))
+
+  raw_good_iff: LEMMA firstPolicy(B)`good(bridgeTable.trajectory(rawFootprint(B),init,n,omega)) IFF
+    legacySelection.MTGood(B`bad,legacyRun(B,init,omega,n)`1)
+
+  footprint_eq_when_bad: LEMMA NOT firstPolicy(B)`good(s) IMPLIES rawFootprint(B)(s)=stoppedFootprint(B)(s)
+
+  raw_prefix_bad_mono: LEMMA m<=n AND RawPrefixBad(B,init,omega,n) IMPLIES RawPrefixBad(B,init,omega,m)
+
+  stopped_prefix_bad_mono: LEMMA m<=n AND StoppedPrefixBad(B,init,omega,n) IMPLIES StoppedPrefixBad(B,init,omega,m)
+
+  raw_no_good_footprints: LEMMA RawPrefixBad(B,init,omega,n) IMPLIES
+    (FORALL(k:nat):k<n IMPLIES
+      rawFootprint(B)(bridgeTable.trajectory(rawFootprint(B),init,k,omega))=
+        stoppedFootprint(B)(bridgeTable.trajectory(rawFootprint(B),init,k,omega)))
+
+  stopped_no_good_footprints: LEMMA StoppedPrefixBad(B,init,omega,n) IMPLIES
+    (FORALL(k:nat):k<n IMPLIES
+      stoppedFootprint(B)(bridgeTable.trajectory(stoppedFootprint(B),init,k,omega))=
+        rawFootprint(B)(bridgeTable.trajectory(stoppedFootprint(B),init,k,omega)))
+
+  stopped_run_eq_before_good: THEOREM RawPrefixBad(B,init,omega,n) IMPLIES
+    bridgeTable.run(stoppedFootprint(B),init,omega,n)=legacyRun(B,init,omega,n)
+
+  raw_run_eq_before_stopped_good: THEOREM StoppedPrefixBad(B,init,omega,n) IMPLIES
+    bridgeTable.run(stoppedFootprint(B),init,omega,n)=legacyRun(B,init,omega,n)
+
+  raw_prefix_runs: LEMMA RawPrefixBad(B,init,omega,n) IMPLIES
+    (FORALL(k:nat):k<=n IMPLIES bridgeTable.run(stoppedFootprint(B),init,omega,k)=legacyRun(B,init,omega,k))
+
+  stopped_prefix_runs: LEMMA StoppedPrefixBad(B,init,omega,n) IMPLIES
+    (FORALL(k:nat):k<=n IMPLIES bridgeTable.run(stoppedFootprint(B),init,omega,k)=legacyRun(B,init,omega,k))
+
+  prefix_bad_equivalent: LEMMA StoppedPrefixBad(B,init,omega,n) IFF RawPrefixBad(B,init,omega,n)
+
+  stopped_before_iff_runningUntil: THEOREM StoppedPrefixBad(B,init,omega,n) IFF
+    legacyRunning.RunningUntil(B`footprint,B`bad,fallback,eventOrder,init(omega),omega,n)
+
+END ppg_finite_mt_legacy
