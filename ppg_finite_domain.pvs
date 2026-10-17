@@ -1,0 +1,26 @@
+% The subtype of a finite domain has a complete finite universe.
+% Reindexing along its inclusion preserves the original finite sum,
+% including the empty domain.
+%
+% Paul R. Halmos, Naive Set Theory, Van Nostrand, 1960.
+ppg_finite_domain[T: TYPE,D:finite_set[T]]: THEORY
+BEGIN
+  IMPORTING ppg_finite_injection[(D),T] AS domainInjection,
+    ppg_finite_sum[(D)] AS typedDomainSum,
+    ppg_finite_sum[T] AS ambientDomainSum,
+    ppg_sum_image[(D),T] AS domainSumImage
+
+  include(x:(D)): T = x
+
+  full_domain_finite: LEMMA is_finite(fullset[(D)])
+
+  universe: {U:finite_set[(D)]|FORALL(x:(D)):U(x)} = fullset[(D)]
+
+  included_universe: LEMMA image[(D),T](include,universe)=D
+
+  inclusion_injective: LEMMA injective?(include)
+
+  reindexed_sum: THEOREM FORALL(f:[T->real]):
+    ambientDomainSum.fsum(D,f)=typedDomainSum.fsum(universe,LAMBDA(x:(D)):f(x))
+
+END ppg_finite_domain

@@ -1,0 +1,56 @@
+% Success for the selected policy means that every declared Boolean
+% event is false. The almost-everywhere conclusion uses the constructed
+% IID law of that policy and its accepted drift witness.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Algorithm 1.1.
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964.
+ppg_resampling_selected_iid[I,V,Value: TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  events:{U:finite_set[I]|FORALL(i:I):U(i)},
+  (IMPORTING ppg_finite_resampling_core[V,Value,variables,domains])
+  Q:{Q:Marginals|Valid(Q)},
+  (IMPORTING ppg_resampling_selection[I,V,Value,variables,domains,events])
+  B:Problem,choose:[ppg_finite_resampling_core[V,Value,variables,domains].State->I],
+  s0:ppg_finite_resampling_core[V,Value,variables,domains].State]: THEORY
+BEGIN
+  State: TYPE = ppg_finite_resampling_core[V,Value,variables,domains].State
+
+  IMPORTING ppg_finite_resampling_core[V,Value,variables,domains] AS avoidCore,
+    ppg_resampling_selection[I,V,Value,variables,domains,events] AS avoidSelection,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS avoidFinite,
+    ppg_resampling_update[V,Value,variables,domains] AS avoidUpdate,
+    ppg_resampling_iid[V,Value,variables,domains,Q,avoidSelection.selectedPolicy(B,choose),s0] AS avoidRun,
+    ppg_finite_update[State,State,avoidFinite.allStates,avoidFinite.allStates] AS avoidRule,
+    ppg_finite_input_history[State] AS avoidHistory,
+    ppg_finite_iid_law[State,State,avoidFinite.allStates,avoidFinite.allStates,
+      avoidCore.rule(Q,avoidSelection.selectedPolicy(B,choose))] AS avoidLaw,
+    ppg_finite_iid_trajectory[State,State,avoidFinite.allStates,avoidFinite.allStates] AS avoidTrajectory,
+    ppg_finite_iid_execution[State,State,avoidFinite.allStates,avoidFinite.allStates,
+      avoidCore.rule(Q,avoidSelection.selectedPolicy(B,choose)),s0] AS avoidExecution,
+    ppg_finite_process_expectation[State,avoidHistory.Sample,avoidFinite.allStates,
+      avoidHistory.ambientSigma,avoidLaw.iidMeasure,avoidTrajectory.inputFiltration] AS avoidExpectation,
+    ppg_finite_process_hitting[State,avoidHistory.Sample,avoidFinite.allStates,
+      avoidHistory.ambientSigma,avoidLaw.iidMeasure,avoidTrajectory.inputFiltration] AS avoidHitting,
+    measure_integration@measure_theory[avoidHistory.Sample,asNasa(avoidHistory.ambientSigma),
+      avoidLaw.iidMeasure] AS avoidAE
+
+  avoidAllEvent: set[avoidHistory.Sample] = {omega:avoidHistory.Sample|
+    EXISTS(T:nat):FORALL(i:I):NOT B`bad(i,avoidExecution.iidRealized(T)(omega))}
+
+  selected_good_function: LEMMA
+    avoidSelection.selectedPolicy(B,choose)`good=
+      (LAMBDA(s:State):FORALL(i:I):NOT B`bad(i,s))
+
+  selected_success_event: LEMMA
+    avoidHitting.successEvent(
+      avoidRule.model(avoidCore.rule(Q,avoidSelection.selectedPolicy(B,choose))),avoidExecution.iidRealized)=
+        avoidAllEvent
+
+  selected_iid_ae_avoids_all: THEOREM
+    FORALL(W:avoidExpectation.AcceptedWitness(
+      avoidRule.model(avoidCore.rule(Q,avoidSelection.selectedPolicy(B,choose))))):
+      avoidAE.ae?(avoidAllEvent)
+
+END ppg_resampling_selected_iid

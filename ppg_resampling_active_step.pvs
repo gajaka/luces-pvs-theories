@@ -1,0 +1,38 @@
+% An active trajectory step uses the selected violated event and its
+% declared footprint. This pointwise statement needs no probability law
+% and applies to arbitrary fresh rows.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Algorithm 1.1.
+ppg_resampling_active_step[I,V,Value: TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  events:{U:finite_set[I]|FORALL(i:I):U(i)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_resampling_core[V,Value,variables,domains] AS activeCore,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS activeFinite,
+    ppg_resampling_selection[I,V,Value,variables,domains,events] AS activeSelection
+
+  State: TYPE = activeCore.State
+
+  IMPORTING ppg_finite_input_history[State] AS activeHistory,
+    ppg_finite_iid_trajectory[State,State,activeFinite.allStates,activeFinite.allStates] AS activeTrajectory
+
+  Q: VAR activeCore.Marginals
+  B: VAR activeSelection.Problem
+  choose: VAR [State->I]
+  s0: VAR State
+  n: VAR nat
+  omega: VAR activeHistory.Sample
+
+  path(Q,B,choose,s0,n,omega): State =
+    activeTrajectory.iidTrajectory(activeCore.rule(Q,activeSelection.selectedPolicy(B,choose)),s0,n)(omega)
+
+  selected_iid_active_step: THEOREM
+    activeSelection.Admissible(B,choose) AND NOT activeSelection.allGood(B,path(Q,B,choose,s0,n,omega)) IMPLIES
+    B`bad(choose(path(Q,B,choose,s0,n,omega)),path(Q,B,choose,s0,n,omega)) AND
+      path(Q,B,choose,s0,n+1,omega)=
+        activeCore.coordinateUpdate(B`footprint(choose(path(Q,B,choose,s0,n,omega))),
+          path(Q,B,choose,s0,n,omega),omega(n))
+
+END ppg_resampling_active_step

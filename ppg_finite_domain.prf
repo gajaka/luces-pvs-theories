@@ -1,0 +1,102 @@
+(|ppg_finite_domain|
+ (|full_domain_finite| 0
+  (|full_domain_finite-1| NIL 4001255549
+   (""
+    (THEN (LEMMA "domainInjection.finite_injection" ("F" "D" "h" "include"))
+     (GRIND :IF-MATCH ALL :DEFS ("include" "injective?") :EXCLUDE
+      ("is_finite" "card")))
+    NIL)
+   ((D FORMAL-CONST-DECL "finite_set[T]" |ppg_finite_domain| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_finite_domain| NIL)
+    (|include| CONST-DECL "T" |ppg_finite_domain| NIL)
+    (|finite_injection| FORMULA-DECL NIL |ppg_finite_injection| NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL))
+   SHOSTAK))
+ (|universe_TCC1| 0
+  (|universe_TCC1-1| NIL 4001255549
+   (""
+    (THEN (LEMMA "full_domain_finite")
+     (GRIND :IF-MATCH NIL :DEFS ("fullset") :EXCLUDE ("is_finite" "card")))
+    NIL)
+   ((|full_domain_finite| FORMULA-DECL NIL |ppg_finite_domain| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL))
+   NIL
+   (|universe| SUBTYPE "fullset[(D)]"
+    "{U: finite_sets[(ppg_finite_domain.D)].finite_set | FORALL (x: (ppg_finite_domain.D)): U(x)}"
+    (17 53 17 65))))
+ (|included_universe| 0
+  (|included_universe-1| NIL 4001255549
+   (""
+    (THEN (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "image") (EXPAND "member")
+     (EXPAND "include") (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite" "card")))
+    NIL)
+   ((T FORMAL-TYPE-DECL NIL |ppg_finite_domain| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|universe| CONST-DECL "{U: finite_set[(D)] | FORALL (x: (D)): U(x)}"
+     |ppg_finite_domain| NIL)
+    (|include| CONST-DECL "T" |ppg_finite_domain| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (D FORMAL-CONST-DECL "finite_set[T]" |ppg_finite_domain| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL))
+   SHOSTAK))
+ (|inclusion_injective| 0
+  (|inclusion_injective-1| NIL 4001255549
+   ("" (THEN (GRIND :IF-MATCH NIL :DEFS ("include" "injective?"))) NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_finite_domain| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (D FORMAL-CONST-DECL "finite_set[T]" |ppg_finite_domain| NIL)
+    (|include| CONST-DECL "T" |ppg_finite_domain| NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL))
+   SHOSTAK))
+ (|reindexed_sum| 0
+  (|reindexed_sum-1| NIL 4001255549
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "domainSumImage.fsum_image"
+      ("S" "universe" "h" "include" "f" "f!1"))
+     (LEMMA "inclusion_injective") (LEMMA "included_universe")
+     (EXPAND "include")
+     (GRIND :IF-MATCH ALL :DEFS ("injective?") :EXCLUDE
+      ("fsum" "is_finite" "card")))
+    NIL)
+   ((|inclusion_injective| FORMULA-DECL NIL |ppg_finite_domain| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|included_universe| FORMULA-DECL NIL |ppg_finite_domain| NIL)
+    (|fsum_image| FORMULA-DECL NIL |ppg_sum_image| NIL)
+    (|universe| CONST-DECL "{U: finite_set[(D)] | FORALL (x: (D)): U(x)}"
+     |ppg_finite_domain| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|include| CONST-DECL "T" |ppg_finite_domain| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_finite_domain| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (D FORMAL-CONST-DECL "finite_set[T]" |ppg_finite_domain| NIL))
+   SHOSTAK)))
+

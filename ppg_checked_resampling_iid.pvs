@@ -1,0 +1,50 @@
+% An accepted combined checker supplies both marginal validity and the
+% original drift witness. Its probability and trajectory are therefore
+% the same constructed resampling execution used by the IID bounds.
+%
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964.
+ppg_checked_resampling_iid[V,Value: TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING ppg_finite_resampling_core[V,Value,variables,domains])
+  Q:Marginals,P:Policy,
+  (IMPORTING ppg_resampling_state_finite[V,Value,variables,domains],
+    ppg_finite_drift[ppg_finite_resampling_core[V,Value,variables,domains].State,
+      ppg_resampling_state_finite[V,Value,variables,domains].allStates],
+    ppg_resampling_update[V,Value,variables,domains])
+  W:{w:Witness|ppg_resampling_update[V,Value,variables,domains].resamplingCheck(Q,P,w)},
+  s0:ppg_finite_resampling_core[V,Value,variables,domains].State]: THEORY
+BEGIN
+  State: TYPE = ppg_finite_resampling_core[V,Value,variables,domains].State
+
+  IMPORTING ppg_resampling_update[V,Value,variables,domains] AS checkedUpdate,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS checkedFinite,
+    ppg_resampling_iid[V,Value,variables,domains,Q,P,s0] AS checkedRun,
+    ppg_finite_input_history[State] AS checkedHistory,
+    ppg_finite_update[State,State,checkedFinite.allStates,checkedFinite.allStates] AS checkedRule,
+    ppg_finite_iid_law[State,State,checkedFinite.allStates,checkedFinite.allStates,
+      rule(Q,P)] AS checkedLaw,
+    ppg_finite_iid_trajectory[State,State,checkedFinite.allStates,checkedFinite.allStates] AS checkedTrajectory,
+    ppg_finite_iid_execution[State,State,checkedFinite.allStates,checkedFinite.allStates,
+      rule(Q,P),s0] AS checkedExecution,
+    ppg_finite_process_expectation[State,checkedHistory.Sample,checkedFinite.allStates,
+      checkedHistory.ambientSigma,checkedLaw.iidMeasure,checkedTrajectory.inputFiltration] AS checkedExpectation,
+    ppg_finite_process_hitting[State,checkedHistory.Sample,checkedFinite.allStates,
+      checkedHistory.ambientSigma,checkedLaw.iidMeasure,checkedTrajectory.inputFiltration] AS checkedHitting,
+    measure_integration@measure_theory[checkedHistory.Sample,asNasa(checkedHistory.ambientSigma),
+      checkedLaw.iidMeasure] AS checkedAE
+
+  accepted: checkedExpectation.AcceptedWitness(checkedRule.model(rule(Q,P))) = W
+
+  checked_resampling_expectedHitCount_le: THEOREM
+    ele(checkedHitting.expectedHitCount(checkedRule.model(rule(Q,P)),checkedExecution.iidRealized),
+      ennFinite(checkedHitting.potentialAt(checkedRule.model(rule(Q,P)),accepted,s0)/
+        checkedExpectation.positiveRate(checkedRule.model(rule(Q,P)),accepted)))
+
+  checked_resampling_expectedHitCount_lt_top: THEOREM
+    ennFinite?(checkedHitting.expectedHitCount(checkedRule.model(rule(Q,P)),checkedExecution.iidRealized))
+
+  checked_resampling_ae_exists_good: THEOREM
+    checkedAE.ae?(checkedHitting.successEvent(checkedRule.model(rule(Q,P)),checkedExecution.iidRealized))
+
+END ppg_checked_resampling_iid

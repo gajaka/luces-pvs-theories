@@ -1,0 +1,59 @@
+% The product resampling rule instantiates the constructed IID update
+% execution. The measure, input history and recursive trajectory are the
+% existing finite-update objects for this very rule.
+%
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_resampling_iid[V,Value: TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING ppg_finite_resampling_core[V,Value,variables,domains])
+  Q:{Q:Marginals|Valid(Q)},P:Policy,s0:ppg_finite_resampling_core[V,Value,variables,domains].State]: THEORY
+BEGIN
+  State: TYPE = ppg_finite_resampling_core[V,Value,variables,domains].State
+
+  IMPORTING ppg_resampling_state_finite[V,Value,variables,domains] AS sampleFinite,
+    ppg_resampling_update[V,Value,variables,domains] AS sampleUpdate,
+    ppg_finite_update[State,State,sampleFinite.allStates,sampleFinite.allStates] AS sampleRule,
+    ppg_finite_input_history[State] AS sampleHistory
+
+  IMPORTING ppg_finite_iid_law[State,State,sampleFinite.allStates,sampleFinite.allStates,
+      rule(Q,P)] AS sampleLaw,
+    ppg_finite_iid_execution[State,State,sampleFinite.allStates,sampleFinite.allStates,
+      rule(Q,P),s0] AS sampleRun,
+    ppg_finite_iid_trajectory[State,State,sampleFinite.allStates,sampleFinite.allStates] AS sampleTrajectory,
+    ppg_finite_iid_hitting[State,State,sampleFinite.allStates,sampleFinite.allStates,
+      rule(Q,P),s0] AS sampleHitting,
+    ppg_finite_process_hitting[State,sampleHistory.Sample,sampleFinite.allStates,
+      sampleHistory.ambientSigma,sampleLaw.iidMeasure,sampleTrajectory.inputFiltration] AS sampleProcess,
+    ppg_finite_process_expectation[State,sampleHistory.Sample,sampleFinite.allStates,
+      sampleHistory.ambientSigma,sampleLaw.iidMeasure,sampleTrajectory.inputFiltration] AS sampleExpectation,
+    ppg_finite_process_realization[State,sampleHistory.Sample,sampleFinite.allStates,
+      sampleHistory.ambientSigma,sampleLaw.iidMeasure,sampleTrajectory.inputFiltration] AS sampleRealization,
+    measure_integration@measure_theory[sampleHistory.Sample,asNasa(sampleHistory.ambientSigma),
+      sampleLaw.iidMeasure] AS sampleAE
+
+  W: VAR sampleExpectation.AcceptedWitness(sampleRule.model(rule(Q,P)))
+  n: VAR nat
+  omega: VAR sampleHistory.Sample
+
+  trajectory_at: LEMMA sampleRun.iidRealized(n)(omega)=
+    sampleTrajectory.iidTrajectory(rule(Q,P),s0,n)(omega)
+
+  resampling_iid_realization: THEOREM
+    sampleRealization.TransitionProcess(sampleRule.model(rule(Q,P)),sampleRun.iidRealized)
+
+  resampling_iid_expectedHitCount_le: THEOREM
+    ele(sampleProcess.expectedHitCount(sampleRule.model(rule(Q,P)),sampleRun.iidRealized),
+      ennFinite(sampleProcess.potentialAt(sampleRule.model(rule(Q,P)),W,s0)/
+        sampleExpectation.positiveRate(sampleRule.model(rule(Q,P)),W)))
+
+  resampling_iid_expectedHitCount_lt_top: THEOREM
+    FORALL(W:sampleExpectation.AcceptedWitness(sampleRule.model(rule(Q,P)))):
+      ennFinite?(sampleProcess.expectedHitCount(sampleRule.model(rule(Q,P)),sampleRun.iidRealized))
+
+  resampling_iid_ae_exists_good: THEOREM
+    FORALL(W:sampleExpectation.AcceptedWitness(sampleRule.model(rule(Q,P)))):
+      sampleAE.ae?(sampleProcess.successEvent(sampleRule.model(rule(Q,P)),sampleRun.iidRealized))
+
+END ppg_resampling_iid
