@@ -1,0 +1,59 @@
+% Finite sums may be evaluated by either order of their two indices.
+% A point indicator then groups weighted values by the fiber of a map.
+% The weights may be signed; only finite algebra is used here.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Section 2.3.1, American Mathematical Society, 2017.
+ppg_finite_weighted_projection[Source,Target: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_sum[Source] AS domain,ppg_finite_sum[Target] AS codomain,
+    ppg_real_sum[Source],ppg_real_sum[Target],ppg_finite_point_sum[Target]
+  S: VAR finite_set[Source]
+  I: VAR finite_set[Target]
+  h: VAR [Source,Target->real]
+  p: VAR [Source->Target]
+  w: VAR [Source->real]
+  f: VAR [Target->real]
+  a,x: VAR Target
+  r: VAR real
+
+  source_function_eq: LEMMA FORALL(u,v:[Source->real]):
+    u=v IFF (FORALL(t:Source):u(t)=v(t))
+
+  target_function_eq: LEMMA FORALL(u,v:[Target->real]):
+    u=v IFF (FORALL(t:Target):u(t)=v(t))
+
+  source_row_step: LEMMA NOT empty?(S) IMPLIES
+    (LAMBDA(a:Target):domain.fsum(S,LAMBDA(t:Source):h(t,a)))=
+    (LAMBDA(a:Target):h(choose(S),a)+domain.fsum(rest(S),LAMBDA(t:Source):h(t,a)))
+
+  swap_finite_sums: LEMMA
+    domain.fsum(S,LAMBDA(t:Source):codomain.fsum(I,LAMBDA(a:Target):h(t,a)))=
+    codomain.fsum(I,LAMBDA(a:Target):domain.fsum(S,LAMBDA(t:Source):h(t,a)))
+
+  weighted_point: LEMMA
+    codomain.fsum(I,LAMBDA(a:Target):IF a=x THEN r*f(a) ELSE 0 ENDIF)=
+      IF I(x) THEN r*f(x) ELSE 0 ENDIF
+
+  fiberWeight(S,p,w,a): real =
+    domain.fsum(S,LAMBDA(t:Source):IF a=p(t) THEN w(t) ELSE 0 ENDIF)
+
+  fiber_function_scale: LEMMA
+    (LAMBDA(t:Source):IF a=p(t) THEN w(t)*r ELSE 0 ENDIF)=
+    (LAMBDA(t:Source):(IF a=p(t) THEN w(t) ELSE 0 ENDIF)*r)
+
+  weighted_fiber: LEMMA
+    domain.fsum(S,LAMBDA(t:Source):IF a=p(t) THEN w(t)*r ELSE 0 ENDIF)=
+      fiberWeight(S,p,w,a)*r
+
+  weighted_point_function: LEMMA
+    (LAMBDA(t:Source):codomain.fsum(I,LAMBDA(a:Target):
+      IF a=p(t) THEN w(t)*f(a) ELSE 0 ENDIF))=
+    (LAMBDA(t:Source):IF I(p(t)) THEN w(t)*f(p(t)) ELSE 0 ENDIF)
+
+  weighted_projection_sum: THEOREM
+    (FORALL(t:Source):S(t) IMPLIES I(p(t))) IMPLIES
+    domain.fsum(S,LAMBDA(t:Source):w(t)*f(p(t)))=
+    codomain.fsum(I,LAMBDA(a:Target):fiberWeight(S,p,w,a)*f(a))
+
+END ppg_finite_weighted_projection

@@ -1,0 +1,880 @@
+(|ppg_finite_lumping|
+ (|sourceSum_TCC1| 0
+  (|sourceSum_TCC1-1| NIL 4001211083 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|rat_plus_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|sourceSum| SUBTYPE "LAMBDA (x, y: rat): x + y"
+    "{op: [rat, rat -> rat] | booleans.AND(operator_defs[rat].identity?(ppg_finite_lumping.op)(0), booleans.AND(operator_defs[rat].associative?(ppg_finite_lumping.op), operator_defs[rat].commutative?(ppg_finite_lumping.op)))}"
+    (24 31 24 50))))
+ (|check_iff| 0
+  (|check_iff-1| NIL 4001211083
+   (""
+    (THEN (SKOSIMP*) (EXPAND "check")
+     (AUTO-REWRITE "concreteClosed.finite_full_all"
+                   "reducedClosed.finite_full_all")
+     (EXPAND "Compatible")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("Compatible" "fiberMass" "fiberWeight" "successorValue" "fsum" "sum"
+       "survival" "Stochastic" "Equations" "check" "finiteAll" "card"
+       "is_finite")))
+    NIL)
+   ((|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|finite_full_all| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_lumping| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|Compatible| CONST-DECL "bool" |ppg_finite_lumping| NIL)
+    (|check| CONST-DECL "bool" |ppg_finite_lumping| NIL))
+   SHOSTAK))
+ (|compatible_good| 0
+  (|compatible_good-1| NIL 4001211083
+   (""
+    (THEN (SKOSIMP*) (EXPAND "Compatible")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("Compatible" "fiberMass" "fiberWeight" "successorValue" "fsum" "sum"
+       "survival" "Stochastic" "Equations" "check" "finiteAll" "card"
+       "is_finite")))
+    NIL)
+   ((|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|Compatible| CONST-DECL "bool" |ppg_finite_lumping| NIL))
+   SHOSTAK))
+ (|good_function_projection| 0
+  (|good_function_projection-1| NIL 4001211420
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "compatible_good" ("M" "M!1" "N" "N!1" "p" "p!1" "s" "x!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Compatible" "projectProcess" "runningEvent" "runningEvents"
+       "prefixEvents" "activeEvents" "activeEvent" "hitCount" "activeCount"
+       "survival" "successorValue" "fsum" "sum")))
+    NIL)
+   ((|compatible_good| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_lumping| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL))
+   SHOSTAK))
+ (|compatible_fiber| 0
+  (|compatible_fiber-1| NIL 4001211083
+   (""
+    (THEN (SKOSIMP*) (EXPAND "Compatible")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("Compatible" "fiberMass" "fiberWeight" "successorValue" "fsum" "sum"
+       "survival" "Stochastic" "Equations" "check" "finiteAll" "card"
+       "is_finite")))
+    NIL)
+   ((|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|Compatible| CONST-DECL "bool" |ppg_finite_lumping| NIL))
+   SHOSTAK))
+ (|fiber_mass_real| 0
+  (|fiber_mass_real-1| NIL 4001211083
+   (""
+    (THEN (SKOSIMP*) (EXPAND "fiberWeight") (EXPAND "fiberMass")
+     (REWRITE "ppg_rational_sum[State].real_sum_eq") (ASSERT))
+    NIL)
+   ((|fiberMass| CONST-DECL "rat" |ppg_finite_lumping| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|real_sum_eq| FORMULA-DECL NIL |ppg_rational_sum| NIL)
+    (|fiberWeight| CONST-DECL "real" |ppg_finite_weighted_projection| NIL))
+   SHOSTAK))
+ (|fiber_weighted_function| 0
+  (|fiber_weighted_function-1| NIL 4001211161
+   (""
+    (THEN (SKOSIMP*) (REWRITE "target_function_eq") (SKOSIMP*)
+     (LEMMA "compatible_fiber"
+      ("M" "M!1" "N" "N!1" "p" "p!1" "s" "s!1" "a" "t!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Compatible" "fiberMass" "fiberWeight" "successorValue"
+       "localExpectation" "fsum" "sum" "survival" "Stochastic" "Equations"
+       "Conditions" "check" "finiteAll" "card" "is_finite" "ClosedBad"
+       "checkClosedBad" "ReachesGood")))
+    NIL)
+   ((|compatible_fiber| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|rat_times_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|target_function_eq| FORMULA-DECL NIL |ppg_finite_weighted_projection|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|fiberMass| CONST-DECL "rat" |ppg_finite_lumping| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_lumping| NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL))
+   SHOSTAK))
+ (|weighted_projection| 0
+  (|weighted_projection-1| NIL 4001211083
+   ("" (SKOSIMP*)
+    (("" (CASE "FORALL(t:State):universe(t) IMPLIES abstractUniverse(p!1(t))")
+      (("1"
+        (LEMMA "weighted_projection_sum"
+         ("S" "universe" "I" "abstractUniverse" "p" "p!1" "w"
+          "LAMBDA(t:State):M!1`transition(s!1,t)" "f" "f!1"))
+        (("1"
+          (LEMMA "fiber_weighted_function"
+           ("M" "M!1" "N" "N!1" "p" "p!1" "s" "s!1" "f" "f!1"))
+          (("1" (EXPAND "successorValue")
+            (("1"
+              (AUTO-REWRITE "ppg_rational_sum[State].real_sum_eq"
+                            "ppg_rational_sum[Abstract].real_sum_eq"
+                            "fiber_mass_real")
+              (("1"
+                (GRIND :IF-MATCH NIL :EXCLUDE
+                 ("Compatible" "fiberMass" "fiberWeight" "successorValue"
+                  "fsum" "sum" "survival" "Stochastic" "Equations" "check"
+                  "finiteAll" "card" "is_finite"))
+                NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (SKOSIMP*)
+        (("2" (LEMMA "reduced.universe_member" ("s" "p!1(t!1)"))
+          (("2" (PROPAX) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|universe_member| FORMULA-DECL NIL |ppg_finite_drift| NIL)
+    (|weighted_projection_sum| FORMULA-DECL NIL
+     |ppg_finite_weighted_projection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|successorValue| CONST-DECL "rat" |ppg_finite_potential_system| NIL)
+    (|rat_times_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_sum_eq| FORMULA-DECL NIL |ppg_rational_sum| NIL)
+    (|fiber_mass_real| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|fiber_weighted_function| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_lumping| NIL))
+   SHOSTAK))
+ (|equations_pullback| 0
+  (|equations_pullback-1| NIL 4001211083
+   (""
+    (THEN (SKOSIMP*) (LEMMA "compatible_good" ("M" "M!1" "N" "N!1" "p" "p!1"))
+     (LEMMA "weighted_projection" ("M" "M!1" "N" "N!1" "p" "p!1" "f" "f!1"))
+     (EXPAND "Equations")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("Compatible" "fiberMass" "fiberWeight" "successorValue" "fsum" "sum"
+       "survival" "Stochastic" "Equations" "check" "finiteAll" "card"
+       "is_finite")))
+    NIL)
+   ((|weighted_projection| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|rat_plus_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|odd_minus_odd_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|even_minus_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|minus_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_u8_u8| APPLICATION-JUDGEMENT "int16" |integertypes| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|rat_minus_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|Equations| CONST-DECL "bool" |ppg_finite_potential_system| NIL)
+    (|compatible_good| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_lumping| NIL))
+   SHOSTAK))
+ (|survival_projection| 0
+  (|survival_projection-1| NIL 4001211083
+   ("" (INDUCT "n")
+    (("1" (SKOSIMP*)
+      (("1" (REWRITE "concreteSurvival.survival_zero")
+        (("1" (REWRITE "reducedSurvival.survival_zero")
+          (("1"
+            (LEMMA "compatible_good" ("M" "M!1" "N" "N!1" "p" "p!1" "s" "s!1"))
+            (("1"
+              (GRIND :IF-MATCH NIL :EXCLUDE
+               ("Compatible" "fiberMass" "fiberWeight" "successorValue" "fsum"
+                "sum" "survival" "Stochastic" "Equations" "check" "finiteAll"
+                "card" "is_finite"))
+              NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (LABEL "IH" -1)
+        (("2" (REWRITE "concreteSurvival.survival_succ")
+          (("2" (REWRITE "reducedSurvival.survival_succ")
+            (("2"
+              (LEMMA "compatible_good"
+               ("M" "M!1" "N" "N!1" "p" "p!1" "s" "s!1"))
+              (("2" (ASSERT)
+                (("2"
+                  (CASE
+                      "(LAMBDA(t:State):concreteSurvival.survival(M!1,j!1,t))=(LAMBDA(t:State):reducedSurvival.survival(N!1,j!1,p!1(t)))")
+                  (("1" (REPLACE -1 :DIR LR)
+                    (("1"
+                      (LEMMA "weighted_projection"
+                       ("M" "M!1" "N" "N!1" "p" "p!1" "f"
+                        "LAMBDA(a:Abstract):reducedSurvival.survival(N!1,j!1,a)"
+                        "s" "s!1"))
+                      (("1"
+                        (GRIND :IF-MATCH NIL :EXCLUDE
+                         ("Compatible" "fiberMass" "fiberWeight"
+                          "successorValue" "fsum" "sum" "survival" "Stochastic"
+                          "Equations" "check" "finiteAll" "card" "is_finite"))
+                        NIL NIL))
+                      NIL))
+                    NIL)
+                   ("2"
+                    (LEMMA "concreteSystem.vector_eq_iff"
+                     ("f"
+                      "LAMBDA(t:State):concreteSurvival.survival(M!1,j!1,t)"
+                      "g"
+                      "LAMBDA(t:State):reducedSurvival.survival(N!1,j!1,p!1(t))"))
+                    (("2" (ASSERT)
+                      (("2" (SKOSIMP*)
+                        (("2" (INST "IH" "M!1" "N!1" "p!1" "s!2")
+                          (("2" (ASSERT) NIL NIL)) NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_lumping| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|Compatible| CONST-DECL "bool" |ppg_finite_lumping| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|survival| DEF-DECL "rat" |ppg_finite_survival| NIL)
+    (|nat_induction| FORMULA-DECL NIL |naturalnumbers| NIL)
+    (|survival_zero| FORMULA-DECL NIL |ppg_finite_survival| NIL)
+    (|compatible_good| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|vector_eq_iff| FORMULA-DECL NIL |ppg_finite_potential_system| NIL)
+    (|weighted_projection| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|survival_succ| FORMULA-DECL NIL |ppg_finite_survival| NIL))
+   SHOSTAK))
+ (|weighted_term_nonnegative| 0
+  (|weighted_term_nonnegative-1| NIL 4001211258
+   (""
+    (THEN (SKOSIMP*) (EXPAND "Stochastic")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("Compatible" "fiberMass" "fiberWeight" "successorValue"
+       "localExpectation" "fsum" "sum" "survival" "Stochastic" "Equations"
+       "Conditions" "check" "finiteAll" "card" "is_finite" "ClosedBad"
+       "checkClosedBad" "ReachesGood")))
+    NIL)
+   ((|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL))
+   SHOSTAK))
+ (|fiber_nonnegative| 0
+  (|fiber_nonnegative-1| NIL 4001211258
+   (""
+    (THEN (SKOSIMP*) (EXPAND "fiberMass")
+     (LEMMA "ppg_rational_sum[State].rational_sum_nonnegative"
+      ("A" "universe" "f"
+       "LAMBDA(t:State):IF a!1=p!1(t) THEN M!1`transition(s!1,t) ELSE 0 ENDIF"))
+     (ASSERT) (SKOSIMP*)
+     (LEMMA "weighted_term_nonnegative"
+      ("M" "M!1" "p" "p!1" "s" "s!1" "t" "x!1" "a" "a!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Compatible" "fiberMass" "fiberWeight" "successorValue"
+       "localExpectation" "fsum" "sum" "survival" "Stochastic" "Equations"
+       "Conditions" "check" "finiteAll" "card" "is_finite" "ClosedBad"
+       "checkClosedBad" "ReachesGood")))
+    NIL)
+   ((|rational_sum_nonnegative| FORMULA-DECL NIL |ppg_rational_sum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|weighted_term_nonnegative| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|fiberMass| CONST-DECL "rat" |ppg_finite_lumping| NIL))
+   SHOSTAK))
+ (|projected_transition_nonnegative| 0
+  (|projected_transition_nonnegative-1| NIL 4001211258
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fiber_nonnegative" ("M" "M!1" "p" "p!1" "s" "s!1" "a" "a!1"))
+     (LEMMA "compatible_fiber"
+      ("M" "M!1" "N" "N!1" "p" "p!1" "s" "s!1" "a" "a!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Compatible" "fiberMass" "fiberWeight" "successorValue"
+       "localExpectation" "fsum" "sum" "survival" "Stochastic" "Equations"
+       "Conditions" "check" "finiteAll" "card" "is_finite" "ClosedBad"
+       "checkClosedBad" "ReachesGood")))
+    NIL)
+   ((|compatible_fiber| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_lumping| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|fiber_nonnegative| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL))
+   SHOSTAK))
+ (|projected_row_normalized| 0
+  (|projected_row_normalized-1| NIL 4001211258
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "weighted_projection"
+      ("M" "M!1" "N" "N!1" "p" "p!1" "f" "LAMBDA(a:Abstract):1" "s" "s!1"))
+     (LEMMA "concreteSurvival.row_constant" ("M" "M!1" "c" "1" "s" "s!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Compatible" "fiberMass" "fiberWeight" "successorValue"
+       "localExpectation" "fsum" "sum" "survival" "Stochastic" "Equations"
+       "Conditions" "check" "finiteAll" "card" "is_finite" "ClosedBad"
+       "checkClosedBad" "ReachesGood")))
+    NIL)
+   ((|row_constant| FORMULA-DECL NIL |ppg_finite_survival| NIL)
+    (|weighted_projection| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_lumping| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL))
+   SHOSTAK))
+ (|stochastic_projected| 0
+  (|stochastic_projected-1| NIL 4001211258
+   ("" (SKOSIMP*)
+    (("" (LABEL "ONTO" -2)
+      (("" (EXPAND "reducedOrder.Stochastic" 1)
+        (("" (PROP)
+          (("1" (SKOSIMP*)
+            (("1" (EXPAND "surjective?" "ONTO")
+              (("1" (INST "ONTO" "s!1")
+                (("1" (SKOSIMP*)
+                  (("1"
+                    (LEMMA "projected_transition_nonnegative"
+                     ("M" "M!1" "N" "N!1" "p" "p!1" "s" "x!1" "a" "t!1"))
+                    (("1"
+                      (GRIND :IF-MATCH NIL :EXCLUDE
+                       ("Compatible" "fiberMass" "fiberWeight" "successorValue"
+                        "localExpectation" "fsum" "sum" "survival" "Stochastic"
+                        "Equations" "Conditions" "check" "finiteAll" "card"
+                        "is_finite" "ClosedBad" "checkClosedBad"
+                        "ReachesGood"))
+                      NIL NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL)
+           ("2" (SKOSIMP*)
+            (("2" (EXPAND "surjective?" "ONTO")
+              (("2" (INST "ONTO" "s!1")
+                (("2" (SKOSIMP*)
+                  (("2"
+                    (LEMMA "projected_row_normalized"
+                     ("M" "M!1" "N" "N!1" "p" "p!1" "s" "x!1"))
+                    (("2" (EXPAND "successorValue")
+                      (("2"
+                        (AUTO-REWRITE "ppg_rational_sum[Abstract].real_sum_eq"
+                                      "ppg_finite_sum[Abstract].fsum_scale_right")
+                        (("2"
+                          (GRIND :IF-MATCH NIL :EXCLUDE
+                           ("Compatible" "fiberMass" "fiberWeight"
+                            "successorValue" "localExpectation" "fsum" "sum"
+                            "survival" "Stochastic" "Equations" "Conditions"
+                            "check" "finiteAll" "card" "is_finite" "ClosedBad"
+                            "checkClosedBad" "ReachesGood"))
+                          NIL NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|projected_row_normalized| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|real_sum_eq| FORMULA-DECL NIL |ppg_rational_sum| NIL)
+    (|successorValue| CONST-DECL "rat" |ppg_finite_potential_system| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|projected_transition_nonnegative| FORMULA-DECL NIL |ppg_finite_lumping|
+     NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_lumping| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|surjective?| CONST-DECL "bool" |functions| NIL))
+   SHOSTAK))
+ (|pull_local_expectation| 0
+  (|pull_local_expectation-1| NIL 4001211258
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "weighted_projection"
+      ("M" "M!1" "N" "N!1" "p" "p!1" "f" "W!1`potential" "s" "s!1"))
+     (EXPAND "localExpectation") (EXPAND "pullWitness")
+     (EXPAND "successorValue")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Compatible" "fiberMass" "fiberWeight" "successorValue"
+       "localExpectation" "fsum" "sum" "survival" "Stochastic" "Equations"
+       "Conditions" "check" "finiteAll" "card" "is_finite" "ClosedBad"
+       "checkClosedBad" "ReachesGood")))
+    NIL)
+   ((|localExpectation| CONST-DECL "rat" |ppg_finite_drift| NIL)
+    (|successorValue| CONST-DECL "rat" |ppg_finite_potential_system| NIL)
+    (|pullWitness| CONST-DECL "concrete.Witness" |ppg_finite_lumping| NIL)
+    (|weighted_projection| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_lumping| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL))
+   SHOSTAK))
+ (|witness_checked| 0
+  (|witness_checked-1| NIL 4001211258
+   (""
+    (THEN (SKOSIMP*) (LEMMA "reduced.check_sound" ("M" "N!1" "W" "W!1"))
+     (LEMMA "concrete.check_complete" ("M" "M!1" "W" "pullWitness(p!1,W!1)"))
+     (LEMMA "pull_local_expectation" ("M" "M!1" "N" "N!1" "p" "p!1" "W" "W!1"))
+     (LEMMA "compatible_good" ("M" "M!1" "N" "N!1" "p" "p!1"))
+     (EXPAND "Conditions") (EXPAND "Stochastic") (EXPAND "pullWitness")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("Compatible" "fiberMass" "fiberWeight" "successorValue"
+       "localExpectation" "fsum" "sum" "survival" "Stochastic" "Equations"
+       "Conditions" "check" "finiteAll" "card" "is_finite" "ClosedBad"
+       "checkClosedBad" "ReachesGood")))
+    NIL)
+   ((|check_complete| FORMULA-DECL NIL |ppg_finite_drift| NIL)
+    (|pullWitness| CONST-DECL "concrete.Witness" |ppg_finite_lumping| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|compatible_good| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|rat_plus_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|minus_u8_u8| APPLICATION-JUDGEMENT "int16" |integertypes| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|even_minus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|rat_minus_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|Conditions| CONST-DECL "bool" |ppg_finite_drift| NIL)
+    (|pull_local_expectation| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|check_sound| FORMULA-DECL NIL |ppg_finite_drift| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_lumping| NIL))
+   SHOSTAK))
+ (|fiber_member_bound| 0
+  (|fiber_member_bound-1| NIL 4001211258
+   (""
+    (THEN (SKOSIMP*) (EXPAND "fiberMass")
+     (LEMMA "ppg_rational_sum[State].rational_member_bound"
+      ("A" "universe" "f"
+       "LAMBDA(u:State):IF p!1(t!1)=p!1(u) THEN M!1`transition(s!1,u) ELSE 0 ENDIF"
+       "x" "t!1"))
+     (LEMMA "concrete.universe_member" ("s" "t!1")) (ASSERT) (SKOSIMP*)
+     (LEMMA "weighted_term_nonnegative"
+      ("M" "M!1" "p" "p!1" "s" "s!1" "t" "y!1" "a" "p!1(t!1)"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Compatible" "fiberMass" "fiberWeight" "successorValue"
+       "localExpectation" "fsum" "sum" "survival" "Stochastic" "Equations"
+       "Conditions" "check" "finiteAll" "card" "is_finite" "ClosedBad"
+       "checkClosedBad" "ReachesGood")))
+    NIL)
+   ((|rational_member_bound| FORMULA-DECL NIL |ppg_rational_sum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|weighted_term_nonnegative| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|universe_member| FORMULA-DECL NIL |ppg_finite_drift| NIL)
+    (|fiberMass| CONST-DECL "rat" |ppg_finite_lumping| NIL))
+   SHOSTAK))
+ (|pull_closed_bad_state| 0
+  (|pull_closed_bad_state-1| NIL 4001211258
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "compatible_good" ("M" "M!1" "N" "N!1" "p" "p!1" "s" "s!1"))
+     (EXPAND "ClosedBad")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("Compatible" "fiberMass" "fiberWeight" "successorValue"
+       "localExpectation" "fsum" "sum" "survival" "Stochastic" "Equations"
+       "Conditions" "check" "finiteAll" "card" "is_finite" "ClosedBad"
+       "checkClosedBad" "ReachesGood")))
+    NIL)
+   ((|ClosedBad| CONST-DECL "bool" |ppg_finite_closed_bad| NIL)
+    (|compatible_good| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_lumping| NIL))
+   SHOSTAK))
+ (|pull_closed_transition_zero| 0
+  (|pull_closed_transition_zero-1| NIL 4001211258
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fiber_member_bound" ("M" "M!1" "p" "p!1" "s" "s!1" "t" "t!1"))
+     (LEMMA "compatible_fiber"
+      ("M" "M!1" "N" "N!1" "p" "p!1" "s" "s!1" "a" "p!1(t!1)"))
+     (EXPAND "ClosedBad") (EXPAND "Stochastic")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("Compatible" "fiberMass" "fiberWeight" "successorValue"
+       "localExpectation" "fsum" "sum" "survival" "Stochastic" "Equations"
+       "Conditions" "check" "finiteAll" "card" "is_finite" "ClosedBad"
+       "checkClosedBad" "ReachesGood")))
+    NIL)
+   ((|compatible_fiber| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_lumping| NIL)
+    (|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|ClosedBad| CONST-DECL "bool" |ppg_finite_closed_bad| NIL)
+    (|fiber_member_bound| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL))
+   SHOSTAK))
+ (|closedBad_pullback| 0
+  (|closedBad_pullback-1| NIL 4001211258
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "pull_closed_bad_state" ("M" "M!1" "N" "N!1" "p" "p!1" "U" "U!1"))
+     (LEMMA "pull_closed_transition_zero"
+      ("M" "M!1" "N" "N!1" "p" "p!1" "U" "U!1"))
+     (EXPAND "concreteClosed.ClosedBad" 1)
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("Compatible" "fiberMass" "fiberWeight" "successorValue"
+       "localExpectation" "fsum" "sum" "survival" "Stochastic" "Equations"
+       "Conditions" "check" "finiteAll" "card" "is_finite" "ClosedBad"
+       "checkClosedBad" "ReachesGood")))
+    NIL)
+   ((|pull_closed_transition_zero| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|ClosedBad| CONST-DECL "bool" |ppg_finite_closed_bad| NIL)
+    (|pull_closed_bad_state| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_lumping| NIL))
+   SHOSTAK))
+ (|checkedClosedBad_refutes| 0
+  (|checkedClosedBad_refutes-1| NIL 4001211258
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "reducedClosed.checkClosedBad_iff" ("M" "N!1" "U" "U!1"))
+     (LEMMA "closedBad_pullback"
+      ("M" "M!1" "N" "N!1" "p" "p!1" "U" "U!1" "s0" "s0!1"))
+     (LEMMA "concreteClosed.closedBad_not_reachesGood"
+      ("M" "M!1" "U" "LAMBDA(s:State):U!1(p!1(s))" "s" "s0!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Compatible" "fiberMass" "fiberWeight" "successorValue"
+       "localExpectation" "fsum" "sum" "survival" "Stochastic" "Equations"
+       "Conditions" "check" "finiteAll" "card" "is_finite" "ClosedBad"
+       "checkClosedBad" "ReachesGood")))
+    NIL)
+   ((|closedBad_pullback| FORMULA-DECL NIL |ppg_finite_lumping| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_lumping|
+     NIL)
+    (|closedBad_not_reachesGood| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|checkClosedBad_iff| FORMULA-DECL NIL |ppg_finite_closed_bad| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_finite_lumping| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_finite_lumping| NIL))
+   SHOSTAK)))
+

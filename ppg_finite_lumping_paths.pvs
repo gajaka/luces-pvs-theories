@@ -1,0 +1,47 @@
+% A compatible projection preserves the good-state test along every path.
+% The running events and first-hit count therefore agree pointwise,
+% before any transition realization or measure is chosen.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Section 2.3.1, American Mathematical Society, 2017.
+ppg_finite_lumping_paths[State,Abstract,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  abstractUniverse:{U:finite_set[Abstract]|FORALL(a:Abstract):U(a)},
+  (IMPORTING ppg_measurable_space[Omega]) S:MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_finite_lumping[State,Abstract,universe,abstractUniverse],
+    ppg_filtration[Omega,State,S] AS concreteHistory,
+    ppg_filtration[Omega,Abstract,S] AS reducedHistory,
+    ppg_finite_process_stopping[State,Omega,universe,S] AS concreteStop,
+    ppg_finite_process_stopping[Abstract,Omega,abstractUniverse,S] AS reducedStop
+  M: VAR ppg_finite_drift[State,universe].Model
+  N: VAR ppg_finite_drift[Abstract,abstractUniverse].Model
+  p: VAR [State->Abstract]
+  X: VAR concreteHistory.Process
+  n: VAR nat
+  omega: VAR Omega
+
+  event_extensionality: LEMMA FORALL(A,B:set[Omega]):
+    A=B IFF (FORALL(omega:Omega):A(omega)=B(omega))
+
+  family_extensionality: LEMMA FORALL(E,F:[nat->set[Omega]]):
+    E=F IFF (FORALL(n:nat):E(n)=F(n))
+
+  projectProcess(p,X): reducedHistory.Process = LAMBDA(n:nat):
+    LAMBDA(omega:Omega):p(X(n)(omega))
+
+  running_event_pointwise: LEMMA Compatible(M,N,p) IMPLIES
+    (concreteStop.runningEvent(M,X,n)(omega) IFF
+      reducedStop.runningEvent(N,projectProcess(p,X),n)(omega))
+
+  runningEvent_projection: THEOREM Compatible(M,N,p) IMPLIES
+    concreteStop.runningEvent(M,X,n)=reducedStop.runningEvent(N,projectProcess(p,X),n)
+
+  running_family_projection: LEMMA Compatible(M,N,p) IMPLIES
+    (LAMBDA(n:nat):concreteStop.runningEvent(M,X,n))=
+    (LAMBDA(n:nat):reducedStop.runningEvent(N,projectProcess(p,X),n))
+
+  hitCount_projection: THEOREM Compatible(M,N,p) IMPLIES
+    concreteStop.hitCount(M,X,omega)=reducedStop.hitCount(N,projectProcess(p,X),omega)
+
+END ppg_finite_lumping_paths
