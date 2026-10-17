@@ -1,0 +1,39 @@
+% On a finite state carrier, the general finite-input update is the
+% existing finite update. Its kernel, reachability and recursively
+% defined trajectory agree with the earlier finite-state construction.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Chapter 1, American Mathematical Society, 2017.
+ppg_finite_update_view[State,Input: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_input_update[State,Input,inputs] AS viewRaw,
+    ppg_finite_update[State,Input,universe,inputs] AS viewFinite,
+    ppg_update_reach[State,Input,inputs] AS viewRawReach,
+    ppg_finite_potential_reach[State,universe] AS viewFiniteReach,
+    ppg_finite_iid_trajectory[State,Input,universe,inputs] AS viewFiniteTrajectory
+
+  R: VAR viewRaw.Rule
+  s,t,s0: VAR State
+  n: VAR nat
+  omega: VAR [nat->Input]
+
+  valid_view: LEMMA viewRaw.Valid(R) IFF viewFinite.Valid(R)
+
+  kernel_terms_view: LEMMA
+    (LAMBDA(a:Input):IF R`update(s,a)=t THEN R`mass(a) ELSE 0 ENDIF)=
+    (LAMBDA(a:Input):IF t=R`update(s,a) THEN R`mass(a) ELSE 0 ENDIF)
+
+  kernel_view: LEMMA viewRaw.kernel(R,s,t)=viewFinite.kernel(R,s,t)
+
+  positive_step_function: LEMMA
+    viewRawReach.positiveStep(R)=viewFiniteReach.positiveStep(viewFinite.model(R))
+
+  reachable_good_view: LEMMA
+    viewRawReach.ReachesGood(R,s) IFF viewFiniteReach.ReachesGood(viewFinite.model(R),s)
+
+  trajectory_view: LEMMA viewRaw.iidTrajectory(R,s0,n)(omega)=
+    viewFiniteTrajectory.iidTrajectory(R,s0,n)(omega)
+
+END ppg_finite_update_view
