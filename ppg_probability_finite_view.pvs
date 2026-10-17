@@ -1,0 +1,27 @@
+% A finite probability law embeds in the native extended measure by
+% attaching the finite flag to each of its masses. The resulting finite
+% measure has exactly the original event values and total mass one.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_probability_finite_view[Omega: TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_probability_measure[Omega,S] AS finiteViewProbability,
+    ppg_finite_law_view[Omega,S] AS finiteViewMeasure,
+    measure_integration@generalized_measure_def[Omega,asNasa(S)] AS finiteViewNative
+
+  mu: VAR finiteViewProbability.Probability
+  A: VAR (S)
+
+  sigma_view: LEMMA asNasa(S)=S
+
+  probability_native_finite: LEMMA finiteViewNative.finite_measure?(mu)
+
+  nativeLaw(mu): finiteViewMeasure.FiniteLaw = finiteViewNative.to_measure(mu)
+
+  native_law_value: LEMMA nativeLaw(mu)(A)=(TRUE,mu(A))
+
+  native_law_full: THEOREM nativeLaw(mu)(fullset[Omega])=(TRUE,1)
+
+END ppg_probability_finite_view
