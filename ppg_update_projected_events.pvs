@@ -1,0 +1,103 @@
+% The same input sequence gives equal good tests along the concrete and
+% reduced paths. Their running and success events are the same sets.
+% Full equality of input measures then preserves their probabilities.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, American Mathematical Society, 2017.
+ppg_update_projected_events[State,Abstract,Input: TYPE,
+  abstractUniverse:{U:finite_set[Abstract]|FORALL(a:Abstract):U(a)},
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)},
+  (IMPORTING ppg_finite_input_update[State,Input,inputs])
+  R:{R:Rule|Valid(R)},
+  (IMPORTING ppg_finite_input_update[Abstract,Input,inputs])
+  Q:{Q:ppg_finite_input_update[Abstract,Input,inputs].Rule|
+    ppg_finite_input_update[Abstract,Input,inputs].Valid(Q)},
+  (IMPORTING ppg_finite_update_projection[State,Abstract,Input,inputs])
+  p:{p:[State->Abstract]|Commutes(R,Q,p)},s0:State]: THEORY
+BEGIN
+  IMPORTING ppg_finite_input_history[Input] AS projEventsHistory,
+    ppg_update_projected_process[State,Abstract,Input,abstractUniverse,inputs,R,Q,p,s0] AS projEventsRun,
+    ppg_update_projected_expectation[State,Abstract,Input,abstractUniverse,inputs,R,Q,p,s0] AS projEventsMean,
+    ppg_update_input_law[State,Input,inputs,R] AS projEventsSourceLaw,
+    ppg_finite_input_update[State,Input,inputs] AS projEventsSourceUpdate,
+    ppg_input_update_stopping[State,Input,inputs] AS projEventsSourceStopping,
+    ppg_update_projection_stopping[State,Abstract,Input,inputs] AS projEventsProjection,
+    ppg_update_projection_reach[State,Abstract,Input,inputs] AS projEventsGoodProjection,
+    ppg_update_stopping_finite_view[Abstract,Input,abstractUniverse,inputs] AS projEventsStopView,
+    ppg_finite_update[Abstract,Input,abstractUniverse,inputs] AS projEventsFiniteRule,
+    ppg_finite_potential_order[Abstract,abstractUniverse] AS projEventsOrder,
+    ppg_finite_iid_law[Abstract,Input,abstractUniverse,inputs,Q] AS projEventsOriginalLaw,
+    ppg_finite_iid_trajectory[Abstract,Input,abstractUniverse,inputs] AS projEventsTrajectory,
+    ppg_finite_iid_execution[Abstract,Input,abstractUniverse,inputs,Q,p(s0)] AS projEventsOriginalExecution,
+    ppg_finite_iid_hitting[Abstract,Input,abstractUniverse,inputs,Q,p(s0)] AS projEventsIidHitting,
+    ppg_finite_process_stopping[Abstract,projEventsHistory.Sample,abstractUniverse,
+      projEventsHistory.ambientSigma] AS projEventsOriginalStopping,
+    ppg_finite_stopped_integral[Abstract,projEventsHistory.Sample,abstractUniverse,
+      projEventsHistory.ambientSigma,projEventsOriginalLaw.iidMeasure,
+      projEventsTrajectory.inputFiltration] AS projEventsStoppedIntegral,
+    ppg_finite_process_hitting[Abstract,projEventsHistory.Sample,abstractUniverse,
+      projEventsHistory.ambientSigma,projEventsOriginalLaw.iidMeasure,
+      projEventsTrajectory.inputFiltration] AS projEventsOriginalHitting,
+    ppg_finite_survival_probability[Abstract,projEventsHistory.Sample,abstractUniverse,
+      projEventsHistory.ambientSigma,projEventsOriginalLaw.iidMeasure,
+      projEventsTrajectory.inputFiltration] AS projEventsProbability,
+    ppg_finite_closed_bad_tail[Abstract,projEventsHistory.Sample,abstractUniverse,
+      projEventsHistory.ambientSigma,projEventsOriginalLaw.iidMeasure,
+      projEventsTrajectory.inputFiltration] AS projEventsClosed,
+    ppg_finite_expectation[projEventsHistory.Sample,projEventsHistory.ambientSigma,
+      projEventsSourceLaw.iidMeasure] AS projEventsSourceMass,
+    ppg_finite_expectation[projEventsHistory.Sample,projEventsHistory.ambientSigma,
+      projEventsOriginalLaw.iidMeasure] AS projEventsOriginalMass
+
+  n: VAR nat
+  omega: VAR projEventsHistory.Sample
+
+  model_stochastic: LEMMA projEventsOrder.Stochastic(projEventsFiniteRule.model(Q))
+
+  stochasticModel: projEventsProbability.StochasticModel = projEventsFiniteRule.model(Q)
+
+  original_probability_mass_one: LEMMA
+    projEventsOriginalMass.mass(fullset[projEventsHistory.Sample])=1
+
+  probability_mass_one: LEMMA projEventsSourceMass.mass(fullset[projEventsHistory.Sample])=1
+
+  original_initial: LEMMA projEventsOriginalExecution.iidRealized(0)(omega)=p(s0)
+
+  sourceGoodPath(n): [projEventsHistory.Sample->bool] =
+    LAMBDA(omega:projEventsHistory.Sample):R`good(projEventsSourceUpdate.iidTrajectory(R,s0,n)(omega))
+
+  targetGoodPath(n): [projEventsHistory.Sample->bool] =
+    LAMBDA(omega:projEventsHistory.Sample):Q`good(projEventsOriginalExecution.iidRealized(n)(omega))
+
+  good_path_function: LEMMA sourceGoodPath=targetGoodPath
+
+  successEvent: set[projEventsHistory.Sample] = {omega:projEventsHistory.Sample|
+    EXISTS(n:nat):sourceGoodPath(n)(omega)}
+
+  neverGood: set[projEventsHistory.Sample] = {omega:projEventsHistory.Sample|
+    FORALL(n:nat):NOT sourceGoodPath(n)(omega)}
+
+  success_event_original: LEMMA successEvent=projEventsOriginalHitting.successEvent(
+    projEventsFiniteRule.model(Q),projEventsOriginalExecution.iidRealized)
+
+  never_good_original: LEMMA neverGood=projEventsClosed.neverGood(
+    projEventsFiniteRule.model(Q),projEventsOriginalExecution.iidRealized)
+
+  running_family_original: LEMMA projEventsSourceStopping.runningEvents(R,s0)=
+    projEventsOriginalStopping.runningEvents(projEventsFiniteRule.model(Q),
+      projEventsOriginalExecution.iidRealized)
+
+  sourceRunning(n): (projEventsHistory.ambientSigma) =
+    projEventsSourceStopping.runningEvents(R,s0)(n)
+
+  source_running_at: LEMMA sourceRunning(n)=projEventsSourceStopping.runningEvent(R,s0,n)
+
+  source_running_original: LEMMA sourceRunning(n)=projEventsStoppedIntegral.runningAmbient(
+    projEventsFiniteRule.model(Q),projEventsOriginalExecution.iidRealized,n)
+
+  running_mass_original: LEMMA projEventsSourceMass.mass(sourceRunning(n))=
+    projEventsOriginalMass.mass(projEventsStoppedIntegral.runningAmbient(
+      projEventsFiniteRule.model(Q),projEventsOriginalExecution.iidRealized,n))
+
+END ppg_update_projected_events

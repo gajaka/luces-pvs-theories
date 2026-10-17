@@ -1,0 +1,56 @@
+% Equal input laws and pointwise equal first-hit counts give equal
+% extended expectations. On the finite reduced carrier this is the
+% earlier IID realization's expected hitting time.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964.
+ppg_update_projected_expectation[State,Abstract,Input: TYPE,
+  abstractUniverse:{U:finite_set[Abstract]|FORALL(a:Abstract):U(a)},
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)},
+  (IMPORTING ppg_finite_input_update[State,Input,inputs])
+  R:{R:Rule|Valid(R)},
+  (IMPORTING ppg_finite_input_update[Abstract,Input,inputs])
+  Q:{Q:ppg_finite_input_update[Abstract,Input,inputs].Rule|
+    ppg_finite_input_update[Abstract,Input,inputs].Valid(Q)},
+  (IMPORTING ppg_finite_update_projection[State,Abstract,Input,inputs])
+  p:{p:[State->Abstract]|Commutes(R,Q,p)},s0:State]: THEORY
+BEGIN
+  IMPORTING ppg_finite_input_history[Input] AS projMeanHistory,
+    ppg_update_projected_process[State,Abstract,Input,abstractUniverse,inputs,R,Q,p,s0] AS projMeanRun,
+    ppg_update_expected_count[State,Input,inputs,R] AS projMeanSource,
+    ppg_update_expected_count[Abstract,Input,inputs,Q] AS projMeanTarget,
+    ppg_update_projection_stopping[State,Abstract,Input,inputs] AS projMeanProjection,
+    ppg_update_stopping_finite_view[Abstract,Input,abstractUniverse,inputs] AS projMeanStopView,
+    ppg_finite_update[Abstract,Input,abstractUniverse,inputs] AS projMeanFiniteRule,
+    ppg_finite_iid_law[Abstract,Input,abstractUniverse,inputs,Q] AS projMeanOriginalLaw,
+    ppg_update_input_law_finite_view[Abstract,Input,abstractUniverse,inputs,Q] AS projMeanTargetLawView,
+    ppg_finite_iid_trajectory[Abstract,Input,abstractUniverse,inputs] AS projMeanTrajectory,
+    ppg_finite_iid_execution[Abstract,Input,abstractUniverse,inputs,Q,p(s0)] AS projMeanOriginalExecution,
+    ppg_finite_process_hitting[Abstract,projMeanHistory.Sample,abstractUniverse,
+      projMeanHistory.ambientSigma,projMeanOriginalLaw.iidMeasure,
+      projMeanTrajectory.inputFiltration] AS projMeanOriginalHitting,
+    ppg_finite_process_stopping[Abstract,projMeanHistory.Sample,abstractUniverse,
+      projMeanHistory.ambientSigma] AS projMeanOriginalStopping
+
+  hit_function_projection: LEMMA projMeanSource.hitFunction(s0)=projMeanTarget.hitFunction(p(s0))
+
+  expectedHitCount_projection: THEOREM projMeanSource.expectedHitCount(s0)=
+    projMeanTarget.expectedHitCount(p(s0))
+
+  original_trajectory_family: LEMMA
+    (LAMBDA(n:nat):projMeanTrajectory.iidTrajectory(Q,p(s0),n))=
+      projMeanOriginalExecution.iidRealized
+
+  target_hit_function_original: LEMMA projMeanTarget.hitFunction(p(s0))=
+    (LAMBDA(omega:projMeanHistory.Sample):projMeanOriginalStopping.hitCount(
+      projMeanFiniteRule.model(Q),projMeanOriginalExecution.iidRealized,omega))
+
+  target_expected_original: LEMMA projMeanTarget.expectedHitCount(p(s0))=
+    projMeanOriginalHitting.expectedHitCount(
+      projMeanFiniteRule.model(Q),projMeanOriginalExecution.iidRealized)
+
+  source_expected_original: LEMMA projMeanSource.expectedHitCount(s0)=
+    projMeanOriginalHitting.expectedHitCount(
+      projMeanFiniteRule.model(Q),projMeanOriginalExecution.iidRealized)
+
+END ppg_update_projected_expectation

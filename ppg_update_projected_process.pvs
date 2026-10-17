@@ -1,0 +1,67 @@
+% The projected path is the reduced IID path on the same input sequence.
+% Equality of the constructed input measures transports its conditional
+% transition law to the original rule's input measure.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Section 2.3.1, American Mathematical Society, 2017.
+ppg_update_projected_process[State,Abstract,Input: TYPE,
+  abstractUniverse:{U:finite_set[Abstract]|FORALL(a:Abstract):U(a)},
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)},
+  (IMPORTING ppg_finite_input_update[State,Input,inputs])
+  R:{R:Rule|Valid(R)},
+  (IMPORTING ppg_finite_input_update[Abstract,Input,inputs])
+  Q:{Q:ppg_finite_input_update[Abstract,Input,inputs].Rule|
+    ppg_finite_input_update[Abstract,Input,inputs].Valid(Q)},
+  (IMPORTING ppg_finite_update_projection[State,Abstract,Input,inputs])
+  p:{p:[State->Abstract]|Commutes(R,Q,p)},s0:State]: THEORY
+BEGIN
+  IMPORTING ppg_finite_input_history[Input] AS projRunHistory,
+    ppg_finite_update[Abstract,Input,abstractUniverse,inputs] AS projRunFiniteRule,
+    ppg_finite_update_view[Abstract,Input,abstractUniverse,inputs] AS projRunFiniteView,
+    ppg_update_input_law[State,Input,inputs,R] AS projRunSourceLaw,
+    ppg_update_input_law[Abstract,Input,inputs,Q] AS projRunTargetLaw,
+    ppg_update_projection_input_law[State,Abstract,Input,inputs,R,Q] AS projRunLawEquality
+
+  target_finite_valid: LEMMA projRunFiniteRule.Valid(Q)
+
+  IMPORTING ppg_finite_iid_law[Abstract,Input,abstractUniverse,inputs,Q] AS projRunOriginalLaw,
+    ppg_update_input_law_finite_view[Abstract,Input,abstractUniverse,inputs,Q] AS projRunTargetView,
+    ppg_finite_iid_trajectory[Abstract,Input,abstractUniverse,inputs] AS projRunTrajectory,
+    ppg_finite_iid_execution[Abstract,Input,abstractUniverse,inputs,Q,p(s0)] AS projRunOriginalExecution,
+    ppg_finite_process_realization[Abstract,projRunHistory.Sample,abstractUniverse,
+      projRunHistory.ambientSigma,projRunSourceLaw.iidMeasure,
+      projRunTrajectory.inputFiltration] AS projRunSourceProcess,
+    ppg_finite_process_realization[Abstract,projRunHistory.Sample,abstractUniverse,
+      projRunHistory.ambientSigma,projRunOriginalLaw.iidMeasure,
+      projRunTrajectory.inputFiltration] AS projRunTargetProcess,
+    ppg_finite_update_projection[State,Abstract,Input,inputs] AS projRunCommutation,
+    ppg_finite_input_update[State,Input,inputs] AS projRunSourceUpdate
+
+  n: VAR nat
+  omega: VAR projRunHistory.Sample
+
+  measure_projection: LEMMA projRunSourceLaw.iidMeasure=projRunTargetLaw.iidMeasure
+
+  measure_original: LEMMA projRunSourceLaw.iidMeasure=projRunOriginalLaw.iidMeasure
+
+  projectedProcess: [nat->[projRunHistory.Sample->Abstract]] =
+    LAMBDA(n:nat):(LAMBDA(omega:projRunHistory.Sample):
+      p(projRunSourceUpdate.iidTrajectory(R,s0,n)(omega)))
+
+  projected_trajectory_at: LEMMA projectedProcess(n)(omega)=
+    projRunOriginalExecution.iidRealized(n)(omega)
+
+  projected_process_equal: LEMMA projectedProcess=projRunOriginalExecution.iidRealized
+
+  projectedAdapted: projRunSourceProcess.AdaptedProcess = projectedProcess
+
+  projectedRealization: projRunSourceProcess.Realization(projRunFiniteRule.model(Q)) = projectedAdapted
+
+  projected_iidRealization: THEOREM
+    projRunSourceProcess.TransitionProcess(projRunFiniteRule.model(Q),projectedRealization)
+
+  projected_realization_at: LEMMA projectedRealization(n)(omega)=
+    p(projRunSourceUpdate.iidTrajectory(R,s0,n)(omega))
+
+END ppg_update_projected_process

@@ -1,0 +1,910 @@
+(|ppg_update_projected_probability|
+ (|timeout_exact| 0
+  (|timeout_exact-1| NIL 4001250118
+   (""
+    (THEN (SKOSIMP*) (LEMMA "projResultsEvents.model_stochastic")
+     (LEMMA "projResultsEvents.original_probability_mass_one")
+     (LEMMA "projResultsEvents.original_initial")
+     (LEMMA "projResultsEvents.running_mass_original" ("n" "n!1"))
+     (LEMMA "projResultsSurvivalIntegral.running_measure_fixed_eq_survival"
+      ("M" "projResultsRule.model(Q)" "X"
+       "projResultsOriginalExecution.iidRealized" "s0" "p(s0)" "N" "n!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Commutes" "Valid" "iidTrajectory" "iidMeasure" "nativeLaw" "model"
+       "kernel" "sum" "fsum" "expectedHitCount" "lintegral" "mass"
+       "sourceRunning" "runningAmbient" "survival" "expt" "generated" "sigma?"
+       "probability?" "measure?")))
+    NIL)
+   ((|original_probability_mass_one| FORMULA-DECL NIL
+     |ppg_update_projected_events| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|running_mass_original| FORMULA-DECL NIL |ppg_update_projected_events|
+     NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|rat_max| APPLICATION-JUDGEMENT "{s: rat | s >= q AND s >= r}" |real_defs|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT
+     "measurable_set[Sample[Input], asNasa(iidSampleHistory.ambientSigma)]"
+     |ppg_update_projected_probability| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT
+     "(asNasa(iidSampleHistory.ambientSigma))"
+     |ppg_update_projected_probability| NIL)
+    (|iidProcess| CONST-DECL "iidRunProcess.AdaptedProcess"
+     |ppg_finite_iid_execution| NIL)
+    (|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|ofReal| CONST-DECL "ENN" |ppg_enn_ofreal| NIL)
+    (|max| CONST-DECL "{p: real | p >= m AND p >= n}" |real_defs| NIL)
+    (|executionRealization| CONST-DECL "Realization(model(R))"
+     |ppg_finite_update_execution| NIL)
+    (|executionProcess| CONST-DECL "iidRunUpdate.ExecutionProcess(R, iidDraws)"
+     |ppg_finite_iid_execution| NIL)
+    (|running_measure_fixed_eq_survival| FORMULA-DECL NIL
+     |ppg_finite_survival_integral| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|TransitionProcess| CONST-DECL "bool" |ppg_finite_process_realization|
+     NIL)
+    (|Realization| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|iidRealized| CONST-DECL "iidRunProcess.Realization(iidRunRule.model(R))"
+     |ppg_finite_iid_execution| NIL)
+    (|Sample| TYPE-EQ-DECL NIL |ppg_finite_input_history| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ambientSigma| CONST-DECL "historySpace.MeasurableSpace"
+     |ppg_finite_input_history| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|iidMeasure| CONST-DECL
+     "ppg_finite_law_view[Sample[Input], iidSampleHistory.ambientSigma].FiniteLaw"
+     |ppg_finite_iid_law| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|inputFiltration| CONST-DECL "trajFiltration.Filtration"
+     |ppg_finite_iid_trajectory| NIL)
+    (|original_initial| FORMULA-DECL NIL |ppg_update_projected_events| NIL)
+    (|model_stochastic| FORMULA-DECL NIL |ppg_update_projected_events| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_update_projected_probability| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projected_probability| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_input_update| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}"
+     |ppg_update_projected_probability| NIL)
+    (Q FORMAL-CONST-DECL
+     "{Q: ppg_finite_input_update[Abstract, Input, inputs].Rule |
+   ppg_finite_input_update[Abstract, Input, inputs].Valid(Q)}"
+     |ppg_update_projected_probability| NIL)
+    (|Commutes| CONST-DECL "bool" |ppg_finite_update_projection| NIL)
+    (|p| FORMAL-CONST-DECL "{p: [State -> Abstract] | Commutes(R, Q, p)}"
+     |ppg_update_projected_probability| NIL)
+    (|s0| FORMAL-CONST-DECL "State" |ppg_update_projected_probability| NIL))
+   SHOSTAK))
+ (|checkedTable_timeout_exact| 0
+  (|checkedTable_timeout_exact-1| NIL 4001250118
+   (""
+    (THEN (SKOSIMP*) (LEMMA "timeout_exact" ("n" "H!1"))
+     (LEMMA "projResultsCertificate.checkedSurvivalTable_exact"
+      ("M" "projResultsRule.model(Q)" "F" "F!1" "H" "H!1" "s" "p(s0)"))
+     (ASSERT))
+    NIL)
+   ((|checkedSurvivalTable_exact| FORMULA-DECL NIL
+     |ppg_finite_survival_certificate| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|SurvivalRows| TYPE-EQ-DECL NIL |ppg_finite_survival_certificate| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projected_probability| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_input_update| NIL)
+    (Q FORMAL-CONST-DECL
+     "{Q: ppg_finite_input_update[Abstract, Input, inputs].Rule |
+   ppg_finite_input_update[Abstract, Input, inputs].Valid(Q)}"
+     |ppg_update_projected_probability| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|Commutes| CONST-DECL "bool" |ppg_finite_update_projection| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}"
+     |ppg_update_projected_probability| NIL)
+    (|p| FORMAL-CONST-DECL "{p: [State -> Abstract] | Commutes(R, Q, p)}"
+     |ppg_update_projected_probability| NIL)
+    (|s0| FORMAL-CONST-DECL "State" |ppg_update_projected_probability| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_update_projected_probability| NIL)
+    (|timeout_exact| FORMULA-DECL NIL |ppg_update_projected_probability| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK))
+ (|mean_exact| 0
+  (|mean_exact-1| NIL 4001250118
+   ("" (SKOSIMP*)
+    (("" (LEMMA "projResultsEvents.model_stochastic")
+      (("" (LEMMA "projResultsEvents.original_probability_mass_one")
+        (("" (LEMMA "projResultsEvents.original_initial")
+          (("" (LEMMA "projResultsMean.source_expected_original")
+            ((""
+              (LEMMA
+               "projResultsPotentialExpectation.expectedHitCount_fixed_eq_of_equations"
+               ("M" "projResultsRule.model(Q)" "f" "f!1" "X"
+                "projResultsOriginalExecution.iidRealized" "s0" "p(s0)"))
+              (("1" (PROP)
+                (("1"
+                  (GRIND :IF-MATCH NIL :EXCLUDE
+                   ("Stochastic" "Absorbing" "Equations" "Commutes" "Valid"
+                    "iidTrajectory" "iidMeasure" "nativeLaw" "model" "kernel"
+                    "sum" "fsum" "expectedHitCount" "lintegral" "mass"
+                    "sourceRunning" "runningAmbient" "survival" "expt"
+                    "generated" "sigma?" "probability?" "measure?"))
+                  NIL NIL))
+                NIL)
+               ("2" (PROPAX) NIL NIL) ("3" (PROP) NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|original_probability_mass_one| FORMULA-DECL NIL
+     |ppg_update_projected_events| NIL)
+    (|source_expected_original| FORMULA-DECL NIL
+     |ppg_update_projected_expectation| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT
+     "measurable_set[Sample[Input], asNasa(iidSampleHistory.ambientSigma)]"
+     |ppg_update_projected_probability| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT
+     "(asNasa(iidSampleHistory.ambientSigma))"
+     |ppg_update_projected_probability| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|rat_max| APPLICATION-JUDGEMENT "{s: rat | s >= q AND s >= r}" |real_defs|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|iidProcess| CONST-DECL "iidRunProcess.AdaptedProcess"
+     |ppg_finite_iid_execution| NIL)
+    (|ofReal| CONST-DECL "ENN" |ppg_enn_ofreal| NIL)
+    (|max| CONST-DECL "{p: real | p >= m AND p >= n}" |real_defs| NIL)
+    (|executionRealization| CONST-DECL "Realization(model(R))"
+     |ppg_finite_update_execution| NIL)
+    (|executionProcess| CONST-DECL "iidRunUpdate.ExecutionProcess(R, iidDraws)"
+     |ppg_finite_iid_execution| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|expectedHitCount_fixed_eq_of_equations| FORMULA-DECL NIL
+     |ppg_finite_potential_expectation| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|Absorbing| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|StochasticAbsorbingModel| TYPE-EQ-DECL NIL
+     |ppg_finite_potential_expectation| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|Equations| CONST-DECL "bool" |ppg_finite_potential_system| NIL)
+    (|SolvingVector| TYPE-EQ-DECL NIL |ppg_finite_stopped_conditional| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|TransitionProcess| CONST-DECL "bool" |ppg_finite_process_realization|
+     NIL)
+    (|Realization| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|iidRealized| CONST-DECL "iidRunProcess.Realization(iidRunRule.model(R))"
+     |ppg_finite_iid_execution| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Sample| TYPE-EQ-DECL NIL |ppg_finite_input_history| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ambientSigma| CONST-DECL "historySpace.MeasurableSpace"
+     |ppg_finite_input_history| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|iidMeasure| CONST-DECL
+     "ppg_finite_law_view[Sample[Input], iidSampleHistory.ambientSigma].FiniteLaw"
+     |ppg_finite_iid_law| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|inputFiltration| CONST-DECL "trajFiltration.Filtration"
+     |ppg_finite_iid_trajectory| NIL)
+    (|original_initial| FORMULA-DECL NIL |ppg_update_projected_events| NIL)
+    (|model_stochastic| FORMULA-DECL NIL |ppg_update_projected_events| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_update_projected_probability| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projected_probability| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_input_update| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}"
+     |ppg_update_projected_probability| NIL)
+    (Q FORMAL-CONST-DECL
+     "{Q: ppg_finite_input_update[Abstract, Input, inputs].Rule |
+   ppg_finite_input_update[Abstract, Input, inputs].Valid(Q)}"
+     |ppg_update_projected_probability| NIL)
+    (|Commutes| CONST-DECL "bool" |ppg_finite_update_projection| NIL)
+    (|p| FORMAL-CONST-DECL "{p: [State -> Abstract] | Commutes(R, Q, p)}"
+     |ppg_update_projected_probability| NIL)
+    (|s0| FORMAL-CONST-DECL "State" |ppg_update_projected_probability| NIL))
+   SHOSTAK))
+ (|checked_mean_bound| 0
+  (|checked_mean_bound-1| NIL 4001250118
+   (""
+    (THEN (SKOSIMP*) (LEMMA "projResultsMean.source_expected_original")
+     (LEMMA "projResultsIidHitting.iid_expectedHitCount_le" ("W" "W!1"))
+     (ASSERT))
+    NIL)
+   ((|iid_expectedHitCount_le| FORMULA-DECL NIL |ppg_finite_iid_hitting| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|check| CONST-DECL "bool" |ppg_finite_drift| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Sample| TYPE-EQ-DECL NIL |ppg_finite_input_history| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ambientSigma| CONST-DECL "historySpace.MeasurableSpace"
+     |ppg_finite_input_history| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|iidMeasure| CONST-DECL
+     "ppg_finite_law_view[Sample[Input], iidSampleHistory.ambientSigma].FiniteLaw"
+     |ppg_finite_iid_law| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|inputFiltration| CONST-DECL "trajFiltration.Filtration"
+     |ppg_finite_iid_trajectory| NIL)
+    (|AcceptedWitness| TYPE-EQ-DECL NIL |ppg_finite_process_expectation| NIL)
+    (|nnreal_div_posreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|source_expected_original| FORMULA-DECL NIL
+     |ppg_update_projected_expectation| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_update_projected_probability| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projected_probability| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_input_update| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}"
+     |ppg_update_projected_probability| NIL)
+    (Q FORMAL-CONST-DECL
+     "{Q: ppg_finite_input_update[Abstract, Input, inputs].Rule |
+   ppg_finite_input_update[Abstract, Input, inputs].Valid(Q)}"
+     |ppg_update_projected_probability| NIL)
+    (|Commutes| CONST-DECL "bool" |ppg_finite_update_projection| NIL)
+    (|p| FORMAL-CONST-DECL "{p: [State -> Abstract] | Commutes(R, Q, p)}"
+     |ppg_update_projected_probability| NIL)
+    (|s0| FORMAL-CONST-DECL "State" |ppg_update_projected_probability| NIL))
+   SHOSTAK))
+ (|checked_ae_success| 0
+  (|checked_ae_success-1| NIL 4001250118
+   (""
+    (THEN (SKOSIMP*) (LEMMA "projResultsRun.measure_original")
+     (REPLACE -1 :ACTUALS? T)
+     (LEMMA "projResultsEvents.success_event_original") (REPLACE -1)
+     (LEMMA "projResultsIidHitting.iid_ae_exists_good" ("W" "W!1")) (ASSERT))
+    NIL)
+   ((|iid_ae_exists_good| FORMULA-DECL NIL |ppg_finite_iid_hitting| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|check| CONST-DECL "bool" |ppg_finite_drift| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Sample| TYPE-EQ-DECL NIL |ppg_finite_input_history| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ambientSigma| CONST-DECL "historySpace.MeasurableSpace"
+     |ppg_finite_input_history| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|iidMeasure| CONST-DECL
+     "ppg_finite_law_view[Sample[Input], iidSampleHistory.ambientSigma].FiniteLaw"
+     |ppg_finite_iid_law| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|inputFiltration| CONST-DECL "trajFiltration.Filtration"
+     |ppg_finite_iid_trajectory| NIL)
+    (|AcceptedWitness| TYPE-EQ-DECL NIL |ppg_finite_process_expectation| NIL)
+    (|success_event_original| FORMULA-DECL NIL |ppg_update_projected_events|
+     NIL)
+    (|measure_original| FORMULA-DECL NIL |ppg_update_projected_process| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_update_projected_probability| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projected_probability| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_input_update| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}"
+     |ppg_update_projected_probability| NIL)
+    (Q FORMAL-CONST-DECL
+     "{Q: ppg_finite_input_update[Abstract, Input, inputs].Rule |
+   ppg_finite_input_update[Abstract, Input, inputs].Valid(Q)}"
+     |ppg_update_projected_probability| NIL)
+    (|Commutes| CONST-DECL "bool" |ppg_finite_update_projection| NIL)
+    (|p| FORMAL-CONST-DECL "{p: [State -> Abstract] | Commutes(R, Q, p)}"
+     |ppg_update_projected_probability| NIL)
+    (|s0| FORMAL-CONST-DECL "State" |ppg_update_projected_probability| NIL))
+   SHOSTAK))
+ (|geometric_timeout_bound| 0
+  (|geometric_timeout_bound-1| NIL 4001250118
+   ("" (SKOSIMP*)
+    (("" (LEMMA "projResultsEvents.model_stochastic")
+      (("" (LEMMA "projResultsEvents.original_probability_mass_one")
+        (("" (LEMMA "projResultsEvents.original_initial")
+          ((""
+            (LEMMA "projResultsEvents.running_mass_original" ("n" "k!1*H!1"))
+            ((""
+              (LEMMA
+               "projResultsSurvivalProbability.running_measure_fixed_blocks_le"
+               ("M" "projResultsRule.model(Q)" "L" "H!1" "k" "k!1" "b" "b!1"
+                "X" "projResultsOriginalExecution.iidRealized" "s0" "p(s0)"))
+              (("1"
+                (GRIND :IF-MATCH NIL :EXCLUDE
+                 ("Commutes" "Valid" "iidTrajectory" "iidMeasure" "nativeLaw"
+                  "model" "kernel" "sum" "fsum" "expectedHitCount" "lintegral"
+                  "mass" "sourceRunning" "runningAmbient" "survival" "expt"
+                  "generated" "sigma?" "probability?" "measure?"))
+                NIL NIL)
+               ("2" (PROPAX) NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|original_probability_mass_one| FORMULA-DECL NIL
+     |ppg_update_projected_events| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|running_mass_original| FORMULA-DECL NIL |ppg_update_projected_events|
+     NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|rat_max| APPLICATION-JUDGEMENT "{s: rat | s >= q AND s >= r}" |real_defs|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|rat_expt| APPLICATION-JUDGEMENT "rat" |exponentiation| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT
+     "measurable_set[Sample[Input], asNasa(iidSampleHistory.ambientSigma)]"
+     |ppg_update_projected_probability| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT
+     "(asNasa(iidSampleHistory.ambientSigma))"
+     |ppg_update_projected_probability| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|iidProcess| CONST-DECL "iidRunProcess.AdaptedProcess"
+     |ppg_finite_iid_execution| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|ofReal| CONST-DECL "ENN" |ppg_enn_ofreal| NIL)
+    (|max| CONST-DECL "{p: real | p >= m AND p >= n}" |real_defs| NIL)
+    (|executionRealization| CONST-DECL "Realization(model(R))"
+     |ppg_finite_update_execution| NIL)
+    (|executionProcess| CONST-DECL "iidRunUpdate.ExecutionProcess(R, iidDraws)"
+     |ppg_finite_iid_execution| NIL)
+    (|running_measure_fixed_blocks_le| FORMULA-DECL NIL
+     |ppg_finite_survival_probability| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|StochasticModel| TYPE-EQ-DECL NIL |ppg_finite_survival_probability| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|TransitionProcess| CONST-DECL "bool" |ppg_finite_process_realization|
+     NIL)
+    (|Realization| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|iidRealized| CONST-DECL "iidRunProcess.Realization(iidRunRule.model(R))"
+     |ppg_finite_iid_execution| NIL)
+    (|Sample| TYPE-EQ-DECL NIL |ppg_finite_input_history| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ambientSigma| CONST-DECL "historySpace.MeasurableSpace"
+     |ppg_finite_input_history| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|iidMeasure| CONST-DECL
+     "ppg_finite_law_view[Sample[Input], iidSampleHistory.ambientSigma].FiniteLaw"
+     |ppg_finite_iid_law| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|inputFiltration| CONST-DECL "trajFiltration.Filtration"
+     |ppg_finite_iid_trajectory| NIL)
+    (|original_initial| FORMULA-DECL NIL |ppg_update_projected_events| NIL)
+    (|model_stochastic| FORMULA-DECL NIL |ppg_update_projected_events| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_update_projected_probability| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projected_probability| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_input_update| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}"
+     |ppg_update_projected_probability| NIL)
+    (Q FORMAL-CONST-DECL
+     "{Q: ppg_finite_input_update[Abstract, Input, inputs].Rule |
+   ppg_finite_input_update[Abstract, Input, inputs].Valid(Q)}"
+     |ppg_update_projected_probability| NIL)
+    (|Commutes| CONST-DECL "bool" |ppg_finite_update_projection| NIL)
+    (|p| FORMAL-CONST-DECL "{p: [State -> Abstract] | Commutes(R, Q, p)}"
+     |ppg_update_projected_probability| NIL)
+    (|s0| FORMAL-CONST-DECL "State" |ppg_update_projected_probability| NIL))
+   SHOSTAK))
+ (|checkedClosedBad_ae_failure| 0
+  (|checkedClosedBad_ae_failure-1| NIL 4001250119
+   ("" (SKOSIMP*)
+    (("" (LEMMA "projResultsEvents.model_stochastic")
+      (("" (LEMMA "projResultsEvents.original_probability_mass_one")
+        (("" (LEMMA "projResultsEvents.original_initial")
+          (("" (LEMMA "projResultsRun.measure_original")
+            (("" (REPLACE -1 :ACTUALS? T)
+              (("" (LEMMA "projResultsEvents.never_good_original")
+                (("" (REPLACE -1)
+                  ((""
+                    (LEMMA "projResultsClosed.ae_never_good_closedBad"
+                     ("M" "projResultsRule.model(Q)" "U" "U!1" "X"
+                      "projResultsOriginalExecution.iidRealized" "s0" "p(s0)"))
+                    (("1"
+                      (GRIND :IF-MATCH NIL :EXCLUDE
+                       ("Commutes" "Valid" "iidTrajectory" "iidMeasure"
+                        "nativeLaw" "model" "kernel" "sum" "fsum"
+                        "expectedHitCount" "lintegral" "mass" "sourceRunning"
+                        "runningAmbient" "survival" "expt" "generated" "sigma?"
+                        "probability?" "measure?"))
+                      NIL NIL)
+                     ("2" (PROPAX) NIL NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|original_probability_mass_one| FORMULA-DECL NIL
+     |ppg_update_projected_events| NIL)
+    (|measure_original| FORMULA-DECL NIL |ppg_update_projected_process| NIL)
+    (|never_good_original| FORMULA-DECL NIL |ppg_update_projected_events| NIL)
+    (|inputFiltration| CONST-DECL "trajFiltration.Filtration"
+     |ppg_finite_iid_trajectory| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|iidMeasure| CONST-DECL
+     "ppg_finite_law_view[Sample[Input], iidSampleHistory.ambientSigma].FiniteLaw"
+     |ppg_finite_iid_law| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|ambientSigma| CONST-DECL "historySpace.MeasurableSpace"
+     |ppg_finite_input_history| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Sample| TYPE-EQ-DECL NIL |ppg_finite_input_history| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|iidRealized| CONST-DECL "iidRunProcess.Realization(iidRunRule.model(R))"
+     |ppg_finite_iid_execution| NIL)
+    (|Realization| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|TransitionProcess| CONST-DECL "bool" |ppg_finite_process_realization|
+     NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|CheckedClass| TYPE-EQ-DECL NIL |ppg_finite_survival_probability| NIL)
+    (|checkClosedBad| CONST-DECL "bool" |ppg_finite_closed_bad| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|StochasticModel| TYPE-EQ-DECL NIL |ppg_finite_survival_probability| NIL)
+    (|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|ae_never_good_closedBad| FORMULA-DECL NIL |ppg_finite_closed_bad_tail|
+     NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|original_initial| FORMULA-DECL NIL |ppg_update_projected_events| NIL)
+    (|model_stochastic| FORMULA-DECL NIL |ppg_update_projected_events| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_update_projected_probability| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projected_probability| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_input_update| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}"
+     |ppg_update_projected_probability| NIL)
+    (Q FORMAL-CONST-DECL
+     "{Q: ppg_finite_input_update[Abstract, Input, inputs].Rule |
+   ppg_finite_input_update[Abstract, Input, inputs].Valid(Q)}"
+     |ppg_update_projected_probability| NIL)
+    (|Commutes| CONST-DECL "bool" |ppg_finite_update_projection| NIL)
+    (|p| FORMAL-CONST-DECL "{p: [State -> Abstract] | Commutes(R, Q, p)}"
+     |ppg_update_projected_probability| NIL)
+    (|s0| FORMAL-CONST-DECL "State" |ppg_update_projected_probability| NIL))
+   SHOSTAK))
+ (|checkedClosedBad_mean_infinite| 0
+  (|checkedClosedBad_mean_infinite-1| NIL 4001250119
+   ("" (SKOSIMP*)
+    (("" (LEMMA "projResultsEvents.model_stochastic")
+      (("" (LEMMA "projResultsEvents.original_probability_mass_one")
+        (("" (LEMMA "projResultsEvents.original_initial")
+          (("" (LEMMA "projResultsMean.source_expected_original")
+            ((""
+              (LEMMA "projResultsClosed.expectedHitCount_closedBad_eq_top"
+               ("M" "projResultsRule.model(Q)" "U" "U!1" "X"
+                "projResultsOriginalExecution.iidRealized" "s0" "p(s0)"))
+              (("1"
+                (GRIND :IF-MATCH NIL :EXCLUDE
+                 ("Commutes" "Valid" "iidTrajectory" "iidMeasure" "nativeLaw"
+                  "model" "kernel" "sum" "fsum" "expectedHitCount" "lintegral"
+                  "mass" "sourceRunning" "runningAmbient" "survival" "expt"
+                  "generated" "sigma?" "probability?" "measure?"))
+                NIL NIL)
+               ("2" (PROPAX) NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|original_probability_mass_one| FORMULA-DECL NIL
+     |ppg_update_projected_events| NIL)
+    (|source_expected_original| FORMULA-DECL NIL
+     |ppg_update_projected_expectation| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|executionRealization| CONST-DECL "Realization(model(R))"
+     |ppg_finite_update_execution| NIL)
+    (|executionProcess| CONST-DECL "iidRunUpdate.ExecutionProcess(R, iidDraws)"
+     |ppg_finite_iid_execution| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT
+     "measurable_set[Sample[Input], asNasa(iidSampleHistory.ambientSigma)]"
+     |ppg_update_projected_probability| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT
+     "(asNasa(iidSampleHistory.ambientSigma))"
+     |ppg_update_projected_probability| NIL)
+    (|expectedHitCount_closedBad_eq_top| FORMULA-DECL NIL
+     |ppg_finite_closed_bad_tail| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|StochasticModel| TYPE-EQ-DECL NIL |ppg_finite_survival_probability| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|checkClosedBad| CONST-DECL "bool" |ppg_finite_closed_bad| NIL)
+    (|CheckedClass| TYPE-EQ-DECL NIL |ppg_finite_survival_probability| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|TransitionProcess| CONST-DECL "bool" |ppg_finite_process_realization|
+     NIL)
+    (|Realization| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|iidRealized| CONST-DECL "iidRunProcess.Realization(iidRunRule.model(R))"
+     |ppg_finite_iid_execution| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Sample| TYPE-EQ-DECL NIL |ppg_finite_input_history| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ambientSigma| CONST-DECL "historySpace.MeasurableSpace"
+     |ppg_finite_input_history| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|iidMeasure| CONST-DECL
+     "ppg_finite_law_view[Sample[Input], iidSampleHistory.ambientSigma].FiniteLaw"
+     |ppg_finite_iid_law| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|inputFiltration| CONST-DECL "trajFiltration.Filtration"
+     |ppg_finite_iid_trajectory| NIL)
+    (|original_initial| FORMULA-DECL NIL |ppg_update_projected_events| NIL)
+    (|model_stochastic| FORMULA-DECL NIL |ppg_update_projected_events| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_update_projected_probability| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_update_projected_probability| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}"
+     |ppg_update_projected_probability| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_input_update| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_input_update| NIL)
+    (R FORMAL-CONST-DECL "{R: Rule | Valid(R)}"
+     |ppg_update_projected_probability| NIL)
+    (Q FORMAL-CONST-DECL
+     "{Q: ppg_finite_input_update[Abstract, Input, inputs].Rule |
+   ppg_finite_input_update[Abstract, Input, inputs].Valid(Q)}"
+     |ppg_update_projected_probability| NIL)
+    (|Commutes| CONST-DECL "bool" |ppg_finite_update_projection| NIL)
+    (|p| FORMAL-CONST-DECL "{p: [State -> Abstract] | Commutes(R, Q, p)}"
+     |ppg_update_projected_probability| NIL)
+    (|s0| FORMAL-CONST-DECL "State" |ppg_update_projected_probability| NIL))
+   SHOSTAK)))
+
