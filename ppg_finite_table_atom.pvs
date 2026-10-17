@@ -1,0 +1,87 @@
+% On a fixed prefix event, the counter vector is fixed. The next read
+% therefore queries a finite block disjoint from the consumed coordinates.
+% Independence of these two blocks factors the joint point probability.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Section 2.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_table_atom[V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING ppg_mt_native_spaces[bool,V,Value,LAMBDA(v:V):domains(v)],
+    ppg_finite_table_core[V,Value,variables,domains])
+  spaces:{S:VariableSpaces|FORALL(v:V,x:(domains(v))):S(v)(singleton[(domains(v))](x))},
+  laws:VariableLaws(spaces),
+  F:ppg_finite_table_core[V,Value,variables,domains].Footprint,
+  init:{f:ppg_finite_table_core[V,Value,variables,domains].Initializer|
+    ppg_measurable_map[LogSpace,MTState].measurable(NativeTableSigma(spaces),NativeStateSigma(spaces),f)},
+  n:nat]: THEORY
+BEGIN
+  plainDomain: MACRO [V->set[Value]] = LAMBDA(v:V):domains(v)
+
+  State: TYPE = ppg_finite_table_core[V,Value,variables,domains].State
+
+  ResamplingLog: TYPE = ppg_finite_table_core[V,Value,variables,domains].ResamplingLog
+
+  IMPORTING ppg_finite_table_paths[V,Value,variables,domains] AS atomPaths,
+    ppg_finite_table_spaces[V,Value,variables,domains,spaces] AS atomSpaces,
+    ppg_finite_table_measurable_prefix[V,Value,variables,domains,spaces] AS atomPrefix,
+    ppg_finite_path_space[V,Value,variables,domains,spaces,n] AS atomPathSpace,
+    ppg_finite_table_prefix_events[V,Value,variables,domains] AS atomPrefixEvents,
+    ppg_finite_table_consumed[V,variables] AS atomConsumed,
+    ppg_finite_table_query[V,Value,variables,domains] AS atomQuery,
+    ppg_finite_table_fixed_law[V,Value,variables,domains,spaces,laws] AS atomFixed,
+    ppg_mt_log_probability[bool,V,Value,plainDomain,spaces,laws],
+    ppg_mt_log_pair_independence[bool,V,Value,plainDomain,spaces,laws],
+    ppg_mt_log_family[bool,V,Value,bool,plainDomain,spaces,laws],
+    ppg_mt_random_process[bool,V,Value,plainDomain] AS atomSlots
+
+  Path: TYPE = atomPaths.Path(n)
+
+  Counter: TYPE = [V->nat]
+
+  p: VAR Path
+  a: VAR State
+  c: VAR Counter
+
+  initial_measurable: LEMMA ppg_measurable_map[ResamplingLog,State].measurable(
+    atomSpaces.tableSigma,atomSpaces.stateSigma,init)
+
+  prefix_point_preimage: LEMMA
+    ppg_measurable_map[ResamplingLog,Path].inverseImage(atomPrefix.prefixMap(F,init,n),singleton[Path](p))=
+      {omega:ResamplingLog|atomPaths.statePrefix(F,init,n,omega)=p}
+
+  prefix_event_measurable: LEMMA NativeTableSigma(spaces)(
+    {omega:ResamplingLog|atomPaths.statePrefix(F,init,n,omega)=p})
+
+  prefixEvent(p): (NativeTableSigma(spaces)) =
+    {omega:ResamplingLog|atomPaths.statePrefix(F,init,n,omega)=p}
+
+  query_point_preimage: LEMMA
+    ppg_measurable_map[ResamplingLog,State].inverseImage(
+      atomFixed.fixedDraw(LAMBDA(v:V):c(v)+1),singleton[State](a))=
+      {omega:ResamplingLog|atomSlots.drawFrom(omega,LAMBDA(v:V):c(v)+1)=a}
+
+  query_event_measurable: LEMMA NativeTableSigma(spaces)(
+    {omega:ResamplingLog|atomSlots.drawFrom(omega,LAMBDA(v:V):c(v)+1)=a})
+
+  queryEvent(c,a): (NativeTableSigma(spaces)) =
+    {omega:ResamplingLog|atomSlots.drawFrom(omega,LAMBDA(v:V):c(v)+1)=a}
+
+  query_point_mass: LEMMA logMeasure(queryEvent(c,a))=atomFixed.productLaw(singleton[State](a))
+
+  prefix_depends: LEMMA InitialLocal(init) IMPLIES
+    ppg_mt_log_family[bool,V,Value,bool,plainDomain,spaces,laws].logDepends(atomConsumed.consumedBlock(atomPaths.pathCount(F,n,p)),prefixEvent(p))
+
+  query_depends: LEMMA ppg_mt_log_family[bool,V,Value,bool,plainDomain,spaces,laws].logDepends(atomQuery.queryBlock(c),queryEvent(c,a))
+
+  nextDrawEvent(p,a): (NativeTableSigma(spaces)) =
+    intersection(prefixEvent(p),queryEvent(atomPaths.pathCount(F,n,p),a))
+
+  next_draw_event_eq: LEMMA nextDrawEvent(p,a)=
+    {omega:ResamplingLog|atomPaths.statePrefix(F,init,n,omega)=p AND nextDraw(F,init,n,omega)=a}
+
+  prefix_nextDraw_atom: THEOREM InitialLocal(init) IMPLIES
+    logMeasure(nextDrawEvent(p,a))=logMeasure(prefixEvent(p))*atomFixed.productLaw(singleton[State](a))
+
+END ppg_finite_table_atom

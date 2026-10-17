@@ -1,0 +1,54 @@
+% A finite state prefix is a function on a finite ordinal. Coordinate
+% singleton cylinders give measurable path singletons. Finiteness then
+% identifies the path product sigma algebra with the full sigma algebra.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_path_space[V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING ppg_mt_coordinate_laws[bool,V,Value,LAMBDA(v:V):domains(v)])
+  spaces:{S:VariableSpaces|FORALL(v:V,x:(domains(v))):S(v)(singleton[(domains(v))](x))},
+  n:nat]: THEORY
+BEGIN
+  IMPORTING ppg_finite_table_paths[V,Value,variables,domains] AS finitePaths,
+    ppg_finite_table_spaces[V,Value,variables,domains,spaces] AS finitePathStates,
+    ppg_finite_table_measurable_prefix[V,Value,variables,domains,spaces] AS finitePathProduct,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS finitePathValues,
+    ppg_finite_index[n+1] AS finitePathIndices
+
+  State: TYPE = finitePathValues.State
+
+  Path: TYPE = finitePaths.Path(n)
+
+  Index: TYPE = below(n+1)
+
+  IMPORTING ppg_finite_function_space[Index,State,finitePathIndices.universe,finitePathValues.allStates] AS pathFunctions
+
+  pathUniverse: {U:finite_set[Path]|FORALL(p:Path):U(p)} = pathFunctions.universe
+
+  pathSigma: MACRO ppg_measurable_space[Path].MeasurableSpace = finitePathProduct.pathSigma(n)
+
+  IMPORTING ppg_measurable_space[Path] AS pathEvents,
+    ppg_finite_events[Path,Index,pathSigma] AS pathMeets,
+    ppg_finite_sigma[Path,pathUniverse] AS pathFiniteSigma
+
+  p: VAR Path
+  k: VAR Index
+
+  pointCoordinate(p,k): set[Path] = finitePathProduct.pathCylinder(n,k,singleton[State](p(k)))
+
+  pointMeet(p): set[Path] = pathMeets.finiteMeet(finitePathIndices.universe,LAMBDA(k:Index):pointCoordinate(p,k))
+
+  point_coordinate_generated: LEMMA finitePathProduct.pathGenerators(n)(pointCoordinate(p,k))
+
+  point_coordinate_measurable: LEMMA pathSigma(pointCoordinate(p,k))
+
+  point_meet_singleton: LEMMA pointMeet(p)=singleton[Path](p)
+
+  point_meet_measurable: LEMMA pathSigma(pointMeet(p))
+
+  path_singleton_measurable: LEMMA pathSigma(singleton[Path](p))
+
+  path_sigma_full: THEOREM pathSigma=fullset[set[Path]]
+
+END ppg_finite_path_space
