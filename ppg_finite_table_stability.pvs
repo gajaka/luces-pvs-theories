@@ -1,0 +1,90 @@
+% Agreement on consumed slots determines the current run state.
+% A selected coordinate reads its next slot; the other coordinates keep
+% their old values. Agreement with a larger consumed block also fixes
+% every earlier state and counter.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Section 2.
+ppg_finite_table_stability[V,Value: TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_finite_table_core[V,Value,variables,domains] AS stableTable
+
+  State: TYPE = stableTable.State
+
+  ResamplingLog: TYPE = stableTable.ResamplingLog
+
+  Counter: TYPE = stableTable.Counter
+
+  RunState: TYPE = stableTable.RunState
+
+  Footprint: TYPE = stableTable.Footprint
+
+  Initializer: TYPE = stableTable.Initializer
+
+  F,G: VAR Footprint
+  init: VAR Initializer
+  omega,omega1,omega2: VAR ResamplingLog
+  prev: VAR RunState
+  c1,c2: VAR Counter
+  n,k,m: VAR nat
+  v: VAR V
+
+  advance(F,prev,omega): RunState =
+    (ppg_finite_resampling_core[V,Value,variables,domains].coordinateUpdate(
+      F(prev`1),prev`1,
+      ppg_mt_random_process[bool,V,Value,LAMBDA(v:V):domains(v)].drawFrom(
+        omega,LAMBDA(v:V):prev`2(v)+1)),
+      LAMBDA(v:V):IF F(prev`1)(v) THEN prev`2(v)+1 ELSE prev`2(v) ENDIF)
+
+  run_step_advance: LEMMA stableTable.run(F,init,omega,n+1)=
+    advance(F,stableTable.run(F,init,omega,n),omega)
+
+  advance_footprint_congr: LEMMA F(prev`1)=G(prev`1) IMPLIES
+    advance(F,prev,omega)=advance(G,prev,omega)
+
+  selectedReads(F,prev,omega1,omega2): bool = FORALL(v:V):F(prev`1)(v) IMPLIES
+    omega1(prev`2(v)+1,v)=omega2(prev`2(v)+1,v)
+
+  advance_agree: LEMMA selectedReads(F,prev,omega1,omega2) IMPLIES
+    advance(F,prev,omega1)=advance(F,prev,omega2)
+
+  agreesThrough(c1,omega1,omega2): bool = FORALL(v:V,j:nat):
+    j<=c1(v) IMPLIES omega1(j,v)=omega2(j,v)
+
+  Agreement(F,init,n,omega1,omega2): bool =
+    agreesThrough(stableTable.count(F,init,n,omega1),omega1,omega2)
+
+  agrees_monotone: LEMMA (FORALL(v:V):c1(v)<=c2(v)) AND
+    agreesThrough(c2,omega1,omega2) IMPLIES agreesThrough(c1,omega1,omega2)
+
+  count_mono: LEMMA m<=n IMPLIES
+    stableTable.count(F,init,m,omega)(v)<=stableTable.count(F,init,n,omega)(v)
+
+  agreement_mono: LEMMA m<=n AND Agreement(F,init,n,omega1,omega2) IMPLIES
+    Agreement(F,init,m,omega1,omega2)
+
+  slot_zero_agreement: LEMMA Agreement(F,init,n,omega1,omega2) IMPLIES
+    (FORALL(v:V):omega1(0,v)=omega2(0,v))
+
+  initial_agreement: LEMMA stableTable.InitialLocal(init) AND
+    Agreement(F,init,n,omega1,omega2) IMPLIES init(omega1)=init(omega2)
+
+  consumed_selected_reads: LEMMA Agreement(F,init,n+1,omega1,omega2) IMPLIES
+    selectedReads(F,stableTable.run(F,init,omega1,n),omega1,omega2)
+
+  final_run_stable: LEMMA stableTable.InitialLocal(init) AND
+    Agreement(F,init,n,omega1,omega2) IMPLIES
+      stableTable.run(F,init,omega1,n)=stableTable.run(F,init,omega2,n)
+
+  run_prefix_stable: THEOREM stableTable.InitialLocal(init) AND
+    Agreement(F,init,n,omega1,omega2) IMPLIES
+      (FORALL(k:nat):k<=n IMPLIES stableTable.run(F,init,omega1,k)=stableTable.run(F,init,omega2,k))
+
+  run_eq_of_footprints_agree: THEOREM
+    (FORALL(k:nat):k<n IMPLIES F(stableTable.trajectory(F,init,k,omega))=
+      G(stableTable.trajectory(F,init,k,omega))) IMPLIES
+        stableTable.run(F,init,omega,n)=stableTable.run(G,init,omega,n)
+
+END ppg_finite_table_stability

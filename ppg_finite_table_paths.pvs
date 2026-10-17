@@ -1,0 +1,66 @@
+% The footprint history determines the counters. A finite state prefix
+% therefore fixes every consumed-slot count, independently of the unused
+% part of the resampling table.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Section 2.
+ppg_finite_table_paths[V,Value: TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_finite_table_core[V,Value,variables,domains] AS pathTable
+
+  State: TYPE = pathTable.State
+
+  ResamplingLog: TYPE = pathTable.ResamplingLog
+
+  Counter: TYPE = pathTable.Counter
+
+  Footprint: TYPE = pathTable.Footprint
+
+  Initializer: TYPE = pathTable.Initializer
+
+  F: VAR Footprint
+  init: VAR Initializer
+  omega: VAR ResamplingLog
+  p,q: VAR [nat->State]
+  n,k: VAR nat
+  v: VAR V
+
+  uses(F,p,n): RECURSIVE Counter = IF n=0 THEN (LAMBDA(v:V):0)
+    ELSE (LAMBDA(v:V):uses(F,p,n-1)(v)+(IF F(p(n-1))(v) THEN 1 ELSE 0 ENDIF))
+    ENDIF MEASURE n
+
+  uses_zero: LEMMA uses(F,p,0)=(LAMBDA(v:V):0)
+
+  uses_step: LEMMA uses(F,p,n+1)=
+    (LAMBDA(v:V):uses(F,p,n)(v)+(IF F(p(n))(v) THEN 1 ELSE 0 ENDIF))
+
+  uses_congr: THEOREM (FORALL(k:nat):k<n IMPLIES p(k)=q(k)) IMPLIES uses(F,p,n)=uses(F,q,n)
+
+  count_step_function: LEMMA pathTable.count(F,init,n+1,omega)=
+    (LAMBDA(v:V):pathTable.count(F,init,n,omega)(v)+
+      (IF F(pathTable.trajectory(F,init,n,omega))(v) THEN 1 ELSE 0 ENDIF))
+
+  count_eq_uses: THEOREM pathTable.count(F,init,n,omega)=
+    uses(F,LAMBDA(k:nat):pathTable.trajectory(F,init,k,omega),n)
+
+  Path(n:nat): TYPE = [below(n+1)->State]
+
+  statePrefix(F,init,n,omega): Path(n) = LAMBDA(k:below(n+1)):pathTable.trajectory(F,init,k,omega)
+
+  pathState(n:nat,p:Path(n),k:nat): State = p(min(k,n))
+
+  pathState_at: THEOREM FORALL(n:nat,p:Path(n),k:nat):
+    k<=n IMPLIES pathState(n,p,k)=p(k)
+
+  pathCount(F:Footprint,n:nat,p:Path(n)): Counter =
+    uses(F,LAMBDA(k:nat):pathState(n,p,k),n)
+
+  prefix_at: LEMMA FORALL(k:below(n+1)):
+    statePrefix(F,init,n,omega)(k)=pathTable.trajectory(F,init,k,omega)
+
+  count_of_prefix: THEOREM FORALL(F:Footprint,init:Initializer,n:nat,omega:ResamplingLog,p:Path(n)):
+    statePrefix(F,init,n,omega)=p IMPLIES pathTable.count(F,init,n,omega)=pathCount(F,n,p)
+
+END ppg_finite_table_paths
