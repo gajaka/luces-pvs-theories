@@ -1,0 +1,91 @@
+% A positive simple function is a finite sum of weighted measurable
+% indicators. Its integral sums the same weights against the original
+% extended measure. The supremum of simple minorants defines the
+% nonnegative integral, including events of infinite measure.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_general_simple_integral[Omega: TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING measure_integration@measure_def[Omega,asNasa(S)])
+  originalMeasure:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_enn_simple_sup
+
+  WeightedEvent: TYPE = [# coefficient:nonneg_real,event:(S) #]
+
+  SimpleCode: TYPE = list[WeightedEvent]
+
+  C: VAR SimpleCode
+  t: VAR WeightedEvent
+  omega: VAR Omega
+  A: VAR (S)
+  c: VAR nonneg_real
+  f,g: VAR [Omega->ENN]
+  u,v: VAR [Omega->real]
+
+  real_function_eq: LEMMA u=v IFF (FORALL(omega:Omega):u(omega)=v(omega))
+
+  originalMass(A): ENN = IF originalMeasure(A)`1 THEN ennFinite(originalMeasure(A)`2)
+    ELSE ennInfinity ENDIF
+
+  original_mass_empty: LEMMA originalMass(emptyset[Omega])=ennFinite(0)
+
+  code_length_cons: LEMMA length(cons(t,C))=length(C)+1
+
+  codeValue(C,omega): RECURSIVE nonneg_real = CASES C OF null:0,
+    cons(t,rest):(IF t`event(omega) THEN t`coefficient ELSE 0 ENDIF)+codeValue(rest,omega)
+    ENDCASES MEASURE length(C)
+
+  codeIntegral(C): RECURSIVE ENN = CASES C OF null:ennFinite(0),
+    cons(t,rest):eadd(scale(t`coefficient,originalMass(t`event)),codeIntegral(rest))
+    ENDCASES MEASURE length(C)
+
+  empty_value: LEMMA codeValue(null[WeightedEvent],omega)=0
+
+  cons_value: LEMMA codeValue(cons(t,C),omega)=
+    (IF t`event(omega) THEN t`coefficient ELSE 0 ENDIF)+codeValue(C,omega)
+
+  empty_integral: LEMMA codeIntegral(null[WeightedEvent])=ennFinite(0)
+
+  cons_integral: LEMMA codeIntegral(cons(t,C))=
+    eadd(scale(t`coefficient,originalMass(t`event)),codeIntegral(C))
+
+  singletonCode(c,A): SimpleCode = cons((# coefficient:=c,event:=A #),null[WeightedEvent])
+
+  singleton_value: LEMMA codeValue(singletonCode(c,A),omega)=IF A(omega) THEN c ELSE 0 ENDIF
+
+  singleton_integral: LEMMA codeIntegral(singletonCode(c,A))=scale(c,originalMass(A))
+
+  codeMinorant(C,f): bool = FORALL(omega:Omega):ele(ennFinite(codeValue(C,omega)),f(omega))
+
+  simpleValues(f): set[ENN] = {z:ENN|EXISTS(C:SimpleCode):codeMinorant(C,f) AND z=codeIntegral(C)}
+
+  generalLintegral(f): ENN = ennSup(simpleValues(f))
+
+  simple_value_member: LEMMA codeMinorant(C,f) IMPLIES simpleValues(f)(codeIntegral(C))
+
+  code_integral_le: LEMMA codeMinorant(C,f) IMPLIES ele(codeIntegral(C),generalLintegral(f))
+
+  code_minorant_monotone: LEMMA codeMinorant(C,f) AND
+    (FORALL(omega:Omega):ele(f(omega),g(omega))) IMPLIES codeMinorant(C,g)
+
+  simple_values_monotone: LEMMA (FORALL(omega:Omega):ele(f(omega),g(omega))) IMPLIES
+    subset?(simpleValues(f),simpleValues(g))
+
+  general_integral_monotone: LEMMA (FORALL(omega:Omega):ele(f(omega),g(omega))) IMPLIES
+    ele(generalLintegral(f),generalLintegral(g))
+
+  on_event_code_minorant: LEMMA (FORALL(omega:Omega):A(omega) IMPLIES ele(ennFinite(c),f(omega)))
+    IMPLIES codeMinorant(singletonCode(c,A),f)
+
+  general_event_bound: LEMMA FORALL(c:posreal,A:(S),f:[Omega->ENN]):
+    (FORALL(omega:Omega):A(omega) IMPLIES ele(ennFinite(c),f(omega))) IMPLIES
+      ele(originalMass(A),dividePositive(generalLintegral(f),c))
+
+  infinite_event_integral: LEMMA FORALL(c:posreal,A:(S),f:[Omega->ENN]):
+    originalMass(A)=ennInfinity AND
+    (FORALL(omega:Omega):A(omega) IMPLIES ele(ennFinite(c),f(omega))) IMPLIES
+      generalLintegral(f)=ennInfinity
+
+END ppg_general_simple_integral

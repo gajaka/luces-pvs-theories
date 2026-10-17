@@ -1,0 +1,46 @@
+% Finite prefix counts are measurable simple functions. Their code
+% integrals are the native finite-prefix expectations. Taking suprema
+% identifies the general integral with the established count integral
+% under the same finite measure.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_general_finite_count[Omega: TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_general_finite_code[Omega,S,measureLaw],
+    ppg_finite_count_budget[Omega,S,measureLaw]
+  E: VAR [nat->(S)]
+  N: VAR nat
+  omega: VAR Omega
+
+  prefixCode(E,N): RECURSIVE SimpleCode = IF N=0 THEN null[WeightedEvent]
+    ELSE cons((# coefficient:=1,event:=E(N-1) #),prefixCode(E,N-1))
+    ENDIF MEASURE N
+
+  prefix_code_zero: LEMMA prefixCode(E,0)=null[WeightedEvent]
+
+  prefix_code_succ: LEMMA prefixCode(E,N+1)=
+    cons((# coefficient:=1,event:=E(N) #),prefixCode(E,N))
+
+  prefix_code_value: LEMMA codeValue(prefixCode(E,N),omega)=countPrefix(E,omega,N)
+
+  native_prefix_function: LEMMA codeNonnegative(prefixCode(E,N))=countApprox(E,N)
+
+  prefix_code_integral: LEMMA codeIntegral(prefixCode(E,N))=ennFinite(massPrefix(E,N))
+
+  count_prefix_lower: LEMMA ele(ennFinite(countPrefix(E,omega,N)),eventCount(E,omega))
+
+  prefix_code_minorant: LEMMA
+    codeMinorant(prefixCode(E,N),LAMBDA(omega:Omega):eventCount(E,omega))
+
+  expected_count_sup: LEMMA expectedCount(E)=iSupNN(LAMBDA(N:nat):massPrefix(E,N))
+
+  finite_counts_le_general: LEMMA
+    ele(expectedCount(E),generalLintegral(LAMBDA(omega:Omega):eventCount(E,omega)))
+
+  general_count_eq_finite: THEOREM
+    generalLintegral(LAMBDA(omega:Omega):eventCount(E,omega))=expectedCount(E)
+
+END ppg_general_finite_count

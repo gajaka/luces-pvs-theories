@@ -1,0 +1,40 @@
+% Finite coefficients scale extended nonnegative values with 0 times
+% infinity equal to zero. Lower finite cones give suprema of arbitrary
+% extended values, including an infinite member or an unbounded family.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_enn_simple_sup: THEORY
+BEGIN
+  IMPORTING ppg_enn_positive_divide
+  x,y: VAR ENN
+  a,b,c: VAR nonneg_real
+  E,F: VAR set[ENN]
+
+  scale(c,x): ENN = IF c=0 THEN ennFinite(0) ELSE
+    CASES x OF ennInfinity:ennInfinity,ennFinite(a):ennFinite(c*a) ENDCASES ENDIF
+
+  scale_finite: LEMMA scale(c,ennFinite(a))=ennFinite(c*a)
+
+  scale_zero: LEMMA scale(0,x)=ennFinite(0)
+
+  scale_one: LEMMA scale(1,x)=x
+
+  positive_scale_division: LEMMA FORALL(c:posreal):
+    ele(scale(c,x),y) IFF ele(x,dividePositive(y,c))
+
+  lower_bound_test: LEMMA (FORALL(a:nonneg_real):ele(ennFinite(a),x) IMPLIES a<=b)
+    IMPLIES ele(x,ennFinite(b))
+
+  lowerCone(E): set[nonneg_real] = {a:nonneg_real|EXISTS(x:ENN):E(x) AND ele(ennFinite(a),x)}
+
+  cone_entry: LEMMA E(x) AND ele(ennFinite(a),x) IMPLIES lowerCone(E)(a)
+
+  ennSup(E): ENN = sSup(lowerCone(E))
+
+  ennSup_member: LEMMA E(x) IMPLIES ele(x,ennSup(E))
+
+  ennSup_least: LEMMA (FORALL(x:ENN):E(x) IMPLIES ele(x,y)) IMPLIES ele(ennSup(E),y)
+
+  ennSup_monotone: LEMMA subset?(E,F) IMPLIES ele(ennSup(E),ennSup(F))
+
+END ppg_enn_simple_sup

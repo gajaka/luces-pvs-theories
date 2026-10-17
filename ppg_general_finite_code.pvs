@@ -1,0 +1,44 @@
+% Under a finite measure, a weighted measurable indicator code is a
+% native integrable function. Its integral agrees with the code score.
+% The measure itself is retained in the comparison.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_general_finite_code[Omega: TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_general_simple_integral[Omega,S,measureLaw],
+    ppg_finite_extended_integral[Omega,S,measureLaw]
+  C: VAR SimpleCode
+  t: VAR WeightedEvent
+  omega: VAR Omega
+  A: VAR (S)
+  f: VAR [Omega->ENN]
+
+  nativeCode(C): RECURSIVE NativeFunction = CASES C OF null:constant(0),
+    cons(t,rest):t`coefficient*indicator(t`event)+nativeCode(rest)
+    ENDCASES MEASURE length(C)
+
+  native_code_empty: LEMMA nativeCode(null[WeightedEvent])=constant(0)
+
+  native_code_cons: LEMMA nativeCode(cons(t,C))=
+    t`coefficient*indicator(t`event)+nativeCode(C)
+
+  native_code_value: LEMMA nativeCode(C)(omega)=codeValue(C,omega)
+
+  native_code_nonnegative: LEMMA 0<=nativeCode(C)(omega)
+
+  codeNonnegative(C): NonnegativeFunction = nativeCode(C)
+
+  code_nonnegative_value: LEMMA codeNonnegative(C)(omega)=codeValue(C,omega)
+
+  original_mass_finite: LEMMA originalMass(A)=ennFinite(mass(A))
+
+  finite_code_integral: LEMMA codeIntegral(C)=ennFinite(mean(codeNonnegative(C)))
+
+  code_nonnegative_minorant: LEMMA codeMinorant(C,f) IMPLIES minorant(codeNonnegative(C),f)
+
+  general_below_finite: LEMMA ele(generalLintegral(f),lintegral(f))
+
+END ppg_general_finite_code
