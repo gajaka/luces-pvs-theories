@@ -1,0 +1,283 @@
+(|ppg_finite_probability_points|
+ (|fullSigma_TCC1| 0
+  (|fullSigma_TCC1-1| NIL 4001255976
+   (""
+    (THEN
+     (GRIND :IF-MATCH NIL :DEFS ("sigma?" "fullset") :EXCLUDE
+      ("is_finite" "card")))
+    NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_finite_probability_points| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL))
+   NIL
+   (|fullSigma| SUBTYPE "fullset[set[T]]" "MeasurableSpace[T]" (11 61 11 76))))
+ (|eventAsFinite_TCC1| 0
+  (|eventAsFinite_TCC1-1| NIL 4001255976
+   (""
+    (THEN (SKOSIMP*) (LEMMA "finitePointSigma.all_events_finite" ("A" "B!1"))
+     (ASSERT))
+    NIL)
+   ((|all_events_finite| FORMULA-DECL NIL |ppg_finite_sigma| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_finite_probability_points| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[T] | FORALL (x: T): U(x)}"
+     |ppg_finite_probability_points| NIL))
+   NIL (|eventAsFinite| SUBTYPE "B" "finite_set[T]" (23 43 23 44))))
+ (|pointMasses_TCC1| 0
+  (|pointMasses_TCC1-1| NIL 4001255976 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |countable_props| |sets_aux|))
+   NIL
+   (|pointMasses| SUBTYPE "singleton[T](x)" "(sets[set[T]].fullset)"
+    (25 46 25 61))))
+ (|rest_partition_TCC1| 0
+  (|rest_partition_TCC1-1| NIL 4001255976 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_finite_probability_points| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|rest_partition| SUBTYPE "A"
+    "(sets[ppg_finite_probability_points.T].nonempty?)" (28 30 28 31))))
+ (|rest_partition| 0
+  (|rest_partition-1| NIL 4001255979
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "finitePointSigma.nonempty_decomposition" ("B" "A!1"))
+     (GRIND :IF-MATCH ALL :DEFS
+      ("disjoint?" "rest" "remove" "singleton" "member") :EXCLUDE
+      ("is_finite" "card")))
+    NIL)
+   ((|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[T]"
+     |countable_props| |sets_aux|)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |countable_props| |sets_aux|)
+    (|nonempty_finite_union1| APPLICATION-JUDGEMENT "non_empty_finite_set[T]"
+     |countable_props| |sets_aux|)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|nonempty_decomposition| FORMULA-DECL NIL |ppg_finite_sigma| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_finite_probability_points| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[T] | FORALL (x: T): U(x)}"
+     |ppg_finite_probability_points| NIL))
+   SHOSTAK))
+ (|finite_probability_sum_TCC1| 0
+  (|finite_probability_sum_TCC1-1| NIL 4001255976 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)) NIL
+   (|finite_probability_sum| SUBTYPE "A" "(sets[set[T]].fullset)"
+    (31 37 31 38))))
+ (|finite_probability_sum| 0
+  (|finite_probability_sum-1| NIL 4001255979
+   ("" (INDUCT "A" :NAME "ppg_finite_induction[T].finite_set_induction_rest")
+    (("1" (SKOSIMP*)
+      (("1" (LEMMA "finitePointProbability.probability_empty" ("mu" "mu!1"))
+        (("1" (REWRITE "finitePointSum.fsum_empty") NIL NIL)) NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (INST -1 "mu!1")
+        (("2" (TYPEPRED "SS!1")
+          (("2" (ASSERT)
+            (("2" (LEMMA "rest_partition" ("A" "SS!1"))
+              (("2" (ASSERT)
+                (("2"
+                  (LEMMA "finitePointSetLaws.probability_union"
+                   ("mu" "mu!1" "A" "singleton[T](choose(SS!1))" "B"
+                    "rest(SS!1)"))
+                  (("1" (ASSERT)
+                    (("1"
+                      (LEMMA "finitePointSum.fsum_step"
+                       ("S" "SS!1" "f" "pointMasses(mu!1)"))
+                      (("1" (EXPAND "pointMasses")
+                        (("1"
+                          (GRIND :IF-MATCH NIL :EXCLUDE
+                           ("fsum" "pointMasses" "probability?"
+                            "finite_measure?" "is_finite" "card"))
+                          NIL NIL))
+                        NIL))
+                      NIL))
+                    NIL)
+                   ("2" (ASSERT)
+                    (("2"
+                      (LEMMA "finitePointSum.fsum_step"
+                       ("S" "SS!1" "f" "pointMasses(mu!1)"))
+                      (("2" (EXPAND "pointMasses")
+                        (("2"
+                          (GRIND :IF-MATCH NIL :EXCLUDE
+                           ("fsum" "pointMasses" "probability?"
+                            "finite_measure?" "is_finite" "card"))
+                          NIL NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL)
+     ("3"
+      (GRIND :IF-MATCH NIL :DEFS ("fullset" "sigma?") :EXCLUDE
+       ("fsum" "pointMasses" "probability?" "finite_measure?" "is_finite"
+        "card"))
+      NIL NIL)
+     ("4"
+      (GRIND :IF-MATCH NIL :DEFS ("fullset" "sigma?") :EXCLUDE
+       ("fsum" "pointMasses" "probability?" "finite_measure?" "is_finite"
+        "card"))
+      NIL NIL))
+    NIL)
+   ((|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|fsum| DEF-DECL "real" |ppg_finite_sum| NIL)
+    (|pointMasses| CONST-DECL "[T -> real]" |ppg_finite_probability_points|
+     NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_finite_probability_points| NIL)
+    (|finite_set_induction_rest| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (|probability_empty| FORMULA-DECL NIL |ppg_probability_measure| NIL)
+    (|fsum_empty| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|nonempty_finite_union1| APPLICATION-JUDGEMENT "non_empty_finite_set[T]"
+     |countable_props| |sets_aux|)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[T]"
+     |countable_props| |sets_aux|)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|real_plus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|fsum_step| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|probability_union| FORMULA-DECL NIL |ppg_probability_set_laws| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|choose| CONST-DECL "(p)" |sets| NIL) (|rest| CONST-DECL "set" |sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |countable_props| |sets_aux|)
+    (|rest_partition| FORMULA-DECL NIL |ppg_finite_probability_points| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|))
+   SHOSTAK))
+ (|point_mass_function_TCC1| 0
+  (|point_mass_function_TCC1-1| NIL 4001255976 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |countable_props| |sets_aux|))
+   NIL
+   (|point_mass_function| SUBTYPE "singleton[T](x)" "(sets[set[T]].fullset)"
+    (34 20 34 35))))
+ (|point_mass_function| 0
+  (|point_mass_function-1| NIL 4001255980
+   (""
+    (THEN (SKOSIMP*) (LABEL "POINTS" -1) (APPLY-EXTENSIONALITY :HIDE? T)
+     (INST "POINTS" "x!1") (EXPAND "pointMasses") (ASSERT))
+    NIL)
+   ((T FORMAL-TYPE-DECL NIL |ppg_finite_probability_points| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|pointMasses| CONST-DECL "[T -> real]" |ppg_finite_probability_points|
+     NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL) (|fullset| CONST-DECL "set" |sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|probability_singleton_extensionality| 0
+  (|probability_singleton_extensionality-1| NIL 4001255980
+   (""
+    (THEN (SKOSIMP*) (LEMMA "point_mass_function" ("mu" "mu!1" "nu" "nu!1"))
+     (ASSERT) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "finite_probability_sum" ("mu" "mu!1" "A" "eventAsFinite(x!1)"))
+     (LEMMA "finite_probability_sum" ("mu" "nu!1" "A" "eventAsFinite(x!1)"))
+     (EXPAND "eventAsFinite") (ASSERT))
+    NIL)
+   ((|finite_probability_sum| FORMULA-DECL NIL |ppg_finite_probability_points|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|eventAsFinite| CONST-DECL "finite_set[T]" |ppg_finite_probability_points|
+     NIL)
+    (|point_mass_function| FORMULA-DECL NIL |ppg_finite_probability_points|
+     NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_finite_probability_points| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|fullset| CONST-DECL "set" |sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL))
+   SHOSTAK)))
+

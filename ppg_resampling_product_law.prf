@@ -1,0 +1,563 @@
+(|ppg_resampling_product_law|
+ (|spaces_TCC1| 0
+  (|spaces_TCC1-1| NIL 4001255878
+   (""
+    (THEN
+     (GRIND :IF-MATCH NIL :DEFS ("sigma?" "fullset") :EXCLUDE
+      ("is_finite" "card")))
+    NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_setofsets|
+     |sets_aux|)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL))
+   NIL
+   (|spaces| SUBTYPE "fullset[set[(domains(v))]]"
+    "MeasurableSpace[(domains(v))]" (20 16 20 46))))
+ (|spaces_at| 0
+  (|spaces_at-1| NIL 4001255980
+   ("" (THEN (SKOSIMP*) (EXPAND "spaces") (ASSERT)) NIL)
+   ((|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL))
+   SHOSTAK))
+ (|coins_TCC1| 0
+  (|coins_TCC1-1| NIL 4001255878
+   (""
+    (THEN (SKOSIMP*) (LEMMA "spaces_at" ("v" "v!1")) (REPLACE -1 :ACTUALS? T)
+     (TYPEPRED
+      "ppg_resampling_marginal[V,Value,variables,domains,Q,v!1].marginalPMF")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("probability?" "finite_measure?" "marginalPMF" "atomicLaw" "finiteLaw"
+       "blockSigma" "nativeProduct" "generated" "coins" "is_finite" "card")))
+    NIL)
+   ((|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (|marginalPMF| CONST-DECL
+     "ppg_probability_measure[Coordinate, fullset[set[Coordinate]]].Probability"
+     |ppg_resampling_marginal| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Coordinate| TYPE-EQ-DECL NIL |ppg_resampling_marginal| NIL)
+    (Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}"
+     |ppg_resampling_product_law| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_product_law| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_product_law| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|spaces_at| FORMULA-DECL NIL |ppg_resampling_product_law| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL))
+   NIL
+   (|coins| SUBTYPE
+    "ppg_resampling_marginal[V, Value, variables, domains, Q, v].marginalPMF"
+    "CoordinateLaw[ppg_resampling_product_law.V, ppg_resampling_product_law.Value, LAMBDA (v: ppg_resampling_product_law.V): ppg_resampling_product_law.domains(v), ppg_resampling_product_law.spaces](ppg_resampling_product_law.v)"
+    (29 16 29 82))))
+ (|native_sigma_eq| 0
+  (|native_sigma_eq-1| NIL 4001255980
+   ("" (THEN (EXPAND "nativeSigma") (ASSERT)) NIL)
+   ((|nativeSigma| CONST-DECL
+     "ppg_measurable_space[NativeBlock].MeasurableSpace"
+     |ppg_resampling_product_law| NIL))
+   SHOSTAK))
+ (|stateSigma_TCC1| 0
+  (|stateSigma_TCC1-1| NIL 4001255878 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |sigma_countable|
+     |sigma_set|)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL))
+   NIL
+   (|stateSigma| SUBTYPE "fullset[set[State]]" "MeasurableSpace[State]"
+    (41 66 41 85))))
+ (|forget_TCC1| 0
+  (|forget_TCC1-1| NIL 4001255878
+   (""
+    (THEN (SKOSIMP*) (LEMMA "productCore.variables_member" ("v" "v!1"))
+     (ASSERT))
+    NIL)
+   ((|variables_member| FORMULA-DECL NIL |ppg_finite_resampling_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_product_law| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_product_law| NIL))
+   NIL
+   (|forget| SUBTYPE "v" "(ppg_resampling_product_law.variables)"
+    (50 47 50 48))))
+ (|forget_embed| 0
+  (|forget_embed-1| NIL 4001255878
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "forget")
+     (EXPAND "embed") (ASSERT))
+    NIL)
+   ((|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_product_law| NIL)
+    (|NativeBlock| TYPE-EQ-DECL NIL |ppg_resampling_product_law| NIL)
+    (|forget| CONST-DECL "State" |ppg_resampling_product_law| NIL)
+    (|embed| CONST-DECL "NativeBlock" |ppg_resampling_product_law| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_product_law| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_product_law| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL))
+   SHOSTAK))
+ (|embed_forget| 0
+  (|embed_forget-1| NIL 4001255878
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "forget")
+     (EXPAND "embed") (ASSERT))
+    NIL)
+   ((|State| TYPE-EQ-DECL NIL |ppg_resampling_product_law| NIL)
+    (|embed| CONST-DECL "NativeBlock" |ppg_resampling_product_law| NIL)
+    (|forget| CONST-DECL "State" |ppg_resampling_product_law| NIL)
+    (|NativeBlock| TYPE-EQ-DECL NIL |ppg_resampling_product_law| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_product_law| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_product_law| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL))
+   SHOSTAK))
+ (|pointEvents_TCC1| 0
+  (|pointEvents_TCC1-1| NIL 4001255878
+   (""
+    (THEN
+     (GRIND :IF-MATCH NIL :DEFS ("spaces" "fullset") :EXCLUDE
+      ("is_finite" "card")))
+    NIL)
+   ((|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[Value]" |ppg_resampling_product_law| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |sigma_countable| |sigma_set|))
+   NIL
+   (|pointEvents| SUBTYPE "singleton[(domains(v))](s(v))"
+    "(ppg_resampling_product_law.spaces(ppg_resampling_product_law.v))"
+    (59 16 59 49))))
+ (|forget_point| 0
+  (|forget_point-1| NIL 4001255878
+   ("" (SKOSIMP*)
+    (("" (APPLY-EXTENSIONALITY :HIDE? T)
+      (("" (EXPAND "productForgetMap.inverseImage")
+        (("" (EXPAND "resamplingBoxes.blockBox")
+          (("" (EXPAND "pointEvents")
+            (("" (EXPAND "singleton")
+              (("" (IFF)
+                (("" (SPLIT)
+                  (("1" (SKOSIMP*)
+                    (("1" (CASE "forget(x!1)(i!1)=s!1(i!1)")
+                      (("1" (EXPAND "forget") (("1" (PROPAX) NIL NIL)) NIL)
+                       ("2" (ASSERT) NIL NIL))
+                      NIL))
+                    NIL)
+                   ("2" (SKOSIMP*)
+                    (("2" (LABEL "ALL" -1)
+                      (("2" (APPLY-EXTENSIONALITY :HIDE? T)
+                        (("2"
+                          (LEMMA "productCore.variables_member" ("v" "x!2"))
+                          (("2" (INST "ALL" "x!2")
+                            (("2" (EXPAND "forget") (("2" (PROPAX) NIL NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|variables_member| FORMULA-DECL NIL |ppg_finite_resampling_core| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |sigma_countable| |sigma_set|)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_product_law| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|forget| CONST-DECL "State" |ppg_resampling_product_law| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockBox| CONST-DECL "set[Block[I, Value, domain, spaces](F)]"
+     |ppg_measurable_block_box| NIL)
+    (|pointEvents| CONST-DECL "resamplingBoxes.CoordinateEvents"
+     |ppg_resampling_product_law| NIL)
+    (|NativeBlock| TYPE-EQ-DECL NIL |ppg_resampling_product_law| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_product_law| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_product_law| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL))
+   SHOSTAK))
+ (|point_preimage_measurable| 0
+  (|point_preimage_measurable-1| NIL 4001255878
+   (""
+    (THEN (SKOSIMP*) (LEMMA "forget_point" ("s" "s!1"))
+     (LEMMA "resamplingBoxes.block_box_measurable"
+      ("F" "variables" "E" "pointEvents(s!1)"))
+     (EXPAND "nativeSigma") (ASSERT))
+    NIL)
+   ((|block_box_measurable| FORMULA-DECL NIL |ppg_measurable_block_box| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|pointEvents| CONST-DECL "resamplingBoxes.CoordinateEvents"
+     |ppg_resampling_product_law| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_product_law| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (|nativeSigma| CONST-DECL
+     "ppg_measurable_space[NativeBlock].MeasurableSpace"
+     |ppg_resampling_product_law| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |sigma_countable| |sigma_set|)
+    (|forget_point| FORMULA-DECL NIL |ppg_resampling_product_law| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_product_law| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_product_law| NIL))
+   SHOSTAK))
+ (|image_sigma_full| 0
+  (|image_sigma_full-1| NIL 4001255878
+   (""
+    (THEN
+     (LEMMA "productFiniteSigma.finite_sigma_full"
+      ("S" "productForgetMap.imageSigma(nativeSigma,forget)"))
+     (LEMMA "point_preimage_measurable") (EXPAND "productForgetMap.imageSigma")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("finiteLaw" "blockSigma" "nativeProduct" "generated" "coins" "is_finite"
+       "card")))
+    NIL)
+   ((|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_product_law| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_product_law| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_product_law| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (|forget| CONST-DECL "State" |ppg_resampling_product_law| NIL)
+    (|nativeSigma| CONST-DECL
+     "ppg_measurable_space[NativeBlock].MeasurableSpace"
+     |ppg_resampling_product_law| NIL)
+    (|imageSigma| CONST-DECL "ppg_measurable_space[Y].MeasurableSpace"
+     |ppg_measurable_map| NIL)
+    (|NativeBlock| TYPE-EQ-DECL NIL |ppg_resampling_product_law| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|finite_sigma_full| FORMULA-DECL NIL |ppg_finite_sigma| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |sigma_countable| |sigma_set|)
+    (|point_preimage_measurable| FORMULA-DECL NIL |ppg_resampling_product_law|
+     NIL))
+   SHOSTAK))
+ (|forget_measurable| 0
+  (|forget_measurable-1| NIL 4001255878
+   (""
+    (THEN (LEMMA "image_sigma_full") (EXPAND "productForgetMap.measurable")
+     (REPLACE -1 :DIR RL) (EXPAND "productForgetMap.imageSigma")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("finiteLaw" "blockSigma" "nativeProduct" "generated" "coins" "is_finite"
+       "card")))
+    NIL)
+   ((|image_sigma_full| FORMULA-DECL NIL |ppg_resampling_product_law| NIL)
+    (|nativeSigma| CONST-DECL
+     "ppg_measurable_space[NativeBlock].MeasurableSpace"
+     |ppg_resampling_product_law| NIL)
+    (|imageSigma| CONST-DECL "ppg_measurable_space[Y].MeasurableSpace"
+     |ppg_measurable_map| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL))
+   SHOSTAK))
+ (|productLaw_TCC1| 0
+  (|productLaw_TCC1-1| NIL 4001255878
+   (""
+    (THEN (LEMMA "native_sigma_eq") (REPLACE -1 :ACTUALS? T)
+     (TYPEPRED "resamplingProduct.finiteLaw(variables)")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("probability?" "finite_measure?" "marginalPMF" "atomicLaw" "finiteLaw"
+       "blockSigma" "nativeProduct" "generated" "coins" "is_finite" "card")))
+    NIL)
+   ((|native_sigma_eq| FORMULA-DECL NIL |ppg_resampling_product_law| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_product_law| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_product_law| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|BlockLaw| TYPE-EQ-DECL NIL |ppg_probability_block_restriction| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| CONST-DECL "[v: V -> resamplingBlockBase.CoordinateLaw(v)]"
+     |ppg_resampling_product_law| NIL)
+    (|finiteLaw| DEF-DECL "BlockLaw(F)" |ppg_probability_finite_product| NIL)
+    (|nativeSigma| CONST-DECL
+     "ppg_measurable_space[NativeBlock].MeasurableSpace"
+     |ppg_resampling_product_law| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL))
+   NIL
+   (|productLaw| SUBTYPE
+    "resamplingProduct[V, Value, LAMBDA (v: V): domains(v), spaces, coins].finiteLaw(variables)"
+    "SourceLaw[NativeBlock, State, nativeSigma, fullset[set[State]]]"
+    (73 28 73 66))))
+ (|productLaw_TCC2| 0
+  (|productLaw_TCC2-1| NIL 4001255878
+   ("" (THEN (LEMMA "forget_measurable") (ASSERT)) NIL)
+   ((|forget_measurable| FORMULA-DECL NIL |ppg_resampling_product_law| NIL))
+   NIL
+   (|productLaw| SUBTYPE "forget"
+    "MeasurableMap[NativeBlock, State, nativeSigma, fullset[set[State]]]"
+    (73 67 73 73))))
+ (|coin_point_mass| 0
+  (|coin_point_mass-1| NIL 4001256085
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA
+      "ppg_resampling_marginal[V,Value,variables,domains,Q,v!1].marginal_point_mass"
+      ("x" "s!1(v!1)"))
+     (EXPAND "coins") (EXPAND "pointEvents") (ASSERT))
+    NIL)
+   ((|coins| CONST-DECL "[v: V -> resamplingBlockBase.CoordinateLaw(v)]"
+     |ppg_resampling_product_law| NIL)
+    (|pointEvents| CONST-DECL "resamplingBoxes.CoordinateEvents"
+     |ppg_resampling_product_law| NIL)
+    (|marginal_point_mass| FORMULA-DECL NIL |ppg_resampling_marginal| NIL)
+    (|Coordinate| TYPE-EQ-DECL NIL |ppg_resampling_marginal| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_product_law| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_product_law| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_product_law| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}"
+     |ppg_resampling_product_law| NIL))
+   SHOSTAK))
+ (|coin_mass_function| 0
+  (|coin_mass_function-1| NIL 4001256085
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "coin_point_mass" ("s" "s!1" "v" "x!1")) (ASSERT))
+    NIL)
+   ((|coin_point_mass| FORMULA-DECL NIL |ppg_resampling_product_law| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_product_law| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| CONST-DECL "[v: V -> resamplingBlockBase.CoordinateLaw(v)]"
+     |ppg_resampling_product_law| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_product_law| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|pointEvents| CONST-DECL "resamplingBoxes.CoordinateEvents"
+     |ppg_resampling_product_law| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_product_law| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}"
+     |ppg_resampling_product_law| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL))
+   SHOSTAK))
+ (|product_law_point_mass_TCC1| 0
+  (|product_law_point_mass_TCC1-1| NIL 4001256077 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |sigma_countable| |sigma_set|))
+   NIL
+   (|product_law_point_mass| SUBTYPE "singleton[State](s)"
+    "(sets[set[State]].fullset)" (82 15 82 34))))
+ (|product_law_point_mass| 0
+  (|product_law_point_mass-1| NIL 4001256085
+   (""
+    (THEN (SKOSIMP*) (LEMMA "forget_point" ("s" "s!1"))
+     (LEMMA "resamplingProduct.finite_law_box"
+      ("F" "variables" "E" "pointEvents(s!1)"))
+     (LEMMA "coin_mass_function" ("s" "s!1"))
+     (LEMMA "productRational.real_product_eq"
+      ("F" "variables" "f" "LAMBDA(v:V):Q`mass(v)(s!1(v))"))
+     (EXPAND "productLaw") (EXPAND "productPush.pushforward")
+     (EXPAND "productPush.imageMass") (EXPAND "productCore.productMass")
+     (ASSERT))
+    NIL)
+   ((|finite_law_box| FORMULA-DECL NIL |ppg_probability_finite_product| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_product_law| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|pointEvents| CONST-DECL "resamplingBoxes.CoordinateEvents"
+     |ppg_resampling_product_law| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|coins| CONST-DECL "[v: V -> resamplingBlockBase.CoordinateLaw(v)]"
+     |ppg_resampling_product_law| NIL)
+    (Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}"
+     |ppg_resampling_product_law| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real_product_eq| FORMULA-DECL NIL |ppg_rational_product| NIL)
+    (|pushforward| CONST-DECL "TargetLaw" |ppg_probability_map| NIL)
+    (|productMass| CONST-DECL "rat" |ppg_finite_resampling_core| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |sigma_countable| |sigma_set|)
+    (|imageMass| CONST-DECL "nnreal" |ppg_probability_map| NIL)
+    (|productLaw| CONST-DECL "productStateProbability.Probability"
+     |ppg_resampling_product_law| NIL)
+    (|coin_mass_function| FORMULA-DECL NIL |ppg_resampling_product_law| NIL)
+    (|forget_point| FORMULA-DECL NIL |ppg_resampling_product_law| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_product_law| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_product_law| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_product_law| NIL))
+   SHOSTAK)))
+

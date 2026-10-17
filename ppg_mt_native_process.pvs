@@ -1,0 +1,32 @@
+% A process is a family of bad events with proved coordinate
+% footprints. Its Boolean presentation feeds the existing dependent MT
+% trajectory; the coordinate probability spaces retain their native laws.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Algorithm 1.1.
+ppg_mt_native_process[I,V,Value: TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_mt_native_spaces[I,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_mt_semantics[I,V,Value,domain] AS nativeProcessSemantics
+
+  State: TYPE = nativeProcessSemantics.MTState
+
+  ProcessData: TYPE = [# bad:[I->set[State]],footprint:[I->finite_set[V]] #]
+
+  ProcessLocal(P:ProcessData): bool = FORALL(i:I,s,t:State):
+    (FORALL(v:V):P`footprint(i)(v) IMPLIES s(v)=t(v)) IMPLIES
+      (P`bad(i)(s) IFF P`bad(i)(t))
+
+  MTProcess: TYPE = {P:ProcessData|ProcessLocal(P)}
+
+  P: VAR MTProcess
+  s: VAR State
+
+  badTest(P)(i:I,s:State): bool = P`bad(i)(s)
+
+  violated(P,s): set[I] = {i:I|P`bad(i)(s)}
+
+  process_locality: LEMMA nativeProcessSemantics.mt_wf(P`footprint,badTest(P))
+
+END ppg_mt_native_process

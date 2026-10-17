@@ -1,0 +1,259 @@
+(|ppg_resampling_marginal|
+ (|marginal_nonnegative| 0
+  (|marginal_nonnegative-1| NIL 4001255769
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "Q") (EXPAND "Valid" -1) (FLATTEN)
+     (INST -1 "v" "x!1") (ASSERT))
+    NIL)
+   ((|Coordinate| TYPE-EQ-DECL NIL |ppg_resampling_marginal| NIL)
+    (|v| FORMAL-CONST-DECL "V" |ppg_resampling_marginal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_marginal| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_marginal| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_marginal| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_marginal| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}" |ppg_resampling_marginal|
+     NIL))
+   SHOSTAK))
+ (|marginal_value_function| 0
+  (|marginal_value_function-1| NIL 4001255770
+   ("" (THEN (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "extendMass") (ASSERT))
+    NIL)
+   ((|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_marginal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_marginal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_marginal| NIL)
+    (|v| FORMAL-CONST-DECL "V" |ppg_resampling_marginal| NIL)
+    (|Coordinate| TYPE-EQ-DECL NIL |ppg_resampling_marginal| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|extendMass| CONST-DECL "rat" |ppg_finite_resampling_core| NIL)
+    (Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}" |ppg_resampling_marginal|
+     NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_marginal| NIL))
+   SHOSTAK))
+ (|marginal_sum_one| 0
+  (|marginal_sum_one-1| NIL 4001255770
+   (""
+    (THEN (LEMMA "marginalDomain.reindexed_sum" ("f" "extendMass(Q,v)"))
+     (LEMMA "marginalNormalization.marginal_real_normalized" ("Q" "Q" "v" "v"))
+     (LEMMA "marginal_value_function") (TYPEPRED "Q") (ASSERT))
+    NIL)
+   ((|v| FORMAL-CONST-DECL "V" |ppg_resampling_marginal| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_marginal| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_marginal| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_marginal| NIL)
+    (Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}" |ppg_resampling_marginal|
+     NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|extendMass| CONST-DECL "rat" |ppg_finite_resampling_core| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_marginal| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|reindexed_sum| FORMULA-DECL NIL |ppg_finite_domain| NIL)
+    (|marginal_value_function| FORMULA-DECL NIL |ppg_resampling_marginal| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|marginal_real_normalized| FORMULA-DECL NIL |ppg_resampling_normalization|
+     NIL))
+   SHOSTAK))
+ (|weights_TCC1| 0
+  (|weights_TCC1-1| NIL 4001255769
+   ("" (THEN (SKOSIMP*) (LEMMA "marginal_nonnegative" ("x" "x!1")) (ASSERT))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|marginal_nonnegative| FORMULA-DECL NIL |ppg_resampling_marginal| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_marginal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_marginal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_marginal| NIL)
+    (|v| FORMAL-CONST-DECL "V" |ppg_resampling_marginal| NIL)
+    (|Coordinate| TYPE-EQ-DECL NIL |ppg_resampling_marginal| NIL))
+   NIL (|weights| SUBTYPE "Q`mass(v)(x)" "nonneg_real" (33 66 33 78))))
+ (|weights_TCC2| 0
+  (|weights_TCC2-1| NIL 4001255769
+   ("" (THEN (LEMMA "marginal_sum_one") (ASSERT)) NIL)
+   ((|marginal_sum_one| FORMULA-DECL NIL |ppg_resampling_marginal| NIL)) NIL
+   (|weights| SUBTYPE "LAMBDA (x: Coordinate): Q`mass(v)(x)"
+    "NormalizedWeights[Coordinate, marginalDomain[Value, domains(v)].universe]"
+    (33 45 33 78))))
+ (|marginalPMF_TCC1| 0
+  (|marginalPMF_TCC1-1| NIL 4001255769 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)
+    (|Coordinate| TYPE-EQ-DECL NIL |ppg_resampling_marginal| NIL)
+    (|v| FORMAL-CONST-DECL "V" |ppg_resampling_marginal| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_marginal| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_marginal| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_marginal| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |ppg_resampling_marginal|
+     NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL))
+   NIL
+   (|marginalPMF| SUBTYPE "fullset[set[Coordinate]]"
+    "MeasurableSpace[Coordinate]" (35 15 35 86))))
+ (|marginal_point_mass_TCC1| 0
+  (|marginal_point_mass_TCC1-1| NIL 4001255769 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[(domains(v))]" |ppg_resampling_marginal| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[Value]" |ppg_resampling_marginal| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL))
+   NIL
+   (|marginal_point_mass| SUBTYPE "singleton[Coordinate](x)"
+    "(sets[set[Coordinate]].fullset)" (38 41 38 65))))
+ (|marginal_point_mass| 0
+  (|marginal_point_mass-1| NIL 4001255770
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "marginalAtoms.atomic_singleton" ("w0" "weights" "x" "x!1"))
+     (EXPAND "marginalPMF") (EXPAND "weights") (ASSERT))
+    NIL)
+   ((|marginalPMF| CONST-DECL
+     "ppg_probability_measure[Coordinate, fullset[set[Coordinate]]].Probability"
+     |ppg_resampling_marginal| NIL)
+    (|atomic_singleton| FORMULA-DECL NIL |ppg_finite_atomic_probability| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|WeightVector| TYPE-EQ-DECL NIL |ppg_finite_atomic_probability| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|fsum| DEF-DECL "real" |ppg_finite_sum| NIL)
+    (|NormalizedWeights| TYPE-EQ-DECL NIL |ppg_finite_atomic_probability| NIL)
+    (|weights| CONST-DECL "marginalAtoms.NormalizedWeights"
+     |ppg_resampling_marginal| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_marginal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_marginal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_marginal| NIL)
+    (|v| FORMAL-CONST-DECL "V" |ppg_resampling_marginal| NIL)
+    (|Coordinate| TYPE-EQ-DECL NIL |ppg_resampling_marginal| NIL)
+    (|universe| CONST-DECL "{U: finite_set[(D)] | FORALL (x: (D)): U(x)}"
+     |ppg_finite_domain| NIL))
+   SHOSTAK))
+ (|marginalPMF_apply| 0
+  (|marginalPMF_apply-1| NIL 4001255770
+   (""
+    (THEN (SKOSIMP*) (LEMMA "marginal_point_mass" ("x" "x!1"))
+     (LEMMA "marginal_nonnegative" ("x" "x!1")) (EXPAND "ofReal")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("marginalPMF" "atomicLaw" "fsum" "is_finite" "card")))
+    NIL)
+   ((|marginal_nonnegative| FORMULA-DECL NIL |ppg_resampling_marginal| NIL)
+    (|max| CONST-DECL "{p: real | p >= m AND p >= n}" |real_defs| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[(domains(v))]" |ppg_resampling_marginal| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[Value]" |ppg_resampling_marginal| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|rat_max| APPLICATION-JUDGEMENT "{s: rat | s >= q AND s >= r}" |real_defs|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|ofReal| CONST-DECL "ENN" |ppg_enn_ofreal| NIL)
+    (|marginal_point_mass| FORMULA-DECL NIL |ppg_resampling_marginal| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_marginal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_marginal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_marginal| NIL)
+    (|v| FORMAL-CONST-DECL "V" |ppg_resampling_marginal| NIL)
+    (|Coordinate| TYPE-EQ-DECL NIL |ppg_resampling_marginal| NIL))
+   SHOSTAK))
+ (|coordinate_sigma_unique| 0
+  (|coordinate_sigma_unique-1| NIL 4001257526
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "marginalFiniteSigma.finite_sigma_full" ("S" "S!1")) (ASSERT))
+    NIL)
+   ((|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[(domains(v))]" |ppg_resampling_marginal| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[Value]" |ppg_resampling_marginal| NIL)
+    (|finite_sigma_full| FORMULA-DECL NIL |ppg_finite_sigma| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_marginal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_marginal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_marginal| NIL)
+    (|v| FORMAL-CONST-DECL "V" |ppg_resampling_marginal| NIL)
+    (|Coordinate| TYPE-EQ-DECL NIL |ppg_resampling_marginal| NIL)
+    (|universe| CONST-DECL "{U: finite_set[(D)] | FORALL (x: (D)): U(x)}"
+     |ppg_finite_domain| NIL))
+   SHOSTAK)))
+

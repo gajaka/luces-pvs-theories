@@ -1,0 +1,175 @@
+(|ppg_resampling_mt_process|
+ (|mtProcess_TCC1| 0
+  (|mtProcess_TCC1-1| NIL 4001256228
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "B!1") (EXPAND "mtSelection.Local")
+     (EXPAND "mtInstance.ProcessLocal")
+     (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite" "card")))
+    NIL)
+   ((|State| TYPE-EQ-DECL NIL |ppg_mt_native_process| NIL)
+    (|coins| CONST-DECL "[v: V -> resamplingBlockBase.CoordinateLaw(v)]"
+     |ppg_resampling_product_law| NIL)
+    (|CoordinateLaw| TYPE-EQ-DECL NIL |ppg_probability_block_base| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}"
+     |ppg_resampling_mt_process| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ProcessLocal| CONST-DECL "bool" |ppg_mt_native_process| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_resampling_mt_process| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_mt_process| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_mt_process| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_mt_process| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_mt_process| NIL)
+    (|events| FORMAL-CONST-DECL "{U: finite_set[I] | FORALL (i: I): U(i)}"
+     |ppg_resampling_mt_process| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL)
+    (|ProblemData| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL)
+    (|Local| CONST-DECL "bool" |ppg_resampling_selection| NIL)
+    (|Problem| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL))
+   NIL
+   (|mtProcess| SUBTYPE
+    "(# bad := LAMBDA (i: I): {s: State | B`bad(i, s)}, footprint := B`footprint #)"
+    "MTProcess[I, V, Value, LAMBDA (v: V): domains(v), mtProduct[V, Value, variables, domains, Q].spaces, mtProduct[V, Value, variables, domains, Q].coins]"
+    (37 4 37 70))))
+ (|mtProcess_bad_iff| 0
+  (|mtProcess_bad_iff-1| NIL 4001256228
+   ("" (THEN (GRIND :IF-MATCH NIL :DEFS ("mtProcess"))) NIL)
+   ((|mtProcess| CONST-DECL "mtInstance.MTProcess" |ppg_resampling_mt_process|
+     NIL))
+   SHOSTAK))
+ (|process_footprint| 0
+  (|process_footprint-1| NIL 4001256228
+   ("" (THEN (SKOSIMP*) (EXPAND "mtProcess") (ASSERT)) NIL)
+   ((|mtProcess| CONST-DECL "mtInstance.MTProcess" |ppg_resampling_mt_process|
+     NIL))
+   SHOSTAK))
+ (|allGood_iff_no_mt_violation| 0
+  (|allGood_iff_no_mt_violation-1| NIL 4001256228
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "mtSelection.allGood_eq_true_iff" ("B" "B!1" "s" "s!1"))
+     (LEMMA "emptyset_is_empty?[I]" ("a" "{i:I|B!1`bad(i,s!1)}"))
+     (EXPAND "mtInstance.violated") (EXPAND "mtProcess")
+     (GRIND :IF-MATCH NIL :DEFS ("empty?" "member") :EXCLUDE
+      ("allGood" "finiteAll" "is_finite" "card")))
+    NIL)
+   ((|emptyset_is_empty?| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|mtProcess| CONST-DECL "mtInstance.MTProcess" |ppg_resampling_mt_process|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_props|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |sigma_countable|
+     |sigma_set|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|violated| CONST-DECL "set[I]" |ppg_mt_native_process| NIL)
+    (|allGood_eq_true_iff| FORMULA-DECL NIL |ppg_resampling_selection| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL)
+    (|ProblemData| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL)
+    (|Local| CONST-DECL "bool" |ppg_resampling_selection| NIL)
+    (|Problem| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_mt_process| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_resampling_mt_process| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_mt_process| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_mt_process| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_mt_process| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_mt_process| NIL)
+    (|events| FORMAL-CONST-DECL "{U: finite_set[I] | FORALL (i: I): U(i)}"
+     |ppg_resampling_mt_process| NIL))
+   SHOSTAK))
+ (|coordinate_resample| 0
+  (|coordinate_resample-1| NIL 4001256228
+   (""
+    (THEN (SKOSIMP*) (EXPAND "mtCore.coordinateUpdate")
+     (EXPAND "mtSemantics.resample") (ASSERT))
+    NIL)
+   ((|resample| CONST-DECL "MTState" |ppg_mt_semantics| NIL)
+    (|coordinateUpdate| CONST-DECL "State" |ppg_finite_resampling_core| NIL))
+   SHOSTAK))
+ (|selected_update_eq_mt_resample| 0
+  (|selected_update_eq_mt_resample-1| NIL 4001256228
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "mtCore.rule_update_bad"
+      ("Q" "Q" "P" "mtSelection.selectedPolicy(B!1,choose!1)" "s" "s!1" "fresh"
+       "fresh!1"))
+     (LEMMA "process_footprint" ("B" "B!1"))
+     (LEMMA "coordinate_resample"
+      ("F" "B!1`footprint(choose!1(s!1))" "s" "s!1" "fresh" "fresh!1"))
+     (EXPAND "mtSelection.selectedPolicy")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("rule" "productMass" "coordinateUpdate" "resample" "is_finite" "card")))
+    NIL)
+   ((|process_footprint| FORMULA-DECL NIL |ppg_resampling_mt_process| NIL)
+    (|mtProcess| CONST-DECL "mtInstance.MTProcess" |ppg_resampling_mt_process|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|allGood| CONST-DECL "bool" |ppg_resampling_selection| NIL)
+    (|coordinate_resample| FORMULA-DECL NIL |ppg_resampling_mt_process| NIL)
+    (|rule_update_bad| FORMULA-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_resampling_mt_process| NIL)
+    (|events| FORMAL-CONST-DECL "{U: finite_set[I] | FORALL (i: I): U(i)}"
+     |ppg_resampling_mt_process| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL)
+    (|ProblemData| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL)
+    (|Local| CONST-DECL "bool" |ppg_resampling_selection| NIL)
+    (|Problem| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL)
+    (|selectedPolicy| CONST-DECL "selectedCore.Policy"
+     |ppg_resampling_selection| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_mt_process| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}"
+     |ppg_resampling_mt_process| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_mt_process| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_mt_process| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_mt_process| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_mt_process| NIL))
+   SHOSTAK)))
+

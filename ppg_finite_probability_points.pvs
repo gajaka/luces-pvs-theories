@@ -1,0 +1,39 @@
+% A probability on a finite carrier is determined by its singleton
+% masses. Finite additivity evaluates every event as their finite sum.
+% The carrier itself may be empty; no normalized law then exists.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_probability_points[T: TYPE,
+  universe:{U:finite_set[T]|FORALL(x:T):U(x)}]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_space[T]
+
+  fullSigma: MACRO ppg_measurable_space[T].MeasurableSpace = fullset[set[T]]
+
+  IMPORTING ppg_probability_measure[T,fullSigma] AS finitePointProbability,
+    ppg_probability_set_laws[T,fullSigma] AS finitePointSetLaws,
+    ppg_finite_sigma[T,universe] AS finitePointSigma,
+    ppg_finite_sum[T] AS finitePointSum,
+    ppg_finite_induction[T]
+
+  mu,nu: VAR finitePointProbability.Probability
+  A: VAR finite_set[T]
+  x: VAR T
+
+  eventAsFinite(B:set[T]): finite_set[T] = B
+
+  pointMasses(mu): [T->real] = LAMBDA(x:T):mu(singleton[T](x))
+
+  rest_partition: LEMMA NOT empty?(A) IMPLIES
+    union(singleton[T](choose(A)),rest(A))=A AND
+      disjoint?(singleton[T](choose(A)),rest(A))
+
+  finite_probability_sum: THEOREM mu(A)=finitePointSum.fsum(A,pointMasses(mu))
+
+  point_mass_function: LEMMA
+    (FORALL(x:T):mu(singleton[T](x))=nu(singleton[T](x))) IMPLIES pointMasses(mu)=pointMasses(nu)
+
+  probability_singleton_extensionality: THEOREM
+    (FORALL(x:T):mu(singleton[T](x))=nu(singleton[T](x))) IMPLIES mu=nu
+
+END ppg_finite_probability_points
