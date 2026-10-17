@@ -1,0 +1,55 @@
+% A selected violated event supplies its declared footprint. The locality
+% condition states exactly which coordinates determine each Boolean event.
+% Resampling a disjoint footprint consequently preserves that event.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Algorithm 1.1, arXiv:0903.0544v3.
+ppg_resampling_selection[I,V,Value: TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  events:{U:finite_set[I]|FORALL(i:I):U(i)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_resampling_core[V,Value,variables,domains] AS selectedCore,
+    ppg_finite_all[I] AS selectedEvents
+
+  State: TYPE = selectedCore.State
+
+  ProblemData: TYPE = [# bad:[I,State->bool],footprint:[I->finite_set[V]] #]
+
+  Local(B:ProblemData): bool = FORALL(i:I,s,t:State):
+    (FORALL(v:V):B`footprint(i)(v) IMPLIES s(v)=t(v)) IMPLIES
+      B`bad(i,s)=B`bad(i,t)
+
+  Problem: TYPE = {B:ProblemData|Local(B)}
+
+  Q: VAR selectedCore.Marginals
+  B: VAR Problem
+  choose: VAR [State->I]
+  s,fresh: VAR State
+  i,j: VAR I
+
+  allGood(B,s): bool = selectedEvents.finiteAll(events,LAMBDA(i:I):NOT B`bad(i,s))
+
+  Admissible(B,choose): bool = FORALL(s:State):
+    NOT allGood(B,s) IMPLIES B`bad(choose(s),s)
+
+  selectedPolicy(B,choose): selectedCore.Policy =
+    (# good:=LAMBDA(s:State):allGood(B,s),
+      footprint:=LAMBDA(s:State):B`footprint(choose(s)) #)
+
+  events_member: LEMMA events(i)
+
+  allGood_eq_true_iff: THEOREM allGood(B,s) IFF
+    (FORALL(i:I):NOT B`bad(i,s))
+
+  selected_rule_resamples_violated: THEOREM
+    Admissible(B,choose) AND NOT allGood(B,s) IMPLIES
+      B`bad(choose(s),s) AND
+      selectedCore.rule(Q,selectedPolicy(B,choose))`update(s,fresh)=
+        selectedCore.coordinateUpdate(B`footprint(choose(s)),s,fresh)
+
+  selected_rule_preserves_unrelated: THEOREM
+    disjoint?(selectedCore.activeFootprint(selectedPolicy(B,choose),s),B`footprint(j)) IMPLIES
+      B`bad(j,selectedCore.rule(Q,selectedPolicy(B,choose))`update(s,fresh))=B`bad(j,s)
+
+END ppg_resampling_selection

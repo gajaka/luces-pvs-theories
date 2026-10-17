@@ -1,0 +1,11 @@
+% An injection into a finite set transfers finiteness to its domain.
+% This is the bounded natural-number encoding used by the PVS prelude.
+ppg_finite_injection[A,B: TYPE]: THEORY
+BEGIN
+  F: VAR finite_set[B]
+  h: VAR [A->B]
+
+  finite_injection: THEOREM
+    (FORALL(a:A):F(h(a))) AND injective?(h) IMPLIES is_finite(fullset[A])
+
+END ppg_finite_injection

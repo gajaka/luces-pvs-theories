@@ -1,0 +1,29 @@
+% Finite products have neutral element one. The rational product and
+% the real product agree term by term and hence on every finite set.
+%
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_rational_product[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_product[T] AS rationalRealProduct,
+    ppg_real_product[T] AS rationalProductAlgebra,
+    ppg_real_product_order[T] AS rationalProductOrder,
+    ppg_finite_induction[T]
+
+  F: VAR finite_set[T]
+  f: VAR [T->rat]
+
+  ratProduct(F,f): RECURSIVE rat = IF empty?(F) THEN 1
+    ELSE f(choose(F))*ratProduct(rest(F),f) ENDIF
+    MEASURE card(F)
+
+  real_product_eq: LEMMA ratProduct(F,f)=rationalRealProduct.product(F,LAMBDA(v:T):f(v))
+
+  product_congr: LEMMA FORALL(g:[T->rat]):
+    (FORALL(v:T):F(v) IMPLIES f(v)=g(v)) IMPLIES ratProduct(F,f)=ratProduct(F,g)
+
+  product_zero_factor: LEMMA FORALL(v:T):
+    F(v) AND f(v)=0 IMPLIES ratProduct(F,f)=0
+
+  product_nonnegative: LEMMA (FORALL(v:T):F(v) IMPLIES 0<=f(v)) IMPLIES 0<=ratProduct(F,f)
+
+END ppg_rational_product

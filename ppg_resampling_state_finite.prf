@@ -1,0 +1,198 @@
+(|ppg_resampling_state_finite|
+ (|row_finite| 0
+  (|row_finite-1| NIL 4001251385
+   ("" (THEN (SKOSIMP*) (TYPEPRED "row(v!1)") (ASSERT)) NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|Pair| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|row| CONST-DECL "finite_set[Pair]" |ppg_resampling_state_finite| NIL))
+   SHOSTAK))
+ (|support_finite| 0
+  (|support_finite-1| NIL 4001251385
+   (""
+    (THEN (EXPAND "support") (LEMMA "finite_Union_finite[Pair]")
+     (LEMMA "row_finite")
+     (GRIND :IF-MATCH ALL :DEFS ("every" "image") :EXCLUDE
+      ("is_finite" "card" "row")))
+    NIL)
+   ((|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|support| CONST-DECL "set[Pair]" |ppg_resampling_state_finite| NIL)
+    (|row_finite| FORMULA-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|row| CONST-DECL "finite_set[Pair]" |ppg_resampling_state_finite| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_state_finite| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|Union_surjective| NAME-JUDGEMENT "(surjective?[setofsets[T], set[T]])"
+     |sets_lemmas| NIL)
+    (|every| CONST-DECL "bool" |sets| NIL)
+    (|Pair| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_state_finite| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|finite_Union_finite| FORMULA-DECL NIL |finite_sets_of_sets| NIL))
+   SHOSTAK))
+ (|finiteSupport_TCC1| 0
+  (|finiteSupport_TCC1-1| NIL 4001251410
+   ("" (THEN (LEMMA "support_finite") (ASSERT)) NIL)
+   ((|support_finite| FORMULA-DECL NIL |ppg_resampling_state_finite| NIL)) NIL
+   (|finiteSupport| SUBTYPE "support" "finite_set[Pair]" (28 36 28 43))))
+ (|stateGraph_TCC1| 0
+  (|stateGraph_TCC1-1| NIL 4001251385
+   ("" (SKOSIMP*)
+    (("" (EXPAND "graphs")
+      (("" (EXPAND "finiteSupport")
+        (("" (EXPAND "powerset")
+          (("" (EXPAND "subset?")
+            (("" (EXPAND "member")
+              (("" (EXPAND "support")
+                (("" (EXPAND "Union")
+                  (("" (SKOSIMP*)
+                    (("" (INST 1 "row(x!1`1)")
+                      (("1" (EXPAND "row")
+                        (("1" (EXPAND "image")
+                          (("1" (INST 1 "x!1`2")
+                            (("1"
+                              (LEMMA "graphCore.variables_member"
+                               ("v" "x!1`1"))
+                              (("1"
+                                (GRIND :IF-MATCH NIL :EXCLUDE
+                                 ("is_finite" "card"))
+                                NIL NIL))
+                              NIL)
+                             ("2"
+                              (LEMMA "graphCore.variables_member"
+                               ("v" "x!1`1"))
+                              (("2"
+                                (GRIND :IF-MATCH NIL :EXCLUDE
+                                 ("is_finite" "card"))
+                                NIL NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL)
+                       ("2" (EXPAND "image")
+                        (("2" (INST 1 "x!1`1")
+                          (("2"
+                            (LEMMA "graphCore.variables_member" ("v" "x!1`1"))
+                            (("2" (PROPAX) NIL NIL)) NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|finiteSupport| CONST-DECL "finite_set[Pair]"
+     |ppg_resampling_state_finite| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|support| CONST-DECL "set[Pair]" |ppg_resampling_state_finite| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_state_finite| NIL)
+    (|variables_member| FORMULA-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|Pair| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|row| CONST-DECL "finite_set[Pair]" |ppg_resampling_state_finite| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_state_finite| NIL)
+    (|Union| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|powerset| CONST-DECL "setofsets" |sets| NIL)
+    (|graphs| CONST-DECL "finite_set[set[Pair]]" |ppg_resampling_state_finite|
+     NIL))
+   NIL
+   (|stateGraph| SUBTYPE "{p: Pair | s(p`1) = p`2}"
+    "(ppg_resampling_state_finite.graphs)" (32 34 32 53))))
+ (|state_graph_at| 0
+  (|state_graph_at-1| NIL 4001251385
+   ("" (THEN (GRIND :IF-MATCH NIL :DEFS ("stateGraph"))) NIL)
+   ((|stateGraph| CONST-DECL "(graphs)" |ppg_resampling_state_finite| NIL))
+   SHOSTAK))
+ (|state_graph_injective| 0
+  (|state_graph_injective-1| NIL 4001251385
+   (""
+    (THEN (EXPAND "injective?") (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "state_graph_at" ("s" "x1!1" "v" "x!1")) (REPLACE -2)
+     (GRIND :IF-MATCH NIL :DEFS ("stateGraph")))
+    NIL)
+   ((|injective?| CONST-DECL "bool" |functions| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_state_finite| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|stateGraph| CONST-DECL "(graphs)" |ppg_resampling_state_finite| NIL)
+    (|state_graph_at| FORMULA-DECL NIL |ppg_resampling_state_finite| NIL))
+   SHOSTAK))
+ (|full_state_finite| 0
+  (|full_state_finite-1| NIL 4001251385
+   (""
+    (THEN (LEMMA "state_graph_injective")
+     (LEMMA "graphFiniteInjection.finite_injection"
+      ("F" "graphs" "h" "stateGraph"))
+     (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite" "card" "stateGraph" "graphs")))
+    NIL)
+   ((|state_graph_injective| FORMULA-DECL NIL |ppg_resampling_state_finite|
+     NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL)
+    (|Pair| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_state_finite| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_state_finite| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|stateGraph| CONST-DECL "(graphs)" |ppg_resampling_state_finite| NIL)
+    (|graphs| CONST-DECL "finite_set[set[Pair]]" |ppg_resampling_state_finite|
+     NIL)
+    (|finite_injection| FORMULA-DECL NIL |ppg_finite_injection| NIL))
+   SHOSTAK))
+ (|allStates_TCC1| 0
+  (|allStates_TCC1-1| NIL 4001251385
+   (""
+    (THEN (LEMMA "full_state_finite")
+     (GRIND :IF-MATCH NIL :DEFS ("fullset") :EXCLUDE ("is_finite" "card")))
+    NIL)
+   ((|full_state_finite| FORMULA-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL))
+   NIL
+   (|allStates| SUBTYPE "fullset[State]"
+    "{U: finite_sets[State].finite_set | FORALL (s: ppg_resampling_state_finite.State): U(s)}"
+    (40 58 40 72)))))
+

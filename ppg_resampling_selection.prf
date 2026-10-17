@@ -1,0 +1,127 @@
+(|ppg_resampling_selection|
+ (|events_member| 0
+  (|events_member-1| NIL 4001251351
+   ("" (THEN (SKOSIMP*) (TYPEPRED "events") (INST -2 "i!1") (ASSERT)) NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_resampling_selection| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|events| FORMAL-CONST-DECL "{U: finite_set[I] | FORALL (i: I): U(i)}"
+     |ppg_resampling_selection| NIL))
+   SHOSTAK))
+ (|allGood_eq_true_iff| 0
+  (|allGood_eq_true_iff-1| NIL 4001251351
+   (""
+    (THEN (SKOSIMP*) (EXPAND "allGood")
+     (LEMMA "selectedEvents.finite_all_iff"
+      ("A" "events" "p" "LAMBDA(i:I):NOT B!1`bad(i,s!1)"))
+     (LEMMA "events_member")
+     (GRIND :IF-MATCH ALL :EXCLUDE ("finiteAll" "is_finite" "card")))
+    NIL)
+   ((|finite_all_iff| FORMULA-DECL NIL |ppg_finite_all| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|events| FORMAL-CONST-DECL "{U: finite_set[I] | FORALL (i: I): U(i)}"
+     |ppg_resampling_selection| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_selection| NIL)
+    (|ProblemData| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL)
+    (|Local| CONST-DECL "bool" |ppg_resampling_selection| NIL)
+    (|Problem| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_selection| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_selection| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_resampling_selection| NIL)
+    (|events_member| FORMULA-DECL NIL |ppg_resampling_selection| NIL)
+    (|allGood| CONST-DECL "bool" |ppg_resampling_selection| NIL))
+   SHOSTAK))
+ (|selected_rule_resamples_violated| 0
+  (|selected_rule_resamples_violated-1| NIL 4001251351
+   (""
+    (THEN (SKOSIMP*) (EXPAND "Admissible") (INST -1 "s!1")
+     (LEMMA "selectedCore.rule_update_bad"
+      ("Q" "Q!1" "P" "selectedPolicy(B!1,choose!1)" "s" "s!1" "fresh"
+       "fresh!1"))
+     (EXPAND "selectedPolicy") (ASSERT))
+    NIL)
+   ((V FORMAL-TYPE-DECL NIL |ppg_resampling_selection| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_selection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_selection| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_selection| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|selectedPolicy| CONST-DECL "selectedCore.Policy"
+     |ppg_resampling_selection| NIL)
+    (|Problem| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL)
+    (|Local| CONST-DECL "bool" |ppg_resampling_selection| NIL)
+    (|ProblemData| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_resampling_selection| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rule_update_bad| FORMULA-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|Admissible| CONST-DECL "bool" |ppg_resampling_selection| NIL))
+   SHOSTAK))
+ (|selected_rule_preserves_unrelated| 0
+  (|selected_rule_preserves_unrelated-1| NIL 4001251351
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "B!1") (EXPAND "Local")
+     (INST -1 "j!1"
+      "selectedCore.rule(Q!1,selectedPolicy(B!1,choose!1))`update(s!1,fresh!1)"
+      "s!1")
+     (EXPAND "selectedCore.rule") (EXPAND "selectedCore.coordinateUpdate")
+     (GRIND :IF-MATCH ALL :DEFS ("disjoint?") :EXCLUDE
+      ("activeFootprint" "productMass" "ratProduct" "is_finite" "card")))
+    NIL)
+   ((|finite_intersection1| APPLICATION-JUDGEMENT "finite_set[V]"
+     |ppg_resampling_selection| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|allGood| CONST-DECL "bool" |ppg_resampling_selection| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|coordinateUpdate| CONST-DECL "State" |ppg_finite_resampling_core| NIL)
+    (|selectedPolicy| CONST-DECL "selectedCore.Policy"
+     |ppg_resampling_selection| NIL)
+    (|rule| CONST-DECL "Rule" |ppg_finite_resampling_core| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_selection| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_selection| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_selection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_resampling_selection| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_selection| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|ProblemData| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL)
+    (|Local| CONST-DECL "bool" |ppg_resampling_selection| NIL)
+    (|Problem| TYPE-EQ-DECL NIL |ppg_resampling_selection| NIL))
+   SHOSTAK)))
+
