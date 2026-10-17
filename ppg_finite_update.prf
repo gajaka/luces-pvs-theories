@@ -1,0 +1,450 @@
+(|ppg_finite_update|
+ (|inputSum_TCC1| 0
+  (|inputSum_TCC1-1| NIL 4001213111 ("" (THEN (SUBTYPE-TCC)) NIL)
+   ((|rat_plus_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|inputSum| SUBTYPE "LAMBDA (x, y: rat): x + y"
+    "{op: [rat, rat -> rat] | booleans.AND(operator_defs[rat].identity?(ppg_finite_update.op)(0), booleans.AND(operator_defs[rat].associative?(ppg_finite_update.op), operator_defs[rat].commutative?(ppg_finite_update.op)))}"
+    (17 31 17 50))))
+ (|kernel_term_nonnegative| 0
+  (|kernel_term_nonnegative-1| NIL 4001213111
+   (""
+    (THEN (SKOSIMP*) (EXPAND "Valid")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("Valid" "kernel" "model" "localExpectation" "successorValue"
+       "Conditions" "updateConditions" "fsum" "sum" "check" "finiteAll"
+       "is_finite" "card")))
+    NIL)
+   ((|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_update| NIL))
+   SHOSTAK))
+ (|kernel_nonnegative| 0
+  (|kernel_nonnegative-1| NIL 4001213111
+   (""
+    (THEN (SKOSIMP*) (EXPAND "kernel")
+     (LEMMA "ppg_rational_sum[Input].rational_sum_nonnegative"
+      ("A" "inputs" "f"
+       "LAMBDA(a:Input):IF t!1=R!1`update(s!1,a) THEN R!1`mass(a) ELSE 0 ENDIF"))
+     (ASSERT) (SKOSIMP*)
+     (LEMMA "kernel_term_nonnegative"
+      ("R" "R!1" "s" "s!1" "t" "t!1" "a" "x!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Valid" "kernel" "model" "localExpectation" "successorValue"
+       "Conditions" "updateConditions" "fsum" "sum" "check" "finiteAll"
+       "is_finite" "card")))
+    NIL)
+   ((|rational_sum_nonnegative| FORMULA-DECL NIL |ppg_rational_sum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}" |ppg_finite_update|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|kernel_term_nonnegative| FORMULA-DECL NIL |ppg_finite_update| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|kernel| CONST-DECL "rat" |ppg_finite_update| NIL))
+   SHOSTAK))
+ (|kernel_fiber_real| 0
+  (|kernel_fiber_real-1| NIL 4001213111
+   (""
+    (THEN (SKOSIMP*) (EXPAND "fiberWeight") (EXPAND "kernel")
+     (REWRITE "ppg_rational_sum[Input].real_sum_eq") (ASSERT))
+    NIL)
+   ((|kernel| CONST-DECL "rat" |ppg_finite_update| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}" |ppg_finite_update|
+     NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|real_sum_eq| FORMULA-DECL NIL |ppg_rational_sum| NIL)
+    (|fiberWeight| CONST-DECL "real" |ppg_finite_weighted_projection| NIL))
+   SHOSTAK))
+ (|kernel_weighted_function| 0
+  (|kernel_weighted_function-1| NIL 4001213212
+   (""
+    (THEN (SKOSIMP*) (REWRITE "target_function_eq") (SKOSIMP*)
+     (LEMMA "kernel_fiber_real" ("R" "R!1" "s" "s!1" "t" "t!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Valid" "kernel" "model" "localExpectation" "successorValue"
+       "Conditions" "updateConditions" "fiberWeight" "fsum" "sum" "check"
+       "finiteAll" "is_finite" "card")))
+    NIL)
+   ((|kernel_fiber_real| FORMULA-DECL NIL |ppg_finite_update| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|rat_times_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|target_function_eq| FORMULA-DECL NIL |ppg_finite_weighted_projection|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|fiberWeight| CONST-DECL "real" |ppg_finite_weighted_projection| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}" |ppg_finite_update|
+     NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_update|
+     NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|kernel| CONST-DECL "rat" |ppg_finite_update| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL))
+   SHOSTAK))
+ (|weighted_next_value| 0
+  (|weighted_next_value-1| NIL 4001213111
+   ("" (SKOSIMP*)
+    (("" (CASE "FORALL(a:Input):inputs(a) IMPLIES universe(R!1`update(s!1,a))")
+      (("1"
+        (LEMMA "weighted_projection_sum"
+         ("S" "inputs" "I" "universe" "p" "LAMBDA(a:Input):R!1`update(s!1,a)"
+          "w" "R!1`mass" "f" "f!1"))
+        (("1"
+          (LEMMA "kernel_weighted_function" ("R" "R!1" "s" "s!1" "f" "f!1"))
+          (("1" (LABEL "FIBER" -1)
+            (("1" (EXPAND "successorValue")
+              (("1" (EXPAND "model")
+                (("1"
+                  (AUTO-REWRITE "ppg_rational_sum[State].real_sum_eq"
+                                "ppg_rational_sum[Input].real_sum_eq")
+                  (("1" (REPLACE "FIBER" :DIR LR)
+                    (("1"
+                      (GRIND :IF-MATCH NIL :EXCLUDE
+                       ("Valid" "kernel" "model" "localExpectation"
+                        "successorValue" "Conditions" "updateConditions"
+                        "fiberWeight" "fsum" "sum" "check" "finiteAll"
+                        "is_finite" "card"))
+                      NIL NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (SKOSIMP*)
+        (("2" (LEMMA "drift.universe_member" ("s" "R!1`update(s!1,a!1)"))
+          (("2" (PROPAX) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|universe_member| FORMULA-DECL NIL |ppg_finite_drift| NIL)
+    (|weighted_projection_sum| FORMULA-DECL NIL
+     |ppg_finite_weighted_projection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|real_sum_eq| FORMULA-DECL NIL |ppg_rational_sum| NIL)
+    (|rat_times_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|successorValue| CONST-DECL "rat" |ppg_finite_potential_system| NIL)
+    (|kernel_weighted_function| FORMULA-DECL NIL |ppg_finite_update| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}" |ppg_finite_update|
+     NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_update|
+     NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL))
+   SHOSTAK))
+ (|kernel_normalized| 0
+  (|kernel_normalized-1| NIL 4001213111
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "weighted_next_value"
+      ("R" "R!1" "f" "LAMBDA(t:State):1" "s" "s!1"))
+     (EXPAND "successorValue") (EXPAND "model") (EXPAND "Valid")
+     (AUTO-REWRITE "ppg_rational_sum[State].real_sum_eq"
+                   "ppg_rational_sum[Input].real_sum_eq"
+                   "ppg_finite_sum[State].fsum_scale_right"
+                   "ppg_finite_sum[Input].fsum_scale_right")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Valid" "kernel" "model" "localExpectation" "successorValue"
+       "Conditions" "updateConditions" "fsum" "sum" "check" "finiteAll"
+       "is_finite" "card")))
+    NIL)
+   ((|successorValue| CONST-DECL "rat" |ppg_finite_potential_system| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (|real_sum_eq| FORMULA-DECL NIL |ppg_rational_sum| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|weighted_next_value| FORMULA-DECL NIL |ppg_finite_update| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_update|
+     NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL))
+   SHOSTAK))
+ (|kernel_zero_of_unreachable| 0
+  (|kernel_zero_of_unreachable-1| NIL 4001213111
+   ("" (SKOSIMP*)
+    (("" (EXPAND "kernel")
+      (("" (REWRITE "ppg_rational_sum[Input].real_sum_eq")
+        ((""
+          (CASE
+              "(LAMBDA(a:Input):IF t!1=R!1`update(s!1,a) THEN R!1`mass(a) ELSE 0 ENDIF)=(LAMBDA(a:Input):0)")
+          (("1" (REPLACE -1 :DIR LR)
+            (("1" (REWRITE "ppg_finite_sum[Input].fsum_zero") NIL NIL)) NIL)
+           ("2"
+            (LEMMA "source_function_eq"
+             ("u"
+              "(LAMBDA(a:Input):IF t!1=R!1`update(s!1,a) THEN R!1`mass(a) ELSE 0 ENDIF)"
+              "v" "LAMBDA(a:Input):0"))
+            (("2" (ASSERT)
+              (("2"
+                (GRIND :IF-MATCH ALL :EXCLUDE
+                 ("Valid" "kernel" "model" "localExpectation" "successorValue"
+                  "Conditions" "updateConditions" "fsum" "sum" "check"
+                  "finiteAll" "is_finite" "card"))
+                NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|real_sum_eq| FORMULA-DECL NIL |ppg_rational_sum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|inputs| FORMAL-CONST-DECL
+     "{U: finite_set[Input] | FORALL (a: Input): U(a)}" |ppg_finite_update|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|source_function_eq| FORMULA-DECL NIL |ppg_finite_weighted_projection|
+     NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|fsum_zero| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|kernel| CONST-DECL "rat" |ppg_finite_update| NIL))
+   SHOSTAK))
+ (|kernel_fixed_function| 0
+  (|kernel_fixed_function-1| NIL 4001213111
+   (""
+    (THEN (SKOSIMP*) (REWRITE "source_function_eq")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("Valid" "kernel" "model" "localExpectation" "successorValue"
+       "Conditions" "updateConditions" "fsum" "sum" "check" "finiteAll"
+       "is_finite" "card")))
+    NIL)
+   ((|State| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|source_function_eq| FORMULA-DECL NIL |ppg_finite_weighted_projection|
+     NIL))
+   SHOSTAK))
+ (|kernel_eq_pure_of_fixed| 0
+  (|kernel_eq_pure_of_fixed-1| NIL 4001213111
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "kernel_fixed_function" ("R" "R!1" "s" "s!1" "t" "t!1")) (ASSERT)
+     (LABEL "FIXED" -1) (EXPAND "kernel") (EXPAND "Valid")
+     (AUTO-REWRITE "ppg_rational_sum[Input].real_sum_eq")
+     (REPLACE "FIXED" :DIR LR) (AUTO-REWRITE "ppg_finite_sum[Input].fsum_zero")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("Valid" "kernel" "model" "localExpectation" "successorValue"
+       "Conditions" "updateConditions" "fsum" "sum" "check" "finiteAll"
+       "is_finite" "card")))
+    NIL)
+   ((|kernel| CONST-DECL "rat" |ppg_finite_update| NIL)
+    (|fsum_zero| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|real_sum_eq| FORMULA-DECL NIL |ppg_rational_sum| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (|kernel_fixed_function| FORMULA-DECL NIL |ppg_finite_update| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL))
+   SHOSTAK))
+ (|localExpectation_eq_update| 0
+  (|localExpectation_eq_update-1| NIL 4001213111
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "weighted_next_value" ("R" "R!1" "f" "W!1`potential" "s" "s!1"))
+     (EXPAND "localExpectation") (EXPAND "successorValue") (ASSERT))
+    NIL)
+   ((|localExpectation| CONST-DECL "rat" |ppg_finite_drift| NIL)
+    (|successorValue| CONST-DECL "rat" |ppg_finite_potential_system| NIL)
+    (|weighted_next_value| FORMULA-DECL NIL |ppg_finite_update| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_update|
+     NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL))
+   SHOSTAK))
+ (|check_eq_true_iff| 0
+  (|check_eq_true_iff-1| NIL 4001213111
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "drift.check_eq_true_iff" ("M" "model(R!1)" "W" "W!1"))
+     (LEMMA "kernel_nonnegative" ("R" "R!1"))
+     (LEMMA "kernel_normalized" ("R" "R!1"))
+     (LEMMA "localExpectation_eq_update" ("R" "R!1" "W" "W!1"))
+     (EXPAND "ppg_finite_update.check") (EXPAND "Conditions")
+     (EXPAND "updateConditions") (EXPAND "model")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("Valid" "kernel" "model" "localExpectation" "successorValue"
+       "Conditions" "updateConditions" "fsum" "sum" "check" "finiteAll"
+       "is_finite" "card")))
+    NIL)
+   ((|kernel_nonnegative| FORMULA-DECL NIL |ppg_finite_update| NIL)
+    (|localExpectation_eq_update| FORMULA-DECL NIL |ppg_finite_update| NIL)
+    (|Conditions| CONST-DECL "bool" |ppg_finite_drift| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|rat_plus_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|rat_times_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|updateConditions| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (|check| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (|kernel_normalized| FORMULA-DECL NIL |ppg_finite_update| NIL)
+    (|check_eq_true_iff| FORMULA-DECL NIL |ppg_finite_drift| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Input| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_finite_update| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}" |ppg_finite_update|
+     NIL))
+   SHOSTAK)))
+
