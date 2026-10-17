@@ -1,0 +1,227 @@
+(|ppg_resampling_update|
+ (|rule_valid| 0
+  (|rule_valid-1| NIL 4001252028
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "ruleNormalization.productMass_normalized" ("Q" "Q!1"))
+     (LEMMA "ruleCore.productMass_nonnegative")
+     (EXPAND "resamplingUpdate.Valid") (EXPAND "ruleCore.rule")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("sum" "fsum" "productMass" "ratProduct" "kernel" "activeFootprint"
+       "is_finite" "card")))
+    NIL)
+   ((|productMass_nonnegative| FORMULA-DECL NIL |ppg_finite_resampling_core|
+     NIL)
+    (|rule| CONST-DECL "Rule" |ppg_finite_resampling_core| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (|productMass_normalized| FORMULA-DECL NIL |ppg_resampling_normalization|
+     NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_update| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_update| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_update| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_update| NIL))
+   SHOSTAK))
+ (|check_eq_true_iff| 0
+  (|check_eq_true_iff-1| NIL 4001252028
+   (""
+    (THEN (SKOSIMP*) (EXPAND "resamplingCheck")
+     (REWRITE "ruleCore.check_marginals_iff") (PROP))
+    NIL)
+   ((|check_marginals_iff| FORMULA-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_update| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_update| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_update| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_update| NIL)
+    (|resamplingCheck| CONST-DECL "bool" |ppg_resampling_update| NIL))
+   SHOSTAK))
+ (|check_sound| 0
+  (|check_sound-1| NIL 4001252028
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "check_eq_true_iff" ("Q" "Q!1" "P" "P!1" "W" "W!1")) (ASSERT))
+    NIL)
+   ((|check_eq_true_iff| FORMULA-DECL NIL |ppg_resampling_update| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_update| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_update| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_update| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_update| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_update| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL))
+   SHOSTAK))
+ (|kernel_good| 0
+  (|kernel_good-1| NIL 4001252028
+   (""
+    (THEN (SKOSIMP*) (LEMMA "rule_valid" ("Q" "Q!1" "P" "P!1"))
+     (LEMMA "ruleCore.rule_update_good")
+     (LEMMA "resamplingUpdate.kernel_eq_pure_of_fixed"
+      ("R" "ruleCore.rule(Q!1,P!1)" "s" "s!1" "t" "t!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("sum" "fsum" "productMass" "ratProduct" "kernel" "activeFootprint"
+       "is_finite" "card")))
+    NIL)
+   ((|rule_update_good| FORMULA-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_update| NIL)
+    (|rule| CONST-DECL "Rule" |ppg_finite_resampling_core| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|kernel_eq_pure_of_fixed| FORMULA-DECL NIL |ppg_finite_update| NIL)
+    (|rule_valid| FORMULA-DECL NIL |ppg_resampling_update| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_update| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_update| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_update| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_update| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL))
+   SHOSTAK))
+ (|unselected_rule_coordinate| 0
+  (|unselected_rule_coordinate-1| NIL 4001252028
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "ruleCore.coordinateUpdate_unselected"
+      ("F" "ruleCore.activeFootprint(P!1,s!1)" "s" "s!1" "fresh" "fresh!1" "v"
+       "v!1"))
+     (EXPAND "ruleCore.rule") (ASSERT))
+    NIL)
+   ((|rule| CONST-DECL "Rule" |ppg_finite_resampling_core| NIL)
+    (|coordinateUpdate_unselected| FORMULA-DECL NIL
+     |ppg_finite_resampling_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|activeFootprint| CONST-DECL "finite_set[V]" |ppg_finite_resampling_core|
+     NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_update| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_update| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_update| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_update| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_update| NIL))
+   SHOSTAK))
+ (|unselected_rule_unreachable| 0
+  (|unselected_rule_unreachable-1| NIL 4001252028
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "unselected_rule_coordinate"
+      ("Q" "Q!1" "P" "P!1" "s" "s!1" "fresh" "fresh!1" "v" "v!1"))
+     (ASSERT))
+    NIL)
+   ((|unselected_rule_coordinate| FORMULA-DECL NIL |ppg_resampling_update| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_update| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_update| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_update| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_update| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_update| NIL))
+   SHOSTAK))
+ (|kernel_zero_unselected| 0
+  (|kernel_zero_unselected-1| NIL 4001252028
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "resamplingUpdate.kernel_zero_of_unreachable"
+      ("R" "ruleCore.rule(Q!1,P!1)" "s" "s!1" "t" "t!1"))
+     (LEMMA "unselected_rule_unreachable")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("sum" "fsum" "productMass" "ratProduct" "kernel" "activeFootprint"
+       "is_finite" "card")))
+    NIL)
+   ((|unselected_rule_unreachable| FORMULA-DECL NIL |ppg_resampling_update|
+     NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|kernel_zero_of_unreachable| FORMULA-DECL NIL |ppg_finite_update| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rule| CONST-DECL "Rule" |ppg_finite_resampling_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_update| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_update| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_update| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_update| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_update| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL))
+   SHOSTAK)))
+

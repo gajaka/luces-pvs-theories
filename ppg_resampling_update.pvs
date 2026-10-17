@@ -1,0 +1,50 @@
+% The product mass and coordinate overwrite form the existing finite
+% update rule. The combined checker validates both the marginals and the
+% drift witness computed from the actual update.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Algorithm 1.1.
+ppg_resampling_update[V,Value: TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_finite_resampling_core[V,Value,variables,domains] AS ruleCore,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS ruleFinite,
+    ppg_resampling_normalization[V,Value,variables,domains] AS ruleNormalization
+
+  State: TYPE = ruleCore.State
+
+  IMPORTING ppg_finite_update[State,State,ruleFinite.allStates,ruleFinite.allStates] AS resamplingUpdate,
+    ppg_finite_drift[State,ruleFinite.allStates] AS resamplingDrift
+
+  Q: VAR ruleCore.Marginals
+  P: VAR ruleCore.Policy
+  W: VAR resamplingDrift.Witness
+  s,t,fresh: VAR State
+  v: VAR V
+
+  rule_valid: THEOREM ruleCore.Valid(Q) IMPLIES resamplingUpdate.Valid(ruleCore.rule(Q,P))
+
+  resamplingCheck(Q,P,W): bool = ruleCore.checkMarginals(Q) AND resamplingUpdate.check(ruleCore.rule(Q,P),W)
+
+  check_eq_true_iff: THEOREM resamplingCheck(Q,P,W) IFF
+    ruleCore.Valid(Q) AND resamplingUpdate.check(ruleCore.rule(Q,P),W)
+
+  check_sound: THEOREM resamplingCheck(Q,P,W) IMPLIES
+    ruleCore.Valid(Q) AND resamplingUpdate.check(ruleCore.rule(Q,P),W)
+
+  kernel_good: THEOREM ruleCore.Valid(Q) AND P`good(s) IMPLIES
+    resamplingUpdate.kernel(ruleCore.rule(Q,P),s,t)=(IF s=t THEN 1 ELSE 0 ENDIF)
+
+  unselected_rule_coordinate: LEMMA NOT ruleCore.activeFootprint(P,s)(v) IMPLIES
+    ruleCore.rule(Q,P)`update(s,fresh)(v)=s(v)
+
+  unselected_rule_unreachable: LEMMA
+    NOT ruleCore.activeFootprint(P,s)(v) AND s(v)/=t(v) IMPLIES
+      ruleCore.rule(Q,P)`update(s,fresh)/=t
+
+  kernel_zero_unselected: THEOREM
+    NOT ruleCore.activeFootprint(P,s)(v) AND s(v)/=t(v) IMPLIES
+      resamplingUpdate.kernel(ruleCore.rule(Q,P),s,t)=0
+
+END ppg_resampling_update

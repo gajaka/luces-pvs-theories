@@ -1,0 +1,274 @@
+(|ppg_resampling_normalization|
+ (|normalizedValues_TCC1| 0
+  (|normalizedValues_TCC1-1| NIL 4001251977 ("" (THEN (SUBTYPE-TCC)) NIL)
+   ((|rat_plus_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|normalizedValues| SUBTYPE "LAMBDA (a, b: rat): a + b"
+    "{op: [rat, rat -> rat] | booleans.AND(operator_defs[rat].identity?(ppg_resampling_normalization.op)(0), booleans.AND(operator_defs[rat].associative?(ppg_resampling_normalization.op), operator_defs[rat].commutative?(ppg_resampling_normalization.op)))}"
+    (18 31 18 50))))
+ (|domain_nonempty| 0
+  (|domain_nonempty-1| NIL 4001251977
+   (""
+    (THEN (SKOSIMP*) (EXPAND "normalizedCore.Valid" -1) (FLATTEN)
+     (INST -2 "v!1")
+     (LEMMA "normalizedValues.sum_emptyset"
+      ("f" "normalizedCore.extendMass(Q!1,v!1)"))
+     (LEMMA "emptyset_is_empty?[Value]" ("a" "domains(v!1)"))
+     (GRIND :IF-MATCH NIL :DEFS ("nonempty?") :EXCLUDE
+      ("fsum" "product" "sum" "productMass" "ratProduct" "is_finite" "card")))
+    NIL)
+   ((|sum_emptyset| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_normalization| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_normalization| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|extendMass| CONST-DECL "rat" |ppg_finite_resampling_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_normalization| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set"
+     |ppg_resampling_normalization| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|emptyset_is_empty?| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_normalization| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL))
+   SHOSTAK))
+ (|initial_TCC1| 0
+  (|initial_TCC1-1| NIL 4001251977
+   (""
+    (THEN (SKOSIMP*) (LEMMA "domain_nonempty" ("Q" "Q!1" "v" "v!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("fsum" "product" "sum" "productMass" "ratProduct" "is_finite" "card")))
+    NIL)
+   ((|domain_nonempty| FORMULA-DECL NIL |ppg_resampling_normalization| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_normalization| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_normalization| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_normalization| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_normalization| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL))
+   NIL
+   (|initial| SUBTYPE "domains(v)"
+    "(sets[ppg_resampling_normalization.Value].nonempty?)" (33 23 33 33))))
+ (|marginal_real_normalized| 0
+  (|marginal_real_normalized-1| NIL 4001251977
+   (""
+    (THEN (SKOSIMP*) (EXPAND "normalizedCore.Valid" -1) (FLATTEN)
+     (INST -2 "v!1")
+     (LEMMA "normalizedValueRat.real_sum_eq"
+      ("A" "domains(v!1)" "f" "normalizedCore.extendMass(Q!1,v!1)"))
+     (LEMMA "normalizedValueReal.fsum_congr"
+      ("S" "domains(v!1)" "f"
+       "LAMBDA(x:Value):normalizedCore.extendMass(Q!1,v!1)(x)" "g"
+       "normalizedCore.extendMass(Q!1,v!1)"))
+     (ASSERT))
+    NIL)
+   ((|real_sum_eq| FORMULA-DECL NIL |ppg_rational_sum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_normalization| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_normalization| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|extendMass| CONST-DECL "rat" |ppg_finite_resampling_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_normalization| NIL)
+    (|fsum_congr| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_normalization| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL))
+   SHOSTAK))
+ (|domain_sums_one| 0
+  (|domain_sums_one-1| NIL 4001251977
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (EXPAND "normalizedSum.domainSums")
+     (LEMMA "marginal_real_normalized" ("Q" "Q!1" "v" "x!1")) (ASSERT))
+    NIL)
+   ((|marginal_real_normalized| FORMULA-DECL NIL |ppg_resampling_normalization|
+     NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_normalization| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_normalization| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_normalization| NIL)
+    (|Factors| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|domainSums| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|extendMass| CONST-DECL "rat" |ppg_finite_resampling_core| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_normalization| NIL))
+   SHOSTAK))
+ (|real_product_mass| 0
+  (|real_product_mass-1| NIL 4001251977
+   (""
+    (THEN (SKOSIMP*) (EXPAND "normalizedCore.productMass")
+     (LEMMA "normalizedRatProduct.real_product_eq"
+      ("F" "variables" "f" "LAMBDA(v:V):Q!1`mass(v)(t!1(v))"))
+     (EXPAND "normalizedCore.extendMass")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("fsum" "product" "sum" "productMass" "ratProduct" "is_finite" "card")))
+    NIL)
+   ((|real_product_eq| FORMULA-DECL NIL |ppg_rational_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_normalization| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_normalization| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_normalization| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_normalization| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_normalization| NIL)
+    (|extendMass| CONST-DECL "rat" |ppg_finite_resampling_core| NIL)
+    (|productMass| CONST-DECL "rat" |ppg_finite_resampling_core| NIL))
+   SHOSTAK))
+ (|product_mass_function| 0
+  (|product_mass_function-1| NIL 4001251977
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "real_product_mass" ("Q" "Q!1" "t" "x!1")) (ASSERT))
+    NIL)
+   ((|real_product_mass| FORMULA-DECL NIL |ppg_resampling_normalization| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_normalization| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|productMass| CONST-DECL "rat" |ppg_finite_resampling_core| NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (|extendMass| CONST-DECL "rat" |ppg_finite_resampling_core| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_normalization| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_normalization| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_normalization| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_normalization| NIL))
+   SHOSTAK))
+ (|productMass_normalized| 0
+  (|productMass_normalized-1| NIL 4001251977
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "normalizedStateRat.real_sum_eq"
+       ("A" "normalizedFinite.allStates" "f"
+        "LAMBDA(t:State):normalizedCore.productMass(Q!1,t)"))
+      ((""
+        (LEMMA "normalizedSum.dependent_product_sum"
+         ("f" "LAMBDA(v:V):normalizedCore.extendMass(Q!1,v)" "base"
+          "initial(Q!1)"))
+        (("1" (LEMMA "product_mass_function" ("Q" "Q!1"))
+          (("1" (LEMMA "domain_sums_one" ("Q" "Q!1"))
+            (("1"
+              (LEMMA "normalizedOneProduct.product_all_one" ("S" "variables"))
+              (("1" (ASSERT) NIL NIL)) NIL))
+            NIL))
+          NIL)
+         ("2" (PROPAX) NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|initial| CONST-DECL "State" |ppg_resampling_normalization| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|extendMass| CONST-DECL "rat" |ppg_finite_resampling_core| NIL)
+    (|Factors| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|dependent_product_sum| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|domain_sums_one| FORMULA-DECL NIL |ppg_resampling_normalization| NIL)
+    (|product_all_one| FORMULA-DECL NIL |ppg_finite_product_factors| NIL)
+    (|product_mass_function| FORMULA-DECL NIL |ppg_resampling_normalization|
+     NIL)
+    (|real_sum_eq| FORMULA-DECL NIL |ppg_rational_sum| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_normalization| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|productMass| CONST-DECL "rat" |ppg_finite_resampling_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_normalization| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_normalization| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_normalization| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_normalization| NIL))
+   SHOSTAK)))
+

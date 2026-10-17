@@ -1,0 +1,52 @@
+% Normalized coordinate marginals give a normalized mass on the full
+% dependent state space. The finite distributive identity supplies the
+% normalization; no probability or realization premise is used.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_resampling_normalization[V,Value: TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_finite_resampling_core[V,Value,variables,domains] AS normalizedCore,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS normalizedFinite,
+    ppg_dependent_product_sum[V,Value,variables,domains] AS normalizedSum
+
+  State: TYPE = normalizedCore.State
+
+  IMPORTING ppg_rational_sum[Value] AS normalizedValueRat,
+    ppg_rational_sum[State] AS normalizedStateRat,
+    ppg_monoid_sum[Value,rat,0,LAMBDA(a,b:rat):a+b] AS normalizedValues,
+    ppg_monoid_sum[State,rat,0,LAMBDA(a,b:rat):a+b] AS normalizedStates,
+    ppg_finite_sum[Value] AS normalizedValueReal,
+    ppg_finite_sum[State] AS normalizedStateReal,
+    ppg_rational_product[V] AS normalizedRatProduct,
+    ppg_finite_product[V] AS normalizedRealProduct,
+    ppg_finite_product_factors[V] AS normalizedOneProduct
+
+  Q: VAR normalizedCore.Marginals
+  v: VAR V
+  t: VAR State
+
+  domain_nonempty: LEMMA normalizedCore.Valid(Q) IMPLIES nonempty?(domains(v))
+
+  initial(Q:{Q:normalizedCore.Marginals|normalizedCore.Valid(Q)}): State =
+    LAMBDA(v:V):choose(domains(v))
+
+  marginal_real_normalized: LEMMA normalizedCore.Valid(Q) IMPLIES
+    normalizedValueReal.fsum(domains(v),normalizedCore.extendMass(Q,v))=1
+
+  domain_sums_one: LEMMA normalizedCore.Valid(Q) IMPLIES
+    normalizedSum.domainSums(LAMBDA(v:V):normalizedCore.extendMass(Q,v))=(LAMBDA(v:V):1)
+
+  real_product_mass: LEMMA normalizedCore.productMass(Q,t)=
+    normalizedRealProduct.product(variables,LAMBDA(v:V):normalizedCore.extendMass(Q,v)(t(v)))
+
+  product_mass_function: LEMMA
+    (LAMBDA(t:State):normalizedCore.productMass(Q,t))=
+      (LAMBDA(t:State):normalizedRealProduct.product(variables,
+        LAMBDA(v:V):normalizedCore.extendMass(Q,v)(t(v))))
+
+  productMass_normalized: THEOREM normalizedCore.Valid(Q) IMPLIES
+    normalizedStates.sum(normalizedFinite.allStates,LAMBDA(t:State):normalizedCore.productMass(Q,t))=1
+
+END ppg_resampling_normalization

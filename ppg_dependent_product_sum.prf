@@ -1,0 +1,671 @@
+(|ppg_dependent_product_sum|
+ (|agree_empty| 0
+  (|agree_empty-1| NIL 4001251848
+   ("" (SKOSIMP*)
+    (("" (EXPAND "agreeOutside")
+      (("" (EXPAND "emptyset")
+        (("" (PROP)
+          (("1" (APPLY-EXTENSIONALITY :HIDE? T) NIL NIL)
+           ("2" (GRIND :IF-MATCH ALL) NIL NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|emptyset| CONST-DECL "set" |sets| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_dependent_product_sum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|agreeOutside| CONST-DECL "bool" |ppg_dependent_product_sum| NIL))
+   SHOSTAK))
+ (|agree_remove_outside| 0
+  (|agree_remove_outside-1| NIL 4001251887
+   (""
+    (THEN (SKOSIMP*) (EXPAND "agreeOutside" -3) (LABEL "AG" -3)
+     (EXPAND "agreeOutside" 1) (SKOSIMP*) (INST "AG" "v!2")
+     (GRIND :IF-MATCH NIL :DEFS ("remove" "member" "setValue") :EXCLUDE
+      ("is_finite" "card")))
+    NIL)
+   ((|finite_remove| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_dependent_product_sum| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|setValue| CONST-DECL "State" |ppg_dependent_product_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|agreeOutside| CONST-DECL "bool" |ppg_dependent_product_sum| NIL))
+   SHOSTAK))
+ (|agree_remove_value| 0
+  (|agree_remove_value-1| NIL 4001251887
+   (""
+    (THEN (SKOSIMP*) (EXPAND "agreeOutside" -3) (INST -3 "v!1")
+     (GRIND :IF-MATCH NIL :DEFS ("remove" "member" "setValue") :EXCLUDE
+      ("is_finite" "card")))
+    NIL)
+   ((V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|setValue| CONST-DECL "State" |ppg_dependent_product_sum| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_dependent_product_sum| NIL)
+    (|agreeOutside| CONST-DECL "bool" |ppg_dependent_product_sum| NIL))
+   SHOSTAK))
+ (|agree_remove_back| 0
+  (|agree_remove_back-1| NIL 4001251887
+   (""
+    (THEN (SKOSIMP*) (EXPAND "agreeOutside" -3) (LABEL "AG" -3)
+     (EXPAND "agreeOutside" 1) (SKOSIMP*) (INST "AG" "v!2")
+     (GRIND :IF-MATCH NIL :DEFS ("remove" "member" "setValue") :EXCLUDE
+      ("is_finite" "card")))
+    NIL)
+   ((/= CONST-DECL "boolean" |notequal| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|setValue| CONST-DECL "State" |ppg_dependent_product_sum| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_dependent_product_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|agreeOutside| CONST-DECL "bool" |ppg_dependent_product_sum| NIL))
+   SHOSTAK))
+ (|agree_remove| 0
+  (|agree_remove-1| NIL 4001251848
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "agree_remove_outside"
+      ("F" "F!1" "v" "v!1" "x" "x!1" "base" "base!1" "t" "t!1"))
+     (LEMMA "agree_remove_value"
+      ("F" "F!1" "v" "v!1" "x" "x!1" "base" "base!1" "t" "t!1"))
+     (LEMMA "agree_remove_back"
+      ("F" "F!1" "v" "v!1" "x" "x!1" "base" "base!1" "t" "t!1"))
+     (PROP))
+    NIL)
+   ((|agree_remove_value| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|agree_remove_back| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|agree_remove_outside| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_dependent_product_sum| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL))
+   SHOSTAK))
+ (|partial_product_remove| 0
+  (|partial_product_remove-1| NIL 4001251848
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "depProductAlgebra.product_remove"
+      ("F" "F!1" "i" "v!1" "f" "LAMBDA(v:V):f!1(v)(t!1(v))"))
+     (EXPAND "partialProduct") (ASSERT))
+    NIL)
+   ((|partialProduct| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_dependent_product_sum| NIL)
+    (|product_remove| FORMULA-DECL NIL |ppg_real_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|Factors| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_dependent_product_sum| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL))
+   SHOSTAK))
+ (|slice_value| 0
+  (|slice_value-1| NIL 4001251916
+   ("" (THEN (SKOSIMP*) (EXPAND "slice") (ASSERT)) NIL)
+   ((|slice| CONST-DECL "real" |ppg_dependent_product_sum| NIL)) SHOSTAK))
+ (|slice_empty| 0
+  (|slice_empty-1| NIL 4001251848
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "slice")
+     (REWRITE "agree_empty") (EXPAND "partialProduct")
+     (EXPAND "depProducts.product")
+     (GRIND :IF-MATCH NIL :DEFS ("emptyset") :EXCLUDE
+      ("fsum" "product" "sliceSum" "slice" "partialProduct" "agreeOutside"
+       "setValue" "domainSums" "is_finite" "card")))
+    NIL)
+   ((|partialProduct| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_dependent_product_sum| NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (|agree_empty| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|Factors| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|slice| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |ppg_dependent_product_sum|
+     NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_dependent_product_sum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL))
+   SHOSTAK))
+ (|slice_sum_empty| 0
+  (|slice_sum_empty-1| NIL 4001251848
+   (""
+    (THEN (SKOSIMP*) (EXPAND "sliceSum") (REWRITE "slice_empty")
+     (LEMMA "depStatePoint.point_sum_value"
+      ("A" "depFinite.allStates" "f" "LAMBDA(t:State):1" "x" "base!1"))
+     (EXPAND "depStatePoint.pointSum") (TYPEPRED "depFinite.allStates")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("fsum" "product" "sliceSum" "slice" "partialProduct" "agreeOutside"
+       "setValue" "domainSums" "is_finite" "card")))
+    NIL)
+   ((|slice_empty| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_dependent_product_sum| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|Factors| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|pointSum| CONST-DECL "real" |ppg_finite_point_sum| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_dependent_product_sum| NIL)
+    (|point_sum_value| FORMULA-DECL NIL |ppg_finite_point_sum| NIL)
+    (|sliceSum| CONST-DECL "real" |ppg_dependent_product_sum| NIL))
+   SHOSTAK))
+ (|slice_row_term| 0
+  (|slice_row_term-1| NIL 4001251848
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "agree_remove"
+      ("F" "F!1" "v" "v!1" "x" "x!1" "base" "base!1" "t" "t!1"))
+     (EXPAND "slice")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("fsum" "product" "sliceSum" "slice" "partialProduct" "agreeOutside"
+       "setValue" "domainSums" "is_finite" "card")))
+    NIL)
+   ((|slice| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_dependent_product_sum| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|agree_remove| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_dependent_product_sum| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL))
+   SHOSTAK))
+ (|slice_row_sum| 0
+  (|slice_row_sum-1| NIL 4001251848
+   ("" (SKOSIMP*)
+    ((""
+      (CASE
+          "FORALL(x:Value):domains(v!1)(x) IMPLIES f!1(v!1)(x)*slice(f!1,remove(v!1,F!1),setValue(base!1,v!1,x))(t!1)=(IF x=t!1(v!1) THEN f!1(v!1)(x)*(IF agreeOutside(F!1,base!1,t!1) THEN partialProduct(f!1,remove(v!1,F!1),t!1) ELSE 0 ENDIF) ELSE 0 ENDIF)")
+      (("1"
+        (LEMMA "depValues.fsum_congr"
+         ("S" "domains(v!1)" "f"
+          "LAMBDA(x:Value):f!1(v!1)(x)*slice(f!1,remove(v!1,F!1),setValue(base!1,v!1,x))(t!1)"
+          "g"
+          "LAMBDA(x:Value):IF x=t!1(v!1) THEN f!1(v!1)(x)*(IF agreeOutside(F!1,base!1,t!1) THEN partialProduct(f!1,remove(v!1,F!1),t!1) ELSE 0 ENDIF) ELSE 0 ENDIF"))
+        (("1" (ASSERT)
+          (("1"
+            (LEMMA "depValuePoint.point_sum_value"
+             ("A" "domains(v!1)" "f"
+              "LAMBDA(x:Value):f!1(v!1)(x)*(IF agreeOutside(F!1,base!1,t!1) THEN partialProduct(f!1,remove(v!1,F!1),t!1) ELSE 0 ENDIF)"
+              "x" "t!1(v!1)"))
+            (("1" (EXPAND "depValuePoint.pointSum")
+              (("1"
+                (LEMMA "partial_product_remove"
+                 ("F" "F!1" "v" "v!1" "f" "f!1" "t" "t!1"))
+                (("1"
+                  (LEMMA "slice_value"
+                   ("f" "f!1" "F" "F!1" "base" "base!1" "t" "t!1"))
+                  (("1"
+                    (GRIND :IF-MATCH NIL :EXCLUDE
+                     ("fsum" "product" "sliceSum" "slice" "partialProduct"
+                      "agreeOutside" "setValue" "domainSums" "is_finite"
+                      "card"))
+                    NIL NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (SKOSIMP*)
+        (("2"
+          (LEMMA "slice_row_term"
+           ("F" "F!1" "v" "v!1" "x" "x!1" "base" "base!1" "t" "t!1" "f" "f!1"))
+          (("2" (ASSERT) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|slice_row_term| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|fsum_congr| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|point_sum_value| FORMULA-DECL NIL |ppg_finite_point_sum| NIL)
+    (|partial_product_remove| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|slice_value| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|pointSum| CONST-DECL "real" |ppg_finite_point_sum| NIL)
+    (|partialProduct| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|agreeOutside| CONST-DECL "bool" |ppg_dependent_product_sum| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|setValue| CONST-DECL "State" |ppg_dependent_product_sum| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|slice| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|Factors| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_dependent_product_sum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_dependent_product_sum| NIL))
+   SHOSTAK))
+ (|slice_row_function| 0
+  (|slice_row_function-1| NIL 4001251916
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "slice_row_sum"
+      ("F" "F!1" "v" "v!1" "base" "base!1" "t" "x!1" "f" "f!1"))
+     (ASSERT))
+    NIL)
+   ((|slice_row_sum| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|fsum| DEF-DECL "real" |ppg_finite_sum| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|Factors| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|slice| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|setValue| CONST-DECL "State" |ppg_dependent_product_sum| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_dependent_product_sum| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_dependent_product_sum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL))
+   SHOSTAK))
+ (|scaled_slice_sum_function| 0
+  (|scaled_slice_sum_function-1| NIL 4001251916
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "depStates.fsum_scale"
+      ("S" "depFinite.allStates" "r" "f!1(v!1)(x!1)" "f"
+       "slice(f!1,remove(v!1,F!1),setValue(base!1,v!1,x!1))"))
+     (EXPAND "sliceSum") (ASSERT))
+    NIL)
+   ((|fsum_scale| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_dependent_product_sum| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|fsum| DEF-DECL "real" |ppg_finite_sum| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_dependent_product_sum| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|Factors| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|slice| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|setValue| CONST-DECL "State" |ppg_dependent_product_sum| NIL)
+    (|sliceSum| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_dependent_product_sum| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL))
+   SHOSTAK))
+ (|slice_sum_step| 0
+  (|slice_sum_step-1| NIL 4001251848
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "depFubini.fsum_comm"
+      ("B" "depFinite.allStates" "U" "domains(v!1)" "f"
+       "LAMBDA(t:State,x:Value):f!1(v!1)(x)*slice(f!1,remove(v!1,F!1),setValue(base!1,v!1,x))(t)"))
+     (LEMMA "slice_row_function"
+      ("F" "F!1" "v" "v!1" "base" "base!1" "f" "f!1"))
+     (LEMMA "scaled_slice_sum_function"
+      ("F" "F!1" "v" "v!1" "base" "base!1" "f" "f!1"))
+     (EXPAND "sliceSum" 1 :OCCURRENCE 1) (ASSERT))
+    NIL)
+   ((|slice_row_function| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|sliceSum| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|scaled_slice_sum_function| FORMULA-DECL NIL |ppg_dependent_product_sum|
+     NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_dependent_product_sum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|setValue| CONST-DECL "State" |ppg_dependent_product_sum| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|slice| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|Factors| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_dependent_product_sum| NIL)
+    (|fsum_comm| FORMULA-DECL NIL |ppg_finite_fubini| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_dependent_product_sum| NIL))
+   SHOSTAK))
+ (|constant_slice_rows| 0
+  (|constant_slice_rows-1| NIL 4001252007
+   (""
+    (THEN (SKOSIMP*) (LABEL "ALL" -1) (APPLY-EXTENSIONALITY :HIDE? T)
+     (INST "ALL" "setValue(base!1,v!1,x!1)") (ASSERT))
+    NIL)
+   ((|Value| FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_dependent_product_sum| NIL)
+    (|setValue| CONST-DECL "State" |ppg_dependent_product_sum| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|sliceSum| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_dependent_product_sum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Factors| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL))
+   SHOSTAK))
+ (|slice_sum_product| 0
+  (|slice_sum_product-1| NIL 4001251848
+   ("" (INDUCT "F" :NAME "ppg_finite_induction[V].finite_set_induction_rest")
+    (("1" (SKOSIMP*)
+      (("1" (REWRITE "slice_sum_empty")
+        (("1" (EXPAND "depProducts.product")
+          (("1"
+            (GRIND :IF-MATCH NIL :DEFS ("emptyset") :EXCLUDE
+             ("fsum" "product" "sliceSum" "slice" "partialProduct"
+              "agreeOutside" "setValue" "domainSums" "is_finite" "card"))
+            NIL NIL))
+          NIL))
+        NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (LABEL "IH" -1)
+        (("2"
+          (LEMMA "slice_sum_step"
+           ("F" "SS!1" "v" "choose(SS!1)" "f" "f!1" "base" "base!1"))
+          (("2" (ASSERT)
+            (("2"
+              (CASE
+                  "FORALL(b:State):sliceSum(f!1,remove(choose(SS!1),SS!1),b)=depProducts.product(rest(SS!1),domainSums(f!1))")
+              (("1"
+                (LEMMA "constant_slice_rows"
+                 ("F" "SS!1" "v" "choose(SS!1)" "f" "f!1" "base" "base!1" "r"
+                  "depProducts.product(rest(SS!1),domainSums(f!1))"))
+                (("1" (ASSERT)
+                  (("1"
+                    (LEMMA "depValues.fsum_scale_right"
+                     ("S" "domains(choose(SS!1))" "f" "f!1(choose(SS!1))" "r"
+                      "depProducts.product(rest(SS!1),domainSums(f!1))"))
+                    (("1" (EXPAND "depProducts.product" 1 :OCCURRENCE 1)
+                      (("1" (EXPAND "domainSums")
+                        (("1"
+                          (GRIND :IF-MATCH NIL :EXCLUDE
+                           ("fsum" "product" "sliceSum" "slice"
+                            "partialProduct" "agreeOutside" "setValue"
+                            "domainSums" "is_finite" "card"))
+                          NIL NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL)
+               ("2" (SKOSIMP*)
+                (("2" (INST "IH" "b!1" "f!1")
+                  (("2" (EXPAND "rest") (("2" (PROPAX) NIL NIL)) NIL)) NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_dependent_product_sum| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|Factors| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|sliceSum| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (|domainSums| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|finite_set_induction_rest| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (|slice_sum_empty| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_dependent_product_sum| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |ppg_dependent_product_sum|
+     NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_dependent_product_sum| NIL)
+    (|constant_slice_rows| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|fsum_scale_right| FORMULA-DECL NIL |ppg_finite_sum| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL) (|rest| CONST-DECL "set" |sets| NIL)
+    (|slice_sum_step| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|choose| CONST-DECL "(p)" |sets| NIL))
+   SHOSTAK))
+ (|agree_full| 0
+  (|agree_full-1| NIL 4001251848
+   (""
+    (THEN (SKOSIMP*) (EXPAND "agreeOutside") (SKOSIMP*) (TYPEPRED "variables")
+     (INST -2 "v!1") (ASSERT))
+    NIL)
+   ((|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_dependent_product_sum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|agreeOutside| CONST-DECL "bool" |ppg_dependent_product_sum| NIL))
+   SHOSTAK))
+ (|full_slice| 0
+  (|full_slice-1| NIL 4001251848
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "slice")
+     (REWRITE "agree_full") (EXPAND "partialProduct") (ASSERT))
+    NIL)
+   ((|partialProduct| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|agree_full| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|Factors| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|slice| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_dependent_product_sum| NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_dependent_product_sum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL))
+   SHOSTAK))
+ (|dependent_product_sum| 0
+  (|dependent_product_sum-1| NIL 4001251848
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "slice_sum_product" ("F" "variables" "f" "f!1" "base" "base!1"))
+     (EXPAND "sliceSum") (REWRITE "full_slice") (ASSERT))
+    NIL)
+   ((|sliceSum| CONST-DECL "real" |ppg_dependent_product_sum| NIL)
+    (|full_slice| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|slice_sum_product| FORMULA-DECL NIL |ppg_dependent_product_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_dependent_product_sum| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_dependent_product_sum| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|Factors| TYPE-EQ-DECL NIL |ppg_dependent_product_sum| NIL))
+   SHOSTAK)))
+
