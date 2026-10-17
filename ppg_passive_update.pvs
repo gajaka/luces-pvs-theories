@@ -1,0 +1,26 @@
+% A passive component may have an arbitrary carrier and arbitrary
+% dynamics. It changes neither the active update nor its input law.
+% Projection onto the active component therefore commutes with updates.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Section 2.3.1, American Mathematical Society, 2017.
+ppg_passive_update[Abstract,Passive,Input: TYPE,
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_input_update[Abstract,Input,inputs] AS passiveActive,
+    ppg_finite_input_update[[Abstract,Passive],Input,inputs] AS passiveJoint,
+    ppg_finite_update_projection[[Abstract,Passive],Abstract,Input,inputs] AS passiveProjection
+
+  Q: VAR passiveActive.Rule
+  advance: VAR [Abstract,Passive,Input->Passive]
+
+  withPassive(Q,advance): passiveJoint.Rule =
+    (# mass:=Q`mass,
+       update:=LAMBDA(s:[Abstract,Passive],a:Input):
+         (Q`update(s`1,a),advance(s`1,s`2,a)),
+       good:=LAMBDA(s:[Abstract,Passive]):Q`good(s`1) #)
+
+  withPassive_commutes: THEOREM passiveProjection.Commutes(
+    withPassive(Q,advance),Q,LAMBDA(s:[Abstract,Passive]):s`1)
+
+END ppg_passive_update

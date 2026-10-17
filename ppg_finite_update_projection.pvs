@@ -1,0 +1,48 @@
+% Equal input masses and commuting updates preserve every projected
+% trajectory. Each positive concrete kernel step projects to a positive
+% reduced step. No enumeration of concrete states is used.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Section 2.3.1, Lemma 2.5, American Mathematical
+% Society, 2017. Update commutation implies the fiber identity.
+ppg_finite_update_projection[State,Abstract,Input: TYPE,
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_input_update[State,Input,inputs] AS projectSource,
+    ppg_finite_input_update[Abstract,Input,inputs] AS projectTarget
+
+  R: VAR projectSource.Rule
+  Q: VAR projectTarget.Rule
+  p: VAR [State->Abstract]
+  s,t,s0: VAR State
+  a: VAR Input
+  n: VAR nat
+  omega: VAR [nat->Input]
+
+  Commutes(R,Q,p): bool =
+    (FORALL(a:Input):R`mass(a)=Q`mass(a)) AND
+    (FORALL(s:State):R`good(s)=Q`good(p(s))) AND
+    (FORALL(s:State,a:Input):p(R`update(s,a))=Q`update(p(s),a))
+
+  mass_function: LEMMA Commutes(R,Q,p) IMPLIES R`mass=Q`mass
+
+  update_value: LEMMA Commutes(R,Q,p) IMPLIES
+    p(R`update(s,a))=Q`update(p(s),a)
+
+  valid_iff: THEOREM Commutes(R,Q,p) IMPLIES (projectSource.Valid(R) IFF projectTarget.Valid(Q))
+
+  trajectory_projection: THEOREM Commutes(R,Q,p) IMPLIES
+    p(projectSource.iidTrajectory(R,s0,n)(omega))=
+      projectTarget.iidTrajectory(Q,p(s0),n)(omega)
+
+  kernel_term_le: LEMMA Commutes(R,Q,p) AND projectTarget.Valid(Q) IMPLIES
+    (IF R`update(s,a)=t THEN R`mass(a) ELSE 0 ENDIF)<=
+    (IF Q`update(p(s),a)=p(t) THEN Q`mass(a) ELSE 0 ENDIF)
+
+  kernel_le_projected: THEOREM Commutes(R,Q,p) AND projectTarget.Valid(Q) IMPLIES
+    projectSource.kernel(R,s,t)<=projectTarget.kernel(Q,p(s),p(t))
+
+  positive_step_projects: THEOREM Commutes(R,Q,p) AND projectTarget.Valid(Q) AND
+    0<projectSource.kernel(R,s,t) IMPLIES 0<projectTarget.kernel(Q,p(s),p(t))
+
+END ppg_finite_update_projection
