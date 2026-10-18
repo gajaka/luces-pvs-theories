@@ -1,0 +1,40 @@
+% The supremum of finitely many natural numbers is their least natural
+% upper bound. The empty supremum is zero, and a nonempty finite family
+% attains its supremum. No enumeration or ordering of the carrier is used.
+%
+% This is the finite supremum used in PPGraphHLSWitnessLayers.lean.
+ppg_finite_nat_sup[T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_nat_bound[T]
+  A: VAR finite_set[T]
+  f,g: VAR [T->nat]
+  x: VAR T
+  n: VAR nat
+
+  upperBounds(A,f): (nonempty?[nat]) =
+    {n:nat|FORALL(x:T):A(x) IMPLIES f(x)<=n}
+
+  natSup(A,f): nat = min_nat[nat].min(upperBounds(A,f))
+
+  nat_sup_upper: LEMMA A(x) IMPLIES f(x)<=natSup(A,f)
+
+  nat_sup_least: LEMMA
+    (FORALL(x:T):A(x) IMPLIES f(x)<=n) IMPLIES natSup(A,f)<=n
+
+  nat_sup_empty: LEMMA natSup(emptyset[T],f)=0
+
+  nat_sup_congr: LEMMA
+    (FORALL(x:T):A(x) IMPLIES f(x)=g(x)) IMPLIES natSup(A,f)=natSup(A,g)
+
+  nat_sup_zero: LEMMA
+    natSup(A,f)=0 IFF (FORALL(x:T):A(x) IMPLIES f(x)=0)
+
+  nat_sup_positive_attained: LEMMA 0<natSup(A,f) IMPLIES
+    EXISTS(x:T):A(x) AND f(x)=natSup(A,f)
+
+  nat_sup_attained: LEMMA NOT empty?(A) IMPLIES
+    EXISTS(x:T):A(x) AND f(x)=natSup(A,f)
+
+  nat_sup_monotone: LEMMA
+    (FORALL(x:T):A(x) IMPLIES f(x)<=g(x)) IMPLIES natSup(A,f)<=natSup(A,g)
+END ppg_finite_nat_sup

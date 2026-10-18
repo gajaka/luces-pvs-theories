@@ -1,0 +1,20 @@
+% A strict decrease of a natural-valued rank gives a well-founded
+% relation, including on an empty carrier. A nonempty predicate contains
+% a point whose rank is least among the ranks attained in that predicate.
+ppg_nat_rank_well_founded[T:TYPE]: THEORY
+BEGIN
+  f: VAR [T->nat]
+  p: VAR pred[T]
+  r: VAR [T,T->bool]
+
+  rankValues(p,f): set[nat] = {n:nat|EXISTS(x:T):p(x) AND f(x)=n}
+
+  rank_values_nonempty: LEMMA
+    (EXISTS(x:T):p(x)) IMPLIES nonempty?(rankValues(p,f))
+
+  rank_minimal: LEMMA (EXISTS(x:T):p(x)) IMPLIES
+    EXISTS(x:T):p(x) AND (FORALL(y:T):p(y) IMPLIES f(x)<=f(y))
+
+  rank_well_founded: THEOREM
+    (FORALL(x,y:T):r(x,y) IMPLIES f(x)<f(y)) IMPLIES well_founded?(r)
+END ppg_nat_rank_well_founded
