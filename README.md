@@ -7,10 +7,10 @@ The application theories describe transport, observability and secure-boot
 models; the generic theory keeps the data, specifications and repair actions
 abstract.
 
-As of **2026-10-18**, the translation has independently replayed counterparts
-for **1,118 of 1,824 Lean source theorems and lemmas**, with **101 of 191 source
-modules fully translated**. Supporting PVS lemmas and type-correctness conditions
-are additional obligations and are excluded from those source-result counts.
+As of **2026-10-19**, the translation has independently replayed counterparts
+for **1,136 of 1,824 Lean source theorems and lemmas**, with all recorded results
+checked in **104 of 191 modules**. Supporting PVS lemmas and type-correctness
+conditions are additional obligations and are excluded from those source-result counts.
 The translation is still in progress.
 
 ## Typechecking and proof replay
@@ -78,13 +78,15 @@ This loop leaves `Sterbenz/` out of the batch. That older Frama-C/Jessie
 development has separate floating-point library dependencies; see its
 [README](Sterbenz/README.md).
 
-Recorded translation checks on 2026-10-18 include:
+Recorded translation checks on 2026-10-18 and 2026-10-19 include:
 
 | Check | Result |
 |-------|--------|
 | General active-count integral and positive-drift budget | 318/318 project obligations complete across 32 theories, including all 87 new obligations. |
 | Full resampling, complete dependency graphs and drift-region support | 2,216/2,216 project obligations complete, including 172 new obligations. |
-| Native measure and integration support | 1,098 library proof bodies freshly forced, with ordinary complete proof chains, including the general monotone-convergence theorem. |
+| Native measure and integration support | 1,109 library proof bodies freshly forced over three disjoint rounds, with ordinary complete proof chains. The certificate includes general monotone convergence and the weighted-measure support. |
+| General conditional expectation | 600/600 project obligations complete across 52 theories, including all 52 new obligations. |
+| General drift, Moser–Tardos certificates and execution cost | 2,241/2,241 project obligations complete across 230 theories, including all 69 new obligations and 14 source results. |
 
 These runs check saved proofs in isolated workspaces. Project dependencies use
 the exact committed source and proof inputs. The separately checked native
@@ -199,6 +201,9 @@ integration arguments. Each entry's imports lead to that support.
 | [ppg_probability_measure.pvs](ppg_probability_measure.pvs), [ppg_probability_integral.pvs](ppg_probability_integral.pvs) | Probability laws and their native NASAlib real integrals. |
 | [ppg_general_simple_integral.pvs](ppg_general_simple_integral.pvs), [ppg_general_code_order.pvs](ppg_general_code_order.pvs) | Nonnegative integrals from weighted measurable indicators, including infinite event masses. |
 | [ppg_general_active_count.pvs](ppg_general_active_count.pvs), [ppg_additive_drift_budget.pvs](ppg_additive_drift_budget.pvs) | Arbitrary-measure count integrals and extended nonnegative budget bounds. |
+| [ppg_conditional_existence.pvs](ppg_conditional_existence.pvs), [ppg_subsigma_restricted_integral.pvs](ppg_subsigma_restricted_integral.pvs) | Conditional expectation for integrable real functions under arbitrary finite native measures and sub-sigma algebras. |
+| [ppg_additive_conditional_certificate.pvs](ppg_additive_conditional_certificate.pvs), [ppg_additive_certificate_expectation.pvs](ppg_additive_certificate_expectation.pvs) | Conditional potential certificates, integrated decrease, expected active count and almost-sure finiteness. |
+| [ppg_mt_fixed_drift.pvs](ppg_mt_fixed_drift.pvs), [ppg_mt_random_init_drift.pvs](ppg_mt_random_init_drift.pvs), [ppg_mt_drift_expected_cost.pvs](ppg_mt_drift_expected_cost.pvs) | Drift bounds for the actual fixed-start and slot-zero MT processes, with bounded per-step costs. |
 | [ppg_finite_conditional_value.pvs](ppg_finite_conditional_value.pvs), [ppg_finite_conditional_drift.pvs](ppg_finite_conditional_drift.pvs) | Finite-state conditional values and integrated drift. |
 | [ppg_finite_potential_synthesis.pvs](ppg_finite_potential_synthesis.pvs), [ppg_finite_potential_accessible.pvs](ppg_finite_potential_accessible.pvs) | Rational first-step equations, checked potentials and positive-mass accessibility. |
 | [ppg_exact_mt_fixed.pvs](ppg_exact_mt_fixed.pvs), [ppg_exact_mt_random.pvs](ppg_exact_mt_random.pvs) | Exact fixed-start and random-start MT expected work. |
@@ -279,8 +284,15 @@ results specify the initial state separately.
    [expectedActiveCount_le_of_budget](ppg_general_active_count.pvs) gives
    **expected active count <= budget(0)/delta**, for positive finite `delta`,
    from `delta * measure(active_n) + budget(n+1) <= budget(n)`.
-   Budgets may take the value infinity. This theorem assumes the local budget
-   inequality; the general conditional-potential construction remains pending.
+   Budgets may take the value infinity. Under a finite measure,
+   [integrated_decrease](ppg_additive_conditional_certificate.pvs) derives
+   this inequality from an integrable, adapted, almost-everywhere nonnegative
+   potential and its local conditional decrease. The resulting bound is
+   **ofReal(integral initial potential)/delta**. For the fixed-start MT
+   process, [ETLog_le_of_drift](ppg_mt_fixed_drift.pvs) gives
+   **E[T_LOG] <= potential(initial)/delta**. The
+   [cost bound](ppg_mt_drift_expected_cost.pvs) multiplies this by a finite
+   cap on each active step; the cost function need not be measurable.
 
 8. **Full resampling.**
    [fullResampling_expected_work_eq](ppg_full_resampling_mean.pvs) identifies
@@ -414,9 +426,12 @@ proofs.
   convergence under a finite bound inside an arbitrary-measure argument.
 - Johannes Lengler, [*Drift Analysis*](https://arxiv.org/abs/1712.00964v2),
   Theorem 1, gives the additive-drift background. The
-  [budget theory](ppg_additive_drift_budget.pvs) and
-  [finite conditional drift](ppg_finite_conditional_drift.pvs) are available;
-  the general conditional-potential and execution-cost translations remain open.
+  [conditional certificate](ppg_additive_conditional_certificate.pvs)
+  integrates the local decrease; the
+  [MT certificate](ppg_mt_conditional_certificate.pvs) applies it to the
+  actual stopped potential under the original product-log law. The
+  [execution-cost bound](ppg_mt_drift_expected_cost.pvs) combines the
+  resulting expected count with a cap on each active-step charge.
 - Michael Mitzenmacher and Eli Upfal,
   [*Probability and Computing*, second edition](https://doi.org/10.1017/9781316651124),
   Section 7.1.1 and Exercise 7.25; David A. Levin and Yuval Peres,
@@ -443,11 +458,10 @@ The LUCES experimental background is described in:
 
 ## Future work
 
-The immediate proof work includes the remaining general conditional-expectation
-certificates, the Moser–Tardos drift consequences and the execution-cost bounds.
-The active-count identity and local budget estimate are already proved; deriving
-the general budget from a conditional potential is a separate remaining step.
-Later translations include the HLS policy developments and the computability
+General conditional expectation is proved. The additive-drift,
+Moser–Tardos drift and execution-cost source modules are translated
+and replayed. The next proof work covers HLS witness DAGs, their canonical
+encodings and the policy bounds built on them, followed by the computability
 limit for the encoded infinite repair family. Existing core translations also
 need to be brought into the same source-by-source replay accounting.
 
