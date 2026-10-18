@@ -1,0 +1,34 @@
+% A nonnegative density on the history sigma algebra represents the
+% original event integrals. Integral transfer lifts it to a conditional
+% version without changing the original finite measure.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_conditional_nonnegative_existence[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) measureLaw:FiniteLaw,
+  H:{H:MeasurableSpace|subset?(H,S)}]: THEORY
+BEGIN
+  IMPORTING ppg_subsigma_measure[X,S,measureLaw,H] AS ceSubsigma,
+    ppg_history_weighted_measure[X,S,measureLaw,H] AS ceWeights,
+    ppg_subsigma_restricted_integral[X,S,measureLaw,H] AS ceTransfer,
+    ppg_finite_extended_integral[X,S,measureLaw] AS ceFunctions,
+    ppg_finite_extended_integral[X,H,ceSubsigma.subsigmaLaw] AS ceHistoryFunctions,
+    ppg_finite_restricted_integral[X,H,ceSubsigma.subsigmaLaw] AS ceHistoryEvents,
+    ppg_conditional_versions[X,S,measureLaw,H] AS ceVersions,
+    ppg_radon_nikodym_finite
+  f: VAR ceFunctions.NonnegativeFunction
+  p: VAR ceHistoryFunctions.NonnegativeFunction
+
+  weighted_absolute_continuity: LEMMA
+    ppg_radon_nikodym_finite[X,H,ceSubsigma.subsigmaLaw,ceWeights.weightedLaw(f)].absoluteContinuous
+
+  history_density_exists: LEMMA EXISTS(p:ceHistoryFunctions.NonnegativeFunction):
+    FORALL(A:(asNasa(H))):ceHistoryEvents.setIntegral(A,p)=ceWeights.weightedMass(f)(A)
+
+  density_history_version: LEMMA
+    (FORALL(A:(asNasa(H))):ceHistoryEvents.setIntegral(A,p)=ceWeights.weightedMass(f)(A)) IMPLIES
+      ceVersions.conditionalVersion(f,ceTransfer.asHistoryVersion(ceTransfer.asHistoryNonnegative(p)))
+
+  nonnegative_conditional_exists: THEOREM
+    EXISTS(g:ceVersions.HistoryFunction):ceVersions.conditionalVersion(f,g)
+
+END ppg_conditional_nonnegative_existence

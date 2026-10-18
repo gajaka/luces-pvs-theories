@@ -1,0 +1,62 @@
+% Integrating a nonnegative integrable function over history events
+% defines a finite measure on the history sigma algebra. Its null events
+% include those of the restricted original measure, so Radon--Nikodym
+% applies without an additional existence assumption on the density.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_history_weighted_measure[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) measureLaw:FiniteLaw,
+  H:{H:MeasurableSpace|subset?(H,S)}]: THEORY
+BEGIN
+  IMPORTING ppg_subsigma_measure[X,S,measureLaw,H] AS subsigma,
+    ppg_finite_extended_integral[X,S,measureLaw] AS weightedSourceFunctions,
+    ppg_finite_restricted_integral[X,S,measureLaw] AS weightedSourceEvents,
+    ppg_finite_measure_continuity[X,S,measureLaw] AS weightedRealLimits,
+    ppg_finite_law_view[X,H] AS weightedHistoryFinite,
+    ppg_finite_law_view[X,S] AS weightedAmbientFinite,
+    measure_integration@generalized_measure_def[X,asNasa(H)] AS weightedHistoryMeasure,
+    measure_integration@measure_space_def[X,asNasa(S)] AS weightedSourceSpace,
+    measure_integration@measure_theory[X,asNasa(S),measureLaw] AS weightedSourceTheory,
+    measure_integration@measure_props[X,asNasa(S),measureLaw] AS weightedSourceMass,
+    measure_integration@integral[X,asNasa(S),measureLaw] AS weightedSourceIntegral,
+    measure_integration@indefinite_integral[X,asNasa(S),measureLaw] AS weightedIndefinite
+  f: VAR weightedSourceFunctions.NonnegativeFunction
+  A: VAR (asNasa(H))
+  E: VAR [nat->(asNasa(H))]
+
+  ambient_event_measurable: LEMMA weightedSourceSpace.measurable_set?(subsigma.ambientEvent(A))
+
+  event_integrability: LEMMA weightedIndefinite.integrable?(subsigma.ambientEvent(A))(f)
+
+  family_integrability: LEMMA FORALL(n:nat):weightedIndefinite.integrable?(subsigma.liftFamily(E)(n))(f)
+
+  pointwise_nonnegative_ae: LEMMA weightedSourceTheory.ae_nonneg?(f)
+
+  weightedMass(f)(A): nonneg_real = weightedSourceEvents.setIntegral(subsigma.ambientEvent(A),f)
+
+  weighted_mass_empty: LEMMA weightedMass(f)(emptyset[X])=0
+
+  weighted_family_integrals: LEMMA (LAMBDA(n:nat):weightedMass(f)(E(n)))=
+    (LAMBDA(n:nat):weightedIndefinite.integral(subsigma.liftFamily(E)(n),f))
+
+  weighted_union_integral: LEMMA weightedMass(f)(IUnion(E))=
+    weightedIndefinite.integral(IUnion(subsigma.liftFamily(E)),f)
+
+  weighted_countably_additive: LEMMA weightedHistoryMeasure.disjoint_indexed_measurable?(E) IMPLIES
+    convergence_sequences.convergence(series(LAMBDA(n:nat):weightedMass(f)(E(n))),weightedMass(f)(IUnion(E)))
+
+  weighted_finite_measure: LEMMA weightedHistoryMeasure.finite_measure?(weightedMass(f))
+
+  realWeightedMeasure(f): weightedHistoryMeasure.finite_measure = weightedMass(f)
+
+  weightedLaw(f): weightedHistoryFinite.FiniteLaw = weightedHistoryMeasure.to_measure(realWeightedMeasure(f))
+
+  weighted_law_value: LEMMA weightedLaw(f)(A)=(TRUE,weightedMass(f)(A))
+
+  weighted_mass_null: LEMMA weightedSourceMass.mu(subsigma.ambientEvent(A))=0 IMPLIES weightedMass(f)(A)=0
+
+  weighted_absolute_continuity: THEOREM
+    subsigma.subsigmaLaw(A)`2=0 IMPLIES weightedLaw(f)(A)`2=0
+
+END ppg_history_weighted_measure

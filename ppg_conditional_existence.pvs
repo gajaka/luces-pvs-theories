@@ -1,0 +1,46 @@
+% Decompose an integrable function into its positive and negative parts.
+% Their conditional versions exist by Radon--Nikodym; their difference
+% preserves every history-event integral. Thus every integrable function
+% belongs to the domain of the previously proved conditional operator.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_conditional_existence[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) measureLaw:FiniteLaw,
+  H:{H:MeasurableSpace|subset?(H,S)}]: THEORY
+BEGIN
+  IMPORTING ppg_conditional_nonnegative_existence[X,S,measureLaw,H] AS existenceNN,
+    ppg_finite_extended_integral[X,S,measureLaw] AS existenceFunctions,
+    ppg_conditional_versions[X,S,measureLaw,H] AS existenceVersions,
+    ppg_conditional_unique[X,S,measureLaw,H] AS existenceUnique,
+    measure_integration@integral[X,asNasa(S),measureLaw] AS existenceNative,
+    measure_integration@measure_theory[X,asNasa(S),measureLaw] AS existenceAE,
+    reals@real_fun_ops_aux[X] AS existenceParts
+  f: VAR existenceNative.integrable
+  g: VAR existenceVersions.HistoryFunction
+
+  positivePart(f): existenceFunctions.NonnegativeFunction = existenceParts.plus(f)
+
+  negativePart(f): existenceFunctions.NonnegativeFunction = existenceParts.minus(f)
+
+  parts_decompose: LEMMA f=positivePart(f)-negativePart(f)
+
+  conditional_version_exists: THEOREM
+    EXISTS(g:existenceVersions.HistoryFunction):existenceVersions.conditionalVersion(f,g)
+
+  every_integrable_admissible: THEOREM existenceUnique.hasConditionalVersion(f)
+
+  asAdmissible(f): existenceUnique.AdmissibleFunction = f
+
+  as_admissible_value: LEMMA asAdmissible(f)=f
+
+  conditionalExpectation(f): {g:existenceVersions.HistoryFunction|existenceVersions.conditionalVersion(f,g)} =
+    existenceUnique.conditionalExpectation(asAdmissible(f))
+
+  conditional_expectation_version: THEOREM
+    existenceVersions.conditionalVersion(f,conditionalExpectation(f))
+
+  conditional_expectation_unique: THEOREM existenceVersions.conditionalVersion(f,g) IMPLIES
+    existenceAE.ae_eq?(conditionalExpectation(f),g)
+
+END ppg_conditional_existence

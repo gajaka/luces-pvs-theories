@@ -1,0 +1,53 @@
+% Restrict a history-measurable nonnegative integrable function by a
+% history event before lifting it to the ambient sigma algebra. The two
+% restrictions are the same function, and the proved integral transfer
+% therefore preserves every history-event integral.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_subsigma_restricted_integral[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) measureLaw:FiniteLaw,
+  H:{H:MeasurableSpace|subset?(H,S)}]: THEORY
+BEGIN
+  IMPORTING ppg_subsigma_measure[X,S,measureLaw,H] AS subsigma,
+    ppg_subsigma_nonnegative[X,S,measureLaw,H] AS nonnegative,
+    ppg_conditional_versions[X,S,measureLaw,H] AS versions,
+    ppg_finite_restricted_integral[X,S,measureLaw] AS ambientEvents,
+    ppg_finite_restricted_integral[X,H,subsigma.subsigmaLaw] AS historyEvents,
+    ppg_finite_extended_integral[X,H,subsigma.subsigmaLaw] AS historyNonnegative,
+    measure_integration@integral[X,asNasa(S),measureLaw] AS ambientNative,
+    measure_integration@integral[X,asNasa(H),subsigma.subsigmaLaw] AS historyNative,
+    measure_integration@nn_integral[X,asNasa(S),measureLaw] AS ambientNN,
+    measure_integration@nn_integral[X,asNasa(H),subsigma.subsigmaLaw] AS historyNN,
+    measure_integration@measure_space_def[X,asNasa(H)] AS historySpace
+  g: VAR historyNN.nn_integrable
+  p: VAR historyNonnegative.NonnegativeFunction
+  A: VAR (asNasa(H))
+  x: VAR X
+
+  history_nonnegative_value: LEMMA 0<=g(x)
+
+  history_restriction_nonnegative: LEMMA 0<=historyEvents.restricted(A,g)(x)
+
+  asHistoryNonnegative(p): historyNN.nn_integrable = p
+
+  as_history_nonnegative_value: LEMMA asHistoryNonnegative(p)(x)=p(x)
+
+  asHistoryVersion(g): versions.HistoryFunction = nonnegative.liftNonnegative(g)
+
+  as_history_version_value: LEMMA asHistoryVersion(g)(x)=g(x)
+
+  historyRestricted(g,A): historyNN.nn_integrable = historyEvents.restricted(A,g)
+
+  restricted_functions_agree: LEMMA
+    ambientEvents.restricted(subsigma.ambientEvent(A),nonnegative.liftNonnegative(g))=
+      nonnegative.liftNonnegative(historyRestricted(g,A))
+
+  restricted_integrals_agree: THEOREM
+    ambientEvents.setIntegral(subsigma.ambientEvent(A),nonnegative.liftNonnegative(g))=
+      historyEvents.setIntegral(A,g)
+
+  history_version_set_integral: LEMMA
+    ambientEvents.setIntegral(subsigma.ambientEvent(A),asHistoryVersion(g))=historyEvents.setIntegral(A,g)
+
+END ppg_subsigma_restricted_integral
