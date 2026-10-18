@@ -1,0 +1,79 @@
+% The event that resampling continues beyond N has the exact killed
+% survival integral. Its probability uses the original native table law.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Lemma 1.13, American Mathematical Society, 2017.
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Section 7.1.1, Cambridge University Press, 2017.
+ppg_resampling_table_tail[V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING ppg_finite_resampling_core[V,Value,variables,domains])
+  Q:{Q:Marginals|Valid(Q)},P:Policy,
+  (IMPORTING ppg_resampling_table_product[V,Value,variables,domains,Q])
+  init:ppg_resampling_table_product[V,Value,variables,domains,Q].TableInitializer]: THEORY
+BEGIN
+  IMPORTING ppg_finite_table_core[V,Value,variables,domains] AS tableCore,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS states,
+    ppg_resampling_table_product[V,Value,variables,domains,Q] AS laws,
+    ppg_resampling_exact_table[V,Value,variables,domains,Q,P,init] AS exactTable
+
+  State: TYPE = tableCore.State
+
+  ResamplingLog: TYPE = tableCore.ResamplingLog
+
+  ambient: MACRO ppg_measurable_space[ResamplingLog].MeasurableSpace = laws.tableAmbient
+
+  IMPORTING ppg_finite_process_stopping[State,ResamplingLog,states.allStates,ambient] AS stopping,
+    ppg_finite_hit_tail[State,ResamplingLog,states.allStates,ambient] AS hitTail,
+    ppg_finite_stopped_integral[State,ResamplingLog,states.allStates,ambient,
+      exactTable.tableMeasure,exactTable.history] AS running,
+    ppg_finite_survival[State,states.allStates] AS survival,
+    ppg_finite_survival_conditional[State,ResamplingLog,states.allStates,ambient,
+      exactTable.tableMeasure,exactTable.history] AS survivalValue,
+    ppg_finite_survival_integral[State,ResamplingLog,states.allStates,ambient,
+      exactTable.tableMeasure,exactTable.history] AS survivalMean,
+    ppg_finite_process_integral[State,ResamplingLog,states.allStates,ambient,
+      exactTable.tableMeasure] AS values,
+    ppg_finite_process_realization[State,ResamplingLog,states.allStates,ambient,
+      exactTable.tableMeasure,exactTable.history] AS process,
+    ppg_finite_measure_integral[ResamplingLog,ambient,exactTable.tableMeasure] AS functions,
+    ppg_finite_expectation[ResamplingLog,ambient,exactTable.tableMeasure] AS mean,
+    ppg_probability_finite_view[ResamplingLog,ambient] AS view,
+    measure_integration@integral[ResamplingLog,ppg_nasa_sigma[ResamplingLog].asNasa(ambient),
+      exactTable.tableMeasure] AS native
+
+  IMPORTING ppg_finite_process_hitting[State,ResamplingLog,states.allStates,ambient,
+      exactTable.tableMeasure,exactTable.history] AS hitting,
+    ppg_finite_potential_tail_bound[State,ResamplingLog,states.allStates,ambient,
+      exactTable.tableMeasure,exactTable.history] AS charge,
+    ppg_enn_positive_divide
+
+  N: VAR nat
+
+  timeoutSet(N): set[ResamplingLog] = {omega:ResamplingLog|NOT ele(
+    stopping.hitCount(exactTable.tableModel,exactTable.tableProcess,omega),ennFinite(N))}
+
+  running_set: LEMMA timeoutSet(N)=running.runningAmbient(exactTable.tableModel,exactTable.tableProcess,N)
+
+  timeoutEvent(N): (ambient) = timeoutSet(N)
+
+  timeoutProbability(N): ENN = ennFinite(laws.tableProbability(timeoutEvent(N)))
+
+  probability_mass: LEMMA laws.tableProbability(timeoutEvent(N))=mean.mass(timeoutEvent(N))
+
+  initialValue(N): functions.NativeFunction =
+    values.integrableValue(survivalValue.survivalVector(exactTable.tableModel,N),exactTable.initialMap)
+
+  initial_function: LEMMA values.integrableValue(survivalValue.survivalVector(exactTable.tableModel,N),
+    process.ambientState(exactTable.tableProcess,0))=initialValue(N)
+
+  table_timeout_eq_survival: THEOREM timeoutProbability(N)=ofReal(native.integral(initialValue(N)))
+
+  finite_charge_divide: LEMMA FORALL(a:nonneg_real,z:ENN,c:posreal):
+    ele(ennFinite(c*a),z) IMPLIES ele(ennFinite(a),dividePositive(z,c))
+
+  table_timeout_mean_div: LEMMA ele(timeoutProbability(N),dividePositive(
+    hitting.expectedHitCount(exactTable.tableModel,exactTable.tableProcess),N+1))
+
+END ppg_resampling_table_tail
