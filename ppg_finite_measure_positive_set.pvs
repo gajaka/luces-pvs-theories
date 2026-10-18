@@ -1,0 +1,45 @@
+% Compare two original finite measures after scaling the second by a
+% nonnegative real. Their difference is a bounded signed charge. If its
+% total charge is positive, a measurable positive-charge event remains
+% on whose measurable subsets the first mass dominates the scaled second.
+%
+% This is the positive-set step in the Radon--Nikodym argument, with no
+% finite-carrier or countably-generated sigma-algebra assumption.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_measure_positive_set[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) leftLaw,rightLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_charge_events[X,S],
+    ppg_signed_charge_cut[X,S] AS charges,
+    ppg_signed_charge_positive[X,S] AS positive,
+    ppg_finite_mass_charge[X,S,leftLaw] AS left,
+    ppg_finite_mass_charge[X,S,rightLaw] AS right,
+    analysis@convergence_ops AS sequences,reals@real_fun_ops_aux[nat]
+  A,B: VAR (S)
+  E: VAR [nat->(S)]
+  c: VAR nonneg_real
+
+  difference(c)(A): real = left.mass(A)-c*right.mass(A)
+
+  difference_zero: LEMMA difference(c)(emptyEvent)=0
+
+  difference_additive: LEMMA disjoint?(A,B) IMPLIES
+    difference(c)(eventUnion(A,B))=difference(c)(A)+difference(c)(B)
+
+  difference_lower: LEMMA -c*right.mass(wholeEvent)<=difference(c)(A)
+
+  difference_continuous: LEMMA ppg_measurable_sequence[X].decreasingEvents(E) IMPLIES
+    convergence_sequences.convergence(LAMBDA(n:nat):difference(c)(E(n)),difference(c)(eventIntersection(E)))
+
+  difference_valid: LEMMA charges.validCharge(difference(c))
+
+  signedDifference(c): charges.SignedCharge = difference(c)
+
+  signed_difference_value: LEMMA signedDifference(c)(A)=left.mass(A)-c*right.mass(A)
+
+  measurable_positive_set: THEOREM c*right.mass(wholeEvent)<left.mass(wholeEvent) IMPLIES
+    EXISTS(B:(S)):(FORALL(A:(S)):subset?(A,B) IMPLIES c*right.mass(A)<=left.mass(A)) AND
+      c*right.mass(B)<left.mass(B)
+
+END ppg_finite_measure_positive_set

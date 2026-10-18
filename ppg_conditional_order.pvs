@@ -1,0 +1,43 @@
+% Conditional versions preserve almost-everywhere order. On the history
+% event where the proposed order fails, their integral difference is
+% nonnegative and at most zero. Strict positivity then makes that event
+% null. This argument uses the original finite measure, including zero.
+%
+% Existence of a conditional version for every integrable function is a
+% separate theorem; no such existence is assumed or claimed here.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_conditional_order[Omega:TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw,
+  H:{H:MeasurableSpace|subset?(H,S)}]: THEORY
+BEGIN
+  IMPORTING ppg_conditional_ae_versions[Omega,S,measureLaw,H]
+  A: VAR (S)
+  f,k: VAR NativeFunction
+  g,h: VAR HistoryFunction
+
+  ae_restricted_order: LEMMA ae_le?(f,k) IMPLIES ae_le?(restricted(A,f),restricted(A,k))
+
+  set_integral_ae_order: LEMMA ae_le?(f,k) IMPLIES setIntegral(A,f)<=setIntegral(A,k)
+
+  restricted_comparison_nonnegative: LEMMA A={omega:Omega|k(omega)<f(omega)} IMPLIES
+    (FORALL(omega:Omega):0<=restricted(A,f-k)(omega))
+
+  comparison_integral_nonnegative: LEMMA A={omega:Omega|k(omega)<f(omega)} IMPLIES
+    0<=setIntegral(A,f-k)
+
+  ordered_comparison_zero_mass: LEMMA A={omega:Omega|k(omega)<f(omega)} AND
+    setIntegral(A,f)<=setIntegral(A,k) IMPLIES mu(A)=0
+
+  ordered_greater_event_null: LEMMA ae_le?(f,k) AND conditionalVersion(f,g) AND
+    conditionalVersion(k,h) IMPLIES null_set?(historyEvent(greaterEvent(g,h)))
+
+  ae_order_from_null: LEMMA null_set?(A) AND
+    (FORALL(omega:Omega):NOT A(omega) IMPLIES f(omega)<=k(omega)) IMPLIES ae_le?(f,k)
+
+  conditional_version_order: THEOREM ae_le?(f,k) AND conditionalVersion(f,g) AND
+    conditionalVersion(k,h) IMPLIES ae_le?(g,h)
+
+END ppg_conditional_order

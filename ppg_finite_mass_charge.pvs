@@ -1,0 +1,35 @@
+% Real masses of an arbitrary finite measure satisfy finite additivity,
+% a uniform total-mass bound and continuity from above. The original
+% measure is retained, including the zero measure.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_finite_mass_charge[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) measureLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_charge_events[X,S],
+    ppg_finite_expectation[X,S,measureLaw] AS means,
+    ppg_finite_measure_continuity[X,S,measureLaw] AS continuity,
+    measure_integration@measure_props[X,asNasa(S),measureLaw] AS native
+  A,B: VAR (S)
+  E: VAR [nat->(S)]
+
+  mass(A): nonneg_real = means.mass(A)
+
+  mass_flag: LEMMA measureLaw(A)`1
+
+  mass_empty: LEMMA mass(emptyEvent)=0
+
+  mass_disjoint_union: LEMMA disjoint?(A,B) IMPLIES
+    mass(eventUnion(A,B))=mass(A)+mass(B)
+
+  mass_monotone: LEMMA subset?(A,B) IMPLIES mass(A)<=mass(B)
+
+  mass_total_bound: LEMMA mass(A)<=mass(wholeEvent)
+
+  native_intersection_eq: LEMMA continuity.finiteIntersection(E)=eventIntersection(E)
+
+  mass_continuous_above: LEMMA ppg_measurable_sequence[X].decreasingEvents(E) IMPLIES
+    convergence_sequences.convergence(LAMBDA(n:nat):mass(E(n)),mass(eventIntersection(E)))
+
+END ppg_finite_mass_charge

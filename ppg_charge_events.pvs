@@ -1,0 +1,43 @@
+% Measurable event operations used in the signed-charge construction.
+% Their values are the ordinary set operations; the return types record
+% measurability, including that of a countable intersection.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_charge_events[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_sequence[X]
+  A,B: VAR (S)
+  E: VAR [nat->(S)]
+  n: VAR nat
+
+  emptyEvent: (S) = emptyset[X]
+
+  wholeEvent: (S) = fullset[X]
+
+  eventUnion(A,B): (S) = union(A,B)
+
+  eventComplement(A): (S) = complement(A)
+
+  eventDifference(A,B): (S) = intersection(A,complement(B))
+
+  eventIntersection(E): (S) = countableIntersection(E)
+
+  empty_subset: LEMMA subset?(emptyEvent,A)
+
+  subset_whole: LEMMA subset?(A,wholeEvent)
+
+  difference_subset: LEMMA subset?(eventDifference(A,B),A)
+
+  difference_disjoint: LEMMA disjoint?(eventDifference(A,B),B)
+
+  difference_partition: LEMMA subset?(B,A) IMPLIES eventUnion(eventDifference(A,B),B)=A
+
+  complement_partition: LEMMA eventUnion(A,eventComplement(A))=wholeEvent
+
+  complement_disjoint: LEMMA disjoint?(A,eventComplement(A))
+
+  intersection_subset: LEMMA subset?(eventIntersection(E),E(n))
+
+  subset_intersection: LEMMA (FORALL(n:nat):subset?(A,E(n))) IMPLIES subset?(A,eventIntersection(E))
+
+END ppg_charge_events

@@ -1,0 +1,78 @@
+% A bounded signed charge has a measurable piece with a sufficiently
+% negative charge whenever one exists. Take the infimum over measurable
+% subsets of the supplied event and choose a piece below half a negative
+% infimum. This choice also controls every remaining negative subset.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_signed_charge_cut[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_charge_events[X,S],analysis@convergence_sequences
+
+  EventCharge: TYPE = [(S)->real]
+
+  chargeAdditive(q:EventCharge): bool = FORALL(A,B:(S)):disjoint?(A,B) IMPLIES
+    q(eventUnion(A,B))=q(A)+q(B)
+
+  chargeBoundedBelow(q:EventCharge): bool = EXISTS(L:real):FORALL(A:(S)):L<=q(A)
+
+  chargeContinuousAbove(q:EventCharge): bool = FORALL(E:[nat->(S)]):
+    ppg_measurable_sequence[X].decreasingEvents(E) IMPLIES
+      convergence_sequences.convergence(LAMBDA(n:nat):q(E(n)),q(eventIntersection(E)))
+
+  validCharge(q:EventCharge): bool = q(emptyEvent)=0 AND chargeAdditive(q) AND
+    chargeBoundedBelow(q) AND chargeContinuousAbove(q)
+
+  SignedCharge: TYPE = (validCharge)
+
+  q: VAR SignedCharge
+  A,B,E: VAR (S)
+  a,L: VAR real
+  family: VAR [nat->(S)]
+
+  charge_zero: LEMMA q(emptyEvent)=0
+
+  charge_additive: LEMMA disjoint?(A,B) IMPLIES q(eventUnion(A,B))=q(A)+q(B)
+
+  charge_bounded_below: LEMMA chargeBoundedBelow(q)
+
+  charge_continuous_above: LEMMA ppg_measurable_sequence[X].decreasingEvents(family) IMPLIES
+    convergence_sequences.convergence(LAMBDA(n:nat):q(family(n)),q(eventIntersection(family)))
+
+  lowerBound(q): {L:real|FORALL(A:(S)):L<=q(A)} = choose[real]({L:real|FORALL(A:(S)):L<=q(A)})
+
+  charge_lower: LEMMA lowerBound(q)<=q(A)
+
+  charge_upper: LEMMA q(A)<=q(wholeEvent)-lowerBound(q)
+
+  values(q,E): (nonempty?[real]) = {a:real|EXISTS(A:(S)):subset?(A,E) AND a=q(A)}
+
+  values_member: LEMMA subset?(A,E) IMPLIES values(q,E)(q(A))
+
+  values_bounded_below: LEMMA bounded_below?(values(q,E))
+
+  worstValue(q,E): {a:real|greatest_lower_bound?(a,values(q,E))} = glb(values(q,E))
+
+  worst_lower: LEMMA subset?(A,E) IMPLIES worstValue(q,E)<=q(A)
+
+  worst_greatest: LEMMA (FORALL(A:(S)):subset?(A,E) IMPLIES L<=q(A)) IMPLIES L<=worstValue(q,E)
+
+  worst_nonpositive: LEMMA worstValue(q,E)<=0
+
+  negative_half_witness: LEMMA worstValue(q,E)<0 IMPLIES
+    EXISTS(A:(S)):subset?(A,E) AND q(A)<worstValue(q,E)/2
+
+  cutProperty(q,E,B): bool = subset?(B,E) AND q(B)<=0 AND
+    (FORALL(A:(S)):subset?(A,E) IMPLIES q(B)<=q(A)/2)
+
+  cut_exists: THEOREM EXISTS(B:(S)):cutProperty(q,E,B)
+
+  negativeCut(q,E): {B:(S)|cutProperty(q,E,B)} = choose[(S)]({B:(S)|cutProperty(q,E,B)})
+
+  cut_subset: LEMMA subset?(negativeCut(q,E),E)
+
+  cut_nonpositive: LEMMA q(negativeCut(q,E))<=0
+
+  cut_half_bound: LEMMA subset?(A,E) IMPLIES q(negativeCut(q,E))<=q(A)/2
+
+END ppg_signed_charge_cut

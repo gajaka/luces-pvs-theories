@@ -1,0 +1,76 @@
+% Remove a measurable negative piece at each stage. The remaining
+% events decrease, while their charges do not decrease. Continuity from
+% above keeps the charge of the intersection at least the original one.
+% A negative subset in that intersection would force linear growth of
+% the remaining charges, contradicting their uniform upper bound.
+%
+% This positive-set lemma is used in the finite-measure Radon--Nikodym
+% construction. No countability assumption is imposed on the sigma algebra.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_signed_charge_positive[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_signed_charge_cut[X,S],analysis@convergence_ops AS sequences
+  q: VAR SignedCharge
+  A: VAR (S)
+  n,m: VAR nat
+  u: VAR [nat->real]
+  a,b,L: VAR real
+  c: VAR posreal
+
+  rest(q,n): RECURSIVE (S) = IF n=0 THEN wholeEvent ELSE
+    eventDifference(rest(q,n-1),negativeCut(q,rest(q,n-1))) ENDIF MEASURE n
+
+  removed(q,n): (S) = negativeCut(q,rest(q,n))
+
+  remaining(q): (S) = eventIntersection(LAMBDA(n:nat):rest(q,n))
+
+  rest_zero: LEMMA rest(q,0)=wholeEvent
+
+  rest_succ: LEMMA rest(q,n+1)=eventDifference(rest(q,n),removed(q,n))
+
+  removed_subset: LEMMA subset?(removed(q,n),rest(q,n))
+
+  removed_nonpositive: LEMMA q(removed(q,n))<=0
+
+  removed_half_bound: LEMMA subset?(A,rest(q,n)) IMPLIES q(removed(q,n))<=q(A)/2
+
+  rest_step_subset: LEMMA subset?(rest(q,n+1),rest(q,n))
+
+  rest_nested: LEMMA m<=n IMPLIES subset?(rest(q,n),rest(q,m))
+
+  rest_decreasing: LEMMA ppg_measurable_sequence[X].decreasingEvents(LAMBDA(n:nat):rest(q,n))
+
+  remaining_subset: LEMMA subset?(remaining(q),rest(q,n))
+
+  rest_charge_succ: LEMMA q(rest(q,n+1))=q(rest(q,n))-q(removed(q,n))
+
+  rest_charge_floor: LEMMA q(wholeEvent)<=q(rest(q,n))
+
+  remaining_limit: LEMMA convergence_sequences.convergence(
+    LAMBDA(n:nat):q(rest(q,n)),q(remaining(q)))
+
+  limit_lower_bound: LEMMA convergence_sequences.convergence(u,L) AND
+    (FORALL(n:nat):a<=u(n)) IMPLIES a<=L
+
+  remaining_charge_floor: LEMMA q(wholeEvent)<=q(remaining(q))
+
+  persistent_half_bound: LEMMA subset?(A,remaining(q)) IMPLIES q(removed(q,n))<=q(A)/2
+
+  natural_above: LEMMA EXISTS(n:nat):a<n
+
+  positive_linear_exceeds: LEMMA EXISTS(n:nat):b<a+n*c
+
+  negative_rest_growth: LEMMA subset?(A,remaining(q)) AND q(A)<0 IMPLIES
+    q(wholeEvent)+n*(-q(A)/2)<=q(rest(q,n))
+
+  remaining_positive: THEOREM subset?(A,remaining(q)) IMPLIES 0<=q(A)
+
+  positive_set_dominates_whole: THEOREM EXISTS(E:(S)):
+    (FORALL(A:(S)):subset?(A,E) IMPLIES 0<=q(A)) AND q(wholeEvent)<=q(E)
+
+  positive_set_exists: THEOREM 0<q(wholeEvent) IMPLIES EXISTS(E:(S)):
+    (FORALL(A:(S)):subset?(A,E) IMPLIES 0<=q(A)) AND 0<q(E)
+
+END ppg_signed_charge_positive
