@@ -1,0 +1,21 @@
+% A constant finite product over the first N natural numbers is a power.
+% The range removal identity supplies the finite-product induction step.
+%
+% Ronald L. Graham, Donald E. Knuth and Oren Patashnik, Concrete
+% Mathematics, second edition, Addison-Wesley, 1994, Chapter 2.
+ppg_nat_real_product: THEORY
+BEGIN
+  IMPORTING ppg_nat_range,ppg_real_product[nat]
+  N: VAR nat
+  r: VAR real
+
+  range_remove_last: LEMMA remove(N,natRange(N+1))=natRange(N)
+
+  range_product_zero: LEMMA product(natRange(0),LAMBDA(k:nat):r)=1
+
+  range_product_succ: LEMMA product(natRange(N+1),LAMBDA(k:nat):r)=
+    r*product(natRange(N),LAMBDA(k:nat):r)
+
+  range_product_constant: THEOREM product(natRange(N),LAMBDA(k:nat):r)=expt(r,N)
+
+END ppg_nat_real_product

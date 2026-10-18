@@ -1,0 +1,44 @@
+% A measurable nonnegative function bounded by a constant is
+% integrable under the original finite probability law. The proof
+% compares it with that constant in the native nonnegative integral.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+% Native integral construction: David Lester, NASAlib.
+ppg_bounded_nonnegative_integral[Omega:TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_probability_measure[Omega,S]) probLaw:Probability]: THEORY
+BEGIN
+  IMPORTING ppg_probability_integral[Omega,S,probLaw] AS nativeIntegral,
+    ppg_measurable_map[Omega,real] AS realMaps,
+    ppg_nasa_sigma[real] AS realSigmaBridge,
+    measure_integration@real_borel AS realBorel,
+    measure_integration@measure_space_def[Omega,asNasa(S)] AS nativeMeasurable,
+    measure_integration@nn_integral[Omega,asNasa(S),nativeIntegral.nasaLaw] AS nativeNN,
+    measure_integration@integral[Omega,asNasa(S),nativeIntegral.nasaLaw] AS nativeDefinitions
+
+  borelSigma: MACRO ppg_measurable_space[real].MeasurableSpace =
+    realSigmaBridge.asProject(realBorel.real_borel)
+
+  f: VAR [Omega->real]
+  g: VAR [Omega->nnreal]
+  M: VAR nnreal
+
+  nativeIntegrable?(f): bool = nativeDefinitions.integrable?(f)
+
+  project_native_measurable: LEMMA realMaps.measurable(S,borelSigma,f) IFF
+    nativeMeasurable.measurable_function?(f)
+
+  constant_function_eq: LEMMA nativeIntegral.constant(M)=(LAMBDA(omega:Omega):M)
+
+  constant_integrable: LEMMA nativeDefinitions.integrable?(LAMBDA(omega:Omega):M)
+
+  constant_nn_integrable: LEMMA nativeNN.nn_integrable?(LAMBDA(omega:Omega):M)
+
+  bounded_nn_integrable: LEMMA realMaps.measurable(S,borelSigma,g) AND
+    (FORALL(omega:Omega):g(omega)<=M) IMPLIES nativeNN.nn_integrable?(g)
+
+  integrable_nonnegative_bounded: THEOREM realMaps.measurable(S,borelSigma,g) AND
+    (FORALL(omega:Omega):g(omega)<=M) IMPLIES nativeDefinitions.integrable?(g)
+
+END ppg_bounded_nonnegative_integral

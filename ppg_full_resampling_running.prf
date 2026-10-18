@@ -1,0 +1,791 @@
+(|ppg_full_resampling_running|
+ (|bad_prefix_finite_meet| 0
+  (|bad_prefix_finite_meet-1| NIL 4001308022
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "paths.badPrefix")
+     (EXPAND "rowMeet.finiteMeet") (EXPAND "rowEvents")
+     (EXPAND "probability.badSlotValue")
+     (AUTO-REWRITE "ranges.natRange_member")
+     (GRIND :IF-MATCH ALL :EXCLUDE ("mtBadSlotEvent" "natRange")))
+    NIL)
+   ((|natRange_member| FORMULA-DECL NIL |ppg_nat_range| NIL)
+    (|badSlotValue| CONST-DECL "(nativeSpaces.NativeTableSigma(spaces))"
+     |ppg_full_resampling_probability| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_full_resampling_paths| NIL)
+    (|badPrefix| CONST-DECL "set[ResamplingLog]" |ppg_full_resampling_paths|
+     NIL)
+    (|events| FORMAL-CONST-DECL "{U: finite_set[C] | FORALL (c: C): U(c)}"
+     |ppg_full_resampling_running| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_full_resampling_running|
+     NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_full_resampling_running| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|BadTest| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|badMeasurable| CONST-DECL "bool" |ppg_full_resampling_probability| NIL)
+    (|MeasurableBad| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|EventFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|finiteMeet| CONST-DECL "Event" |ppg_finite_events| NIL)
+    (|natRange| DEF-DECL "finite_set[nat]" |ppg_nat_range| NIL)
+    (|LogEvents| TYPE-EQ-DECL NIL |ppg_mt_log_family| NIL)
+    (|rowEvents| CONST-DECL "rowFamily.LogEvents" |ppg_full_resampling_running|
+     NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_full_resampling_paths| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_full_resampling_running| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_full_resampling_running| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK))
+ (|bad_prefix_measurable| 0
+  (|bad_prefix_measurable-1| NIL 4001308100
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "rowMeet.finite_meet_measurable"
+      ("F" "ranges.natRange(N!1)" "E" "rowEvents(B!1)"))
+     (LEMMA "bad_prefix_finite_meet" ("B" "B!1" "N" "N!1"))
+     (EXPAND "NativeTableSigma") (ASSERT))
+    NIL)
+   ((|bad_prefix_finite_meet| FORMULA-DECL NIL |ppg_full_resampling_running|
+     NIL)
+    (|finite_meet_measurable| FORMULA-DECL NIL |ppg_finite_events| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|natRange| DEF-DECL "finite_set[nat]" |ppg_nat_range| NIL)
+    (|MeasurableFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_full_resampling_running| NIL)
+    (|events| FORMAL-CONST-DECL "{U: finite_set[C] | FORALL (c: C): U(c)}"
+     |ppg_full_resampling_running| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_full_resampling_running| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|BadTest| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|badMeasurable| CONST-DECL "bool" |ppg_full_resampling_probability| NIL)
+    (|MeasurableBad| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|LogEvents| TYPE-EQ-DECL NIL |ppg_mt_log_family| NIL)
+    (|rowEvents| CONST-DECL "rowFamily.LogEvents" |ppg_full_resampling_running|
+     NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_full_resampling_running| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_full_resampling_running|
+     NIL))
+   SHOSTAK))
+ (|row_event_depends| 0
+  (|row_event_depends-1| NIL 4001308022
+   ("" (SKOSIMP*)
+    (("" (LEMMA "paths.mtBadSlotEvent_dependsOn" ("bad" "B!1" "n" "n!1"))
+      (("" (EXPAND "rowFamily.logDepends")
+        (("" (EXPAND "rowBlocks")
+          (("" (EXPAND "rowEvents")
+            (("" (EXPAND "probability.badSlotValue")
+              ((""
+                (GRIND :IF-MATCH NIL :EXCLUDE
+                 ("logMeasure" "finiteLaw" "product" "pushforward"
+                  "nativeProduct" "generated" "sigma?" "is_finite" "card"
+                  "natRange" "mtBadProbability" "outerProbability" "ast"))
+                (("1" (GRIND :IF-MATCH ALL :DEFS NIL) NIL NIL)
+                 ("2" (GRIND :IF-MATCH ALL :DEFS NIL) NIL NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|logDepends| CONST-DECL "bool" |ppg_mt_log_family| NIL)
+    (|rowEvents| CONST-DECL "rowFamily.LogEvents" |ppg_full_resampling_running|
+     NIL)
+    (|mtSlotBlock| CONST-DECL "finite_set[[nat, V]]"
+     |ppg_full_resampling_paths| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|MTGood| CONST-DECL "bool" |ppg_mt_selection| NIL)
+    (|mtBadSlotEvent| CONST-DECL "set[ResamplingLog]"
+     |ppg_full_resampling_paths| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_full_resampling_paths| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|badSlotValue| CONST-DECL "(nativeSpaces.NativeTableSigma(spaces))"
+     |ppg_full_resampling_probability| NIL)
+    (|rowBlocks| CONST-DECL "set[[nat, V]]" |ppg_full_resampling_running| NIL)
+    (|mtBadSlotEvent_dependsOn| FORMULA-DECL NIL |ppg_full_resampling_paths|
+     NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_full_resampling_paths| NIL)
+    (|events| FORMAL-CONST-DECL "{U: finite_set[C] | FORALL (c: C): U(c)}"
+     |ppg_full_resampling_running| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_full_resampling_running|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_full_resampling_running| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|BadTest| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|badMeasurable| CONST-DECL "bool" |ppg_full_resampling_probability| NIL)
+    (|MeasurableBad| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_full_resampling_running| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_full_resampling_running| NIL))
+   SHOSTAK))
+ (|row_blocks_disjoint| 0
+  (|row_blocks_disjoint-1| NIL 4001308022
+   (""
+    (THEN (SKOSIMP*) (LEMMA "paths.mtSlotBlock_disjoint" ("n" "n!1" "k" "k!1"))
+     (EXPAND "rowBlocks") (ASSERT))
+    NIL)
+   ((|rowBlocks| CONST-DECL "set[[nat, V]]" |ppg_full_resampling_running| NIL)
+    (|mtSlotBlock_disjoint| FORMULA-DECL NIL |ppg_full_resampling_paths| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_full_resampling_running| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_full_resampling_running| NIL))
+   SHOSTAK))
+ (|row_event_factors| 0
+  (|row_event_factors-1| NIL 4001308022
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "probability.logMeasure_mtBadSlotEvent" ("B" "B!1" "n" "x!1"))
+     (EXPAND "rowProduct.eventFactors") (EXPAND "rowEvents") (ASSERT))
+    NIL)
+   ((|logMeasure_mtBadSlotEvent| FORMULA-DECL NIL
+     |ppg_full_resampling_probability| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_full_resampling_running| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_full_resampling_running|
+     NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|MeasurableFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|eventFactors| CONST-DECL "[K -> real]" |ppg_probability_event_product|
+     NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_full_resampling_running| NIL)
+    (|logMeasure| CONST-DECL "ppg_probability_measure
+    [LogSpace[C, V, Value, domain], NativeTableSigma(spaces)].Probability"
+     |ppg_mt_log_probability| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_full_resampling_running| NIL)
+    (|events| FORMAL-CONST-DECL "{U: finite_set[C] | FORALL (c: C): U(c)}"
+     |ppg_full_resampling_running| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|BadTest| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|badMeasurable| CONST-DECL "bool" |ppg_full_resampling_probability| NIL)
+    (|MeasurableBad| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|LogEvents| TYPE-EQ-DECL NIL |ppg_mt_log_family| NIL)
+    (|rowEvents| CONST-DECL "rowFamily.LogEvents" |ppg_full_resampling_running|
+     NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|mtBadProbability| CONST-DECL "{r: nnreal | r <= 1}"
+     |ppg_full_resampling_probability| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|bad_prefix_product_TCC1| 0
+  (|bad_prefix_product_TCC1-1| NIL 4001308021
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "rowMeet.finite_meet_measurable"
+      ("F" "ranges.natRange(N!1)" "E" "rowEvents(B!1)"))
+     (EXPAND "NativeTableSigma") (ASSERT))
+    NIL)
+   ((|finite_meet_measurable| FORMULA-DECL NIL |ppg_finite_events| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|natRange| DEF-DECL "finite_set[nat]" |ppg_nat_range| NIL)
+    (|MeasurableFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_full_resampling_running| NIL)
+    (|events| FORMAL-CONST-DECL "{U: finite_set[C] | FORALL (c: C): U(c)}"
+     |ppg_full_resampling_running| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_full_resampling_running| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|BadTest| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|badMeasurable| CONST-DECL "bool" |ppg_full_resampling_probability| NIL)
+    (|MeasurableBad| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|LogEvents| TYPE-EQ-DECL NIL |ppg_mt_log_family| NIL)
+    (|rowEvents| CONST-DECL "rowFamily.LogEvents" |ppg_full_resampling_running|
+     NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_full_resampling_running| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_full_resampling_running|
+     NIL))
+   NIL
+   (|bad_prefix_product| SUBTYPE
+    "rowMeet[LogSpace[C, V, Value, domain], nat, NativeTableSigma(spaces)].finiteMeet(ranges.natRange(N), rowEvents(B))"
+    "(ppg_mt_native_spaces[ppg_full_resampling_running.C, ppg_full_resampling_running.V, ppg_full_resampling_running.Value, ppg_full_resampling_running.domain].NativeTableSigma(ppg_full_resampling_running.spaces))"
+    (53 51 53 102))))
+ (|bad_prefix_product| 0
+  (|bad_prefix_product-1| NIL 4001308022
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "rowFamily.log_finite_product"
+       ("F" "ranges.natRange(N!1)" "blk" "rowBlocks" "E" "rowEvents(B!1)"))
+      (("" (LEMMA "row_event_factors" ("B" "B!1"))
+        (("" (LEMMA "row_event_depends" ("B" "B!1"))
+          (("" (LEMMA "row_blocks_disjoint")
+            (("" (EXPAND "pairwiseDisjoint")
+              (("" (ASSERT)
+                ((""
+                  (GRIND :IF-MATCH NIL :EXCLUDE
+                   ("logMeasure" "finiteLaw" "product" "pushforward"
+                    "nativeProduct" "generated" "sigma?" "is_finite" "card"
+                    "natRange" "mtBadProbability" "outerProbability" "ast"))
+                  (("1" (GRIND :IF-MATCH ALL :DEFS NIL) NIL NIL)
+                   ("2" (GRIND :IF-MATCH ALL :DEFS NIL) NIL NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|row_event_factors| FORMULA-DECL NIL |ppg_full_resampling_running| NIL)
+    (|row_blocks_disjoint| FORMULA-DECL NIL |ppg_full_resampling_running| NIL)
+    (|logMeasure| CONST-DECL "ppg_probability_measure
+    [LogSpace[C, V, Value, domain], NativeTableSigma(spaces)].Probability"
+     |ppg_mt_log_probability| NIL)
+    (|EventFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|finiteMeet| CONST-DECL "Event" |ppg_finite_events| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|mtBadProbability| CONST-DECL "{r: nnreal | r <= 1}"
+     |ppg_full_resampling_probability| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_full_resampling_running| NIL)
+    (|logDepends| CONST-DECL "bool" |ppg_mt_log_family| NIL)
+    (|mtBadSlotEvent| CONST-DECL "set[ResamplingLog]"
+     |ppg_full_resampling_paths| NIL)
+    (|MTGood| CONST-DECL "bool" |ppg_mt_selection| NIL)
+    (|badSlotValue| CONST-DECL "(nativeSpaces.NativeTableSigma(spaces))"
+     |ppg_full_resampling_probability| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|mtSlotBlock| CONST-DECL "finite_set[[nat, V]]"
+     |ppg_full_resampling_paths| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|pairwiseDisjoint| CONST-DECL "bool" |ppg_probability_disjoint_family|
+     NIL)
+    (|row_event_depends| FORMULA-DECL NIL |ppg_full_resampling_running| NIL)
+    (|log_finite_product| FORMULA-DECL NIL |ppg_mt_log_family| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|natRange| DEF-DECL "finite_set[nat]" |ppg_nat_range| NIL)
+    (|rowBlocks| CONST-DECL "set[[nat, V]]" |ppg_full_resampling_running| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|LogEvents| TYPE-EQ-DECL NIL |ppg_mt_log_family| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_full_resampling_running| NIL)
+    (|events| FORMAL-CONST-DECL "{U: finite_set[C] | FORALL (c: C): U(c)}"
+     |ppg_full_resampling_running| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|BadTest| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|badMeasurable| CONST-DECL "bool" |ppg_full_resampling_probability| NIL)
+    (|MeasurableBad| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|rowEvents| CONST-DECL "rowFamily.LogEvents" |ppg_full_resampling_running|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_full_resampling_running| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_full_resampling_running|
+     NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_full_resampling_running| NIL))
+   SHOSTAK))
+ (|bad_prefix_measure_TCC1| 0
+  (|bad_prefix_measure_TCC1-1| NIL 4001308021
+   (""
+    (THEN (SKOSIMP*) (LEMMA "bad_prefix_measurable" ("B" "B!1" "N" "N!1"))
+     (EXPAND "NativeTableSigma") (ASSERT))
+    NIL)
+   ((|bad_prefix_measurable| FORMULA-DECL NIL |ppg_full_resampling_running|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_full_resampling_running| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_full_resampling_running| NIL)
+    (|events| FORMAL-CONST-DECL "{U: finite_set[C] | FORALL (c: C): U(c)}"
+     |ppg_full_resampling_running| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_full_resampling_running|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_full_resampling_running| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|BadTest| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|badMeasurable| CONST-DECL "bool" |ppg_full_resampling_probability| NIL)
+    (|MeasurableBad| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   NIL
+   (|bad_prefix_measure| SUBTYPE
+    "paths[C, V, Value, domain, universe].badPrefix(B, N)"
+    "(ppg_mt_native_spaces[ppg_full_resampling_running.C, ppg_full_resampling_running.V, ppg_full_resampling_running.Value, ppg_full_resampling_running.domain].NativeTableSigma(ppg_full_resampling_running.spaces))"
+    (56 51 56 71))))
+ (|bad_prefix_measure| 0
+  (|bad_prefix_measure-1| NIL 4001308022
+   (""
+    (THEN (SKOSIMP*) (LEMMA "bad_prefix_finite_meet" ("B" "B!1" "N" "N!1"))
+     (LEMMA "bad_prefix_product" ("B" "B!1" "N" "N!1"))
+     (LEMMA "powers.range_product_constant"
+      ("N" "N!1" "r" "probability.mtBadProbability(B!1)"))
+     (ASSERT))
+    NIL)
+   ((|bad_prefix_product| FORMULA-DECL NIL |ppg_full_resampling_running| NIL)
+    (|nnreal_expt| APPLICATION-JUDGEMENT "nnreal" |exponentiation| NIL)
+    (|range_product_constant| FORMULA-DECL NIL |ppg_nat_real_product| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|mtBadProbability| CONST-DECL "{r: nnreal | r <= 1}"
+     |ppg_full_resampling_probability| NIL)
+    (|bad_prefix_finite_meet| FORMULA-DECL NIL |ppg_full_resampling_running|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_full_resampling_running| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_full_resampling_running| NIL)
+    (|events| FORMAL-CONST-DECL "{U: finite_set[C] | FORALL (c: C): U(c)}"
+     |ppg_full_resampling_running| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_full_resampling_running|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_full_resampling_running| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|BadTest| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|badMeasurable| CONST-DECL "bool" |ppg_full_resampling_probability| NIL)
+    (|MeasurableBad| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK))
+ (|running_measurable| 0
+  (|running_measurable-1| NIL 4001308101
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "paths.fullResampling_runningEvent_eq"
+      ("vars" "vars!1" "bad" "B!1" "fallback" "fallback!1" "enumeration"
+       "enumeration!1" "N" "N!1"))
+     (LEMMA "bad_prefix_measurable" ("B" "B!1" "N" "N!1")) (ASSERT))
+    NIL)
+   ((|bad_prefix_measurable| FORMULA-DECL NIL |ppg_full_resampling_running|
+     NIL)
+    (|fullResampling_runningEvent_eq| FORMULA-DECL NIL
+     |ppg_full_resampling_paths| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_full_resampling_paths| NIL)
+    (|events| FORMAL-CONST-DECL "{U: finite_set[C] | FORALL (c: C): U(c)}"
+     |ppg_full_resampling_running| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_full_resampling_running|
+     NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_full_resampling_running| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|BadTest| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|badMeasurable| CONST-DECL "bool" |ppg_full_resampling_probability| NIL)
+    (|MeasurableBad| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_full_resampling_running| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_full_resampling_running| NIL))
+   SHOSTAK))
+ (|fullResampling_running_probability_TCC1| 0
+  (|fullResampling_running_probability_TCC1-1| NIL 4001308021
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "running_measurable"
+      ("vars" "vars!1" "B" "B!1" "fallback" "fallback!1" "enumeration"
+       "enumeration!1" "N" "N!1"))
+     (EXPAND "NativeTableSigma") (ASSERT))
+    NIL)
+   ((|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|running_measurable| FORMULA-DECL NIL |ppg_full_resampling_running| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_full_resampling_running| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_full_resampling_running| NIL)
+    (|events| FORMAL-CONST-DECL "{U: finite_set[C] | FORALL (c: C): U(c)}"
+     |ppg_full_resampling_running| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_full_resampling_running|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_full_resampling_running| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|BadTest| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|badMeasurable| CONST-DECL "bool" |ppg_full_resampling_probability| NIL)
+    (|MeasurableBad| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL))
+   NIL
+   (|fullResampling_running_probability| SUBTYPE
+    "stopped[C, V, Value, domain].randomInitRunningEvent(vars, B, fallback, enumeration, N)"
+    "(ppg_mt_native_spaces[ppg_full_resampling_running.C, ppg_full_resampling_running.V, ppg_full_resampling_running.Value, ppg_full_resampling_running.domain].NativeTableSigma(ppg_full_resampling_running.spaces))"
+    (62 27 62 88))))
+ (|fullResampling_running_probability| 0
+  (|fullResampling_running_probability-1| NIL 4001308022
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "paths.fullResampling_runningEvent_eq"
+      ("vars" "vars!1" "bad" "B!1" "fallback" "fallback!1" "enumeration"
+       "enumeration!1" "N" "N!1"))
+     (LEMMA "bad_prefix_measure" ("B" "B!1" "N" "N!1")) (ASSERT))
+    NIL)
+   ((|bad_prefix_measure| FORMULA-DECL NIL |ppg_full_resampling_running| NIL)
+    (|nnreal_expt| APPLICATION-JUDGEMENT "nnreal" |exponentiation| NIL)
+    (|fullResampling_runningEvent_eq| FORMULA-DECL NIL
+     |ppg_full_resampling_paths| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_full_resampling_paths| NIL)
+    (|events| FORMAL-CONST-DECL "{U: finite_set[C] | FORALL (c: C): U(c)}"
+     |ppg_full_resampling_running| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_full_resampling_running|
+     NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_full_resampling_running| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|BadTest| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|badMeasurable| CONST-DECL "bool" |ppg_full_resampling_probability| NIL)
+    (|MeasurableBad| TYPE-EQ-DECL NIL |ppg_full_resampling_probability| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_full_resampling_running| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_full_resampling_running| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_full_resampling_running| NIL))
+   SHOSTAK)))
+

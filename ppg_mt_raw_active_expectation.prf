@@ -1,0 +1,231 @@
+(|ppg_mt_raw_active_expectation|
+ (|event_order_complete| 0
+  (|event_order_complete-1| NIL 4001310484
+   (""
+    (THEN (TYPEPRED "eventOrder") (EXPAND "selection.completeEnumeration")
+     (ASSERT))
+    NIL)
+   ((|eventOrder| FORMAL-CONST-DECL
+     "{e: list[C] | FORALL (c: C): member(c, e)}"
+     |ppg_mt_raw_active_expectation| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|completeEnumeration| CONST-DECL "bool" |ppg_mt_selection| NIL))
+   SHOSTAK))
+ (|nativeEnumeration_TCC1| 0
+  (|nativeEnumeration_TCC1-1| NIL 4001310484
+   ("" (THEN (LEMMA "event_order_complete") (ASSERT)) NIL)
+   ((|event_order_complete| FORMULA-DECL NIL |ppg_mt_raw_active_expectation|
+     NIL))
+   NIL
+   (|nativeEnumeration| SUBTYPE "eventOrder"
+    "FullEnumeration[C, V, Value, domain, spaces, laws]" (44 54 44 64))))
+ (|activeCount_mt_eq_TLog| 0
+  (|activeCount_mt_eq_TLog-1| NIL 4001310484
+   (""
+    (THEN (SKOSIMP*) (EXPAND "activeCount") (EXPAND "runningSchedule")
+     (EXPAND "mtRunningEvent") (EXPAND "originalCounts.TLog")
+     (EXPAND "originalCounts.processCount") (EXPAND "counts.eventCount")
+     (EXPAND "stopped.runningEvent") (ASSERT))
+    NIL)
+   ((|runningSchedule| CONST-DECL "RawSchedule" |ppg_mt_raw_active_expectation|
+     NIL)
+    (|TLog| CONST-DECL "ENN" |ppg_mt_extended_count| NIL)
+    (|eventCount| CONST-DECL "ENN" |ppg_event_count| NIL)
+    (|runningEvent| CONST-DECL "set[LogSpace[C, V, Value, domain]]"
+     |ppg_mt_stopped_events| NIL)
+    (|processCount| CONST-DECL "ENN" |ppg_mt_extended_count| NIL)
+    (|mtRunningEvent| CONST-DECL "set[ResamplingLog]"
+     |ppg_mt_raw_active_expectation| NIL)
+    (|activeCount| CONST-DECL "enn.ENN" |ppg_mt_raw_active_expectation| NIL))
+   SHOSTAK))
+ (|fixed_count_function| 0
+  (|fixed_count_function-1| NIL 4001310484
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "activeCount_mt_eq_TLog"
+      ("vars" "vars!1" "bad" "bad!1" "init"
+       "LAMBDA(omega:ResamplingLog):initial!1" "omega" "x!1"))
+     (ASSERT))
+    NIL)
+   ((|activeCount_mt_eq_TLog| FORMULA-DECL NIL |ppg_mt_raw_active_expectation|
+     NIL)
+    (|RawSchedule| TYPE-EQ-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|activeCount| CONST-DECL "enn.ENN" |ppg_mt_raw_active_expectation| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (|runningSchedule| CONST-DECL "RawSchedule" |ppg_mt_raw_active_expectation|
+     NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|TLog| CONST-DECL "ENN" |ppg_mt_extended_count| NIL)
+    (|fallback| FORMAL-CONST-DECL "C" |ppg_mt_raw_active_expectation| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|eventOrder| FORMAL-CONST-DECL
+     "{e: list[C] | FORALL (c: C): member(c, e)}"
+     |ppg_mt_raw_active_expectation| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_mt_raw_active_expectation| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK))
+ (|random_count_function| 0
+  (|random_count_function-1| NIL 4001310484
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "activeCount_mt_eq_TLog"
+      ("vars" "vars!1" "bad" "bad!1" "init" "slots.initialStateFromLog" "omega"
+       "x!1"))
+     (EXPAND "originalCounts.randomInitTLog") (ASSERT))
+    NIL)
+   ((|activeCount_mt_eq_TLog| FORMULA-DECL NIL |ppg_mt_raw_active_expectation|
+     NIL)
+    (|RawSchedule| TYPE-EQ-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|activeCount| CONST-DECL "enn.ENN" |ppg_mt_raw_active_expectation| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (|runningSchedule| CONST-DECL "RawSchedule" |ppg_mt_raw_active_expectation|
+     NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|initialStateFromLog| CONST-DECL "MTState" |ppg_mt_random_process| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|randomInitTLog| CONST-DECL "ENN" |ppg_mt_extended_count| NIL)
+    (|fallback| FORMAL-CONST-DECL "C" |ppg_mt_raw_active_expectation| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|eventOrder| FORMAL-CONST-DECL
+     "{e: list[C] | FORALL (c: C): member(c, e)}"
+     |ppg_mt_raw_active_expectation| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_mt_raw_active_expectation| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK))
+ (|expectedActiveCount_fixed_eq| 0
+  (|expectedActiveCount_fixed_eq-1| NIL 4001310484
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fixed_count_function"
+      ("vars" "vars!1" "bad" "bad!1" "initial" "initial!1"))
+     (EXPAND "expectedActiveCount") (EXPAND "rawETLog")
+     (REPLACE -1 :ACTUALS? T) (ASSERT))
+    NIL)
+   ((|expectedActiveCount| CONST-DECL "enn.ENN" |ppg_mt_raw_active_expectation|
+     NIL)
+    (|rawETLog| CONST-DECL "enn.ENN" |ppg_mt_raw_active_expectation| NIL)
+    (|fixed_count_function| FORMULA-DECL NIL |ppg_mt_raw_active_expectation|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_mt_raw_active_expectation| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|expectedActiveCount_randomInit_eq| 0
+  (|expectedActiveCount_randomInit_eq-1| NIL 4001310484
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "random_count_function" ("vars" "vars!1" "bad" "bad!1"))
+     (EXPAND "expectedActiveCount") (EXPAND "rawRandomInitETLog")
+     (REPLACE -1 :ACTUALS? T) (ASSERT))
+    NIL)
+   ((|expectedActiveCount| CONST-DECL "enn.ENN" |ppg_mt_raw_active_expectation|
+     NIL)
+    (|rawRandomInitETLog| CONST-DECL "enn.ENN" |ppg_mt_raw_active_expectation|
+     NIL)
+    (|random_count_function| FORMULA-DECL NIL |ppg_mt_raw_active_expectation|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_mt_raw_active_expectation| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|native_fixed_agreement| 0
+  (|native_fixed_agreement-1| NIL 4001310484
+   (""
+    (THEN (SKOSIMP*) (EXPAND "rawETLog") (EXPAND "oldExpectation.ETLog")
+     (EXPAND "nativeEnumeration") (ASSERT)
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("lintegral" "eventCount" "tsum" "TLog" "randomInitTLog" "logMeasure"
+       "nasaLaw" "lowerValues")))
+    NIL)
+   ((|ETLog| CONST-DECL "ENN" |ppg_mt_time_expectation| NIL)
+    (|nativeEnumeration| CONST-DECL "oldExpectation.FullEnumeration"
+     |ppg_mt_raw_active_expectation| NIL)
+    (|rawETLog| CONST-DECL "enn.ENN" |ppg_mt_raw_active_expectation| NIL))
+   SHOSTAK))
+ (|native_random_agreement| 0
+  (|native_random_agreement-1| NIL 4001310484
+   (""
+    (THEN (SKOSIMP*) (EXPAND "rawRandomInitETLog")
+     (EXPAND "oldExpectation.randomInitETLog") (EXPAND "nativeEnumeration")
+     (ASSERT)
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("lintegral" "eventCount" "tsum" "TLog" "randomInitTLog" "logMeasure"
+       "nasaLaw" "lowerValues")))
+    NIL)
+   ((|randomInitETLog| CONST-DECL "ENN" |ppg_mt_time_expectation| NIL)
+    (|nativeEnumeration| CONST-DECL "oldExpectation.FullEnumeration"
+     |ppg_mt_raw_active_expectation| NIL)
+    (|rawRandomInitETLog| CONST-DECL "enn.ENN" |ppg_mt_raw_active_expectation|
+     NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,43 @@
+% Extend a native probability law to every set by its canonical outer
+% measure. On measurable sets this is the original probability. Keeping
+% the extension allows safe-box lower bounds for arbitrary bad-event sets.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% David Lester's NASALib outer-measure construction follows
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_mt_outer_probability[Omega:TYPE,
+  (IMPORTING ppg_measurable_space[Omega]) ambient:MeasurableSpace,
+  (IMPORTING ppg_probability_measure[Omega,ambient]) probLaw:Probability]: THEORY
+BEGIN
+  IMPORTING ppg_nasa_sigma[Omega],
+    ppg_probability_set_laws[Omega,ambient] AS originalSetLaws,
+    ppg_probability_finite_view[Omega,ambient] AS finiteView,
+    measure_integration@outer_measure_def[Omega] AS outerDefinitions,
+    measure_integration@ast_def[Omega,asNasa(ambient)] AS cover
+
+  outerNative: outerDefinitions.outer_measure = cover.ast(finiteView.nativeLaw(probLaw))
+
+  IMPORTING measure_integration@outer_measure_props[Omega,outerNative] AS outerProperties
+
+  A,B: VAR set[Omega]
+  E: VAR (ambient)
+
+  outer_event_value: LEMMA outerNative(E)=(TRUE,probLaw(E))
+
+  outer_full: LEMMA outerNative(fullset[Omega])=(TRUE,1)
+
+  outer_bound: LEMMA outerNative(A)`1 AND outerNative(A)`2<=1
+
+  outerProbability(A): {r:nnreal|r<=1} = outerNative(A)`2
+
+  outer_probability_event: LEMMA outerProbability(E)=probLaw(E)
+
+  outer_probability_full: LEMMA outerProbability(fullset[Omega])=1
+
+  outer_probability_mono: LEMMA subset?(A,B) IMPLIES outerProbability(A)<=outerProbability(B)
+
+  outer_probability_positive: LEMMA subset?(E,A) AND 0<probLaw(E) IMPLIES 0<outerProbability(A)
+
+  outer_probability_complement: LEMMA outerProbability(E)+outerProbability(complement(E))=1
+
+END ppg_mt_outer_probability

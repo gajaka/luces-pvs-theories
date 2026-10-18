@@ -1,0 +1,65 @@
+% Full resampling reads disjoint complete rows of the original log.
+% Their bad-state events have the same mass; finite independence gives
+% the exact geometric probability of the stopped process still running.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Section 2.
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Cambridge University Press, 2017.
+ppg_full_resampling_running[C,V,Value:TYPE,domain:[V->set[Value]],
+  universe:{U:finite_set[V]|FORALL(v:V):U(v)},
+  events:{U:finite_set[C]|FORALL(c:C):U(c)},
+  (IMPORTING ppg_mt_coordinate_laws[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_full_resampling_probability[C,V,Value,domain,universe,events,spaces,laws] AS probability,
+    ppg_full_resampling_paths[C,V,Value,domain,universe] AS paths,
+    ppg_mt_semantics[C,V,Value,domain] AS semantics,
+    ppg_mt_random_process[C,V,Value,domain] AS slots,
+    ppg_mt_selection[C,V,Value,domain] AS selection,
+    ppg_mt_stopped_events[C,V,Value,domain] AS stopped,
+    ppg_mt_native_spaces[C,V,Value,domain] AS nativeSpaces,
+    ppg_mt_log_probability[C,V,Value,domain,spaces,laws] AS originalLaw,
+    ppg_mt_log_family[C,V,Value,nat,domain,spaces,laws] AS rowFamily,
+    ppg_finite_events[slots.LogSpace,nat,nativeSpaces.NativeTableSigma(spaces)] AS rowMeet,
+    ppg_probability_event_product[slots.LogSpace,nat,nativeSpaces.NativeTableSigma(spaces)] AS rowProduct,
+    ppg_nat_range AS ranges,
+    ppg_finite_product[nat] AS natProduct,
+    ppg_nat_real_product AS powers
+
+  ResamplingLog: TYPE = slots.LogSpace
+
+  B: VAR probability.MeasurableBad
+  vars: VAR [C->finite_set[V]]
+  fallback: VAR C
+  enumeration: VAR list[C]
+  N,n,k: VAR nat
+
+  rowEvents(B): rowFamily.LogEvents = LAMBDA(n:nat):probability.badSlotValue(B,n)
+
+  rowBlocks(n): set[[nat,V]] = paths.mtSlotBlock(n)
+
+  bad_prefix_finite_meet: LEMMA paths.badPrefix(B,N)=rowMeet.finiteMeet(ranges.natRange(N),rowEvents(B))
+
+  bad_prefix_measurable: LEMMA nativeSpaces.NativeTableSigma(spaces)(paths.badPrefix(B,N))
+
+  row_event_depends: LEMMA rowFamily.logDepends(rowBlocks(n),rowEvents(B)(n))
+
+  row_blocks_disjoint: LEMMA n/=k IMPLIES disjoint?(rowBlocks(n),rowBlocks(k))
+
+  row_event_factors: LEMMA rowProduct.eventFactors(originalLaw.logMeasure,rowEvents(B))=
+    (LAMBDA(n:nat):probability.mtBadProbability(B))
+
+  bad_prefix_product: LEMMA originalLaw.logMeasure(rowMeet.finiteMeet(ranges.natRange(N),rowEvents(B)))=
+    natProduct.product(ranges.natRange(N),LAMBDA(n:nat):probability.mtBadProbability(B))
+
+  bad_prefix_measure: LEMMA originalLaw.logMeasure(paths.badPrefix(B,N))=expt(probability.mtBadProbability(B),N)
+
+  running_measurable: LEMMA paths.Full(vars) AND selection.completeEnumeration(enumeration) IMPLIES
+    nativeSpaces.NativeTableSigma(spaces)(stopped.randomInitRunningEvent(vars,B,fallback,enumeration,N))
+
+  fullResampling_running_probability: THEOREM paths.Full(vars) AND selection.completeEnumeration(enumeration) IMPLIES
+    originalLaw.logMeasure(stopped.randomInitRunningEvent(vars,B,fallback,enumeration,N))=
+      expt(probability.mtBadProbability(B),N)
+
+END ppg_full_resampling_running
