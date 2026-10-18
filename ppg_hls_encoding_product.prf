@@ -1,0 +1,419 @@
+(|ppg_hls_encoding_product|
+ (|height_slice_fold| 0
+  (|height_slice_fold-1| NIL 4001354859
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "sum_image"
+       ("S" "layerNodes(Q!1,d!1)" "h" "LAMBDA(u:WNode):u`1" "f"
+        "LAMBDA(a:C):f!1(d!1,a)"))
+      (("" (SPLIT -1)
+        (("1"
+          (LEMMA "nodes.sum_f_g"
+           ("S" "layerNodes(Q!1,d!1)" "f"
+            "LAMBDA(u:WNode):f!1(height(Q!1,u),u`1)" "g"
+            "LAMBDA(u:WNode):f!1(d!1,u`1)"))
+          (("1" (SPLIT -1)
+            (("1" (EXPAND "layerLabels") (("1" (ASSERT) NIL NIL)) NIL)
+             ("2" (SKOSIMP*)
+              (("2" (TYPEPRED "x!1")
+                (("2" (EXPAND "layerNodes")
+                  (("2" (GRIND :EXCLUDE ("height" "is_finite")) NIL NIL)) NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL)
+         ("2" (SKOSIMP*)
+          (("2"
+            (LEMMA "layer_label_injective"
+             ("Q" "Q!1" "k" "d!1" "u" "a!1" "v" "b!1"))
+            (("2" (PROP) NIL NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|layerLabels| CONST-DECL "finite_set[C]" |ppg_hls_witness_layers| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_hls_encoding_product| NIL)
+    (|sum_f_g| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|height| DEF-DECL "nat" |ppg_hls_witness_layers| NIL)
+    (|layer_label_injective| FORMULA-DECL NIL |ppg_hls_witness_layers| NIL)
+    (|sum_image| FORMULA-DECL NIL |ppg_monoid_image| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_encoding_product| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|layerNodes| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_witness_layers|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_encoding_product| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (M FORMAL-TYPE-DECL NIL |ppg_hls_encoding_product| NIL)
+    (|unit| FORMAL-CONST-DECL "M" |ppg_hls_encoding_product| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|op| FORMAL-CONST-DECL "{h: [M, M -> M] |
+   identity?(h)(unit) AND associative?(h) AND commutative?(h)}"
+     |ppg_hls_encoding_product| NIL))
+   SHOSTAK))
+ (|prod_nodes_eq_prod_layers| 0
+  (|prod_nodes_eq_prod_layers-1| NIL 4001354859
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "fold_fiberwise"
+       ("S" "Q!1`nodes" "I" "natRange(maxHeight(Q!1)+1)" "key"
+        "LAMBDA(u:WNode):height(Q!1,u)" "h"
+        "LAMBDA(u:WNode):f!1(height(Q!1,u),u`1)"))
+      (("" (SPLIT -1)
+        (("1"
+          (LEMMA "depths.sum_f_g"
+           ("S" "natRange(maxHeight(Q!1)+1)" "f"
+            "LAMBDA(d:nat):nodes.sum(fiber(Q!1`nodes,LAMBDA(u:WNode):height(Q!1,u),d),LAMBDA(u:WNode):f!1(height(Q!1,u),u`1))"
+            "g"
+            "LAMBDA(d:nat):labels.sum(layerLabels(Q!1,d),LAMBDA(a:C):f!1(d,a))"))
+          (("1" (SPLIT -1)
+            (("1" (ASSERT) NIL NIL)
+             ("2" (SKOSIMP*)
+              (("2" (LEMMA "height_slice_fold" ("Q" "Q!1" "d" "x!1" "f" "f!1"))
+                (("2" (EXPAND "fiber")
+                  (("2" (EXPAND "layerNodes") (("2" (PROPAX) NIL NIL)) NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL)
+         ("2" (SKOSIMP*)
+          (("2" (LEMMA "height_le_maxHeight" ("Q" "Q!1" "u" "a!1"))
+            (("2"
+              (LEMMA "natRange_member"
+               ("n" "maxHeight(Q!1)+1" "k" "height(Q!1,a!1)"))
+              (("2" (ASSERT) NIL NIL)) NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|height_slice_fold| FORMULA-DECL NIL |ppg_hls_encoding_product| NIL)
+    (|layerNodes| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_witness_layers|
+     NIL)
+    (|sum_f_g| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|fiber| CONST-DECL "finite_set[A]" |ppg_finite_fiber_fold| NIL)
+    (|layerLabels| CONST-DECL "finite_set[C]" |ppg_hls_witness_layers| NIL)
+    (|height_le_maxHeight| FORMULA-DECL NIL |ppg_hls_stable_encoding| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|natRange_member| FORMULA-DECL NIL |ppg_nat_range| NIL)
+    (|op| FORMAL-CONST-DECL "{h: [M, M -> M] |
+   identity?(h)(unit) AND associative?(h) AND commutative?(h)}"
+     |ppg_hls_encoding_product| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|unit| FORMAL-CONST-DECL "M" |ppg_hls_encoding_product| NIL)
+    (M FORMAL-TYPE-DECL NIL |ppg_hls_encoding_product| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_encoding_product| NIL)
+    (|height| DEF-DECL "nat" |ppg_hls_witness_layers| NIL)
+    (|maxHeight| CONST-DECL "nat" |ppg_hls_stable_encoding| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_encoding_product| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|natRange| DEF-DECL "finite_set[nat]" |ppg_nat_range| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|fold_fiberwise| FORMULA-DECL NIL |ppg_finite_fiber_fold| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK))
+ (|fold_window| 0
+  (|fold_window-1| NIL 4001354859
+   ("" (INDUCT "n")
+    (("1" (SKOSIMP*)
+      (("1" (REWRITE "window_zero")
+        (("1" (REWRITE "natRange_succ")
+          (("1" (REWRITE "natRange_zero")
+            (("1"
+              (LEMMA "depths.sum_singleton"
+               ("x" "0" "f" "LAMBDA(d:nat):h!1(g!1(k!1+d))"))
+              (("1" (LEMMA "singleton_as_add[nat]" ("x" "0"))
+                (("1"
+                  (LEMMA "layers.fold_cons"
+                   ("x" "g!1(k!1)" "xs" "null[Layer]" "f" "h!1"))
+                  (("1" (LEMMA "layers.fold_nil" ("f" "h!1"))
+                    (("1" (GRIND :EXCLUDE ("fold" "sum" "is_finite")) NIL NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (INST -1 "h!1" "k!1" "g!1")
+        (("2" (REWRITE "window_snoc")
+          (("2"
+            (LEMMA "fold_snoc"
+             ("L" "layerWindow(g!1,j!1,k!1)" "x" "g!1(k!1+j!1+1)" "f" "h!1"))
+            (("2" (LEMMA "natRange_succ" ("n" "j!1+1"))
+              (("2"
+                (LEMMA "depths.sum_add"
+                 ("S" "natRange(j!1+1)" "x" "j!1+1" "f"
+                  "LAMBDA(d:nat):h!1(g!1(k!1+d))"))
+                (("2" (LEMMA "natRange_member" ("n" "j!1+1" "k" "j!1+1"))
+                  (("2" (GRIND :EXCLUDE ("natRange" "fold" "sum" "is_finite"))
+                    NIL NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_encoding_product| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_encoding_product| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (M FORMAL-TYPE-DECL NIL |ppg_hls_encoding_product| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|unit| FORMAL-CONST-DECL "M" |ppg_hls_encoding_product| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|op| FORMAL-CONST-DECL "{h: [M, M -> M] |
+   identity?(h)(unit) AND associative?(h) AND commutative?(h)}"
+     |ppg_hls_encoding_product| NIL)
+    (|fold| DEF-DECL "R" |ppg_list_fold| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|layerWindow| DEF-DECL "LayerSeq" |ppg_shearer_windows| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|natRange| DEF-DECL "finite_set[nat]" |ppg_nat_range| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|nat_induction| FORMULA-DECL NIL |naturalnumbers| NIL)
+    (|window_zero| FORMULA-DECL NIL |ppg_shearer_windows| NIL)
+    (|natRange_zero| FORMULA-DECL NIL |ppg_nat_range| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |ppg_hls_encoding_product|
+     NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|singleton_as_add| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|fold_nil| FORMULA-DECL NIL |ppg_list_fold| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[nat]" |ppg_hls_encoding_product| NIL)
+    (|fold_cons| FORMULA-DECL NIL |ppg_list_fold| NIL)
+    (|null?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|null| ADT-CONSTRUCTOR-DECL "(null?)" |list_adt| NIL)
+    (|sum_singleton| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |ppg_hls_encoding_product| NIL)
+    (|natRange_succ| FORMULA-DECL NIL |ppg_nat_range| NIL)
+    (|fold_snoc| FORMULA-DECL NIL |ppg_list_fold_append| NIL)
+    (|sum_add| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|natRange_member| FORMULA-DECL NIL |ppg_nat_range| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|window_snoc| FORMULA-DECL NIL |ppg_hls_stable_encoding| NIL))
+   SHOSTAK))
+ (|fold_stableEncoding| 0
+  (|fold_stableEncoding-1| NIL 4001354859
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fold_window"
+      ("g" "LAMBDA(d:nat):layerLabels(Q!1,d)" "h" "h!1" "n" "maxHeight(Q!1)"
+       "k" "0"))
+     (EXPAND "stableEncoding") (EXPAND "layerSequence") (ASSERT))
+    NIL)
+   ((|stableEncoding| CONST-DECL "LayerSeq" |ppg_hls_stable_encoding| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|layerSequence| CONST-DECL "LayerSeq" |ppg_hls_stable_encoding| NIL)
+    (|fold_window| FORMULA-DECL NIL |ppg_hls_encoding_product| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_encoding_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_encoding_product| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (M FORMAL-TYPE-DECL NIL |ppg_hls_encoding_product| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|maxHeight| CONST-DECL "nat" |ppg_hls_stable_encoding| NIL)
+    (|layerLabels| CONST-DECL "finite_set[C]" |ppg_hls_witness_layers| NIL))
+   SHOSTAK))
+ (|layer_function_eta| 0
+  (|layer_function_eta-1| NIL 4001354887
+   ("" (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY) (ASSERT)) NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_hls_encoding_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_encoding_product| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (M FORMAL-TYPE-DECL NIL |ppg_hls_encoding_product| NIL))
+   SHOSTAK))
+ (|prod_map_stableEncoding| 0
+  (|prod_map_stableEncoding-1| NIL 4001354859
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fold_map"
+      ("xs" "stableEncoding(Q!1)" "h" "h!1" "f" "LAMBDA(x:M):x"))
+     (LEMMA "fold_stableEncoding" ("Q" "Q!1" "h" "h!1"))
+     (LEMMA "layer_function_eta" ("h" "h!1")) (REPLACE -1) (ASSERT))
+    NIL)
+   ((|fold_stableEncoding| FORMULA-DECL NIL |ppg_hls_encoding_product| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|layer_function_eta| FORMULA-DECL NIL |ppg_hls_encoding_product| NIL)
+    (|fold_map| FORMULA-DECL NIL |ppg_list_fold_map| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_encoding_product| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|LayerSeq| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|stableEncoding| CONST-DECL "LayerSeq" |ppg_hls_stable_encoding| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_encoding_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (M FORMAL-TYPE-DECL NIL |ppg_hls_encoding_product| NIL)
+    (|unit| FORMAL-CONST-DECL "M" |ppg_hls_encoding_product| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|op| FORMAL-CONST-DECL "{h: [M, M -> M] |
+   identity?(h)(unit) AND associative?(h) AND commutative?(h)}"
+     |ppg_hls_encoding_product| NIL))
+   SHOSTAK)))
+

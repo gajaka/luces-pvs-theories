@@ -1,0 +1,49 @@
+% A finite commutative-monoid product can be grouped by node height.
+% Distinct nodes in a height layer have distinct labels, so passing to
+% layer labels preserves every factor and its multiplicity. The ordered
+% layer list and its finite height range therefore have the same product.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 1.2.1. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSStableEncoding.lean.
+ppg_hls_encoding_product[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},M:TYPE,unit:M,
+  op:{h:[M,M->M]|identity?(h)(unit) AND associative?(h) AND commutative?(h)}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_stable_encoding[C,G], ppg_nat_range,
+    ppg_finite_fiber_fold[[C,nat],nat,M,unit,op],
+    ppg_monoid_image[[C,nat],C,M,unit,op],
+    ppg_monoid_sum[[C,nat],M,unit,op] AS nodes,
+    ppg_monoid_sum[C,M,unit,op] AS labels,
+    ppg_monoid_sum[nat,M,unit,op] AS depths,
+    ppg_list_fold[finite_set[C],M,unit,op] AS layers,
+    ppg_list_fold[M,M,unit,op] AS values,
+    ppg_list_fold_append[finite_set[C],M,unit,op],
+    ppg_list_fold_map[finite_set[C],M,M,unit,op]
+  Q: VAR (Valid)
+  f: VAR [nat,C->M]
+  h: VAR [Layer->M]
+  g: VAR [nat->Layer]
+  d,n,k: VAR nat
+
+  height_slice_fold: LEMMA
+    nodes.sum(layerNodes(Q,d),LAMBDA(u:WNode):f(height(Q,u),u`1))=
+    labels.sum(layerLabels(Q,d),LAMBDA(a:C):f(d,a))
+
+  prod_nodes_eq_prod_layers: THEOREM
+    nodes.sum(Q`nodes,LAMBDA(u:WNode):f(height(Q,u),u`1))=
+    depths.sum(natRange(maxHeight(Q)+1),
+      LAMBDA(d:nat):labels.sum(layerLabels(Q,d),LAMBDA(a:C):f(d,a)))
+
+  fold_window: LEMMA FORALL(g:[nat->Layer]):layers.fold(layerWindow(g,n,k),h)=
+    depths.sum(natRange(n+1),LAMBDA(d:nat):h(g(k+d)))
+
+  fold_stableEncoding: LEMMA layers.fold(stableEncoding(Q),h)=
+    depths.sum(natRange(maxHeight(Q)+1),LAMBDA(d:nat):h(layerLabels(Q,d)))
+
+  layer_function_eta: LEMMA (LAMBDA(J:Layer):h(J))=h
+
+  prod_map_stableEncoding: THEOREM
+    values.fold(map[Layer,M](h)(stableEncoding(Q)),LAMBDA(x:M):x)=
+    depths.sum(natRange(maxHeight(Q)+1),LAMBDA(d:nat):h(layerLabels(Q,d)))
+END ppg_hls_encoding_product

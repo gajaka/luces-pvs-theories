@@ -1,0 +1,93 @@
+% The longest-path layers form a stable sequence without choosing a
+% topological ordering. Their finite supremum fixes the final layer;
+% reading beyond it gives the empty set. A proper DAG has no missing
+% intermediate height, so its encoding belongs to the proper family.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 1.2.1. https://arxiv.org/abs/2111.06527
+% Nicholas J. A. Harvey and Jan Vondrak, "An Algorithmic Proof of the
+% Lovasz Local Lemma via Resampling Oracles", Section 5.3.
+% https://arxiv.org/abs/1504.02044
+% Lean counterpart: PPGraphHLSStableEncoding.lean.
+ppg_hls_stable_encoding[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_witness_layers[C,G], ppg_shearer_windows[C,G],
+    ppg_finite_nat_sup[[C,nat]] AS encodingSup
+  Q,E: VAR (Valid)
+  u,v,r: VAR WNode
+  B,J: VAR Layer
+  L: VAR LayerSeq
+  f: VAR [nat->Layer]
+  start,d,k,n: VAR nat
+
+  layerSequence(Q,start,d): LayerSeq =
+    layerWindow(LAMBDA(k:nat):layerLabels(Q,k),d,start)
+
+  layerSequence_stable: THEOREM
+    (FORALL(u:WNode):Q`nodes(u) IMPLIES B(u`1)) IMPLIES
+    stableSequences(B,d,layerLabels(Q,start))(layerSequence(Q,start,d))
+
+  window_mem_index: LEMMA list_props[Layer].member(J,layerWindow(f,d,start)) IMPLIES
+    EXISTS(k:nat):start<=k AND k<=start+d AND J=f(k)
+
+  layerSequence_mem_index: THEOREM
+    list_props[Layer].member(J,layerSequence(Q,start,d)) IMPLIES
+    EXISTS(k:nat):start<=k AND k<=start+d AND J=layerLabels(Q,k)
+
+  maxHeight(Q): nat = encodingSup.natSup(Q`nodes,LAMBDA(u:WNode):height(Q,u))
+
+  height_le_maxHeight: THEOREM Q`nodes(u) IMPLIES height(Q,u)<=maxHeight(Q)
+
+  lower_height_at: LEMMA Q`nodes(u) AND height(Q,u)=n AND k<=n IMPLIES
+    EXISTS(v:WNode):Q`nodes(v) AND height(Q,v)=k
+
+  exists_node_at_lower_height: THEOREM Q`nodes(u) AND k<=height(Q,u) IMPLIES
+    EXISTS(v:WNode):Q`nodes(v) AND height(Q,v)=k
+
+  layerLabels_nonempty: THEOREM NOT empty?(Q`nodes) AND k<=maxHeight(Q) IMPLIES
+    NOT empty?(layerLabels(Q,k))
+
+  stableEncoding(Q): LayerSeq = layerSequence(Q,0,maxHeight(Q))
+
+  stableEncoding_proper: LEMMA NOT empty?(Q`nodes) IMPLIES proper(stableEncoding(Q))
+
+  stableEncoding_mem_properFamily: THEOREM
+    (FORALL(u:WNode):Q`nodes(u) IMPLIES B(u`1)) AND Q`nodes(r) AND
+    (FORALL(u:WNode):Q`nodes(u) IMPLIES Reach(Q)(u,r)) IMPLIES
+    properFamily(B,singleton(r`1))(stableEncoding(Q))
+
+  orderedRange(n): RECURSIVE list[nat] = IF n=0 THEN null[nat]
+    ELSE append[nat](orderedRange(n-1),cons[nat](n-1,null[nat])) ENDIF MEASURE n
+
+  orderedRange_zero: LEMMA orderedRange(0)=null[nat]
+
+  orderedRange_succ: LEMMA orderedRange(n+1)=
+    append[nat](orderedRange(n),cons[nat](n,null[nat]))
+
+  window_snoc: LEMMA layerWindow(f,d+1,start)=
+    append[Layer](layerWindow(f,d,start),cons[Layer](f(start+d+1),null[Layer]))
+
+  window_eq_range_map: LEMMA layerWindow(f,d,start)=
+    map[nat,Layer](LAMBDA(k:nat):f(start+k))(orderedRange(d+1))
+
+  layerSequence_eq_range_map: THEOREM layerSequence(Q,start,d)=
+    map[nat,Layer](LAMBDA(k:nat):layerLabels(Q,start+k))(orderedRange(d+1))
+
+  layerGetD(L,k): RECURSIVE Layer = CASES L OF null:emptyset[C],
+    cons(J,M):IF k=0 THEN J ELSE layerGetD(M,k-1) ENDIF ENDCASES MEASURE k
+
+  window_getD: LEMMA layerGetD(layerWindow(f,d,start),k)=
+    IF k<=d THEN f(start+k) ELSE emptyset[C] ENDIF
+
+  layerSequence_getD: THEOREM layerGetD(layerSequence(Q,start,d),k)=
+    IF k<=d THEN layerLabels(Q,start+k) ELSE emptyset[C] ENDIF
+
+  layerLabels_eq_empty_of_maxHeight_lt: THEOREM maxHeight(Q)<k IMPLIES
+    layerLabels(Q,k)=emptyset[C]
+
+  stableEncoding_getD: THEOREM layerGetD(stableEncoding(Q),k)=layerLabels(Q,k)
+
+  stableEncoding_eq_imp_layerLabels_eq: THEOREM stableEncoding(Q)=stableEncoding(E) IMPLIES
+    layerLabels(Q,k)=layerLabels(E,k)
+END ppg_hls_stable_encoding

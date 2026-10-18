@@ -1,0 +1,27 @@
+% The layer-product identity specializes to real multiplication without
+% any sign restriction. Every node contributes its label weight once;
+% taking the layers merely regroups those finitely many factors.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 1.2.1. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSStableEncoding.lean.
+ppg_hls_encoding_weight[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_stable_encoding[C,G],
+    ppg_hls_encoding_product[C,G,real,1,LAMBDA(a,b:real):a*b] AS encodingProducts,
+    ppg_real_product[[C,nat]], ppg_real_product[C]
+  Q: VAR (Valid)
+  p: VAR [C->real]
+
+  label_product_fold: LEMMA ppg_finite_product[C].product=
+    ppg_monoid_sum[C,real,1,LAMBDA(a,b:real):a*b].sum
+
+  node_product_fold: LEMMA ppg_finite_product[[C,nat]].product=
+    ppg_monoid_sum[[C,nat],real,1,LAMBDA(a,b:real):a*b].sum
+
+  weight_eta: LEMMA (LAMBDA(a:C):p(a))=p
+
+  sequenceWeight_stableEncoding: THEOREM
+    sequenceWeight(p)(stableEncoding(Q))=product(Q`nodes,LAMBDA(u:WNode):p(u`1))
+END ppg_hls_encoding_weight
