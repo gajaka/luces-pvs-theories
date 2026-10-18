@@ -1,0 +1,284 @@
+(|ppg_resampling_potential|
+ (|model_stochastic| 0
+  (|model_stochastic-1| NIL 4001296819
+   (""
+    (THEN (SKOSIMP*) (LEMMA "potentialCheck.rule_valid" ("Q" "Q!1" "P" "P!1"))
+     (LEMMA "potentialUpdate.kernel_nonnegative"
+      ("R" "potentialCore.rule(Q!1,P!1)"))
+     (LEMMA "potentialUpdate.kernel_normalized"
+      ("R" "potentialCore.rule(Q!1,P!1)"))
+     (GRIND :IF-MATCH ALL :DEFS
+      ("model" "potentialOrder.Stochastic" "potentialUpdate.model") :EXCLUDE
+      ("rule" "kernel" "sum" "Valid" "is_finite" "card")))
+    NIL)
+   ((|kernel_nonnegative| FORMULA-DECL NIL |ppg_finite_update| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rule| CONST-DECL "Rule" |ppg_finite_resampling_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_update| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|model| CONST-DECL "potentialDrift.Model" |ppg_resampling_potential| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|kernel_normalized| FORMULA-DECL NIL |ppg_finite_update| NIL)
+    (|rule_valid| FORMULA-DECL NIL |ppg_resampling_update| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_potential| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_potential| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_potential| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_potential| NIL))
+   SHOSTAK))
+ (|model_absorbing| 0
+  (|model_absorbing-1| NIL 4001296819
+   (""
+    (THEN (SKOSIMP*) (EXPAND "potentialOrder.Absorbing") (SKOSIMP*)
+     (LEMMA "potentialCheck.kernel_good"
+      ("Q" "Q!1" "P" "P!1" "s" "s!1" "t" "t!1"))
+     (EXPAND "model") (EXPAND "potentialUpdate.model")
+     (EXPAND "potentialCore.rule")
+     (GRIND :IF-MATCH NIL :DEFS ("model" "potentialUpdate.model") :EXCLUDE
+      ("rule" "kernel" "sum" "Valid" "is_finite" "card")))
+    NIL)
+   ((|model| CONST-DECL "potentialDrift.Model" |ppg_resampling_potential| NIL)
+    (|rule| CONST-DECL "Rule" |ppg_finite_resampling_core| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|productMass| CONST-DECL "rat" |ppg_finite_resampling_core| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_potential| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_potential| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_potential| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_potential| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_update| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|kernel_good| FORMULA-DECL NIL |ppg_resampling_update| NIL)
+    (|Absorbing| CONST-DECL "bool" |ppg_finite_potential_order| NIL))
+   SHOSTAK))
+ (|candidate_check_of_accessible| 0
+  (|candidate_check_of_accessible-1| NIL 4001296819
+   (""
+    (THEN (SKOSIMP*) (LEMMA "model_stochastic" ("Q" "Q!1" "P" "P!1"))
+     (LEMMA "model_absorbing" ("Q" "Q!1" "P" "P!1"))
+     (LEMMA "potentialAccessible.candidate_checked_iff_accessible"
+      ("M" "model(Q!1,P!1)"))
+     (LEMMA "potentialCheck.check_eq_true_iff"
+      ("Q" "Q!1" "P" "P!1" "W" "potentialSynthesis.candidate(model(Q!1,P!1))"))
+     (EXPAND "potentialUpdate.check") (EXPAND "model")
+     (EXPAND "potentialUpdate.model")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("rule" "kernel" "model" "check" "resamplingCheck" "Stochastic"
+       "Absorbing" "Accessible" "candidate" "synthesize" "potential"
+       "cramerValue" "is_finite" "card")))
+    NIL)
+   ((|model_absorbing| FORMULA-DECL NIL |ppg_resampling_potential| NIL)
+    (|candidate| CONST-DECL "Witness" |ppg_finite_potential_synthesis| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|check_eq_true_iff| FORMULA-DECL NIL |ppg_resampling_update| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|check| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_potential| NIL)
+    (|model| CONST-DECL "potentialDrift.Model" |ppg_resampling_potential| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_update| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|candidate_checked_iff_accessible| FORMULA-DECL NIL
+     |ppg_finite_potential_accessible| NIL)
+    (|model_stochastic| FORMULA-DECL NIL |ppg_resampling_potential| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_potential| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_potential| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_potential| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_potential| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL))
+   SHOSTAK))
+ (|synthesizePotential_sound| 0
+  (|synthesizePotential_sound-1| NIL 4001296819
+   (""
+    (THEN (SKOSIMP*) (LEMMA "potentialCore.check_marginals_iff" ("Q" "Q!1"))
+     (EXPAND "synthesizePotential")
+     (LEMMA "potentialSynthesis.synthesize_sound"
+      ("M" "model(Q!1,P!1)" "W" "W!1"))
+     (LEMMA "potentialCheck.check_eq_true_iff" ("Q" "Q!1" "P" "P!1" "W" "W!1"))
+     (EXPAND "potentialUpdate.check") (EXPAND "model")
+     (EXPAND "potentialUpdate.model")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("rule" "kernel" "model" "check" "resamplingCheck" "Stochastic"
+       "Absorbing" "Accessible" "candidate" "synthesize" "potential"
+       "cramerValue" "is_finite" "card")))
+    NIL)
+   ((|synthesizePotential| CONST-DECL
+     "lift[Witness[State[V, Value, variables, domains], ruleFinite.allStates]]"
+     |ppg_resampling_potential| NIL)
+    (|check_eq_true_iff| FORMULA-DECL NIL |ppg_resampling_update| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|checkMarginals| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|extendMass| CONST-DECL "rat" |ppg_finite_resampling_core| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|check| CONST-DECL "bool" |ppg_finite_update| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_potential| NIL)
+    (|Witness| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|model| CONST-DECL "potentialDrift.Model" |ppg_resampling_potential| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_update| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|synthesize_sound| FORMULA-DECL NIL |ppg_finite_potential_synthesis| NIL)
+    (|check_marginals_iff| FORMULA-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_potential| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_potential| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_potential| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_potential| NIL))
+   SHOSTAK))
+ (|synthesizePotential_complete| 0
+  (|synthesizePotential_complete-1| NIL 4001296819
+   (""
+    (THEN (SKOSIMP*) (LEMMA "potentialCore.check_marginals_iff" ("Q" "Q!1"))
+     (LEMMA "model_stochastic" ("Q" "Q!1" "P" "P!1"))
+     (LEMMA "model_absorbing" ("Q" "Q!1" "P" "P!1"))
+     (LEMMA "potentialAccessible.synthesize_complete" ("M" "model(Q!1,P!1)"))
+     (EXPAND "synthesizePotential") (EXPAND "model")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("rule" "kernel" "model" "check" "resamplingCheck" "Stochastic"
+       "Absorbing" "Accessible" "candidate" "synthesize" "potential"
+       "cramerValue" "is_finite" "card")))
+    NIL)
+   ((|model_stochastic| FORMULA-DECL NIL |ppg_resampling_potential| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|synthesize_complete| FORMULA-DECL NIL |ppg_finite_potential_accessible|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_update| NIL)
+    (|model| CONST-DECL "potentialDrift.Model" |ppg_resampling_potential| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_potential| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|extendMass| CONST-DECL "rat" |ppg_finite_resampling_core| NIL)
+    (|checkMarginals| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|synthesizePotential| CONST-DECL
+     "lift[Witness[State[V, Value, variables, domains], ruleFinite.allStates]]"
+     |ppg_resampling_potential| NIL)
+    (|model_absorbing| FORMULA-DECL NIL |ppg_resampling_potential| NIL)
+    (|check_marginals_iff| FORMULA-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_potential| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_potential| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_potential| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_potential| NIL))
+   SHOSTAK))
+ (|synthesizePotential_iff_accessible| 0
+  (|synthesizePotential_iff_accessible-1| NIL 4001296819
+   (""
+    (THEN (SKOSIMP*) (LEMMA "potentialCore.check_marginals_iff" ("Q" "Q!1"))
+     (LEMMA "model_stochastic" ("Q" "Q!1" "P" "P!1"))
+     (LEMMA "model_absorbing" ("Q" "Q!1" "P" "P!1"))
+     (LEMMA "potentialAccessible.synthesize_iff_accessible"
+      ("M" "model(Q!1,P!1)"))
+     (EXPAND "synthesizePotential") (EXPAND "model")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("rule" "kernel" "model" "check" "resamplingCheck" "Stochastic"
+       "Absorbing" "Accessible" "candidate" "synthesize" "potential"
+       "cramerValue" "is_finite" "card")))
+    NIL)
+   ((|model_stochastic| FORMULA-DECL NIL |ppg_resampling_potential| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|synthesize_iff_accessible| FORMULA-DECL NIL
+     |ppg_finite_potential_accessible| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_update| NIL)
+    (|model| CONST-DECL "potentialDrift.Model" |ppg_resampling_potential| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_potential| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|extendMass| CONST-DECL "rat" |ppg_finite_resampling_core| NIL)
+    (|checkMarginals| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|synthesizePotential| CONST-DECL
+     "lift[Witness[State[V, Value, variables, domains], ruleFinite.allStates]]"
+     |ppg_resampling_potential| NIL)
+    (|model_absorbing| FORMULA-DECL NIL |ppg_resampling_potential| NIL)
+    (|check_marginals_iff| FORMULA-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_potential| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_potential| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_potential| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_potential| NIL))
+   SHOSTAK)))
+

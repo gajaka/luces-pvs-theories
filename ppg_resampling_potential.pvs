@@ -1,0 +1,56 @@
+% The finite coordinate-resampling kernel is stochastic and absorbs good
+% states. Positive-mass accessibility is therefore exactly the condition
+% for its rational Cramer candidate to pass the existing drift checker.
+% Synthesis retains the marginal-validity check before returning a witness.
+%
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Section 7.1.1 and Exercise 7.25.
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Exercise 10.22.
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Algorithm 1.1.
+ppg_resampling_potential[V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_finite_resampling_core[V,Value,variables,domains] AS potentialCore,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS potentialStates,
+    ppg_resampling_update[V,Value,variables,domains] AS potentialCheck
+
+  State: TYPE = potentialCore.State
+
+  IMPORTING ppg_finite_update[State,State,potentialStates.allStates,potentialStates.allStates] AS potentialUpdate,
+    ppg_finite_drift[State,potentialStates.allStates] AS potentialDrift,
+    ppg_finite_potential_order[State,potentialStates.allStates] AS potentialOrder,
+    ppg_finite_potential_reach[State,potentialStates.allStates] AS potentialReach,
+    ppg_finite_potential_synthesis[State,potentialStates.allStates] AS potentialSynthesis,
+    ppg_finite_potential_accessible[State,potentialStates.allStates] AS potentialAccessible
+
+  Q: VAR potentialCore.Marginals
+  P: VAR potentialCore.Policy
+  W: VAR potentialDrift.Witness
+
+  model(Q,P): potentialDrift.Model = potentialUpdate.model(potentialCore.rule(Q,P))
+
+  synthesizePotential(Q,P): lift[potentialDrift.Witness] =
+    IF potentialCore.checkMarginals(Q) THEN potentialSynthesis.synthesize(model(Q,P))
+    ELSE bottom[potentialDrift.Witness] ENDIF
+
+  model_stochastic: THEOREM potentialCore.Valid(Q) IMPLIES potentialOrder.Stochastic(model(Q,P))
+
+  model_absorbing: THEOREM potentialCore.Valid(Q) IMPLIES potentialOrder.Absorbing(model(Q,P))
+
+  candidate_check_of_accessible: THEOREM potentialCore.Valid(Q) AND potentialReach.Accessible(model(Q,P)) IMPLIES
+    potentialCheck.resamplingCheck(Q,P,potentialSynthesis.candidate(model(Q,P)))
+
+  synthesizePotential_sound: THEOREM synthesizePotential(Q,P)=up[potentialDrift.Witness](W) IMPLIES
+    potentialCheck.resamplingCheck(Q,P,W)
+
+  synthesizePotential_complete: THEOREM potentialCore.Valid(Q) AND potentialReach.Accessible(model(Q,P)) IMPLIES
+    synthesizePotential(Q,P)=up[potentialDrift.Witness](potentialSynthesis.candidate(model(Q,P)))
+
+  synthesizePotential_iff_accessible: THEOREM potentialCore.Valid(Q) IMPLIES
+    ((EXISTS(W:potentialDrift.Witness):synthesizePotential(Q,P)=up[potentialDrift.Witness](W)) IFF
+      potentialReach.Accessible(model(Q,P)))
+
+END ppg_resampling_potential
