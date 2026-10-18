@@ -1,0 +1,782 @@
+(|ppg_resampling_exact_table|
+ (|tableModel_TCC1| 0
+  (|tableModel_TCC1-1| NIL 4001300401
+   (""
+    (THEN (TYPEPRED "Q") (TYPEPRED "init") (LEMMA "laws.coordinate_singletons")
+     (TYPEPRED "execution.tableH")
+     (LEMMA "kernelProof.model_stochastic" ("Q" "Q" "P" "P"))
+     (LEMMA "kernelProof.model_absorbing" ("Q" "Q" "P" "P"))
+     (EXPAND "kernelProof.model")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("measurable" "tableModel" "tableProcess" "initialValue"
+       "expectedHitCount" "integral" "integrableValue" "integrable?"
+       "trajectory" "run" "rule" "model" "Equations" "Stochastic" "Absorbing"
+       "NativeTableSigma" "NativeStateSigma" "generated" "sigma?" "is_finite"
+       "card")))
+    NIL)
+   ((Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}"
+     |ppg_resampling_exact_table| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_exact_table| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_exact_table| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_exact_table| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_exact_table| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|coordinate_singletons| FORMULA-DECL NIL |ppg_resampling_table_product|
+     NIL)
+    (|init| FORMAL-CONST-DECL "ppg_resampling_table_product
+    [V, Value, variables, domains, Q].TableInitializer"
+     |ppg_resampling_exact_table| NIL)
+    (|TableInitializer| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|InitialLocal| CONST-DECL "bool" |ppg_finite_table_core| NIL)
+    (|Initializer| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   NIL
+   (|tableModel| SUBTYPE "execProduct[V, Value, variables, domains, Q].spaces"
+    "{S: ppg_mt_coordinate_laws[bool, ppg_resampling_exact_table.V, ppg_resampling_exact_table.Value, LAMBDA (v: ppg_resampling_exact_table.V): ppg_resampling_exact_table.domains(v)].VariableSpaces | FORALL (v_1: ppg_resampling_exact_table.V, x: (ppg_resampling_exact_table.domains(v_1))): S(v_1)(sets[(ppg_resampling_exact_table.domains(v_1))].singleton(x))}"
+    (44 45 44 67))))
+ (|tableModel_TCC2| 0
+  (|tableModel_TCC2-1| NIL 4001300401
+   (""
+    (THEN (TYPEPRED "Q") (TYPEPRED "init") (LEMMA "laws.coordinate_singletons")
+     (TYPEPRED "execution.tableH")
+     (LEMMA "kernelProof.model_stochastic" ("Q" "Q" "P" "P"))
+     (LEMMA "kernelProof.model_absorbing" ("Q" "Q" "P" "P"))
+     (EXPAND "kernelProof.model")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("measurable" "tableModel" "tableProcess" "initialValue"
+       "expectedHitCount" "integral" "integrableValue" "integrable?"
+       "trajectory" "run" "rule" "model" "Equations" "Stochastic" "Absorbing"
+       "NativeTableSigma" "NativeStateSigma" "generated" "sigma?" "is_finite"
+       "card")))
+    NIL)
+   ((Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}"
+     |ppg_resampling_exact_table| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_exact_table| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_exact_table| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_exact_table| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_exact_table| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|coordinate_singletons| FORMULA-DECL NIL |ppg_resampling_table_product|
+     NIL)
+    (|model_stochastic| FORMULA-DECL NIL |ppg_resampling_potential| NIL)
+    (|model| CONST-DECL "potentialDrift.Model" |ppg_resampling_potential| NIL)
+    (|model_absorbing| FORMULA-DECL NIL |ppg_resampling_potential| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (P FORMAL-CONST-DECL "Policy" |ppg_resampling_exact_table| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_table_execution| NIL)
+    (|activeFootprint| CONST-DECL "finite_set[V]" |ppg_finite_resampling_core|
+     NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_finite_table_history| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_table_history| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|tableHistory| CONST-DECL "historyFiltration.Filtration"
+     |ppg_finite_table_history| NIL)
+    (|init| FORMAL-CONST-DECL "ppg_resampling_table_product
+    [V, Value, variables, domains, Q].TableInitializer"
+     |ppg_resampling_exact_table| NIL)
+    (|TableInitializer| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|InitialLocal| CONST-DECL "bool" |ppg_finite_table_core| NIL)
+    (|Initializer| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   NIL
+   (|tableModel| SUBTYPE
+    "update[State[V, Value, variables, domains], State[V, Value, variables, domains], ruleFinite.allStates, ruleFinite.allStates].model(core[V, Value, variables, domains].rule(Q, P))"
+    "StochasticAbsorbingModel[State, ResamplingLog, states[V, Value, variables, domains].allStates, qNative[bool, V, Value, LAMBDA (v: V): domains(v)].NativeTableSigma(qProduct[V, Value, variables, domains, Q].spaces), execution[V, Value, variables, domains, Q, P, init].tableMeasure, tablePast[V, Value, variables, domains, execProduct.spaces, LAMBDA (s: State[V, Value, variables, domains, Q, P, init]): execCore.activeFootprint(P, s), init].tableHistory]"
+    (49 47 49 75))))
+ (|tableProcess_TCC1| 0
+  (|tableProcess_TCC1-1| NIL 4001300401
+   (""
+    (THEN (TYPEPRED "Q") (TYPEPRED "init") (LEMMA "laws.coordinate_singletons")
+     (TYPEPRED "execution.tableH") (TYPEPRED "execution.tableRealized")
+     (EXPAND "tableModel") (ASSERT))
+    NIL)
+   ((Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}"
+     |ppg_resampling_exact_table| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_exact_table| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_exact_table| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_exact_table| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_exact_table| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|coordinate_singletons| FORMULA-DECL NIL |ppg_resampling_table_product|
+     NIL)
+    (|tableRealized| CONST-DECL
+     "tableProcessTypes.Realization(tableRule.model(execCore.rule(Q, P)))"
+     |ppg_resampling_table_execution| NIL)
+    (|Realization| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|rule| CONST-DECL "Rule" |ppg_finite_resampling_core| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|model| CONST-DECL "drift.Model" |ppg_finite_update| NIL)
+    (|Rule| TYPE-EQ-DECL NIL |ppg_finite_update| NIL)
+    (|TransitionProcess| CONST-DECL "bool" |ppg_finite_process_realization|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|tableMeasure| CONST-DECL "tableMeasureTypes.FiniteLaw"
+     |ppg_resampling_table_execution| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_resampling_table_execution| NIL)
+    (|tableModel| CONST-DECL "exact.StochasticAbsorbingModel"
+     |ppg_resampling_exact_table| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (P FORMAL-CONST-DECL "Policy" |ppg_resampling_exact_table| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_table_execution| NIL)
+    (|activeFootprint| CONST-DECL "finite_set[V]" |ppg_finite_resampling_core|
+     NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_finite_table_history| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_table_history| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|tableHistory| CONST-DECL "historyFiltration.Filtration"
+     |ppg_finite_table_history| NIL)
+    (|init| FORMAL-CONST-DECL "ppg_resampling_table_product
+    [V, Value, variables, domains, Q].TableInitializer"
+     |ppg_resampling_exact_table| NIL)
+    (|TableInitializer| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|InitialLocal| CONST-DECL "bool" |ppg_finite_table_core| NIL)
+    (|Initializer| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   NIL
+   (|tableProcess| SUBTYPE
+    "execution[V, Value, variables, domains, Q, P, init].tableRealized"
+    "Realization[State[V, Value, variables, domains, Q, P, init], ResamplingLog[V, Value, variables, domains, Q, P, init], execStates[ppg_resampling_exact_table.V, ppg_resampling_exact_table.Value, ppg_resampling_exact_table.variables, ppg_resampling_exact_table.domains].allStates, qNative[bool, ppg_resampling_exact_table.V, ppg_resampling_exact_table.Value, LAMBDA (v: ppg_resampling_exact_table.V): ppg_resampling_exact_table.domains(v)].NativeTableSigma(qProduct[ppg_resampling_exact_table.V, ppg_resampling_exact_table.Value, ppg_resampling_exact_table.variables, ppg_resampling_exact_table.domains, ppg_resampling_exact_table.Q].spaces), ppg_resampling_table_execution[ppg_resampling_exact_table.V, ppg_resampling_exact_table.Value, ppg_resampling_exact_table.variables, ppg_resampling_exact_table.domains, ppg_resampling_exact_table.Q, ppg_resampling_exact_table.P, ppg_resampling_exact_table.init].tableMeasure, tablePast[ppg_resampling_exact_table.V, ppg_resampling_exact_table.Value, ppg_resampling_exact_table.variables, ppg_resampling_exact_table.domains, execProduct[ppg_resampling_exact_table.V, ppg_resampling_exact_table.Value, ppg_resampling_exact_table.variables, ppg_resampling_exact_table.domains, ppg_resampling_exact_table.Q].spaces, LAMBDA (s: ppg_resampling_table_execution[ppg_resampling_exact_table.V, ppg_resampling_exact_table.Value, ppg_resampling_exact_table.variables, ppg_resampling_exact_table.domains, ppg_resampling_exact_table.Q, ppg_resampling_exact_table.P, ppg_resampling_exact_table.init].State): execCore[ppg_resampling_exact_table.V, ppg_resampling_exact_table.Value, ppg_resampling_exact_table.variables, ppg_resampling_exact_table.domains].activeFootprint(ppg_resampling_exact_table.P, s), ppg_resampling_exact_table.init].tableHistory](ppg_resampling_exact_table.tableModel)"
+    (55 50 55 73))))
+ (|initialMap_TCC1| 0
+  (|initialMap_TCC1-1| NIL 4001300401
+   (""
+    (THEN (TYPEPRED "Q") (TYPEPRED "init") (LEMMA "laws.coordinate_singletons")
+     (TYPEPRED "execution.tableH") (LEMMA "laws.native_state_sigma_full")
+     (REPLACE -1 :ACTUALS? T)
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("measurable" "tableModel" "tableProcess" "initialValue"
+       "expectedHitCount" "integral" "integrableValue" "integrable?"
+       "trajectory" "run" "rule" "model" "Equations" "Stochastic" "Absorbing"
+       "NativeTableSigma" "NativeStateSigma" "generated" "sigma?" "is_finite"
+       "card")))
+    NIL)
+   ((Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}"
+     |ppg_resampling_exact_table| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_exact_table| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_exact_table| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_exact_table| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_exact_table| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|coordinate_singletons| FORMULA-DECL NIL |ppg_resampling_table_product|
+     NIL)
+    (|native_state_sigma_full| FORMULA-DECL NIL |ppg_resampling_table_product|
+     NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (P FORMAL-CONST-DECL "Policy" |ppg_resampling_exact_table| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_table_execution| NIL)
+    (|activeFootprint| CONST-DECL "finite_set[V]" |ppg_finite_resampling_core|
+     NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_finite_table_history| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_table_history| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|tableHistory| CONST-DECL "historyFiltration.Filtration"
+     |ppg_finite_table_history| NIL)
+    (|init| FORMAL-CONST-DECL "ppg_resampling_table_product
+    [V, Value, variables, domains, Q].TableInitializer"
+     |ppg_resampling_exact_table| NIL)
+    (|TableInitializer| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|InitialLocal| CONST-DECL "bool" |ppg_finite_table_core| NIL)
+    (|Initializer| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   NIL
+   (|initialMap| SUBTYPE "init"
+    "StateMap[State, ResamplingLog, states[V, Value, variables, domains].allStates, qNative[bool, V, Value, LAMBDA (v: V): domains(v)].NativeTableSigma(qProduct[V, Value, variables, domains, Q].spaces), execution[V, Value, variables, domains, Q, P, init].tableMeasure]"
+    (57 32 57 36))))
+ (|initial_process| 0
+  (|initial_process-1| NIL 4001300403
+   (""
+    (THEN (TYPEPRED "Q") (TYPEPRED "init") (LEMMA "laws.coordinate_singletons")
+     (TYPEPRED "execution.tableH") (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "process.ambient_state_at"
+      ("X" "tableProcess" "n" "0" "omega" "x!1"))
+     (LEMMA "execution.realization_at" ("n" "0" "omega" "x!1"))
+     (LEMMA "exactTableCore.trajectory_zero"
+      ("F" "LAMBDA(s:State):core.activeFootprint(P,s)" "init" "init" "omega"
+       "x!1"))
+     (EXPAND "tableProcess") (EXPAND "initialMap")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("measurable" "tableModel" "tableProcess" "initialValue"
+       "expectedHitCount" "integral" "integrableValue" "integrable?"
+       "trajectory" "run" "rule" "model" "Equations" "Stochastic" "Absorbing"
+       "NativeTableSigma" "NativeStateSigma" "generated" "sigma?" "is_finite"
+       "card")))
+    NIL)
+   ((Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}"
+     |ppg_resampling_exact_table| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_exact_table| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_exact_table| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_exact_table| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_exact_table| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|coordinate_singletons| FORMULA-DECL NIL |ppg_resampling_table_product|
+     NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_resampling_table_execution| NIL)
+    (|initialMap| CONST-DECL "values.StateMap" |ppg_resampling_exact_table|
+     NIL)
+    (|tableProcess| CONST-DECL "process.Realization(tableModel)"
+     |ppg_resampling_exact_table| NIL)
+    (|Realization| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|tableModel| CONST-DECL "exact.StochasticAbsorbingModel"
+     |ppg_resampling_exact_table| NIL)
+    (|StochasticAbsorbingModel| TYPE-EQ-DECL NIL
+     |ppg_finite_potential_expectation| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_resampling_exact_table| NIL)
+    (|Absorbing| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_exact_table| NIL)
+    (|TransitionProcess| CONST-DECL "bool" |ppg_finite_process_realization|
+     NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|ambientState| CONST-DECL "StateMap" |ppg_finite_process_realization| NIL)
+    (|StateMap| TYPE-EQ-DECL NIL |ppg_finite_process_integral| NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|tableMeasure| CONST-DECL "tableMeasureTypes.FiniteLaw"
+     |ppg_resampling_table_execution| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |sigma_countable| |sigma_set|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[Value]" |ppg_resampling_exact_table| NIL)
+    (|realization_at| FORMULA-DECL NIL |ppg_resampling_table_execution| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|executionProcess| CONST-DECL
+     "tableUpdate.ExecutionProcess(execCore.rule(Q, P), tableDraws)"
+     |ppg_resampling_table_execution| NIL)
+    (|executionRealization| CONST-DECL "Realization(model(R))"
+     |ppg_finite_update_execution| NIL)
+    (|tableRealized| CONST-DECL
+     "tableProcessTypes.Realization(tableRule.model(execCore.rule(Q, P)))"
+     |ppg_resampling_table_execution| NIL)
+    (|trajectory_zero| FORMULA-DECL NIL |ppg_finite_table_core| NIL)
+    (|Footprint| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (|ambient_state_at| FORMULA-DECL NIL |ppg_finite_process_realization| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (P FORMAL-CONST-DECL "Policy" |ppg_resampling_exact_table| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_table_execution| NIL)
+    (|activeFootprint| CONST-DECL "finite_set[V]" |ppg_finite_resampling_core|
+     NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_finite_table_history| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_table_history| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|tableHistory| CONST-DECL "historyFiltration.Filtration"
+     |ppg_finite_table_history| NIL)
+    (|init| FORMAL-CONST-DECL "ppg_resampling_table_product
+    [V, Value, variables, domains, Q].TableInitializer"
+     |ppg_resampling_exact_table| NIL)
+    (|TableInitializer| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|InitialLocal| CONST-DECL "bool" |ppg_finite_table_core| NIL)
+    (|Initializer| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK))
+ (|initial_function| 0
+  (|initial_function-1| NIL 4001300403
+   (""
+    (THEN (TYPEPRED "Q") (TYPEPRED "init") (LEMMA "laws.coordinate_singletons")
+     (TYPEPRED "execution.tableH") (SKOSIMP*) (LEMMA "initial_process")
+     (REPLACE -1 :ACTUALS? T) (EXPAND "initialValue") (ASSERT))
+    NIL)
+   ((Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}"
+     |ppg_resampling_exact_table| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_exact_table| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_exact_table| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_exact_table| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_exact_table| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|coordinate_singletons| FORMULA-DECL NIL |ppg_resampling_table_product|
+     NIL)
+    (|initialValue| CONST-DECL "functions.NativeFunction"
+     |ppg_resampling_exact_table| NIL)
+    (|initial_process| FORMULA-DECL NIL |ppg_resampling_exact_table| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (P FORMAL-CONST-DECL "Policy" |ppg_resampling_exact_table| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_table_execution| NIL)
+    (|activeFootprint| CONST-DECL "finite_set[V]" |ppg_finite_resampling_core|
+     NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_finite_table_history| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_table_history| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|tableHistory| CONST-DECL "historyFiltration.Filtration"
+     |ppg_finite_table_history| NIL)
+    (|init| FORMAL-CONST-DECL "ppg_resampling_table_product
+    [V, Value, variables, domains, Q].TableInitializer"
+     |ppg_resampling_exact_table| NIL)
+    (|TableInitializer| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|InitialLocal| CONST-DECL "bool" |ppg_finite_table_core| NIL)
+    (|Initializer| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK))
+ (|table_expectedHitCount_eq_of_equations| 0
+  (|table_expectedHitCount_eq_of_equations-1| NIL 4001300403
+   (""
+    (THEN (TYPEPRED "Q") (TYPEPRED "init") (LEMMA "laws.coordinate_singletons")
+     (TYPEPRED "execution.tableH") (SKOSIMP*) (TYPEPRED "f!1")
+     (TYPEPRED "tableModel")
+     (LEMMA "exact.expectedHitCount_eq_of_equations"
+      ("M" "tableModel" "f" "f!1" "X" "tableProcess"))
+     (LEMMA "initial_function" ("f" "f!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("measurable" "tableModel" "tableProcess" "initialValue"
+       "expectedHitCount" "integral" "integrableValue" "integrable?"
+       "trajectory" "run" "rule" "model" "Equations" "Stochastic" "Absorbing"
+       "NativeTableSigma" "NativeStateSigma" "generated" "sigma?" "is_finite"
+       "card")))
+    NIL)
+   ((Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}"
+     |ppg_resampling_exact_table| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_exact_table| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_exact_table| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_exact_table| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_exact_table| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|coordinate_singletons| FORMULA-DECL NIL |ppg_resampling_table_product|
+     NIL)
+    (|initial_function| FORMULA-DECL NIL |ppg_resampling_exact_table| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[Value]" |ppg_resampling_exact_table| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |sigma_countable| |sigma_set|)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|comap| CONST-DECL "comapEvents.MeasurableSpace" |ppg_discrete_comap| NIL)
+    (|fiberInvariant| CONST-DECL "bool" |ppg_discrete_comap| NIL)
+    (|prefixMap| CONST-DECL "[ResamplingLog -> prefixPaths.Path(n)]"
+     |ppg_finite_table_measurable_prefix| NIL)
+    (|history| CONST-DECL "ppg_measurable_space[ResamplingLog].MeasurableSpace"
+     |ppg_finite_table_history| NIL)
+    (|prefixMap| CONST-DECL "[ResamplingLog -> historyPaths.Path(n)]"
+     |ppg_finite_table_history| NIL)
+    (|ofReal| CONST-DECL "ENN" |ppg_enn_ofreal| NIL)
+    (|max| CONST-DECL "{p: real | p >= m AND p >= n}" |real_defs| NIL)
+    (|ambientState| CONST-DECL "StateMap" |ppg_finite_process_realization| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|expectedHitCount_eq_of_equations| FORMULA-DECL NIL
+     |ppg_finite_potential_expectation| NIL)
+    (|SolvingVector| TYPE-EQ-DECL NIL |ppg_finite_stopped_conditional| NIL)
+    (|Process| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|StateSpace| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|adapted| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|AdaptedProcess| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|TransitionProcess| CONST-DECL "bool" |ppg_finite_process_realization|
+     NIL)
+    (|Realization| TYPE-EQ-DECL NIL |ppg_finite_process_realization| NIL)
+    (|tableProcess| CONST-DECL "process.Realization(tableModel)"
+     |ppg_resampling_exact_table| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_update| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_state_finite| NIL)
+    (|allStates| CONST-DECL "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_resampling_state_finite| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| NIL)
+    (|Vector| TYPE-EQ-DECL NIL |ppg_finite_potential_system| NIL)
+    (|Equations| CONST-DECL "bool" |ppg_finite_potential_system| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_exact_table| NIL)
+    (|Stochastic| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|Absorbing| CONST-DECL "bool" |ppg_finite_potential_order| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_resampling_exact_table| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_resampling_table_execution| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|allFinite| CONST-DECL "bool" |ppg_finite_law_view| NIL)
+    (|FiniteLaw| TYPE-EQ-DECL NIL |ppg_finite_law_view| NIL)
+    (|tableMeasure| CONST-DECL "tableMeasureTypes.FiniteLaw"
+     |ppg_resampling_table_execution| NIL)
+    (|StochasticAbsorbingModel| TYPE-EQ-DECL NIL
+     |ppg_finite_potential_expectation| NIL)
+    (|tableModel| CONST-DECL "exact.StochasticAbsorbingModel"
+     |ppg_resampling_exact_table| NIL)
+    (|Solution| TYPE-EQ-DECL NIL |ppg_resampling_exact_table| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Policy| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (P FORMAL-CONST-DECL "Policy" |ppg_resampling_exact_table| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_table_execution| NIL)
+    (|activeFootprint| CONST-DECL "finite_set[V]" |ppg_finite_resampling_core|
+     NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_finite_table_history| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_table_history| NIL)
+    (|HistoryLaw| CONST-DECL "bool" |ppg_filtration| NIL)
+    (|Filtration| TYPE-EQ-DECL NIL |ppg_filtration| NIL)
+    (|tableHistory| CONST-DECL "historyFiltration.Filtration"
+     |ppg_finite_table_history| NIL)
+    (|init| FORMAL-CONST-DECL "ppg_resampling_table_product
+    [V, Value, variables, domains, Q].TableInitializer"
+     |ppg_resampling_exact_table| NIL)
+    (|TableInitializer| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|InitialLocal| CONST-DECL "bool" |ppg_finite_table_core| NIL)
+    (|Initializer| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_finite_table_core| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_resampling_table_product| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK)))
+
