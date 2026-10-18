@@ -1,0 +1,60 @@
+% Certification status gives an ordinary cert_selection morphism pair:
+% its forward map is constant at the supplied level, and its reverse map
+% returns a proposition. Intersecting these views over all data is precisely
+% certification equivalence. No round-trip consistency law is needed here.
+%
+% Lean counterpart: PPGraphEquivBridge.lean. Families retain the source lists
+% through ppg_list_certificates. The witness argument d0 represents exactly
+% the source Nonempty D instance; it does not affect family membership.
+%
+% For order-theoretic background, see B. A. Davey and H. A. Priestley,
+% Introduction to Lattices and Order, second edition, Cambridge, 2002.
+% The certification instance is due to D. Stosic.
+%
+% Author: Dragan Stosic, 2026.
+
+ppg_cert_equiv_bridge[D: TYPE, Th: TYPE, le: (partial_order?[Th])]: THEORY
+BEGIN
+
+  IMPORTING ppg_list_certificates[D, Th, le]
+  IMPORTING cert_selection[bool, Th]
+
+  F: VAR CertFamily
+  d, d0, d1: VAR D
+  t0, t1, t2: VAR Th
+
+  proposition_equiv(p, q: bool): bool = p IFF q
+
+  cert_lens(F, d, t0): MorphPair =
+    (# f := (LAMBDA (p: bool): t0),
+       g := (LAMBDA (t: Th): fully_certified(F)(d, t)),
+       eq_T := proposition_equiv #)
+
+  cert_lens_induced: THEOREM
+    FORALL (F: CertFamily, d: D, t0, t1, t2: Th):
+      induced_equiv(cert_lens(F, d, t0))(t1, t2) IFF
+        (fully_certified(F)(d, t1) IFF fully_certified(F)(d, t2))
+
+  cert_morph_family(F, t0, d0): MorphFamily =
+    {mp: MorphPair | EXISTS (d: D): mp = cert_lens(F, d, t0)}
+
+  cert_morph_family_witness_independent: LEMMA
+    FORALL (F: CertFamily, t0: Th, d0, d1: D):
+      cert_morph_family(F, t0, d0) = cert_morph_family(F, t0, d1)
+
+  cert_equiv_eq_finest: THEOREM
+    FORALL (F: CertFamily, d0: D, t0, t1, t2: Th):
+      cert_equiv(F)(t1, t2) IFF
+        finest_equiv(cert_morph_family(F, t0, d0))(t1, t2)
+
+  cert_equiv_to_finest: THEOREM
+    FORALL (F: CertFamily, d0: D, t0, t1, t2: Th):
+      cert_equiv(F)(t1, t2) IMPLIES
+        finest_equiv(cert_morph_family(F, t0, d0))(t1, t2)
+
+  finest_to_cert_equiv: THEOREM
+    FORALL (F: CertFamily, d0: D, t0, t1, t2: Th):
+      finest_equiv(cert_morph_family(F, t0, d0))(t1, t2) IMPLIES
+        cert_equiv(F)(t1, t2)
+
+END ppg_cert_equiv_bridge

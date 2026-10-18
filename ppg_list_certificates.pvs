@@ -1,0 +1,36 @@
+% A certificate family retains the finite list used in PPGraphParametric.lean.
+% The subtype condition represents its proof that every listed predicate is
+% monotone. Repeated certificates and their order are retained in the value.
+%
+% The universal predicates below use ordinary list membership. Compare the
+% treatment of predicates and partial orders in B. A. Davey and H. A. Priestley,
+% Introduction to Lattices and Order, second edition, Cambridge, 2002.
+%
+% Author: Dragan Stosic, 2026.
+
+ppg_list_certificates[D: TYPE, Th: TYPE, le: (partial_order?[Th])]: THEORY
+BEGIN
+
+  Certificate: TYPE = [D, Th -> bool]
+
+  C: VAR Certificate
+  d: VAR D
+  t, t1, t2: VAR Th
+
+  monotone_cert(C): bool =
+    FORALL (d: D, t1, t2: Th):
+      le(t1, t2) AND C(d, t1) IMPLIES C(d, t2)
+
+  CertFamily: TYPE =
+    {L: list[Certificate] |
+       FORALL (C: Certificate): member(C, L) IMPLIES monotone_cert(C)}
+
+  F: VAR CertFamily
+
+  fully_certified(F)(d, t): bool =
+    FORALL (C: Certificate): member(C, F) IMPLIES C(d, t)
+
+  cert_equiv(F)(t1, t2): bool =
+    FORALL (d: D): fully_certified(F)(d, t1) IFF fully_certified(F)(d, t2)
+
+END ppg_list_certificates
