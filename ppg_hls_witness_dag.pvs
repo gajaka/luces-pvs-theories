@@ -1,0 +1,145 @@
+% Finite witness DAGs retain their nodes and arcs as separate finite sets.
+% A node consists of a label and an occurrence index. Validity records
+% support, acyclicity and complete orientation on dependent label pairs;
+% the raw graph type carries none of these additional conditions.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Definitions 2.1--2.4 and Fact 2.6.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSWitnessDAG.lean.
+%
+% An ancestor prefix keeps the nodes that can reach its root and the
+% arcs whose targets can reach it. Its root need not be a node until a
+% theorem explicitly requires that membership. Canonical occurrence
+% indices follow each chain of nodes with the same label. The label
+% type remains arbitrary; only each graph's node and arc sets are finite.
+
+ppg_hls_witness_dag[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_reversal[[C,nat]] AS dagPaths
+
+  WNode: TYPE = [C,nat]
+
+  WitnessDAG: TYPE = [#nodes:finite_set[WNode],arcs:finite_set[[WNode,WNode]]#]
+
+  D: VAR WitnessDAG
+  u,v,w,x,y,r: VAR WNode
+  i: VAR C
+  m,n: VAR nat
+
+  Edge(D): dagPaths.ArcRelation = D`arcs
+
+  positivePath(D)(u,v): bool = dagPaths.positivePath(Edge(D))(u,v)
+
+  Reach(D)(u,v): bool = dagPaths.path(Edge(D))(u,v)
+
+  Valid(D): bool =
+    (FORALL(u,v:WNode):Edge(D)(u,v) IMPLIES D`nodes(u) AND D`nodes(v)) AND
+    dagPaths.Acyclic(Edge(D)) AND
+    (FORALL(u,v:WNode):D`nodes(u) AND D`nodes(v) AND u/=v IMPLIES
+      ((Edge(D)(u,v) OR Edge(D)(v,u)) IFF (u`1=v`1 OR G(u`1,v`1))))
+
+  Proper(D): bool = EXISTS(r:WNode):D`nodes(r) AND
+    (FORALL(u:WNode):D`nodes(u) IMPLIES Reach(D)(u,r))
+
+  Sink(D)(u): bool = D`nodes(u) AND (FORALL(v:WNode):NOT Edge(D)(u,v))
+
+  Canonical(D): bool =
+    (FORALL(i:C,n:nat):D`nodes((i,n+1)) IMPLIES D`nodes((i,n))) AND
+    (FORALL(i:C,m,n:nat):D`nodes((i,m)) AND D`nodes((i,n)) AND m<n IMPLIES
+      Edge(D)((i,m),(i,n)))
+
+  valid_supported: LEMMA Valid(D) AND Edge(D)(u,v) IMPLIES D`nodes(u) AND D`nodes(v)
+
+  valid_acyclic: LEMMA Valid(D) IMPLIES dagPaths.Acyclic(Edge(D))
+
+  valid_oriented: LEMMA Valid(D) AND D`nodes(u) AND D`nodes(v) AND u/=v IMPLIES
+    ((Edge(D)(u,v) OR Edge(D)(v,u)) IFF (u`1=v`1 OR G(u`1,v`1)))
+
+  positivePath_single: LEMMA Edge(D)(u,v) IMPLIES positivePath(D)(u,v)
+
+  positivePath_trans: LEMMA
+    positivePath(D)(u,v) AND positivePath(D)(v,w) IMPLIES positivePath(D)(u,w)
+
+  reach_cases: LEMMA Reach(D)(u,v) IFF u=v OR positivePath(D)(u,v)
+
+  positivePath_to_reach: LEMMA positivePath(D)(u,v) IMPLIES Reach(D)(u,v)
+
+  reach_refl: LEMMA Reach(D)(u,u)
+
+  reach_single: LEMMA Edge(D)(u,v) IMPLIES Reach(D)(u,v)
+
+  reach_trans: LEMMA Reach(D)(u,v) AND Reach(D)(v,w) IMPLIES Reach(D)(u,w)
+
+  edge_reach_positive: LEMMA Edge(D)(u,v) AND Reach(D)(v,w) IMPLIES positivePath(D)(u,w)
+
+  edge_reach: LEMMA Edge(D)(u,v) AND Reach(D)(v,w) IMPLIES Reach(D)(u,w)
+
+  reach_edge: LEMMA Reach(D)(u,v) AND Edge(D)(v,w) IMPLIES Reach(D)(u,w)
+
+  sink_no_positive: LEMMA Sink(D)(u) IMPLIES NOT positivePath(D)(u,v)
+
+  canonical_predecessor: LEMMA Canonical(D) AND D`nodes((i,n+1)) IMPLIES D`nodes((i,n))
+
+  canonical_chain: LEMMA Canonical(D) AND D`nodes((i,m)) AND D`nodes((i,n)) AND m<n IMPLIES
+    Edge(D)((i,m),(i,n))
+
+  edge_ne: THEOREM Valid(D) AND Edge(D)(u,v) IMPLIES u/=v
+
+  edge_dependent: THEOREM Valid(D) AND Edge(D)(u,v) IMPLIES u`1=v`1 OR G(u`1,v`1)
+
+  transGen_supported: THEOREM Valid(D) AND positivePath(D)(u,v) IMPLIES D`nodes(u) AND D`nodes(v)
+
+  proper_root_sink: THEOREM Valid(D) AND D`nodes(r) AND
+    (FORALL(u:WNode):D`nodes(u) IMPLIES Reach(D)(u,r)) IMPLIES Sink(D)(r)
+
+  sink_eq_root: THEOREM
+    (FORALL(v:WNode):D`nodes(v) IMPLIES Reach(D)(v,r)) AND Sink(D)(u) IMPLIES u=r
+
+  proper_unique_sink: THEOREM Valid(D) AND Proper(D) IMPLIES
+    (EXISTS(r:WNode):Sink(D)(r) AND (FORALL(u:WNode):Sink(D)(u) IMPLIES u=r))
+
+  reverse(D,u,v): WitnessDAG =
+    (#nodes:=D`nodes,arcs:=add((v,u),remove((u,v),D`arcs))#)
+
+  reverse_nodes: LEMMA reverse(D,u,v)`nodes=D`nodes
+
+  reverse_edge_iff: THEOREM
+    Edge(reverse(D,u,v))(x,y) IFF dagPaths.reverseArc(Edge(D),u,v)(x,y)
+
+  reverse_edge_relation: LEMMA Edge(reverse(D,u,v))=dagPaths.reverseArc(Edge(D),u,v)
+
+  reverse_valid: THEOREM Valid(D) AND Edge(D)(u,v) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(D),u,v)) IMPLIES Valid(reverse(D,u,v))
+
+  reverse_canonical: THEOREM Canonical(D) AND u`1/=v`1 IMPLIES Canonical(reverse(D,u,v))
+
+  ancestorPrefix(D,r): WitnessDAG =
+    (#nodes:=intersection(D`nodes,LAMBDA(u:WNode):Reach(D)(u,r)),
+      arcs:=intersection(D`arcs,LAMBDA(e:[WNode,WNode]):Reach(D)(e`2,r))#)
+
+  prefix_node_iff: THEOREM ancestorPrefix(D,r)`nodes(u) IFF D`nodes(u) AND Reach(D)(u,r)
+
+  prefix_edge_iff: THEOREM Edge(ancestorPrefix(D,r))(u,v) IFF Edge(D)(u,v) AND Reach(D)(v,r)
+
+  prefix_edge_sub: LEMMA Edge(ancestorPrefix(D,r))(u,v) IMPLIES Edge(D)(u,v)
+
+  prefixPathCase(D,r)(u,v): bool = Reach(D)(u,v) AND
+    (Reach(D)(v,r) IMPLIES Reach(ancestorPrefix(D,r))(u,v))
+
+  prefix_case_single: LEMMA Edge(D)(u,v) IMPLIES prefixPathCase(D,r)(u,v)
+
+  prefix_case_trans: LEMMA
+    prefixPathCase(D,r)(u,v) AND prefixPathCase(D,r)(v,w) IMPLIES prefixPathCase(D,r)(u,w)
+
+  positive_prefix_case: LEMMA positivePath(D)(u,v) IMPLIES prefixPathCase(D,r)(u,v)
+
+  reach_prefix: THEOREM Reach(D)(u,r) IMPLIES Reach(ancestorPrefix(D,r))(u,r)
+
+  prefix_valid: THEOREM Valid(D) IMPLIES Valid(ancestorPrefix(D,r))
+
+  prefix_proper: THEOREM D`nodes(r) IMPLIES Proper(ancestorPrefix(D,r))
+
+  prefix_canonical: THEOREM Canonical(D) IMPLIES Canonical(ancestorPrefix(D,r))
+END ppg_hls_witness_dag
