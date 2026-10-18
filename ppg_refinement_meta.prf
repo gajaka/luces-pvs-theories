@@ -1,0 +1,111 @@
+(|ppg_refinement_meta|
+ (|compatible_refl| 0
+  (|compatible_refl-1| NIL 4001353336
+   ("" (THEN (GRIND :DEFS ("configs_compatible") :EXCLUDE ("rr_of"))) NIL)
+   ((|configs_compatible| CONST-DECL "bool" |ppg_refinement_meta| NIL))
+   SHOSTAK))
+ (|compatible_trans| 0
+  (|compatible_trans-1| NIL 4001353336
+   ("" (THEN (GRIND :DEFS ("configs_compatible") :EXCLUDE ("rr_of"))) NIL)
+   ((|configs_compatible| CONST-DECL "bool" |ppg_refinement_meta| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_refinement_meta| NIL))
+   SHOSTAK))
+ (|meta_edge_preserves_relations| 0
+  (|meta_edge_preserves_relations-1| NIL 4001353337
+   (""
+    (THEN
+     (GRIND :DEFS ("meta_pp_edge" "configs_compatible") :EXCLUDE
+      ("rr_of" "config_valid")))
+    NIL)
+   ((|meta_pp_edge| CONST-DECL "bool" |ppg_refinement_meta| NIL)
+    (|configs_compatible| CONST-DECL "bool" |ppg_refinement_meta| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_refinement_meta| NIL))
+   SHOSTAK))
+ (|invalid_config_isolated| 0
+  (|invalid_config_isolated-1| NIL 4001353337
+   (""
+    (THEN
+     (GRIND :DEFS ("meta_pp_edge") :EXCLUDE
+      ("config_valid" "configs_compatible")))
+    NIL)
+   ((|meta_pp_edge| CONST-DECL "bool" |ppg_refinement_meta| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL))
+   SHOSTAK))
+ (|invalid_config_no_incoming| 0
+  (|invalid_config_no_incoming-1| NIL 4001353337
+   (""
+    (THEN
+     (GRIND :DEFS ("meta_pp_edge") :EXCLUDE
+      ("config_valid" "configs_compatible")))
+    NIL)
+   ((|meta_pp_edge| CONST-DECL "bool" |ppg_refinement_meta| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL))
+   SHOSTAK))
+ (|meta_valid_configs| 0
+  (|meta_valid_configs-1| NIL 4001353337
+   (""
+    (THEN
+     (GRIND :DEFS ("meta_pp_valid" "meta_pp_edge") :EXCLUDE
+      ("config_valid" "configs_compatible")))
+    NIL)
+   ((|meta_pp_valid| CONST-DECL "bool" |ppg_refinement_meta| NIL)
+    (|meta_pp_edge| CONST-DECL "bool" |ppg_refinement_meta| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|MetaPPGraph| TYPE-EQ-DECL NIL |ppg_refinement_meta| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|RefinementConfig| TYPE-EQ-DECL NIL |ppg_refinement_meta| NIL)
+    (|EquivRel| TYPE-EQ-DECL NIL |ppg_refinement_meta| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_refinement_meta| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|upgrade_chain_preserves| 0
+  (|upgrade_chain_preserves-1| NIL 4001353337
+   (""
+    (THEN
+     (GRIND :DEFS ("meta_pp_edge" "configs_compatible") :EXCLUDE
+      ("rr_of" "config_valid")))
+    NIL)
+   ((|meta_pp_edge| CONST-DECL "bool" |ppg_refinement_meta| NIL)
+    (|configs_compatible| CONST-DECL "bool" |ppg_refinement_meta| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_refinement_meta| NIL))
+   SHOSTAK))
+ (|compatibility_preorder| 0
+  (|compatibility_preorder-1| NIL 4001353337
+   (""
+    (THEN (LEMMA "compatible_refl") (LEMMA "compatible_trans")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|compatible_refl| FORMULA-DECL NIL |ppg_refinement_meta| NIL)
+    (|compatible_trans| FORMULA-DECL NIL |ppg_refinement_meta| NIL))
+   SHOSTAK))
+ (|backward_compatible| 0
+  (|backward_compatible-1| NIL 4001353337
+   (""
+    (THEN
+     (GRIND :DEFS
+      ("meta_pp_edge" "configs_compatible" "implementation_correct") :EXCLUDE
+      ("rr_of" "config_valid")))
+    NIL)
+   ((|implementation_correct| CONST-DECL "bool" |ppg_refinement_meta| NIL)
+    (|meta_pp_edge| CONST-DECL "bool" |ppg_refinement_meta| NIL)
+    (|configs_compatible| CONST-DECL "bool" |ppg_refinement_meta| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_refinement_meta| NIL))
+   SHOSTAK))
+ (|failure_propagates| 0
+  (|failure_propagates-1| NIL 4001353337
+   ("" (THEN (LEMMA "backward_compatible") (GRIND :DEFS NIL)) NIL)
+   ((|backward_compatible| FORMULA-DECL NIL |ppg_refinement_meta| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_refinement_meta| NIL)
+    (|EquivRel| TYPE-EQ-DECL NIL |ppg_refinement_meta| NIL)
+    (|RefinementConfig| TYPE-EQ-DECL NIL |ppg_refinement_meta| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL))
+   SHOSTAK)))
+

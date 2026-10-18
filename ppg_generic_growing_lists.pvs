@@ -1,0 +1,26 @@
+% Appending a last element is injective in both the prefix and the element.
+% Reversal exposes the last element as a constructor head. A nonempty
+% finite family of lists has a member of greatest length, even when the
+% element carrier itself is empty or infinite.
+%
+% Robin A. Moser and Gabor Tardos, A constructive proof of the general
+% Lovasz Local Lemma, Journal of the ACM 57(2), 2010, Section 2.
+% Lean counterpart: the two generic list lemmas in
+% PPGraphMoserTardosGrowing.lean.
+ppg_generic_growing_lists[T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_real_minimum[list[T]] AS listMinimum
+  L,M: VAR list[T]
+  x,y: VAR T
+  S: VAR finite_set[list[T]]
+
+  reverse_append_singleton: LEMMA
+    reverse(append(L,cons(x,null)))=cons(x,reverse(L))
+
+  list_concat_inj: THEOREM append(L,cons(x,null))=append(M,cons(y,null)) IMPLIES
+    L=M AND x=y
+
+  exists_max_depth_candidate: THEOREM nonempty?(S) IMPLIES
+    EXISTS(v:list[T]):S(v) AND FORALL(w:list[T]):S(w) IMPLIES length(w)<=length(v)
+
+END ppg_generic_growing_lists

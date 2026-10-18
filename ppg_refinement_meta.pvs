@@ -1,0 +1,84 @@
+% A refinement configuration determines a relation on implementation
+% pairs. Compatibility includes every pair related by the source in the
+% target relation. Compatible meta-edges therefore preserve correctness.
+%
+% Lean counterpart: PPGraphMeta.lean, theorems T1--T10.
+ppg_refinement_meta[T:TYPE]: THEORY
+BEGIN
+  EquivRel: TYPE = {R:[T,T->bool]|
+    (FORALL(x:T):R(x,x)) AND
+    (FORALL(x,y:T):R(x,y) IMPLIES R(y,x)) AND
+    (FORALL(x,y,z:T):R(x,y) AND R(y,z) IMPLIES R(x,z))}
+
+  RefinementConfig: TYPE =
+    [# le:EquivRel,f_abs:[T->T],g_con:[T->T] #]
+
+  cfg,cfg1,cfg2,cfg3: VAR RefinementConfig
+  x,y: VAR T
+  impl_pairs: VAR [T,T->bool]
+
+  rr_of(cfg)(x,y): bool =
+    cfg`le(x,cfg`g_con(y)) OR
+    (cfg`le(cfg`g_con(y),x) AND cfg`le(cfg`f_abs(x),cfg`f_abs(x))) OR
+    (cfg`le(cfg`g_con(y),cfg`g_con(y)) AND cfg`le(cfg`f_abs(x),y))
+
+  config_valid(cfg): bool =
+    (FORALL(y:T):cfg`le(cfg`g_con(y),cfg`g_con(y))) AND
+    (FORALL(x:T):cfg`le(cfg`f_abs(x),cfg`f_abs(x))) AND
+    (FORALL(x:T):rr_of(cfg)(x,x))
+
+  configs_compatible(cfg1,cfg2): bool =
+    FORALL(x,y:T):rr_of(cfg1)(x,y) IMPLIES rr_of(cfg2)(x,y)
+
+  meta_pp_edge(cfg1,cfg2): bool =
+    cfg1/=cfg2 AND config_valid(cfg1) AND config_valid(cfg2) AND
+    configs_compatible(cfg1,cfg2)
+
+  MetaPPGraph: TYPE =
+    {H:[# configs:pred[RefinementConfig],edges:[RefinementConfig,RefinementConfig->bool] #]|
+      FORALL(c1,c2:RefinementConfig):H`edges(c1,c2) IMPLIES
+        H`configs(c1) AND H`configs(c2)}
+
+  H: VAR MetaPPGraph
+
+  meta_pp_valid(H): bool =
+    FORALL(c1,c2:RefinementConfig):H`edges(c1,c2) IMPLIES meta_pp_edge(c1,c2)
+
+  compatible_refl: THEOREM configs_compatible(cfg,cfg)
+
+  compatible_trans: THEOREM
+    configs_compatible(cfg1,cfg2) AND configs_compatible(cfg2,cfg3) IMPLIES
+    configs_compatible(cfg1,cfg3)
+
+  meta_edge_preserves_relations: THEOREM
+    meta_pp_edge(cfg1,cfg2) AND rr_of(cfg1)(x,y) IMPLIES rr_of(cfg2)(x,y)
+
+  invalid_config_isolated: THEOREM
+    NOT config_valid(cfg1) IMPLIES NOT meta_pp_edge(cfg1,cfg2)
+
+  invalid_config_no_incoming: THEOREM
+    NOT config_valid(cfg2) IMPLIES NOT meta_pp_edge(cfg1,cfg2)
+
+  meta_valid_configs: THEOREM meta_pp_valid(H) AND H`edges(cfg1,cfg2) IMPLIES
+    config_valid(cfg1) AND config_valid(cfg2)
+
+  upgrade_chain_preserves: THEOREM
+    meta_pp_edge(cfg1,cfg2) AND meta_pp_edge(cfg2,cfg3) AND rr_of(cfg1)(x,y) IMPLIES
+    rr_of(cfg3)(x,y)
+
+  compatibility_preorder: THEOREM
+    (FORALL(cfg:RefinementConfig):configs_compatible(cfg,cfg)) AND
+    (FORALL(cfg1,cfg2,cfg3:RefinementConfig):
+      configs_compatible(cfg1,cfg2) AND configs_compatible(cfg2,cfg3) IMPLIES
+      configs_compatible(cfg1,cfg3))
+
+  implementation_correct(cfg,impl_pairs): bool =
+    FORALL(x,y:T):impl_pairs(x,y) IMPLIES rr_of(cfg)(x,y)
+
+  backward_compatible: THEOREM meta_pp_edge(cfg1,cfg2) AND
+    implementation_correct(cfg1,impl_pairs) IMPLIES implementation_correct(cfg2,impl_pairs)
+
+  failure_propagates: THEOREM meta_pp_edge(cfg1,cfg2) AND
+    NOT implementation_correct(cfg2,impl_pairs) IMPLIES
+    NOT implementation_correct(cfg1,impl_pairs)
+END ppg_refinement_meta
