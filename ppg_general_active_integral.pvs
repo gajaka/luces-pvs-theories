@@ -1,0 +1,62 @@
+% An upper bound on all prefix integrals makes every event mass finite.
+% Monotone convergence supplies a real almost-everywhere limit. A simple
+% minorant of the count lies below that limit off a null set, so its
+% integral obeys the same bound.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_general_active_integral[Omega:TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING measure_integration@measure_def[Omega,asNasa(S)])
+  originalMeasure:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_general_count_prefix[Omega,S,originalMeasure] AS prefixes,
+    ppg_general_simple_integral[Omega,S,originalMeasure] AS simple,
+    ppg_general_code_order[Omega,S,originalMeasure] AS codeOrder,
+    ppg_count_prefix_limit[Omega] AS limits,
+    ppg_event_count[Omega] AS counts,
+    ppg_additive_drift_budget AS budgets,
+    ppg_enn_simple_sup,ppg_enn_complete_sup,
+    measure_integration@integral[Omega,asNasa(S),originalMeasure] AS nativeIntegral,
+    measure_integration@measure_theory[Omega,asNasa(S),originalMeasure] AS nativeTheory,
+    measure_integration@integral_convergence[Omega,asNasa(S),originalMeasure] AS nativeConvergence,
+    real_fun_preds[nat] AS realSequences
+
+  E: VAR [nat->(S)]
+  F: VAR prefixes.FiniteEventFamily
+  C: VAR simple.SimpleCode
+  g: VAR nativeIntegral.integrable
+  n: VAR nat
+  omega: VAR Omega
+  b: VAR nonneg_real
+
+  PrefixBound(E,b): bool = FORALL(N:nat):ele(budgets.costPrefix(prefixes.massFamily(E),N),ennFinite(b))
+
+  real_prefix_bound: LEMMA PrefixBound(F,b) IMPLIES
+    nativeIntegral.integral(prefixes.realPrefix(F)(n))<=b
+
+  prefix_ae_increasing: LEMMA nativeTheory.ae_increasing?(prefixes.realPrefix(F))
+
+  prefix_integrals_bounded: LEMMA PrefixBound(F,b) IMPLIES
+    realSequences.bounded?(LAMBDA(k:nat):nativeIntegral.integral(prefixes.realPrefix(F)(k)))
+
+  prefix_limit_exists: LEMMA PrefixBound(F,b) IMPLIES
+    EXISTS(g:nativeIntegral.integrable):nativeTheory.ae_convergence?(prefixes.realPrefix(F),g) AND
+      nativeIntegral.integral(g)<=b
+
+  minorant_limit_point: LEMMA convergence?(LAMBDA(k:nat):prefixes.realPrefix(F)(k)(omega),g(omega)) AND
+    simple.codeMinorant(C,LAMBDA(x:Omega):counts.eventCount(F,x)) IMPLIES
+      codeOrder.codeFunction(C)(omega)<=g(omega)
+
+  minorant_ae_below: LEMMA nativeTheory.ae_convergence?(prefixes.realPrefix(F),g) AND
+    simple.codeMinorant(C,LAMBDA(x:Omega):counts.eventCount(F,x)) IMPLIES
+      nativeTheory.ae_le?(codeOrder.codeFunction(C),g)
+
+  ae_code_absolute: LEMMA nativeTheory.ae_le?(codeOrder.codeFunction(C),g) IMPLIES
+    nativeTheory.ae_le?(abs(codeOrder.codeFunction(C)),abs(g))
+
+  minorant_code_integral_bound: LEMMA nativeTheory.ae_convergence?(prefixes.realPrefix(F),g) AND
+    simple.codeMinorant(C,LAMBDA(x:Omega):counts.eventCount(F,x)) AND nativeIntegral.integral(g)<=b
+      IMPLIES ele(simple.codeIntegral(C),ennFinite(b))
+
+END ppg_general_active_integral

@@ -1,0 +1,94 @@
+% Weighted indicator codes may use events of infinite measure.
+% A code has finite integral exactly when each term with positive
+% coefficient has finite support measure. The native integral then
+% proves order preservation and independence of the chosen code.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_general_code_order[Omega:TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING measure_integration@measure_def[Omega,asNasa(S)])
+  originalMeasure:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_general_simple_integral[Omega,S,originalMeasure],
+    measure_integration@measure_space[Omega,asNasa(S)] AS nativeSpaces,
+    measure_integration@isf[Omega,asNasa(S),originalMeasure] AS nativeISF,
+    measure_integration@nn_integral[Omega,asNasa(S),originalMeasure] AS nativeNN,
+    measure_integration@integral[Omega,asNasa(S),originalMeasure] AS nativeIntegral,
+    measure_integration@measure_props[Omega,asNasa(S),originalMeasure] AS nativeMeasure
+
+  C,D: VAR SimpleCode
+  t: VAR WeightedEvent
+  omega: VAR Omega
+  A,B: VAR (S)
+  g: VAR nativeNN.nn_integrable
+
+  codeFunction(C): RECURSIVE nativeSpaces.simple = CASES C OF
+    null:LAMBDA(omega:Omega):0,
+    cons(t,rest):t`coefficient*nativeSpaces.phi(t`event)+codeFunction(rest)
+    ENDCASES MEASURE length(C)
+
+  code_function_zero: LEMMA codeFunction(null[WeightedEvent])=(LAMBDA(omega:Omega):0)
+
+  code_function_cons: LEMMA codeFunction(cons(t,C))=
+    t`coefficient*nativeSpaces.phi(t`event)+codeFunction(C)
+
+  code_function_value: LEMMA codeFunction(C)(omega)=codeValue(C,omega)
+
+  code_function_nonnegative: LEMMA 0<=codeFunction(C)(omega)
+
+  zero_coefficient_cons: LEMMA t`coefficient=0 IMPLIES codeFunction(cons(t,C))=codeFunction(C)
+
+  code_tail_below: LEMMA codeFunction(C)(omega)<=codeFunction(cons(t,C))(omega)
+
+  code_head_below: LEMMA t`event(omega) IMPLIES
+    t`coefficient<=codeFunction(cons(t,C))(omega)
+
+  finiteCode(C): RECURSIVE bool = CASES C OF null:TRUE,
+    cons(t,rest):(t`coefficient=0 OR originalMeasure(t`event)`1) AND finiteCode(rest)
+    ENDCASES MEASURE length(C)
+
+  finite_code_zero: LEMMA finiteCode(null[WeightedEvent])
+
+  finite_code_cons: LEMMA finiteCode(cons(t,C)) IFF
+    (t`coefficient=0 OR originalMeasure(t`event)`1) AND finiteCode(C)
+
+  finite_integral_cons: LEMMA ennFinite?(codeIntegral(cons(t,C))) IFF
+    (t`coefficient=0 OR originalMeasure(t`event)`1) AND ennFinite?(codeIntegral(C))
+
+  code_integral_finite: LEMMA ennFinite?(codeIntegral(C)) IFF finiteCode(C)
+
+  positive_indicator_integrable: LEMMA originalMeasure(A)`1 IMPLIES
+    nativeNN.nn_integrable?(nativeSpaces.phi(A))
+
+  term_integrable: LEMMA (t`coefficient=0 OR originalMeasure(t`event)`1) IMPLIES
+    nativeNN.nn_integrable?(t`coefficient*nativeSpaces.phi(t`event))
+
+  code_cons_integrable: LEMMA nativeNN.nn_integrable?(codeFunction(C)) AND
+    (t`coefficient=0 OR originalMeasure(t`event)`1) IMPLIES
+      nativeNN.nn_integrable?(codeFunction(cons(t,C)))
+
+  finite_code_integrable: LEMMA finiteCode(C) IMPLIES nativeNN.nn_integrable?(codeFunction(C))
+
+  finite_code_integral: LEMMA finiteCode(C) IMPLIES
+    codeIntegral(C)=ennFinite(nativeNN.nn_integral(codeFunction(C)))
+
+  finite_measure_subset: LEMMA subset?(A,B) AND originalMeasure(B)`1 IMPLIES originalMeasure(A)`1
+
+  integrable_head_finite: LEMMA nativeNN.nn_integrable?(codeFunction(cons(t,C))) AND
+    0<t`coefficient IMPLIES originalMeasure(t`event)`1
+
+  integrable_tail: LEMMA nativeNN.nn_integrable?(codeFunction(cons(t,C))) IMPLIES
+    nativeNN.nn_integrable?(codeFunction(C))
+
+  integrable_code_finite: LEMMA nativeNN.nn_integrable?(codeFunction(C)) IMPLIES finiteCode(C)
+
+  native_code_integrability: THEOREM nativeNN.nn_integrable?(codeFunction(C)) IFF finiteCode(C)
+
+  code_integral_monotone: THEOREM (FORALL(omega:Omega):codeValue(C,omega)<=codeValue(D,omega))
+    IMPLIES ele(codeIntegral(C),codeIntegral(D))
+
+  code_integral_extensional: THEOREM (FORALL(omega:Omega):codeValue(C,omega)=codeValue(D,omega))
+    IMPLIES codeIntegral(C)=codeIntegral(D)
+
+END ppg_general_code_order
