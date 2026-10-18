@@ -1,0 +1,127 @@
+% The full hit count of the constructed table realization is the original
+% TLog on the same table. Identifying the two integral presentations
+% transfers the finite drift bound to that existing count.
+%
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964.
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Section 2.
+ppg_finite_mt_table_expectation[I,V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  events:{U:finite_set[I]|FORALL(i:I):U(i)},
+  fallback:I,eventOrder:{e:list[I]|FORALL(i:I):member(i,e)},
+  (IMPORTING ppg_finite_resampling_core[V,Value,variables,domains],
+    ppg_resampling_selection[I,V,Value,variables,domains,events])
+  Q:{Q:Marginals|Valid(Q)},B:ppg_resampling_selection[I,V,Value,variables,domains,events].Problem,
+  (IMPORTING ppg_resampling_table_product[V,Value,variables,domains,Q])
+  init:ppg_resampling_table_product[V,Value,variables,domains,Q].TableInitializer]: THEORY
+BEGIN
+  IMPORTING ppg_finite_table_core[V,Value,variables,domains]
+
+  State: TYPE = ppg_finite_resampling_core[V,Value,variables,domains].State
+
+  ResamplingLog: TYPE = ppg_finite_table_core[V,Value,variables,domains].ResamplingLog
+
+  plainDomain: MACRO [V->set[Value]] = LAMBDA(v:V):domains(v)
+
+  IMPORTING ppg_finite_mt_legacy[I,V,Value,variables,domains,events,fallback,eventOrder] AS meanLegacy,
+    ppg_resampling_table_product[V,Value,variables,domains,Q] AS meanLaws,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS meanStates,
+    ppg_finite_table_core[V,Value,variables,domains] AS meanTable,
+    ppg_finite_resampling_core[V,Value,variables,domains] AS meanCore,
+    ppg_resampling_product_law[V,Value,variables,domains,Q] AS meanProduct
+
+  ambient: MACRO ppg_measurable_space[ResamplingLog].MeasurableSpace = meanLaws.tableAmbient
+
+  IMPORTING ppg_resampling_table_execution[V,Value,variables,domains,Q,meanLegacy.firstPolicy(B),init] AS meanExecution,
+    ppg_finite_mt_count[I,V,Value,variables,domains,events,fallback,eventOrder,ambient] AS meanCount,
+    ppg_finite_process_stopping[State,ResamplingLog,meanStates.allStates,ambient] AS meanStopping,
+    ppg_mt_extended_count[I,V,Value,plainDomain] AS meanOldCount,
+    ppg_mt_selection[I,V,Value,plainDomain] AS meanSelection,
+    ppg_probability_extended_view[ResamplingLog,ambient,meanLaws.tableProbability] AS meanIntegralView,
+    ppg_extended_integral[ResamplingLog,ambient,meanLaws.tableProbability] AS meanProbabilityIntegral,
+    ppg_finite_update[State,State,meanStates.allStates,meanStates.allStates] AS meanUpdate,
+    ppg_mt_table_label[bool,I,V,Value,plainDomain,meanProduct.spaces,meanProduct.coins] AS meanLabels,
+    ppg_mt_native_spaces[I,V,Value,plainDomain] AS meanOldSpaces,
+    ppg_mt_log_probability[I,V,Value,plainDomain,meanProduct.spaces,meanProduct.coins] AS meanOldLaw,
+    ppg_mt_random_process[I,V,Value,plainDomain] AS meanOldSlots,
+    ppg_probability_integral[meanOldSlots.LogSpace,meanOldSpaces.NativeTableSigma(meanProduct.spaces),
+      meanOldLaw.logMeasure] AS meanOldIntegral
+
+  meanHistory: MACRO ppg_filtration[ResamplingLog,State,ambient].Filtration = meanExecution.tableH
+
+  IMPORTING ppg_finite_process_hitting[State,ResamplingLog,meanStates.allStates,ambient,
+      meanExecution.tableMeasure,meanHistory] AS meanHitting,
+    ppg_finite_process_expectation[State,ResamplingLog,meanStates.allStates,ambient,
+      meanExecution.tableMeasure,meanHistory] AS meanDrift,
+    measure_integration@integral[ResamplingLog,ppg_nasa_sigma[ResamplingLog].asNasa(ambient),
+      meanExecution.tableMeasure] AS meanNativeIntegral,
+    measure_integration@measure_theory[ResamplingLog,ppg_nasa_sigma[ResamplingLog].asNasa(ambient),
+      meanExecution.tableMeasure] AS meanAE
+
+  W: VAR meanDrift.AcceptedWitness(meanUpdate.model(meanCore.rule(Q,meanLegacy.firstPolicy(B))))
+  omega: VAR ResamplingLog
+  n: VAR nat
+
+  legacy_sigma_eq: LEMMA ambient=meanOldSpaces.NativeTableSigma(meanProduct.spaces)
+
+  legacy_probability_eq: LEMMA meanLaws.tableProbability=meanOldLaw.logMeasure
+
+  model_eq: LEMMA meanCount.tableModel(Q,B)=meanUpdate.model(meanCore.rule(Q,meanLegacy.firstPolicy(B)))
+
+  process_eq: LEMMA meanExecution.tableRealized=meanCount.tableProcess(B,init)
+
+  legacyCount(omega): ENN = meanOldCount.TLog(B`footprint,B`bad,fallback,eventOrder,init(omega),omega)
+
+  count_function: LEMMA
+    (LAMBDA(omega:ResamplingLog):meanStopping.hitCount(
+      meanUpdate.model(meanCore.rule(Q,meanLegacy.firstPolicy(B))),meanExecution.tableRealized,omega))=legacyCount
+
+  legacyExpected: ENN = meanProbabilityIntegral.lintegral(legacyCount)
+
+  measure_view_eq: LEMMA meanExecution.tableMeasure=
+    ppg_probability_finite_view[ResamplingLog,ambient].nativeLaw(meanLaws.tableProbability)
+
+  expected_eq: LEMMA meanHitting.expectedHitCount(
+    meanUpdate.model(meanCore.rule(Q,meanLegacy.firstPolicy(B))),meanExecution.tableRealized)=legacyExpected
+
+  legacy_native_measure_eq: LEMMA meanExecution.tableMeasure=meanOldIntegral.nasaLaw
+
+  legacy_expected_le: THEOREM ele(legacyExpected,
+    ennFinite(meanNativeIntegral.integral(meanExecution.initialPotential(W))/
+      meanDrift.positiveRate(meanUpdate.model(meanCore.rule(Q,meanLegacy.firstPolicy(B))),W)))
+
+  legacy_expected_finite: THEOREM
+    FORALL(W:meanDrift.AcceptedWitness(meanUpdate.model(meanCore.rule(Q,meanLegacy.firstPolicy(B))))):
+      ennFinite?(legacyExpected)
+
+  rawGoodAt(n,omega): bool = meanSelection.MTGood(B`bad,meanLegacy.legacyRun(B,init,omega,n)`1)
+
+  stoppedGoodAt(n,omega): bool = meanLegacy.firstPolicy(B)`good(
+    meanTable.trajectory(meanLegacy.stoppedFootprint(B),init,n,omega))
+
+  NoRawGood(omega): bool = FORALL(n:nat):NOT rawGoodAt(n,omega)
+
+  NoStoppedGood(omega): bool = FORALL(n:nat):NOT stoppedGoodAt(n,omega)
+
+  no_raw_run: LEMMA NoRawGood(omega) IMPLIES
+    meanTable.run(meanLegacy.stoppedFootprint(B),init,omega,n)=meanLegacy.legacyRun(B,init,omega,n)
+
+  no_stopped_run: LEMMA NoStoppedGood(omega) IMPLIES
+    meanTable.run(meanLegacy.stoppedFootprint(B),init,omega,n)=meanLegacy.legacyRun(B,init,omega,n)
+
+  no_raw_implies_no_stopped: LEMMA NoRawGood(omega) IMPLIES NoStoppedGood(omega)
+
+  no_stopped_implies_no_raw: LEMMA NoStoppedGood(omega) IMPLIES NoRawGood(omega)
+
+  rawSuccess: set[ResamplingLog] = {omega:ResamplingLog|EXISTS(n:nat):rawGoodAt(n,omega)}
+
+  stoppedSuccess: set[ResamplingLog] = {omega:ResamplingLog|EXISTS(n:nat):stoppedGoodAt(n,omega)}
+
+  success_events_eq: LEMMA rawSuccess=stoppedSuccess
+
+  legacy_ae_exists_good: THEOREM
+    FORALL(W:meanDrift.AcceptedWitness(meanUpdate.model(meanCore.rule(Q,meanLegacy.firstPolicy(B))))):
+      meanAE.ae?(rawSuccess)
+
+END ppg_finite_mt_table_expectation

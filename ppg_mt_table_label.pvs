@@ -1,0 +1,33 @@
+% Changing the type of bad-event labels does not change the resampling
+% table law. The coordinate domains, spaces, and probability laws determine
+% the same countable product and the same decoding map.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_mt_table_label[C1,C2,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_probability_coordinates[V,Value,domain])
+  spaces:CoordinateSpaces,laws:ProbabilityFamily(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_mt_random_process[C1,V,Value,domain] AS leftSlots,
+    ppg_mt_random_process[C2,V,Value,domain] AS rightSlots,
+    ppg_mt_coordinate_laws[C1,V,Value,domain] AS leftCoordinates,
+    ppg_mt_coordinate_laws[C2,V,Value,domain] AS rightCoordinates,
+    ppg_mt_native_spaces[C1,V,Value,domain] AS leftSpaces,
+    ppg_mt_native_spaces[C2,V,Value,domain] AS rightSpaces,
+    ppg_mt_log_probability[C1,V,Value,domain,spaces,laws] AS leftLaw,
+    ppg_mt_log_probability[C2,V,Value,domain,spaces,laws] AS rightLaw
+
+  table_domain_eq: LEMMA leftSlots.TableDomain=rightSlots.TableDomain
+
+  table_spaces_eq: LEMMA leftCoordinates.TableSpaces(spaces)=rightCoordinates.TableSpaces(spaces)
+
+  table_coins_eq: LEMMA leftCoordinates.coinLaw(spaces,laws)=rightCoordinates.coinLaw(spaces,laws)
+
+  state_sigma_eq: LEMMA leftSpaces.NativeStateSigma(spaces)=rightSpaces.NativeStateSigma(spaces)
+
+  table_sigma_eq: LEMMA leftSpaces.NativeTableSigma(spaces)=rightSpaces.NativeTableSigma(spaces)
+
+  table_decode_eq: LEMMA leftLaw.logMap=rightLaw.logMap
+
+  table_probability_eq: LEMMA leftLaw.logMeasure=rightLaw.logMeasure
+
+END ppg_mt_table_label

@@ -1,0 +1,170 @@
+(|ppg_resampling_table_init|
+ (|constant_measurable| 0
+  (|constant_measurable-1| NIL 4001295138
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "initMaps.measurable_constant"
+      ("SX" "initLaws.tableAmbient" "SY" "initLaws.tableStateSigma" "y"
+       "s0!1"))
+     (ASSERT))
+    NIL)
+   ((|measurable_constant| FORMULA-DECL NIL |ppg_measurable_map| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_table_init| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}"
+     |ppg_resampling_table_init| NIL)
+    (|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_table_init| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_table_init| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_table_init| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_resampling_table_init| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_table_init| NIL))
+   SHOSTAK))
+ (|constant_local| 0
+  (|constant_local-1| NIL 4001295138
+   (""
+    (THEN (SKOSIMP*)
+     (GRIND :IF-MATCH NIL :DEFS ("initTable.InitialLocal") :EXCLUDE
+      ("is_finite" "card")))
+    NIL)
+   ((|InitialLocal| CONST-DECL "bool" |ppg_finite_table_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_table_init| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_table_init| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_table_init| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_table_init| NIL))
+   SHOSTAK))
+ (|fixedInit_TCC1| 0
+  (|fixedInit_TCC1-1| NIL 4001295137
+   (""
+    (THEN (LEMMA "constant_measurable") (LEMMA "constant_local")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("InitialLocal" "measurable" "NativeTableSigma" "NativeStateSigma"
+       "is_finite" "card")))
+    NIL)
+   ((|constant_measurable| FORMULA-DECL NIL |ppg_resampling_table_init| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_resampling_table_init| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_table_init| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_table_init| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_table_init| NIL)
+    (|constant_local| FORMULA-DECL NIL |ppg_resampling_table_init| NIL))
+   NIL
+   (|fixedInit| SUBTYPE "LAMBDA (omega: ResamplingLog): s0"
+    "TableInitializer[V, Value, variables, domains, Q]" (36 45 36 75))))
+ (|random_measurable| 0
+  (|random_measurable-1| NIL 4001295138
+   (""
+    (THEN
+     (LEMMA "initSpaces.native_initialState_measurable"
+      ("spaces" "initProduct.spaces"))
+     (ASSERT))
+    NIL)
+   ((|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_table_init| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_table_init| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_table_init| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|spaces| CONST-DECL
+     "[v: V -> ppg_measurable_space[(domains(v))].MeasurableSpace]"
+     |ppg_resampling_product_law| NIL)
+    (Q FORMAL-CONST-DECL "{Q: Marginals | Valid(Q)}"
+     |ppg_resampling_table_init| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_finite_resampling_core| NIL)
+    (|Marginals| TYPE-EQ-DECL NIL |ppg_finite_resampling_core| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_table_init| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|native_initialState_measurable| FORMULA-DECL NIL |ppg_mt_native_spaces|
+     NIL))
+   SHOSTAK))
+ (|randomInit_TCC1| 0
+  (|randomInit_TCC1-1| NIL 4001295137
+   (""
+    (THEN (LEMMA "random_measurable")
+     (LEMMA "initLocal.initialStateFromLog_local") (ASSERT))
+    NIL)
+   ((|random_measurable| FORMULA-DECL NIL |ppg_resampling_table_init| NIL)
+    (|domains| FORMAL-CONST-DECL "[V -> finite_set[Value]]"
+     |ppg_resampling_table_init| NIL)
+    (|variables| FORMAL-CONST-DECL "{U: finite_set[V] | FORALL (v: V): U(v)}"
+     |ppg_resampling_table_init| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_resampling_table_init| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_resampling_table_init| NIL)
+    (|initialStateFromLog_local| FORMULA-DECL NIL |ppg_finite_table_initial|
+     NIL))
+   NIL
+   (|randomInit| SUBTYPE
+    "initSlots[bool, V, Value, LAMBDA (v: V): domains(v)].initialStateFromLog"
+    "TableInitializer[V, Value, variables, domains, Q]" (41 42 41 71))))
+ (|fixed_value| 0
+  (|fixed_value-1| NIL 4001295139
+   ("" (THEN (SKOSIMP*) (EXPAND "fixedInit") (ASSERT)) NIL)
+   ((|fixedInit| CONST-DECL "initLaws.TableInitializer"
+     |ppg_resampling_table_init| NIL))
+   SHOSTAK))
+ (|random_value| 0
+  (|random_value-1| NIL 4001295139
+   ("" (THEN (SKOSIMP*) (EXPAND "randomInit") (ASSERT)) NIL)
+   ((|randomInit| CONST-DECL "initLaws.TableInitializer"
+     |ppg_resampling_table_init| NIL))
+   SHOSTAK)))
+

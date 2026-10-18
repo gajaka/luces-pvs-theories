@@ -1,0 +1,47 @@
+% Constant initialization is measurable and local. Reading slot zero is
+% also measurable, and its locality follows directly from agreement on
+% that row of the table.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Section 2.
+ppg_resampling_table_init[V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING ppg_finite_resampling_core[V,Value,variables,domains])
+  Q:{Q:Marginals|Valid(Q)}]: THEORY
+BEGIN
+  IMPORTING ppg_resampling_table_product[V,Value,variables,domains,Q] AS initLaws,
+    ppg_finite_table_core[V,Value,variables,domains] AS initTable,
+    ppg_finite_table_initial[V,Value,variables,domains] AS initLocal
+
+  State: TYPE = initTable.State
+
+  ResamplingLog: TYPE = initTable.ResamplingLog
+
+  plainDomain: MACRO [V->set[Value]] = LAMBDA(v:V):domains(v)
+
+  IMPORTING ppg_mt_random_process[bool,V,Value,plainDomain] AS initSlots,
+    ppg_mt_native_spaces[bool,V,Value,plainDomain] AS initSpaces,
+    ppg_resampling_product_law[V,Value,variables,domains,Q] AS initProduct,
+    ppg_measurable_map[ResamplingLog,State] AS initMaps
+
+  s0: VAR State
+  omega: VAR ResamplingLog
+
+  constant_measurable: LEMMA initMaps.measurable(initLaws.tableAmbient,
+    initLaws.tableStateSigma,LAMBDA(omega:ResamplingLog):s0)
+
+  constant_local: LEMMA initTable.InitialLocal(LAMBDA(omega:ResamplingLog):s0)
+
+  fixedInit(s0): initLaws.TableInitializer = LAMBDA(omega:ResamplingLog):s0
+
+  random_measurable: LEMMA initMaps.measurable(initLaws.tableAmbient,
+    initLaws.tableStateSigma,initSlots.initialStateFromLog)
+
+  randomInit: initLaws.TableInitializer = initSlots.initialStateFromLog
+
+  fixed_value: LEMMA fixedInit(s0)(omega)=s0
+
+  random_value: LEMMA randomInit(omega)=initSlots.initialStateFromLog(omega)
+
+END ppg_resampling_table_init

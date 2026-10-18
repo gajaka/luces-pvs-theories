@@ -1,0 +1,23 @@
+% The probability and finite-measure presentations integrate against the
+% same native measure. Their suprema of integrable nonnegative minorants
+% therefore agree, including at infinity.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_probability_extended_view[X:TYPE,
+  (IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_probability_measure[X,S]) probLaw:Probability]: THEORY
+BEGIN
+  IMPORTING ppg_probability_finite_view[X,S] AS view,
+    ppg_probability_integral[X,S,probLaw] AS probabilityIntegral,
+    ppg_extended_integral[X,S,probLaw] AS probabilityExtended,
+    ppg_finite_extended_integral[X,S,view.nativeLaw(probLaw)] AS finiteExtended
+
+  f: VAR [X->ENN]
+
+  native_law_eq: LEMMA probabilityIntegral.nasaLaw=view.nativeLaw(probLaw)
+
+  lower_values_eq: LEMMA probabilityExtended.lowerValues(f)=finiteExtended.lowerValues(f)
+
+  lintegral_eq: LEMMA probabilityExtended.lintegral(f)=finiteExtended.lintegral(f)
+
+END ppg_probability_extended_view

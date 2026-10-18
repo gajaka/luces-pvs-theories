@@ -1,0 +1,99 @@
+% A successful finite rational drift check bounds the existing MT TLog
+% from a fixed initial state. The initializer is constructed here; its
+% measurability and locality are not additional premises.
+%
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964.
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Section 2.
+ppg_finite_mt_checked_fixed[I,V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  events:{U:finite_set[I]|FORALL(i:I):U(i)},
+  fallback:I,eventOrder:{e:list[I]|FORALL(i:I):member(i,e)},
+  (IMPORTING ppg_finite_resampling_core[V,Value,variables,domains],
+    ppg_resampling_selection[I,V,Value,variables,domains,events])
+  Q:{Q:Marginals|Valid(Q)},B:ppg_resampling_selection[I,V,Value,variables,domains,events].Problem,
+  s0:ppg_finite_resampling_core[V,Value,variables,domains].State]: THEORY
+BEGIN
+  IMPORTING ppg_finite_table_core[V,Value,variables,domains]
+
+  State: TYPE = ppg_finite_resampling_core[V,Value,variables,domains].State
+
+  ResamplingLog: TYPE = ppg_finite_table_core[V,Value,variables,domains].ResamplingLog
+
+  plainDomain: MACRO [V->set[Value]] = LAMBDA(v:V):domains(v)
+
+  IMPORTING ppg_resampling_table_init[V,Value,variables,domains,Q] AS fixedInit,
+    ppg_finite_mt_legacy[I,V,Value,variables,domains,events,fallback,eventOrder] AS fixedLegacy,
+    ppg_resampling_table_product[V,Value,variables,domains,Q] AS fixedLaws,
+    ppg_resampling_product_law[V,Value,variables,domains,Q] AS fixedProduct,
+    ppg_resampling_update[V,Value,variables,domains] AS fixedCheck,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS fixedStates,
+    ppg_finite_resampling_core[V,Value,variables,domains] AS fixedCore
+
+  ambient: MACRO ppg_measurable_space[ResamplingLog].MeasurableSpace = fixedLaws.tableAmbient
+
+  IMPORTING ppg_finite_mt_table_expectation[I,V,Value,variables,domains,events,
+      fallback,eventOrder,Q,B,fixedInit.fixedInit(s0)] AS fixedMean,
+    ppg_resampling_table_execution[V,Value,variables,domains,Q,fixedLegacy.firstPolicy(B),
+      fixedInit.fixedInit(s0)] AS fixedExecution,
+    ppg_finite_drift[State,fixedStates.allStates] AS fixedDrift,
+    ppg_finite_update[State,State,fixedStates.allStates,fixedStates.allStates] AS fixedUpdate,
+    ppg_mt_time_expectation[I,V,Value,plainDomain,fixedProduct.spaces,fixedProduct.coins] AS fixedOldTime,
+    ppg_mt_random_process[I,V,Value,plainDomain] AS fixedSlots,
+    ppg_mt_selection[I,V,Value,plainDomain] AS fixedSelection,
+    ppg_mt_native_spaces[I,V,Value,plainDomain] AS fixedOldSpaces,
+    ppg_mt_log_probability[I,V,Value,plainDomain,fixedProduct.spaces,fixedProduct.coins] AS fixedOldLaw,
+    ppg_mt_table_label[bool,I,V,Value,plainDomain,fixedProduct.spaces,fixedProduct.coins] AS fixedLabels,
+    ppg_probability_integral[fixedSlots.LogSpace,fixedOldSpaces.NativeTableSigma(fixedProduct.spaces),
+      fixedOldLaw.logMeasure] AS fixedOldIntegral
+
+  history: MACRO ppg_filtration[ResamplingLog,State,ambient].Filtration = fixedExecution.tableH
+
+  IMPORTING ppg_finite_process_expectation[State,ResamplingLog,fixedStates.allStates,ambient,
+      fixedExecution.tableMeasure,history] AS fixedExpected,
+    ppg_finite_measure_integral[ResamplingLog,ambient,fixedExecution.tableMeasure] AS fixedFunctions,
+    ppg_finite_expectation[ResamplingLog,ambient,fixedExecution.tableMeasure] AS fixedExpectation,
+    ppg_probability_finite_view[ResamplingLog,ambient] AS fixedView,
+    measure_integration@integral[ResamplingLog,ppg_nasa_sigma[ResamplingLog].asNasa(ambient),
+      fixedExecution.tableMeasure] AS fixedIntegral,
+    measure_integration@measure_theory[fixedSlots.LogSpace,
+      ppg_nasa_sigma[fixedSlots.LogSpace].asNasa(fixedOldSpaces.NativeTableSigma(fixedProduct.spaces)),
+      fixedOldIntegral.nasaLaw] AS fixedOldAE
+
+  CheckedWitness: TYPE = {w:fixedDrift.Witness|fixedCheck.resamplingCheck(Q,fixedLegacy.firstPolicy(B),w)}
+
+  W: VAR CheckedWitness
+
+  accepted(W): fixedExpected.AcceptedWitness(fixedUpdate.model(fixedCore.rule(Q,fixedLegacy.firstPolicy(B)))) = W
+
+  checkedRate(W): posrat = W`delta
+
+  checkedPotential(W): nonneg_rat = W`potential(s0)
+
+  old_expectation_eq: LEMMA fixedOldTime.ETLog(B`footprint,B`bad,fallback,eventOrder,s0)=fixedMean.legacyExpected
+
+  initial_function_const: LEMMA fixedExecution.initialPotential(accepted(W))=fixedFunctions.constant(W`potential(s0))
+
+  mass_one: LEMMA fixedExpectation.mass(fullset[ResamplingLog])=1
+
+  initial_integral_const: LEMMA fixedIntegral.integral(fixedExecution.initialPotential(accepted(W)))=checkedPotential(W)
+
+  rate_eq: LEMMA fixedExpected.positiveRate(
+    fixedUpdate.model(fixedCore.rule(Q,fixedLegacy.firstPolicy(B))),accepted(W))=checkedRate(W)
+
+  checked_ETLog_le: THEOREM
+    ele(fixedOldTime.ETLog(B`footprint,B`bad,fallback,eventOrder,s0),
+      ennFinite(checkedPotential(W)/checkedRate(W)))
+
+  checked_ETLog_lt_top: THEOREM FORALL(W:CheckedWitness):
+    ennFinite?(fixedOldTime.ETLog(B`footprint,B`bad,fallback,eventOrder,s0))
+
+  oldSuccess: set[fixedSlots.LogSpace] = {omega:fixedSlots.LogSpace|EXISTS(T:nat):
+    fixedSelection.MTGood(B`bad,fixedSlots.randTraj(B`footprint,B`bad,fallback,eventOrder,s0,omega,T))}
+
+  success_event_eq: LEMMA fixedMean.rawSuccess=oldSuccess
+
+  checked_randTraj_ae_exists_good: THEOREM FORALL(W:CheckedWitness):fixedOldAE.ae?(oldSuccess)
+
+END ppg_finite_mt_checked_fixed

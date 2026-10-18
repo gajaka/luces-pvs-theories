@@ -1,0 +1,54 @@
+(|ppg_probability_extended_view|
+ (|native_law_eq| 0
+  (|native_law_eq-1| NIL 4001295013
+   (""
+    (THEN (EXPAND "probabilityIntegral.nasaLaw") (EXPAND "view.nativeLaw")
+     (ASSERT))
+    NIL)
+   ((|nasaLaw| CONST-DECL "generalized_measure_def[X, asNasa(S)].measure_type"
+     |ppg_probability_integral| NIL)
+    (|nativeLaw| CONST-DECL "finiteViewMeasure.FiniteLaw"
+     |ppg_probability_finite_view| NIL))
+   SHOSTAK))
+ (|lower_values_eq| 0
+  (|lower_values_eq-1| NIL 4001295013
+   (""
+    (THEN (SKOSIMP*) (LEMMA "native_law_eq") (REPLACE -1 :ACTUALS? T)
+     (EXPAND "probabilityExtended.lowerValues")
+     (EXPAND "finiteExtended.lowerValues")
+     (EXPAND "probabilityExtended.minorant") (EXPAND "finiteExtended.minorant")
+     (EXPAND "probabilityExtended.embed") (EXPAND "finiteExtended.embed")
+     (EXPAND "probabilityExtended.mean") (EXPAND "finiteExtended.mean")
+     (EXPAND "expectation") (REPLACE -1 :ACTUALS? T)
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("integral" "integrable" "ele" "ennFinite" "sSup" "asNasa" "is_finite"
+       "card")))
+    NIL)
+   ((|lowerValues| CONST-DECL "set[nonneg_real]" |ppg_extended_integral| NIL)
+    (|minorant| CONST-DECL "bool" |ppg_extended_integral| NIL)
+    (|embed| CONST-DECL "ENN" |ppg_extended_integral| NIL)
+    (|mean| CONST-DECL "nonneg_real" |ppg_extended_integral| NIL)
+    (|expectation| CONST-DECL "real" |ppg_finite_expectation| NIL)
+    (|expectation| CONST-DECL "real" |ppg_probability_integral| NIL)
+    (|mean| CONST-DECL "nonneg_real" |ppg_finite_extended_integral| NIL)
+    (|embed| CONST-DECL "ENN" |ppg_finite_extended_integral| NIL)
+    (|minorant| CONST-DECL "bool" |ppg_finite_extended_integral| NIL)
+    (|lowerValues| CONST-DECL "set[nonneg_real]" |ppg_finite_extended_integral|
+     NIL)
+    (|native_law_eq| FORMULA-DECL NIL |ppg_probability_extended_view| NIL))
+   SHOSTAK))
+ (|lintegral_eq| 0
+  (|lintegral_eq-1| NIL 4001295013
+   (""
+    (THEN (SKOSIMP*) (EXPAND "probabilityExtended.lintegral")
+     (EXPAND "finiteExtended.lintegral") (LEMMA "lower_values_eq" ("f" "f!1"))
+     (ASSERT))
+    NIL)
+   ((|lintegral| CONST-DECL "ENN" |ppg_finite_extended_integral| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_extended_view| NIL)
+    (|lower_values_eq| FORMULA-DECL NIL |ppg_probability_extended_view| NIL)
+    (|lintegral| CONST-DECL "ENN" |ppg_extended_integral| NIL))
+   SHOSTAK)))
+
