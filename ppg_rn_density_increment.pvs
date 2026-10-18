@@ -1,0 +1,58 @@
+% On a positive set for the residual charge, a small constant multiple
+% of its indicator can be added to a candidate. Intersecting each test
+% event with that set proves that all candidate inequalities survive.
+% Positive base mass makes the total integral increase strictly.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_rn_density_increment[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) baseLaw,targetLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_charge_events[X,S],
+    ppg_rn_candidates[X,S,baseLaw,targetLaw] AS densities,
+    ppg_rn_residual_charge[X,S,baseLaw,targetLaw] AS remainders,
+    ppg_finite_restricted_integral[X,S,baseLaw] AS baseIntegral,
+    ppg_finite_measure_integral[X,S,baseLaw] AS functions,
+    ppg_finite_expectation[X,S,baseLaw] AS baseMeans,
+    ppg_finite_mass_charge[X,S,baseLaw] AS baseMass,
+    ppg_finite_mass_charge[X,S,targetLaw] AS target,
+    ppg_finite_extended_integral[X,S,baseLaw] AS nn,
+    measure_integration@integral[X,asNasa(S),baseLaw] AS native
+  p: VAR densities.Candidate
+  A,B: VAR (S)
+  c: VAR nonneg_real
+  x: VAR X
+
+  meet_subset_left: LEMMA subset?(densities.meet(A,B),A)
+
+  meet_subset_right: LEMMA subset?(densities.meet(A,B),B)
+
+  restricted_indicator: LEMMA baseIntegral.restricted(A,functions.indicator(B))=
+    functions.indicator(densities.meet(A,B))
+
+  restricted_indicator_mean: LEMMA baseIntegral.setIntegral(A,functions.indicator(B))=
+    baseMass.mass(densities.meet(A,B))
+
+  increment(p,c,B): nn.NonnegativeFunction = p+c*functions.indicator(B)
+
+  increment_value: LEMMA increment(p,c,B)(x)=p(x)+IF B(x) THEN c ELSE 0 ENDIF
+
+  increment_set_integral: LEMMA baseIntegral.setIntegral(A,increment(p,c,B))=
+    baseIntegral.setIntegral(A,p)+c*baseMass.mass(densities.meet(A,B))
+
+  increment_mean: LEMMA native.integral(increment(p,c,B))=native.integral(p)+c*baseMass.mass(B)
+
+  increment_dominated: LEMMA
+    (FORALL(A:(S)):subset?(A,B) IMPLIES c*baseMass.mass(A)<=remainders.residual(p)(A)) IMPLIES
+      densities.densityCandidate(increment(p,c,B))
+
+  PositiveEvent(p,c): TYPE = {B:(S)|FORALL(A:(S)):subset?(A,B) IMPLIES
+    c*baseMass.mass(A)<=remainders.residual(p)(A)}
+
+  incrementCandidate(p:densities.Candidate,c:nonneg_real,B:PositiveEvent(p,c)): densities.Candidate = increment(p,c,B)
+
+  increment_candidate_mean: LEMMA FORALL(B:PositiveEvent(p,c)):
+    native.integral(incrementCandidate(p,c,B))=native.integral(p)+c*baseMass.mass(B)
+
+  candidate_event_integral_nonnegative: LEMMA 0<=baseIntegral.setIntegral(A,p)
+
+END ppg_rn_density_increment

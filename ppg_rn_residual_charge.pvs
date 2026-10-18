@@ -1,0 +1,73 @@
+% A candidate density leaves a nonnegative, finitely additive residual
+% on measurable events. Continuity of the event integrals from above
+% makes the residual a finite charge. Subtracting a constant multiple
+% of the base measure permits the measurable positive-set argument.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_rn_residual_charge[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) baseLaw,targetLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_charge_events[X,S],
+    ppg_rn_candidates[X,S,baseLaw,targetLaw] AS densities,
+    ppg_integral_charge_continuity[X,S,baseLaw] AS continuity,
+    ppg_finite_restricted_integral[X,S,baseLaw] AS baseIntegral,
+    ppg_finite_mass_charge[X,S,baseLaw] AS baseMass,
+    ppg_finite_mass_charge[X,S,targetLaw] AS target,
+    ppg_signed_charge_cut[X,S] AS charges,
+    ppg_signed_charge_positive[X,S] AS positive,
+    measure_integration@integral[X,asNasa(S),baseLaw] AS native,
+    analysis@convergence_ops AS realSequences
+  p: VAR densities.Candidate
+  A,B: VAR (S)
+  E: VAR [nat->(S)]
+  c: VAR nonneg_real
+
+  restricted_empty: LEMMA baseIntegral.restricted(emptyEvent,p)=(LAMBDA(x:X):0)
+
+  restricted_disjoint_union: LEMMA disjoint?(A,B) IMPLIES
+    baseIntegral.restricted(eventUnion(A,B),p)=baseIntegral.restricted(A,p)+baseIntegral.restricted(B,p)
+
+  set_integral_empty: LEMMA baseIntegral.setIntegral(emptyEvent,p)=0
+
+  set_integral_disjoint_union: LEMMA disjoint?(A,B) IMPLIES
+    baseIntegral.setIntegral(eventUnion(A,B),p)=baseIntegral.setIntegral(A,p)+baseIntegral.setIntegral(B,p)
+
+  residual(p)(A): real = target.mass(A)-baseIntegral.setIntegral(A,p)
+
+  residual_nonnegative: LEMMA 0<=residual(p)(A)
+
+  residual_empty: LEMMA residual(p)(emptyEvent)=0
+
+  residual_disjoint_union: LEMMA disjoint?(A,B) IMPLIES
+    residual(p)(eventUnion(A,B))=residual(p)(A)+residual(p)(B)
+
+  residual_monotone: LEMMA subset?(A,B) IMPLIES residual(p)(A)<=residual(p)(B)
+
+  residual_total_bound: LEMMA residual(p)(A)<=residual(p)(wholeEvent)
+
+  residual_continuous: LEMMA decreasingEvents(E) IMPLIES
+    convergence_sequences.convergence(LAMBDA(n:nat):residual(p)(E(n)),residual(p)(eventIntersection(E)))
+
+  scaledResidual(p,c)(A): real = residual(p)(A)-c*baseMass.mass(A)
+
+  scaled_residual_empty: LEMMA scaledResidual(p,c)(emptyEvent)=0
+
+  scaled_residual_additive: LEMMA disjoint?(A,B) IMPLIES
+    scaledResidual(p,c)(eventUnion(A,B))=scaledResidual(p,c)(A)+scaledResidual(p,c)(B)
+
+  scaled_residual_lower: LEMMA -c*baseMass.mass(wholeEvent)<=scaledResidual(p,c)(A)
+
+  scaled_residual_continuous: LEMMA decreasingEvents(E) IMPLIES
+    convergence_sequences.convergence(LAMBDA(n:nat):scaledResidual(p,c)(E(n)),scaledResidual(p,c)(eventIntersection(E)))
+
+  scaled_residual_valid: LEMMA charges.validCharge(scaledResidual(p,c))
+
+  signedResidual(p,c): charges.SignedCharge = scaledResidual(p,c)
+
+  signed_residual_value: LEMMA signedResidual(p,c)(A)=residual(p)(A)-c*baseMass.mass(A)
+
+  residual_positive_set: THEOREM c*baseMass.mass(wholeEvent)<residual(p)(wholeEvent) IMPLIES
+    EXISTS(B:(S)):(FORALL(A:(S)):subset?(A,B) IMPLIES c*baseMass.mass(A)<=residual(p)(A)) AND
+      c*baseMass.mass(B)<residual(p)(B)
+
+END ppg_rn_residual_charge

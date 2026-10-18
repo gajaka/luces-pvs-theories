@@ -1,0 +1,48 @@
+% Absolute continuity eliminates the residual of a maximal candidate.
+% If a positive residual remained, a positive set would have positive
+% base mass, and its indicator would yield a candidate of larger mean.
+% The resulting density represents the target on every measurable event.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_radon_nikodym_finite[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) baseLaw,targetLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_charge_events[X,S],
+    ppg_rn_candidates[X,S,baseLaw,targetLaw] AS densities,
+    ppg_rn_candidate_sequence[X,S,baseLaw,targetLaw] AS sequence,
+    ppg_rn_maximal_density[X,S,baseLaw,targetLaw] AS maximal,
+    ppg_rn_residual_charge[X,S,baseLaw,targetLaw] AS remainders,
+    ppg_rn_density_increment[X,S,baseLaw,targetLaw] AS increments,
+    ppg_finite_restricted_integral[X,S,baseLaw] AS baseIntegral,
+    ppg_finite_extended_integral[X,S,baseLaw] AS nn,
+    ppg_finite_mass_charge[X,S,baseLaw] AS baseMass,
+    ppg_finite_mass_charge[X,S,targetLaw] AS target,
+    measure_integration@integral[X,asNasa(S),baseLaw] AS native
+  p: VAR densities.Candidate
+  A,B: VAR (S)
+  c: VAR nonneg_real
+
+  absoluteContinuous: bool = FORALL(A:(S)):baseMass.mass(A)=0 IMPLIES target.mass(A)=0
+
+  small_positive_scale: LEMMA FORALL(r:real,m:nonneg_real):0<r IMPLIES EXISTS(c:posreal):c*m<r
+
+  positive_residual_base_mass: LEMMA absoluteContinuous AND
+    c*baseMass.mass(B)<remainders.residual(p)(B) IMPLIES 0<baseMass.mass(B)
+
+  positive_increment_mean: LEMMA FORALL(B:increments.PositiveEvent(p,c)):
+    0<c AND 0<baseMass.mass(B) IMPLIES native.integral(p)<sequence.topMean
+
+  maximal_residual_total_zero: LEMMA absoluteContinuous AND native.integral(p)=sequence.topMean IMPLIES
+    remainders.residual(p)(wholeEvent)=0
+
+  maximal_residual_zero: LEMMA absoluteContinuous AND native.integral(p)=sequence.topMean IMPLIES
+    remainders.residual(p)(A)=0
+
+  maximal_density_represents: LEMMA absoluteContinuous AND native.integral(p)=sequence.topMean IMPLIES
+    baseIntegral.setIntegral(A,p)=target.mass(A)
+
+  radon_nikodym_finite: THEOREM absoluteContinuous IMPLIES
+    EXISTS(g:nn.NonnegativeFunction):FORALL(A:(S)):baseIntegral.setIntegral(A,g)=target.mass(A)
+
+END ppg_radon_nikodym_finite

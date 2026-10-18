@@ -1,0 +1,75 @@
+% A decreasing sequence of event restrictions is eventually constant at
+% every point. Negating the restrictions gives an increasing sequence;
+% monotone convergence proves continuity of its integrals from above.
+% The measure and its sigma algebra are arbitrary, and total mass may be zero.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_integral_charge_continuity[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) measureLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_charge_events[X,S],
+    ppg_finite_restricted_integral[X,S,measureLaw] AS events,
+    ppg_finite_extended_integral[X,S,measureLaw] AS nn,
+    ppg_finite_measure_continuity[X,S,measureLaw] AS continuity,
+    measure_integration@integral[X,asNasa(S),measureLaw] AS native,
+    measure_integration@measure_theory[X,asNasa(S),measureLaw] AS nativeTheory,
+    measure_integration@integral_convergence[X,asNasa(S),measureLaw] AS monotone,
+    analysis@convergence_ops AS realSequences
+  E: VAR [nat->(S)]
+  g: VAR nn.NonnegativeFunction
+  x: VAR X
+  i,j,n,N: VAR nat
+  u: VAR [nat->real]
+  a: VAR real
+
+  eventually_constant_converges: LEMMA
+    (EXISTS(N:nat):FORALL(n:nat):N<=n IMPLIES u(n)=a) IMPLIES convergence?(u,a)
+
+  intersection_member: LEMMA eventIntersection(E)(x) IFF (FORALL(n:nat):E(n)(x))
+
+  intersection_absent: LEMMA NOT eventIntersection(E)(x) IMPLIES EXISTS(N:nat):NOT E(N)(x)
+
+  absent_after: LEMMA decreasingEvents(E) AND NOT E(N)(x) AND N<=n IMPLIES NOT E(n)(x)
+
+  negativeFamily(E,g)(n): native.integrable = -events.restricted(E(n),g)
+
+  negativeLimit(E,g): native.integrable = -events.restricted(eventIntersection(E),g)
+
+  negative_family_value: LEMMA negativeFamily(E,g)(n)(x)=IF E(n)(x) THEN -g(x) ELSE 0 ENDIF
+
+  negative_limit_value: LEMMA negativeLimit(E,g)(x)=IF eventIntersection(E)(x) THEN -g(x) ELSE 0 ENDIF
+
+  negative_path_eventually_constant: LEMMA decreasingEvents(E) IMPLIES
+    EXISTS(N:nat):FORALL(n:nat):N<=n IMPLIES negativeFamily(E,g)(n)(x)=negativeLimit(E,g)(x)
+
+  negative_path_converges: LEMMA decreasingEvents(E) IMPLIES
+    convergence?(LAMBDA(n:nat):negativeFamily(E,g)(n)(x),negativeLimit(E,g)(x))
+
+  negative_family_increasing: LEMMA decreasingEvents(E) AND i<=j IMPLIES
+    negativeFamily(E,g)(i)(x)<=negativeFamily(E,g)(j)(x)
+
+  negative_family_ae_increasing: LEMMA decreasingEvents(E) IMPLIES
+    nativeTheory.ae_increasing?(negativeFamily(E,g))
+
+  negative_family_ae_convergence: LEMMA decreasingEvents(E) IMPLIES
+    nativeTheory.ae_convergence?(negativeFamily(E,g),negativeLimit(E,g))
+
+  negative_integrals_converge: LEMMA decreasingEvents(E) IMPLIES
+    converges_upto?(LAMBDA(n:nat):native.integral(negativeFamily(E,g)(n)),native.integral(negativeLimit(E,g)))
+
+  negative_integral_value: LEMMA native.integral(negativeFamily(E,g)(n))=-events.setIntegral(E(n),g)
+
+  negative_integral_limit: LEMMA native.integral(negativeLimit(E,g))=-events.setIntegral(eventIntersection(E),g)
+
+  negative_integral_path: LEMMA (LAMBDA(n:nat):native.integral(negativeFamily(E,g)(n)))=
+    -(LAMBDA(n:nat):events.setIntegral(E(n),g))
+
+  negative_limit_convergence: LEMMA converges_upto?(-u,-a) IMPLIES
+    convergence_sequences.convergence(u,a)
+
+  event_integrals_continuous_above: THEOREM decreasingEvents(E) IMPLIES
+    convergence_sequences.convergence(LAMBDA(n:nat):events.setIntegral(E(n),g),
+      events.setIntegral(eventIntersection(E),g))
+
+END ppg_integral_charge_continuity
