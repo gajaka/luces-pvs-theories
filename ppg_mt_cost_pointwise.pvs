@@ -1,0 +1,51 @@
+% The charge at time n is incurred precisely when the original
+% resampling process is still running at time n+1. Thus the cap bounds
+% total cost by the cap times the original stopped count, including
+% infinity. No measurability or termination premise is needed here.
+%
+% Edward A. Lee and Sanjit A. Seshia, Introduction to Embedded Systems,
+% second edition, MIT Press, 2017, Chapter 16.
+% Lean counterpart: RepairDrift.mtTotalCost_le_cap_mul_TLog in
+% PPGraphMoserTardosDriftCost.lean.
+ppg_mt_cost_pointwise[C,V,Value:TYPE,domain:[V->set[Value]],
+  fallback:C,eventOrder:{e:list[C]|FORALL(c:C):member(c,e)}]: THEORY
+BEGIN
+  IMPORTING ppg_mt_random_process[C,V,Value,domain] AS trajectories,
+    ppg_mt_extended_count[C,V,Value,domain] AS counts,
+    ppg_mt_semantics[C,V,Value,domain] AS semantics,
+    ppg_mt_stopped_events[C,V,Value,domain] AS stopped,
+    ppg_weighted_active_cost[trajectories.LogSpace] AS weighted,
+    ppg_event_count[trajectories.LogSpace] AS events,
+    ppg_enn_simple_sup
+
+  State: TYPE = semantics.MTState
+
+  ResamplingLog: TYPE = trajectories.LogSpace
+
+  vars: VAR [C->finite_set[V]]
+  bad: VAR [C,State->bool]
+  init: VAR [ResamplingLog->State]
+  cost: VAR [State->nonneg_real]
+  cap: VAR nonneg_real
+  omega: VAR ResamplingLog
+
+  runningSchedule(vars,bad,init): [nat->set[ResamplingLog]] = LAMBDA(n:nat):
+    stopped.runningEvent(vars,bad,fallback,eventOrder,init,n+1)
+
+  costSchedule(vars,bad,init,cost): [nat->[ResamplingLog->nonneg_real]] = LAMBDA(n:nat):
+    LAMBDA(omega:ResamplingLog):cost(trajectories.randTraj(vars,bad,fallback,eventOrder,init(omega),omega,n))
+
+  mtTotalCost(vars,bad,init,cost,omega): ENN =
+    weighted.weightedTotal(runningSchedule(vars,bad,init),costSchedule(vars,bad,init,cost),omega)
+
+  running_count_identity: LEMMA events.eventCount(runningSchedule(vars,bad,init),omega)=
+    counts.TLog(vars,bad,fallback,eventOrder,init(omega),omega)
+
+  schedule_cost_bound: LEMMA (FORALL(s:State):cost(s)<=cap) IMPLIES
+    weighted.weightBound(costSchedule(vars,bad,init,cost),cap,omega)
+
+  mtTotalCost_le_cap_mul_TLog: THEOREM (FORALL(s:State):cost(s)<=cap) IMPLIES
+    ele(mtTotalCost(vars,bad,init,cost,omega),
+      scale(cap,counts.TLog(vars,bad,fallback,eventOrder,init(omega),omega)))
+
+END ppg_mt_cost_pointwise

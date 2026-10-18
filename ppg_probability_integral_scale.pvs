@@ -1,0 +1,44 @@
+% On a probability space, a positive scalar can be removed from a
+% nonnegative integrable minorant by dividing that minorant. The real
+% integral scales by the same factor. Finite upper bounds then give the
+% extended-integral estimate, with zero times infinity equal to zero.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_probability_integral_scale[X:TYPE,
+  (IMPORTING ppg_measurable_space[X]) S:MeasurableSpace,
+  (IMPORTING ppg_probability_measure[X,S]) probLaw:Probability]: THEORY
+BEGIN
+  IMPORTING ppg_extended_integral[X,S,probLaw],ppg_enn_simple_sup
+  f: VAR [X->ENN]
+  g: VAR NonnegativeFunction
+  q,a,b: VAR nonneg_real
+  c: VAR posreal
+  z: VAR ENN
+  x: VAR X
+
+  nonnegative_value: LEMMA 0<=g(x)
+
+  finite_below_scaled: LEMMA ele(ennFinite(a),scale(c,z)) IFF
+    ele(ennFinite(a/c),z)
+
+  scaledMinorant(q,g): NonnegativeFunction = q*g
+
+  scaled_minorant_value: LEMMA scaledMinorant(q,g)(x)=q*g(x)
+
+  scaled_minorant_mean: LEMMA mean(scaledMinorant(q,g))=q*mean(g)
+
+  divided_minorant: LEMMA minorant(g,LAMBDA(x:X):scale(c,f(x))) IMPLIES
+    minorant(scaledMinorant(1/c,g),f)
+
+  positive_minorant_bound: LEMMA ele(scale(c,lintegral(f)),ennFinite(b)) AND
+    minorant(g,LAMBDA(x:X):scale(c,f(x))) IMPLIES mean(g)<=b
+
+  positive_scalar_integral_bound: LEMMA
+    ele(lintegral(LAMBDA(x:X):scale(c,f(x))),scale(c,lintegral(f)))
+
+  zero_scaled_function: LEMMA (LAMBDA(x:X):scale(0,f(x)))=(LAMBDA(x:X):ennFinite(0))
+
+  lintegral_scale_bound: THEOREM
+    ele(lintegral(LAMBDA(x:X):scale(q,f(x))),scale(q,lintegral(f)))
+
+END ppg_probability_integral_scale

@@ -1,0 +1,47 @@
+% A nonnegative charge at an active time contributes to the total cost.
+% Bounding every charge bounds each finite sum by the cap times the
+% number of active times. Finite upper bounds give the same estimate
+% for the unrestricted sum, including infinite paths and a zero cap.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Edward A. Lee and Sanjit A. Seshia, Introduction to Embedded Systems,
+% second edition, MIT Press, 2017, Chapter 16.
+ppg_weighted_active_cost[Omega:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_nat_tsum,ppg_enn_simple_sup,ppg_enn_order,
+    ppg_event_count[Omega] AS events,ppg_count_prefix_limit[Omega] AS counts
+  E: VAR [nat->set[Omega]]
+  W: VAR [nat->[Omega->nonneg_real]]
+  omega: VAR Omega
+  cap,b: VAR nonneg_real
+  x,y: VAR ENN
+  N: VAR nat
+
+  weightBound(W,cap,omega): bool = FORALL(k:nat):W(k)(omega)<=cap
+
+  weightedTerm(E,W,omega)(k:nat): nonneg_real = IF E(k)(omega) THEN W(k)(omega) ELSE 0 ENDIF
+
+  weightedPrefix(E,W,omega,N): nonneg_real = sums.sum(natRange(N),weightedTerm(E,W,omega))
+
+  weightedTotal(E,W,omega): ENN = tsum(weightedTerm(E,W,omega))
+
+  weighted_prefix_zero: LEMMA weightedPrefix(E,W,omega,0)=0
+
+  weighted_prefix_succ: LEMMA weightedPrefix(E,W,omega,N+1)=
+    weightedPrefix(E,W,omega,N)+weightedTerm(E,W,omega)(N)
+
+  scale_monotone: LEMMA ele(x,y) IMPLIES ele(scale(cap,x),scale(cap,y))
+
+  weighted_prefix_bound: LEMMA weightBound(W,cap,omega) IMPLIES
+    weightedPrefix(E,W,omega,N)<=cap*events.countPrefix(E,omega,N)
+
+  scaled_count_prefix: LEMMA ele(ennFinite(cap*events.countPrefix(E,omega,N)),
+    scale(cap,events.eventCount(E,omega)))
+
+  weighted_total_finite_bound: LEMMA ele(weightedTotal(E,W,omega),ennFinite(b)) IFF
+    (FORALL(N:nat):weightedPrefix(E,W,omega,N)<=b)
+
+  weighted_total_bound: LEMMA weightBound(W,cap,omega) IMPLIES
+    ele(weightedTotal(E,W,omega),scale(cap,events.eventCount(E,omega)))
+
+END ppg_weighted_active_cost

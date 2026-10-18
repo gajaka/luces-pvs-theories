@@ -1,0 +1,65 @@
+% A nonnegative weighted sum is measurable when each charge and active
+% event is measurable. Finite prefixes are real measurable functions;
+% the preimage of an extended-real upper ray is the intersection of
+% their sublevel sets. No bound on the charges or the total is needed.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_weighted_cost_measurable[X:TYPE,(IMPORTING ppg_nasa_sigma[X])
+  S:MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_weighted_active_cost[X] AS weighted,
+    ppg_enn_measurable[X] AS extended,
+    ppg_measurable_map[X,ppg_enn_sup.ENN] AS ennMaps,
+    ppg_measurable_sequence[X],ppg_measurable_map[X,real] AS realMaps,
+    ppg_nasa_sigma[real] AS realSigmaBridge,
+    measure_integration@real_borel AS realBorel,
+    measure_integration@measure_space_def[X,asNasa(S)]
+
+  borelSigma: MACRO ppg_measurable_space[real].MeasurableSpace =
+    realSigmaBridge.asProject(realBorel.real_borel)
+
+  weightMeasurable(W:[nat->[X->nonneg_real]]): bool = FORALL(n:nat):
+    realMaps.measurable(S,borelSigma,LAMBDA(x:X):W(n)(x))
+
+  MeasurableWeights: TYPE = (weightMeasurable)
+
+  E: VAR [nat->(S)]
+  W: VAR MeasurableWeights
+  n,N: VAR nat
+  b: VAR nonneg_real
+  f: VAR [X->real]
+  x: VAR X
+
+  project_native_measurable: LEMMA realMaps.measurable(S,borelSigma,f) IFF measurable_function?(f)
+
+  term_branch: LEMMA (LAMBDA(x:X):weighted.weightedTerm(E,W,x)(n))=
+    realMaps.branch(E(n),LAMBDA(x:X):W(n)(x),LAMBDA(x:X):0)
+
+  term_measurable: LEMMA realMaps.measurable(S,borelSigma,
+    LAMBDA(x:X):weighted.weightedTerm(E,W,x)(n))
+
+  nativeTerm(E,W,n): measurable_function = LAMBDA(x:X):weighted.weightedTerm(E,W,x)(n)
+
+  nativePrefix(E,W,N): RECURSIVE measurable_function = IF N=0 THEN LAMBDA(x:X):0
+    ELSE nativePrefix(E,W,N-1)+nativeTerm(E,W,N-1) ENDIF MEASURE N
+
+  native_term_value: LEMMA nativeTerm(E,W,n)(x)=weighted.weightedTerm(E,W,x)(n)
+
+  native_prefix_zero: LEMMA nativePrefix(E,W,0)(x)=0
+
+  native_prefix_succ: LEMMA nativePrefix(E,W,N+1)(x)=nativePrefix(E,W,N)(x)+nativeTerm(E,W,N)(x)
+
+  native_prefix_value: LEMMA nativePrefix(E,W,N)(x)=weighted.weightedPrefix(E,W,x,N)
+
+  native_prefix_function: LEMMA nativePrefix(E,W,N)=(LAMBDA(x:X):weighted.weightedPrefix(E,W,x,N))
+
+  prefix_sublevel_measurable: LEMMA S({x:X|weighted.weightedPrefix(E,W,x,N)<=b})
+
+  total_upper_preimage: LEMMA ennMaps.inverseImage(
+    LAMBDA(x:X):weighted.weightedTotal(E,W,x),extended.upperRay(b))=
+      countableIntersection(LAMBDA(N:nat):{x:X|weighted.weightedPrefix(E,W,x,N)<=b})
+
+  measurable_weighted_total: THEOREM ennMaps.measurable(S,extended.ENNSigma,
+    LAMBDA(x:X):weighted.weightedTotal(E,W,x))
+
+END ppg_weighted_cost_measurable

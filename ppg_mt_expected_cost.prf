@@ -1,0 +1,304 @@
+(|ppg_mt_expected_cost|
+ (|expected_cost_bound| 0
+  (|expected_cost_bound-1| NIL 4001333965
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "charges.mtTotalCost_le_cap_mul_TLog"
+      ("vars" "vars!1" "bad" "bad!1" "init" "init!1" "cost" "cost!1" "cap"
+       "cap!1"))
+     (LEMMA "nativeIntegral.lintegral_monotone"
+      ("f"
+       "LAMBDA(omega:ResamplingLog):charges.mtTotalCost(vars!1,bad!1,init!1,cost!1,omega)"
+       "h"
+       "LAMBDA(omega:ResamplingLog):scale(cap!1,originalCounts.TLog(vars!1,bad!1,fallback,eventOrder,init!1(omega),omega))"))
+     (LEMMA "scalar.lintegral_scale_bound"
+      ("f"
+       "LAMBDA(omega:ResamplingLog):originalCounts.TLog(vars!1,bad!1,fallback,eventOrder,init!1(omega),omega)"
+       "q" "cap!1"))
+     (LEMMA "ele_transitive"
+      ("x" "mtExpectedCost(vars!1,bad!1,init!1,cost!1)" "y"
+       "nativeIntegral.lintegral(LAMBDA(omega:ResamplingLog):scale(cap!1,originalCounts.TLog(vars!1,bad!1,fallback,eventOrder,init!1(omega),omega)))"
+       "z"
+       "scale(cap!1,nativeIntegral.lintegral(LAMBDA(omega:ResamplingLog):originalCounts.TLog(vars!1,bad!1,fallback,eventOrder,init!1(omega),omega)))"))
+     (EXPAND "mtExpectedCost") (GRIND :IF-MATCH ALL :DEFS NIL))
+    NIL)
+   ((|logMeasure| CONST-DECL "ppg_probability_measure
+    [LogSpace[C, V, Value, domain], NativeTableSigma(spaces)].Probability"
+     |ppg_mt_log_probability| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)" |ppg_mt_expected_cost|
+     NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_mt_expected_cost| NIL)
+    (|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|TLog| CONST-DECL "ENN" |ppg_mt_extended_count| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|scale| CONST-DECL "ENN" |ppg_enn_simple_sup| NIL)
+    (|mtTotalCost| CONST-DECL "ENN" |ppg_mt_cost_pointwise| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|lintegral_monotone| FORMULA-DECL NIL |ppg_extended_integral| NIL)
+    (|lintegral| CONST-DECL "ENN" |ppg_extended_integral| NIL)
+    (|mtExpectedCost| CONST-DECL "ENN" |ppg_mt_expected_cost| NIL)
+    (|ele_transitive| FORMULA-DECL NIL |ppg_enn_add| NIL)
+    (|lintegral_scale_bound| FORMULA-DECL NIL |ppg_probability_integral_scale|
+     NIL)
+    (|mtTotalCost_le_cap_mul_TLog| FORMULA-DECL NIL |ppg_mt_cost_pointwise|
+     NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_mt_cost_pointwise| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_mt_cost_pointwise| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_expected_cost| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_expected_cost| NIL)
+    (|fallback| FORMAL-CONST-DECL "C" |ppg_mt_expected_cost| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|eventOrder| FORMAL-CONST-DECL
+     "{e: list[C] | FORALL (c: C): member(c, e)}" |ppg_mt_expected_cost| NIL))
+   SHOSTAK))
+ (|fixed_count_integral| 0
+  (|fixed_count_integral-1| NIL 4001333965
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "raw.native_fixed_agreement"
+      ("vars" "vars!1" "B" "B!1" "initial" "initial!1"))
+     (EXPAND "raw.rawETLog") (ASSERT))
+    NIL)
+   ((|rawETLog| CONST-DECL "enn.ENN" |ppg_mt_raw_active_expectation| NIL)
+    (|native_fixed_agreement| FORMULA-DECL NIL |ppg_mt_raw_active_expectation|
+     NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_mt_raw_active_expectation| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_expected_cost| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_expected_cost| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_mt_expected_cost| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)" |ppg_mt_expected_cost|
+     NIL)
+    (|fallback| FORMAL-CONST-DECL "C" |ppg_mt_expected_cost| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|eventOrder| FORMAL-CONST-DECL
+     "{e: list[C] | FORALL (c: C): member(c, e)}" |ppg_mt_expected_cost| NIL))
+   SHOSTAK))
+ (|random_count_integral| 0
+  (|random_count_integral-1| NIL 4001333965
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "raw.native_random_agreement" ("vars" "vars!1" "B" "B!1"))
+     (EXPAND "raw.rawRandomInitETLog") (EXPAND "originalCounts.randomInitTLog")
+     (ASSERT))
+    NIL)
+   ((|rawRandomInitETLog| CONST-DECL "enn.ENN" |ppg_mt_raw_active_expectation|
+     NIL)
+    (|randomInitTLog| CONST-DECL "ENN" |ppg_mt_extended_count| NIL)
+    (|native_random_agreement| FORMULA-DECL NIL |ppg_mt_raw_active_expectation|
+     NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_expected_cost| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_expected_cost| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_mt_expected_cost| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)" |ppg_mt_expected_cost|
+     NIL)
+    (|fallback| FORMAL-CONST-DECL "C" |ppg_mt_expected_cost| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|eventOrder| FORMAL-CONST-DECL
+     "{e: list[C] | FORALL (c: C): member(c, e)}" |ppg_mt_expected_cost| NIL))
+   SHOSTAK))
+ (|mtExpectedCost_fixed_le| 0
+  (|mtExpectedCost_fixed_le-1| NIL 4001333965
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "expected_cost_bound"
+      ("vars" "vars!1" "bad" "B!1" "init"
+       "LAMBDA(omega:ResamplingLog):initial!1" "cost" "cost!1" "cap" "cap!1"))
+     (LEMMA "fixed_count_integral"
+      ("vars" "vars!1" "B" "B!1" "initial" "initial!1"))
+     (REPLACE -1 :ACTUALS? T) (ASSERT))
+    NIL)
+   ((|fixed_count_integral| FORMULA-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|expected_cost_bound| FORMULA-DECL NIL |ppg_mt_expected_cost| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_expected_cost| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_expected_cost| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_mt_expected_cost| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)" |ppg_mt_expected_cost|
+     NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|mtExpectedCost_randomInit_le| 0
+  (|mtExpectedCost_randomInit_le-1| NIL 4001333965
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "expected_cost_bound"
+      ("vars" "vars!1" "bad" "B!1" "init" "slots.initialStateFromLog" "cost"
+       "cost!1" "cap" "cap!1"))
+     (LEMMA "random_count_integral" ("vars" "vars!1" "B" "B!1"))
+     (REPLACE -1 :ACTUALS? T) (ASSERT))
+    NIL)
+   ((|random_count_integral| FORMULA-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|expected_cost_bound| FORMULA-DECL NIL |ppg_mt_expected_cost| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_expected_cost| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_expected_cost| NIL)
+    (|State| TYPE-EQ-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_mt_expected_cost| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)" |ppg_mt_expected_cost|
+     NIL)
+    (|NativeBad| TYPE-EQ-DECL NIL |ppg_mt_check_probability| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|ResamplingLog| TYPE-EQ-DECL NIL |ppg_mt_expected_cost| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|initialStateFromLog| CONST-DECL "MTState" |ppg_mt_random_process| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK)))
+
