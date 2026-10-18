@@ -1,0 +1,351 @@
+(|ppg_general_active_count|
+ (|bounded_events_finite| 0
+  (|bounded_events_finite-1| NIL 4001329240
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "prefixes.finite_events_from_bound" ("E" "E!1" "b" "b!1"))
+     (EXPAND "PrefixBound") (GRIND :IF-MATCH ALL :DEFS NIL))
+    NIL)
+   ((|PrefixBound| CONST-DECL "bool" |ppg_general_active_integral| NIL)
+    (|finite_events_from_bound| FORMULA-DECL NIL |ppg_general_count_prefix|
+     NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_general_active_count| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_general_active_count| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|originalMeasure| FORMAL-CONST-DECL "measure_type"
+     |ppg_general_active_count| NIL))
+   SHOSTAK))
+ (|bounded_count_integral| 0
+  (|bounded_count_integral-1| NIL 4001329156
+   ("" (SKOSIMP*)
+    (("" (LEMMA "bounded_events_finite" ("E" "E!1" "b" "b!1"))
+      (("" (ASSERT)
+        (("" (LEMMA "limits.prefix_limit_exists" ("F" "E!1" "b" "b!1"))
+          (("" (SPLIT -1)
+            (("1" (SKOSIMP*)
+              (("1" (EXPAND "expectedActiveCount")
+                (("1" (EXPAND "simple.generalLintegral")
+                  (("1"
+                    (LEMMA "ennSup_least"
+                     ("E"
+                      "simple.simpleValues(LAMBDA(omega:Omega):counts.eventCount(E!1,omega))"
+                      "y" "ennFinite(b!1)"))
+                    (("1" (ASSERT)
+                      (("1" (EXPAND "simple.simpleValues")
+                        (("1" (SKOSIMP*)
+                          (("1"
+                            (LEMMA "limits.minorant_code_integral_bound"
+                             ("F" "E!1" "C" "C!1" "g" "g!1" "b" "b!1"))
+                            (("1"
+                              (GRIND :IF-MATCH NIL :DEFS ("limits.PrefixBound")
+                               :EXCLUDE
+                               ("generalLintegral" "codeIntegral"
+                                "codeMinorant" "ae_convergence?"))
+                              NIL NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("2" (PROPAX) NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|expectedActiveCount| CONST-DECL "ENN" |ppg_general_active_count| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|eventCount| CONST-DECL "ENN" |ppg_event_count| NIL)
+    (|simpleValues| CONST-DECL "set[ENN]" |ppg_general_simple_integral| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|ennSup_least| FORMULA-DECL NIL |ppg_enn_simple_sup| NIL)
+    (|integrable| NONEMPTY-TYPE-EQ-DECL NIL |integral| |measure_integration|)
+    (|integrable?| CONST-DECL "bool" |integral| |measure_integration|)
+    (|SimpleCode| TYPE-EQ-DECL NIL |ppg_general_simple_integral| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|WeightedEvent| TYPE-EQ-DECL NIL |ppg_general_simple_integral| NIL)
+    (|minorant_code_integral_bound| FORMULA-DECL NIL
+     |ppg_general_active_integral| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|finiteValues| CONST-DECL "set[nonneg_real]" |ppg_nonneg_tsum| NIL)
+    (|bounded| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|tsum| CONST-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (|integral| CONST-DECL "real" |integral| |measure_integration|)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|PrefixBound| CONST-DECL "bool" |ppg_general_active_integral| NIL)
+    (|lowerCone| CONST-DECL "set[nonneg_real]" |ppg_enn_simple_sup| NIL)
+    (|ennSup| CONST-DECL "ENN" |ppg_enn_simple_sup| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|generalLintegral| CONST-DECL "ENN" |ppg_general_simple_integral| NIL)
+    (|prefix_limit_exists| FORMULA-DECL NIL |ppg_general_active_integral| NIL)
+    (|finiteEvents?| CONST-DECL "bool" |ppg_general_count_prefix| NIL)
+    (|FiniteEventFamily| TYPE-EQ-DECL NIL |ppg_general_count_prefix| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|originalMeasure| FORMAL-CONST-DECL "measure_type"
+     |ppg_general_active_count| NIL)
+    (|bounded_events_finite| FORMULA-DECL NIL |ppg_general_active_count| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_general_active_count| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_general_active_count| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL))
+   SHOSTAK))
+ (|active_count_finite_bound| 0
+  (|active_count_finite_bound-1| NIL 4001329156
+   (""
+    (THEN (SKOSIMP*) (LEMMA "prefixes.general_count_lower" ("E" "E!1"))
+     (LEMMA "bounded_count_integral" ("E" "E!1" "b" "b!1"))
+     (LEMMA "scaled.total_finite_bound"
+      ("cost" "prefixes.massFamily(E!1)" "a" "b!1"))
+     (LEMMA "ele_transitive")
+     (GRIND :IF-MATCH ALL :DEFS ("limits.PrefixBound" "expectedActiveCount")
+      :EXCLUDE ("generalLintegral" "costTotal" "costPrefix")))
+    NIL)
+   ((|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|bounded_count_integral| FORMULA-DECL NIL |ppg_general_active_count| NIL)
+    (|ele_transitive| FORMULA-DECL NIL |ppg_enn_add| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|PrefixBound| CONST-DECL "bool" |ppg_general_active_integral| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|finiteValues| CONST-DECL "set[nonneg_real]" |ppg_nonneg_tsum| NIL)
+    (|bounded| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|tsum| CONST-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (|eventCount| CONST-DECL "ENN" |ppg_event_count| NIL)
+    (|expectedActiveCount| CONST-DECL "ENN" |ppg_general_active_count| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|sSup| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|generalLintegral| CONST-DECL "ENN" |ppg_general_simple_integral| NIL)
+    (|costTotal| CONST-DECL "ENN" |ppg_additive_drift_budget| NIL)
+    (|total_finite_bound| FORMULA-DECL NIL |ppg_enn_scaled_prefix| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|massFamily| CONST-DECL "ENN" |ppg_general_count_prefix| NIL)
+    (|general_count_lower| FORMULA-DECL NIL |ppg_general_count_prefix| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_general_active_count| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_general_active_count| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|originalMeasure| FORMAL-CONST-DECL "measure_type"
+     |ppg_general_active_count| NIL))
+   SHOSTAK))
+ (|expectedActiveCount_eq_tsum| 0
+  (|expectedActiveCount_eq_tsum-1| NIL 4001329156
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "finite_bounds_separate"
+      ("x" "expectedActiveCount(E!1)" "y"
+       "budgets.costTotal(prefixes.massFamily(E!1))"))
+     (LEMMA "active_count_finite_bound" ("E" "E!1"))
+     (GRIND :IF-MATCH ALL :DEFS NIL))
+    NIL)
+   ((|active_count_finite_bound| FORMULA-DECL NIL |ppg_general_active_count|
+     NIL)
+    (|finite_bounds_separate| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_general_active_count| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_general_active_count| NIL)
+    (|expectedActiveCount| CONST-DECL "ENN" |ppg_general_active_count| NIL)
+    (|costTotal| CONST-DECL "ENN" |ppg_additive_drift_budget| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|originalMeasure| FORMAL-CONST-DECL "measure_type"
+     |ppg_general_active_count| NIL)
+    (|massFamily| CONST-DECL "ENN" |ppg_general_count_prefix| NIL))
+   SHOSTAK))
+ (|expectedActiveCount_le_of_budget| 0
+  (|expectedActiveCount_le_of_budget-1| NIL 4001329156
+   (""
+    (THEN (SKOSIMP*) (REWRITE "expectedActiveCount_eq_tsum")
+     (LEMMA "scaled.scaled_budget_bound"
+      ("cost" "prefixes.massFamily(E!1)" "budget" "budget!1" "c" "c!1"))
+     (ASSERT))
+    NIL)
+   ((|scaled_budget_bound| FORMULA-DECL NIL |ppg_enn_scaled_prefix| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|posreal| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|originalMeasure| FORMAL-CONST-DECL "measure_type"
+     |ppg_general_active_count| NIL)
+    (|massFamily| CONST-DECL "ENN" |ppg_general_count_prefix| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_general_active_count| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Omega| FORMAL-TYPE-DECL NIL |ppg_general_active_count| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|expectedActiveCount_eq_tsum| FORMULA-DECL NIL |ppg_general_active_count|
+     NIL))
+   SHOSTAK)))
+

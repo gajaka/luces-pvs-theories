@@ -1,0 +1,84 @@
+% Prefix counts have explicit weighted-indicator codes. Their code
+% integrals are finite extended sums of the original event measures,
+% even when one of those measures is infinite. Finite event masses
+% give native integrable prefixes for the monotone-convergence argument.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_general_count_prefix[Omega:TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING measure_integration@measure_def[Omega,asNasa(S)])
+  originalMeasure:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_general_simple_integral[Omega,S,originalMeasure] AS simple,
+    ppg_general_code_order[Omega,S,originalMeasure] AS codeOrder,
+    ppg_event_count[Omega] AS counts,
+    ppg_count_prefix_limit[Omega] AS limits,
+    ppg_additive_drift_budget AS budgets,
+    ppg_enn_simple_sup,ppg_enn_complete_sup,
+    measure_integration@nn_integral[Omega,asNasa(S),originalMeasure] AS nativeNN,
+    measure_integration@integral[Omega,asNasa(S),originalMeasure] AS nativeIntegral
+
+  E: VAR [nat->(S)]
+  N,n: VAR nat
+  omega: VAR Omega
+  b: VAR nonneg_real
+
+  massFamily(E)(n): ENN = simple.originalMass(E(n))
+
+  prefixCode(E,N): RECURSIVE simple.SimpleCode = IF N=0 THEN null[simple.WeightedEvent]
+    ELSE cons((# coefficient:=1,event:=E(N-1) #),prefixCode(E,N-1)) ENDIF MEASURE N
+
+  prefix_code_zero: LEMMA prefixCode(E,0)=null[simple.WeightedEvent]
+
+  prefix_code_succ: LEMMA prefixCode(E,N+1)=cons((# coefficient:=1,event:=E(N) #),prefixCode(E,N))
+
+  prefix_code_value: LEMMA simple.codeValue(prefixCode(E,N),omega)=counts.countPrefix(E,omega,N)
+
+  prefix_code_integral: LEMMA simple.codeIntegral(prefixCode(E,N))=budgets.costPrefix(massFamily(E),N)
+
+  prefix_code_minorant: LEMMA simple.codeMinorant(prefixCode(E,N),LAMBDA(omega:Omega):counts.eventCount(E,omega))
+
+  prefix_integral_lower: LEMMA ele(budgets.costPrefix(massFamily(E),N),
+    simple.generalLintegral(LAMBDA(omega:Omega):counts.eventCount(E,omega)))
+
+  general_count_lower: LEMMA ele(budgets.costTotal(massFamily(E)),
+    simple.generalLintegral(LAMBDA(omega:Omega):counts.eventCount(E,omega)))
+
+  finiteEvents?(E): bool = FORALL(n:nat):originalMeasure(E(n))`1
+
+  FiniteEventFamily: TYPE = (finiteEvents?)
+
+  F: VAR FiniteEventFamily
+
+  finite_prefix_code: LEMMA codeOrder.finiteCode(prefixCode(F,N))
+
+  nativePrefix(F)(n): nativeNN.nn_integrable = codeOrder.codeFunction(prefixCode(F,n))
+
+  realPrefix(F)(n): nativeIntegral.integrable = nativePrefix(F)(n)
+
+  meanPrefix(F,n): nnreal = nativeNN.nn_integral(nativePrefix(F)(n))
+
+  native_prefix_value: LEMMA nativePrefix(F)(n)(omega)=counts.countPrefix(F,omega,n)
+
+  real_prefix_value: LEMMA realPrefix(F)(n)(omega)=counts.countPrefix(F,omega,n)
+
+  real_prefix_path: LEMMA (LAMBDA(k:nat):realPrefix(F)(k)(omega))=
+    (LAMBDA(k:nat):counts.countPrefix(F,omega,k))
+
+  prefix_mass_finite: LEMMA budgets.costPrefix(massFamily(F),n)=ennFinite(meanPrefix(F,n))
+
+  real_prefix_mean: LEMMA nativeIntegral.integral(realPrefix(F)(n))=meanPrefix(F,n)
+
+  real_mean_function: LEMMA (LAMBDA(n:nat):nativeIntegral.integral(realPrefix(F)(n)))=
+    (LAMBDA(n:nat):meanPrefix(F,n))
+
+  event_below_prefix: LEMMA ele(massFamily(E)(n),budgets.costPrefix(massFamily(E),n+1))
+
+  finite_events_from_bound: LEMMA (FORALL(N:nat):ele(budgets.costPrefix(massFamily(E),N),ennFinite(b)))
+    IMPLIES finiteEvents?(E)
+
+  prefix_means_bounded: LEMMA (FORALL(N:nat):ele(budgets.costPrefix(massFamily(F),N),ennFinite(b)))
+    IMPLIES (FORALL(N:nat):meanPrefix(F,N)<=b)
+
+END ppg_general_count_prefix

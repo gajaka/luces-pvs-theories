@@ -1,0 +1,36 @@
+% Positive finite coefficients commute with finite extended sums.
+% The budget estimate follows at each horizon before taking a supremum.
+% Zero times infinity is zero, as in the nonnegative Lebesgue integral.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964.
+ppg_enn_scaled_prefix: THEORY
+BEGIN
+  IMPORTING ppg_enn_simple_sup,ppg_enn_complete_sup,
+    ppg_additive_drift_budget AS budgets
+  cost,budget: VAR [nat->ENN]
+  N: VAR nat
+  c: VAR posreal
+  a: VAR nonneg_real
+  x,y: VAR ENN
+
+  scale_add: LEMMA scale(c,eadd(x,y))=eadd(scale(c,x),scale(c,y))
+
+  scaled_prefix: LEMMA budgets.costPrefix(LAMBDA(n:nat):scale(c,cost(n)),N)=
+    scale(c,budgets.costPrefix(cost,N))
+
+  prefix_below_total: LEMMA ele(budgets.costPrefix(cost,N),budgets.costTotal(cost))
+
+  total_from_prefix: LEMMA (FORALL(N:nat):ele(budgets.costPrefix(cost,N),y)) IMPLIES
+    ele(budgets.costTotal(cost),y)
+
+  total_finite_bound: LEMMA ele(budgets.costTotal(cost),ennFinite(a)) IFF
+    (FORALL(N:nat):ele(budgets.costPrefix(cost,N),ennFinite(a)))
+
+  budget_prefix_bound: LEMMA budgets.BudgetSteps(LAMBDA(n:nat):scale(c,cost(n)),budget) IMPLIES
+    ele(budgets.costPrefix(cost,N),dividePositive(budget(0),c))
+
+  scaled_budget_bound: LEMMA budgets.BudgetSteps(LAMBDA(n:nat):scale(c,cost(n)),budget) IMPLIES
+    ele(budgets.costTotal(cost),dividePositive(budget(0),c))
+
+END ppg_enn_scaled_prefix

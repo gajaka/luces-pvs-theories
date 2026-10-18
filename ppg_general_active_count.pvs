@@ -1,0 +1,46 @@
+% For a countable family of measurable events, integrating the number
+% of occurrences gives the sum of their measures. The measure and the
+% sum may be infinite. A finite bound permits monotone convergence of
+% the integrable prefixes; finite upper bounds then determine equality.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964, additive drift.
+% Lean counterparts: RepairDrift.expectedActiveCount_eq_tsum and
+% RepairDrift.expectedActiveCount_le_of_budget, PPGraphAdditiveDrift.lean.
+ppg_general_active_count[Omega:TYPE,
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING measure_integration@measure_def[Omega,asNasa(S)])
+  originalMeasure:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_general_count_prefix[Omega,S,originalMeasure] AS prefixes,
+    ppg_general_active_integral[Omega,S,originalMeasure] AS limits,
+    ppg_general_simple_integral[Omega,S,originalMeasure] AS simple,
+    ppg_event_count[Omega] AS counts,
+    ppg_additive_drift_budget AS budgets,
+    ppg_enn_simple_sup,ppg_enn_complete_sup,
+    ppg_enn_scaled_prefix AS scaled
+
+  E: VAR [nat->(S)]
+  b: VAR nonneg_real
+  c: VAR posreal
+  budget: VAR [nat->ENN]
+
+  expectedActiveCount(E): ENN = simple.generalLintegral(LAMBDA(omega:Omega):counts.eventCount(E,omega))
+
+  bounded_events_finite: LEMMA limits.PrefixBound(E,b) IMPLIES prefixes.finiteEvents?(E)
+
+  bounded_count_integral: LEMMA limits.PrefixBound(E,b) IMPLIES
+    ele(expectedActiveCount(E),ennFinite(b))
+
+  active_count_finite_bound: LEMMA ele(expectedActiveCount(E),ennFinite(b)) IFF
+    ele(budgets.costTotal(prefixes.massFamily(E)),ennFinite(b))
+
+  expectedActiveCount_eq_tsum: THEOREM
+    expectedActiveCount(E)=budgets.costTotal(prefixes.massFamily(E))
+
+  expectedActiveCount_le_of_budget: THEOREM
+    budgets.BudgetSteps(LAMBDA(n:nat):scale(c,prefixes.massFamily(E)(n)),budget) IMPLIES
+      ele(expectedActiveCount(E),dividePositive(budget(0),c))
+
+END ppg_general_active_count
