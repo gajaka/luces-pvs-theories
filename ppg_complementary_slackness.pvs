@@ -1,0 +1,62 @@
+% Positive transported mass and zero entrywise gap force a tight dual
+% constraint. Complementary slackness then equates the two entry costs.
+% A Monge row selects one positive entry; strict slackness separates all
+% the other entries from its tight constraint.
+%
+% Lean counterpart: PPGraphComplementarySlackness.lean. The arguments
+% apply to arbitrary index types, including Fin 0. No marginal constraints
+% or global equality of primal and dual objective values are assumed.
+ppg_complementary_slackness[I,J:TYPE]: THEORY
+BEGIN
+  Transport: TYPE = [I,J->real]
+
+  CostMatrix: TYPE = [I,J->real]
+
+  MarginalA: TYPE = [I->real]
+
+  MarginalB: TYPE = [J->real]
+
+  DualU: TYPE = [I->real]
+
+  DualV: TYPE = [J->real]
+
+  P: VAR Transport
+  C: VAR CostMatrix
+  u: VAR DualU
+  v: VAR DualV
+  i: VAR I
+  j: VAR J
+
+  nonnegPlan(P): bool = FORALL(i:I,j:J):P(i,j)>=0
+
+  dual_feasible(u,v,C): bool = FORALL(i:I,j:J):u(i)+v(j)<=C(i,j)
+
+  cs_condition(P,u,v,C): bool =
+    FORALL(i:I,j:J):P(i,j)>0 IMPLIES u(i)+v(j)=C(i,j)
+
+  cs_pointwise: THEOREM dual_feasible(u,v,C) AND nonnegPlan(P) AND
+    P(i,j)>0 AND P(i,j)*(C(i,j)-(u(i)+v(j)))=0 IMPLIES u(i)+v(j)=C(i,j)
+
+  cs_from_pointwise_tight: THEOREM dual_feasible(u,v,C) AND nonnegPlan(P) AND
+    (FORALL(i:I,j:J):P(i,j)*(C(i,j)-(u(i)+v(j)))=0) IMPLIES
+    cs_condition(P,u,v,C)
+
+  cs_entry_cost: THEOREM nonnegPlan(P) AND cs_condition(P,u,v,C) IMPLIES
+    P(i,j)*C(i,j)=P(i,j)*(u(i)+v(j))
+
+  is_monge(P): bool = FORALL(i:I):EXISTS(j_star:J):P(i,j_star)>0 AND
+    (FORALL(j:J):j/=j_star IMPLIES P(i,j)=0)
+
+  monge_cs_tight_entry: THEOREM is_monge(P) AND cs_condition(P,u,v,C) IMPLIES
+    EXISTS(j_star:J):P(i,j_star)>0 AND u(i)+v(j_star)=C(i,j_star)
+
+  cs_strict(P,u,v,C): bool =
+    FORALL(i:I,j:J):P(i,j)=0 IMPLIES u(i)+v(j)<C(i,j)
+
+  monge_cs_strict_unique: THEOREM
+    is_monge(P) AND cs_condition(P,u,v,C) AND cs_strict(P,u,v,C) IMPLIES
+    EXISTS(j_star:J):P(i,j_star)>0 AND u(i)+v(j_star)=C(i,j_star) AND
+      (FORALL(j:J):j/=j_star IMPLIES u(i)+v(j)<C(i,j))
+
+  cert_cs(P,u,v,C): bool = cs_condition(P,u,v,C)
+END ppg_complementary_slackness
