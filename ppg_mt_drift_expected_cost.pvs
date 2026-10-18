@@ -1,0 +1,52 @@
+% A cap on each state charge bounds total expected cost by the cap times
+% the expected stopped count. The drift certificate bounds that count
+% under the original product-log law. The resulting finite bound needs
+% neither measurable charges nor a bounded state potential.
+%
+% Johannes Lengler, Drift Analysis, arXiv:1712.00964, Theorem 1.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Edward A. Lee and Sanjit A. Seshia, Introduction to Embedded Systems,
+% second edition, MIT Press, 2017, Chapter 16.
+ppg_mt_drift_expected_cost[C,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_mt_coordinate_laws[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),fallback:C,
+  eventOrder:{e:list[C]|FORALL(c:C):member(c,e)},
+  (IMPORTING ppg_mt_observed_history[C,V,Value,domain,spaces,laws,fallback,eventOrder])
+  vars:[C->finite_set[V]],
+  B:ppg_mt_check_probability[C,V,Value,domain,spaces,laws].NativeBad,
+  initial:ppg_mt_semantics[C,V,Value,domain].MTState,Phi:MeasurablePotential]: THEORY
+BEGIN
+  IMPORTING ppg_mt_fixed_drift[C,V,Value,domain,spaces,laws,fallback,eventOrder,vars,B,initial,Phi] AS costDrift,
+    ppg_mt_expected_cost[C,V,Value,domain,spaces,laws,fallback,eventOrder] AS driftCosts,
+    ppg_mt_semantics[C,V,Value,domain] AS costSemantics,
+    ppg_mt_random_process[C,V,Value,domain] AS costSlots,
+    ppg_mt_raw_active_expectation[C,V,Value,domain,spaces,laws,fallback,eventOrder] AS costRaw,
+    ppg_mt_time_expectation[C,V,Value,domain,spaces,laws] AS costLegacy,
+    ppg_weighted_active_cost[costSlots.LogSpace] AS costScaling,
+    ppg_enn_add AS costOrder,
+    ppg_enn_simple_sup
+
+  State: TYPE = costSemantics.MTState
+
+  ResamplingLog: TYPE = costSlots.LogSpace
+
+  cost: VAR [State->nonneg_real]
+  cap: VAR nonneg_real
+
+  scaled_count_bound: LEMMA FORALL(delta:posreal,T:costDrift.MTCertificate(delta)):
+    ele(scale(cap,costLegacy.ETLog(vars,B,fallback,costRaw.nativeEnumeration,initial)),
+      scale(cap,dividePositive(ennFinite(Phi(initial)),delta)))
+
+  mtExpectedCost_fixed_le_of_drift: THEOREM FORALL(delta:posreal,T:costDrift.MTCertificate(delta)):
+    (FORALL(s:State):cost(s)<=cap) IMPLIES
+      ele(driftCosts.mtExpectedCost(vars,B,LAMBDA(omega:ResamplingLog):initial,cost),
+        scale(cap,dividePositive(ennFinite(Phi(initial)),delta)))
+
+  finite_drift_cost_bound: LEMMA FORALL(delta:posreal):
+    scale(cap,dividePositive(ennFinite(Phi(initial)),delta))=ennFinite(cap*(Phi(initial)/delta))
+
+  mtExpectedCost_fixed_lt_top_of_drift: THEOREM FORALL(delta:posreal,T:costDrift.MTCertificate(delta)):
+    (FORALL(s:State):cost(s)<=cap) IMPLIES
+      ennFinite?(driftCosts.mtExpectedCost(vars,B,LAMBDA(omega:ResamplingLog):initial,cost))
+
+END ppg_mt_drift_expected_cost

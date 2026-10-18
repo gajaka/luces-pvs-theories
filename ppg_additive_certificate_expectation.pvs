@@ -1,0 +1,44 @@
+% Every finite prefix is paid from the initial potential mean. Passing
+% to the increasing active counts gives the full expectation bound;
+% finite expectation then makes the active count finite almost surely.
+%
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964, Theorem 1.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_additive_certificate_expectation[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) measureLaw:FiniteLaw,
+  (IMPORTING ppg_filtration[X,real,S]) history:Filtration]: THEORY
+BEGIN
+  IMPORTING ppg_additive_conditional_certificate[X,S,measureLaw,history] AS certificate,
+    ppg_finite_count_budget[X,S,measureLaw] AS countBudget,
+    ppg_finite_integral_finiteness[X,S,measureLaw] AS finiteness,
+    ppg_event_count[X] AS events,
+    measure_integration@integral[X,asNasa(S),measureLaw] AS boundNative,
+    ppg_enn_positive_divide
+  E: VAR certificate.HistorySchedule
+  x: VAR X
+
+  activeCount(E,x): ENN = events.eventCount(certificate.eventSchedule(E),x)
+
+  expectedActiveCount(E): ENN = countBudget.expectedCount(certificate.eventSchedule(E))
+
+  active_count_eq: LEMMA activeCount(E,x)=events.eventCount(E,x)
+
+  active_count_measurable: LEMMA measurable(S,ENNSigma,LAMBDA(x:X):activeCount(E,x))
+
+  certificate_budget: LEMMA FORALL(E:certificate.HistorySchedule,delta:posreal,
+    C:certificate.ConditionalCertificate(E,delta)):
+    countBudget.BudgetLaw(certificate.eventSchedule(E),
+      LAMBDA(n:nat):certificate.budgetMean(E,delta,C,n),delta)
+
+  expectedActiveCount_le: THEOREM FORALL(E:certificate.HistorySchedule,delta:posreal,
+    C:certificate.ConditionalCertificate(E,delta)):
+    ele(expectedActiveCount(E),dividePositive(ofReal(boundNative.integral(C(0))),delta))
+
+  expectedActiveCount_lt_top: THEOREM FORALL(E:certificate.HistorySchedule,delta:posreal,
+    C:certificate.ConditionalCertificate(E,delta)):ennFinite?(expectedActiveCount(E))
+
+  ae_activeCount_lt_top: THEOREM FORALL(E:certificate.HistorySchedule,delta:posreal,
+    C:certificate.ConditionalCertificate(E,delta)):
+    ae?[X,asNasa(S),measureLaw]({x:X|ennFinite?(activeCount(E,x))})
+
+END ppg_additive_certificate_expectation

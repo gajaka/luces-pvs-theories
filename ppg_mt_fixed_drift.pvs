@@ -1,0 +1,57 @@
+% For a fixed initial state, the initial stopped potential is constant.
+% Its mean is therefore the state potential itself. The general certificate
+% bounds the actual stopped count, including paths on which that count is infinite.
+%
+% Johannes Lengler, Drift Analysis, arXiv:1712.00964, Theorem 1.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_mt_fixed_drift[C,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_mt_coordinate_laws[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),fallback:C,
+  eventOrder:{e:list[C]|FORALL(c:C):member(c,e)},
+  (IMPORTING ppg_mt_observed_history[C,V,Value,domain,spaces,laws,fallback,eventOrder])
+  vars:[C->finite_set[V]],
+  B:ppg_mt_check_probability[C,V,Value,domain,spaces,laws].NativeBad,
+  initial:ppg_mt_semantics[C,V,Value,domain].MTState,Phi:MeasurablePotential]: THEORY
+BEGIN
+  IMPORTING ppg_mt_observed_history[C,V,Value,domain,spaces,laws,fallback,eventOrder] AS fixedObserved,
+    ppg_mt_random_process[C,V,Value,domain] AS fixedSlots,
+    ppg_mt_drift_pointwise[C,V,Value,domain,fallback,eventOrder] AS fixedPointwise,
+    ppg_mt_semantics[C,V,Value,domain] AS fixedSemantics,
+    ppg_mt_selection[C,V,Value,domain] AS fixedSelection,
+    ppg_measurable_map[fixedSlots.LogSpace,fixedSemantics.MTState] AS fixedStateMaps,
+    ppg_mt_raw_active_expectation[C,V,Value,domain,spaces,laws,fallback,eventOrder] AS fixedRaw,
+    ppg_mt_time_expectation[C,V,Value,domain,spaces,laws] AS fixedLegacy,
+    ppg_enn_simple_sup
+
+  ResamplingLog: TYPE = fixedSlots.LogSpace
+
+  fixedInit: fixedObserved.Initializer = LAMBDA(omega:ResamplingLog):initial
+
+  IMPORTING ppg_mt_conditional_certificate[C,V,Value,domain,spaces,laws,fallback,eventOrder,vars,B,fixedInit,Phi] AS fixedCertificate
+
+  MTCertificate(delta:nonneg_real): TYPE = fixedCertificate.MTCertificate(delta)
+
+  delta: VAR posreal
+
+  fixed_initial_function: LEMMA FORALL(delta:posreal,T:MTCertificate(delta)):
+    T(0)=fixedCertificate.constant(Phi(initial))
+
+  fixed_initial_mean: LEMMA FORALL(delta:posreal,T:MTCertificate(delta)):
+    fixedCertificate.mean(T(0))=Phi(initial)
+
+  fixed_count_identity: LEMMA fixedRaw.expectedActiveCount(fixedRaw.runningSchedule(vars,B,fixedInit))=
+    fixedLegacy.ETLog(vars,B,fallback,fixedRaw.nativeEnumeration,initial)
+
+  ETLog_le_of_drift: THEOREM FORALL(delta:posreal,T:MTCertificate(delta)):
+    ele(fixedLegacy.ETLog(vars,B,fallback,fixedRaw.nativeEnumeration,initial),
+      dividePositive(ennFinite(Phi(initial)),delta))
+
+  ETLog_lt_top_of_drift: THEOREM FORALL(delta:posreal,T:MTCertificate(delta)):
+    ennFinite?(fixedLegacy.ETLog(vars,B,fallback,fixedRaw.nativeEnumeration,initial))
+
+  ae_exists_good_of_drift: THEOREM FORALL(delta:posreal,T:MTCertificate(delta)):
+    ae?[ResamplingLog,asNasa(fixedCertificate.tableSigma),fixedCertificate.nativeLaw](
+      {omega:ResamplingLog|EXISTS(N:nat):fixedSelection.MTGood(B,
+        fixedSlots.randTraj(vars,B,fallback,eventOrder,initial,omega,N))})
+
+END ppg_mt_fixed_drift

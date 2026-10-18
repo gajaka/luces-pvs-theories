@@ -1,0 +1,94 @@
+% Integrate the local conditional decrease before telescoping over time.
+% The certificate retains adaptation and almost-everywhere nonnegativity;
+% no pointwise sign condition or eventual stopping is required.
+%
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964, Theorem 1.
+% K. Chatterjee, H. Fu and P. Novotny, in Foundations of Probabilistic
+% Programming, Definition 7.4 and Proposition 7.5.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_additive_conditional_certificate[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) measureLaw:FiniteLaw,
+  (IMPORTING ppg_filtration[X,real,S]) history:Filtration]: THEORY
+BEGIN
+  IMPORTING ppg_finite_expectation[X,S,measureLaw] AS driftIntegral,
+    ppg_finite_measure_integral[X,S,measureLaw] AS driftFunctions,
+    ppg_finite_integral_order[X,S,measureLaw] AS driftOrder,
+    measure_integration@integral[X,asNasa(S),measureLaw] AS driftNative,
+    measure_integration@measure_theory[X,asNasa(S),measureLaw] AS driftAE,
+    ppg_enn_ofreal,ppg_enn_simple_sup,
+    ppg_conditional_existence,ppg_conditional_versions
+
+  historyAt(n:nat): {H:ppg_measurable_space[X].MeasurableSpace|subset?(H,S)} = history(n)
+
+  HistorySchedule: TYPE = {E:[nat->set[X]]|FORALL(n:nat):history(n)(E(n))}
+
+  E: VAR HistorySchedule
+  delta: VAR nonneg_real
+  value: VAR [nat->driftNative.integrable]
+  n: VAR nat
+
+  historyEvent(E,n): (S) = E(n)
+
+  eventSchedule(E): [nat->(S)] = LAMBDA(n:nat):historyEvent(E,n)
+
+  history_event_value: LEMMA historyEvent(E,n)=E(n)
+
+  conditionalNext(value,n): ppg_conditional_versions[X,S,measureLaw,historyAt(n)].HistoryFunction =
+    ppg_conditional_existence[X,S,measureLaw,historyAt(n)].conditionalExpectation(value(n+1))
+
+  conditional_next_version: LEMMA
+    ppg_conditional_versions[X,S,measureLaw,historyAt(n)].conditionalVersion(value(n+1),conditionalNext(value,n))
+
+  conditional_next_integral: LEMMA driftNative.integral(conditionalNext(value,n))=
+    driftNative.integral(value(n+1))
+
+  activeCharge(E,delta,n): driftNative.integrable = delta*driftFunctions.indicator(historyEvent(E,n))
+
+  active_charge_integral: LEMMA driftNative.integral(activeCharge(E,delta,n))=
+    delta*driftIntegral.mass(historyEvent(E,n))
+
+  ae_shift_bound: LEMMA FORALL(f,g,c,h:driftNative.integrable):
+    driftAE.ae_eq?(f,g) AND driftAE.ae_le?(f+c,h) IMPLIES driftAE.ae_le?(g+c,h)
+
+  version_decrease_iff: LEMMA FORALL(value:[nat->driftNative.integrable],n:nat,
+    g:ppg_conditional_versions[X,S,measureLaw,historyAt(n)].HistoryFunction,
+    E:HistorySchedule,delta:nonneg_real):
+    ppg_conditional_versions[X,S,measureLaw,historyAt(n)].conditionalVersion(value(n+1),g) IMPLIES
+    (driftAE.ae_le?(conditionalNext(value,n)+activeCharge(E,delta,n),value(n)) IFF
+      driftAE.ae_le?(g+activeCharge(E,delta,n),value(n)))
+
+  CertificateLaw(E,delta,value): bool =
+    (FORALL(n:nat):driftAE.ae_nonneg?(value(n))) AND
+    (FORALL(n:nat):ppg_conditional_versions[X,S,measureLaw,historyAt(n)].historyMeasurable(value(n))) AND
+    (FORALL(n:nat):driftAE.ae_le?(conditionalNext(value,n)+activeCharge(E,delta,n),value(n)))
+
+  ConditionalCertificate(E,delta): TYPE = {value:[nat->driftNative.integrable]|CertificateLaw(E,delta,value)}
+
+  certificate_nonnegative: LEMMA CertificateLaw(E,delta,value) IMPLIES driftAE.ae_nonneg?(value(n))
+
+  certificate_adapted: LEMMA CertificateLaw(E,delta,value) IMPLIES
+    ppg_conditional_versions[X,S,measureLaw,historyAt(n)].historyMeasurable(value(n))
+
+  certificate_decrease: LEMMA CertificateLaw(E,delta,value) IMPLIES
+    driftAE.ae_le?(conditionalNext(value,n)+activeCharge(E,delta,n),value(n))
+
+  nonnegative_ae_zero_comparison: LEMMA FORALL(f:driftNative.integrable):
+    driftAE.ae_nonneg?(f) IMPLIES driftAE.ae_le?(driftFunctions.constant(0),f)
+
+  value_mean_nonnegative: LEMMA CertificateLaw(E,delta,value) IMPLIES
+    0<=driftNative.integral(value(n))
+
+  integrated_real_decrease: LEMMA CertificateLaw(E,delta,value) IMPLIES
+    delta*driftIntegral.mass(historyEvent(E,n))+driftNative.integral(value(n+1))<=
+      driftNative.integral(value(n))
+
+  budgetMean(E:HistorySchedule,delta:nonneg_real,C:ConditionalCertificate(E,delta),n:nat): nonneg_real = driftNative.integral(C(n))
+
+  budget_mean_ofreal: LEMMA FORALL(E:HistorySchedule,delta:nonneg_real,C:ConditionalCertificate(E,delta),n:nat):
+    ofReal(driftNative.integral(C(n)))=ennFinite(budgetMean(E,delta,C,n))
+
+  integrated_decrease: THEOREM FORALL(E:HistorySchedule,delta:nonneg_real,C:ConditionalCertificate(E,delta),n:nat):
+    ele(eadd(scale(delta,ennFinite(driftIntegral.mass(historyEvent(E,n)))),
+      ofReal(driftNative.integral(C(n+1)))),ofReal(driftNative.integral(C(n))))
+
+END ppg_additive_conditional_certificate
