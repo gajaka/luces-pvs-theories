@@ -1,0 +1,366 @@
+(|ppg_hls_reversal|
+ (|positivePath_single| 0
+  (|positivePath_single-1| NIL 4001352408
+   ("" (THEN (SKOSIMP*) (EXPAND "positivePath") (EXPAND "TC" 1) (ASSERT)) NIL)
+   ((TC INDUCTIVE-DECL "bool" |relations| NIL)
+    (|positivePath| CONST-DECL "bool" |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|positivePath_trans| 0
+  (|positivePath_trans-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*) (EXPAND "positivePath") (EXPAND "TC" 1) (FLATTEN)
+     (INST 2 "y!1") (ASSERT))
+    NIL)
+   ((TC INDUCTIVE-DECL "bool" |relations| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|positivePath| CONST-DECL "bool" |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|positivePath_closed| 0
+  (|positivePath_closed-1| NIL 4001352408
+   ("" (SKOSIMP*)
+    (("" (EXPAND "positivePath")
+      (("" (LEMMA "TC_weak_induction[V]")
+        (("" (INST -1 "r!1" "s!1")
+          (("" (SPLIT -1)
+            (("1" (INST -1 "a!1" "b!1") (("1" (ASSERT) NIL NIL)) NIL)
+             ("2" (HIDE-ALL-BUT (-1 -2 1))
+              (("2" (SKOSIMP*)
+                (("2" (SPLIT -1)
+                  (("1" (INST -2 "x!1" "y!1") (("1" (ASSERT) NIL NIL)) NIL)
+                   ("2" (SKOSIMP*)
+                    (("2" (INST -4 "x!1" "z!1" "y!1") (("2" (ASSERT) NIL NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|TC_weak_induction| FORMULA-DECL NIL |relations| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|positivePath| CONST-DECL "bool" |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|positivePath_mono| 0
+  (|positivePath_mono-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "positivePath_closed" ("r" "r!1" "s" "positivePath(s!1)"))
+     (LEMMA "positivePath_single" ("r" "s!1"))
+     (LEMMA "positivePath_trans" ("r" "s!1"))
+     (GRIND :EXCLUDE ("positivePath" "TC")))
+    NIL)
+   ((|positivePath_single| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (|positivePath_trans| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (|positivePath_closed| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL)
+    (|positivePath| CONST-DECL "bool" |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|path_cases| 0
+  (|path_cases-1| NIL 4001352408
+   ("" (THEN (GRIND :DEFS ("path" "RTC" "positivePath") :EXCLUDE ("TC"))) NIL)
+   ((RTC CONST-DECL "bool" |relations| NIL)
+    (|path| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|positivePath| CONST-DECL "bool" |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|path_refl| 0
+  (|path_refl-1| NIL 4001352408
+   ("" (THEN (GRIND :DEFS ("path" "RTC") :EXCLUDE ("TC"))) NIL)
+   ((RTC CONST-DECL "bool" |relations| NIL)
+    (|path| CONST-DECL "bool" |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|positivePath_to_path| 0
+  (|positivePath_to_path-1| NIL 4001352408
+   ("" (THEN (GRIND :DEFS ("positivePath" "path" "RTC") :EXCLUDE ("TC"))) NIL)
+   ((|positivePath| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (RTC CONST-DECL "bool" |relations| NIL)
+    (|path| CONST-DECL "bool" |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|path_single| 0
+  (|path_single-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*) (LEMMA "positivePath_single")
+     (LEMMA "positivePath_to_path")
+     (GRIND :EXCLUDE ("positivePath" "path" "TC")))
+    NIL)
+   ((|positivePath_to_path| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL)
+    (|positivePath_single| FORMULA-DECL NIL |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|path_trans| 0
+  (|path_trans-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "positivePath_trans" ("r" "r!1" "x" "x!1" "y" "y!1" "z" "z!1"))
+     (GRIND :DEFS ("path" "RTC" "positivePath") :EXCLUDE ("TC")))
+    NIL)
+   ((|positivePath| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (RTC CONST-DECL "bool" |relations| NIL)
+    (|path| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|positivePath_trans| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|path_mono| 0
+  (|path_mono-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*) (LEMMA "positivePath_mono" ("r" "r!1" "s" "s!1"))
+     (GRIND :DEFS ("path" "RTC" "positivePath") :EXCLUDE ("TC")))
+    NIL)
+   ((|positivePath| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|path| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (RTC CONST-DECL "bool" |relations| NIL)
+    (|positivePath_mono| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|positivePath_path| 0
+  (|positivePath_path-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "positivePath_trans" ("r" "r!1" "x" "x!1" "y" "y!1" "z" "z!1"))
+     (GRIND :DEFS ("path" "RTC" "positivePath") :EXCLUDE ("TC")))
+    NIL)
+   ((|positivePath| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (RTC CONST-DECL "bool" |relations| NIL)
+    (|path| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|positivePath_trans| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|path_positivePath| 0
+  (|path_positivePath-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "positivePath_trans" ("r" "r!1" "x" "x!1" "y" "y!1" "z" "z!1"))
+     (GRIND :DEFS ("path" "RTC" "positivePath") :EXCLUDE ("TC")))
+    NIL)
+   ((|positivePath| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (RTC CONST-DECL "bool" |relations| NIL)
+    (|path| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|positivePath_trans| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|acyclic_mono| 0
+  (|acyclic_mono-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*) (LEMMA "positivePath_mono" ("r" "s!1" "s" "r!1"))
+     (GRIND :DEFS ("Acyclic") :EXCLUDE ("positivePath" "path" "TC")))
+    NIL)
+   ((|Acyclic| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|positivePath_mono| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|acyclic_irrefl| 0
+  (|acyclic_irrefl-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "positivePath_single" ("r" "r!1" "x" "x!1" "y" "x!1"))
+     (GRIND :DEFS ("Acyclic") :EXCLUDE ("positivePath" "TC")))
+    NIL)
+   ((|Acyclic| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|positivePath_single| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|acyclic_asymm| 0
+  (|acyclic_asymm-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "positivePath_single" ("r" "r!1" "x" "u!1" "y" "v!1"))
+     (LEMMA "positivePath_single" ("r" "r!1" "x" "v!1" "y" "u!1"))
+     (LEMMA "positivePath_trans" ("r" "r!1" "x" "u!1" "y" "v!1" "z" "u!1"))
+     (GRIND :DEFS ("Acyclic") :EXCLUDE ("positivePath" "TC")))
+    NIL)
+   ((|Acyclic| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|positivePath_trans| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (|positivePath_single| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|acyclic_eraseArc| 0
+  (|acyclic_eraseArc-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "acyclic_mono" ("r" "r!1" "s" "eraseArc(r!1,u!1,v!1)"))
+     (GRIND :DEFS ("eraseArc") :EXCLUDE ("Acyclic" "positivePath" "TC")))
+    NIL)
+   ((|acyclic_mono| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL)
+    (|eraseArc| CONST-DECL "bool" |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|addArc_case_single| 0
+  (|addArc_case_single-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "positivePath_single" ("r" "r!1" "x" "x!1" "y" "y!1"))
+     (LEMMA "path_refl" ("r" "r!1" "x" "u!1"))
+     (LEMMA "path_refl" ("r" "r!1" "x" "v!1"))
+     (GRIND :DEFS ("addArc" "addArcPathCase") :EXCLUDE
+      ("positivePath" "path" "TC")))
+    NIL)
+   ((|path_refl| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (|addArcPathCase| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|addArc| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|positivePath_single| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|addArc_case_trans| 0
+  (|addArc_case_trans-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "positivePath_trans" ("r" "r!1" "x" "x!1" "y" "y!1" "z" "z!1"))
+     (LEMMA "positivePath_to_path" ("r" "r!1" "x" "x!1" "y" "y!1"))
+     (LEMMA "positivePath_to_path" ("r" "r!1" "x" "y!1" "y" "z!1"))
+     (LEMMA "path_trans" ("r" "r!1" "x" "x!1" "y" "y!1" "z" "u!1"))
+     (LEMMA "path_trans" ("r" "r!1" "x" "v!1" "y" "y!1" "z" "z!1"))
+     (LEMMA "path_trans" ("r" "r!1" "x" "v!1" "y" "y!1" "z" "u!1"))
+     (GRIND :DEFS ("addArcPathCase") :EXCLUDE ("positivePath" "path" "TC")))
+    NIL)
+   ((|positivePath_to_path| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (|path_trans| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (|addArcPathCase| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|positivePath_trans| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|transGen_addArc_cases| 0
+  (|transGen_addArc_cases-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "positivePath_closed"
+      ("r" "addArc(r!1,u!1,v!1)" "s" "addArcPathCase(r!1,u!1,v!1)"))
+     (LEMMA "addArc_case_single" ("r" "r!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "addArc_case_trans" ("r" "r!1" "u" "u!1" "v" "v!1"))
+     (GRIND :DEFS ("addArcPathCase") :EXCLUDE ("positivePath" "path" "TC")))
+    NIL)
+   ((|addArc_case_single| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (|addArc_case_trans| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (|positivePath_closed| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL)
+    (|addArc| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|addArcPathCase| CONST-DECL "bool" |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|acyclic_addArc| 0
+  (|acyclic_addArc-1| NIL 4001352408
+   (""
+    (THEN (EXPAND "Acyclic") (SKOSIMP*)
+     (LEMMA "transGen_addArc_cases"
+      ("r" "r!1" "u" "u!1" "v" "v!1" "x" "x!1" "y" "x!1"))
+     (LEMMA "path_trans" ("r" "r!1" "x" "v!1" "y" "x!1" "z" "u!1"))
+     (GRIND :EXCLUDE ("positivePath" "path" "TC")))
+    NIL)
+   ((|Acyclic| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|transGen_addArc_cases| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL)
+    (|path_trans| FORMULA-DECL NIL |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|addArc_cycle| 0
+  (|addArc_cycle-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "path_mono"
+      ("r" "r!1" "s" "addArc(r!1,u!1,v!1)" "x" "v!1" "y" "u!1"))
+     (LEMMA "positivePath_single"
+      ("r" "addArc(r!1,u!1,v!1)" "x" "u!1" "y" "v!1"))
+     (LEMMA "positivePath_path"
+      ("r" "addArc(r!1,u!1,v!1)" "x" "u!1" "y" "v!1" "z" "u!1"))
+     (GRIND :DEFS ("addArc") :EXCLUDE ("positivePath" "path" "TC")))
+    NIL)
+   ((|positivePath_single| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (|positivePath_path| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (|path_mono| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL)
+    (|addArc| CONST-DECL "bool" |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|acyclic_addArc_iff| 0
+  (|acyclic_addArc_iff-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*) (LEMMA "acyclic_addArc" ("r" "r!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "addArc_cycle" ("r" "r!1" "u" "u!1" "v" "v!1"))
+     (GRIND :DEFS ("Acyclic") :EXCLUDE ("positivePath" "path" "TC")))
+    NIL)
+   ((|addArc_cycle| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (|Acyclic| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|acyclic_addArc| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|reversible_iff_no_alternate_path| 0
+  (|reversible_iff_no_alternate_path-1| NIL 4001352408
+   (""
+    (THEN (SKOSIMP*) (LEMMA "acyclic_irrefl" ("r" "r!1" "x" "u!1"))
+     (LEMMA "acyclic_eraseArc" ("r" "r!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "acyclic_addArc_iff"
+      ("r" "eraseArc(r!1,u!1,v!1)" "u" "v!1" "v" "u!1"))
+     (GRIND :DEFS ("reverseArc" "path" "RTC" "positivePath") :EXCLUDE
+      ("TC" "Acyclic" "eraseArc" "addArc")))
+    NIL)
+   ((|acyclic_eraseArc| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (|positivePath| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|reverseArc| CONST-DECL "ArcRelation" |ppg_hls_reversal| NIL)
+    (|path| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (RTC CONST-DECL "bool" |relations| NIL)
+    (|eraseArc| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|acyclic_addArc_iff| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (|acyclic_irrefl| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_reversal| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL))
+   SHOSTAK))
+ (|reverseArc_oriented| 0
+  (|reverseArc_oriented-1| NIL 4001352408
+   ("" (THEN (GRIND :DEFS ("reverseArc" "addArc" "eraseArc"))) NIL)
+   ((|reverseArc| CONST-DECL "ArcRelation" |ppg_hls_reversal| NIL)
+    (|eraseArc| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|addArc| CONST-DECL "bool" |ppg_hls_reversal| NIL))
+   SHOSTAK)))
+

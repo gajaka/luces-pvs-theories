@@ -1,0 +1,107 @@
+% Reversing an arc of a witness DAG preserves acyclicity precisely when
+% deleting that arc leaves no directed path between its endpoints.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Definition 2.4 and Fact 2.5.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSReversal.lean.
+%
+% Positive paths use the prelude transitive closure TC. Reflexive paths
+% use RTC, so a path from a vertex to itself may have length zero. These
+% notions remain distinct in the acyclicity and no-return conditions.
+% The vertex type is arbitrary; no finiteness or ordering is assumed.
+%
+% The path decomposition uses that an added arc can occur only once when
+% its target has no return path to its source. Under acyclicity, an
+% existing arc has distinct endpoints; after deleting it, an alternate
+% path between those endpoints is therefore strictly positive.
+
+ppg_hls_reversal[V:TYPE]: THEORY
+BEGIN
+  ArcRelation: TYPE = [V,V->bool]
+
+  r,s: VAR ArcRelation
+  u,v,x,y,z: VAR V
+
+  positivePath(r)(x,y): bool = TC(r)(x,y)
+
+  path(r)(x,y): bool = RTC(r)(x,y)
+
+  Acyclic(r): bool = FORALL(x:V): NOT positivePath(r)(x,x)
+
+  eraseArc(r,u,v)(x,y): bool = r(x,y) AND NOT (x=u AND y=v)
+
+  addArc(r,u,v)(x,y): bool = r(x,y) OR (x=u AND y=v)
+
+  reverseArc(r,u,v): ArcRelation = addArc(eraseArc(r,u,v),v,u)
+
+  positivePath_single: LEMMA r(x,y) IMPLIES positivePath(r)(x,y)
+
+  positivePath_trans: LEMMA
+    positivePath(r)(x,y) AND positivePath(r)(y,z) IMPLIES positivePath(r)(x,z)
+
+  positivePath_closed: LEMMA
+    (FORALL(a,b:V): r(a,b) IMPLIES s(a,b)) AND
+    (FORALL(a,b,c:V): s(a,b) AND s(b,c) IMPLIES s(a,c)) IMPLIES
+    (FORALL(a,b:V): positivePath(r)(a,b) IMPLIES s(a,b))
+
+  positivePath_mono: LEMMA
+    (FORALL(a,b:V): r(a,b) IMPLIES s(a,b)) AND
+    positivePath(r)(x,y) IMPLIES positivePath(s)(x,y)
+
+  path_cases: LEMMA path(r)(x,y) IFF x=y OR positivePath(r)(x,y)
+
+  path_refl: LEMMA path(r)(x,x)
+
+  positivePath_to_path: LEMMA positivePath(r)(x,y) IMPLIES path(r)(x,y)
+
+  path_single: LEMMA r(x,y) IMPLIES path(r)(x,y)
+
+  path_trans: LEMMA path(r)(x,y) AND path(r)(y,z) IMPLIES path(r)(x,z)
+
+  path_mono: LEMMA
+    (FORALL(a,b:V): r(a,b) IMPLIES s(a,b)) AND
+    path(r)(x,y) IMPLIES path(s)(x,y)
+
+  positivePath_path: LEMMA
+    positivePath(r)(x,y) AND path(r)(y,z) IMPLIES positivePath(r)(x,z)
+
+  path_positivePath: LEMMA
+    path(r)(x,y) AND positivePath(r)(y,z) IMPLIES positivePath(r)(x,z)
+
+  acyclic_mono: THEOREM
+    (FORALL(a,b:V): s(a,b) IMPLIES r(a,b)) AND Acyclic(r) IMPLIES Acyclic(s)
+
+  acyclic_irrefl: THEOREM Acyclic(r) IMPLIES NOT r(x,x)
+
+  acyclic_asymm: THEOREM Acyclic(r) AND r(u,v) IMPLIES NOT r(v,u)
+
+  acyclic_eraseArc: THEOREM Acyclic(r) IMPLIES Acyclic(eraseArc(r,u,v))
+
+  addArcPathCase(r,u,v)(x,y): bool = positivePath(r)(x,y) OR
+    (path(r)(x,u) AND path(r)(v,y))
+
+  addArc_case_single: LEMMA addArc(r,u,v)(x,y) IMPLIES addArcPathCase(r,u,v)(x,y)
+
+  addArc_case_trans: LEMMA NOT path(r)(v,u) AND
+    addArcPathCase(r,u,v)(x,y) AND addArcPathCase(r,u,v)(y,z) IMPLIES
+    addArcPathCase(r,u,v)(x,z)
+
+  transGen_addArc_cases: THEOREM NOT path(r)(v,u) AND
+    positivePath(addArc(r,u,v))(x,y) IMPLIES
+    positivePath(r)(x,y) OR (path(r)(x,u) AND path(r)(v,y))
+
+  acyclic_addArc: THEOREM
+    Acyclic(r) AND NOT path(r)(v,u) IMPLIES Acyclic(addArc(r,u,v))
+
+  addArc_cycle: LEMMA path(r)(v,u) IMPLIES positivePath(addArc(r,u,v))(u,u)
+
+  acyclic_addArc_iff: THEOREM
+    Acyclic(r) IMPLIES (Acyclic(addArc(r,u,v)) IFF NOT path(r)(v,u))
+
+  reversible_iff_no_alternate_path: THEOREM Acyclic(r) AND r(u,v) IMPLIES
+    (Acyclic(reverseArc(r,u,v)) IFF NOT positivePath(eraseArc(r,u,v))(u,v))
+
+  reverseArc_oriented: THEOREM r(u,v) IMPLIES
+    ((reverseArc(r,u,v)(x,y) OR reverseArc(r,u,v)(y,x)) IFF (r(x,y) OR r(y,x)))
+END ppg_hls_reversal
