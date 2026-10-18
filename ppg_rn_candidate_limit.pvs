@@ -1,0 +1,52 @@
+% The increasing candidate sequence has bounded integrals. The native
+% monotone-convergence theorem therefore supplies an integrable limit
+% almost everywhere. Its positive part is nonnegative everywhere and
+% has the same pointwise limit outside the original negligible set.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Native monotone convergence: David Lester's NASAlib construction,
+% following Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_rn_candidate_limit[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) baseLaw,targetLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_rn_candidate_sequence[X,S,baseLaw,targetLaw] AS sequence,
+    ppg_finite_extended_integral[X,S,baseLaw] AS nn,
+    ppg_finite_mass_charge[X,S,targetLaw] AS target,
+    ppg_charge_events[X,S],
+    measure_integration@integral[X,asNasa(S),baseLaw] AS native,
+    measure_integration@measure_theory[X,asNasa(S),baseLaw] AS nativeTheory,
+    measure_integration@integral_convergence[X,asNasa(S),baseLaw] AS monotone,
+    real_fun_preds[nat] AS realSequences
+  g: VAR native.integrable
+  h: VAR nn.NonnegativeFunction
+  x: VAR X
+  n: VAR nat
+
+  prefixFamily(n): native.integrable = sequence.prefix(n)
+
+  family_value: LEMMA prefixFamily(n)(x)=sequence.prefix(n)(x)
+
+  prefix_path_increasing: LEMMA increasing?(LAMBDA(n:nat):prefixFamily(n)(x))
+
+  prefix_limit_nonnegative: LEMMA convergence?(LAMBDA(n:nat):prefixFamily(n)(x),g(x)) IMPLIES 0<=g(x)
+
+  positiveLimit(g): nn.NonnegativeFunction = plus(g)
+
+  limit_positive_part_same: LEMMA convergence?(LAMBDA(n:nat):prefixFamily(n)(x),g(x)) IMPLIES
+    positiveLimit(g)(x)=g(x)
+
+  positive_limit_ae_convergence: LEMMA nativeTheory.ae_convergence?(prefixFamily,g) IMPLIES
+    nativeTheory.ae_convergence?(prefixFamily,positiveLimit(g))
+
+  prefix_family_ae_increasing: LEMMA nativeTheory.ae_increasing?(prefixFamily)
+
+  prefix_family_bounded: LEMMA realSequences.bounded?(LAMBDA(n:nat):native.integral(prefixFamily(n)))
+
+  real_limit_exists: LEMMA EXISTS(g:native.integrable):nativeTheory.ae_convergence?(prefixFamily,g)
+
+  nonnegative_limit_exists: THEOREM EXISTS(h:nn.NonnegativeFunction):nativeTheory.ae_convergence?(prefixFamily,h)
+
+  limit_means_converge: LEMMA nativeTheory.ae_convergence?(prefixFamily,h) IMPLIES
+    converges_upto?(LAMBDA(n:nat):native.integral(prefixFamily(n)),native.integral(h))
+
+END ppg_rn_candidate_limit

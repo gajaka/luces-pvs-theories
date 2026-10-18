@@ -1,0 +1,63 @@
+% Restrict the increasing candidate sequence to one measurable event.
+% Its almost-everywhere limit restricts to the same event. Monotone
+% convergence then passes the target-mass bound to the limit integral.
+% Thus the nonnegative limit is itself a candidate density.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_rn_restricted_limit[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) baseLaw,targetLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_rn_candidates[X,S,baseLaw,targetLaw] AS densities,
+    ppg_rn_candidate_sequence[X,S,baseLaw,targetLaw] AS sequence,
+    ppg_rn_candidate_limit[X,S,baseLaw,targetLaw] AS limits,
+    ppg_finite_restricted_integral[X,S,baseLaw] AS baseIntegral,
+    ppg_finite_extended_integral[X,S,baseLaw] AS nn,
+    ppg_finite_mass_charge[X,S,targetLaw] AS target,
+    ppg_finite_measure_continuity[X,S,baseLaw] AS continuity,
+    ppg_count_prefix_limit[X] AS realBounds,
+    analysis@convergence_ops AS realSequences,
+    measure_integration@integral[X,asNasa(S),baseLaw] AS native,
+    measure_integration@measure_theory[X,asNasa(S),baseLaw] AS nativeTheory,
+    measure_integration@integral_convergence[X,asNasa(S),baseLaw] AS monotone
+  A: VAR (S)
+  g: VAR native.integrable
+  h: VAR nn.NonnegativeFunction
+  n: VAR nat
+  x: VAR X
+
+  restrictedFamily(A)(n): native.integrable = baseIntegral.restricted(A,limits.prefixFamily(n))
+
+  restricted_family_value: LEMMA restrictedFamily(A)(n)(x)=
+    IF A(x) THEN limits.prefixFamily(n)(x) ELSE 0 ENDIF
+
+  restricted_path_present: LEMMA A(x) IMPLIES (LAMBDA(n:nat):restrictedFamily(A)(n)(x))=
+    (LAMBDA(n:nat):limits.prefixFamily(n)(x))
+
+  restricted_path_absent: LEMMA NOT A(x) IMPLIES (LAMBDA(n:nat):restrictedFamily(A)(n)(x))=
+    (LAMBDA(n:nat):0)
+
+  zero_path_converges: LEMMA convergence?(LAMBDA(n:nat):0,0)
+
+  point_restricted_convergence: LEMMA convergence?(LAMBDA(n:nat):limits.prefixFamily(n)(x),g(x)) IMPLIES
+    convergence?(LAMBDA(n:nat):restrictedFamily(A)(n)(x),baseIntegral.restricted(A,g)(x))
+
+  restricted_ae_convergence: LEMMA nativeTheory.ae_convergence?(limits.prefixFamily,g) IMPLIES
+    nativeTheory.ae_convergence?(restrictedFamily(A),baseIntegral.restricted(A,g))
+
+  restricted_ae_increasing: LEMMA nativeTheory.ae_increasing?(restrictedFamily(A))
+
+  prefix_event_bound: LEMMA native.integral(restrictedFamily(A)(n))<=target.mass(A)
+
+  restricted_integrals_converge: LEMMA nativeTheory.ae_convergence?(limits.prefixFamily,g) IMPLIES
+    converges_upto?(LAMBDA(n:nat):native.integral(restrictedFamily(A)(n)),
+      native.integral(baseIntegral.restricted(A,g)))
+
+  limit_event_bound: LEMMA nativeTheory.ae_convergence?(limits.prefixFamily,h) IMPLIES
+    baseIntegral.setIntegral(A,h)<=target.mass(A)
+
+  limit_is_candidate: THEOREM nativeTheory.ae_convergence?(limits.prefixFamily,h) IMPLIES
+    densities.densityCandidate(h)
+
+  candidate_limit_exists: THEOREM EXISTS(p:densities.Candidate):nativeTheory.ae_convergence?(limits.prefixFamily,p)
+
+END ppg_rn_restricted_limit

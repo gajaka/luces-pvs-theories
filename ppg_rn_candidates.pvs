@@ -1,0 +1,61 @@
+% Candidate densities are nonnegative integrable functions whose event
+% integrals are bounded by the target measure. The zero function is a
+% candidate. Splitting an event where two densities exchange order proves
+% that their pointwise maximum is again a candidate.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_rn_candidates[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) baseLaw,targetLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_charge_events[X,S],
+    ppg_finite_extended_integral[X,S,baseLaw] AS nn,
+    ppg_finite_restricted_integral[X,S,baseLaw] AS baseIntegral,
+    measure_integration@integral[X,asNasa(S),baseLaw] AS baseNative,
+    ppg_finite_mass_charge[X,S,targetLaw] AS target,
+    measure_integration@measure_space_def[X,asNasa(S)] AS nativeSpace
+
+  densityCandidate(g:nn.NonnegativeFunction): bool = FORALL(A:(S)):baseIntegral.setIntegral(A,g)<=target.mass(A)
+
+  Candidate: TYPE = (densityCandidate)
+
+  g,h: VAR nn.NonnegativeFunction
+  p,q: VAR Candidate
+  A: VAR (S)
+  x: VAR X
+
+  zero_is_candidate: LEMMA densityCandidate(nn.zero_function)
+
+  zeroCandidate: Candidate = nn.zero_function
+
+  candidate_nonnegative: LEMMA 0<=p(x)
+
+  candidate_event_bound: LEMMA baseIntegral.setIntegral(A,p)<=target.mass(A)
+
+  candidate_total_bound: LEMMA baseNative.integral(p)<=target.mass(wholeEvent)
+
+  maxDensity(g,h): nn.NonnegativeFunction = max(g,h)
+
+  max_density_value: LEMMA maxDensity(g,h)(x)=max(g(x),h(x))
+
+  switchEvent(g,h): (S) = {x:X|g(x)<=h(x)}
+
+  meet(A,B:(S)): (S) = intersection(A,B)
+
+  split_disjoint: LEMMA disjoint?(eventDifference(A,switchEvent(g,h)),meet(A,switchEvent(g,h)))
+
+  split_partition: LEMMA eventUnion(eventDifference(A,switchEvent(g,h)),meet(A,switchEvent(g,h)))=A
+
+  restricted_max_decomposition: LEMMA baseIntegral.restricted(A,maxDensity(g,h))=
+    baseIntegral.restricted(eventDifference(A,switchEvent(g,h)),g)+baseIntegral.restricted(meet(A,switchEvent(g,h)),h)
+
+  maximum_set_integral: LEMMA baseIntegral.setIntegral(A,maxDensity(g,h))=
+    baseIntegral.setIntegral(eventDifference(A,switchEvent(g,h)),g)+baseIntegral.setIntegral(meet(A,switchEvent(g,h)),h)
+
+  maximum_is_candidate: THEOREM densityCandidate(maxDensity(p,q))
+
+  maxCandidate(p,q): Candidate = maxDensity(p,q)
+
+  max_candidate_value: LEMMA maxCandidate(p,q)(x)=max(p(x),q(x))
+
+END ppg_rn_candidates

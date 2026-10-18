@@ -1,0 +1,31 @@
+% The limit candidate attains the supremum of all candidate integrals.
+% Each prefix lies below its limit in mean, while the near-maximizers
+% approach the supremum within 1/(n+1). The Archimedean property closes
+% the remaining real inequality. No absolute-continuity assumption is
+% needed until the residual target mass is shown to vanish.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_rn_maximal_density[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) baseLaw,targetLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_rn_candidates[X,S,baseLaw,targetLaw] AS densities,
+    ppg_rn_candidate_sequence[X,S,baseLaw,targetLaw] AS sequence,
+    ppg_rn_candidate_limit[X,S,baseLaw,targetLaw] AS limits,
+    ppg_rn_restricted_limit[X,S,baseLaw,targetLaw] AS restrictedLimits,
+    measure_integration@integral[X,asNasa(S),baseLaw] AS native,
+    measure_integration@measure_theory[X,asNasa(S),baseLaw] AS nativeTheory
+  p: VAR densities.Candidate
+  n: VAR nat
+  a,b: VAR real
+
+  prefix_mean_below_limit: LEMMA nativeTheory.ae_convergence?(limits.prefixFamily,p) IMPLIES
+    native.integral(limits.prefixFamily(n))<=native.integral(p)
+
+  reciprocal_lower_limit: LEMMA (FORALL(n:nat):a-1/(n+1)<b) IMPLIES a<=b
+
+  maximal_mean: LEMMA nativeTheory.ae_convergence?(limits.prefixFamily,p) IMPLIES
+    native.integral(p)=sequence.topMean
+
+  maximal_density_exists: THEOREM EXISTS(p:densities.Candidate):native.integral(p)=sequence.topMean
+
+END ppg_rn_maximal_density

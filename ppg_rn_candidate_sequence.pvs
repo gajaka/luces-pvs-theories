@@ -1,0 +1,62 @@
+% Candidate integrals have a finite supremum bounded by the target's
+% total mass. Choose a density within 1/(n+1) of that supremum at stage n.
+% Taking successive pointwise maxima preserves the candidate inequalities
+% and gives an increasing sequence with integrals approaching the supremum.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_rn_candidate_sequence[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) baseLaw,targetLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING ppg_rn_candidates[X,S,baseLaw,targetLaw] AS densities,
+    ppg_finite_mass_charge[X,S,targetLaw] AS target,
+    ppg_finite_integral_order[X,S,baseLaw] AS order,
+    measure_integration@integral[X,asNasa(S),baseLaw] AS native,
+    ppg_charge_events[X,S]
+  p: VAR densities.Candidate
+  n,k,i,j: VAR nat
+  x: VAR X
+  a: VAR real
+
+  candidateMeans: (nonempty?[real]) = {a:real|EXISTS(p:densities.Candidate):a=native.integral(p)}
+
+  means_member: LEMMA candidateMeans(native.integral(p))
+
+  means_bounded_above: LEMMA bounded_above?(candidateMeans)
+
+  topMean: {a:real|least_upper_bound?(a,candidateMeans)} = lub(candidateMeans)
+
+  top_upper: LEMMA native.integral(p)<=topMean
+
+  top_least: LEMMA (FORALL(p:densities.Candidate):native.integral(p)<=a) IMPLIES topMean<=a
+
+  near_density_exists: LEMMA EXISTS(p:densities.Candidate):topMean-1/(n+1)<native.integral(p)
+
+  nearDensity(n): {p:densities.Candidate|topMean-1/(n+1)<native.integral(p)} =
+    choose[densities.Candidate]({p:densities.Candidate|topMean-1/(n+1)<native.integral(p)})
+
+  prefix(n): RECURSIVE densities.Candidate = IF n=0 THEN densities.zeroCandidate ELSE
+    densities.maxCandidate(prefix(n-1),nearDensity(n-1)) ENDIF MEASURE n
+
+  prefix_zero: LEMMA prefix(0)=densities.zeroCandidate
+
+  prefix_succ: LEMMA prefix(n+1)=densities.maxCandidate(prefix(n),nearDensity(n))
+
+  prefix_nonnegative: LEMMA 0<=prefix(n)(x)
+
+  prefix_step: LEMMA prefix(n)(x)<=prefix(n+1)(x)
+
+  near_below_prefix: LEMMA nearDensity(n)(x)<=prefix(n+1)(x)
+
+  near_mean_below_prefix: LEMMA native.integral(nearDensity(n))<=native.integral(prefix(n+1))
+
+  prefix_mean_near: LEMMA topMean-1/(n+1)<native.integral(prefix(n+1))
+
+  candidate_mean_nonnegative: LEMMA 0<=native.integral(p)
+
+  prefix_mean_bound: LEMMA 0<=native.integral(prefix(n)) AND native.integral(prefix(n))<=target.mass(wholeEvent)
+
+  prefix_span: LEMMA prefix(n)(x)<=prefix(n+k)(x)
+
+  prefix_monotone: LEMMA i<=j IMPLIES prefix(i)(x)<=prefix(j)(x)
+
+END ppg_rn_candidate_sequence
