@@ -8,8 +8,8 @@ models; the generic theory keeps the data, specifications and repair actions
 abstract.
 
 As of **2026-10-19**, the translation has independently replayed counterparts
-for **1,136 of 1,824 Lean source theorems and lemmas**, with all recorded results
-checked in **104 of 191 modules**. Supporting PVS lemmas and type-correctness
+for **1,204 of 1,824 Lean source theorems and lemmas**, with all recorded results
+checked in **112 of 191 modules**. Supporting PVS lemmas and type-correctness
 conditions are additional obligations and are excluded from those source-result counts.
 The translation is still in progress.
 
@@ -87,6 +87,10 @@ Recorded translation checks on 2026-10-18 and 2026-10-19 include:
 | Native measure and integration support | 1,109 library proof bodies freshly forced over three disjoint rounds, with ordinary complete proof chains. The certificate includes general monotone convergence and the weighted-measure support. |
 | General conditional expectation | 600/600 project obligations complete across 52 theories, including all 52 new obligations. |
 | General drift, Moser–Tardos certificates and execution cost | 2,241/2,241 project obligations complete across 230 theories, including all 69 new obligations and 14 source results. |
+| Generic repair, growing lists and meta refinement | 80/80 project obligations complete across 10 theories, including 13 new obligations and 30 source results. |
+| Acyclic relation reversal | 24/24 project obligations complete across 1 theory, including 24 new obligations and 9 source results. |
+| Witness DAGs and ancestor prefixes | 61/61 project obligations complete across 2 theories, including 37 new obligations and 15 source results. |
+| Longest-path heights and independent layers | 183/183 project obligations complete across 14 theories, including 33 new obligations and 14 source results. |
 
 These runs check saved proofs in isolated workspaces. Project dependencies use
 the exact committed source and proof inputs. The separately checked native
@@ -180,6 +184,7 @@ integration arguments. Each entry's imports lead to that support.
 | [cert_quotient.pvs](cert_quotient.pvs), [cert_selection.pvs](cert_selection.pvs), [cert_quotient_bridge.pvs](cert_quotient_bridge.pvs) | Certification equivalence, quotient order and hierarchical selection. |
 | [cert_blocking.pvs](cert_blocking.pvs), [ppg_self_assessment.pvs](ppg_self_assessment.pvs), [ppg_assessment_bridge.pvs](ppg_assessment_bridge.pvs) | Blocking diagnostics, failure containment and certification after repair. |
 | [pp_graph_repair.pvs](pp_graph_repair.pvs), [ppg_repair_semantics.pvs](ppg_repair_semantics.pvs) | Repair relations, restoration and preservation obligations. |
+| [ppg_refinement_meta.pvs](ppg_refinement_meta.pvs) | Configuration compatibility, upgrade chains and refinement preservation. |
 
 ### Dependency and probabilistic repair
 
@@ -193,6 +198,14 @@ integration arguments. Each entry's imports lead to that support.
 | [ppg_mt_termination.pvs](ppg_mt_termination.pvs), [ppg_mt_budget_repair.pvs](ppg_mt_budget_repair.pvs) | Almost-sure termination and the repair reachability bridge. |
 | [ppg_pegden_expectation.pvs](ppg_pegden_expectation.pvs), [ppg_pegden_termination.pvs](ppg_pegden_termination.pvs) | Independent-subset budgets, expected resamplings and termination. |
 | [ppg_shearer_total_expectation.pvs](ppg_shearer_total_expectation.pvs), [ppg_shearer_component_integral.pvs](ppg_shearer_component_integral.pvs) | Strict Shearer expected-work bounds and component integrals. |
+
+### HLS witness DAGs
+
+| Files | Scope |
+|-------|-------|
+| [ppg_hls_reversal.pvs](ppg_hls_reversal.pvs) | Reversible arcs of arbitrary acyclic relations. |
+| [ppg_hls_witness_dag.pvs](ppg_hls_witness_dag.pvs) | Finite witness DAGs, unique sinks, reversal and ancestor prefixes. |
+| [ppg_hls_witness_layers.pvs](ppg_hls_witness_layers.pvs), [ppg_finite_nat_sup.pvs](ppg_finite_nat_sup.pvs), [ppg_nat_rank_well_founded.pvs](ppg_nat_rank_well_founded.pvs) | Constructed longest-path heights, independent layers and their successor relation. |
 
 ### Integrals, finite stochastic models and stopping bounds
 
@@ -349,6 +362,16 @@ Resampling tables, witness trees, canonicalization and occurrence probabilities
 then support expected-work and termination theorems for the declared process.
 Pegden and Shearer bounds use their own budget hypotheses.
 
+### Witness DAGs and layers
+
+A witness DAG has separate finite node and arc sets over an arbitrary label
+type. Validity records supported arcs, acyclicity and orientation of dependent
+labels. Reversal preserves validity when the reversed relation is acyclic;
+ancestor prefixes preserve validity and canonical occurrence indices.
+Longest-path heights are defined by recursion on descendant cardinality. Each
+height layer has distinct independent labels, and each positive layer belongs
+to the successor family of the preceding layer.
+
 ### Integrals and exact stochastic models
 
 The integration layer connects measurable functions to NASAlib's real integral
@@ -417,6 +440,18 @@ proofs.
   [Vondrák's 2018 Lecture 8](https://theory.stanford.edu/~jvondrak/MATH233A-2018/Math233-lec08.pdf).
   See [ppg_shearer_total_expectation.pvs](ppg_shearer_total_expectation.pvs).
 
+- Kun He, Qian Li and Xiaoming Sun,
+  [*Moser–Tardos Algorithm: Beyond Shearer’s Bound*](https://arxiv.org/abs/2111.06527v1),
+  Definitions 2.1–2.4 and Facts 2.5–2.6. The
+  [witness-DAG theory](ppg_hls_witness_dag.pvs) covers reversal and ancestor
+  prefixes. The stable-set connection is discussed in Section 1.2.1, footnote 3.
+- Nicholas J. A. Harvey and Jan Vondrák,
+  [*An Algorithmic Proof of the Lovász Local Lemma via Resampling Oracles*](https://arxiv.org/abs/1504.02044v3),
+  Definition 5.2 and Section 5.3.2. The
+  [layer theory](ppg_hls_witness_layers.pvs) constructs independent layers
+  and proves their closed-neighborhood successor condition. The later HLS
+  counting and policy translations remain in progress.
+
 ### Integration, potentials and stopping bounds
 
 - Patrick Billingsley, *Probability and Measure*, third edition, Wiley, 1995;
@@ -460,10 +495,11 @@ The LUCES experimental background is described in:
 
 General conditional expectation is proved. The additive-drift,
 Moser–Tardos drift and execution-cost source modules are translated
-and replayed. The next proof work covers HLS witness DAGs, their canonical
+and replayed. The witness-DAG reversal, ancestor-prefix and longest-path layer
+modules are also replayed. The next proof work covers their stable and canonical
 encodings and the policy bounds built on them, followed by the computability
 limit for the encoded infinite repair family. Existing core translations also
-need to be brought into the same source-by-source replay accounting.
+need further source-by-source semantic review and replay accounting.
 
 For the controller application, live measurements need a defined interpretation
 in the formal state, and the running checker must evaluate the corresponding
