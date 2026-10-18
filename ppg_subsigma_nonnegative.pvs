@@ -1,0 +1,75 @@
+% Keep the same increasing simple approximations when passing from the
+% smaller sigma algebra to the ambient one. Their simple integrals agree,
+% so native nonnegative integrability transfers with the function itself.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_subsigma_nonnegative[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) measureLaw:FiniteLaw,
+  H:{H:MeasurableSpace|subset?(H,S)}]: THEORY
+BEGIN
+  IMPORTING ppg_subsigma_measure[X,S,measureLaw,H] AS subsigma,
+    ppg_subsigma_simple_integral[X,S,measureLaw,H] AS simple,
+    measure_integration@isf[X,asNasa(H),subsigma.subsigmaLaw] AS historyISF,
+    measure_integration@isf[X,asNasa(S),measureLaw] AS ambientISF,
+    measure_integration@nn_integral[X,asNasa(H),subsigma.subsigmaLaw] AS historyNN,
+    measure_integration@nn_integral[X,asNasa(S),measureLaw] AS ambientNN,
+    measure_integration@integral[X,asNasa(H),subsigma.subsigmaLaw] AS historyNative,
+    measure_integration@integral[X,asNasa(S),measureLaw] AS ambientNative,
+    ppg_pointwise_monotone_integral[X,H,subsigma.subsigmaLaw] AS historyMonotone,
+    ppg_pointwise_monotone_integral[X,S,measureLaw] AS ambientMonotone,
+    ppg_finite_measure_continuity[X,S,measureLaw] AS realLimits,
+    analysis@convergence_sequences AS realSequences
+  i: VAR historyNN.nn_isf
+  u: VAR historyNN.increasing_nn_isf
+  f: VAR [X->nnreal]
+  n: VAR nat
+  x: VAR X
+  g: VAR historyNN.nn_integrable
+  v,w: VAR [nat->real]
+  a,b: VAR real
+
+  liftSimple(i): ambientNN.nn_isf = simple.ambientSimple(i)
+
+  lift_simple_value: LEMMA liftSimple(i)(x)=i(x)
+
+  liftSequence(u)(n): ambientNN.nn_isf = liftSimple(u(n))
+
+  lift_sequence_eq: LEMMA liftSequence(u)=u
+
+  lift_sequence_increasing: LEMMA pointwise_increasing?(liftSequence(u))
+
+  ambientApproximation(u): ambientNN.increasing_nn_isf = liftSequence(u)
+
+  ambient_approximation_eq: LEMMA ambientApproximation(u)=u
+
+  integral_sequence_eq: LEMMA (LAMBDA(n:nat):ambientISF.isf_integral(ambientApproximation(u)(n)))=
+    (LAMBDA(n:nat):historyISF.isf_integral(u(n)))
+
+  nonnegative_integrability_transfer: THEOREM historyNN.nn_integrable?(f) IMPLIES ambientNN.nn_integrable?(f)
+
+  liftNonnegative(g:historyNN.nn_integrable): ambientNN.nn_integrable = g
+
+  historyFamily(u)(n): historyNative.integrable = u(n)
+
+  ambientFamily(u)(n): ambientNative.integrable = ambientApproximation(u)(n)
+
+  history_family_eq: LEMMA historyFamily(u)=u
+
+  ambient_family_eq: LEMMA ambientFamily(u)=u
+
+  native_integral_sequence_eq: LEMMA (LAMBDA(n:nat):ambientNative.integral(ambientFamily(u)(n)))=
+    (LAMBDA(n:nat):historyNative.integral(historyFamily(u)(n)))
+
+  history_integrals_converge: LEMMA pointwise_convergence?(u,g) IMPLIES
+    converges_upto?(LAMBDA(n:nat):historyNative.integral(historyFamily(u)(n)),historyNative.integral(g))
+
+  ambient_integrals_converge: LEMMA pointwise_convergence?(u,g) IMPLIES
+    converges_upto?(LAMBDA(n:nat):ambientNative.integral(ambientFamily(u)(n)),
+      ambientNative.integral(liftNonnegative(g)))
+
+  monotone_limit_unique: LEMMA v=w AND converges_upto?(v,a) AND converges_upto?(w,b) IMPLIES a=b
+
+  nonnegative_integral_equal: THEOREM ambientNative.integral(liftNonnegative(g))=historyNative.integral(g)
+
+END ppg_subsigma_nonnegative

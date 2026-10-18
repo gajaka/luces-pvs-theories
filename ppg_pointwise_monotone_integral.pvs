@@ -1,0 +1,22 @@
+% Pointwise monotonicity and convergence imply their almost-everywhere
+% counterparts by taking the exceptional set to be empty. Native monotone
+% convergence then identifies the limit of the integrals.
+%
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_pointwise_monotone_integral[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) measureLaw:FiniteLaw]: THEORY
+BEGIN
+  IMPORTING measure_integration@integral[X,asNasa(S),measureLaw] AS native,
+    measure_integration@measure_theory[X,asNasa(S),measureLaw] AS nativeTheory,
+    measure_integration@integral_convergence[X,asNasa(S),measureLaw] AS monotone
+  F: VAR [nat->native.integrable]
+  g: VAR native.integrable
+
+  pointwise_increasing_ae: LEMMA pointwise_increasing?(F) IMPLIES nativeTheory.ae_increasing?(F)
+
+  pointwise_convergence_ae: LEMMA pointwise_convergence?(F,g) IMPLIES nativeTheory.ae_convergence?(F,g)
+
+  pointwise_monotone_integrals: THEOREM pointwise_increasing?(F) AND pointwise_convergence?(F,g) IMPLIES
+    converges_upto?(LAMBDA(n:nat):native.integral(F(n)),native.integral(g))
+
+END ppg_pointwise_monotone_integral

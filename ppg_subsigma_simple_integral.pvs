@@ -1,0 +1,78 @@
+% A simple function measurable for the smaller sigma algebra is also
+% simple for the ambient one. Restricting the measure changes neither
+% its level sets nor their masses, so its simple integral is unchanged.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_subsigma_simple_integral[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) measureLaw:FiniteLaw,
+  H:{H:MeasurableSpace|subset?(H,S)}]: THEORY
+BEGIN
+  IMPORTING ppg_subsigma_measure[X,S,measureLaw,H] AS subsigma,
+    ppg_finite_law_view[X,S] AS ambientFinite,
+    measure_integration@measure_space[X,asNasa(H)] AS historySpaces,
+    measure_integration@measure_space[X,asNasa(S)] AS ambientSpaces,
+    measure_integration@measure_space_def[X,asNasa(H)] AS historySpace,
+    measure_integration@measure_space_def[X,asNasa(S)] AS ambientSpace,
+    measure_integration@measure_props[X,asNasa(S),measureLaw] AS ambientMeasure,
+    measure_integration@measure_props[X,asNasa(H),subsigma.subsigmaLaw] AS historyMeasure,
+    measure_integration@isf[X,asNasa(H),subsigma.subsigmaLaw] AS historyISF,
+    measure_integration@isf[X,asNasa(S),measureLaw] AS ambientISF
+  i: VAR historyISF.isf
+  f: VAR [X->real]
+  x: VAR X
+  c: VAR real
+
+  history_simple: LEMMA historySpaces.simple?(i)
+
+  history_measurable: LEMMA historySpace.measurable_function?(i)
+
+  ambient_measurable: LEMMA ambientSpace.measurable_function?(i)
+
+  simple_inclusion: LEMMA historySpaces.simple?(f) IMPLIES ambientSpaces.simple?(f)
+
+  ambient_nonzero_measurable: LEMMA ambientSpace.measurable_set?(ambientISF.nonzero_set?(i))
+
+  ambient_nonzero_finite: LEMMA ambientMeasure.mu_fin?(ambientISF.nonzero_set?(i))
+
+  ambientSimple(i): ambientISF.isf = i
+
+  ambient_simple_value: LEMMA ambientSimple(i)(x)=i(x)
+
+  levelSet(i,c): (asNasa(H)) = intersection({x:X|i(x)<=c},complement({x:X|i(x)<c}))
+
+  level_set_value: LEMMA levelSet(i,c)(x) IFF i(x)=c
+
+  level_inverse: LEMMA inverse_image[X,real](i,singleton[real](c))=levelSet(i,c)
+
+  ambientWeights(i)(c): real = IF c=0 THEN 0 ELSE c*measureLaw(subsigma.ambientEvent(levelSet(i,c)))`2 ENDIF
+
+  historyWeights(i)(c): real = IF c=0 THEN 0 ELSE c*subsigma.subsigmaLaw(levelSet(i,c))`2 ENDIF
+
+  weights_equal: LEMMA ambientWeights(i)=historyWeights(i)
+
+  level_values_countable: LEMMA is_countable[real](image[X,real](i,fullset[X]))
+
+  ambientRawWeights(i)(c): real = IF c=0 THEN 0 ELSE c*measureLaw(inverse_image[X,real](i,singleton[real](c)))`2 ENDIF
+
+  historyRawWeights(i)(c): real = IF c=0 THEN 0 ELSE c*subsigma.subsigmaLaw(inverse_image[X,real](i,singleton[real](c)))`2 ENDIF
+
+  ambient_weights_formula: LEMMA ambientRawWeights(i)=ambientWeights(i)
+
+  history_weights_formula: LEMMA historyRawWeights(i)=historyWeights(i)
+
+  ambient_simple_raw: LEMMA ambientISF.isf_integral(ambientSimple(i))=
+    sigma[real](image[X,real](i,fullset[X]),ambientRawWeights(i))
+
+  history_simple_raw: LEMMA historyISF.isf_integral(i)=
+    sigma[real](image[X,real](i,fullset[X]),historyRawWeights(i))
+
+  ambient_simple_formula: LEMMA ambientISF.isf_integral(ambientSimple(i))=
+    sigma[real](image[X,real](i,fullset[X]),ambientWeights(i))
+
+  history_simple_formula: LEMMA historyISF.isf_integral(i)=
+    sigma[real](image[X,real](i,fullset[X]),historyWeights(i))
+
+  isf_integral_equal: THEOREM ambientISF.isf_integral(ambientSimple(i))=historyISF.isf_integral(i)
+
+END ppg_subsigma_simple_integral

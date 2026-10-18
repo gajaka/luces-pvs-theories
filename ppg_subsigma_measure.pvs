@@ -1,0 +1,54 @@
+% Restrict the original finite measure to an arbitrary sub-sigma algebra.
+% Its measurable events retain exactly their original masses. No choice
+% of a new probability law or countable generating family is involved.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_subsigma_measure[X:TYPE,(IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[X,S]) measureLaw:FiniteLaw,
+  H:{H:MeasurableSpace|subset?(H,S)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_law_view[X,H] AS historyFinite,
+    ppg_finite_law_view[X,S] AS ambientFinite,
+    measure_integration@generalized_measure_def[X,asNasa(H)] AS historyMeasure,
+    measure_integration@generalized_measure_def[X,asNasa(S)] AS ambientMeasure,
+    measure_integration@measure_props[X,asNasa(S),measureLaw] AS original,
+    measure_integration@measure_space_def[X,asNasa(H)] AS historySpace,
+    measure_integration@measure_space_def[X,asNasa(S)] AS ambientSpace
+  E: VAR [nat->(asNasa(H))]
+  A: VAR (asNasa(H))
+  B: VAR set[X]
+  f: VAR [X->real]
+
+  event_inclusion: LEMMA H(B) IMPLIES S(B)
+
+  ambientEvent(A): (asNasa(S)) = A
+
+  liftFamily(E)(n:nat): (asNasa(S)) = ambientEvent(E(n))
+
+  lift_family_eq: LEMMA liftFamily(E)=E
+
+  family_native_measurable: LEMMA FORALL(n:nat):asNasa(H)(E(n)) AND asNasa(S)(liftFamily(E)(n))
+
+  lift_family_union: LEMMA IUnion(liftFamily(E))=IUnion(E)
+
+  lift_family_disjoint: LEMMA historyMeasure.disjoint_indexed_measurable?(E) IMPLIES
+    ambientMeasure.disjoint_indexed_measurable?(liftFamily(E))
+
+  restrictedMass(A): extended_nnreal = measureLaw(ambientEvent(A))
+
+  restricted_family_eq: LEMMA (restrictedMass o E)=(measureLaw o liftFamily(E))
+
+  restricted_mass_empty: LEMMA restrictedMass(emptyset[X])=(TRUE,0)
+
+  restricted_mass_flag: LEMMA restrictedMass(A)`1
+
+  restricted_mass_measure: LEMMA historyMeasure.measure?(restrictedMass)
+
+  subsigmaLaw: historyFinite.FiniteLaw = restrictedMass
+
+  subsigma_law_value: LEMMA subsigmaLaw(A)=measureLaw(ambientEvent(A))
+
+  measurable_inclusion: LEMMA historySpace.measurable_function?(f) IMPLIES
+    ambientSpace.measurable_function?(f)
+
+END ppg_subsigma_measure
