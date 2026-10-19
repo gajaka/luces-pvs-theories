@@ -1,0 +1,426 @@
+%%% ADT file generated from ppg_partrec_code
+
+ppg_partrec_code_adt: THEORY
+ BEGIN
+
+  ppg_partrec_code: TYPE
+
+  codeZero?, codeSucc?, codeLeft?, codeRight?, codePair?, codeComp?,
+  codePrec?, codeRfind?: [ppg_partrec_code -> boolean]
+
+  pairFirst: [(codePair?) -> ppg_partrec_code]
+
+  pairSecond: [(codePair?) -> ppg_partrec_code]
+
+  compFirst: [(codeComp?) -> ppg_partrec_code]
+
+  compSecond: [(codeComp?) -> ppg_partrec_code]
+
+  precFirst: [(codePrec?) -> ppg_partrec_code]
+
+  precSecond: [(codePrec?) -> ppg_partrec_code]
+
+  rfindBody: [(codeRfind?) -> ppg_partrec_code]
+
+  codeZero: (codeZero?)
+
+  codeSucc: (codeSucc?)
+
+  codeLeft: (codeLeft?)
+
+  codeRight: (codeRight?)
+
+  codePair: [[ppg_partrec_code, ppg_partrec_code] -> (codePair?)]
+
+  codeComp: [[ppg_partrec_code, ppg_partrec_code] -> (codeComp?)]
+
+  codePrec: [[ppg_partrec_code, ppg_partrec_code] -> (codePrec?)]
+
+  codeRfind: [ppg_partrec_code -> (codeRfind?)]
+
+  ppg_partrec_code_ord: [ppg_partrec_code -> upto(7)]
+
+  ppg_partrec_code_ord_defaxiom: AXIOM
+         (ppg_partrec_code_ord(codeZero) = 0)
+     AND (ppg_partrec_code_ord(codeSucc) = 1)
+     AND (ppg_partrec_code_ord(codeLeft) = 2)
+     AND (ppg_partrec_code_ord(codeRight) = 3)
+     AND (FORALL (pairFirst: ppg_partrec_code,
+                  pairSecond: ppg_partrec_code):
+            ppg_partrec_code_ord(codePair(pairFirst, pairSecond)) = 4)
+     AND (FORALL (compFirst: ppg_partrec_code,
+                  compSecond: ppg_partrec_code):
+            ppg_partrec_code_ord(codeComp(compFirst, compSecond)) = 5)
+     AND (FORALL (precFirst: ppg_partrec_code,
+                  precSecond: ppg_partrec_code):
+            ppg_partrec_code_ord(codePrec(precFirst, precSecond)) = 6)
+     AND FORALL (rfindBody: ppg_partrec_code):
+           ppg_partrec_code_ord(codeRfind(rfindBody)) = 7;
+
+  ord(x: ppg_partrec_code): upto(7) =
+      CASES x
+        OF codeZero: 0,
+           codeSucc: 1,
+           codeLeft: 2,
+           codeRight: 3,
+           codePair(codePair1_var, codePair2_var): 4,
+           codeComp(codeComp1_var, codeComp2_var): 5,
+           codePrec(codePrec1_var, codePrec2_var): 6,
+           codeRfind(codeRfind1_var): 7
+        ENDCASES
+
+  ppg_partrec_code_codeZero_extensionality: AXIOM
+    FORALL (codeZero?_var: (codeZero?), codeZero?_var2: (codeZero?)):
+      codeZero?_var = codeZero?_var2;
+
+  ppg_partrec_code_codeSucc_extensionality: AXIOM
+    FORALL (codeSucc?_var: (codeSucc?), codeSucc?_var2: (codeSucc?)):
+      codeSucc?_var = codeSucc?_var2;
+
+  ppg_partrec_code_codeLeft_extensionality: AXIOM
+    FORALL (codeLeft?_var: (codeLeft?), codeLeft?_var2: (codeLeft?)):
+      codeLeft?_var = codeLeft?_var2;
+
+  ppg_partrec_code_codeRight_extensionality: AXIOM
+    FORALL (codeRight?_var: (codeRight?), codeRight?_var2: (codeRight?)):
+      codeRight?_var = codeRight?_var2;
+
+  ppg_partrec_code_codePair_extensionality: AXIOM
+    FORALL (codePair?_var: (codePair?), codePair?_var2: (codePair?)):
+      pairFirst(codePair?_var) = pairFirst(codePair?_var2) AND
+       pairSecond(codePair?_var) = pairSecond(codePair?_var2)
+       IMPLIES codePair?_var = codePair?_var2;
+
+  ppg_partrec_code_codePair_eta: AXIOM
+    FORALL (codePair?_var: (codePair?)):
+      codePair(pairFirst(codePair?_var), pairSecond(codePair?_var)) =
+       codePair?_var;
+
+  ppg_partrec_code_codeComp_extensionality: AXIOM
+    FORALL (codeComp?_var: (codeComp?), codeComp?_var2: (codeComp?)):
+      compFirst(codeComp?_var) = compFirst(codeComp?_var2) AND
+       compSecond(codeComp?_var) = compSecond(codeComp?_var2)
+       IMPLIES codeComp?_var = codeComp?_var2;
+
+  ppg_partrec_code_codeComp_eta: AXIOM
+    FORALL (codeComp?_var: (codeComp?)):
+      codeComp(compFirst(codeComp?_var), compSecond(codeComp?_var)) =
+       codeComp?_var;
+
+  ppg_partrec_code_codePrec_extensionality: AXIOM
+    FORALL (codePrec?_var: (codePrec?), codePrec?_var2: (codePrec?)):
+      precFirst(codePrec?_var) = precFirst(codePrec?_var2) AND
+       precSecond(codePrec?_var) = precSecond(codePrec?_var2)
+       IMPLIES codePrec?_var = codePrec?_var2;
+
+  ppg_partrec_code_codePrec_eta: AXIOM
+    FORALL (codePrec?_var: (codePrec?)):
+      codePrec(precFirst(codePrec?_var), precSecond(codePrec?_var)) =
+       codePrec?_var;
+
+  ppg_partrec_code_codeRfind_extensionality: AXIOM
+    FORALL (codeRfind?_var: (codeRfind?), codeRfind?_var2: (codeRfind?)):
+      rfindBody(codeRfind?_var) = rfindBody(codeRfind?_var2) IMPLIES
+       codeRfind?_var = codeRfind?_var2;
+
+  ppg_partrec_code_codeRfind_eta: AXIOM
+    FORALL (codeRfind?_var: (codeRfind?)):
+      codeRfind(rfindBody(codeRfind?_var)) = codeRfind?_var;
+
+  ppg_partrec_code_pairFirst_codePair: AXIOM
+    FORALL (codePair1_var: ppg_partrec_code,
+            codePair2_var: ppg_partrec_code):
+      pairFirst(codePair(codePair1_var, codePair2_var)) = codePair1_var;
+
+  ppg_partrec_code_pairSecond_codePair: AXIOM
+    FORALL (codePair1_var: ppg_partrec_code,
+            codePair2_var: ppg_partrec_code):
+      pairSecond(codePair(codePair1_var, codePair2_var)) = codePair2_var;
+
+  ppg_partrec_code_compFirst_codeComp: AXIOM
+    FORALL (codeComp1_var: ppg_partrec_code,
+            codeComp2_var: ppg_partrec_code):
+      compFirst(codeComp(codeComp1_var, codeComp2_var)) = codeComp1_var;
+
+  ppg_partrec_code_compSecond_codeComp: AXIOM
+    FORALL (codeComp1_var: ppg_partrec_code,
+            codeComp2_var: ppg_partrec_code):
+      compSecond(codeComp(codeComp1_var, codeComp2_var)) = codeComp2_var;
+
+  ppg_partrec_code_precFirst_codePrec: AXIOM
+    FORALL (codePrec1_var: ppg_partrec_code,
+            codePrec2_var: ppg_partrec_code):
+      precFirst(codePrec(codePrec1_var, codePrec2_var)) = codePrec1_var;
+
+  ppg_partrec_code_precSecond_codePrec: AXIOM
+    FORALL (codePrec1_var: ppg_partrec_code,
+            codePrec2_var: ppg_partrec_code):
+      precSecond(codePrec(codePrec1_var, codePrec2_var)) = codePrec2_var;
+
+  ppg_partrec_code_rfindBody_codeRfind: AXIOM
+    FORALL (codeRfind1_var: ppg_partrec_code):
+      rfindBody(codeRfind(codeRfind1_var)) = codeRfind1_var;
+
+  ppg_partrec_code_inclusive: AXIOM
+    FORALL (ppg_partrec_code_var: ppg_partrec_code):
+           codeZero?(ppg_partrec_code_var)
+       OR codeSucc?(ppg_partrec_code_var) OR codeLeft?(ppg_partrec_code_var)
+       OR codeRight?(ppg_partrec_code_var)
+       OR codePair?(ppg_partrec_code_var) OR codeComp?(ppg_partrec_code_var)
+       OR codePrec?(ppg_partrec_code_var)
+       OR codeRfind?(ppg_partrec_code_var);
+
+  ppg_partrec_code_induction: AXIOM
+    FORALL (p: [ppg_partrec_code -> boolean]):
+      (     p(codeZero) AND p(codeSucc) AND p(codeLeft) AND p(codeRight)
+        AND (FORALL (codePair1_var: ppg_partrec_code,
+                     codePair2_var: ppg_partrec_code):
+               p(codePair1_var) AND p(codePair2_var) IMPLIES
+                p(codePair(codePair1_var, codePair2_var)))
+        AND (FORALL (codeComp1_var: ppg_partrec_code,
+                     codeComp2_var: ppg_partrec_code):
+               p(codeComp1_var) AND p(codeComp2_var) IMPLIES
+                p(codeComp(codeComp1_var, codeComp2_var)))
+        AND (FORALL (codePrec1_var: ppg_partrec_code,
+                     codePrec2_var: ppg_partrec_code):
+               p(codePrec1_var) AND p(codePrec2_var) IMPLIES
+                p(codePrec(codePrec1_var, codePrec2_var)))
+        AND FORALL (codeRfind1_var: ppg_partrec_code):
+              p(codeRfind1_var) IMPLIES p(codeRfind(codeRfind1_var)))
+       IMPLIES
+       FORALL (ppg_partrec_code_var: ppg_partrec_code):
+         p(ppg_partrec_code_var);
+
+  subterm(x: ppg_partrec_code, y: ppg_partrec_code):  boolean =
+      x = y OR
+       CASES y
+         OF codeZero: FALSE,
+            codeSucc: FALSE,
+            codeLeft: FALSE,
+            codeRight: FALSE,
+            codePair(codePair1_var, codePair2_var):
+              subterm(x, codePair1_var) OR subterm(x, codePair2_var),
+            codeComp(codeComp1_var, codeComp2_var):
+              subterm(x, codeComp1_var) OR subterm(x, codeComp2_var),
+            codePrec(codePrec1_var, codePrec2_var):
+              subterm(x, codePrec1_var) OR subterm(x, codePrec2_var),
+            codeRfind(codeRfind1_var): subterm(x, codeRfind1_var)
+         ENDCASES;
+
+  <<:  (strict_well_founded?[ppg_partrec_code]) =
+      LAMBDA (x: ppg_partrec_code, y: ppg_partrec_code):
+        CASES y
+          OF codeZero: FALSE,
+             codeSucc: FALSE,
+             codeLeft: FALSE,
+             codeRight: FALSE,
+             codePair(codePair1_var, codePair2_var):
+               (x = codePair1_var OR x << codePair1_var) OR
+                (x = codePair2_var OR x << codePair2_var),
+             codeComp(codeComp1_var, codeComp2_var):
+               (x = codeComp1_var OR x << codeComp1_var) OR
+                (x = codeComp2_var OR x << codeComp2_var),
+             codePrec(codePrec1_var, codePrec2_var):
+               (x = codePrec1_var OR x << codePrec1_var) OR
+                (x = codePrec2_var OR x << codePrec2_var),
+             codeRfind(codeRfind1_var):
+               (x = codeRfind1_var OR x << codeRfind1_var)
+          ENDCASES;
+
+  ppg_partrec_code_well_founded: AXIOM
+    strict_well_founded?[ppg_partrec_code](<<);
+
+  reduce_nat(codeZero?_fun: nat, codeSucc?_fun: nat, codeLeft?_fun: nat,
+             codeRight?_fun: nat, codePair?_fun: [[nat, nat] -> nat],
+             codeComp?_fun: [[nat, nat] -> nat],
+             codePrec?_fun: [[nat, nat] -> nat],
+             codeRfind?_fun: [nat -> nat]):
+        [ppg_partrec_code -> nat] =
+      LAMBDA (ppg_partrec_code_adtvar: ppg_partrec_code):
+        LET red: [ppg_partrec_code -> nat] =
+              reduce_nat(codeZero?_fun, codeSucc?_fun, codeLeft?_fun,
+                         codeRight?_fun, codePair?_fun, codeComp?_fun,
+                         codePrec?_fun, codeRfind?_fun)
+          IN
+          CASES ppg_partrec_code_adtvar
+            OF codeZero: codeZero?_fun,
+               codeSucc: codeSucc?_fun,
+               codeLeft: codeLeft?_fun,
+               codeRight: codeRight?_fun,
+               codePair(codePair1_var, codePair2_var):
+                 codePair?_fun(red(codePair1_var), red(codePair2_var)),
+               codeComp(codeComp1_var, codeComp2_var):
+                 codeComp?_fun(red(codeComp1_var), red(codeComp2_var)),
+               codePrec(codePrec1_var, codePrec2_var):
+                 codePrec?_fun(red(codePrec1_var), red(codePrec2_var)),
+               codeRfind(codeRfind1_var):
+                 codeRfind?_fun(red(codeRfind1_var))
+            ENDCASES;
+
+  REDUCE_nat(codeZero?_fun: [ppg_partrec_code -> nat],
+             codeSucc?_fun: [ppg_partrec_code -> nat],
+             codeLeft?_fun: [ppg_partrec_code -> nat],
+             codeRight?_fun: [ppg_partrec_code -> nat],
+             codePair?_fun: [[nat, nat, ppg_partrec_code] -> nat],
+             codeComp?_fun: [[nat, nat, ppg_partrec_code] -> nat],
+             codePrec?_fun: [[nat, nat, ppg_partrec_code] -> nat],
+             codeRfind?_fun: [[nat, ppg_partrec_code] -> nat]):
+        [ppg_partrec_code -> nat] =
+      LAMBDA (ppg_partrec_code_adtvar: ppg_partrec_code):
+        LET red: [ppg_partrec_code -> nat] =
+              REDUCE_nat(codeZero?_fun, codeSucc?_fun, codeLeft?_fun,
+                         codeRight?_fun, codePair?_fun, codeComp?_fun,
+                         codePrec?_fun, codeRfind?_fun)
+          IN
+          CASES ppg_partrec_code_adtvar
+            OF codeZero: codeZero?_fun(ppg_partrec_code_adtvar),
+               codeSucc: codeSucc?_fun(ppg_partrec_code_adtvar),
+               codeLeft: codeLeft?_fun(ppg_partrec_code_adtvar),
+               codeRight: codeRight?_fun(ppg_partrec_code_adtvar),
+               codePair(codePair1_var, codePair2_var):
+                 codePair?_fun(red(codePair1_var), red(codePair2_var),
+                               ppg_partrec_code_adtvar),
+               codeComp(codeComp1_var, codeComp2_var):
+                 codeComp?_fun(red(codeComp1_var), red(codeComp2_var),
+                               ppg_partrec_code_adtvar),
+               codePrec(codePrec1_var, codePrec2_var):
+                 codePrec?_fun(red(codePrec1_var), red(codePrec2_var),
+                               ppg_partrec_code_adtvar),
+               codeRfind(codeRfind1_var):
+                 codeRfind?_fun(red(codeRfind1_var),
+                                ppg_partrec_code_adtvar)
+            ENDCASES;
+
+  reduce_ordinal(codeZero?_fun: ordinal, codeSucc?_fun: ordinal,
+                 codeLeft?_fun: ordinal, codeRight?_fun: ordinal,
+                 codePair?_fun: [[ordinal, ordinal] -> ordinal],
+                 codeComp?_fun: [[ordinal, ordinal] -> ordinal],
+                 codePrec?_fun: [[ordinal, ordinal] -> ordinal],
+                 codeRfind?_fun: [ordinal -> ordinal]):
+        [ppg_partrec_code -> ordinal] =
+      LAMBDA (ppg_partrec_code_adtvar: ppg_partrec_code):
+        LET red: [ppg_partrec_code -> ordinal] =
+              reduce_ordinal(codeZero?_fun, codeSucc?_fun, codeLeft?_fun,
+                             codeRight?_fun, codePair?_fun, codeComp?_fun,
+                             codePrec?_fun, codeRfind?_fun)
+          IN
+          CASES ppg_partrec_code_adtvar
+            OF codeZero: codeZero?_fun,
+               codeSucc: codeSucc?_fun,
+               codeLeft: codeLeft?_fun,
+               codeRight: codeRight?_fun,
+               codePair(codePair1_var, codePair2_var):
+                 codePair?_fun(red(codePair1_var), red(codePair2_var)),
+               codeComp(codeComp1_var, codeComp2_var):
+                 codeComp?_fun(red(codeComp1_var), red(codeComp2_var)),
+               codePrec(codePrec1_var, codePrec2_var):
+                 codePrec?_fun(red(codePrec1_var), red(codePrec2_var)),
+               codeRfind(codeRfind1_var):
+                 codeRfind?_fun(red(codeRfind1_var))
+            ENDCASES;
+
+  REDUCE_ordinal(codeZero?_fun: [ppg_partrec_code -> ordinal],
+                 codeSucc?_fun: [ppg_partrec_code -> ordinal],
+                 codeLeft?_fun: [ppg_partrec_code -> ordinal],
+                 codeRight?_fun: [ppg_partrec_code -> ordinal],
+                 codePair?_fun:
+                   [[ordinal, ordinal, ppg_partrec_code] -> ordinal],
+                 codeComp?_fun:
+                   [[ordinal, ordinal, ppg_partrec_code] -> ordinal],
+                 codePrec?_fun:
+                   [[ordinal, ordinal, ppg_partrec_code] -> ordinal],
+                 codeRfind?_fun:
+                   [[ordinal, ppg_partrec_code] -> ordinal]):
+        [ppg_partrec_code -> ordinal] =
+      LAMBDA (ppg_partrec_code_adtvar: ppg_partrec_code):
+        LET red: [ppg_partrec_code -> ordinal] =
+              REDUCE_ordinal(codeZero?_fun, codeSucc?_fun, codeLeft?_fun,
+                             codeRight?_fun, codePair?_fun, codeComp?_fun,
+                             codePrec?_fun, codeRfind?_fun)
+          IN
+          CASES ppg_partrec_code_adtvar
+            OF codeZero: codeZero?_fun(ppg_partrec_code_adtvar),
+               codeSucc: codeSucc?_fun(ppg_partrec_code_adtvar),
+               codeLeft: codeLeft?_fun(ppg_partrec_code_adtvar),
+               codeRight: codeRight?_fun(ppg_partrec_code_adtvar),
+               codePair(codePair1_var, codePair2_var):
+                 codePair?_fun(red(codePair1_var), red(codePair2_var),
+                               ppg_partrec_code_adtvar),
+               codeComp(codeComp1_var, codeComp2_var):
+                 codeComp?_fun(red(codeComp1_var), red(codeComp2_var),
+                               ppg_partrec_code_adtvar),
+               codePrec(codePrec1_var, codePrec2_var):
+                 codePrec?_fun(red(codePrec1_var), red(codePrec2_var),
+                               ppg_partrec_code_adtvar),
+               codeRfind(codeRfind1_var):
+                 codeRfind?_fun(red(codeRfind1_var),
+                                ppg_partrec_code_adtvar)
+            ENDCASES;
+ END ppg_partrec_code_adt
+
+ppg_partrec_code_adt_reduce[range: TYPE]: THEORY
+ BEGIN
+
+  IMPORTING ppg_partrec_code_adt
+
+  reduce(codeZero?_fun: range, codeSucc?_fun: range, codeLeft?_fun: range,
+         codeRight?_fun: range, codePair?_fun: [[range, range] -> range],
+         codeComp?_fun: [[range, range] -> range],
+         codePrec?_fun: [[range, range] -> range],
+         codeRfind?_fun: [range -> range]):
+        [ppg_partrec_code -> range] =
+      LAMBDA (ppg_partrec_code_adtvar: ppg_partrec_code):
+        LET red: [ppg_partrec_code -> range] =
+              reduce(codeZero?_fun, codeSucc?_fun, codeLeft?_fun,
+                     codeRight?_fun, codePair?_fun, codeComp?_fun,
+                     codePrec?_fun, codeRfind?_fun)
+          IN
+          CASES ppg_partrec_code_adtvar
+            OF codeZero: codeZero?_fun,
+               codeSucc: codeSucc?_fun,
+               codeLeft: codeLeft?_fun,
+               codeRight: codeRight?_fun,
+               codePair(codePair1_var, codePair2_var):
+                 codePair?_fun(red(codePair1_var), red(codePair2_var)),
+               codeComp(codeComp1_var, codeComp2_var):
+                 codeComp?_fun(red(codeComp1_var), red(codeComp2_var)),
+               codePrec(codePrec1_var, codePrec2_var):
+                 codePrec?_fun(red(codePrec1_var), red(codePrec2_var)),
+               codeRfind(codeRfind1_var):
+                 codeRfind?_fun(red(codeRfind1_var))
+            ENDCASES;
+
+  REDUCE(codeZero?_fun: [ppg_partrec_code -> range],
+         codeSucc?_fun: [ppg_partrec_code -> range],
+         codeLeft?_fun: [ppg_partrec_code -> range],
+         codeRight?_fun: [ppg_partrec_code -> range],
+         codePair?_fun: [[range, range, ppg_partrec_code] -> range],
+         codeComp?_fun: [[range, range, ppg_partrec_code] -> range],
+         codePrec?_fun: [[range, range, ppg_partrec_code] -> range],
+         codeRfind?_fun: [[range, ppg_partrec_code] -> range]):
+        [ppg_partrec_code -> range] =
+      LAMBDA (ppg_partrec_code_adtvar: ppg_partrec_code):
+        LET red: [ppg_partrec_code -> range] =
+              REDUCE(codeZero?_fun, codeSucc?_fun, codeLeft?_fun,
+                     codeRight?_fun, codePair?_fun, codeComp?_fun,
+                     codePrec?_fun, codeRfind?_fun)
+          IN
+          CASES ppg_partrec_code_adtvar
+            OF codeZero: codeZero?_fun(ppg_partrec_code_adtvar),
+               codeSucc: codeSucc?_fun(ppg_partrec_code_adtvar),
+               codeLeft: codeLeft?_fun(ppg_partrec_code_adtvar),
+               codeRight: codeRight?_fun(ppg_partrec_code_adtvar),
+               codePair(codePair1_var, codePair2_var):
+                 codePair?_fun(red(codePair1_var), red(codePair2_var),
+                               ppg_partrec_code_adtvar),
+               codeComp(codeComp1_var, codeComp2_var):
+                 codeComp?_fun(red(codeComp1_var), red(codeComp2_var),
+                               ppg_partrec_code_adtvar),
+               codePrec(codePrec1_var, codePrec2_var):
+                 codePrec?_fun(red(codePrec1_var), red(codePrec2_var),
+                               ppg_partrec_code_adtvar),
+               codeRfind(codeRfind1_var):
+                 codeRfind?_fun(red(codeRfind1_var),
+                                ppg_partrec_code_adtvar)
+            ENDCASES;
+ END ppg_partrec_code_adt_reduce

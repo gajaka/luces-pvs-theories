@@ -1,0 +1,129 @@
+% The tags and square pairing are Mathlib's encodeCode, not a new numbering.
+% Removing the last tag leaves smaller recursive decoder inputs.
+%
+% Mario Carneiro, Mathlib Computability.PartrecCode, encodeCode and ofNatCode.
+% Mario Carneiro, "Formalizing Computability Theory via Partial Recursive
+% Functions", ITP 2019, Section 2, Figure 1.
+ppg_partrec_code_encoding: THEORY
+BEGIN
+  IMPORTING ppg_partrec_code, ppg_nat_square_pairing
+
+  c,f,g: VAR ppg_partrec_code
+
+  n,m,a,b: VAR nat
+
+  codeSize(c): RECURSIVE nat = CASES c OF
+    codeZero: 1,
+    codeSucc: 1,
+    codeLeft: 1,
+    codeRight: 1,
+    codePair(f,g): 1+codeSize(f)+codeSize(g),
+    codeComp(f,g): 1+codeSize(f)+codeSize(g),
+    codePrec(f,g): 1+codeSize(f)+codeSize(g),
+    codeRfind(f): 1+codeSize(f)
+  ENDCASES MEASURE c BY <<
+
+  codeSize_positive: LEMMA 0<codeSize(c)
+
+  codeSize_pair: LEMMA codeSize(f)<codeSize(codePair(f,g)) AND
+    codeSize(g)<codeSize(codePair(f,g))
+
+  codeSize_comp: LEMMA codeSize(f)<codeSize(codeComp(f,g)) AND
+    codeSize(g)<codeSize(codeComp(f,g))
+
+  codeSize_prec: LEMMA codeSize(f)<codeSize(codePrec(f,g)) AND
+    codeSize(g)<codeSize(codePrec(f,g))
+
+  codeSize_rfind: LEMMA codeSize(f)<codeSize(codeRfind(f))
+
+  encodeCode(c): RECURSIVE nat = CASES c OF
+    codeZero: 0,
+    codeSucc: 1,
+    codeLeft: 2,
+    codeRight: 3,
+    codePair(f,g): 4*natPair(encodeCode(f),encodeCode(g))+4,
+    codeComp(f,g): 4*natPair(encodeCode(f),encodeCode(g))+6,
+    codePrec(f,g): 4*natPair(encodeCode(f),encodeCode(g))+5,
+    codeRfind(f): 4*encodeCode(f)+7
+  ENDCASES MEASURE c BY <<
+
+  encodeCode_zero: LEMMA encodeCode(codeZero)=0
+
+  encodeCode_succ: LEMMA encodeCode(codeSucc)=1
+
+  encodeCode_left: LEMMA encodeCode(codeLeft)=2
+
+  encodeCode_right: LEMMA encodeCode(codeRight)=3
+
+  encodeCode_pair: LEMMA encodeCode(codePair(f,g))=
+    4*natPair(encodeCode(f),encodeCode(g))+4
+
+  encodeCode_comp: LEMMA encodeCode(codeComp(f,g))=
+    4*natPair(encodeCode(f),encodeCode(g))+6
+
+  encodeCode_prec: LEMMA encodeCode(codePrec(f,g))=
+    4*natPair(encodeCode(f),encodeCode(g))+5
+
+  encodeCode_rfind: LEMMA encodeCode(codeRfind(f))=4*encodeCode(f)+7
+
+  unpair_components_bound: LEMMA unpair(n)`1<=n AND unpair(n)`2<=n
+
+  tag_division: LEMMA n=4*ndiv(n,4)+rem(4)(n)
+
+  tag_roundtrip: LEMMA b<4 IMPLIES
+    ndiv(4*a+b,4)=a AND rem(4)(4*a+b)=b
+
+  decoder_input_bound: LEMMA 4<=n IMPLIES
+    ndiv(natSub(n,4),4)<n AND
+    unpair(ndiv(natSub(n,4),4))`1<n AND
+    unpair(ndiv(natSub(n,4),4))`2<n
+
+  ofNatCode(n): RECURSIVE ppg_partrec_code =
+    IF n=0 THEN codeZero
+    ELSIF n=1 THEN codeSucc
+    ELSIF n=2 THEN codeLeft
+    ELSIF n=3 THEN codeRight
+    ELSE LET m=ndiv(natSub(n,4),4),p=unpair(m),tag=rem(4)(natSub(n,4)) IN
+      IF tag=0 THEN codePair(ofNatCode(p`1),ofNatCode(p`2))
+      ELSIF tag=1 THEN codePrec(ofNatCode(p`1),ofNatCode(p`2))
+      ELSIF tag=2 THEN codeComp(ofNatCode(p`1),ofNatCode(p`2))
+      ELSE codeRfind(ofNatCode(m)) ENDIF
+    ENDIF MEASURE n
+
+  ofNatCode_zero: LEMMA ofNatCode(0)=codeZero
+
+  ofNatCode_succ: LEMMA ofNatCode(1)=codeSucc
+
+  ofNatCode_left: LEMMA ofNatCode(2)=codeLeft
+
+  ofNatCode_right: LEMMA ofNatCode(3)=codeRight
+
+  ofNatCode_pair_tag: LEMMA ofNatCode(4*natPair(a,b)+4)=
+    codePair(ofNatCode(a),ofNatCode(b))
+
+  ofNatCode_comp_tag: LEMMA ofNatCode(4*natPair(a,b)+6)=
+    codeComp(ofNatCode(a),ofNatCode(b))
+
+  ofNatCode_prec_tag: LEMMA ofNatCode(4*natPair(a,b)+5)=
+    codePrec(ofNatCode(a),ofNatCode(b))
+
+  ofNatCode_rfind_tag: LEMMA ofNatCode(4*a+7)=codeRfind(ofNatCode(a))
+
+  encode_ofNatCode: THEOREM encodeCode(ofNatCode(n))=n
+
+  ofNatCode_encode: THEOREM ofNatCode(encodeCode(c))=c
+
+  encodeCode_injective: LEMMA encodeCode(f)=encodeCode(g) IMPLIES f=g
+
+  encode_lt_pair: LEMMA encodeCode(f)<encodeCode(codePair(f,g)) AND
+    encodeCode(g)<encodeCode(codePair(f,g))
+
+  encode_lt_comp: LEMMA encodeCode(f)<encodeCode(codeComp(f,g)) AND
+    encodeCode(g)<encodeCode(codeComp(f,g))
+
+  encode_lt_prec: LEMMA encodeCode(f)<encodeCode(codePrec(f,g)) AND
+    encodeCode(g)<encodeCode(codePrec(f,g))
+
+  encode_lt_rfind: LEMMA encodeCode(f)<encodeCode(codeRfind(f))
+
+END ppg_partrec_code_encoding
