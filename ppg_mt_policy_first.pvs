@@ -1,0 +1,55 @@
+% The first-violated-event policy uses the existing scan and the table's
+% slot-zero initial assignment. Its state and active-time count agree
+% with the original random-initialized process, even on infinite runs.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2; Kun He, Qian Li and Xiaoming Sun,
+% "Moser-Tardos Algorithm: Beyond Shearer's Bound", Algorithm 1.
+% Lean counterpart: PPGraphMoserTardosPolicy.lean, namespace MTPolicy.
+
+ppg_mt_policy_first[C, V, Value: TYPE, domain: [V -> set[Value]],
+  universe: {U: finite_set[C] | FORALL (c: C): U(c)},
+  (IMPORTING ppg_mt_log_measurable[C, V, Value, domain])
+  coordinates: [V -> ppg_measurable_space[Value].MeasurableSpace]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_policy_schedule[C, V, Value, domain, universe, coordinates],
+    ppg_mt_extended_count[C, V, Value, domain]
+
+  vars: VAR CertVars
+  bad: VAR [C, MTState -> bool]
+  fallback: VAR C
+  enumeration: VAR list[C]
+  omega: VAR LogSpace
+  t, n: VAR nat
+
+  firstSelection(vars, bad, fallback, enumeration): SelectionData =
+    (# select := LAMBDA (omega: LogSpace): LAMBDA (t: nat):
+      realC(vars, bad, fallback, enumeration, initialStateFromLog(omega), omega, t) #)
+
+  state_first_eq: THEOREM
+    policyState(vars, firstSelection(vars, bad, fallback, enumeration)`select(omega), omega, t) =
+      randStep(vars, bad, fallback, enumeration, initialStateFromLog(omega), omega, t)`1
+
+  first_selection_measurable: LEMMA BadMeasurable(bad) IMPLIES
+    selectionMeasurable(firstSelection(vars, bad, fallback, enumeration))
+
+  first_selection_admissible: LEMMA completeEnumeration(enumeration) IMPLIES
+    Admissible(vars, bad, firstSelection(vars, bad, fallback, enumeration)`select(omega), omega)
+
+  MeasurableTests: TYPE = {b: [C, MTState -> bool] | BadMeasurable(b)}
+
+  PolicyEnumeration: TYPE = {xs: list[C] | completeEnumeration(xs)}
+
+  first(vars: CertVars, bad: MeasurableTests, fallback: C,
+      enumeration: PolicyEnumeration): Schedule(vars, bad) =
+    firstSelection(vars, bad, fallback, enumeration)
+
+  running_first_eq: LEMMA
+    Running(vars, bad, firstSelection(vars, bad, fallback, enumeration)`select(omega), omega, n)
+      IFF RunningUntil(vars, bad, fallback, enumeration, initialStateFromLog(omega), omega, n)
+
+  tLog_first_eq: THEOREM FORALL (tests: MeasurableTests, labels: PolicyEnumeration):
+    tLog(vars, tests, first(vars, tests, fallback, labels)`select(omega), omega) =
+      randomInitTLog(vars, tests, fallback, labels, omega)
+
+END ppg_mt_policy_first

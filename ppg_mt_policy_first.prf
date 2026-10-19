@@ -1,0 +1,392 @@
+(|ppg_mt_policy_first|
+ (|state_first_eq| 0
+  (|state_first_eq-1| NIL 4001384060
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY) (EXPAND "policyState")
+     (EXPAND "firstSelection")
+     (LEMMA "randStep_count_eq_filter_card"
+      ("vars" "vars!1" "bad" "bad!1" "fallback" "fallback!1" "enumeration"
+       "enumeration!1" "initial" "initialStateFromLog(omega!1)" "omega"
+       "omega!1" "s" "t!1" "v" "x!1"))
+     (LEMMA "randStep_state_eq_atIdx"
+      ("vars" "vars!1" "bad" "bad!1" "fallback" "fallback!1" "enumeration"
+       "enumeration!1" "initial" "initialStateFromLog(omega!1)" "omega"
+       "omega!1" "t" "t!1" "v" "x!1"))
+     (EXPAND "initialAligned") (EXPAND "initialStateFromLog")
+     (EXPAND "freshState") (EXPAND "atIdx") (EXPAND "actualUses")
+     (EXPAND "uses") (GRIND :EXCLUDE ("randStep" "realC" "filteredRange")))
+    NIL)
+   ((|randStep_count_eq_filter_card| FORMULA-DECL NIL |ppg_mt_correspondence|
+     NIL)
+    (|initialAligned| CONST-DECL "bool" |ppg_mt_correspondence| NIL)
+    (|freshState| CONST-DECL "MTState" |ppg_mt_random_process| NIL)
+    (|actualUses| CONST-DECL "finite_set[nat]" |ppg_mt_correspondence| NIL)
+    (|uses| CONST-DECL "nat" |ppg_mt_policy_state| NIL)
+    (|atIdx| CONST-DECL "(domain(v))" |ppg_mt_random_process| NIL)
+    (|randStep_state_eq_atIdx| FORMULA-DECL NIL |ppg_mt_correspondence| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|policyState| CONST-DECL "MTState" |ppg_mt_policy_state| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[C] | FORALL (c: C): U(c)}"
+     |ppg_mt_policy_first| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|coordinates| FORMAL-CONST-DECL
+     "[V -> ppg_measurable_space[Value].MeasurableSpace]" |ppg_mt_policy_first|
+     NIL)
+    (|SelectionData| TYPE-EQ-DECL NIL |ppg_mt_policy_schedule| NIL)
+    (|firstSelection| CONST-DECL "SelectionData" |ppg_mt_policy_first| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|StepState| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|randStep| DEF-DECL "StepState" |ppg_mt_random_process| NIL)
+    (|initialStateFromLog| CONST-DECL "MTState" |ppg_mt_random_process| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_policy_first| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL))
+   SHOSTAK))
+ (|first_selection_measurable| 0
+  (|first_selection_measurable-1| NIL 4001384060
+   (""
+    (THEN (SKOSIMP*) (EXPAND "selectionMeasurable") (SKOSIMP*)
+     (LEMMA "measurable_realC_of_measurable_init"
+      ("vars" "vars!1" "bad" "bad!1" "fallback" "fallback!1" "enumeration"
+       "enumeration!1" "init" "initialStateFromLog" "coordinates" "coordinates"
+       "s" "t!1"))
+     (LEMMA "measurable_initialStateFromLog" ("coordinates" "coordinates"))
+     (EXPAND "BadMeasurable") (EXPAND "measurableBad")
+     (EXPAND "firstSelection") (ASSERT))
+    NIL)
+   ((|measurable_initialStateFromLog| FORMULA-DECL NIL |ppg_mt_log_measurable|
+     NIL)
+    (|measurableBad| CONST-DECL "bool" |ppg_mt_policy_measurable| NIL)
+    (|firstSelection| CONST-DECL "SelectionData" |ppg_mt_policy_first| NIL)
+    (|BadMeasurable| CONST-DECL "bool" |ppg_mt_policy_schedule| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_policy_first| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|initialStateFromLog| CONST-DECL "MTState" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|coordinates| FORMAL-CONST-DECL
+     "[V -> ppg_measurable_space[Value].MeasurableSpace]" |ppg_mt_policy_first|
+     NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|measurable_realC_of_measurable_init| FORMULA-DECL NIL
+     |ppg_mt_stopped_events| NIL)
+    (|selectionMeasurable| CONST-DECL "bool" |ppg_mt_policy_schedule| NIL))
+   SHOSTAK))
+ (|first_selection_admissible| 0
+  (|first_selection_admissible-1| NIL 4001384060
+   (""
+    (THEN (SKOSIMP*) (EXPAND "Admissible") (SKOSIMP*)
+     (REWRITE "state_first_eq")
+     (LEMMA "pickFirstViolated_mem_violated"
+      ("bad" "bad!1" "fallback" "fallback!1" "enumeration" "enumeration!1" "om"
+       "randStep(vars!1, bad!1, fallback!1, enumeration!1, initialStateFromLog(omega!1), omega!1, t!1)`1"))
+     (EXPAND "firstSelection") (EXPAND "realC") (EXPAND "MTGood") (ASSERT)
+     (INST -1 "c!1") (ASSERT))
+    NIL)
+   ((|initialStateFromLog| CONST-DECL "MTState" |ppg_mt_random_process| NIL)
+    (|randStep| DEF-DECL "StepState" |ppg_mt_random_process| NIL)
+    (|StepState| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|Counter| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|pickFirstViolated_mem_violated| FORMULA-DECL NIL |ppg_mt_selection| NIL)
+    (|realC| CONST-DECL "C" |ppg_mt_selection| NIL)
+    (|MTGood| CONST-DECL "bool" |ppg_mt_selection| NIL)
+    (|firstSelection| CONST-DECL "SelectionData" |ppg_mt_policy_first| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_policy_first| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (|state_first_eq| FORMULA-DECL NIL |ppg_mt_policy_first| NIL)
+    (|Admissible| CONST-DECL "bool" |ppg_mt_policy_state| NIL))
+   SHOSTAK))
+ (|first_TCC1| 0
+  (|first_TCC1-1| NIL 4001384060
+   (""
+    (THEN (SKOSIMP*) (LEMMA "first_selection_measurable")
+     (LEMMA "first_selection_admissible") (TYPEPRED "bad!1")
+     (TYPEPRED "enumeration!1")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("selectionMeasurable" "Admissible" "firstSelection" "BadMeasurable"
+       "completeEnumeration")))
+    NIL)
+   ((|first_selection_admissible| FORMULA-DECL NIL |ppg_mt_policy_first| NIL)
+    (|PolicyEnumeration| TYPE-EQ-DECL NIL |ppg_mt_policy_first| NIL)
+    (|completeEnumeration| CONST-DECL "bool" |ppg_mt_selection| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|MeasurableTests| TYPE-EQ-DECL NIL |ppg_mt_policy_first| NIL)
+    (|BadMeasurable| CONST-DECL "bool" |ppg_mt_policy_schedule| NIL)
+    (|coordinates| FORMAL-CONST-DECL
+     "[V -> ppg_measurable_space[Value].MeasurableSpace]" |ppg_mt_policy_first|
+     NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[C] | FORALL (c: C): U(c)}"
+     |ppg_mt_policy_first| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_policy_first| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|first_selection_measurable| FORMULA-DECL NIL |ppg_mt_policy_first| NIL))
+   NIL
+   (|first| SUBTYPE "firstSelection(vars, bad, fallback, enumeration)"
+    "Schedule[ppg_mt_policy_first.C, ppg_mt_policy_first.V, ppg_mt_policy_first.Value, ppg_mt_policy_first.domain, ppg_mt_policy_first.universe, ppg_mt_policy_first.coordinates](ppg_mt_policy_first.vars, ppg_mt_policy_first.bad)"
+    (45 4 45 52))))
+ (|running_first_eq| 0
+  (|running_first_eq-1| NIL 4001384060
+   ("" (SKOSIMP*)
+    (("" (EXPAND "Running")
+      (("" (EXPAND "RunningUntil")
+        (("" (SPLIT)
+          (("1" (SKOSIMP*)
+            (("1"
+              (LEMMA "state_first_eq"
+               ("vars" "vars!1" "bad" "bad!1" "fallback" "fallback!1"
+                "enumeration" "enumeration!1" "omega" "omega!1" "t" "s!1"))
+              (("1" (INST -2 "s!1")
+                (("1" (EXPAND "firstSelection")
+                  (("1"
+                    (GRIND :EXCLUDE
+                     ("realC" "policyState" "randStep" "initialStateFromLog"))
+                    NIL NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL)
+           ("2" (SKOSIMP*)
+            (("2"
+              (LEMMA "state_first_eq"
+               ("vars" "vars!1" "bad" "bad!1" "fallback" "fallback!1"
+                "enumeration" "enumeration!1" "omega" "omega!1" "t" "t!1"))
+              (("2" (INST -2 "t!1")
+                (("2" (EXPAND "firstSelection")
+                  (("2"
+                    (GRIND :EXCLUDE
+                     ("realC" "policyState" "randStep" "initialStateFromLog"))
+                    NIL NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|RunningUntil| CONST-DECL "bool" |ppg_mt_correspondence| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|firstSelection| CONST-DECL "SelectionData" |ppg_mt_policy_first| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_policy_first| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (|state_first_eq| FORMULA-DECL NIL |ppg_mt_policy_first| NIL)
+    (|Running| CONST-DECL "bool" |ppg_mt_policy_state| NIL))
+   SHOSTAK))
+ (|tLog_first_eq| 0
+  (|tLog_first_eq-1| NIL 4001384060
+   ("" (SKOSIMP*)
+    (("" (EXPAND "first")
+      (("" (EXPAND "tLog")
+        (("" (REWRITE "randomInitTLog_eq_tsum_indicator")
+          ((""
+            (LEMMA "eventCount_congr"
+             ("E"
+              "LAMBDA (t: nat): {w: LogSpace | Running(vars!1, tests!1, firstSelection(vars!1, tests!1, fallback!1, labels!1)`select(omega!1), w, t + 1)}"
+              "F"
+              "LAMBDA (t: nat): randomInitRunningEvent(vars!1, tests!1, fallback!1, labels!1, t + 1)"
+              "x" "omega!1"))
+            (("" (SPLIT -1)
+              (("1" (ASSERT) NIL NIL)
+               ("2" (SKOSIMP*)
+                (("2" (EXPAND "randomInitRunningEvent")
+                  (("2" (EXPAND "runningEvent")
+                    (("2"
+                      (LEMMA "running_first_eq"
+                       ("vars" "vars!1" "bad" "tests!1" "fallback" "fallback!1"
+                        "enumeration" "labels!1" "omega" "omega!1" "n"
+                        "k!1 + 1"))
+                      (("2"
+                        (GRIND :EXCLUDE
+                         ("Running" "RunningUntil" "eventCount"
+                          "firstSelection" "initialStateFromLog"))
+                        NIL NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|tLog| CONST-DECL "ENN" |ppg_mt_policy_schedule| NIL)
+    (|randomInitRunningEvent| CONST-DECL "set[LogSpace[C, V, Value, domain]]"
+     |ppg_mt_stopped_events| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|firstSelection| CONST-DECL "SelectionData" |ppg_mt_policy_first| NIL)
+    (|SelectionData| TYPE-EQ-DECL NIL |ppg_mt_policy_schedule| NIL)
+    (|Running| CONST-DECL "bool" |ppg_mt_policy_state| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|eventCount_congr| FORMULA-DECL NIL |ppg_event_count| NIL)
+    (|runningEvent| CONST-DECL "set[LogSpace[C, V, Value, domain]]"
+     |ppg_mt_stopped_events| NIL)
+    (|running_first_eq| FORMULA-DECL NIL |ppg_mt_policy_first| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_mt_policy_first| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_policy_first| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|PolicyEnumeration| TYPE-EQ-DECL NIL |ppg_mt_policy_first| NIL)
+    (|completeEnumeration| CONST-DECL "bool" |ppg_mt_selection| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|MeasurableTests| TYPE-EQ-DECL NIL |ppg_mt_policy_first| NIL)
+    (|BadMeasurable| CONST-DECL "bool" |ppg_mt_policy_schedule| NIL)
+    (|coordinates| FORMAL-CONST-DECL
+     "[V -> ppg_measurable_space[Value].MeasurableSpace]" |ppg_mt_policy_first|
+     NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[C] | FORALL (c: C): U(c)}"
+     |ppg_mt_policy_first| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|randomInitTLog_eq_tsum_indicator| FORMULA-DECL NIL
+     |ppg_mt_extended_count| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|first| CONST-DECL "Schedule(vars, bad)" |ppg_mt_policy_first| NIL))
+   SHOSTAK)))
+

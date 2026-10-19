@@ -1,0 +1,53 @@
+% A selection sequence consumes one table entry for each variable in its
+% chosen footprint. The sequence may inspect the whole table: no causal
+% or fairness condition is part of these pointwise definitions.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Algorithm 1 and footnote 2.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphMoserTardosPolicy.lean, namespace MTPolicy.
+
+ppg_mt_policy_state[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_random_process[C, V, Value, domain], ppg_nat_range
+
+  SelectionSeq: TYPE = [nat -> C]
+
+  vars: VAR CertVars
+  bad: VAR [C, MTState -> bool]
+  seq, other: VAR SelectionSeq
+  omega: VAR LogSpace
+  t, n: VAR nat
+  v: VAR V
+
+  uses(vars, seq, t, v): nat =
+    card(filteredRange(LAMBDA (s: nat): vars(seq(s))(v), t))
+
+  policyState(vars, seq, omega, t): MTState =
+    LAMBDA (v: V): atIdx(omega, v, uses(vars, seq, t, v))
+
+  uses_zero: THEOREM uses(vars, seq, 0, v) = 0
+
+  uses_succ: THEOREM uses(vars, seq, t + 1, v) =
+    uses(vars, seq, t, v) + IF vars(seq(t))(v) THEN 1 ELSE 0 ENDIF
+
+  uses_le: THEOREM uses(vars, seq, t, v) <= t
+
+  state_zero: THEOREM policyState(vars, seq, omega, 0) = initialStateFromLog(omega)
+
+  state_succ: THEOREM policyState(vars, seq, omega, t + 1) =
+    resample(vars(seq(t)), policyState(vars, seq, omega, t),
+      drawFrom(omega, LAMBDA (v: V): uses(vars, seq, t, v) + 1))
+
+  Running(vars, bad, seq, omega, n): bool =
+    FORALL (t: nat): t < n IMPLIES bad(seq(t), policyState(vars, seq, omega, t))
+
+  Admissible(vars, bad, seq, omega): bool = FORALL (t: nat):
+    NOT (FORALL (c: C): NOT bad(c, policyState(vars, seq, omega, t))) IMPLIES
+      bad(seq(t), policyState(vars, seq, omega, t))
+
+  uses_congr: THEOREM
+    (FORALL (s: nat): s < t IMPLIES seq(s) = other(s)) IMPLIES
+      uses(vars, seq, t, v) = uses(vars, other, t, v)
+
+END ppg_mt_policy_state

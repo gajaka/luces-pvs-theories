@@ -1,0 +1,27 @@
+% Expected work is the nonnegative integral of the policy's active-time
+% count under the original product-table law. For the first-event policy,
+% pointwise count equality identifies this integral with randomInitETLog.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Lean counterpart: PPGraphMoserTardosPolicy.lean, expectedWork_first_eq.
+
+ppg_mt_policy_expectation[C, V, Value: TYPE, domain: [V -> set[Value]],
+  universe: {U: finite_set[C] | FORALL (c: C): U(c)},
+  (IMPORTING ppg_mt_native_spaces[C, V, Value, domain])
+  spaces: VariableSpaces, laws: VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_mt_policy_first[C, V, Value, domain, universe, variableAmbient(spaces)],
+    ppg_mt_time_expectation[C, V, Value, domain, spaces, laws]
+
+  vars: VAR CertVars
+  fallback: VAR C
+
+  expectedWork(vars: CertVars, bad: [C, MTState -> bool],
+      sigma: Schedule(vars, bad)): ENN =
+    lintegral(LAMBDA (omega: LogSpace): tLog(vars, bad, sigma`select(omega), omega))
+
+  expectedWork_first_eq: THEOREM FORALL (tests: MeasurableTests, labels: PolicyEnumeration):
+    expectedWork(vars, tests, first(vars, tests, fallback, labels)) =
+      randomInitETLog(vars, tests, fallback, labels)
+
+END ppg_mt_policy_expectation
