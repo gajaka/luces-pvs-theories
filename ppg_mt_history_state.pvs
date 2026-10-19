@@ -1,0 +1,85 @@
+% The online configuration records the current state and counters together
+% with all earlier states and choices. Unwritten state slots contain the
+% initial state; unwritten label slots contain one fixed default label.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2; Kun He, Qian Li and Xiaoming Sun,
+% "Moser-Tardos Algorithm: Beyond Shearer's Bound", Algorithm 1.
+% Lean counterpart: PPGraphMoserTardosHistoryPolicy.lean, MTPolicy.
+
+ppg_mt_history_state[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_policy_state[C, V, Value, domain]
+
+  StateHistory: TYPE = [nat -> MTState]
+
+  LabelHistory: TYPE = [nat -> C]
+
+  HistoryConfig: TYPE = [MTState, [Counter, [StateHistory, LabelHistory]]]
+
+  HistoryChoice: TYPE = [nat, HistoryConfig -> C]
+
+  vars: VAR CertVars
+  bad: VAR [C, MTState -> bool]
+  choose: VAR HistoryChoice
+  fallback: VAR C
+  omega: VAR LogSpace
+  t, s: VAR nat
+  v: VAR V
+
+  historyRun(vars, choose, fallback, omega, t): RECURSIVE HistoryConfig =
+    IF t = 0 THEN
+      (initialStateFromLog(omega), (LAMBDA (v: V): 0,
+        (LAMBDA (s: nat): initialStateFromLog(omega), LAMBDA (s: nat): fallback)))
+    ELSE LET z = historyRun(vars, choose, fallback, omega, t - 1),
+      i = choose(t - 1, z), F = vars(i),
+      next = resample(F, z`1, drawFrom(omega, LAMBDA (v: V): z`2`1(v) + 1)) IN
+      (next, (LAMBDA (v: V): IF F(v) THEN z`2`1(v) + 1 ELSE z`2`1(v) ENDIF,
+        (LAMBDA (s: nat): IF s = t THEN next ELSE z`2`2`1(s) ENDIF,
+         LAMBDA (s: nat): IF s = t - 1 THEN i ELSE z`2`2`2(s) ENDIF)))
+    ENDIF MEASURE t
+
+  historySelect(vars, choose, fallback, omega): SelectionSeq =
+    LAMBDA (t: nat): choose(t, historyRun(vars, choose, fallback, omega, t))
+
+  historyRun_zero: LEMMA historyRun(vars, choose, fallback, omega, 0) =
+    (initialStateFromLog(omega), (LAMBDA (v: V): 0,
+      (LAMBDA (s: nat): initialStateFromLog(omega), LAMBDA (s: nat): fallback)))
+
+  historyRun_succ: LEMMA historyRun(vars, choose, fallback, omega, t + 1) =
+    LET z = historyRun(vars, choose, fallback, omega, t),
+      i = historySelect(vars, choose, fallback, omega)(t), F = vars(i),
+      next = resample(F, z`1, drawFrom(omega, LAMBDA (v: V): z`2`1(v) + 1)) IN
+      (next, (LAMBDA (v: V): IF F(v) THEN z`2`1(v) + 1 ELSE z`2`1(v) ENDIF,
+        (LAMBDA (s: nat): IF s = t + 1 THEN next ELSE z`2`2`1(s) ENDIF,
+         LAMBDA (s: nat): IF s = t THEN i ELSE z`2`2`2(s) ENDIF)))
+
+  historyCount_le: THEOREM historyRun(vars, choose, fallback, omega, t)`2`1(v) <= t
+
+  historyCount_eq_uses: THEOREM historyRun(vars, choose, fallback, omega, t)`2`1(v) =
+    uses(vars, historySelect(vars, choose, fallback, omega), t, v)
+
+  historyState_eq_state: THEOREM historyRun(vars, choose, fallback, omega, t)`1 =
+    policyState(vars, historySelect(vars, choose, fallback, omega), omega, t)
+
+  historyValid(bad, choose): bool = FORALL (t: nat, z: HistoryConfig):
+    NOT (FORALL (c: C): NOT bad(c, z`1)) IMPLIES bad(choose(t, z), z`1)
+
+  history_admissible: THEOREM historyValid(bad, choose) IMPLIES
+    Admissible(vars, bad, historySelect(vars, choose, fallback, omega), omega)
+
+  history_states_record: THEOREM s <= t IMPLIES
+    historyRun(vars, choose, fallback, omega, t)`2`2`1(s) =
+      policyState(vars, historySelect(vars, choose, fallback, omega), omega, s)
+
+  history_labels_record: THEOREM s < t IMPLIES
+    historyRun(vars, choose, fallback, omega, t)`2`2`2(s) =
+      historySelect(vars, choose, fallback, omega)(s)
+
+  history_states_future_padding: THEOREM t < s IMPLIES
+    historyRun(vars, choose, fallback, omega, t)`2`2`1(s) = initialStateFromLog(omega)
+
+  history_labels_future_padding: THEOREM t <= s IMPLIES
+    historyRun(vars, choose, fallback, omega, t)`2`2`2(s) = fallback
+
+END ppg_mt_history_state
