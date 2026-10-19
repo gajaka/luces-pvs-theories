@@ -1,0 +1,15 @@
+% The image of a finite set is finite. This typed constructor keeps
+% that stock prelude fact visible when the target is a dependent type.
+ppg_finite_image_constructor[A,B:TYPE]: THEORY
+BEGIN
+  IMPORTING function_image_aux[A,B]
+
+  S: VAR finite_set[A]
+  f: VAR [A->B]
+  b: VAR B
+
+  finiteImage(f,S): finite_set[B] = image[A,B](f,S)
+
+  finiteImage_member: LEMMA finiteImage(f,S)(b) IFF EXISTS(a:A):S(a) AND f(a)=b
+
+END ppg_finite_image_constructor

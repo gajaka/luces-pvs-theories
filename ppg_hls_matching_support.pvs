@@ -1,0 +1,26 @@
+% Every endpoint of a matching arc belongs to the witness DAG support.
+% Selected arcs are a subset, so their endpoints inherit this property.
+% No finiteness of the ambient label type is needed.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Proposition 3.2. https://arxiv.org/abs/2111.06527
+% Corresponding support statements: PPGraphHLSProductDiscount.lean.
+ppg_hls_matching_support[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_matching_selection[C,G]
+
+  M: VAR DependencyMatching
+  D: VAR WitnessDAG
+  e: VAR Arc
+  u: VAR WNode
+
+  matching_arc_supported: LEMMA Valid(D) AND matchingArcs(M,D)(e) IMPLIES
+    D`nodes(e`1) AND D`nodes(e`2)
+
+  arcNodes_subset: THEOREM Valid(D) IMPLIES subset?(arcNodes(matchingArcs(M,D)),D`nodes)
+
+  selected_arcNodes_subset: THEOREM Valid(D) IMPLIES
+    subset?(arcNodes(selectedArcs(M,D)),D`nodes)
+
+END ppg_hls_matching_support

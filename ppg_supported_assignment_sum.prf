@@ -1,0 +1,585 @@
+(|ppg_supported_assignment_sum|
+ (|productFold_TCC1| 0
+  (|productFold_TCC1-1| NIL 4001418282
+   ("" (THEN (LEMMA "multiplication_monoid") (ASSERT)) NIL NIL)
+   ((|multiplication_monoid| FORMULA-DECL NIL |ppg_enn_semiring| NIL)) NIL
+   (|productFold| SUBTYPE "emul"
+    "{op: [ENN, ENN -> ENN] | booleans.AND(operator_defs[ENN].identity?(op)(ppg_ennreal_adt.ennFinite(1)), booleans.AND(operator_defs[ENN].associative?(op), operator_defs[ENN].commutative?(op)))}"
+    (11 38 11 42))))
+ (|stateImage_TCC1| 0
+  (|stateImage_TCC1-1| NIL 4001418282
+   ("" (THEN (LEMMA "stateFinite.addition_monoid") (ASSERT)) NIL NIL)
+   ((|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_assignment_sum| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|addition_monoid| FORMULA-DECL NIL |ppg_enn_finite| NIL))
+   NIL
+   (|stateImage| SUBTYPE "eadd"
+    "{f: [ENN, ENN -> ENN] | booleans.AND(operator_defs[ENN].identity?(f)(ppg_ennreal_adt.ennFinite(0)), booleans.AND(operator_defs[ENN].associative?(f), operator_defs[ENN].commutative?(f)))}"
+    (18 60 18 64))))
+ (|assignmentUniverse_member| 0
+  (|assignmentUniverse_member-1| NIL 4001418696
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "universe_member" ("S" "S!1" "domains" "domains!1" "s" "s!1"))
+     (EXPAND "assignmentUniverse") (EXPAND "assignmentAdmissible") (ASSERT))
+    NIL NIL)
+   ((|assignmentUniverse| CONST-DECL "finite_set[State]"
+     |ppg_supported_assignment_sum| NIL)
+    (|assignmentAdmissible| CONST-DECL "bool" |ppg_supported_assignment_sum|
+     NIL)
+    (|universe_member| FORMULA-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_assignment_sum| NIL))
+   SHOSTAK))
+ (|weights_remove| 0
+  (|weights_remove-1| NIL 4001418282
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "productFold.sum_x" ("S" "S!1" "f" "LAMBDA(v:V):f!1(v)(s!1(v))"))
+     (INST -1 "v!1") (EXPAND "weights") (EXPAND "products.eprod") (ASSERT))
+    NIL NIL)
+   ((|eprod| CONST-DECL "ENN" |ppg_enn_products| NIL)
+    (|weights| CONST-DECL "ENN" |ppg_supported_assignment_sum| NIL)
+    (|sum_x| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_assignment_sum| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|emul| CONST-DECL "ENN" |ppg_enn_multiply| NIL))
+   SHOSTAK))
+ (|updated_rest_weights| 0
+  (|updated_rest_weights-1| NIL 4001418282
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "products.eprod_congr"
+      ("F" "remove(v!1,S!1)" "f" "LAMBDA(u:V):f!1(u)(update(t!1,v!1,a!1)(u))"
+       "g" "LAMBDA(u:V):f!1(u)(t!1(u))"))
+     (EXPAND "weights") (EXPAND "update")
+     (GRIND :DEFS ("remove" "member") :EXCLUDE
+      ("is_finite" "card" "universe" "admissible" "row" "weights"
+       "assignmentSum" "eprod" "esum" "sum" "eadd" "emul" "rest")))
+    NIL NIL)
+   ((|weights| CONST-DECL "ENN" |ppg_supported_assignment_sum| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|update| CONST-DECL "Assignment" |ppg_supported_finite_assignments| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_assignment_sum| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|eprod_congr| FORMULA-DECL NIL |ppg_enn_products| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[V]"
+     |ppg_supported_assignment_sum| NIL))
+   SHOSTAK))
+ (|updated_weights| 0
+  (|updated_weights-1| NIL 4001418282
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "weights_remove"
+      ("S" "S!1" "f" "f!1" "s" "update(t!1,v!1,a!1)" "v" "v!1"))
+     (LEMMA "updated_rest_weights"
+      ("S" "S!1" "f" "f!1" "t" "t!1" "v" "v!1" "a" "a!1"))
+     (REWRITE "update_at") (ASSERT))
+    NIL NIL)
+   ((|updated_rest_weights| FORMULA-DECL NIL |ppg_supported_assignment_sum|
+     NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[V]"
+     |ppg_supported_assignment_sum| NIL)
+    (|update_at| FORMULA-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|weights_remove| FORMULA-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_assignment_sum| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|update| CONST-DECL "Assignment" |ppg_supported_finite_assignments| NIL))
+   SHOSTAK))
+ (|universe_removed_value| 0
+  (|universe_removed_value-1| NIL 4001418282
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "universe_member"
+      ("S" "remove(v!1,S!1)" "domains" "domains!1" "s" "s!1"))
+     (ASSERT) (EXPAND "admissible" -1) (INST -1 "v!1")
+     (GRIND :DEFS ("remove" "member") :EXCLUDE
+      ("is_finite" "card" "universe" "admissible" "row" "weights"
+       "assignmentSum" "eprod" "esum" "sum" "eadd" "emul" "rest")))
+    NIL NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|admissible| CONST-DECL "bool" |ppg_supported_finite_assignments| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_assignment_sum| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|universe_member| FORMULA-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[V]"
+     |ppg_supported_assignment_sum| NIL))
+   SHOSTAK))
+ (|row_injective| 0
+  (|row_injective-1| NIL 4001418282
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "universe_removed_value"
+      ("S" "S!1" "domains" "domains!1" "s" "s!1" "v" "v!1"))
+     (LEMMA "universe_removed_value"
+      ("S" "S!1" "domains" "domains!1" "s" "t!1" "v" "v!1"))
+     (ASSERT) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "update_outside" ("s" "s!1" "v" "v!1" "a" "a!1" "u" "x!1"))
+     (LEMMA "update_outside" ("s" "t!1" "v" "v!1" "a" "a!1" "u" "x!1"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   ((|update_outside| FORMULA-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[V]"
+     |ppg_supported_assignment_sum| NIL)
+    (|universe_removed_value| FORMULA-DECL NIL |ppg_supported_assignment_sum|
+     NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_assignment_sum| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL))
+   SHOSTAK))
+ (|rows_disjoint| 0
+  (|rows_disjoint-1| NIL 4001418282
+   (""
+    (THEN (SKOSIMP*) (EXPAND "rows.disjointFamily") (SKOSIMP*) (EXPAND "row")
+     (LEMMA "update_at")
+     (GRIND :DEFS ("image" "disjoint?") :IF-MATCH ALL :EXCLUDE
+      ("universe" "is_finite" "card")))
+    NIL NIL)
+   ((|update_at| FORMULA-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_assignment_sum| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|universe| DEF-DECL "finite_set[Assignment]"
+     |ppg_supported_finite_assignments| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|finite_intersection1| APPLICATION-JUDGEMENT
+     "finite_set[Assignment[V, A, default]]" |ppg_supported_assignment_sum|
+     NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[V]"
+     |ppg_supported_assignment_sum| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|update| CONST-DECL "Assignment" |ppg_supported_finite_assignments| NIL)
+    (|row| CONST-DECL "finite_set[Assignment[V, A, default]]"
+     |ppg_supported_assignment_sum| NIL)
+    (|disjointFamily| CONST-DECL "bool" |ppg_finite_bind| NIL))
+   SHOSTAK))
+ (|row_product_function| 0
+  (|row_product_function-1| NIL 4001418387
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "updated_weights"
+      ("S" "S!1" "f" "f!1" "t" "x!1" "v" "v!1" "a" "a!1"))
+     (ASSERT))
+    NIL NIL)
+   ((|updated_weights| FORMULA-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_assignment_sum| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|weights| CONST-DECL "ENN" |ppg_supported_assignment_sum| NIL)
+    (|update| CONST-DECL "Assignment" |ppg_supported_finite_assignments| NIL)
+    (|emul| CONST-DECL "ENN" |ppg_enn_multiply| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[V]"
+     |ppg_supported_assignment_sum| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL))
+   SHOSTAK))
+ (|universe_empty| 0
+  (|universe_empty-1| NIL 4001418387
+   (""
+    (THEN (SKOSIMP*) (EXPAND "universe" + :OCCURRENCE 1)
+     (GRIND :DEFS ("empty?" "emptyset") :EXCLUDE
+      ("universe" "rows.biUnion" "is_finite" "card")))
+    NIL NIL)
+   ((|emptyset| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[Assignment[V, A, default]]"
+     |ppg_supported_assignment_sum| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[V]"
+     |ppg_supported_assignment_sum| NIL)
+    (|universe| DEF-DECL "finite_set[Assignment]"
+     |ppg_supported_finite_assignments| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[V]"
+     |ppg_supported_assignment_sum| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL))
+   SHOSTAK))
+ (|weights_empty| 0
+  (|weights_empty-1| NIL 4001418387
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "weights")
+     (LEMMA "products.eprod_empty" ("f" "LAMBDA(v:V):f!1(v)(x!1(v))"))
+     (ASSERT))
+    NIL NIL)
+   ((|eprod_empty| FORMULA-DECL NIL |ppg_enn_products| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_assignment_sum| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|weights| CONST-DECL "ENN" |ppg_supported_assignment_sum| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[V]"
+     |ppg_supported_assignment_sum| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL))
+   SHOSTAK))
+ (|row_sum| 0
+  (|row_sum-1| NIL 4001418282
+   (""
+    (THEN (LEMMA "stateFinite.addition_monoid") (SKOSIMP*)
+     (LEMMA "stateImage.sum_image"
+      ("S" "universe(remove(v!1,S!1),domains!1)" "h"
+       "LAMBDA(t:Assignment):update(t,v!1,a!1)" "f" "weights(S!1,f!1)"))
+     (LEMMA "row_injective"
+      ("S" "S!1" "domains" "domains!1" "v" "v!1" "a" "a!1"))
+     (LEMMA "row_product_function" ("S" "S!1" "f" "f!1" "v" "v!1" "a" "a!1"))
+     (LEMMA "stateScale.esum_scale_left"
+      ("F" "universe(remove(v!1,S!1),domains!1)" "a" "f!1(v!1)(a!1)" "f"
+       "weights(remove(v!1,S!1),f!1)"))
+     (AUTO-REWRITE "stateFinite.esum_as_fold") (EXPAND "row")
+     (EXPAND "assignmentSum")
+     (GRIND :DEFS NIL :IF-MATCH ALL :EXCLUDE
+      ("is_finite" "card" "universe" "admissible" "row" "weights"
+       "assignmentSum" "eprod" "esum" "sum" "eadd" "emul" "rest")))
+    NIL NIL)
+   ((|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_assignment_sum| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|addition_monoid| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[V]"
+     |ppg_supported_assignment_sum| NIL)
+    (|sum_image| FORMULA-DECL NIL |ppg_monoid_image| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| DEF-DECL "finite_set[Assignment]"
+     |ppg_supported_finite_assignments| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|weights| CONST-DECL "ENN" |ppg_supported_assignment_sum| NIL)
+    (|update| CONST-DECL "Assignment" |ppg_supported_finite_assignments| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|row_product_function| FORMULA-DECL NIL |ppg_supported_assignment_sum|
+     NIL)
+    (|assignmentSum| CONST-DECL "ENN" |ppg_supported_assignment_sum| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|esum_as_fold| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|row| CONST-DECL "finite_set[Assignment[V, A, default]]"
+     |ppg_supported_assignment_sum| NIL)
+    (|esum_scale_left| FORMULA-DECL NIL |ppg_enn_sum_scale| NIL)
+    (|row_injective| FORMULA-DECL NIL |ppg_supported_assignment_sum| NIL))
+   SHOSTAK))
+ (|universe_step| 0
+  (|universe_step-1| NIL 4001418282
+   (""
+    (THEN (SKOSIMP*) (EXPAND "universe" + :OCCURRENCE 1) (EXPAND "row")
+     (EXPAND "rest") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   ((|row| CONST-DECL "finite_set[Assignment[V, A, default]]"
+     |ppg_supported_assignment_sum| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|universe| DEF-DECL "finite_set[Assignment]"
+     |ppg_supported_finite_assignments| NIL))
+   SHOSTAK))
+ (|row_sum_function| 0
+  (|row_sum_function-1| NIL 4001418282
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "row_sum"
+      ("S" "Q!1" "domains" "domains!1" "f" "f!1" "v" "choose(Q!1)" "a" "x!1"))
+     (EXPAND "rest") (ASSERT))
+    NIL NIL)
+   ((|row_sum| FORMULA-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[V]"
+     |ppg_supported_assignment_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_assignment_sum| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|esum| DEF-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (|row| CONST-DECL "finite_set[Assignment[V, A, default]]"
+     |ppg_supported_assignment_sum| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|choose| CONST-DECL "(p)" |sets| NIL)
+    (|weights| CONST-DECL "ENN" |ppg_supported_assignment_sum| NIL)
+    (|emul| CONST-DECL "ENN" |ppg_enn_multiply| NIL)
+    (|assignmentSum| CONST-DECL "ENN" |ppg_supported_assignment_sum| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[V]"
+     |ppg_supported_assignment_sum| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL))
+   SHOSTAK))
+ (|assignment_sum_empty| 0
+  (|assignment_sum_empty-1| NIL 4001418282
+   (""
+    (THEN (LEMMA "stateFinite.addition_monoid") (SKOSIMP*)
+     (EXPAND "assignmentSum") (REWRITE "universe_empty")
+     (REWRITE "weights_empty") (REWRITE "stateFinite.esum_as_fold")
+     (LEMMA "ppg_monoid_sum[Assignment,ENN,ennFinite(0),eadd].sum_singleton"
+      ("x" "defaultState" "f" "LAMBDA(s:Assignment):ennFinite(1)"))
+     (AUTO-REWRITE "eadd_zero_right") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   ((|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_assignment_sum| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|addition_monoid| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|assignmentSum| CONST-DECL "ENN" |ppg_supported_assignment_sum| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|weights_empty| FORMULA-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|sum_singleton| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|eadd_zero_right| FORMULA-DECL NIL |ppg_enn_add| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|defaultState| CONST-DECL "Assignment" |ppg_supported_finite_assignments|
+     NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|esum_as_fold| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|universe_empty| FORMULA-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[Assignment[V, A, default]]"
+     |ppg_supported_assignment_sum| NIL))
+   SHOSTAK))
+ (|assignment_sum_step| 0
+  (|assignment_sum_step-1| NIL 4001418282
+   (""
+    (THEN (LEMMA "stateFinite.addition_monoid") (SKOSIMP*)
+     (LEMMA "rowSums.sum_bind"
+      ("S" "domains!1(choose(Q!1))" "F"
+       "LAMBDA(a:A):row(Q!1,domains!1,choose(Q!1),a)" "f" "weights(Q!1,f!1)"))
+     (LEMMA "rows_disjoint"
+      ("S" "Q!1" "domains" "domains!1" "v" "choose(Q!1)"))
+     (LEMMA "row_sum_function" ("Q" "Q!1" "domains" "domains!1" "f" "f!1"))
+     (LEMMA "universe_step" ("Q" "Q!1" "domains" "domains!1"))
+     (LEMMA "valueScale.esum_scale_right"
+      ("F" "domains!1(choose(Q!1))" "f" "f!1(choose(Q!1))" "a"
+       "assignmentSum(rest(Q!1),domains!1,f!1)"))
+     (EXPAND "assignmentSum" 1 :OCCURRENCE 1) (EXPAND "domainSums")
+     (AUTO-REWRITE "stateFinite.esum_as_fold" "valueFinite.esum_as_fold")
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   ((|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_assignment_sum| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|addition_monoid| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|sum_bind| FORMULA-DECL NIL |ppg_bind_sum| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|row| CONST-DECL "finite_set[Assignment[V, A, default]]"
+     |ppg_supported_assignment_sum| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|choose| CONST-DECL "(p)" |sets| NIL)
+    (|weights| CONST-DECL "ENN" |ppg_supported_assignment_sum| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|row_sum_function| FORMULA-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|assignmentSum| CONST-DECL "ENN" |ppg_supported_assignment_sum| NIL)
+    (|esum_scale_right| FORMULA-DECL NIL |ppg_enn_sum_scale| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[V]"
+     |ppg_supported_assignment_sum| NIL)
+    (|domainSums| CONST-DECL "ENN" |ppg_supported_assignment_sum| NIL)
+    (|esum_as_fold| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|universe_step| FORMULA-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|rows_disjoint| FORMULA-DECL NIL |ppg_supported_assignment_sum| NIL))
+   SHOSTAK))
+ (|supported_product_of_sums| 0
+  (|supported_product_of_sums-1| NIL 4001418282
+   ("" (INDUCT "S" :NAME "ppg_finite_induction[V].finite_set_induction_rest")
+    (("1" (SKOSIMP*)
+      (("1" (REWRITE "assignment_sum_empty")
+        (("1" (REWRITE "products.eprod_empty") NIL NIL)) NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (INST -1 "domains!1" "f!1")
+        (("2"
+          (LEMMA "assignment_sum_step"
+           ("Q" "SS!1" "domains" "domains!1" "f" "f!1"))
+          (("2"
+            (LEMMA "products.eprod_rest"
+             ("F" "SS!1" "f" "domainSums(domains!1,f!1)"))
+            (("2" (GRIND :DEFS NIL :IF-MATCH ALL) NIL NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|assignment_sum_step| FORMULA-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[V]"
+     |ppg_supported_assignment_sum| NIL)
+    (|eprod_rest| FORMULA-DECL NIL |ppg_enn_products| NIL)
+    (|eprod_empty| FORMULA-DECL NIL |ppg_enn_products| NIL)
+    (|assignment_sum_empty| FORMULA-DECL NIL |ppg_supported_assignment_sum|
+     NIL)
+    (|finite_set_induction_rest| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|domainSums| CONST-DECL "ENN" |ppg_supported_assignment_sum| NIL)
+    (|eprod| CONST-DECL "ENN" |ppg_enn_products| NIL)
+    (|assignmentSum| CONST-DECL "ENN" |ppg_supported_assignment_sum| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_assignment_sum| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK)))
+

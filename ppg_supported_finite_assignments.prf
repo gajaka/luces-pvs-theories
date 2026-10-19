@@ -1,0 +1,238 @@
+(|ppg_supported_finite_assignments|
+ (|universe_TCC1| 0
+  (|universe_TCC1-1| NIL 4001418133 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|universe| SUBTYPE "S"
+    "(sets[ppg_supported_finite_assignments.V].nonempty?)" (27 78 27 79))))
+ (|universe_TCC2| 0
+  (|universe_TCC2-1| NIL 4001418133
+   ("" (THEN (SKOSIMP*) (REWRITE "card_rest") (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|card_rest| FORMULA-DECL NIL |finite_sets| NIL))
+   NIL
+   (|universe| TERMINATION "universe(rest[V](S), domains)"
+    #A((3) BASE-CHAR . "NIL") (29 8 29 33))))
+ (|update_at| 0
+  (|update_at-1| NIL 4001418133 ("" (THEN (GRIND :DEFS ("update"))) NIL NIL)
+   ((|update| CONST-DECL "Assignment" |ppg_supported_finite_assignments| NIL))
+   SHOSTAK))
+ (|update_outside| 0
+  (|update_outside-1| NIL 4001418133
+   ("" (THEN (GRIND :DEFS ("update"))) NIL NIL)
+   ((|update| CONST-DECL "Assignment" |ppg_supported_finite_assignments| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL))
+   SHOSTAK))
+ (|update_restore| 0
+  (|update_restore-1| NIL 4001418133
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "update")
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   ((|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|update| CONST-DECL "Assignment" |ppg_supported_finite_assignments| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_finite_assignments| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_finite_assignments| NIL))
+   SHOSTAK))
+ (|admissible_empty| 0
+  (|admissible_empty-1| NIL 4001418133
+   (""
+    (THEN (SKOSIMP*) (EXPAND "admissible") (EXPAND "emptyset")
+     (EXPAND "defaultState") (GRIND :IF-MATCH ALL)
+     (APPLY-EXTENSIONALITY :HIDE? T) (GRIND :IF-MATCH ALL))
+    NIL NIL)
+   ((|emptyset| CONST-DECL "set" |sets| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_finite_assignments| NIL)
+    (|defaultState| CONST-DECL "Assignment" |ppg_supported_finite_assignments|
+     NIL)
+    (|admissible| CONST-DECL "bool" |ppg_supported_finite_assignments| NIL))
+   SHOSTAK))
+ (|admissible_value| 0
+  (|admissible_value-1| NIL 4001418133
+   (""
+    (THEN
+     (GRIND :DEFS ("admissible") :EXCLUDE
+      ("is_finite" "card" "universe" "rows.biUnion")))
+    NIL NIL)
+   ((|admissible| CONST-DECL "bool" |ppg_supported_finite_assignments| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|admissible_update| 0
+  (|admissible_update-1| NIL 4001418133
+   (""
+    (THEN (SKOSIMP*) (LABEL "PRE" -3) (EXPAND "admissible" "PRE")
+     (EXPAND "admissible" 1) (SKOSIMP*) (INST "PRE" "v!2") (EXPAND "update")
+     (GRIND :DEFS ("remove" "member") :IF-MATCH NIL :EXCLUDE
+      ("is_finite" "card")))
+    NIL NIL)
+   ((|admissible| CONST-DECL "bool" |ppg_supported_finite_assignments| NIL)
+    (|update| CONST-DECL "Assignment" |ppg_supported_finite_assignments| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_finite_assignments| NIL))
+   SHOSTAK))
+ (|admissible_clear| 0
+  (|admissible_clear-1| NIL 4001418133
+   (""
+    (THEN (SKOSIMP*) (LABEL "PRE" -2) (EXPAND "admissible" "PRE")
+     (EXPAND "admissible" 1) (SKOSIMP*) (INST "PRE" "v!2") (EXPAND "update")
+     (GRIND :DEFS ("remove" "member") :IF-MATCH NIL :EXCLUDE
+      ("is_finite" "card")))
+    NIL NIL)
+   ((|admissible| CONST-DECL "bool" |ppg_supported_finite_assignments| NIL)
+    (|update| CONST-DECL "Assignment" |ppg_supported_finite_assignments| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_finite_assignments| NIL))
+   SHOSTAK))
+ (|admissible_step| 0
+  (|admissible_step-1| NIL 4001418133
+   ("" (SKOSIMP*)
+    (("" (SPLIT)
+      (("1" (SKOSIMP*)
+        (("1"
+          (LEMMA "admissible_clear"
+           ("S" "Q!1" "v" "choose(Q!1)" "domains" "domains!1" "s" "s!1"))
+          (("1"
+            (LEMMA "admissible_value"
+             ("S" "Q!1" "v" "choose(Q!1)" "domains" "domains!1" "s" "s!1"))
+            (("1" (LEMMA "update_restore" ("s" "s!1" "v" "choose(Q!1)"))
+              (("1"
+                (INST + "s!1(choose(Q!1))" "update(s!1,choose(Q!1),default)")
+                (("1" (EXPAND "rest")
+                  (("1" (GRIND :DEFS NIL :IF-MATCH ALL) NIL NIL)) NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (SKOSIMP*)
+        (("2"
+          (LEMMA "admissible_update"
+           ("S" "Q!1" "v" "choose(Q!1)" "domains" "domains!1" "t" "t!1" "a"
+            "a!1"))
+          (("2" (EXPAND "rest") (("2" (GRIND :DEFS NIL :IF-MATCH ALL) NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|choose| CONST-DECL "(p)" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|admissible_clear| FORMULA-DECL NIL |ppg_supported_finite_assignments|
+     NIL)
+    (|update_restore| FORMULA-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|update| CONST-DECL "Assignment" |ppg_supported_finite_assignments| NIL)
+    (|default| FORMAL-CONST-DECL "A" |ppg_supported_finite_assignments| NIL)
+    (|admissible_value| FORMULA-DECL NIL |ppg_supported_finite_assignments|
+     NIL)
+    (|admissible_update| FORMULA-DECL NIL |ppg_supported_finite_assignments|
+     NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL))
+   SHOSTAK))
+ (|universe_member| 0
+  (|universe_member-1| NIL 4001418133
+   ("" (INDUCT "S" :NAME "ppg_finite_induction[V].finite_set_induction_rest")
+    (("1" (SKOSIMP*)
+      (("1" (EXPAND "universe")
+        (("1" (REWRITE "admissible_empty")
+          (("1"
+            (GRIND :DEFS ("singleton" "member") :EXCLUDE
+             ("is_finite" "card" "universe" "admissible"))
+            NIL NIL))
+          NIL))
+        NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (REWRITE "admissible_step" +)
+        (("2" (EXPAND "universe" + :OCCURRENCE 1)
+          (("2" (REWRITE "rows.biUnion_member" +)
+            (("2"
+              (GRIND :IF-MATCH ALL :DEFS ("image") :EXCLUDE
+               ("admissible" "universe" "update" "rows.biUnion" "rest"
+                "is_finite" "card"))
+              NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|finite_rest| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|biUnion_member| FORMULA-DECL NIL |ppg_finite_bind| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|update| CONST-DECL "Assignment" |ppg_supported_finite_assignments| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|choose| CONST-DECL "(p)" |sets| NIL) (|rest| CONST-DECL "set" |sets| NIL)
+    (|admissible_step| FORMULA-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|admissible_empty| FORMULA-DECL NIL |ppg_supported_finite_assignments|
+     NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_set_induction_rest| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|admissible| CONST-DECL "bool" |ppg_supported_finite_assignments| NIL)
+    (|universe| DEF-DECL "finite_set[Assignment]"
+     |ppg_supported_finite_assignments| NIL)
+    (IFF CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (A FORMAL-TYPE-DECL NIL |ppg_supported_finite_assignments| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK)))
+

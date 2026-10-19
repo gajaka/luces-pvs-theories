@@ -1,0 +1,26 @@
+% Finite products preserve the order on extended nonnegative factors.
+% The empty product and the convention zero times infinity are retained.
+%
+% Nicolas Bourbaki, Algebra I, Chapters 1--3, Springer, 1989.
+ppg_enn_product_comparison[T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_enn_products[T]
+
+  x,y,z,w: VAR ENN
+  S: VAR finite_set[T]
+  f,g: VAR [T->ENN]
+
+  nonnegative_product_mono: LEMMA FORALL(a,b,c,d:nonneg_real):
+    a<=b AND c<=d IMPLIES a*c<=b*d
+
+  emul_monotone: LEMMA ele(x,y) AND ele(z,w) IMPLIES
+    ele(emul(x,z),emul(y,w))
+
+  factor_rest_bound: LEMMA FORALL(Q:non_empty_finite_set[T]):
+    (FORALL(t:T):Q(t) IMPLIES ele(f(t),g(t))) IMPLIES
+      (FORALL(t:T):rest(Q)(t) IMPLIES ele(f(t),g(t)))
+
+  eprod_monotone: THEOREM (FORALL(t:T):S(t) IMPLIES ele(f(t),g(t))) IMPLIES
+    ele(eprod(S,f),eprod(S,g))
+
+END ppg_enn_product_comparison

@@ -1,0 +1,24 @@
+% Matching-arc endpoints receive the prime factor. Every other node
+% keeps its original factor; no validity premise is part of this weight.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Theorem 3.13. https://arxiv.org/abs/2111.06527
+% Lean counterpart: refinedWeight and prime_eq_unmatched in
+% PPGraphHLSRefinedBudget.lean.
+ppg_hls_refined_weight[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},p:[C->real]]: THEORY
+BEGIN
+  IMPORTING ppg_hls_choice_weights[C,G],ppg_hls_matching[C,G,p] AS overlap
+
+  O: VAR overlap.OverlapBounds
+  D: VAR WitnessDAG
+  i: VAR C
+
+  refinedFactor(O,D)(u:WNode): ENN = IF arcNodes(matchingArcs(O`mate,D))(u)
+    THEN ofReal(overlap.prime(O)(u`1)) ELSE ofReal(p(u`1)) ENDIF
+
+  refinedWeight(O)(D): ENN = wnProducts.eprod(D`nodes,refinedFactor(O,D))
+
+  prime_eq_unmatched: THEOREM O`mate(i)=i IMPLIES overlap.prime(O)(i)=p(i)
+
+END ppg_hls_refined_weight

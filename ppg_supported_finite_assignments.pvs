@@ -1,0 +1,53 @@
+% A finite support and finite coordinate domains determine finitely many
+% total assignments with a fixed value outside that support. Recursive
+% updates construct the universe and retain the empty-support case.
+%
+% Paul R. Halmos, Naive Set Theory, Van Nostrand, 1960.
+ppg_supported_finite_assignments[V,A:TYPE,default:A]: THEORY
+BEGIN
+  Assignment: TYPE = [V->A]
+
+  IMPORTING ppg_finite_bind[A,Assignment] AS rows,ppg_finite_induction[V]
+
+  S: VAR finite_set[V]
+  Q: VAR non_empty_finite_set[V]
+  domains: VAR [V->finite_set[A]]
+  s,t: VAR Assignment
+  v,u: VAR V
+  a: VAR A
+
+  defaultState: Assignment = LAMBDA(v:V):default
+
+  update(s,v,a): Assignment = LAMBDA(u:V):IF u=v THEN a ELSE s(u) ENDIF
+
+  admissible(S,domains,s): bool = FORALL(v:V):
+    (S(v) IMPLIES domains(v)(s(v))) AND (NOT S(v) IMPLIES s(v)=default)
+
+  universe(S,domains): RECURSIVE finite_set[Assignment] = IF empty?(S)
+    THEN singleton[Assignment](defaultState) ELSE rows.biUnion(domains(choose(S)),
+      LAMBDA(a:A):image[Assignment,Assignment](LAMBDA(t:Assignment):update(t,choose(S),a),
+        universe(rest(S),domains))) ENDIF MEASURE card(S)
+
+  update_at: LEMMA update(s,v,a)(v)=a
+
+  update_outside: LEMMA u/=v IMPLIES update(s,v,a)(u)=s(u)
+
+  update_restore: LEMMA update(update(s,v,default),v,s(v))=s
+
+  admissible_empty: LEMMA admissible(emptyset[V],domains,s) IFF s=defaultState
+
+  admissible_value: LEMMA admissible(S,domains,s) AND S(v) IMPLIES domains(v)(s(v))
+
+  admissible_update: LEMMA S(v) AND domains(v)(a) AND
+    admissible(remove(v,S),domains,t) IMPLIES admissible(S,domains,update(t,v,a))
+
+  admissible_clear: LEMMA S(v) AND admissible(S,domains,s) IMPLIES
+    admissible(remove(v,S),domains,update(s,v,default))
+
+  admissible_step: LEMMA admissible(Q,domains,s) IFF
+    EXISTS(a:A,t:Assignment):domains(choose(Q))(a) AND
+      admissible(rest(Q),domains,t) AND update(t,choose(Q),a)=s
+
+  universe_member: THEOREM universe(S,domains)(s) IFF admissible(S,domains,s)
+
+END ppg_supported_finite_assignments

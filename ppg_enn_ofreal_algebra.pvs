@@ -1,0 +1,16 @@
+% Clipping preserves sums of nonnegative terms. This identity uses
+% real nonnegativity only; no probability or upper bound is required.
+ppg_enn_ofreal_algebra: THEORY
+BEGIN
+  IMPORTING ppg_enn_products[bool]
+
+  a,b,c,d: VAR real
+
+  ofReal_add_nonnegative: LEMMA 0<=a AND 0<=b IMPLIES
+    eadd(ofReal(a),ofReal(b))=ofReal(a+b)
+
+  four_ofReal_choices: LEMMA 0<=a AND 0<=b AND 0<=c AND 0<=d IMPLIES
+    eadd(eadd(eadd(ofReal(a),ofReal(b)),emul(ofReal(b),ofReal(c))),
+      emul(ofReal(b),ofReal(d)))=ofReal(a+b+b*c+b*d)
+
+END ppg_enn_ofreal_algebra

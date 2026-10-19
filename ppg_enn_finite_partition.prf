@@ -1,0 +1,361 @@
+(|ppg_enn_finite_partition|
+ (|partition_TCC1| 0
+  (|partition_TCC1-1| NIL 4001417622
+   ("" (THEN (LEMMA "flatFolds.addition_monoid") (ASSERT)) NIL NIL)
+   ((R FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|addition_monoid| FORMULA-DECL NIL |ppg_enn_finite| NIL))
+   NIL
+   (|partition| SUBTYPE "eadd"
+    "{f: [ENN, ENN -> ENN] | booleans.AND(operator_defs[ENN].identity?(f)(ppg_ennreal_adt.ennFinite(0)), booleans.AND(operator_defs[ENN].associative?(f), operator_defs[ENN].commutative?(f)))}"
+    (15 47 15 51))))
+ (|partialFiber_subset| 0
+  (|partialFiber_subset-1| NIL 4001417622
+   (""
+    (THEN
+     (GRIND :DEFS
+      ("exactFibers" "partition.fiber" "subset?" "member" "intersection")
+      :IF-MATCH ALL :EXCLUDE
+      ("esum" "sum" "eTsum" "ele" "eadd" "is_finite" "card")))
+    NIL NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|fiber| CONST-DECL "finite_set[A]" |ppg_finite_fiber_fold| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|exactFibers| CONST-DECL "bool" |ppg_enn_finite_partition| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL))
+   SHOSTAK))
+ (|partialFiber_bound| 0
+  (|partialFiber_bound-1| NIL 4001417622
+   ("" (LEMMA "flatFolds.addition_monoid")
+    (("" (SKOSIMP*)
+      (("" (LEMMA "partialFiber_subset" ("H" "H!1" "i" "i!1"))
+        ((""
+          (LEMMA "flatOrder.esum_subset"
+           ("F" "partition.fiber(H!1,first,i!1)" "H" "fullFiber(i!1)" "f"
+            "f!1"))
+          (("1" (EXPAND "fiberWeight") (("1" (ASSERT) NIL NIL)) NIL)
+           ("2" (EXPAND "fiberWeight") (("2" (ASSERT) NIL NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|esum_subset| FORMULA-DECL NIL |ppg_enn_finite_order| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|fiber| CONST-DECL "finite_set[A]" |ppg_finite_fiber_fold| NIL)
+    (|first| FORMAL-CONST-DECL "[R -> I]" |ppg_enn_finite_partition| NIL)
+    (|fullFiber| FORMAL-CONST-DECL "[I -> finite_set[R]]"
+     |ppg_enn_finite_partition| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[R]])"
+     |ppg_enn_finite_partition| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|fiberWeight| CONST-DECL "ENN" |ppg_enn_finite_partition| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|partialFiber_subset| FORMULA-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|addition_monoid| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL))
+   SHOSTAK))
+ (|partial_sum_partition| 0
+  (|partial_sum_partition-1| NIL 4001417622
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "partition.fold_fiberwise"
+      ("S" "H!1" "I" "image(first,H!1)" "key" "first" "h" "f!1"))
+     (AUTO-REWRITE "flatFolds.esum_as_fold" "outerFolds.esum_as_fold")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("esum" "sum" "eTsum" "ele" "eadd" "is_finite" "card")))
+    NIL NIL)
+   ((|fiber| CONST-DECL "finite_set[A]" |ppg_finite_fiber_fold| NIL)
+    (|esum_as_fold| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[R]"
+     |ppg_enn_finite_partition| NIL)
+    (|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|first| FORMAL-CONST-DECL "[R -> I]" |ppg_enn_finite_partition| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|fold_fiberwise| FORMULA-DECL NIL |ppg_finite_fiber_fold| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL))
+   SHOSTAK))
+ (|partial_sum_bound| 0
+  (|partial_sum_bound-1| NIL 4001417622
+   ("" (LEMMA "flatFolds.addition_monoid")
+    (("" (SKOSIMP*)
+      (("" (LEMMA "partial_sum_partition" ("H" "H!1" "f" "f!1"))
+        ((""
+          (LEMMA "outerOrder.esum_monotone"
+           ("F" "image(first,H!1)" "f"
+            "LAMBDA(i:I):flatFinite.esum(partition.fiber(H!1,first,i),f!1)" "g"
+            "fiberWeight(f!1)"))
+          (("1" (LEMMA "partialFiber_bound" ("H" "H!1" "f" "f!1"))
+            (("1"
+              (LEMMA "outerSums.eTsum_partial"
+               ("F" "image(first,H!1)" "f" "fiberWeight(f!1)"))
+              (("1"
+                (LEMMA "ele_transitive"
+                 ("x" "flatFinite.esum(H!1,f!1)" "y"
+                  "outerFinite.esum(image(first,H!1),fiberWeight(f!1))" "z"
+                  "outerSums.eTsum(fiberWeight(f!1))"))
+                (("1" (GRIND :DEFS NIL :IF-MATCH ALL) NIL NIL)) NIL))
+              NIL))
+            NIL)
+           ("2" (LEMMA "partialFiber_bound" ("H" "H!1" "f" "f!1"))
+            (("2"
+              (LEMMA "outerSums.eTsum_partial"
+               ("F" "image(first,H!1)" "f" "fiberWeight(f!1)"))
+              (("2"
+                (LEMMA "ele_transitive"
+                 ("x" "flatFinite.esum(H!1,f!1)" "y"
+                  "outerFinite.esum(image(first,H!1),fiberWeight(f!1))" "z"
+                  "outerSums.eTsum(fiberWeight(f!1))"))
+                (("2" (GRIND :DEFS NIL :IF-MATCH ALL) NIL NIL)) NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|esum_monotone| FORMULA-DECL NIL |ppg_enn_finite_order| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|first| FORMAL-CONST-DECL "[R -> I]" |ppg_enn_finite_partition| NIL)
+    (|esum| DEF-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|fiber| CONST-DECL "finite_set[A]" |ppg_finite_fiber_fold| NIL)
+    (|fiberWeight| CONST-DECL "ENN" |ppg_enn_finite_partition| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|eTsum_partial| FORMULA-DECL NIL |ppg_enn_unrestricted_sum| NIL)
+    (|ele_transitive| FORMULA-DECL NIL |ppg_enn_add| NIL)
+    (|eTsum| CONST-DECL "ENN" |ppg_enn_unrestricted_sum| NIL)
+    (|partialFiber_bound| FORMULA-DECL NIL |ppg_enn_finite_partition| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|partial_sum_partition| FORMULA-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|addition_monoid| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL))
+   SHOSTAK))
+ (|fullFiber_disjoint| 0
+  (|fullFiber_disjoint-1| NIL 4001417622
+   (""
+    (THEN
+     (GRIND :DEFS ("exactFibers") :IF-MATCH ALL :EXCLUDE
+      ("esum" "sum" "eTsum" "ele" "eadd" "is_finite" "card")))
+    NIL NIL)
+   ((|finite_intersection2| APPLICATION-JUDGEMENT "finite_set[R]"
+     |ppg_enn_finite_partition| NIL)
+    (|exactFibers| CONST-DECL "bool" |ppg_enn_finite_partition| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|disjointFamily| CONST-DECL "bool" |ppg_finite_bind| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|finite_family_sum| 0
+  (|finite_family_sum-1| NIL 4001417622
+   (""
+    (THEN (LEMMA "flatFolds.addition_monoid") (SKOSIMP*)
+     (LEMMA "fiberBind.sum_bind" ("S" "K!1" "F" "fullFiber" "f" "f!1"))
+     (LEMMA "fullFiber_disjoint" ("K" "K!1"))
+     (AUTO-REWRITE "flatFolds.esum_as_fold" "outerFolds.esum_as_fold")
+     (EXPAND "fiberWeight") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   ((R FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|addition_monoid| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|sum_bind| FORMULA-DECL NIL |ppg_bind_sum| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|fullFiber| FORMAL-CONST-DECL "[I -> finite_set[R]]"
+     |ppg_enn_finite_partition| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|esum_as_fold| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|fiberWeight| CONST-DECL "ENN" |ppg_enn_finite_partition| NIL)
+    (|fullFiber_disjoint| FORMULA-DECL NIL |ppg_enn_finite_partition| NIL))
+   SHOSTAK))
+ (|finite_family_bound| 0
+  (|finite_family_bound-1| NIL 4001417622
+   (""
+    (THEN (SKOSIMP*) (LEMMA "finite_family_sum" ("K" "K!1" "f" "f!1"))
+     (LEMMA "flatSums.eTsum_partial"
+      ("F" "familySets.biUnion(K!1,fullFiber)" "f" "f!1"))
+     (ASSERT))
+    NIL NIL)
+   ((|eTsum_partial| FORMULA-DECL NIL |ppg_enn_unrestricted_sum| NIL)
+    (|biUnion| DEF-DECL "finite_set[B]" |ppg_finite_bind| NIL)
+    (|fullFiber| FORMAL-CONST-DECL "[I -> finite_set[R]]"
+     |ppg_enn_finite_partition| NIL)
+    (|finite_family_sum| FORMULA-DECL NIL |ppg_enn_finite_partition| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL))
+   SHOSTAK))
+ (|flat_sum_upper| 0
+  (|flat_sum_upper-1| NIL 4001417622
+   (""
+    (THEN (LEMMA "flatFolds.addition_monoid") (SKOSIMP*)
+     (LEMMA "flatSums.eTsum_least"
+      ("f" "f!1" "y" "outerSums.eTsum(fiberWeight(f!1))"))
+     (LEMMA "partial_sum_bound" ("f" "f!1")) (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   ((R FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|addition_monoid| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|eTsum_least| FORMULA-DECL NIL |ppg_enn_unrestricted_sum| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|eTsum| CONST-DECL "ENN" |ppg_enn_unrestricted_sum| NIL)
+    (|fiberWeight| CONST-DECL "ENN" |ppg_enn_finite_partition| NIL)
+    (|partial_sum_bound| FORMULA-DECL NIL |ppg_enn_finite_partition| NIL))
+   SHOSTAK))
+ (|outer_sum_upper| 0
+  (|outer_sum_upper-1| NIL 4001417622
+   (""
+    (THEN (LEMMA "flatFolds.addition_monoid") (SKOSIMP*)
+     (LEMMA "outerSums.eTsum_least"
+      ("f" "fiberWeight(f!1)" "y" "flatSums.eTsum(f!1)"))
+     (LEMMA "finite_family_bound" ("f" "f!1")) (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   ((R FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|addition_monoid| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|eTsum_least| FORMULA-DECL NIL |ppg_enn_unrestricted_sum| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|fiberWeight| CONST-DECL "ENN" |ppg_enn_finite_partition| NIL)
+    (|eTsum| CONST-DECL "ENN" |ppg_enn_unrestricted_sum| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|finite_family_bound| FORMULA-DECL NIL |ppg_enn_finite_partition| NIL))
+   SHOSTAK))
+ (|tsum_finite_partition| 0
+  (|tsum_finite_partition-1| NIL 4001417622
+   (""
+    (THEN (SKOSIMP*) (LEMMA "flat_sum_upper" ("f" "f!1"))
+     (LEMMA "outer_sum_upper" ("f" "f!1"))
+     (LEMMA "ele_antisym"
+      ("x" "flatSums.eTsum(f!1)" "y" "outerSums.eTsum(fiberWeight(f!1))"))
+     (ASSERT) (PROP))
+    NIL NIL)
+   ((|outer_sum_upper| FORMULA-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|fiberWeight| CONST-DECL "ENN" |ppg_enn_finite_partition| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|eTsum| CONST-DECL "ENN" |ppg_enn_unrestricted_sum| NIL)
+    (|ele_antisym| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (|flat_sum_upper| FORMULA-DECL NIL |ppg_enn_finite_partition| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_enn_finite_partition| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL))
+   SHOSTAK)))
+

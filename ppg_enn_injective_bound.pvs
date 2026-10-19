@@ -1,0 +1,32 @@
+% An injection sends each finite partial sum to the same weighted
+% finite image. Suprema then give the bound for unrestricted ENN sums,
+% with no countability, summability or finiteness of either carrier.
+ppg_enn_injective_bound[D,R:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_enn_finite_order[D] AS sourceOrder,
+    ppg_enn_finite_order[R] AS targetOrder,
+    ppg_nonneg_tsum[D] AS sourceFinite,
+    ppg_nonneg_tsum[R] AS targetFinite,
+    ppg_enn_unrestricted_sum[D] AS sourceSums,
+    ppg_enn_unrestricted_sum[R] AS targetSums,
+    ppg_enn_finite[D] AS sourceFolds,
+    ppg_enn_finite[R] AS targetFolds,
+    ppg_monoid_image[D,R,ENN,ennFinite(0),eadd] AS images,
+    ppg_monoid_sum[D,ENN,ennFinite(0),eadd] AS domainSums
+
+  i: VAR [D->R]
+  f: VAR [D->ENN]
+  g: VAR [R->ENN]
+  H: VAR finite_set[D]
+
+  weighted_image: LEMMA injective?(i) AND (FORALL(x:D):g(i(x))=f(x)) IMPLIES
+    targetFinite.esum(image(i,H),g)=sourceFinite.esum(H,f)
+
+  finite_image_bound: LEMMA injective?(i) AND (FORALL(x:D):g(i(x))=f(x)) IMPLIES
+    ele(sourceFinite.esum(H,f),targetSums.eTsum(g))
+
+  tsum_comp_le_tsum_of_injective: THEOREM injective?(i) AND
+    (FORALL(x:D):g(i(x))=f(x)) IMPLIES
+      ele(sourceSums.eTsum(f),targetSums.eTsum(g))
+
+END ppg_enn_injective_bound

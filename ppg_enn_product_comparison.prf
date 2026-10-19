@@ -1,0 +1,172 @@
+(|ppg_enn_product_comparison|
+ (|nonnegative_product_mono| 0
+  (|nonnegative_product_mono-1| NIL 4001417330
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "le_times_le_pos" ("nnx" "a!1" "y" "b!1" "nnz" "c!1" "w" "d!1"))
+     (ASSERT))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|le_times_le_pos| FORMULA-DECL NIL |real_props| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL))
+   SHOSTAK))
+ (|emul_monotone| 0
+  (|emul_monotone-1| NIL 4001417330
+   (""
+    (THEN (SKOSIMP*) (LEMMA "finite_eta" ("x" "x!1"))
+     (LEMMA "finite_eta" ("x" "y!1")) (LEMMA "finite_eta" ("x" "z!1"))
+     (LEMMA "finite_eta" ("x" "w!1")) (LEMMA "nonnegative_product_mono")
+     (GRIND :DEFS ("ele" "emul") :IF-MATCH ALL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|times_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|ennInfinity| ADT-CONSTRUCTOR-DECL "(ennInfinity?)" |ppg_ennreal_adt| NIL)
+    (|ennInfinity?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|emul| CONST-DECL "ENN" |ppg_enn_multiply| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|ennValue| ADT-ACCESSOR-DECL "[(ennFinite?) -> nonneg_real]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nonnegative_product_mono| FORMULA-DECL NIL |ppg_enn_product_comparison|
+     NIL)
+    (|finite_eta| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL))
+   SHOSTAK))
+ (|factor_rest_bound| 0
+  (|factor_rest_bound-1| NIL 4001417394
+   (""
+    (THEN
+     (GRIND :DEFS ("rest" "remove" "member") :EXCLUDE
+      ("ele" "is_finite" "card")))
+    NIL NIL)
+   ((|remove| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_product_comparison| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|eprod_monotone| 0
+  (|eprod_monotone-1| NIL 4001417330
+   ("" (INDUCT "S" :NAME "ppg_finite_induction[T].finite_set_induction_rest")
+    (("1" (SKOSIMP*)
+      (("1" (REWRITE "eprod_empty")
+        (("1" (REWRITE "eprod_empty")
+          (("1" (LEMMA "ele_refl" ("x" "ennFinite(1)"))
+            (("1" (PROPAX) NIL NIL)) NIL))
+          NIL))
+        NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (LABEL "ALL" -2)
+        (("2" (INST -1 "f!1" "g!1")
+          (("2" (LEMMA "factor_rest_bound" ("Q" "SS!1" "f" "f!1" "g" "g!1"))
+            (("2" (ASSERT)
+              (("2" (INST "ALL" "choose(SS!1)")
+                (("2" (TYPEPRED "SS!1")
+                  (("2" (LEMMA "eprod_rest" ("F" "SS!1" "f" "f!1"))
+                    (("2" (LEMMA "eprod_rest" ("F" "SS!1" "f" "g!1"))
+                      (("2"
+                        (LEMMA "emul_monotone"
+                         ("x" "f!1(choose(SS!1))" "y" "g!1(choose(SS!1))" "z"
+                          "eprod(rest(SS!1),f!1)" "w" "eprod(rest(SS!1),g!1)"))
+                        (("2"
+                          (GRIND :IF-MATCH NIL :EXCLUDE
+                           ("rest" "eprod" "sum" "emul" "ele" "is_finite"
+                            "card"))
+                          NIL NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[T]"
+     |ppg_enn_product_comparison| NIL)
+    (|emul_monotone| FORMULA-DECL NIL |ppg_enn_product_comparison| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|eprod_rest| FORMULA-DECL NIL |ppg_enn_products| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|choose| CONST-DECL "(p)" |sets| NIL)
+    (|factor_rest_bound| FORMULA-DECL NIL |ppg_enn_product_comparison| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|non_empty_finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|ele_refl| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (|eprod_empty| FORMULA-DECL NIL |ppg_enn_products| NIL)
+    (|finite_set_induction_rest| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_product_comparison| NIL)
+    (|eprod| CONST-DECL "ENN" |ppg_enn_products| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK)))
+

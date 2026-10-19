@@ -1,0 +1,90 @@
+(|ppg_enn_injective_bound|
+ (|images_TCC1| 0
+  (|images_TCC1-1| NIL 4001417459
+   ("" (THEN (LEMMA "sourceFolds.addition_monoid") (ASSERT)) NIL NIL)
+   ((D FORMAL-TYPE-DECL NIL |ppg_enn_injective_bound| NIL)
+    (|addition_monoid| FORMULA-DECL NIL |ppg_enn_finite| NIL))
+   NIL
+   (|images| SUBTYPE "eadd"
+    "{f: [ENN, ENN -> ENN] | booleans.AND(operator_defs[ENN].identity?(f)(ppg_ennreal_adt.ennFinite(0)), booleans.AND(operator_defs[ENN].associative?(f), operator_defs[ENN].commutative?(f)))}"
+    (14 42 14 46))))
+ (|weighted_image| 0
+  (|weighted_image-1| NIL 4001417459
+   (""
+    (THEN (AUTO-REWRITE "sourceFolds.esum_as_fold" "targetFolds.esum_as_fold")
+     (SKOSIMP*) (LEMMA "images.sum_image" ("h" "i!1" "S" "H!1" "f" "g!1"))
+     (LEMMA "domainSums.sum_f_g"
+      ("S" "H!1" "f" "LAMBDA(x:D):g!1(i!1(x))" "g" "f!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE ("esum" "sum" "eadd" "is_finite" "card")))
+    NIL NIL)
+   ((|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_enn_injective_bound| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_enn_injective_bound| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sum_image| FORMULA-DECL NIL |ppg_monoid_image| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|esum_as_fold| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL)
+    (|sum_f_g| FORMULA-DECL NIL |ppg_monoid_sum| NIL))
+   SHOSTAK))
+ (|finite_image_bound| 0
+  (|finite_image_bound-1| NIL 4001417459
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "weighted_image" ("i" "i!1" "H" "H!1" "f" "f!1" "g" "g!1"))
+     (LEMMA "targetSums.eTsum_partial" ("F" "image(i!1,H!1)" "f" "g!1"))
+     (ASSERT))
+    NIL NIL)
+   ((|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|eTsum_partial| FORMULA-DECL NIL |ppg_enn_unrestricted_sum| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|weighted_image| FORMULA-DECL NIL |ppg_enn_injective_bound| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_enn_injective_bound| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_enn_injective_bound| NIL))
+   SHOSTAK))
+ (|tsum_comp_le_tsum_of_injective| 0
+  (|tsum_comp_le_tsum_of_injective-1| NIL 4001417459
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "sourceSums.eTsum_least" ("f" "f!1" "y" "targetSums.eTsum(g!1)"))
+     (LEMMA "finite_image_bound" ("i" "i!1" "f" "f!1" "g" "g!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("esum" "sum" "eadd" "eTsum" "eSup" "ele" "is_finite" "card")))
+    NIL NIL)
+   ((|finite_image_bound| FORMULA-DECL NIL |ppg_enn_injective_bound| NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL)
+    (|eTsum_least| FORMULA-DECL NIL |ppg_enn_unrestricted_sum| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_enn_injective_bound| NIL)
+    (|eTsum| CONST-DECL "ENN" |ppg_enn_unrestricted_sum| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_enn_injective_bound| NIL))
+   SHOSTAK)))
+
