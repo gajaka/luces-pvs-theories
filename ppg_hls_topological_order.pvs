@@ -1,0 +1,40 @@
+% Order finite witness DAGs by decreasing longest-path height, breaking
+% ties with a fixed numbering of the finite label set. Equal-height nodes
+% have distinct labels, so this order is total on the node support.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 2.1 (witness DAGs).
+% https://arxiv.org/abs/2111.06527
+% The finite-set bijection is the counterpart of Fintype.equivFin in
+% PPGraphHLSTopologicalOrder.lean; the empty label carrier is allowed.
+ppg_hls_topological_order[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},
+  universe:{S:finite_set[C]|FORALL(i:C):S(i)}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_witness_layers[C,G]
+  Q: VAR (Valid)
+  u,v,w: VAR WNode
+  i,j: VAR C
+
+  labelNumber(i): nat = bij[C](universe)(i)
+
+  labelNumber_injective: THEOREM injective?(labelNumber)
+
+  topoBefore(Q)(u,v): bool = height(Q,v)<height(Q,u) OR
+    (height(Q,v)=height(Q,u) AND labelNumber(u`1)<labelNumber(v`1))
+
+  topoBefore_irrefl: THEOREM NOT topoBefore(Q)(u,u)
+
+  topoBefore_trans: THEOREM topoBefore(Q)(u,v) AND topoBefore(Q)(v,w) IMPLIES
+    topoBefore(Q)(u,w)
+
+  topoBefore_asymm: THEOREM topoBefore(Q)(u,v) IMPLIES NOT topoBefore(Q)(v,u)
+
+  topoBefore_total: THEOREM Q`nodes(u) AND Q`nodes(v) AND u/=v IMPLIES
+    topoBefore(Q)(u,v) OR topoBefore(Q)(v,u)
+
+  topoBefore_of_edge: THEOREM Edge(Q)(u,v) IMPLIES topoBefore(Q)(u,v)
+
+  edge_of_topoBefore_dependent: THEOREM Q`nodes(u) AND Q`nodes(v) AND
+    topoBefore(Q)(u,v) AND (u`1=v`1 OR G(u`1,v`1)) IMPLIES Edge(Q)(u,v)
+END ppg_hls_topological_order
