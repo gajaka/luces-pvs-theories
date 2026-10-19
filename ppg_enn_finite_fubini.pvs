@@ -1,0 +1,19 @@
+% Two finite ENN sums may be interchanged without restricting their
+% summands to finite real values or requiring either index type nonempty.
+%
+% Nicolas Bourbaki, Algebra I, Chapters 1-3, Springer, 1989.
+% https://link.springer.com/book/9783540642435
+ppg_enn_finite_fubini[C,V:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_nonneg_tsum[C] AS rows,ppg_nonneg_tsum[V] AS cols,
+    ppg_enn_finite_algebra[C] AS rowAlgebra,ppg_enn_finite_algebra[V] AS colAlgebra
+
+  B: VAR finite_set[C]
+  U: VAR finite_set[V]
+  f: VAR [C,V->ENN]
+
+  esum_comm: LEMMA
+    rows.esum(B,LAMBDA(c:C):cols.esum(U,LAMBDA(v:V):f(c,v)))=
+      cols.esum(U,LAMBDA(v:V):rows.esum(B,LAMBDA(c:C):f(c,v)))
+
+END ppg_enn_finite_fubini

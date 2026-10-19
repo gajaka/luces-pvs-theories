@@ -1,0 +1,22 @@
+% On a finite carrier the unrestricted ENN sum equals the finite sum.
+% The supplied universe is a proved complete finite set, including when
+% the carrier is empty. No positivity or finite-valuedness is required.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% The order construction of a nonnegative sum uses finite partial sums.
+ppg_enn_finite_total[T:TYPE,universe:{U:finite_set[T]|FORALL(t:T):U(t)}]: THEORY
+BEGIN
+  IMPORTING ppg_enn_finite_order[T]
+
+  f: VAR [T->ENN]
+  F: VAR finite_set[T]
+
+  finite_subset_total: LEMMA subset?(F,universe)
+
+  finite_total_upper: LEMMA ele(eTsum(f),esum(universe,f))
+
+  finite_total_lower: LEMMA ele(esum(universe,f),eTsum(f))
+
+  tsum_finite_total: THEOREM eTsum(f)=esum(universe,f)
+
+END ppg_enn_finite_total

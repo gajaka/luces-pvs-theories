@@ -1,0 +1,26 @@
+% Finite ENN sums obey the additive monoid identities even when terms
+% are infinite. A point sum keeps exactly one supported summand.
+%
+% Nicolas Bourbaki, Algebra I, Chapters 1-3, Springer, 1989.
+% https://link.springer.com/book/9783540642435
+ppg_enn_finite_algebra[T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_enn_finite[T]
+
+  S: VAR finite_set[T]
+  f,g: VAR [T->ENN]
+  x: VAR T
+
+  esum_step: LEMMA NOT empty?(S) IMPLIES
+    esum(S,f)=eadd(f(choose(S)),esum(rest(S),f))
+
+  esum_zero: LEMMA esum(S,LAMBDA(x:T):ennFinite(0))=ennFinite(0)
+
+  esum_add_functions: LEMMA
+    esum(S,LAMBDA(x:T):eadd(f(x),g(x)))=eadd(esum(S,f),esum(S,g))
+
+  pointSum(S,f,x): ENN = esum(S,LAMBDA(t:T):IF t=x THEN f(t) ELSE ennFinite(0) ENDIF)
+
+  point_sum_value: LEMMA pointSum(S,f,x)=IF S(x) THEN f(x) ELSE ennFinite(0) ENDIF
+
+END ppg_enn_finite_algebra

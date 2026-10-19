@@ -1,0 +1,101 @@
+(|ppg_enn_finite_total|
+ (|finite_subset_total| 0
+  (|finite_subset_total-1| NIL 4001415645
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "universe")
+     (GRIND :DEFS ("subset?") :EXCLUDE ("is_finite" "esum" "sum" "eTsum")))
+    NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |ppg_enn_finite_total| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_finite_total| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[T] | FORALL (t: T): U(t)}"
+     |ppg_enn_finite_total| NIL))
+   SHOSTAK))
+ (|finite_total_upper| 0
+  (|finite_total_upper-1| NIL 4001415645
+   ("" (SKOSIMP*)
+    (("" (LEMMA "eTsum_least" ("f" "f!1" "y" "esum(universe,f!1)"))
+      (("" (CASE "FORALL(F:finite_set[T]):ele(esum(F,f!1),esum(universe,f!1))")
+        (("1" (ASSERT) NIL NIL)
+         ("2" (SKOSIMP*)
+          (("2" (LEMMA "esum_subset" ("F" "F!1" "H" "universe" "f" "f!1"))
+            (("2" (LEMMA "finite_subset_total" ("F" "F!1"))
+              (("2" (ASSERT) NIL NIL)) NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((T FORMAL-TYPE-DECL NIL |ppg_enn_finite_total| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[T] | FORALL (t: T): U(t)}"
+     |ppg_enn_finite_total| NIL)
+    (|esum| DEF-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|eTsum_least| FORMULA-DECL NIL |ppg_enn_unrestricted_sum| NIL)
+    (|finite_subset_total| FORMULA-DECL NIL |ppg_enn_finite_total| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |ppg_enn_finite_total| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|esum_subset| FORMULA-DECL NIL |ppg_enn_finite_order| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL))
+   SHOSTAK))
+ (|finite_total_lower| 0
+  (|finite_total_lower-1| NIL 4001415645
+   (""
+    (THEN (SKOSIMP*) (LEMMA "eTsum_partial" ("F" "universe" "f" "f!1"))
+     (ASSERT))
+    NIL)
+   ((|eTsum_partial| FORMULA-DECL NIL |ppg_enn_unrestricted_sum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[T] | FORALL (t: T): U(t)}"
+     |ppg_enn_finite_total| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_finite_total| NIL))
+   SHOSTAK))
+ (|tsum_finite_total| 0
+  (|tsum_finite_total-1| NIL 4001415645
+   (""
+    (THEN (SKOSIMP*) (LEMMA "finite_total_upper" ("f" "f!1"))
+     (LEMMA "finite_total_lower" ("f" "f!1"))
+     (LEMMA "ele_antisym" ("x" "eTsum(f!1)" "y" "esum(universe,f!1)"))
+     (ASSERT))
+    NIL)
+   ((|finite_total_lower| FORMULA-DECL NIL |ppg_enn_finite_total| NIL)
+    (|universe| FORMAL-CONST-DECL "{U: finite_set[T] | FORALL (t: T): U(t)}"
+     |ppg_enn_finite_total| NIL)
+    (|esum| DEF-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|eTsum| CONST-DECL "ENN" |ppg_enn_unrestricted_sum| NIL)
+    (|ele_antisym| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (|finite_total_upper| FORMULA-DECL NIL |ppg_enn_finite_total| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_finite_total| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL))
+   SHOSTAK)))
+
