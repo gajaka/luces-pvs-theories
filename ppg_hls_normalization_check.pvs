@@ -1,0 +1,28 @@
+% Renaming a valid witness DAG preserves the table entries read at every
+% occurrence. Consequently it preserves each original bad-event test and
+% the full table-check event. No measurability premise is needed for these
+% identities: the imported table events and original log space are unchanged.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 3.1. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSNormalizationCheck.lean.
+ppg_hls_normalization_check[C,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_mt_native_process[C,V,Value,domain,spaces,laws])
+  process:MTProcess]: THEORY
+BEGIN
+  IMPORTING ppg_hls_table_events[C,V,Value,domain,spaces,laws,process],
+    ppg_hls_normalization_coordinates[C,V,process`footprint]
+  Q: VAR (Valid)
+  u,x: VAR WNode
+
+  tableState_normalize: THEOREM Q`nodes(u) IMPLIES
+    tableState(normalize(Q),canonicalName(Q,u))=tableState(Q,u)
+
+  tableEvent_normalize: THEOREM Q`nodes(u) IMPLIES
+    tableEvent(normalize(Q),canonicalName(Q,u))=tableEvent(Q,u)
+
+  tableCheck_normalize: THEOREM tableCheck(normalize(Q))=tableCheck(Q)
+
+END ppg_hls_normalization_check
