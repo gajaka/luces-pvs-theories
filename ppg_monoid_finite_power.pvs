@@ -1,0 +1,23 @@
+% A constant finite fold is a natural power in the same monoid.
+% This keeps the product argument independent of the real numbers.
+% Nicolas Bourbaki, Algebra I, Chapters 1--3, Springer, 1989.
+ppg_monoid_finite_power[T,R:TYPE,unit:R,
+  op:{f:[R,R->R]|identity?(f)(unit) AND associative?(f) AND commutative?(f)}]: THEORY
+BEGIN
+  IMPORTING ppg_monoid_sum[T,R,unit,op] AS folds,
+    ppg_finite_induction[T]
+
+  S: VAR finite_set[T]
+  a: VAR R
+  n: VAR nat
+
+  power(a,n): RECURSIVE R = IF n=0 THEN unit ELSE op(a,power(a,n-1)) ENDIF
+    MEASURE n
+
+  power_zero: LEMMA power(a,0)=unit
+
+  power_succ: LEMMA power(a,n+1)=op(a,power(a,n))
+
+  constant_fold: THEOREM folds.sum(S,LAMBDA(t:T):a)=power(a,card(S))
+
+END ppg_monoid_finite_power

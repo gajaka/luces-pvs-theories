@@ -1,0 +1,30 @@
+% Finite real products inherit the same monoid fold identities. Order
+% comparisons clip only outside the stated nonnegative support.
+% Nicolas Bourbaki, Algebra I, Chapters 1--3, Springer, 1989.
+ppg_real_product_identities[T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_real_product_order[T],ppg_nonneg_order[T],
+    ppg_monoid_finite_power[T,real,1,LAMBDA(a,b:real):a*b] AS powers
+
+  S: VAR finite_set[T]
+  f,g: VAR [T->real]
+  a: VAR real
+  n: VAR nat
+  t: VAR T
+
+  clip(f)(t): nonneg_real = max(0,f(t))
+
+  product_pointwise_mul: LEMMA product(S,LAMBDA(t:T):f(t)*g(t))=
+    product(S,f)*product(S,g)
+
+  power_eq_expt: LEMMA powers.power(a,n)=expt(a,n)
+
+  product_constant: LEMMA product(S,LAMBDA(t:T):a)=expt(a,card(S))
+
+  clipped_product: LEMMA NonnegativeFactors(f,S) IMPLIES
+    product(S,f)=products.sum(S,clip(f))
+
+  product_mono: LEMMA (FORALL(t:T):S(t) IMPLIES 0<=f(t) AND f(t)<=g(t)) IMPLIES
+    product(S,f)<=product(S,g)
+
+END ppg_real_product_identities

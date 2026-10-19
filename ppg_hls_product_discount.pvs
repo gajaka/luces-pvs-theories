@@ -1,0 +1,79 @@
+% The half-cover estimate compares label fibers of the selected endpoints.
+% The final product identity splits off those endpoints before applying it.
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Proposition 3.2. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSProductDiscount.lean.
+ppg_hls_product_discount[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},p:[C->real],
+  universe:{U:finite_set[C]|FORALL(i:C):U(i)}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_refined_weight[C,G,p],ppg_hls_product_support[C,G],
+    ppg_hls_matching[C,G,p] AS overlap,
+    ppg_hls_selected_monoid[C,real,G,1,LAMBDA(a,b:real):a*b] AS selectedReal,
+    ppg_finite_fiber_fold[[C,nat],C,real,1,LAMBDA(a,b:real):a*b] AS realFibers,
+    ppg_real_product_identities[[C,nat]] AS nodeReal,
+    ppg_real_product_identities[C] AS labelReal,
+    ppg_real_product[[[C,nat],[C,nat]]] AS pairReal
+
+  O: VAR overlap.OverlapBounds
+  D: VAR WitnessDAG
+  N: VAR finite_set[WNode]
+  f: VAR [C->real]
+  i: VAR C
+  u: VAR WNode
+
+  realRefinedFactor(O,D)(u): real = IF arcNodes(matchingArcs(O`mate,D))(u)
+    THEN overlap.prime(O)(u`1) ELSE p(u`1) ENDIF
+
+  node_product_fold: LEMMA ppg_finite_product[[C,nat]].product=
+    ppg_monoid_sum[[C,nat],real,1,LAMBDA(a,b:real):a*b].sum
+
+  label_product_fold: LEMMA ppg_finite_product[C].product=
+    ppg_monoid_sum[C,real,1,LAMBDA(a,b:real):a*b].sum
+
+  arc_product_fold: LEMMA ppg_finite_product[[[C,nat],[C,nat]]].product=
+    ppg_monoid_sum[[[C,nat],[C,nat]],real,1,LAMBDA(a,b:real):a*b].sum
+
+  real_label_fiber: LEMMA product(intersection(N,LAMBDA(u:WNode):u`1=i),LAMBDA(u:WNode):f(u`1))=
+    expt(f(i),card(intersection(N,LAMBDA(u:WNode):u`1=i)))
+
+  real_label_product: LEMMA product(N,LAMBDA(u:WNode):f(u`1))=
+    product(universe,LAMBDA(i:C):expt(f(i),card(intersection(N,LAMBDA(u:WNode):u`1=i))))
+
+  label_discount_compare: LEMMA (FORALL(j:C):0<p(j)) AND Valid(D) IMPLIES
+    0<=expt(1-2*overlap.discount(O)(i),
+      card(intersection(arcNodes(selectedArcs(O`mate,D)),LAMBDA(u:WNode):u`1=i))) AND
+    expt(1-2*overlap.discount(O)(i),
+      card(intersection(arcNodes(selectedArcs(O`mate,D)),LAMBDA(u:WNode):u`1=i)))<=
+    expt(1-overlap.discount(O)(i),
+      card(intersection(arcNodes(matchingArcs(O`mate,D)),LAMBDA(u:WNode):u`1=i)))
+
+  selected_discount_le: THEOREM (FORALL(j:C):0<p(j)) AND Valid(D) IMPLIES
+    product(arcNodes(selectedArcs(O`mate,D)),LAMBDA(u:WNode):1-2*overlap.discount(O)(u`1))<=
+    product(arcNodes(matchingArcs(O`mate,D)),LAMBDA(u:WNode):1-overlap.discount(O)(u`1))
+
+  refined_real_product: LEMMA (FORALL(j:C):0<p(j)) IMPLIES
+    refinedWeight(O)(D)=ofReal(product(D`nodes,realRefinedFactor(O,D)))
+
+  factor_split: LEMMA (FORALL(j:C):0<p(j)) IMPLIES realRefinedFactor(O,D)(u)=
+    p(u`1)*(IF arcNodes(matchingArcs(O`mate,D))(u) THEN 1-overlap.discount(O)(u`1) ELSE 1 ENDIF)
+
+  refinedWeight_eq_prod_discount: THEOREM (FORALL(j:C):0<p(j)) AND Valid(D) IMPLIES
+    refinedWeight(O)(D)=ofReal(product(D`nodes,LAMBDA(u:WNode):p(u`1))*
+      product(arcNodes(matchingArcs(O`mate,D)),LAMBDA(u:WNode):1-overlap.discount(O)(u`1)))
+
+  selected_pair_product: LEMMA Valid(D) IMPLIES
+    product(selectedArcs(O`mate,D),LAMBDA(e:Arc):
+      p(e`1`1)*p(e`2`1)*(1-2*overlap.discount(O)(e`1`1))*(1-2*overlap.discount(O)(e`2`1)))=
+    product(arcNodes(selectedArcs(O`mate,D)),LAMBDA(u:WNode):p(u`1))*
+      product(arcNodes(selectedArcs(O`mate,D)),LAMBDA(u:WNode):1-2*overlap.discount(O)(u`1))
+
+  scalar_left_mono: LEMMA FORALL(a,b,c:real):0<=a AND b<=c IMPLIES a*b<=a*c
+
+  selected_pair_product_le_refined: THEOREM (FORALL(j:C):0<p(j)) AND Valid(D) IMPLIES
+    ele(ofReal(product(difference(D`nodes,arcNodes(selectedArcs(O`mate,D))),LAMBDA(u:WNode):p(u`1))*
+      product(selectedArcs(O`mate,D),LAMBDA(e:Arc):
+        p(e`1`1)*p(e`2`1)*(1-2*overlap.discount(O)(e`1`1))*(1-2*overlap.discount(O)(e`2`1)))),
+      refinedWeight(O)(D))
+
+END ppg_hls_product_discount

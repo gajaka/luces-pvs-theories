@@ -1,0 +1,20 @@
+% These are the support premises used when products are split into
+% selected endpoints and their complement in the witness DAG.
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Proposition 3.2. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSProductDiscount.lean.
+ppg_hls_product_support[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_matching_support[C,G] AS supports
+
+  M: VAR DependencyMatching
+  D: VAR WitnessDAG
+
+  arcNodes_subset: THEOREM Valid(D) IMPLIES
+    subset?(arcNodes(matchingArcs(M,D)),D`nodes)
+
+  selected_arcNodes_subset: THEOREM Valid(D) IMPLIES
+    subset?(arcNodes(selectedArcs(M,D)),D`nodes)
+
+END ppg_hls_product_support
