@@ -1,0 +1,84 @@
+% Equal colored expansions identify the original vertices by their
+% canonical names. The induced map is a genuine label-preserving node
+% isomorphism; canonical originals therefore agree.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Appendix C. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSOriginalIso.lean.
+ppg_hls_original_iso[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},
+  universe:{S:finite_set[C]|FORALL(i:C):S(i)}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_colored_expansion[C,G,universe], ppg_hls_node_iso[C,G]
+
+  M: VAR DependencyMatching
+  Q,R: VAR (Valid)
+  c,d: VAR [WNode->ppg_hls_expansion_vertices[C,G].ExpansionChoice]
+  u,v,w: VAR WNode
+  x: VAR ExpandedVertex
+
+  original_pair_support: LEMMA Q`nodes(u) IMPLIES expandedNodes(Q,c)((u,FALSE))
+
+  original_name_not_extra: LEMMA Q`nodes(u) IMPLIES
+    NOT expansionExtras(M,Q,c)(expansionName(M,Q,c)((u,FALSE)))
+
+  original_name_exists_of_colored_eq: THEOREM LegalExpansion(M,Q,c) AND
+    LegalExpansion(M,R,d) AND coloredExpansion(M,Q,c)=coloredExpansion(M,R,d) AND
+    Q`nodes(u) IMPLIES EXISTS(v:WNode):R`nodes(v) AND
+      expansionName(M,R,d)((v,FALSE))=expansionName(M,Q,c)((u,FALSE))
+
+  originalCandidates(M,Q,R,c,d)(u): finite_set[WNode] =
+    intersection(R`nodes,LAMBDA(v:WNode):
+      expansionName(M,R,d)((v,FALSE))=expansionName(M,Q,c)((u,FALSE)))
+
+  originalIsoMap(M,Q,R,c,d)(u): WNode =
+    IF empty?(originalCandidates(M,Q,R,c,d)(u)) THEN u
+    ELSE choose(originalCandidates(M,Q,R,c,d)(u)) ENDIF
+
+  originalCandidates_member: LEMMA originalCandidates(M,Q,R,c,d)(u)(v) IFF
+    R`nodes(v) AND expansionName(M,R,d)((v,FALSE))=expansionName(M,Q,c)((u,FALSE))
+
+  originalCandidates_nonempty: LEMMA LegalExpansion(M,Q,c) AND LegalExpansion(M,R,d) AND
+    coloredExpansion(M,Q,c)=coloredExpansion(M,R,d) AND Q`nodes(u) IMPLIES
+      NOT empty?(originalCandidates(M,Q,R,c,d)(u))
+
+  originalIsoMap_spec: THEOREM LegalExpansion(M,Q,c) AND LegalExpansion(M,R,d) AND
+    coloredExpansion(M,Q,c)=coloredExpansion(M,R,d) AND Q`nodes(u) IMPLIES
+      R`nodes(originalIsoMap(M,Q,R,c,d)(u)) AND
+      expansionName(M,R,d)((originalIsoMap(M,Q,R,c,d)(u),FALSE))=
+        expansionName(M,Q,c)((u,FALSE))
+
+  originalIsoMap_injective: LEMMA LegalExpansion(M,Q,c) AND LegalExpansion(M,R,d) AND
+    coloredExpansion(M,Q,c)=coloredExpansion(M,R,d) IMPLIES
+      nodeImages.injOn(originalIsoMap(M,Q,R,c,d),Q`nodes)
+
+  originalIsoMap_surjective: LEMMA LegalExpansion(M,Q,c) AND LegalExpansion(M,R,d) AND
+    coloredExpansion(M,Q,c)=coloredExpansion(M,R,d) AND R`nodes(v) IMPLIES
+      EXISTS(u:WNode):Q`nodes(u) AND originalIsoMap(M,Q,R,c,d)(u)=v
+
+  originalIsoMap_image: LEMMA LegalExpansion(M,Q,c) AND LegalExpansion(M,R,d) AND
+    coloredExpansion(M,Q,c)=coloredExpansion(M,R,d) IMPLIES
+      image(originalIsoMap(M,Q,R,c,d),Q`nodes)=R`nodes
+
+  originalIsoMap_label: LEMMA LegalExpansion(M,Q,c) AND LegalExpansion(M,R,d) AND
+    coloredExpansion(M,Q,c)=coloredExpansion(M,R,d) AND Q`nodes(u) IMPLIES
+      originalIsoMap(M,Q,R,c,d)(u)`1=u`1
+
+  originalIsoMap_edge: LEMMA LegalExpansion(M,Q,c) AND LegalExpansion(M,R,d) AND
+    coloredExpansion(M,Q,c)=coloredExpansion(M,R,d) AND Q`nodes(u) AND Q`nodes(v) IMPLIES
+      (Edge(R)(originalIsoMap(M,Q,R,c,d)(u),originalIsoMap(M,Q,R,c,d)(v)) IFF Edge(Q)(u,v))
+
+  originalIsoMap_is_iso: LEMMA LegalExpansion(M,Q,c) AND LegalExpansion(M,R,d) AND
+    coloredExpansion(M,Q,c)=coloredExpansion(M,R,d) IMPLIES
+      EXISTS(f:NodeIso(Q,R)):f=originalIsoMap(M,Q,R,c,d)
+
+  original_eq_of_colored_eq: THEOREM Canonical(Q) AND Canonical(R) AND
+    LegalExpansion(M,Q,c) AND LegalExpansion(M,R,d) AND
+    coloredExpansion(M,Q,c)=coloredExpansion(M,R,d) IMPLIES Q=R
+
+  original_names_eq_of_colored_eq: THEOREM Canonical(Q) AND Canonical(R) AND
+    LegalExpansion(M,Q,c) AND LegalExpansion(M,R,d) AND
+    coloredExpansion(M,Q,c)=coloredExpansion(M,R,d) AND Q`nodes(u) IMPLIES
+      expansionName(M,Q,c)((u,FALSE))=expansionName(M,R,d)((u,FALSE))
+
+END ppg_hls_original_iso
