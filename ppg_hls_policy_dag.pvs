@@ -1,0 +1,118 @@
+% An active selection prefix defines a chronological witness DAG.
+% Its ancestor prefix and canonical renaming preserve the actual tests.
+% The choice sequence may inspect the whole table; no convergence or
+% restriction on how choices depend on the table is used.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 2.1. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSPolicyDAG.lean.
+ppg_hls_policy_dag[C,V,Value:TYPE,domain:[V->set[Value]],
+  footprint:[C->finite_set[V]],
+  (IMPORTING ppg_mt_semantics[C,V,Value,domain])bad:[C,MTState->bool]]: THEORY
+BEGIN
+  IMPORTING ppg_hls_prefix_check[C,V,Value,domain,footprint,bad],
+    ppg_hls_time_coordinates[C,V,footprint],
+    ppg_hls_normalization_coordinates[C,V,footprint],
+    ppg_mt_policy_state[C,V,Value,domain] AS policy,
+    ppg_finite_bijection[nat,WNode] AS occurrenceImages
+  labels: VAR [nat->C]
+  omega: VAR rawSlots.LogSpace
+  t,n,s: VAR nat
+  a: VAR V
+  u,r: VAR WNode
+  i: VAR C
+  x,y: VAR MTState
+  Q: VAR (Valid)
+
+  executionDAG(labels,t): WitnessDAG =
+    ancestorPrefix(timeDAG(labels,t+1),timeNode(labels)(t))
+
+  realDAG(labels,t): WitnessDAG = normalize(executionDAG(labels,t))
+
+  earlierLabelTimes(labels,t): finite_set[nat] =
+    filteredRange(LAMBDA(s:nat):labels(s)=labels(t),t)
+
+  earlierLabelCount(labels,t): nat = card(earlierLabelTimes(labels,t))
+
+  realRoot(labels,t): WNode = (labels(t),earlierLabelCount(labels,t))
+
+  % This is the original MTProcess.dep field, written for its pointwise
+  % state representation. It is used only when transporting bad tests.
+  localBad: bool = FORALL(i:C,x,y:MTState):
+    (FORALL(a:V):footprint(i)(a) IMPLIES x(a)=y(a)) IMPLIES
+      (bad(i,x) IFF bad(i,y))
+
+  properCanonicalFor(D:WitnessDAG,i:C): bool = Valid(D) AND Canonical(D) AND
+    (EXISTS(r:WNode):D`nodes(r) AND r`1=i AND
+      (FORALL(u:WNode):D`nodes(u) IMPLIES Reach(D)(u,r)))
+
+  executionDAG_valid: THEOREM Valid(executionDAG(labels,t))
+
+  executionDAG_proper: THEOREM Proper(executionDAG(labels,t))
+
+  realDAG_valid: THEOREM Valid(realDAG(labels,t))
+
+  realDAG_canonical: THEOREM Canonical(realDAG(labels,t))
+
+  realDAG_proper: THEOREM Proper(realDAG(labels,t))
+
+  timeDAG_tableState_agrees: THEOREM t<n AND footprint(labels(t))(a) IMPLIES
+    tableState(timeDAG(labels,n),timeNode(labels)(t))(omega)(a)=
+      policy.policyState(footprint,labels,omega,t)(a)
+
+  bad_of_agreement: LEMMA localBad AND
+    (FORALL(a:V):footprint(i)(a) IMPLIES x(a)=y(a)) AND bad(i,y) IMPLIES bad(i,x)
+
+  timeDAG_tableCheck_of_running: THEOREM localBad AND
+    policy.Running(footprint,bad,labels,omega,n) IMPLIES tableCheck(timeDAG(labels,n))(omega)
+
+  executionDAG_tableCheck_of_running: THEOREM localBad AND
+    policy.Running(footprint,bad,labels,omega,t+1) IMPLIES tableCheck(executionDAG(labels,t))(omega)
+
+  pointwise_tableState_normalize: LEMMA Q`nodes(u) IMPLIES
+    tableState(normalize(Q),canonicalName(Q,u))(omega)=tableState(Q,u)(omega)
+
+  pointwise_checks_forward: LEMMA tableCheck(Q)(omega) IMPLIES
+    tableCheck(normalize(Q))(omega)
+
+  pointwise_checks_backward: LEMMA tableCheck(normalize(Q))(omega) IMPLIES
+    tableCheck(Q)(omega)
+
+  pointwise_tableCheck_normalize: LEMMA tableCheck(normalize(Q))=tableCheck(Q)
+
+  realDAG_tableCheck_of_running: THEOREM localBad AND
+    policy.Running(footprint,bad,labels,omega,t+1) IMPLIES tableCheck(realDAG(labels,t))(omega)
+
+  execution_root_mem: LEMMA executionDAG(labels,t)`nodes(timeNode(labels)(t))
+
+  execution_reach_root: LEMMA executionDAG(labels,t)`nodes(u) IMPLIES
+    Reach(executionDAG(labels,t))(u,timeNode(labels)(t))
+
+  prior_root_forward: LEMMA labelPrior(executionDAG(labels,t),timeNode(labels)(t))(u) IMPLIES
+    earlierLabelTimes(labels,t)(u`2) AND timeNode(labels)(u`2)=u
+
+  prior_root_backward: LEMMA earlierLabelTimes(labels,t)(s) IMPLIES
+    labelPrior(executionDAG(labels,t),timeNode(labels)(t))(timeNode(labels)(s))
+
+  labelPrior_execution_root: THEOREM
+    labelPrior(executionDAG(labels,t),timeNode(labels)(t))=
+      image[nat,WNode](timeNode(labels),earlierLabelTimes(labels,t))
+
+  occurrence_injective: LEMMA occurrenceImages.injOn(timeNode(labels),earlierLabelTimes(labels,t))
+
+  labelRank_execution_root: THEOREM
+    labelRank(executionDAG(labels,t),timeNode(labels)(t))=earlierLabelCount(labels,t)
+
+  realRoot_eq_canonicalName: THEOREM
+    realRoot(labels,t)=canonicalName(executionDAG(labels,t),timeNode(labels)(t))
+
+  realRoot_mem: THEOREM realDAG(labels,t)`nodes(realRoot(labels,t))
+
+  realDAG_reach_root: THEOREM realDAG(labels,t)`nodes(u) IMPLIES
+    Reach(realDAG(labels,t))(u,realRoot(labels,t))
+
+  realDAG_isProperCanonical: THEOREM properCanonicalFor(realDAG(labels,t),labels(t))
+
+  realRoot_sink: THEOREM Sink(realDAG(labels,t))(realRoot(labels,t))
+
+END ppg_hls_policy_dag
