@@ -1,0 +1,99 @@
+% Canonical occurrence indices are determined by the layers above a node.
+% For a fixed label, smaller indices are exactly the higher occurrences.
+% Counting these occurrences recovers the index, then the node support
+% and all arcs. The stable encoding therefore has no naming multiplicity.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 1.2.1. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSCanonicalEncoding.lean.
+ppg_hls_canonical_encoding[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_stable_encoding[C,G], ppg_nat_range,
+    ppg_finite_bijection[nat,[C,nat]] AS occurrenceImages,
+    ppg_finite_bijection[[C,nat],nat] AS heightImages
+  D: VAR WitnessDAG
+  Q,E: VAR (Valid)
+  u,v: VAR WNode
+  i: VAR C
+  m,n,N,k: VAR nat
+
+  canonical_node_mem_of_le: THEOREM Canonical(D) AND D`nodes((i,n)) AND m<=n IMPLIES
+    D`nodes((i,m))
+
+  node_eta: LEMMA (u`1,u`2)=u
+
+  node_with_label: LEMMA u`1=i IMPLIES (i,u`2)=u
+
+  same_label_height_iff_index: THEOREM Canonical(Q) AND Q`nodes((i,m)) AND Q`nodes((i,n)) IMPLIES
+    (height(Q,(i,n))<height(Q,(i,m)) IFF m<n)
+
+  earlierLabelNodes(D,i,n): finite_set[WNode] =
+    intersection(D`nodes,LAMBDA(u:WNode):u`1=i AND u`2<n)
+
+  mem_earlierLabelNodes: LEMMA earlierLabelNodes(D,i,n)(u) IFF
+    D`nodes(u) AND u`1=i AND u`2<n
+
+  occurrence_range_member: LEMMA
+    image[nat,WNode](LAMBDA(m:nat):(i,m),natRange(n))(u) IFF u`1=i AND u`2<n
+
+  earlierLabelNodes_eq_range_image: THEOREM Canonical(D) AND D`nodes((i,n)) IMPLIES
+    earlierLabelNodes(D,i,n)=image[nat,WNode](LAMBDA(m:nat):(i,m),natRange(n))
+
+  range_card: LEMMA card(natRange(n))=n
+
+  earlierLabelNodes_card: THEOREM Canonical(D) AND D`nodes((i,n)) IMPLIES
+    card(earlierLabelNodes(D,i,n))=n
+
+  higherLabelLayers(Q,i,n,N): finite_set[nat] = intersection(natRange(N),
+    LAMBDA(k:nat):height(Q,(i,n))<k AND layerLabels(Q,k)(i))
+
+  mem_higherLabelLayers: LEMMA higherLabelLayers(Q,i,n,N)(k) IFF
+    k<N AND height(Q,(i,n))<k AND layerLabels(Q,k)(i)
+
+  earlier_maps_higher: LEMMA Canonical(Q) AND Q`nodes((i,n)) AND maxHeight(Q)<N AND
+    earlierLabelNodes(Q,i,n)(u) IMPLIES higherLabelLayers(Q,i,n,N)(height(Q,u))
+
+  higher_has_earlier: LEMMA Canonical(Q) AND Q`nodes((i,n)) AND maxHeight(Q)<N AND
+    higherLabelLayers(Q,i,n,N)(k) IMPLIES
+    EXISTS(u:WNode):earlierLabelNodes(Q,i,n)(u) AND height(Q,u)=k
+
+  earlierLabelNodes_height_image: THEOREM Canonical(Q) AND Q`nodes((i,n)) AND maxHeight(Q)<N IMPLIES
+    image[WNode,nat](LAMBDA(u:WNode):height(Q,u),earlierLabelNodes(Q,i,n))=
+    higherLabelLayers(Q,i,n,N)
+
+  earlier_height_injective: LEMMA earlierLabelNodes(Q,i,n)(u) AND earlierLabelNodes(Q,i,n)(v) AND
+    height(Q,u)=height(Q,v) IMPLIES u=v
+
+  index_eq_card_higher_layers: THEOREM Canonical(Q) AND Q`nodes((i,n)) AND maxHeight(Q)<N IMPLIES
+    n=card(higherLabelLayers(Q,i,n,N))
+
+  node_index_readout: LEMMA Canonical(Q) AND Q`nodes(u) AND maxHeight(Q)<N IMPLIES
+    u`2=card(higherLabelLayers(Q,u`1,u`2,N))
+
+  same_higher_layers: LEMMA
+    (FORALL(k:nat):layerLabels(Q,k)=layerLabels(E,k)) AND u`1=v`1 AND height(Q,u)=height(E,v) IMPLIES
+    higherLabelLayers(Q,u`1,u`2,N)=higherLabelLayers(E,v`1,v`2,N)
+
+  node_components_equal: LEMMA u`1=v`1 AND u`2=v`2 IMPLIES u=v
+
+  transport_node_of_layerLabels_eq: THEOREM Canonical(Q) AND Canonical(E) AND
+    (FORALL(k:nat):layerLabels(Q,k)=layerLabels(E,k)) AND Q`nodes(u) IMPLIES
+    E`nodes(u) AND height(Q,u)=height(E,u)
+
+  layer_equal_reverse: LEMMA
+    (FORALL(k:nat):layerLabels(Q,k)=layerLabels(E,k)) IMPLIES
+    (FORALL(k:nat):layerLabels(E,k)=layerLabels(Q,k))
+
+  same_nodes: LEMMA Canonical(Q) AND Canonical(E) AND
+    (FORALL(k:nat):layerLabels(Q,k)=layerLabels(E,k)) IMPLIES Q`nodes=E`nodes
+
+  same_arcs: LEMMA Canonical(Q) AND Canonical(E) AND
+    (FORALL(k:nat):layerLabels(Q,k)=layerLabels(E,k)) IMPLIES Q`arcs=E`arcs
+
+  eq_of_layerLabels_eq: THEOREM Canonical(Q) AND Canonical(E) AND
+    (FORALL(k:nat):layerLabels(Q,k)=layerLabels(E,k)) IMPLIES Q=E
+
+  eq_of_stableEncoding_eq: THEOREM Canonical(Q) AND Canonical(E) AND
+    stableEncoding(Q)=stableEncoding(E) IMPLIES Q=E
+END ppg_hls_canonical_encoding
