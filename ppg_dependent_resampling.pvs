@@ -1,0 +1,26 @@
+% Each variable keeps its own value domain. Resampling a finite footprint
+% takes fresh values on that footprint and retains the old coordinates
+% elsewhere. An event determined by disjoint coordinates keeps its value.
+% These pointwise identities hold under every choice of coordinate laws.
+%
+% Robin A. Moser and Gabor Tardos, A constructive proof of the general
+% Lovasz Local Lemma. https://arxiv.org/abs/0903.0544v3
+% Lean counterpart: PPGraphMoserTardos.lean.
+ppg_dependent_resampling[V,Value:TYPE,domain:[V->set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_semantics[bool,V,Value,domain]
+  A_ev: VAR set[MTState]
+  F,Fc: VAR finite_set[V]
+  om,fresh: VAR MTState
+  v: VAR V
+
+  depends_only_on(A_ev,F): bool = FORALL(om,fresh:MTState):
+    (FORALL(v:V):F(v) IMPLIES om(v)=fresh(v)) IMPLIES (A_ev(om) IFF A_ev(fresh))
+
+  resample_preserves_disjoint: THEOREM depends_only_on(A_ev,Fc) AND disjoint?(F,Fc)
+    IMPLIES (A_ev(om) IFF A_ev(resample(F,om,fresh)))
+
+  resample_agrees_on: THEOREM F(v) IMPLIES resample(F,om,fresh)(v)=fresh(v)
+
+  resample_fixes_outside: THEOREM NOT F(v) IMPLIES resample(F,om,fresh)(v)=om(v)
+END ppg_dependent_resampling
