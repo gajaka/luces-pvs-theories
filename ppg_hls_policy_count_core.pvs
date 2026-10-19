@@ -1,0 +1,152 @@
+% The occurrence rank counts every earlier selection of the same label.
+% Only active times contribute to a resampling count. Reindexing these
+% times and partitioning them by label preserve infinite counts.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2; Kun He, Qian Li and Xiaoming Sun,
+% "Moser-Tardos Algorithm: Beyond Shearer's Bound", Section 2.1.
+% Lean counterpart: PPGraphHLSPolicyCounting.lean, pointwise results.
+ppg_hls_policy_count_core[C,V,Value:TYPE,domain:[V->set[Value]],
+  footprint:[C->finite_set[V]],
+  (IMPORTING ppg_mt_semantics[C,V,Value,domain])bad:[C,MTState->bool],
+  universe:{S:finite_set[C]|FORALL(a:C):S(a)},
+  (IMPORTING ppg_mt_log_measurable[C,V,Value,domain])
+  coordinates:[V->ppg_measurable_space[Value].MeasurableSpace]]: THEORY
+BEGIN
+  IMPORTING ppg_hls_root_union_events[C,V,Value,domain,footprint,bad],
+    ppg_mt_policy_schedule[C,V,Value,domain,universe,coordinates] AS countSchedule,
+    ppg_mt_policy_state[C,V,Value,domain] AS rawPolicy,
+    ppg_hls_real_dag_counts[C,V,Value,domain,footprint,bad] AS policyRanks,
+    ppg_event_count[LogSpace] AS policyCounts,
+    ppg_indicator_reindex[nat,nat] AS policyReindex,
+    ppg_finite_sup_sum[C],ppg_sum_swap_nat[C],ppg_count_finiteness[LogSpace],
+    ppg_nn_indicator[C],ppg_count_order[LogSpace]
+
+  PolicyData: TYPE = countSchedule.SelectionData
+
+  PolicySchedule: TYPE = countSchedule.Schedule(footprint,bad)
+
+  d: VAR PolicyData
+  omega: VAR LogSpace
+  a: VAR C
+  labels,otherLabels: VAR [nat->C]
+  s,t,r,n,N: VAR nat
+
+  resamplingEvent(d,a,t): set[LogSpace] = {omega:LogSpace|
+    rawPolicy.Running(footprint,bad,d`select(omega),omega,t+1) AND d`select(omega)(t)=a}
+
+  selectedEvents(d,a): [nat->set[LogSpace]] = LAMBDA(t:nat):resamplingEvent(d,a,t)
+
+  activeEvents(d): [nat->set[LogSpace]] = LAMBDA(t:nat):
+    countSchedule.runningEvent(footprint,bad,d,t+1)
+
+  count(d,omega,a): ENN = policyCounts.eventCount(selectedEvents(d,a),omega)
+
+  ordinalOccurrence(d,a,r): set[LogSpace] = {omega:LogSpace|EXISTS(t:nat):
+    resamplingEvent(d,a,t)(omega) AND earlierLabelCount(d`select(omega),t)=r}
+
+  ordinalRankFiber(d,t,r): set[LogSpace] = {omega:LogSpace|
+    earlierLabelCount(d`select(omega),t)=r}
+
+  ordinalOccurrence_eq_iUnion: THEOREM ordinalOccurrence(d,a,r)=
+    countableUnion(LAMBDA(t:nat):intersection(resamplingEvent(d,a,t),ordinalRankFiber(d,t,r)))
+
+  ordinalActiveTimes(d,omega,a): set[nat] = {t:nat|resamplingEvent(d,a,t)(omega)}
+
+  ordinal_active_label: LEMMA ordinalActiveTimes(d,omega,a)(t) IMPLIES d`select(omega)(t)=a
+
+  ordinal_rank_injective: LEMMA FORALL(s,t:nat):
+    ordinalActiveTimes(d,omega,a)(s) AND ordinalActiveTimes(d,omega,a)(t) AND
+    earlierLabelCount(d`select(omega),s)=earlierLabelCount(d`select(omega),t) IMPLIES s=t
+
+  ordinal_active_image: LEMMA policyReindex.supportImage(ordinalActiveTimes(d,omega,a),
+    LAMBDA(t:nat):earlierLabelCount(d`select(omega),t))=
+      {r:nat|ordinalOccurrence(d,a,r)(omega)}
+
+  ordinal_indicator_function: LEMMA
+    (LAMBDA(r:nat):IF policyReindex.supportImage(ordinalActiveTimes(d,omega,a),
+      LAMBDA(t:nat):earlierLabelCount(d`select(omega),t))(r) THEN 1 ELSE 0 ENDIF)=
+    (LAMBDA(r:nat):IF ordinalOccurrence(d,a,r)(omega) THEN 1 ELSE 0 ENDIF)
+
+  count_eq_tsum_ordinalOccurrence: THEOREM count(d,omega,a)=
+    ppg_nonneg_tsum[nat].tsum(LAMBDA(r:nat):
+      IF ordinalOccurrence(d,a,r)(omega) THEN 1 ELSE 0 ENDIF)
+
+  ordinal_count_function: LEMMA
+    (LAMBDA(omega:LogSpace):count(d,omega,a))=
+    (LAMBDA(omega:LogSpace):policyCounts.eventCount(
+      LAMBDA(r:nat):ordinalOccurrence(d,a,r),omega))
+
+  occurrence_root: LEMMA resamplingEvent(d,a,t)(omega) AND
+    earlierLabelCount(d`select(omega),t)=r IMPLIES realRoot(d`select(omega),t)=(a,r)
+
+  ordinalOccurrence_subset_rootUnion: THEOREM localBad IMPLIES
+    subset?(ordinalOccurrence(d,a,r),rootUnion(a,r))
+
+  selectedLabels(d,omega,t): set[C] = {a:C|resamplingEvent(d,a,t)(omega)}
+
+  selected_label_filter: LEMMA intersection(universe,selectedLabels(d,omega,t))=
+    IF activeEvents(d)(t)(omega) THEN singleton[C](d`select(omega)(t)) ELSE emptyset[C] ENDIF
+
+  activeStepValue(d,omega)(t): nonneg_real = IF activeEvents(d)(t)(omega) THEN 1 ELSE 0 ENDIF
+
+  selectedStepValue(d,omega,a)(t): nonneg_real = IF selectedEvents(d,a)(t)(omega) THEN 1 ELSE 0 ENDIF
+
+  prefixRows(d,omega)(a:C,n:nat): nonneg_real = policyCounts.countPrefix(selectedEvents(d,a),omega,n)
+
+  running_step_partition: LEMMA activeStepValue(d,omega)(t)=
+    tSum.sum(universe,LAMBDA(a:C):selectedStepValue(d,omega,a)(t))
+
+  step_partition_function: LEMMA activeStepValue(d,omega)=
+    (LAMBDA(t:nat):tSum.sum(universe,LAMBDA(a:C):selectedStepValue(d,omega,a)(t)))
+
+  running_prefix_indicator: LEMMA nSum.sum(natRange(n),activeStepValue(d,omega))=
+    policyCounts.countPrefix(activeEvents(d),omega,n)
+
+  selected_prefix_indicator: LEMMA nSum.sum(natRange(n),selectedStepValue(d,omega,a))=
+    prefixRows(d,omega)(a,n)
+
+  selected_prefix_function: LEMMA
+    (LAMBDA(a:C):nSum.sum(natRange(n),selectedStepValue(d,omega,a)))=
+    (LAMBDA(a:C):prefixRows(d,omega)(a,n))
+
+  prefix_partition: LEMMA policyCounts.countPrefix(activeEvents(d),omega,n)=
+    tSum.sum(universe,LAMBDA(a:C):prefixRows(d,omega)(a,n))
+
+  prefix_partition_function: LEMMA
+    (LAMBDA(n:nat):policyCounts.countPrefix(activeEvents(d),omega,n))=stageSum(universe,prefixRows(d,omega))
+
+  prefix_rows_monotone: LEMMA rowMonotone(prefixRows(d,omega))
+
+  tLog_policy_count: LEMMA countSchedule.tLog(footprint,bad,d`select(omega),omega)=
+    policyCounts.eventCount(activeEvents(d),omega)
+
+  running_count_sup: LEMMA countSchedule.tLog(footprint,bad,d`select(omega),omega)=
+    natSup(LAMBDA(n:nat):policyCounts.countPrefix(activeEvents(d),omega,n))
+
+  selected_sup_function: LEMMA (LAMBDA(a:C):count(d,omega,a))=
+    (LAMBDA(a:C):natSup(LAMBDA(n:nat):prefixRows(d,omega)(a,n)))
+
+  tLog_eq_sum_count: THEOREM countSchedule.tLog(footprint,bad,d`select(omega),omega)=
+    ppg_nonneg_tsum[C].esum(universe,LAMBDA(a:C):count(d,omega,a))
+
+  goodAt(labels,omega,N): bool = FORALL(a:C):NOT bad(a,rawPolicy.policyState(footprint,labels,omega,N))
+
+  good_stops_running: LEMMA goodAt(labels,omega,N) AND N<=n IMPLIES
+    NOT rawPolicy.Running(footprint,bad,labels,omega,n+1)
+
+  tLog_le_of_good: THEOREM goodAt(labels,omega,N) IMPLIES
+    ele(countSchedule.tLog(footprint,bad,labels,omega),ennFinite(N))
+
+  no_good_running: LEMMA rawPolicy.Admissible(footprint,bad,labels,omega) AND
+    NOT(EXISTS(N:nat):goodAt(labels,omega,N)) IMPLIES
+    FORALL(n:nat):rawPolicy.Running(footprint,bad,labels,omega,n)
+
+  no_good_infinite: LEMMA rawPolicy.Admissible(footprint,bad,labels,omega) AND
+    NOT(EXISTS(N:nat):goodAt(labels,omega,N)) IMPLIES
+    countSchedule.tLog(footprint,bad,labels,omega)=ennInfinity
+
+  tLog_lt_top_iff_exists_good: THEOREM rawPolicy.Admissible(footprint,bad,labels,omega) IMPLIES
+    (ennFinite?(countSchedule.tLog(footprint,bad,labels,omega)) IFF EXISTS(N:nat):goodAt(labels,omega,N))
+
+END ppg_hls_policy_count_core

@@ -1,0 +1,1265 @@
+(|ppg_hls_policy_count_core|
+ (|ordinalOccurrence_eq_iUnion| 0
+  (|ordinalOccurrence_eq_iUnion-1| NIL 4001410334
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :DEFS
+      ("ordinalOccurrence" "ordinalRankFiber" "countableUnion" "intersection"
+       "member")
+      :EXCLUDE ("resamplingEvent" "earlierLabelCount")))
+    NIL NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|ordinalOccurrence| CONST-DECL "set[LogSpace[C, V, Value, domain]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|Family| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|countableUnion| CONST-DECL "Event" |ppg_measurable_space| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|resamplingEvent| CONST-DECL "set[LogSpace[C, V, Value, domain]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|ordinalRankFiber| CONST-DECL "set[LogSpace[C, V, Value, domain]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK))
+ (|ordinal_active_label| 0
+  (|ordinal_active_label-1| NIL 4001410334
+   (""
+    (THEN
+     (GRIND :DEFS ("ordinalActiveTimes" "resamplingEvent") :EXCLUDE
+      ("rawPolicy.Running")))
+    NIL NIL)
+   ((|ordinalActiveTimes| CONST-DECL "set[nat]" |ppg_hls_policy_count_core|
+     NIL)
+    (|resamplingEvent| CONST-DECL "set[LogSpace[C, V, Value, domain]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|ordinal_rank_injective| 0
+  (|ordinal_rank_injective-1| NIL 4001410334
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "ordinal_active_label"
+      ("d" "d!1" "omega" "omega!1" "a" "a!1" "t" "s!1"))
+     (LEMMA "ordinal_active_label"
+      ("d" "d!1" "omega" "omega!1" "a" "a!1" "t" "t!1"))
+     (LEMMA "policyRanks.count_strict"
+      ("labels" "d!1`select(omega!1)" "s" "s!1" "t" "t!1"))
+     (LEMMA "policyRanks.count_strict"
+      ("labels" "d!1`select(omega!1)" "s" "t!1" "t" "s!1"))
+     (GRIND :EXCLUDE
+      ("ordinalActiveTimes" "resamplingEvent" "earlierLabelCount"
+       "earlierLabelTimes")))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|count_strict| FORMULA-DECL NIL |ppg_hls_real_dag_counts| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|footprint| FORMAL-CONST-DECL "[C -> finite_set[V]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|bad| FORMAL-CONST-DECL "[C, MTState -> bool]" |ppg_hls_policy_count_core|
+     NIL)
+    (|ordinal_active_label| FORMULA-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL))
+   SHOSTAK))
+ (|ordinal_active_image| 0
+  (|ordinal_active_image-1| NIL 4001410334
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :IF-MATCH NIL :DEFS
+      ("policyReindex.supportImage" "ordinalActiveTimes" "ordinalOccurrence")
+      :EXCLUDE ("resamplingEvent" "earlierLabelCount" "is_finite")))
+    NIL NIL)
+   ((|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|supportImage| CONST-DECL "set[R]" |ppg_indicator_reindex| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|ordinalActiveTimes| CONST-DECL "set[nat]" |ppg_hls_policy_count_core|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|footprint| FORMAL-CONST-DECL "[C -> finite_set[V]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|bad| FORMAL-CONST-DECL "[C, MTState -> bool]" |ppg_hls_policy_count_core|
+     NIL)
+    (|earlierLabelCount| CONST-DECL "nat" |ppg_hls_policy_dag| NIL)
+    (|ordinalOccurrence| CONST-DECL "set[LogSpace[C, V, Value, domain]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|ordinal_indicator_function| 0
+  (|ordinal_indicator_function-1| NIL 4001410334
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "ordinal_active_image" ("d" "d!1" "omega" "omega!1" "a" "a!1"))
+     (REPLACE -1) (ASSERT))
+    NIL NIL)
+   ((|ordinal_active_image| FORMULA-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL))
+   SHOSTAK))
+ (|count_eq_tsum_ordinalOccurrence| 0
+  (|count_eq_tsum_ordinalOccurrence-1| NIL 4001410334
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "ordinal_rank_injective" ("d" "d!1" "omega" "omega!1" "a" "a!1"))
+     (LEMMA "policyReindex.indicator_count_reindex"
+      ("A" "ordinalActiveTimes(d!1,omega!1,a!1)" "i"
+       "LAMBDA(t:nat):earlierLabelCount(d!1`select(omega!1),t)"))
+     (ASSERT)
+     (LEMMA "ordinal_indicator_function"
+      ("d" "d!1" "omega" "omega!1" "a" "a!1"))
+     (REPLACE -1) (EXPAND "count") (EXPAND "policyCounts.eventCount")
+     (EXPAND "selectedEvents") (EXPAND "ordinalActiveTimes") (ASSERT))
+    NIL NIL)
+   ((|earlierLabelCount| CONST-DECL "nat" |ppg_hls_policy_dag| NIL)
+    (|bad| FORMAL-CONST-DECL "[C, MTState -> bool]" |ppg_hls_policy_count_core|
+     NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|footprint| FORMAL-CONST-DECL "[C -> finite_set[V]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|ordinalActiveTimes| CONST-DECL "set[nat]" |ppg_hls_policy_count_core|
+     NIL)
+    (|indicator_count_reindex| FORMULA-DECL NIL |ppg_indicator_reindex| NIL)
+    (|ordinal_indicator_function| FORMULA-DECL NIL |ppg_hls_policy_count_core|
+     NIL)
+    (|count| CONST-DECL "ENN" |ppg_hls_policy_count_core| NIL)
+    (|selectedEvents| CONST-DECL "[nat -> set[LogSpace[C, V, Value, domain]]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|eventCount| CONST-DECL "ENN" |ppg_event_count| NIL)
+    (|ordinal_rank_injective| FORMULA-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL))
+   SHOSTAK))
+ (|ordinal_count_function| 0
+  (|ordinal_count_function-1| NIL 4001410334
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "count_eq_tsum_ordinalOccurrence")
+     (EXPAND "policyCounts.eventCount")
+     (GRIND :EXCLUDE ("count" "ordinalOccurrence" "ppg_nonneg_tsum.tsum")))
+    NIL NIL)
+   ((|count_eq_tsum_ordinalOccurrence| FORMULA-DECL NIL
+     |ppg_hls_policy_count_core| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|count| CONST-DECL "ENN" |ppg_hls_policy_count_core| NIL)
+    (|eventCount| CONST-DECL "ENN" |ppg_event_count| NIL)
+    (|ordinalOccurrence| CONST-DECL "set[LogSpace[C, V, Value, domain]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK))
+ (|occurrence_root| 0
+  (|occurrence_root-1| NIL 4001410334
+   (""
+    (THEN
+     (GRIND :DEFS ("resamplingEvent" "realRoot") :EXCLUDE
+      ("rawPolicy.Running" "earlierLabelCount")))
+    NIL NIL)
+   ((|realRoot| CONST-DECL "WNode" |ppg_hls_policy_dag| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|footprint| FORMAL-CONST-DECL "[C -> finite_set[V]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|bad| FORMAL-CONST-DECL "[C, MTState -> bool]" |ppg_hls_policy_count_core|
+     NIL)
+    (|resamplingEvent| CONST-DECL "set[LogSpace[C, V, Value, domain]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL))
+   SHOSTAK))
+ (|ordinalOccurrence_subset_rootUnion| 0
+  (|ordinalOccurrence_subset_rootUnion-1| NIL 4001410334
+   (""
+    (THEN (SKOSIMP*) (EXPAND "subset?") (SKOSIMP*) (EXPAND "ordinalOccurrence")
+     (EXPAND "member") (SKOSIMP*)
+     (LEMMA "occurrence_root"
+      ("d" "d!1" "omega" "x!1" "a" "a!1" "t" "t!1" "r" "r!1"))
+     (LEMMA "policy_root_union_member"
+      ("labels" "d!1`select(x!1)" "omega" "x!1" "t" "t!1" "a" "a!1" "r" "r!1"))
+     (GRIND :DEFS ("resamplingEvent") :EXCLUDE
+      ("rootUnion" "rawPolicy.Running" "earlierLabelCount" "realRoot")))
+    NIL NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|occurrence_root| FORMULA-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|resamplingEvent| CONST-DECL "set[LogSpace[C, V, Value, domain]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|localBad| CONST-DECL "bool" |ppg_hls_policy_dag| NIL)
+    (|policy_root_union_member| FORMULA-DECL NIL |ppg_hls_root_union_events|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|footprint| FORMAL-CONST-DECL "[C -> finite_set[V]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|bad| FORMAL-CONST-DECL "[C, MTState -> bool]" |ppg_hls_policy_count_core|
+     NIL)
+    (|ordinalOccurrence| CONST-DECL "set[LogSpace[C, V, Value, domain]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL))
+   SHOSTAK))
+ (|selected_label_filter| 0
+  (|selected_label_filter-1| NIL 4001410745
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (TYPEPRED "universe")
+     (GRIND :DEFS
+      ("selectedLabels" "resamplingEvent" "activeEvents"
+       "countSchedule.runningEvent" "intersection" "singleton" "emptyset"
+       "member")
+      :EXCLUDE ("rawPolicy.Running" "Running" "is_finite")))
+    NIL NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|resamplingEvent| CONST-DECL "set[LogSpace[C, V, Value, domain]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|coordinates| FORMAL-CONST-DECL
+     "[V -> ppg_measurable_space[Value].MeasurableSpace]"
+     |ppg_hls_policy_count_core| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|runningEvent| CONST-DECL "set[LogSpace[C, V, Value, domain]]"
+     |ppg_mt_policy_schedule| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |ppg_hls_policy_count_core|
+     NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |countable_props|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[C]" |ppg_hls_policy_count_core| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_hls_policy_count_core| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{S: finite_set[C] | FORALL (a: C): S(a)}"
+     |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|selectedLabels| CONST-DECL "set[C]" |ppg_hls_policy_count_core| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|activeEvents| CONST-DECL "[nat -> set[LogSpace[C, V, Value, domain]]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|singleton?| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL))
+   SHOSTAK))
+ (|running_step_partition_TCC1| 0
+  (|running_step_partition_TCC1-1| NIL 4001410745 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|running_step_partition| SUBTYPE "LAMBDA (a, b: nonneg_real): a + b"
+    "{op: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_hls_policy_count_core.op)(0), booleans.AND(operator_defs[nonneg_real].associative?(ppg_hls_policy_count_core.op), operator_defs[nonneg_real].commutative?(ppg_hls_policy_count_core.op)))}"
+    (98 4 98 12))))
+ (|running_step_partition| 0
+  (|running_step_partition-1| NIL 4001410745
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "ppg_nn_indicator[C].sum_indicator"
+      ("S" "universe" "P" "selectedLabels(d!1,omega!1,t!1)"))
+     (LEMMA "selected_label_filter" ("d" "d!1" "omega" "omega!1" "t" "t!1"))
+     (REPLACE -1) (EXPAND "selectedLabels") (EXPAND "selectedStepValue")
+     (EXPAND "selectedEvents") (EXPAND "activeStepValue")
+     (AUTO-REWRITE "card_emptyset[C]" "card_singleton[C]")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("sum" "esum" "activeEvents" "resamplingEvent" "is_finite")))
+    NIL NIL)
+   ((|selected_label_filter| FORMULA-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|selectedEvents| CONST-DECL "[nat -> set[LogSpace[C, V, Value, domain]]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |ppg_hls_policy_count_core|
+     NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |countable_setofsets|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |countable_props|
+     |sets_aux|)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[C]" |ppg_hls_policy_count_core| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_hls_policy_count_core| NIL)
+    (|card_emptyset| FORMULA-DECL NIL |finite_sets| NIL)
+    (|card_singleton| FORMULA-DECL NIL |finite_sets| NIL)
+    (|activeStepValue| CONST-DECL "nonneg_real" |ppg_hls_policy_count_core|
+     NIL)
+    (|selectedStepValue| CONST-DECL "nonneg_real" |ppg_hls_policy_count_core|
+     NIL)
+    (|sum_indicator| FORMULA-DECL NIL |ppg_nn_indicator| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|selectedLabels| CONST-DECL "set[C]" |ppg_hls_policy_count_core| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{S: finite_set[C] | FORALL (a: C): S(a)}"
+     |ppg_hls_policy_count_core| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL))
+   SHOSTAK))
+ (|step_partition_function| 0
+  (|step_partition_function-1| NIL 4001410745
+   ("" (SKOSIMP*)
+    (("" (APPLY-EXTENSIONALITY :HIDE? T)
+      (("1"
+        (LEMMA "running_step_partition"
+         ("d" "d!1" "omega" "omega!1" "t" "x!1"))
+        (("1" (PROPAX) NIL NIL)) NIL)
+       ("2"
+        (GRIND :EXCLUDE
+         ("sum" "activeStepValue" "selectedStepValue" "is_finite"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|selectedStepValue| CONST-DECL "nonneg_real" |ppg_hls_policy_count_core|
+     NIL)
+    (|universe| FORMAL-CONST-DECL "{S: finite_set[C] | FORALL (a: C): S(a)}"
+     |ppg_hls_policy_count_core| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|activeStepValue| CONST-DECL "nonneg_real" |ppg_hls_policy_count_core|
+     NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|running_step_partition| FORMULA-DECL NIL |ppg_hls_policy_count_core|
+     NIL))
+   SHOSTAK))
+ (|running_prefix_indicator| 0
+  (|running_prefix_indicator-1| NIL 4001410745
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "policyCounts.sum_indicator_eq_card"
+      ("E" "activeEvents(d!1)" "x" "omega!1" "n" "n!1"))
+     (EXPAND "activeStepValue") (ASSERT))
+    NIL NIL)
+   ((|activeStepValue| CONST-DECL "nonneg_real" |ppg_hls_policy_count_core|
+     NIL)
+    (|sum_indicator_eq_card| FORMULA-DECL NIL |ppg_event_count| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|activeEvents| CONST-DECL "[nat -> set[LogSpace[C, V, Value, domain]]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL))
+   SHOSTAK))
+ (|selected_prefix_indicator| 0
+  (|selected_prefix_indicator-1| NIL 4001410745
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "policyCounts.sum_indicator_eq_card"
+      ("E" "selectedEvents(d!1,a!1)" "x" "omega!1" "n" "n!1"))
+     (EXPAND "selectedStepValue") (EXPAND "prefixRows") (ASSERT))
+    NIL NIL)
+   ((|selectedStepValue| CONST-DECL "nonneg_real" |ppg_hls_policy_count_core|
+     NIL)
+    (|prefixRows| CONST-DECL "nonneg_real" |ppg_hls_policy_count_core| NIL)
+    (|sum_indicator_eq_card| FORMULA-DECL NIL |ppg_event_count| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|selectedEvents| CONST-DECL "[nat -> set[LogSpace[C, V, Value, domain]]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL))
+   SHOSTAK))
+ (|selected_prefix_function| 0
+  (|selected_prefix_function-1| NIL 4001410745
+   ("" (SKOSIMP*)
+    (("" (APPLY-EXTENSIONALITY :HIDE? T)
+      (("1"
+        (LEMMA "selected_prefix_indicator"
+         ("d" "d!1" "omega" "omega!1" "a" "x!1" "n" "n!1"))
+        (("1" (PROPAX) NIL NIL)) NIL)
+       ("2"
+        (GRIND :EXCLUDE ("sum" "prefixRows" "selectedStepValue" "is_finite"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|prefixRows| CONST-DECL "nonneg_real" |ppg_hls_policy_count_core| NIL)
+    (|selectedStepValue| CONST-DECL "nonneg_real" |ppg_hls_policy_count_core|
+     NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|natRange| DEF-DECL "finite_set[nat]" |ppg_nat_range| NIL)
+    (|sum| DEF-DECL "R" |ppg_monoid_sum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|selected_prefix_indicator| FORMULA-DECL NIL |ppg_hls_policy_count_core|
+     NIL))
+   SHOSTAK))
+ (|prefix_partition| 0
+  (|prefix_partition-1| NIL 4001410745
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "running_prefix_indicator" ("d" "d!1" "omega" "omega!1" "n" "n!1"))
+     (REPLACE -1 :DIR RL)
+     (LEMMA "step_partition_function" ("d" "d!1" "omega" "omega!1"))
+     (REPLACE -1)
+     (LEMMA "swap_nat_prefix"
+      ("A" "universe" "q"
+       "LAMBDA(a:C,t:nat):selectedStepValue(d!1,omega!1,a)(t)" "n" "n!1"))
+     (REPLACE -1)
+     (LEMMA "selected_prefix_function" ("d" "d!1" "omega" "omega!1" "n" "n!1"))
+     (REPLACE -1) (EXPAND "selectedStepValue")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("sum" "natRange" "activeStepValue" "selectedStepValue" "prefixRows"
+       "activeEvents" "selectedEvents" "countPrefix" "is_finite")))
+    NIL NIL)
+   ((|selected_prefix_function| FORMULA-DECL NIL |ppg_hls_policy_count_core|
+     NIL)
+    (|swap_nat_prefix| FORMULA-DECL NIL |ppg_sum_swap_nat| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{S: finite_set[C] | FORALL (a: C): S(a)}"
+     |ppg_hls_policy_count_core| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|selectedStepValue| CONST-DECL "nonneg_real" |ppg_hls_policy_count_core|
+     NIL)
+    (|step_partition_function| FORMULA-DECL NIL |ppg_hls_policy_count_core|
+     NIL)
+    (|running_prefix_indicator| FORMULA-DECL NIL |ppg_hls_policy_count_core|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL))
+   SHOSTAK))
+ (|prefix_partition_function| 0
+  (|prefix_partition_function-1| NIL 4001410745
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "stageSum")
+     (LEMMA "prefix_partition" ("d" "d!1" "omega" "omega!1" "n" "x!1"))
+     (GRIND :EXCLUDE
+      ("sum" "esum" "is_finite" "countPrefix" "prefixRows" "activeEvents")))
+    NIL NIL)
+   ((|prefix_partition| FORMULA-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|countPrefix| CONST-DECL "nat" |ppg_event_count| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|activeEvents| CONST-DECL "[nat -> set[LogSpace[C, V, Value, domain]]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|stageSum| CONST-DECL "nonneg_real" |ppg_finite_sup_sum| NIL)
+    (|universe| FORMAL-CONST-DECL "{S: finite_set[C] | FORALL (a: C): S(a)}"
+     |ppg_hls_policy_count_core| NIL)
+    (|prefixRows| CONST-DECL "nonneg_real" |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|prefix_rows_monotone| 0
+  (|prefix_rows_monotone-1| NIL 4001410745
+   (""
+    (THEN (SKOSIMP*) (EXPAND "rowMonotone") (EXPAND "monotone") (SKOSIMP*)
+     (EXPAND "prefixRows")
+     (LEMMA "prefix_ordered"
+      ("E" "selectedEvents(d!1,t!1)" "x" "omega!1" "i" "i!1" "j" "j!1"))
+     (ASSERT))
+    NIL NIL)
+   ((|monotone| CONST-DECL "bool" |ppg_sup_add| NIL)
+    (|prefixRows| CONST-DECL "nonneg_real" |ppg_hls_policy_count_core| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|selectedEvents| CONST-DECL "[nat -> set[LogSpace[C, V, Value, domain]]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|prefix_ordered| FORMULA-DECL NIL |ppg_count_order| NIL)
+    (|rowMonotone| CONST-DECL "bool" |ppg_finite_sup_sum| NIL))
+   SHOSTAK))
+ (|tLog_policy_count| 0
+  (|tLog_policy_count-1| NIL 4001410839
+   (""
+    (THEN (SKOSIMP*) (EXPAND "countSchedule.tLog") (EXPAND "activeEvents")
+     (EXPAND "countSchedule.runningEvent")
+     (LEMMA "policyCounts.eventCount_congr"
+      ("E"
+       "LAMBDA(t:nat):{w:LogSpace|rawPolicy.Running(footprint,bad,d!1`select(omega!1),w,t+1)}"
+       "F"
+       "LAMBDA(t:nat):{w:LogSpace|rawPolicy.Running(footprint,bad,d!1`select(w),w,t+1)}"
+       "x" "omega!1"))
+     (GRIND :EXCLUDE ("eventCount" "rawPolicy.Running" "Running")))
+    NIL NIL)
+   ((|activeEvents| CONST-DECL "[nat -> set[LogSpace[C, V, Value, domain]]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|eventCount_congr| FORMULA-DECL NIL |ppg_event_count| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|Running| CONST-DECL "bool" |ppg_mt_policy_state| NIL)
+    (|footprint| FORMAL-CONST-DECL "[C -> finite_set[V]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|bad| FORMAL-CONST-DECL "[C, MTState -> bool]" |ppg_hls_policy_count_core|
+     NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|runningEvent| CONST-DECL "set[LogSpace[C, V, Value, domain]]"
+     |ppg_mt_policy_schedule| NIL)
+    (|tLog| CONST-DECL "ENN" |ppg_mt_policy_schedule| NIL))
+   SHOSTAK))
+ (|running_count_sup| 0
+  (|running_count_sup-1| NIL 4001410745
+   (""
+    (THEN (SKOSIMP*) (LEMMA "tLog_policy_count" ("d" "d!1" "omega" "omega!1"))
+     (LEMMA "policyCounts.eventCount_eq_iSup_card"
+      ("E" "activeEvents(d!1)" "x" "omega!1"))
+     (EXPAND "natSup") (ASSERT))
+    NIL NIL)
+   ((|activeEvents| CONST-DECL "[nat -> set[LogSpace[C, V, Value, domain]]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|eventCount_eq_iSup_card| FORMULA-DECL NIL |ppg_event_count| NIL)
+    (|natSup| CONST-DECL "ENN" |ppg_finite_sup_sum| NIL)
+    (|tLog_policy_count| FORMULA-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL))
+   SHOSTAK))
+ (|selected_sup_function| 0
+  (|selected_sup_function-1| NIL 4001410745
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "count")
+     (LEMMA "policyCounts.eventCount_eq_iSup_card"
+      ("E" "selectedEvents(d!1,x!1)" "x" "omega!1"))
+     (EXPAND "prefixRows") (EXPAND "natSup") (ASSERT))
+    NIL NIL)
+   ((|eventCount_eq_iSup_card| FORMULA-DECL NIL |ppg_event_count| NIL)
+    (|selectedEvents| CONST-DECL "[nat -> set[LogSpace[C, V, Value, domain]]]"
+     |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|count| CONST-DECL "ENN" |ppg_hls_policy_count_core| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|natSup| CONST-DECL "ENN" |ppg_finite_sup_sum| NIL)
+    (|prefixRows| CONST-DECL "nonneg_real" |ppg_hls_policy_count_core| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL))
+   SHOSTAK))
+ (|tLog_eq_sum_count| 0
+  (|tLog_eq_sum_count-1| NIL 4001410745
+   (""
+    (THEN (SKOSIMP*) (LEMMA "running_count_sup" ("d" "d!1" "omega" "omega!1"))
+     (LABEL "RUN" -1)
+     (LEMMA "selected_sup_function" ("d" "d!1" "omega" "omega!1"))
+     (LABEL "SEL" -1)
+     (LEMMA "prefix_partition_function" ("d" "d!1" "omega" "omega!1"))
+     (LABEL "PREF" -1)
+     (LEMMA "prefix_rows_monotone" ("d" "d!1" "omega" "omega!1"))
+     (LEMMA "finite_sup_sum" ("A" "universe" "q" "prefixRows(d!1,omega!1)"))
+     (EXPAND "finiteSup" -1) (REPLACE "PREF" :DIR RL) (REPLACE "SEL" :DIR RL)
+     (ASSERT))
+    NIL NIL)
+   ((|prefixRows| CONST-DECL "nonneg_real" |ppg_hls_policy_count_core| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|universe| FORMAL-CONST-DECL "{S: finite_set[C] | FORALL (a: C): S(a)}"
+     |ppg_hls_policy_count_core| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_sup_sum| FORMULA-DECL NIL |ppg_finite_sup_sum| NIL)
+    (|finiteSup| CONST-DECL "ENN" |ppg_finite_sup_sum| NIL)
+    (|prefix_rows_monotone| FORMULA-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|prefix_partition_function| FORMULA-DECL NIL |ppg_hls_policy_count_core|
+     NIL)
+    (|selected_sup_function| FORMULA-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|running_count_sup| FORMULA-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|PolicyData| TYPE-EQ-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL))
+   SHOSTAK))
+ (|good_stops_running| 0
+  (|good_stops_running-1| NIL 4001410745
+   (""
+    (THEN (SKOSIMP*)
+     (GRIND :DEFS ("goodAt" "rawPolicy.Running") :EXCLUDE
+      ("bad" "rawPolicy.policyState")))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|goodAt| CONST-DECL "bool" |ppg_hls_policy_count_core| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Running| CONST-DECL "bool" |ppg_mt_policy_state| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|tLog_le_of_good| 0
+  (|tLog_le_of_good-1| NIL 4001410745
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "good_stops_running"
+      ("labels" "labels!1" "omega" "omega!1" "N" "N!1"))
+     (LEMMA "count_tail_bound"
+      ("E"
+       "LAMBDA(k:nat):{w:LogSpace|rawPolicy.Running(footprint,bad,labels!1,w,k+1)}"
+       "x" "omega!1" "N" "N!1"))
+     (EXPAND "countSchedule.tLog")
+     (GRIND :EXCLUDE
+      ("eventCount" "ele" "goodAt" "rawPolicy.Running" "Running")))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|bad| FORMAL-CONST-DECL "[C, MTState -> bool]" |ppg_hls_policy_count_core|
+     NIL)
+    (|footprint| FORMAL-CONST-DECL "[C -> finite_set[V]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|Running| CONST-DECL "bool" |ppg_mt_policy_state| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|count_tail_bound| FORMULA-DECL NIL |ppg_count_finiteness| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|tLog| CONST-DECL "ENN" |ppg_mt_policy_schedule| NIL)
+    (|good_stops_running| FORMULA-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL))
+   SHOSTAK))
+ (|no_good_running| 0
+  (|no_good_running-1| NIL 4001410745
+   (""
+    (THEN (SKOSIMP*) (EXPAND "rawPolicy.Running") (SKOSIMP*)
+     (EXPAND "rawPolicy.Admissible") (INST -1 "t!1") (EXPAND "goodAt")
+     (INST 1 "t!1") (GRIND :EXCLUDE ("rawPolicy.policyState" "policyState")))
+    NIL NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|goodAt| CONST-DECL "bool" |ppg_hls_policy_count_core| NIL)
+    (|Admissible| CONST-DECL "bool" |ppg_mt_policy_state| NIL)
+    (|Running| CONST-DECL "bool" |ppg_mt_policy_state| NIL))
+   SHOSTAK))
+ (|no_good_infinite| 0
+  (|no_good_infinite-1| NIL 4001410745
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "no_good_running" ("labels" "labels!1" "omega" "omega!1"))
+     (LEMMA "count_all_infinite"
+      ("E"
+       "LAMBDA(k:nat):{w:LogSpace|rawPolicy.Running(footprint,bad,labels!1,w,k+1)}"
+       "x" "omega!1"))
+     (EXPAND "countSchedule.tLog")
+     (GRIND :EXCLUDE
+      ("eventCount" "rawPolicy.Admissible" "rawPolicy.Running" "Running"
+       "goodAt")))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|bad| FORMAL-CONST-DECL "[C, MTState -> bool]" |ppg_hls_policy_count_core|
+     NIL)
+    (|footprint| FORMAL-CONST-DECL "[C -> finite_set[V]]"
+     |ppg_hls_policy_count_core| NIL)
+    (|Running| CONST-DECL "bool" |ppg_mt_policy_state| NIL)
+    (|SelectionSeq| TYPE-EQ-DECL NIL |ppg_mt_policy_state| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|count_all_infinite| FORMULA-DECL NIL |ppg_count_finiteness| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|tLog| CONST-DECL "ENN" |ppg_mt_policy_schedule| NIL)
+    (|no_good_running| FORMULA-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL))
+   SHOSTAK))
+ (|tLog_lt_top_iff_exists_good| 0
+  (|tLog_lt_top_iff_exists_good-1| NIL 4001410745
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "no_good_infinite" ("labels" "labels!1" "omega" "omega!1"))
+     (LEMMA "tLog_le_of_good" ("labels" "labels!1" "omega" "omega!1"))
+     (GRIND :DEFS ("ele") :EXCLUDE
+      ("countSchedule.tLog" "goodAt" "rawPolicy.Admissible")))
+    NIL NIL)
+   ((|tLog_le_of_good| FORMULA-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|no_good_infinite| FORMULA-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_policy_count_core| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_policy_count_core|
+     NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|LogSpace| TYPE-EQ-DECL NIL |ppg_mt_random_process| NIL))
+   SHOSTAK)))
+
