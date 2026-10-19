@@ -1,0 +1,59 @@
+% Universal evaluation searches the genuine bounded evaluator from zero.
+% Input s contains an actual Code encoding and its natural-number argument.
+% Soundness and completeness identify this search with the literal Eval graph.
+% Mario Carneiro, Mathlib Computability.PartrecCode, Code.eval_partrec.
+ppg_partrec_universal_evaluator: THEORY
+BEGIN
+  IMPORTING ppg_nat_primrec_bounded_evaluator,ppg_nat_partrec_option_search,
+    ppg_partrec_evaln_correspondence,ppg_partrec_code_representation
+
+  c: VAR ppg_partrec_code
+
+  f: VAR PartialFunction
+
+  s,k,n,v,w: VAR nat
+
+  approxArgT: TotalFunction = pairT(pairT(rightT,compT(leftT,leftT)),compT(rightT,leftT))
+
+  approxT: TotalFunction = compT(actualElementT,approxArgT)
+
+  universalEval: PartialFunction = LAMBDA(s:nat):Eval(ofNatCode(leftT(s)),rightT(s))
+
+  codeInputT(c): TotalFunction = pairT(constT(encodeCode(c)),idT)
+
+  pr_approxArg: LEMMA NatPrimrec(approxArgT)
+
+  pr_approx: THEOREM NatPrimrec(approxT)
+
+  approxArg_value: LEMMA approxArgT(natPair(s,k))=natPair(natPair(k,leftT(s)),rightT(s))
+
+  approx_value: THEOREM approxT(natPair(s,k))=
+    encodeLiftNat(evaln(k,ofNatCode(leftT(s)),rightT(s)))
+
+  approx_some_iff: LEMMA approxT(natPair(s,k))=v+1 IFF
+    evaln(k,ofNatCode(leftT(s)),rightT(s))=up[nat](v)
+
+  search_eval_sound: LEMMA findSomeF(approxT)(s)(v) IMPLIES universalEval(s)(v)
+
+  eval_search_nonempty: LEMMA universalEval(s)(v) IMPLIES
+    EXISTS(w:nat):findSomeF(approxT)(s)(w)
+
+  universal_search_value: THEOREM universalEval(s)(v) IFF findSomeF(approxT)(s)(v)
+
+  universal_as_search: THEOREM universalEval=findSomeF(approxT)
+
+  partrec_universal: THEOREM NatPartrec(universalEval)
+
+  universal_pair_value: THEOREM universalEval(natPair(encodeCode(c),n))(v) IFF Eval(c,n)(v)
+
+  pr_codeInput: LEMMA NatPrimrec(codeInputT(c))
+
+  denote_as_universal_comp: LEMMA codeDenote(c)=compF(universalEval,totalGraph(codeInputT(c)))
+
+  partrec_code_denote: THEOREM NatPartrec(codeDenote(c))
+
+  partrec_iff_code: THEOREM NatPartrec(f) IFF EXISTS(c:ppg_partrec_code):codeDenote(c)=f
+
+  universal_has_code: THEOREM EXISTS(c:ppg_partrec_code):codeDenote(c)=universalEval
+
+END ppg_partrec_universal_evaluator

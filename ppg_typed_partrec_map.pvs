@@ -1,0 +1,62 @@
+% Mathlib Partrec binds the decoded input and maps encode over a partial result.
+% These partial graphs are single-valued; the carriers may be empty.
+% Partial outputs use encode(y), without the Some tag used by total Primrec.
+% Mario Carneiro, Mathlib Computability.Partrec, Partrec and Computable.
+ppg_typed_partrec_map [A,B:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_typed_primrec_map[A,B],ppg_nat_partrec_optional_graph
+
+  singleValuedMap(h:[A -> set[B]]): bool = FORALL(x:A,y,z:B):
+    h(x)(y) AND h(x)(z) IMPLIES y=z
+
+  PartialMap: TYPE = (singleValuedMap)
+
+  E: VAR CodecA
+
+  F: VAR CodecB
+
+  f,g: VAR PartialMap
+
+  h: VAR [A -> B]
+
+  x: VAR A
+
+  y: VAR B
+
+  n,v: VAR nat
+
+  someMap(h): PartialMap = LAMBDA(x:A):{y:B|y=h(x)}
+
+  normalizedPartial(E,F,f): PartialFunction = LAMBDA(n:nat):{v:nat|
+    EXISTS(x:A,y:B):E`decode(n)=up[A](x) AND f(x)(y) AND F`encode(y)=v}
+
+  TypedPartrec(E,F,f): bool = NatPartrec(normalizedPartial(E,F,f))
+
+  TypedComputable(E,F,h): bool = TypedPartrec(E,F,someMap(h))
+
+  someMap_member: LEMMA someMap(h)(x)(y) IFF y=h(x)
+
+  normalizedPartial_none: LEMMA E`decode(n)=bottom[A] IMPLIES
+    NOT normalizedPartial(E,F,f)(n)(v)
+
+  normalizedPartial_some: LEMMA E`decode(n)=up[A](x) IMPLIES
+    (normalizedPartial(E,F,f)(n)(v) IFF EXISTS(y:B):f(x)(y) AND F`encode(y)=v)
+
+  normalizedPartial_at_code: LEMMA ppg_primcodable_core[A].CodecLaw(E) IMPLIES
+    (normalizedPartial(E,F,f)(E`encode(x))(v) IFF EXISTS(y:B):f(x)(y) AND F`encode(y)=v)
+
+  normalizedPartial_code_member: THEOREM ppg_primcodable_core[A].CodecLaw(E) AND
+    ppg_primcodable_core[B].CodecLaw(F) IMPLIES
+    (normalizedPartial(E,F,f)(E`encode(x))(F`encode(y)) IFF f(x)(y))
+
+  normalizedPartial_functional: THEOREM functional(normalizedPartial(E,F,f))
+
+  normalizedTotal_member: LEMMA normalizedPartial(E,F,someMap(h))(n)(v) IFF
+    normalizedMap(E,F,h)(n)=v+1
+
+  normalizedTotal_as_optionalGraph: LEMMA
+    normalizedPartial(E,F,someMap(h))=optionalGraph(normalizedMap(E,F,h))
+
+  typedPrimrec_to_computable: THEOREM TypedPrimrec(E,F,h) IMPLIES TypedComputable(E,F,h)
+
+END ppg_typed_partrec_map

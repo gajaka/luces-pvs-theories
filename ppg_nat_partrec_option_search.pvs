@@ -1,0 +1,74 @@
+% Numeric optional values use zero for None and value+1 for Some.
+% Search tests these genuine total approximations from budget zero.
+% Parameter-preserving bind is derived from pairing and composition.
+% Mario Carneiro, Mathlib Computability.Partrec, Partrec.rfindOpt.
+ppg_nat_partrec_option_search: THEORY
+BEGIN
+  IMPORTING ppg_nat_partrec_closed,ppg_nat_primrec_arithmetic
+
+  f,g: VAR PartialFunction
+
+  u: VAR TotalFunction
+
+  a,b,k,j,v: VAR nat
+
+  bindParamF(f,g): PartialFunction = compF(g,pairF(totalGraph(idT),f))
+
+  optionTestT(u): TotalFunction = compT(zeroTestT,u)
+
+  firstBudgetF(u): PartialFunction = rfindF(totalGraph(optionTestT(u)))
+
+  findSomeF(u): PartialFunction = bindParamF(firstBudgetF(u),totalGraph(compT(predT,u)))
+
+  firstPositive(u,a,k): bool = 0<u(natPair(a,k)) AND
+    (FORALL(j:nat):j<k IMPLIES u(natPair(a,j))=0)
+
+  bindParamF_value: LEMMA bindParamF(f,g)(a)(v) IFF
+    EXISTS(k:nat):f(a)(k) AND g(natPair(a,k))(v)
+
+  partrec_bind_param: THEOREM NatPartrec(f) AND NatPartrec(g) IMPLIES NatPartrec(bindParamF(f,g))
+
+  pr_option_test: LEMMA NatPrimrec(u) IMPLIES NatPrimrec(optionTestT(u))
+
+  partrec_first_budget: LEMMA NatPrimrec(u) IMPLIES NatPartrec(firstBudgetF(u))
+
+  partrec_find_some: THEOREM NatPrimrec(u) IMPLIES NatPartrec(findSomeF(u))
+
+  totalGraph_member: LEMMA totalGraph(u)(a)(v) IFF v=u(a)
+
+  optionTest_graph_zero: LEMMA totalGraph(optionTestT(u))(a)(0) IFF 0<u(a)
+
+  optionTest_graph_nonzero: LEMMA
+    (EXISTS(v:nat):totalGraph(optionTestT(u))(a)(v) AND v/=0) IFF u(a)=0
+
+  firstBudget_member: LEMMA firstBudgetF(u)(a)(k) IFF firstPositive(u,a,k)
+
+  findSome_member: THEOREM findSomeF(u)(a)(v) IFF
+    EXISTS(k:nat):u(natPair(a,k))=v+1 AND
+      (FORALL(j:nat):j<k IMPLIES u(natPair(a,j))=0)
+
+  positive_bounded_step: LEMMA
+    (EXISTS(k:nat):k<=b+1 AND 0<u(natPair(a,k))) IFF
+      (EXISTS(k:nat):k<=b AND 0<u(natPair(a,k))) OR 0<u(natPair(a,b+1))
+
+  firstPositive_base: LEMMA 0<u(natPair(a,0)) IMPLIES firstPositive(u,a,0)
+
+  firstPositive_step: LEMMA (FORALL(j:nat):j<=b IMPLIES u(natPair(a,j))=0) AND
+    0<u(natPair(a,b+1)) IMPLIES firstPositive(u,a,b+1)
+
+  least_positive_bounded: LEMMA (EXISTS(k:nat):k<=b AND 0<u(natPair(a,k))) IMPLIES
+    EXISTS(k:nat):k<=b AND firstPositive(u,a,k)
+
+  first_positive_exists: LEMMA (EXISTS(k:nat):0<u(natPair(a,k))) IMPLIES
+    EXISTS(k:nat):firstPositive(u,a,k)
+
+  findSome_from_first: LEMMA firstPositive(u,a,k) IMPLIES
+    findSomeF(u)(a)(predT(u(natPair(a,k))))
+
+  findSome_defined_iff: THEOREM (EXISTS(v:nat):findSomeF(u)(a)(v)) IFF
+    EXISTS(k:nat):0<u(natPair(a,k))
+
+  findSome_sound: LEMMA findSomeF(u)(a)(v) IMPLIES
+    EXISTS(k:nat):u(natPair(a,k))=v+1
+
+END ppg_nat_partrec_option_search

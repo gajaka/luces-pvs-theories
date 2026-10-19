@@ -1,0 +1,30 @@
+% Removing the numeric Some tag is partial: zero has no output.
+% The genuine start-zero search constructs this graph without a totality oracle.
+% Mario Carneiro, Mathlib Computability.Partrec, Primrec.to_comp.
+ppg_nat_partrec_optional_graph: THEORY
+BEGIN
+  IMPORTING ppg_nat_partrec_option_search
+
+  u: VAR TotalFunction
+
+  n,k,v: VAR nat
+
+  repeatOptionalT(u): TotalFunction = compT(u,leftT)
+
+  optionalGraph(u): PartialFunction = LAMBDA(n:nat):{v:nat|u(n)=v+1}
+
+  repeatOptional_value: LEMMA repeatOptionalT(u)(natPair(n,k))=u(n)
+
+  pr_repeatOptional: LEMMA NatPrimrec(u) IMPLIES NatPrimrec(repeatOptionalT(u))
+
+  findSome_repeat_value: LEMMA findSomeF(repeatOptionalT(u))(n)(v) IFF optionalGraph(u)(n)(v)
+
+  optionalGraph_as_search: LEMMA optionalGraph(u)=findSomeF(repeatOptionalT(u))
+
+  partrec_optionalGraph: THEOREM NatPrimrec(u) IMPLIES NatPartrec(optionalGraph(u))
+
+  optionalGraph_member: LEMMA optionalGraph(u)(n)(v) IFF u(n)=v+1
+
+  optionalGraph_functional: LEMMA functional(optionalGraph(u))
+
+END ppg_nat_partrec_optional_graph

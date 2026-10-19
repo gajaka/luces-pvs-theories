@@ -1,0 +1,68 @@
+% The actual Code constructors represent the eight Nat.Partrec operators.
+% Code.rfind accepts an offset; a preceding pair with zero implements the
+% minimization-from-zero constructor of the least partial-recursive class.
+% Mario Carneiro, Mathlib Computability.PartrecCode, Nat.Partrec.exists_code.
+ppg_partrec_code_representation: THEORY
+BEGIN
+  IMPORTING ppg_nat_partrec_closed,ppg_partrec_evaluation
+
+  c,d: VAR ppg_partrec_code
+
+  f,g: VAR PartialFunction
+
+  u: VAR TotalFunction
+
+  n: VAR nat
+
+  codeDenote(c): PartialFunction = LAMBDA(n:nat): Eval(c,n)
+
+  codeIdentity: ppg_partrec_code = codePair(codeLeft,codeRight)
+
+  codeRfindZero(c): ppg_partrec_code =
+    codeComp(codeRfind(c),codePair(codeIdentity,codeZero))
+
+  Represented(f): bool = EXISTS(c:ppg_partrec_code): codeDenote(c)=f
+
+  denote_zero: LEMMA codeDenote(codeZero)=zeroF
+
+  denote_succ: LEMMA codeDenote(codeSucc)=succF
+
+  denote_left: LEMMA codeDenote(codeLeft)=leftF
+
+  denote_right: LEMMA codeDenote(codeRight)=rightF
+
+  denote_pair: LEMMA codeDenote(codePair(c,d))=pairF(codeDenote(c),codeDenote(d))
+
+  denote_comp: LEMMA codeDenote(codeComp(c,d))=compF(codeDenote(c),codeDenote(d))
+
+  denote_prec: LEMMA codeDenote(codePrec(c,d))=precF(codeDenote(c),codeDenote(d))
+
+  Eval_identity: LEMMA Eval(codeIdentity,n)=pureP(n)
+
+  denote_rfind_zero: LEMMA codeDenote(codeRfindZero(c))=rfindF(codeDenote(c))
+
+  represented_zero: LEMMA Represented(zeroF)
+
+  represented_succ: LEMMA Represented(succF)
+
+  represented_left: LEMMA Represented(leftF)
+
+  represented_right: LEMMA Represented(rightF)
+
+  represented_pair: LEMMA Represented(f) AND Represented(g) IMPLIES Represented(pairF(f,g))
+
+  represented_comp: LEMMA Represented(f) AND Represented(g) IMPLIES Represented(compF(f,g))
+
+  represented_prec: LEMMA Represented(f) AND Represented(g) IMPLIES Represented(precF(f,g))
+
+  represented_rfind: LEMMA Represented(f) IMPLIES Represented(rfindF(f))
+
+  represented_is_closed: THEOREM PartrecClosed(Represented)
+
+  partrec_has_code: THEOREM NatPartrec(f) IMPLIES
+    EXISTS(c:ppg_partrec_code): codeDenote(c)=f
+
+  primrec_has_code: THEOREM NatPrimrec(u) IMPLIES
+    EXISTS(c:ppg_partrec_code): codeDenote(c)=totalGraph(u)
+
+END ppg_partrec_code_representation

@@ -1,0 +1,192 @@
+(|ppg_nat_partrec_optional_graph|
+ (|repeatOptional_value| 0
+  (|repeatOptional_value-1| NIL 4001424659
+   (""
+    (THEN (AUTO-REWRITE "unpair_pair") (SKOSIMP*) (EXPAND "repeatOptionalT")
+     (EXPAND "compT") (EXPAND "leftT") (ASSERT))
+    NIL)
+   ((|repeatOptionalT| CONST-DECL "TotalFunction"
+     |ppg_nat_partrec_optional_graph| NIL)
+    (|leftT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|unpair_pair| FORMULA-DECL NIL |ppg_nat_square_pairing| NIL)
+    (|compT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL))
+   SHOSTAK))
+ (|pr_repeatOptional| 0
+  (|pr_repeatOptional-1| NIL 4001424659
+   (""
+    (THEN (SKOSIMP*) (LEMMA "pr_left") (EXPAND "repeatOptionalT")
+     (USE "pr_comp" ("f" "u!1" "g" "leftT")) (ASSERT))
+    NIL)
+   ((|repeatOptionalT| CONST-DECL "TotalFunction"
+     |ppg_nat_partrec_optional_graph| NIL)
+    (|leftT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|pr_comp| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|pr_left| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL))
+   SHOSTAK))
+ (|findSome_repeat_value| 0
+  (|findSome_repeat_value-1| NIL 4001424659
+   ("" (AUTO-REWRITE "repeatOptional_value")
+    (("" (SKOSIMP*)
+      (("" (REWRITE "findSome_member")
+        (("" (EXPAND "optionalGraph")
+          (("" (ASSERT)
+            (("" (SPLIT)
+              (("1" (SKOSIMP*) NIL NIL)
+               ("2" (SKOSIMP*)
+                (("2" (INST 1 "0")
+                  (("2" (GRIND :IF-MATCH NIL :DEFS NIL) NIL NIL)) NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|findSome_member| FORMULA-DECL NIL |ppg_nat_partrec_option_search| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|repeatOptionalT| CONST-DECL "TotalFunction"
+     |ppg_nat_partrec_optional_graph| NIL)
+    (|repeatOptional_value| FORMULA-DECL NIL |ppg_nat_partrec_optional_graph|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|optionalGraph| CONST-DECL "PartialFunction"
+     |ppg_nat_partrec_optional_graph| NIL))
+   SHOSTAK))
+ (|optionalGraph_as_search| 0
+  (|optionalGraph_as_search-1| NIL 4001424659
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "functions[nat,PartialGraph].extensionality"
+      ("f" "optionalGraph(u!1)" "g" "findSomeF(repeatOptionalT(u!1))"))
+     (ASSERT) (SKOSIMP*)
+     (LEMMA "sets_lemmas[nat].extensionality"
+      ("a" "optionalGraph(u!1)(x!1)" "b"
+       "findSomeF(repeatOptionalT(u!1))(x!1)"))
+     (ASSERT) (SKOSIMP*)
+     (USE "findSome_repeat_value" ("u" "u!1" "n" "x!1" "v" "x!2"))
+     (EXPAND "member") (GRIND :IF-MATCH NIL :DEFS NIL))
+    NIL)
+   ((|extensionality| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|member| CONST-DECL "bool" |sets| NIL)
+    (|findSome_repeat_value| FORMULA-DECL NIL |ppg_nat_partrec_optional_graph|
+     NIL)
+    (|extensionality| FORMULA-DECL NIL |functions| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|PartialFunction| TYPE-EQ-DECL NIL |ppg_partial_nat| NIL)
+    (|optionalGraph| CONST-DECL "PartialFunction"
+     |ppg_nat_partrec_optional_graph| NIL)
+    (|findSomeF| CONST-DECL "PartialFunction" |ppg_nat_partrec_option_search|
+     NIL)
+    (|repeatOptionalT| CONST-DECL "TotalFunction"
+     |ppg_nat_partrec_optional_graph| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|PartialGraph| TYPE-EQ-DECL NIL |ppg_partial_nat| NIL))
+   SHOSTAK))
+ (|partrec_optionalGraph| 0
+  (|partrec_optionalGraph-1| NIL 4001424659
+   (""
+    (THEN (SKOSIMP*) (USE "pr_repeatOptional" ("u" "u!1")) (ASSERT)
+     (USE "partrec_find_some" ("u" "repeatOptionalT(u!1)"))
+     (REWRITE "optionalGraph_as_search") (ASSERT))
+    NIL)
+   ((|optionalGraph_as_search| FORMULA-DECL NIL
+     |ppg_nat_partrec_optional_graph| NIL)
+    (|repeatOptionalT| CONST-DECL "TotalFunction"
+     |ppg_nat_partrec_optional_graph| NIL)
+    (|partrec_find_some| FORMULA-DECL NIL |ppg_nat_partrec_option_search| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|pr_repeatOptional| FORMULA-DECL NIL |ppg_nat_partrec_optional_graph|
+     NIL))
+   SHOSTAK))
+ (|optionalGraph_member| 0
+  (|optionalGraph_member-1| NIL 4001424659
+   ("" (THEN (SKOSIMP*) (EXPAND "optionalGraph") (ASSERT)) NIL)
+   ((|optionalGraph| CONST-DECL "PartialFunction"
+     |ppg_nat_partrec_optional_graph| NIL))
+   SHOSTAK))
+ (|optionalGraph_functional| 0
+  (|optionalGraph_functional-1| NIL 4001424659
+   (""
+    (THEN
+     (GRIND :IF-MATCH NIL :DEFS ("functional" "singleValued" "optionalGraph")))
+    NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|optionalGraph| CONST-DECL "PartialFunction"
+     |ppg_nat_partrec_optional_graph| NIL)
+    (|singleValued| CONST-DECL "bool" |ppg_partial_nat| NIL)
+    (|functional| CONST-DECL "bool" |ppg_partial_nat| NIL))
+   SHOSTAK)))
+
