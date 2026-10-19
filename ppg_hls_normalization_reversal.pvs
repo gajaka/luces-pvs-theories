@@ -1,0 +1,57 @@
+% Canonical occurrence names preserve deletion of an arc and lift its
+% remaining positive paths in both directions. The alternate-path
+% criterion therefore gives the same reversible arcs after renaming.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Fact 2.5 and Section 3.1.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSNormalizationReversal.lean.
+ppg_hls_normalization_reversal[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_normalization[C,G]
+  Q: VAR (Valid)
+  u,v,x,y,z: VAR WNode
+
+  normalize_eraseArc_forward: THEOREM Q`nodes(u) AND Q`nodes(v) AND
+    dagPaths.eraseArc(Edge(Q),u,v)(x,y) IMPLIES
+      dagPaths.eraseArc(Edge(normalize(Q)),canonicalName(Q,u),canonicalName(Q,v))
+        (canonicalName(Q,x),canonicalName(Q,y))
+
+  normalize_eraseArc_backward: THEOREM
+    dagPaths.eraseArc(Edge(normalize(Q)),canonicalName(Q,u),canonicalName(Q,v))(x,y) IMPLIES
+      dagPaths.eraseArc(Edge(Q),u,v)(sourceNode(Q,x),sourceNode(Q,y))
+
+  erasedForward(Q,u,v)(x,y): bool =
+    dagPaths.positivePath(dagPaths.eraseArc(Edge(normalize(Q)),canonicalName(Q,u),
+      canonicalName(Q,v)))(canonicalName(Q,x),canonicalName(Q,y))
+
+  erasedForward_single: LEMMA Q`nodes(u) AND Q`nodes(v) AND
+    dagPaths.eraseArc(Edge(Q),u,v)(x,y) IMPLIES erasedForward(Q,u,v)(x,y)
+
+  erasedForward_trans: LEMMA erasedForward(Q,u,v)(x,y) AND
+    erasedForward(Q,u,v)(y,z) IMPLIES erasedForward(Q,u,v)(x,z)
+
+  erasedForward_positive: LEMMA Q`nodes(u) AND Q`nodes(v) AND
+    dagPaths.positivePath(dagPaths.eraseArc(Edge(Q),u,v))(x,y) IMPLIES
+      erasedForward(Q,u,v)(x,y)
+
+  erasedBackward(Q,u,v)(x,y): bool =
+    dagPaths.positivePath(dagPaths.eraseArc(Edge(Q),u,v))(sourceNode(Q,x),sourceNode(Q,y))
+
+  erasedBackward_single: LEMMA
+    dagPaths.eraseArc(Edge(normalize(Q)),canonicalName(Q,u),canonicalName(Q,v))(x,y) IMPLIES
+      erasedBackward(Q,u,v)(x,y)
+
+  erasedBackward_trans: LEMMA erasedBackward(Q,u,v)(x,y) AND
+    erasedBackward(Q,u,v)(y,z) IMPLIES erasedBackward(Q,u,v)(x,z)
+
+  erasedBackward_positive: LEMMA
+    dagPaths.positivePath(dagPaths.eraseArc(Edge(normalize(Q)),canonicalName(Q,u),canonicalName(Q,v)))(x,y)
+      IMPLIES erasedBackward(Q,u,v)(x,y)
+
+  normalize_reversible_iff: THEOREM Edge(Q)(u,v) IMPLIES
+    (dagPaths.Acyclic(dagPaths.reverseArc(Edge(normalize(Q)),canonicalName(Q,u),canonicalName(Q,v))) IFF
+      dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,v)))
+
+END ppg_hls_normalization_reversal
