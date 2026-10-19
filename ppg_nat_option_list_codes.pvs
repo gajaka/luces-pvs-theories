@@ -1,0 +1,114 @@
+% Mario Carneiro, Mathlib Logic.Equiv.List and Computability.Primrec.List.
+% Natural-number options use 0 for none and n+1 for some n. A list is 0 at
+% nil and 1+Nat.pair(head,tail) at cons. The lookup equations retain that code.
+ppg_nat_option_list_codes: THEORY
+BEGIN
+  IMPORTING ppg_nat_primrec_arithmetic
+
+  f: VAR TotalFunction
+
+  a,l,k,n: VAR nat
+
+  pair_zero: LEMMA natPair(0,0)=0
+
+  unpair_zero: LEMMA unpair(0)=(0,0)
+
+  unpair_components_le: LEMMA leftT(n)<=n AND rightT(n)<=n
+
+  optionMapCode(f,n): nat = IF n=0 THEN 0 ELSE f(n-1)+1 ENDIF
+
+  optionBindCode(f,n): nat = IF n=0 THEN 0 ELSE f(n-1) ENDIF
+
+  optionMapT(f): TotalFunction = LAMBDA(n:nat): optionMapCode(f,n)
+
+  optionBindT(f): TotalFunction = LAMBDA(n:nat): optionBindCode(f,n)
+
+  optionMap_none: LEMMA optionMapCode(f,0)=0
+
+  optionMap_some: LEMMA optionMapCode(f,n+1)=f(n)+1
+
+  optionBind_none: LEMMA optionBindCode(f,0)=0
+
+  optionBind_some: LEMMA optionBindCode(f,n+1)=f(n)
+
+  optionMapT_as_if: LEMMA optionMapT(f)=
+    ifZeroT(idT,zeroT,compT(succT,compT(f,predT)))
+
+  optionBindT_as_if: LEMMA optionBindT(f)=ifZeroT(idT,zeroT,compT(f,predT))
+
+  pr_option_map: THEOREM NatPrimrec(f) IMPLIES NatPrimrec(optionMapT(f))
+
+  pr_option_bind: THEOREM NatPrimrec(f) IMPLIES NatPrimrec(optionBindT(f))
+
+  consCode(a,l): nat = natPair(a,l)+1
+
+  headCode: TotalFunction = LAMBDA(n:nat): leftT(predT(n))
+
+  tailCode: TotalFunction = LAMBDA(n:nat): rightT(predT(n))
+
+  consCodeT: TotalFunction = LAMBDA(n:nat): consCode(leftT(n),rightT(n))
+
+  headCode_nil: LEMMA headCode(0)=0
+
+  tailCode_nil: LEMMA tailCode(0)=0
+
+  consCode_positive: LEMMA consCode(a,l)>0
+
+  headCode_cons: LEMMA headCode(consCode(a,l))=a
+
+  tailCode_cons: LEMMA tailCode(consCode(a,l))=l
+
+  consCode_head_tail: LEMMA n>0 IMPLIES consCode(headCode(n),tailCode(n))=n
+
+  tailCode_strict: LEMMA n>0 IMPLIES tailCode(n)<n
+
+  headCode_as_comp: LEMMA headCode=compT(leftT,predT)
+
+  tailCode_as_comp: LEMMA tailCode=compT(rightT,predT)
+
+  consCodeT_as_succ: LEMMA consCodeT=succT
+
+  pr_headCode: THEOREM NatPrimrec(headCode)
+
+  pr_tailCode: THEOREM NatPrimrec(tailCode)
+
+  pr_consCode: THEOREM NatPrimrec(consCodeT)
+
+  dropStepT: TotalFunction = compT(tailCode,compT(rightT,rightT))
+
+  dropCode(l,k): nat = natRecT(idT,dropStepT,l,k)
+
+  dropCode_zero: LEMMA dropCode(l,0)=l
+
+  dropCode_succ: LEMMA dropCode(l,k+1)=tailCode(dropCode(l,k))
+
+  dropCode_nil: LEMMA dropCode(0,k)=0
+
+  dropCode_tail: LEMMA dropCode(l,k+1)=dropCode(tailCode(l),k)
+
+  dropCode_cons_succ: LEMMA dropCode(consCode(a,l),k+1)=dropCode(l,k)
+
+  dropCodeT: TotalFunction = LAMBDA(n:nat): dropCode(leftT(n),rightT(n))
+
+  dropCodeT_as_prec: LEMMA dropCodeT=precT(idT,dropStepT)
+
+  pr_dropStep: LEMMA NatPrimrec(dropStepT)
+
+  pr_dropCode: THEOREM NatPrimrec(dropCodeT)
+
+  lookupCode(l,k): nat = IF dropCode(l,k)=0 THEN 0 ELSE headCode(dropCode(l,k))+1 ENDIF
+
+  lookupCode_nil: LEMMA lookupCode(0,k)=0
+
+  lookupCode_cons_zero: LEMMA lookupCode(consCode(a,l),0)=a+1
+
+  lookupCode_cons_succ: LEMMA lookupCode(consCode(a,l),k+1)=lookupCode(l,k)
+
+  lookupCodeT: TotalFunction = LAMBDA(n:nat): lookupCode(leftT(n),rightT(n))
+
+  lookupCodeT_as_if: LEMMA lookupCodeT=
+    ifZeroT(dropCodeT,zeroT,compT(succT,compT(headCode,dropCodeT)))
+
+  pr_lookupCode: THEOREM NatPrimrec(lookupCodeT)
+
+END ppg_nat_option_list_codes
