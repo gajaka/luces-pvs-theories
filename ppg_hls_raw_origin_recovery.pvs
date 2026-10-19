@@ -1,0 +1,38 @@
+% The extra/original bit satisfies the intrinsic origin rule. An extra
+% vertex points to its down-colored original. A legal down-colored
+% original cannot receive the required reversible old matching arc.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Appendix C. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSOriginRecovery.lean, final result.
+ppg_hls_raw_origin_recovery[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},
+  universe:{S:finite_set[C]|FORALL(i:C):S(i)}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_origin_rule[C,G], ppg_hls_expansion_reversibility[C,G,universe]
+
+  M: VAR DependencyMatching
+  Q: VAR (Valid)
+  choice: VAR [WNode->ppg_hls_expansion_vertices[C,G].ExpansionChoice]
+  u,v: VAR WNode
+  x,y: VAR ExpandedVertex
+
+  expandedOriginWitness(M,Q,choice)(x,y): bool = expandedNodes(Q,choice)(y) AND
+    NOT y`2 AND expandedDown(choice)(y) AND
+    Edge(rawExpansion(M,Q,choice))(expansionEmbed(M)(x),expansionEmbed(M)(y)) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(rawExpansion(M,Q,choice)),
+      expansionEmbed(M)(x),expansionEmbed(M)(y))) AND
+    M(expandedLabel(M)(x))=expandedLabel(M)(y) AND
+      expandedLabel(M)(x)/=expandedLabel(M)(y)
+
+  raw_origin_extra_witness: LEMMA LegalExpansion(M,Q,choice) AND Q`nodes(u) AND
+    needsExtra(choice(u)) IMPLIES expandedOriginWitness(M,Q,choice)((u,TRUE),(u,FALSE))
+
+  raw_origin_original_impossible: LEMMA LegalExpansion(M,Q,choice) AND Q`nodes(u) AND
+    expandedOriginWitness(M,Q,choice)((u,FALSE),y) IMPLIES FALSE
+
+  rawExpansion_origin_rule_at: THEOREM LegalExpansion(M,Q,choice) AND
+    expandedNodes(Q,choice)(x) IMPLIES
+      (x`2 IFF EXISTS(y:ExpandedVertex):expandedOriginWitness(M,Q,choice)(x,y))
+
+END ppg_hls_raw_origin_recovery

@@ -1,0 +1,75 @@
+% An inserted vertex is recognized by a reversible matching arc into a
+% down-colored original. At a fixed vertex, this rule depends only on
+% outgoing successors. Their strictly smaller heights give uniqueness.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Appendix C. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSOriginRecovery.lean, first four results.
+ppg_hls_origin_rule[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_matching_selection[C,G], ppg_hls_expansion_vertices[C,G],
+    ppg_hls_witness_layers[C,G]
+
+  M: VAR DependencyMatching
+  D: VAR WitnessDAG
+  Q: VAR (Valid)
+  down,e1,e2,extra: VAR [WNode->bool]
+  choice: VAR [WNode->ppg_hls_expansion_vertices[C,G].ExpansionChoice]
+  u,v: VAR WNode
+  k: VAR nat
+
+  OriginRule(M,D,down,extra): bool = FORALL(u:WNode):D`nodes(u) IMPLIES
+    (extra(u) IFF EXISTS(v:WNode):D`nodes(v) AND NOT extra(v) AND down(v) AND
+      Edge(D)(u,v) AND dagPaths.Acyclic(dagPaths.reverseArc(Edge(D),u,v)) AND
+      M(u`1)=v`1 AND u`1/=v`1)
+
+  originRule_at: LEMMA OriginRule(M,D,down,extra) AND D`nodes(u) IMPLIES
+    (extra(u) IFF EXISTS(v:WNode):D`nodes(v) AND NOT extra(v) AND down(v) AND
+      Edge(D)(u,v) AND dagPaths.Acyclic(dagPaths.reverseArc(Edge(D),u,v)) AND
+      M(u`1)=v`1 AND u`1/=v`1)
+
+  origin_agree_step: LEMMA OriginRule(M,D,down,e1) AND OriginRule(M,D,down,e2) AND
+    D`nodes(u) AND (FORALL(v:WNode):D`nodes(v) AND Edge(D)(u,v) IMPLIES e1(v)=e2(v))
+    IMPLIES e1(u)=e2(u)
+
+  agreeBelow(Q,e1,e2,k): bool = FORALL(u:WNode):Q`nodes(u) AND height(Q,u)<k
+    IMPLIES e1(u)=e2(u)
+
+  agreeBelow_zero: LEMMA agreeBelow(Q,e1,e2,0)
+
+  agreeBelow_succ: LEMMA OriginRule(M,Q,down,e1) AND OriginRule(M,Q,down,e2) AND
+    agreeBelow(Q,e1,e2,k) IMPLIES agreeBelow(Q,e1,e2,k+1)
+
+  origin_agree_below: LEMMA OriginRule(M,Q,down,e1) AND OriginRule(M,Q,down,e2)
+    IMPLIES agreeBelow(Q,e1,e2,k)
+
+  originRule_unique: THEOREM OriginRule(M,Q,down,e1) AND OriginRule(M,Q,down,e2)
+    AND Q`nodes(u) IMPLIES e1(u)=e2(u)
+
+  originalDown(choice)(u): bool = choice(u)/=code.choiceUp
+
+  expandedDown(choice)(x:ExpandedVertex): bool =
+    IF x`2 THEN choice(x`1)=code.choiceInsertDown ELSE originalDown(choice)(x`1) ENDIF
+
+  LegalExpansion(M,D,choice): bool =
+    (FORALL(u:WNode):arcNodes(matchingArcs(M,D))(u) IMPLIES choice(u)=code.choiceUp) AND
+    (FORALL(u:WNode):D`nodes(u) AND M(u`1)=u`1 IMPLIES choice(u)=code.choiceUp)
+
+  expandedNode_extra_choice: THEOREM expandedNodes(D,choice)((u,TRUE)) IMPLIES
+    needsExtra(choice(u))
+
+  needsExtra_implies_down: THEOREM needsExtra(choice(u)) IMPLIES originalDown(choice)(u)
+
+  matching_arc_target: LEMMA Edge(D)(u,v) AND M(u`1)=v`1 AND u`1/=v`1 AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(D),u,v)) IMPLIES
+      arcNodes(matchingArcs(M,D))(v)
+
+  legal_original_down_not_reversible: THEOREM LegalExpansion(M,D,choice) AND
+    Edge(D)(u,v) AND M(u`1)=v`1 AND u`1/=v`1 AND originalDown(choice)(v) IMPLIES
+      NOT dagPaths.Acyclic(dagPaths.reverseArc(Edge(D),u,v))
+
+  legal_extra_not_fixed: LEMMA LegalExpansion(M,D,choice) AND D`nodes(u) AND
+    needsExtra(choice(u)) IMPLIES M(u`1)/=u`1
+
+END ppg_hls_origin_rule

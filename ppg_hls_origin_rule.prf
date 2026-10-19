@@ -1,0 +1,523 @@
+(|ppg_hls_origin_rule|
+ (|originRule_at| 0
+  (|originRule_at-1| NIL 4001402665
+   ("" (THEN (SKOSIMP*) (EXPAND "OriginRule") (INST -1 "u!1") (ASSERT)) NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_hls_origin_rule| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_origin_rule| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|OriginRule| CONST-DECL "bool" |ppg_hls_origin_rule| NIL))
+   SHOSTAK))
+ (|origin_agree_step| 0
+  (|origin_agree_step-1| NIL 4001402665
+   ("" (SKOSIMP*)
+    (("" (EXPAND "OriginRule")
+      (("" (INST -1 "u!1")
+        (("" (INST -2 "u!1")
+          (("" (CASE "e1!1(u!1)")
+            (("1" (CASE "e2!1(u!1)")
+              (("1" (ASSERT) NIL NIL)
+               ("2" (ASSERT)
+                (("2" (SKOSIMP*)
+                  (("2" (INST - "v!1")
+                    (("2"
+                      (GRIND :EXCLUDE
+                       ("is_finite" "Edge" "dagPaths.Acyclic"
+                        "dagPaths.reverseArc"))
+                      NIL NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("2" (CASE "e2!1(u!1)")
+              (("1" (ASSERT)
+                (("1" (SKOSIMP*)
+                  (("1" (INST - "v!1")
+                    (("1"
+                      (GRIND :EXCLUDE
+                       ("is_finite" "Edge" "dagPaths.Acyclic"
+                        "dagPaths.reverseArc"))
+                      NIL NIL))
+                    NIL))
+                  NIL))
+                NIL)
+               ("2" (ASSERT) NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|OriginRule| CONST-DECL "bool" |ppg_hls_origin_rule| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_origin_rule| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_origin_rule| NIL))
+   SHOSTAK))
+ (|agreeBelow_zero| 0
+  (|agreeBelow_zero-1| NIL 4001402665
+   ("" (THEN (GRIND :DEFS ("agreeBelow") :EXCLUDE ("is_finite" "height"))) NIL)
+   ((|agreeBelow| CONST-DECL "bool" |ppg_hls_origin_rule| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|Edge| CONST-DECL "dagPaths.ArcRelation" |ppg_hls_witness_dag| NIL)
+    (|positivePath| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|Acyclic| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_origin_rule| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_origin_rule| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|agreeBelow_succ| 0
+  (|agreeBelow_succ-1| NIL 4001402665
+   ("" (SKOSIMP*)
+    (("" (EXPAND "agreeBelow")
+      (("" (SKOSIMP*)
+        ((""
+          (LEMMA "origin_agree_step"
+           ("M" "M!1" "D" "Q!1" "down" "down!1" "e1" "e1!1" "e2" "e2!1" "u"
+            "u!1"))
+          (("" (LEMMA "height_lt_of_edge" ("Q" "Q!1" "u" "u!1"))
+            ((""
+              (GRIND :EXCLUDE
+               ("is_finite" "OriginRule" "agreeBelow" "height" "height_eq_sup"
+                "matchingArcs" "arcNodes" "LegalExpansion" "originalDown"
+                "expandedDown" "expandedNodes" "needsExtra" "expandedBefore"
+                "topo.topoBefore" "expansionEmbed" "expandedBuild.build"
+                "expandedLabel" "expandedTag" "Edge" "Reach" "positivePath"
+                "rawExpansion" "dagPaths.Acyclic" "dagPaths.reverseArc"
+                "expandedOriginWitness"))
+              (("1" (LEMMA "height_lt_of_edge" ("Q" "Q!1" "u" "u!1" "v" "v!1"))
+                (("1" (ASSERT) NIL NIL)) NIL)
+               ("2" (LEMMA "height_lt_of_edge" ("Q" "Q!1" "u" "u!1" "v" "v!1"))
+                (("2" (ASSERT) NIL NIL)) NIL)
+               ("3" (LEMMA "height_lt_of_edge" ("Q" "Q!1" "u" "u!1" "v" "v!1"))
+                (("3" (ASSERT) NIL NIL)) NIL)
+               ("4" (LEMMA "height_lt_of_edge" ("Q" "Q!1" "u" "u!1" "v" "v!1"))
+                (("4" (ASSERT) NIL NIL)) NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|agreeBelow| CONST-DECL "bool" |ppg_hls_origin_rule| NIL)
+    (|origin_agree_step| FORMULA-DECL NIL |ppg_hls_origin_rule| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_origin_rule| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_origin_rule| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|height_lt_of_edge| FORMULA-DECL NIL |ppg_hls_witness_layers| NIL))
+   SHOSTAK))
+ (|origin_agree_below| 0
+  (|origin_agree_below-1| NIL 4001402665
+   ("" (INDUCT "k")
+    (("1" (SKOSIMP*)
+      (("1" (LEMMA "agreeBelow_zero")
+        (("1" (LEMMA "agreeBelow_succ")
+          (("1"
+            (GRIND :EXCLUDE
+             ("is_finite" "OriginRule" "agreeBelow" "height" "height_eq_sup"
+              "matchingArcs" "arcNodes" "LegalExpansion" "originalDown"
+              "expandedDown" "expandedNodes" "needsExtra" "expandedBefore"
+              "topo.topoBefore" "expansionEmbed" "expandedBuild.build"
+              "expandedLabel" "expandedTag" "Edge" "Reach" "positivePath"
+              "rawExpansion" "dagPaths.Acyclic" "dagPaths.reverseArc"
+              "expandedOriginWitness"))
+            NIL NIL))
+          NIL))
+        NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2" (LEMMA "agreeBelow_zero")
+        (("2" (LEMMA "agreeBelow_succ")
+          (("2"
+            (GRIND :EXCLUDE
+             ("is_finite" "OriginRule" "agreeBelow" "height" "height_eq_sup"
+              "matchingArcs" "arcNodes" "LegalExpansion" "originalDown"
+              "expandedDown" "expandedNodes" "needsExtra" "expandedBefore"
+              "topo.topoBefore" "expansionEmbed" "expandedBuild.build"
+              "expandedLabel" "expandedTag" "Edge" "Reach" "positivePath"
+              "rawExpansion" "dagPaths.Acyclic" "dagPaths.reverseArc"
+              "expandedOriginWitness"))
+            NIL NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|agreeBelow_succ| FORMULA-DECL NIL |ppg_hls_origin_rule| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|minus_u8_u8| APPLICATION-JUDGEMENT "int16" |integertypes| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|even_minus_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|agreeBelow_zero| FORMULA-DECL NIL |ppg_hls_origin_rule| NIL)
+    (|nat_induction| FORMULA-DECL NIL |naturalnumbers| NIL)
+    (|agreeBelow| CONST-DECL "bool" |ppg_hls_origin_rule| NIL)
+    (|OriginRule| CONST-DECL "bool" |ppg_hls_origin_rule| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_origin_rule| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_origin_rule| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|originRule_unique| 0
+  (|originRule_unique-1| NIL 4001402665
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "origin_agree_below"
+      ("M" "M!1" "Q" "Q!1" "down" "down!1" "e1" "e1!1" "e2" "e2!1" "k"
+       "height(Q!1,u!1)+1"))
+     (EXPAND "agreeBelow")
+     (GRIND :EXCLUDE
+      ("is_finite" "OriginRule" "agreeBelow" "height" "height_eq_sup"
+       "matchingArcs" "arcNodes" "LegalExpansion" "originalDown" "expandedDown"
+       "expandedNodes" "needsExtra" "expandedBefore" "topo.topoBefore"
+       "expansionEmbed" "expandedBuild.build" "expandedLabel" "expandedTag"
+       "Edge" "Reach" "positivePath" "rawExpansion" "dagPaths.Acyclic"
+       "dagPaths.reverseArc" "expandedOriginWitness")))
+    NIL)
+   ((|agreeBelow| CONST-DECL "bool" |ppg_hls_origin_rule| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|height| DEF-DECL "nat" |ppg_hls_witness_layers| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_origin_rule| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_origin_rule| NIL)
+    (|origin_agree_below| FORMULA-DECL NIL |ppg_hls_origin_rule| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK))
+ (|expandedNode_extra_choice| 0
+  (|expandedNode_extra_choice-1| NIL 4001402665
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "expandedNodes_member"
+      ("D" "D!1" "choice" "choice!1" "x" "(u!1,TRUE)"))
+     (GRIND :EXCLUDE
+      ("is_finite" "OriginRule" "agreeBelow" "height" "height_eq_sup"
+       "matchingArcs" "arcNodes" "LegalExpansion" "originalDown" "expandedDown"
+       "expandedNodes" "needsExtra" "expandedBefore" "topo.topoBefore"
+       "expansionEmbed" "expandedBuild.build" "expandedLabel" "expandedTag"
+       "Edge" "Reach" "positivePath" "rawExpansion" "dagPaths.Acyclic"
+       "dagPaths.reverseArc" "expandedOriginWitness")))
+    NIL)
+   ((|expandedNodes_member| FORMULA-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|ExpansionChoice| TYPE-EQ-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|ExpandedVertex| TYPE-EQ-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_origin_rule| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_origin_rule| NIL))
+   SHOSTAK))
+ (|needsExtra_implies_down| 0
+  (|needsExtra_implies_down-1| NIL 4001402665
+   (""
+    (THEN
+     (GRIND :DEFS
+      ("needsExtra" "originalDown" "code.choiceUp" "code.choiceInsertUp"
+       "code.choiceInsertDown")
+      :EXCLUDE ("is_finite")))
+    NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_hls_origin_rule| NIL)
+    (|choiceInsertUp| CONST-DECL "ExpansionChoice" |ppg_hls_expansion_decoder|
+     NIL)
+    (|choiceInsertDown| CONST-DECL "ExpansionChoice"
+     |ppg_hls_expansion_decoder| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_origin_rule| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|needsExtra| CONST-DECL "bool" |ppg_hls_expansion_vertices| NIL)
+    (|choiceUp| CONST-DECL "ExpansionChoice" |ppg_hls_expansion_decoder| NIL)
+    (|originalDown| CONST-DECL "bool" |ppg_hls_origin_rule| NIL))
+   SHOSTAK))
+ (|matching_arc_target| 0
+  (|matching_arc_target-1| NIL 4001402665
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "arcNodes_member" ("E" "matchingArcs(M!1,D!1)" "u" "v!1"))
+     (GRIND :DEFS ("matchingArcs" "Edge") :EXCLUDE
+      ("is_finite" "arcNodes" "dagPaths.Acyclic" "dagPaths.reverseArc")))
+    NIL)
+   ((|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|Edge| CONST-DECL "dagPaths.ArcRelation" |ppg_hls_witness_dag| NIL)
+    (|arcNodes_member| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|matchingArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_origin_rule| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_origin_rule| NIL))
+   SHOSTAK))
+ (|legal_original_down_not_reversible| 0
+  (|legal_original_down_not_reversible-1| NIL 4001402665
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "matching_arc_target" ("M" "M!1" "D" "D!1" "u" "u!1" "v" "v!1"))
+     (GRIND :DEFS ("LegalExpansion" "originalDown") :EXCLUDE
+      ("is_finite" "matchingArcs" "arcNodes" "Edge" "dagPaths.Acyclic"
+       "dagPaths.reverseArc")))
+    NIL)
+   ((|originalDown| CONST-DECL "bool" |ppg_hls_origin_rule| NIL)
+    (|LegalExpansion| CONST-DECL "bool" |ppg_hls_origin_rule| NIL)
+    (|choiceUp| CONST-DECL "ExpansionChoice" |ppg_hls_expansion_decoder| NIL)
+    (|matching_arc_target| FORMULA-DECL NIL |ppg_hls_origin_rule| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_origin_rule| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_origin_rule| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL))
+   SHOSTAK))
+ (|legal_extra_not_fixed| 0
+  (|legal_extra_not_fixed-1| NIL 4001402665
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "needsExtra_implies_down" ("choice" "choice!1" "u" "u!1"))
+     (GRIND :DEFS ("LegalExpansion" "originalDown") :EXCLUDE
+      ("is_finite" "matchingArcs" "arcNodes" "needsExtra")))
+    NIL)
+   ((|LegalExpansion| CONST-DECL "bool" |ppg_hls_origin_rule| NIL)
+    (|originalDown| CONST-DECL "bool" |ppg_hls_origin_rule| NIL)
+    (|choiceUp| CONST-DECL "ExpansionChoice" |ppg_hls_expansion_decoder| NIL)
+    (|needsExtra_implies_down| FORMULA-DECL NIL |ppg_hls_origin_rule| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_origin_rule| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_origin_rule| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|ExpansionChoice| TYPE-EQ-DECL NIL |ppg_hls_expansion_vertices| NIL))
+   SHOSTAK)))
+
