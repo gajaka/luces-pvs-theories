@@ -1,0 +1,73 @@
+% Mario Carneiro, Mathlib Logic.Equiv.List, encodeList/decodeList.
+% This is the actual square-pairing code on finite lists of natural numbers.
+% Every natural number decodes; positive codes decrease along their tails.
+ppg_nat_list_square_codec: THEORY
+BEGIN
+  IMPORTING ppg_nat_option_list_codes
+
+  NatList: TYPE = list[nat]
+
+  L: VAR NatList
+
+  a,n,k: VAR nat
+
+  encodeNatList(L): RECURSIVE nat = IF null?(L) THEN 0
+    ELSE consCode(car(L),encodeNatList(cdr(L))) ENDIF MEASURE length(L)
+
+  decodeNatList(n): RECURSIVE NatList = IF n=0 THEN null[nat]
+    ELSE cons[nat](headCode(n),decodeNatList(tailCode(n))) ENDIF MEASURE n
+
+  encodeNatList_nil: LEMMA encodeNatList(null[nat])=0
+
+  encodeNatList_cons: LEMMA encodeNatList(cons[nat](a,L))=consCode(a,encodeNatList(L))
+
+  decodeNatList_zero: LEMMA decodeNatList(0)=null[nat]
+
+  decodeNatList_cons: LEMMA decodeNatList(consCode(a,n))=
+    cons[nat](a,decodeNatList(n))
+
+  decode_encodeNatList: THEOREM decodeNatList(encodeNatList(L))=L
+
+  encode_decodeNatList_step: LEMMA
+    (FORALL(k:nat): k<n IMPLIES encodeNatList(decodeNatList(k))=k)
+    IMPLIES encodeNatList(decodeNatList(n))=n
+
+  encode_decodeNatList: THEOREM encodeNatList(decodeNatList(n))=n
+
+  encodeNatList_injective: THEOREM
+    FORALL(M:NatList): encodeNatList(L)=encodeNatList(M) IMPLIES L=M
+
+  length_le_encodeNatList: THEOREM length(L)<=encodeNatList(L)
+
+  normalizeNatList: TotalFunction = LAMBDA(n:nat): encodeNatList(decodeNatList(n))+1
+
+  normalizeNatList_as_succ: LEMMA normalizeNatList=succT
+
+  pr_normalizeNatList: THEOREM NatPrimrec(normalizeNatList)
+
+  tailCode_encodeNatList: LEMMA tailCode(encodeNatList(L))=
+    IF null?(L) THEN 0 ELSE encodeNatList(cdr(L)) ENDIF
+
+  dropNatList(L,k): RECURSIVE NatList = IF k=0 OR null?(L) THEN L
+    ELSE dropNatList(cdr(L),k-1) ENDIF MEASURE k
+
+  dropNatList_nil: LEMMA dropNatList(null[nat],k)=null[nat]
+
+  dropNatList_zero: LEMMA dropNatList(L,0)=L
+
+  dropNatList_cons_succ: LEMMA dropNatList(cons[nat](a,L),k+1)=dropNatList(L,k)
+
+  encode_dropNatList: THEOREM encodeNatList(dropNatList(L,k))=dropCode(encodeNatList(L),k)
+
+  lookupNatList(L,k): RECURSIVE nat = IF null?(L) THEN 0 ELSIF k=0 THEN car(L)+1
+    ELSE lookupNatList(cdr(L),k-1) ENDIF MEASURE k
+
+  lookupNatList_nil: LEMMA lookupNatList(null[nat],k)=0
+
+  lookupNatList_cons_zero: LEMMA lookupNatList(cons[nat](a,L),0)=a+1
+
+  lookupNatList_cons_succ: LEMMA lookupNatList(cons[nat](a,L),k+1)=lookupNatList(L,k)
+
+  lookupCode_encodeNatList: THEOREM lookupCode(encodeNatList(L),k)=lookupNatList(L,k)
+
+END ppg_nat_list_square_codec
