@@ -1,0 +1,698 @@
+(|ppg_hls_label_ranks|
+ (|mem_labelNodes| 0
+  (|mem_labelNodes-1| NIL 4001388468
+   (""
+    (THEN
+     (GRIND :DEFS ("labelNodes" "intersection" "member") :EXCLUDE
+      ("is_finite")))
+    NIL)
+   ((|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|labelNodes| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_label_ranks|
+     NIL))
+   SHOSTAK))
+ (|mem_labelPrior| 0
+  (|mem_labelPrior-1| NIL 4001388468
+   (""
+    (THEN
+     (GRIND :DEFS ("labelPrior" "intersection" "member") :EXCLUDE
+      ("Edge" "is_finite")))
+    NIL)
+   ((|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|labelPrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_label_ranks|
+     NIL))
+   SHOSTAK))
+ (|labelPrior_subset_of_edge| 0
+  (|labelPrior_subset_of_edge-1| NIL 4001388468
+   (""
+    (THEN (SKOSIMP*) (EXPAND "subset?") (SKOSIMP*) (EXPAND "labelPrior")
+     (EXPAND "intersection") (EXPAND "member") (FLATTEN)
+     (LEMMA "positivePath_single" ("D" "Q!1" "u" "x!1" "v" "u!1"))
+     (LEMMA "positivePath_single" ("D" "Q!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "positivePath_trans" ("D" "Q!1" "u" "x!1" "v" "u!1" "w" "v!1"))
+     (LEMMA "edge_of_transGen_dependent" ("Q" "Q!1" "u" "x!1" "v" "v!1"))
+     (GRIND :DEFS ("member") :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "labelRank" "labelPrior"
+       "labelNodes" "height" "is_finite")))
+    NIL)
+   ((|intersection| CONST-DECL "set" |sets| NIL)
+    (|edge_of_transGen_dependent| FORMULA-DECL NIL |ppg_hls_edge_completion|
+     NIL)
+    (|positivePath_trans| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_label_ranks| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|positivePath_single| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|labelPrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_label_ranks|
+     NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL))
+   SHOSTAK))
+ (|labelPrior_strict| 0
+  (|labelPrior_strict-1| NIL 4001388468
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "labelPrior_subset_of_edge" ("Q" "Q!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "valid_supported" ("D" "Q!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "edge_ne" ("D" "Q!1" "u" "u!1" "v" "u!1"))
+     (LEMMA "mem_labelPrior" ("D" "Q!1" "u" "u!1" "w" "u!1"))
+     (LEMMA "mem_labelPrior" ("D" "Q!1" "u" "v!1" "w" "u!1")) (TYPEPRED "Q!1")
+     (GRIND :DEFS ("strict_subset?") :EXCLUDE
+      ("labelPrior" "subset?" "positivePath" "Edge" "Valid" "is_finite")))
+    NIL)
+   ((|valid_supported| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|mem_labelPrior| FORMULA-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|strict_subset?| CONST-DECL "bool" |sets| NIL)
+    (|strict_subset_is_strict_order| NAME-JUDGEMENT "(strict_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|edge_ne| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|labelPrior_subset_of_edge| FORMULA-DECL NIL |ppg_hls_label_ranks| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_label_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL))
+   SHOSTAK))
+ (|labelRank_lt_of_edge| 0
+  (|labelRank_lt_of_edge-1| NIL 4001388468
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "labelPrior_strict" ("Q" "Q!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "card_strict_subset"
+      ("A" "labelPrior(Q!1,u!1)" "B" "labelPrior(Q!1,v!1)"))
+     (GRIND :DEFS ("labelRank") :EXCLUDE ("labelPrior" "Edge" "is_finite")))
+    NIL)
+   ((|labelPrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_label_ranks|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|card_strict_subset| FORMULA-DECL NIL |finite_sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|strict_subset?| CONST-DECL "bool" |sets| NIL)
+    (|labelRank| CONST-DECL "nat" |ppg_hls_label_ranks| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|strict_subset_is_strict_order| NAME-JUDGEMENT "(strict_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|labelPrior_strict| FORMULA-DECL NIL |ppg_hls_label_ranks| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_label_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL))
+   SHOSTAK))
+ (|eq_of_same_labelRank| 0
+  (|eq_of_same_labelRank-1| NIL 4001388468
+   (""
+    (THEN (SKOSIMP*) (LEMMA "valid_oriented" ("D" "Q!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "labelRank_lt_of_edge" ("Q" "Q!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "labelRank_lt_of_edge" ("Q" "Q!1" "u" "v!1" "v" "u!1"))
+     (TYPEPRED "Q!1") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|labelRank_lt_of_edge| FORMULA-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|valid_oriented| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_label_ranks| NIL))
+   SHOSTAK))
+ (|canonicalName_injective| 0
+  (|canonicalName_injective-1| NIL 4001388468
+   (""
+    (THEN (SKOSIMP*) (LEMMA "eq_of_same_labelRank")
+     (GRIND :DEFS ("canonicalName") :IF-MATCH ALL :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "labelRank" "labelPrior"
+       "labelNodes" "height" "is_finite")))
+    NIL)
+   ((|canonicalName| CONST-DECL "WNode" |ppg_hls_label_ranks| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_label_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|eq_of_same_labelRank| FORMULA-DECL NIL |ppg_hls_label_ranks| NIL))
+   SHOSTAK))
+ (|labelPrior_subset_labelNodes| 0
+  (|labelPrior_subset_labelNodes-1| NIL 4001388468
+   ("" (THEN (GRIND :IF-MATCH NIL :EXCLUDE ("Edge" "is_finite"))) NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|labelNodes| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_label_ranks|
+     NIL)
+    (|labelPrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_label_ranks|
+     NIL))
+   SHOSTAK))
+ (|labelPrior_no_self| 0
+  (|labelPrior_no_self-1| NIL 4001388468
+   (""
+    (THEN (SKOSIMP*) (LEMMA "edge_ne" ("D" "Q!1" "u" "u!1" "v" "u!1"))
+     (TYPEPRED "Q!1")
+     (GRIND :DEFS ("labelPrior") :EXCLUDE ("Edge" "Valid" "is_finite")))
+    NIL)
+   ((|labelPrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_label_ranks|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|edge_ne| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_label_ranks| NIL))
+   SHOSTAK))
+ (|labelRank_lt_card| 0
+  (|labelRank_lt_card-1| NIL 4001388468
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "labelPrior_subset_labelNodes" ("D" "Q!1" "u" "u!1"))
+     (LEMMA "labelPrior_no_self" ("Q" "Q!1" "u" "u!1"))
+     (LEMMA "mem_labelNodes" ("D" "Q!1" "i" "u!1`1" "u" "u!1"))
+     (LEMMA "card_strict_subset"
+      ("A" "labelPrior(Q!1,u!1)" "B" "labelNodes(Q!1,u!1`1)"))
+     (GRIND :DEFS ("labelRank" "strict_subset?") :EXCLUDE
+      ("labelPrior" "labelNodes" "subset?" "Edge" "is_finite")))
+    NIL)
+   ((|labelPrior_no_self| FORMULA-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|labelNodes| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_label_ranks|
+     NIL)
+    (|labelPrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_label_ranks|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|card_strict_subset| FORMULA-DECL NIL |finite_sets| NIL)
+    (|labelRank| CONST-DECL "nat" |ppg_hls_label_ranks| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|strict_subset?| CONST-DECL "bool" |sets| NIL)
+    (|strict_subset_is_strict_order| NAME-JUDGEMENT "(strict_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|mem_labelNodes| FORMULA-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|labelPrior_subset_labelNodes| FORMULA-DECL NIL |ppg_hls_label_ranks| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_label_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL))
+   SHOSTAK))
+ (|rank_injective_on_label| 0
+  (|rank_injective_on_label-1| NIL 4001388468
+   (""
+    (THEN (LEMMA "eq_of_same_labelRank")
+     (GRIND :DEFS ("rankImages.injOn" "labelNodes") :IF-MATCH ALL :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "labelRank" "labelPrior"
+       "height" "natRange" "is_finite")))
+    NIL)
+   ((|eq_of_same_labelRank| FORMULA-DECL NIL |ppg_hls_label_ranks| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_label_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|labelNodes| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_label_ranks|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|injOn| CONST-DECL "bool" |ppg_finite_bijection| NIL))
+   SHOSTAK))
+ (|rank_image_subset_range| 0
+  (|rank_image_subset_range-1| NIL 4001388468
+   (""
+    (THEN (LEMMA "labelRank_lt_card") (AUTO-REWRITE "natRange_member")
+     (GRIND :DEFS ("image" "subset?" "labelNodes") :IF-MATCH ALL :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "labelRank" "labelPrior"
+       "height" "natRange" "is_finite")))
+    NIL)
+   ((|labelRank_lt_card| FORMULA-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|natRange_member| FORMULA-DECL NIL |ppg_nat_range| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|labelNodes| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_label_ranks|
+     NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_label_ranks| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_label_ranks| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|labelRank_image_eq_range| 0
+  (|labelRank_image_eq_range-1| NIL 4001388468
+   (""
+    (THEN (SKOSIMP*) (LEMMA "rank_injective_on_label" ("Q" "Q!1" "i" "i!1"))
+     (LEMMA "rankImages.card_image_injOn"
+      ("S" "labelNodes(Q!1,i!1)" "f" "LAMBDA(u:WNode):labelRank(Q!1,u)"))
+     (LEMMA "rank_image_subset_range" ("Q" "Q!1" "i" "i!1"))
+     (LEMMA "range_card" ("n" "card(labelNodes(Q!1,i!1))"))
+     (LEMMA "same_card_subset"
+      ("A"
+       "image[WNode,nat](LAMBDA(u:WNode):labelRank(Q!1,u),labelNodes(Q!1,i!1))"
+       "B" "natRange(card(labelNodes(Q!1,i!1)))"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|labelRank| CONST-DECL "nat" |ppg_hls_label_ranks| NIL)
+    (|labelNodes| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_label_ranks|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|card_image_injOn| FORMULA-DECL NIL |ppg_finite_bijection| NIL)
+    (|card| CONST-DECL "{n: nat | n = Card(S)}" |finite_sets| NIL)
+    (|Card| CONST-DECL "nat" |finite_sets| NIL)
+    (|range_card| FORMULA-DECL NIL |ppg_hls_canonical_encoding| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|same_card_subset| FORMULA-DECL NIL |finite_sets| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|natRange| DEF-DECL "finite_set[nat]" |ppg_nat_range| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|rank_image_subset_range| FORMULA-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|rank_injective_on_label| FORMULA-DECL NIL |ppg_hls_label_ranks| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_label_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL))
+   SHOSTAK))
+ (|exists_node_of_labelRank_lt| 0
+  (|exists_node_of_labelRank_lt-1| NIL 4001388468
+   ("" (SKOSIMP*)
+    (("" (LEMMA "labelRank_image_eq_range" ("Q" "Q!1" "i" "i!1"))
+      ((""
+        (LEMMA "natRange_member" ("n" "card(labelNodes(Q!1,i!1))" "k" "n!1"))
+        (("" (ASSERT)
+          ((""
+            (CASE
+                "image[WNode,nat](LAMBDA(u:WNode):labelRank(Q!1,u),labelNodes(Q!1,i!1))(n!1)")
+            (("1"
+              (GRIND :DEFS ("image" "labelNodes") :EXCLUDE
+               ("Edge" "Valid" "Canonical" "labelRank" "labelPrior" "height"
+                "natRange" "is_finite"))
+              NIL NIL)
+             ("2" (REPLACE -2) (("2" (PROPAX) NIL NIL)) NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|labelNodes| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_label_ranks|
+     NIL)
+    (|card| CONST-DECL "{n: nat | n = Card(S)}" |finite_sets| NIL)
+    (|Card| CONST-DECL "nat" |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|natRange_member| FORMULA-DECL NIL |ppg_nat_range| NIL)
+    (|labelRank| CONST-DECL "nat" |ppg_hls_label_ranks| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|labelRank_image_eq_range| FORMULA-DECL NIL |ppg_hls_label_ranks| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_label_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL))
+   SHOSTAK))
+ (|labelPrior_eq_earlierLabelNodes| 0
+  (|labelPrior_eq_earlierLabelNodes-1| NIL 4001388468
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY)
+     (LEMMA "height_lt_of_edge" ("Q" "Q!1" "u" "(x!1,x!2)" "v" "u!1"))
+     (LEMMA "same_label_height_iff_index"
+      ("Q" "Q!1" "i" "u!1`1" "m" "x!2" "n" "u!1`2"))
+     (LEMMA "canonical_chain" ("D" "Q!1" "i" "u!1`1" "m" "x!2" "n" "u!1`2"))
+     (LEMMA "node_with_label" ("u" "(x!1,x!2)" "i" "u!1`1"))
+     (LEMMA "node_eta" ("u" "u!1"))
+     (GRIND :DEFS ("labelPrior" "earlierLabelNodes") :IF-MATCH ALL :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "labelRank" "height"
+       "is_finite")))
+    NIL)
+   ((|height_lt_of_edge| FORMULA-DECL NIL |ppg_hls_witness_layers| NIL)
+    (|canonical_chain| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|node_eta| FORMULA-DECL NIL |ppg_hls_canonical_encoding| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|node_with_label| FORMULA-DECL NIL |ppg_hls_canonical_encoding| NIL)
+    (|same_label_height_iff_index| FORMULA-DECL NIL
+     |ppg_hls_canonical_encoding| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|labelPrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_label_ranks|
+     NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|earlierLabelNodes| CONST-DECL "finite_set[WNode[C, G]]"
+     |ppg_hls_canonical_encoding| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_label_ranks| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_label_ranks| NIL))
+   SHOSTAK))
+ (|labelRank_eq_index_of_canonical| 0
+  (|labelRank_eq_index_of_canonical-1| NIL 4001388468
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "labelPrior_eq_earlierLabelNodes" ("Q" "Q!1" "u" "u!1"))
+     (LEMMA "earlierLabelNodes_card" ("D" "Q!1" "i" "u!1`1" "n" "u!1`2"))
+     (LEMMA "node_eta" ("u" "u!1"))
+     (GRIND :DEFS ("labelRank") :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "labelPrior" "labelNodes"
+       "height" "is_finite")))
+    NIL)
+   ((|earlierLabelNodes_card| FORMULA-DECL NIL |ppg_hls_canonical_encoding|
+     NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|labelRank| CONST-DECL "nat" |ppg_hls_label_ranks| NIL)
+    (|earlierLabelNodes| CONST-DECL "finite_set[WNode[C, G]]"
+     |ppg_hls_canonical_encoding| NIL)
+    (|node_eta| FORMULA-DECL NIL |ppg_hls_canonical_encoding| NIL)
+    (|labelPrior_eq_earlierLabelNodes| FORMULA-DECL NIL |ppg_hls_label_ranks|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_label_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL))
+   SHOSTAK))
+ (|canonicalName_eq_of_canonical| 0
+  (|canonicalName_eq_of_canonical-1| NIL 4001388468
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "labelRank_eq_index_of_canonical" ("Q" "Q!1" "u" "u!1"))
+     (LEMMA "node_eta" ("u" "u!1"))
+     (GRIND :DEFS ("canonicalName") :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "labelRank" "labelPrior"
+       "labelNodes" "height" "is_finite")))
+    NIL)
+   ((|node_eta| FORMULA-DECL NIL |ppg_hls_canonical_encoding| NIL)
+    (|canonicalName| CONST-DECL "WNode" |ppg_hls_label_ranks| NIL)
+    (|labelRank_eq_index_of_canonical| FORMULA-DECL NIL |ppg_hls_label_ranks|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_label_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL))
+   SHOSTAK)))
+
