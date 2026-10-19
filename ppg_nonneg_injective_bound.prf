@@ -1,0 +1,107 @@
+(|ppg_nonneg_injective_bound|
+ (|images_TCC1| 0
+  (|images_TCC1-1| NIL 4001357459 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|images| SUBTYPE "LAMBDA (a, b: nonneg_real): a + b"
+    "{f: [nonneg_real, nonneg_real -> nonneg_real] | booleans.AND(operator_defs[nonneg_real].identity?(ppg_nonneg_injective_bound.f)(0), booleans.AND(operator_defs[nonneg_real].associative?(ppg_nonneg_injective_bound.f), operator_defs[nonneg_real].commutative?(ppg_nonneg_injective_bound.f)))}"
+    (8 39 8 66))))
+ (|weighted_image| 0
+  (|weighted_image-1| NIL 4001357461
+   (""
+    (THEN (SKOSIMP*) (LEMMA "images.sum_image" ("S" "H!1" "h" "i!1" "f" "g!1"))
+     (LEMMA "sourceFolds.sum_congr"
+      ("S" "H!1" "f" "LAMBDA(x:D):g!1(i!1(x))" "g" "f!1"))
+     (GRIND :EXCLUDE ("sum" "is_finite")))
+    NIL)
+   ((|sum_congr| FORMULA-DECL NIL |ppg_nonneg_folds| NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|sum_image| FORMULA-DECL NIL |ppg_monoid_image| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_nonneg_injective_bound| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_nonneg_injective_bound| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL))
+   SHOSTAK))
+ (|finite_image_bound| 0
+  (|finite_image_bound-1| NIL 4001357461
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "weighted_image" ("i" "i!1" "f" "f!1" "g" "g!1" "H" "H!1"))
+     (LEMMA "targetSums.tsum_finite_bound" ("f" "g!1" "b" "b!1"))
+     (GRIND :EXCLUDE ("tsum" "sum" "is_finite")))
+    NIL)
+   ((|tsum_finite_bound| FORMULA-DECL NIL |ppg_nonneg_tsum| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|weighted_image| FORMULA-DECL NIL |ppg_nonneg_injective_bound| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_nonneg_injective_bound| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_nonneg_injective_bound| NIL))
+   SHOSTAK))
+ (|tsum_comp_le_tsum_of_injective| 0
+  (|tsum_comp_le_tsum_of_injective-1| NIL 4001357461
+   (""
+    (THEN (SKOSIMP*) (REWRITE "finite_bounds_order") (SKOSIMP*)
+     (REWRITE "sourceSums.tsum_finite_bound") (SKOSIMP*)
+     (LEMMA "finite_image_bound"
+      ("i" "i!1" "f" "f!1" "g" "g!1" "H" "F!1" "b" "b!1"))
+     (ASSERT))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|finite_image_bound| FORMULA-DECL NIL |ppg_nonneg_injective_bound| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|tsum_finite_bound| FORMULA-DECL NIL |ppg_nonneg_tsum| NIL)
+    (R FORMAL-TYPE-DECL NIL |ppg_nonneg_injective_bound| NIL)
+    (|tsum| CONST-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_nonneg_injective_bound| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|finite_bounds_order| FORMULA-DECL NIL |ppg_enn_order| NIL))
+   SHOSTAK)))
+

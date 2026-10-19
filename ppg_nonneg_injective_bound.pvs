@@ -1,0 +1,28 @@
+% An injection preserves each finite partial sum after taking its image.
+% Nonnegativity then bounds the unrestricted source sum by the target sum.
+% Suprema over all finite subsets include uncountable carriers and do not
+% require a summability or finite-total hypothesis.
+ppg_nonneg_injective_bound[D,R:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_nonneg_tsum[D] AS sourceSums, ppg_nonneg_tsum[R] AS targetSums,
+    ppg_monoid_image[D,R,nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b] AS images,
+    ppg_monoid_sum[D,nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b] AS domainSums,
+    ppg_monoid_sum[R,nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b] AS codomainSums,
+    ppg_nonneg_folds[D] AS sourceFolds, ppg_enn_order
+  i: VAR [D->R]
+  f: VAR [D->nonneg_real]
+  g: VAR [R->nonneg_real]
+  H: VAR finite_set[D]
+  b: VAR nonneg_real
+
+  weighted_image: LEMMA injective?(i) AND (FORALL(x:D):g(i(x))=f(x)) IMPLIES
+    codomainSums.sum(image(i,H),g)=domainSums.sum(H,f)
+
+  finite_image_bound: LEMMA injective?(i) AND (FORALL(x:D):g(i(x))=f(x)) AND
+    ele(targetSums.tsum(g),ennFinite(b)) IMPLIES
+    domainSums.sum(H,f)<=b
+
+  tsum_comp_le_tsum_of_injective: THEOREM injective?(i) AND
+    (FORALL(x:D):g(i(x))=f(x)) IMPLIES
+    ele(sourceSums.tsum(f),targetSums.tsum(g))
+END ppg_nonneg_injective_bound
