@@ -1,0 +1,54 @@
+% Consecutive source vertices have no alternate positive path after
+% deleting their direct arc. The reversal criterion then preserves
+% acyclicity. The first result uses transitivity on the finite support
+% and does not assume that the constructed graph is already valid.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Definition 2.4 and Fact 2.5.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSOrderedReversal.lean.
+ppg_hls_ordered_reversal[C,A:TYPE,G:{H:[C,C->bool]|(FORALL(i:C):NOT H(i,i)) AND
+  (FORALL(i,j:C):H(i,j)=H(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_ordered_dag[C,A,G], ppg_hls_reversal[[C,nat]] AS reversalPaths
+  S: VAR finite_set[A]
+  labels: VAR [A->C]
+  tags: VAR [A->nat]
+  before: VAR [A,A->bool]
+  a,b,c: VAR A
+  u,v,w,x: VAR WNode
+  r: VAR [WNode,WNode->bool]
+
+  lastStepCase(r)(u,v): bool = r(u,v) OR
+    (EXISTS(w:WNode):reversalPaths.positivePath(r)(u,w) AND r(w,v))
+
+  last_case_single: LEMMA r(u,v) IMPLIES lastStepCase(r)(u,v)
+
+  last_case_positive: LEMMA lastStepCase(r)(u,v) IMPLIES reversalPaths.positivePath(r)(u,v)
+
+  last_case_extend: LEMMA reversalPaths.positivePath(r)(u,v) AND r(v,w) IMPLIES lastStepCase(r)(u,w)
+
+  last_case_trans: LEMMA lastStepCase(r)(u,v) AND lastStepCase(r)(v,w) IMPLIES
+    lastStepCase(r)(u,w)
+
+  positivePath_last: LEMMA reversalPaths.positivePath(r)(u,v) IMPLIES
+    r(u,v) OR (EXISTS(w:WNode):reversalPaths.positivePath(r)(u,w) AND r(w,v))
+
+  erased_path_sub: LEMMA reversalPaths.positivePath(reversalPaths.eraseArc(r,u,v))(w,x) IMPLIES
+    reversalPaths.positivePath(r)(w,x)
+
+  no_middle_elim: LEMMA (FORALL(d:A):S(d) IMPLIES NOT(before(a,d) AND before(d,b))) AND
+    S(c) AND before(a,c) AND before(c,b) IMPLIES FALSE
+
+  no_alternate_if_no_middle: THEOREM localInjective(S,labels,tags) AND orderTransitive(S,before) AND
+    S(a) AND S(b) AND (FORALL(c:A):S(c) IMPLIES NOT(before(a,c) AND before(c,b))) IMPLIES
+    NOT reversalPaths.positivePath(reversalPaths.eraseArc(Edge(build(S,labels,tags,before)),
+      embed(labels,tags)(a),embed(labels,tags)(b)))(embed(labels,tags)(a),embed(labels,tags)(b))
+
+  reversible_if_no_middle: THEOREM localInjective(S,labels,tags) AND orderTransitive(S,before) AND
+    Valid(build(S,labels,tags,before)) AND S(a) AND S(b) AND before(a,b) AND
+    (labels(a)=labels(b) OR G(labels(a),labels(b))) AND
+    (FORALL(c:A):S(c) IMPLIES NOT(before(a,c) AND before(c,b))) IMPLIES
+    reversalPaths.Acyclic(reversalPaths.reverseArc(Edge(build(S,labels,tags,before)),
+      embed(labels,tags)(a),embed(labels,tags)(b)))
+END ppg_hls_ordered_reversal
