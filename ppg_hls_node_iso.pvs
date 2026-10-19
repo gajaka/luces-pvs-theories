@@ -1,0 +1,55 @@
+% Label-preserving isomorphisms carry predecessor sets bijectively to
+% predecessor sets. Their cardinalities, hence canonical names, agree.
+% A canonical valid witness DAG therefore has no distinct presentation
+% related to it by such an isomorphism.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 1.2.1. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSNodeIso.lean.
+ppg_hls_node_iso[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_label_ranks[C,G],
+    ppg_finite_bijection[[C,nat],[C,nat]] AS nodeImages
+
+  D,E: VAR WitnessDAG
+  Q,R: VAR (Valid)
+  u,v,w: VAR WNode
+
+  NodeIso(D,E): TYPE = {f:[WNode->WNode] |
+    nodeImages.injOn(f,D`nodes) AND image(f,D`nodes)=E`nodes AND
+    (FORALL(u:WNode):D`nodes(u) IMPLIES f(u)`1=u`1) AND
+    (FORALL(u,v:WNode):D`nodes(u) AND D`nodes(v) IMPLIES
+      (Edge(E)(f(u),f(v)) IFF Edge(D)(u,v)))}
+
+  label_preserved: LEMMA FORALL(f:NodeIso(D,E)):
+    D`nodes(u) IMPLIES f(u)`1=u`1
+
+  edge_preserved: LEMMA FORALL(f:NodeIso(D,E)):
+    D`nodes(u) AND D`nodes(v) IMPLIES (Edge(E)(f(u),f(v)) IFF Edge(D)(u,v))
+
+  map_mem: THEOREM FORALL(f:NodeIso(D,E)):
+    D`nodes(u) IMPLIES E`nodes(f(u))
+
+  labelPrior_image: THEOREM FORALL(f:NodeIso(D,E)):
+    D`nodes(u) IMPLIES image(f,labelPrior(D,u))=labelPrior(E,f(u))
+
+  prior_injective: LEMMA FORALL(f:NodeIso(D,E)):
+    nodeImages.injOn(f,labelPrior(D,u))
+
+  canonicalName_map: THEOREM FORALL(f:NodeIso(D,E)):
+    D`nodes(u) IMPLIES canonicalName(E,f(u))=canonicalName(D,u)
+
+  map_eq_of_canonical: THEOREM FORALL(f:NodeIso(Q,R)):
+    Canonical(Q) AND Canonical(R) AND Q`nodes(u) IMPLIES f(u)=u
+
+  nodes_eq_of_fixed: LEMMA FORALL(f:NodeIso(D,E)):
+    (FORALL(u:WNode):D`nodes(u) IMPLIES f(u)=u) IMPLIES D`nodes=E`nodes
+
+  arcs_eq_of_fixed: LEMMA FORALL(f:NodeIso(Q,R)):
+    (FORALL(u:WNode):Q`nodes(u) IMPLIES f(u)=u) IMPLIES Q`arcs=R`arcs
+
+  eq_of_canonical: THEOREM FORALL(f:NodeIso(Q,R)):
+    Canonical(Q) AND Canonical(R) IMPLIES Q=R
+
+END ppg_hls_node_iso
