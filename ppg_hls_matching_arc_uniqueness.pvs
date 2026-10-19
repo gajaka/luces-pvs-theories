@@ -1,0 +1,20 @@
+% A reversible arc between matching labels has a unique matching target.
+% The two possible targets would have the same consecutive clique rank.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 3.1. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSMatchingArcUniqueness.lean.
+ppg_hls_matching_arc_uniqueness[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_pair_keys[C,G]
+  M: VAR DependencyMatching
+  Q: VAR (Valid)
+  u,v,w: VAR WNode
+
+  reversible_matching_target_unique: THEOREM Edge(Q)(u,v) AND Edge(Q)(u,w) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,v)) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,w)) AND
+    M(u`1)=v`1 AND M(u`1)=w`1 IMPLIES v=w
+
+END ppg_hls_matching_arc_uniqueness

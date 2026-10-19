@@ -1,0 +1,39 @@
+% An involution partitions labels into singleton or two-element keys.
+% Equal keys represent the same independent auxiliary coin table; distinct
+% keys are disjoint. Each key is a clique in the dependency graph.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 3.1. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSPairKeys.lean.
+ppg_hls_pair_keys[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_clique_ranks[C,G]
+
+  DependencyMatching: TYPE = {mate:[C->C]|
+    (FORALL(i:C):mate(mate(i))=i) AND
+    (FORALL(i:C):mate(i)/=i IMPLIES G(i,mate(i)))}
+
+  M: VAR DependencyMatching
+  i,j,k: VAR C
+
+  matchPair(M,i): finite_set[C] = add(i,singleton(M(i)))
+
+  matching_involutive: LEMMA M(M(i))=i
+
+  matching_adjacent: LEMMA M(i)/=i IMPLIES G(i,M(i))
+
+  mem_pair_self: THEOREM matchPair(M,i)(i)
+
+  mem_pair_mate: THEOREM matchPair(M,i)(M(i))
+
+  pair_mate: THEOREM matchPair(M,M(i))=matchPair(M,i)
+
+  pair_eq_of_mem: THEOREM matchPair(M,i)(j) IMPLIES matchPair(M,j)=matchPair(M,i)
+
+  pair_disjoint_of_ne: THEOREM matchPair(M,i)/=matchPair(M,j) IMPLIES
+    disjoint?(matchPair(M,i),matchPair(M,j))
+
+  pair_is_clique: THEOREM LabelClique(matchPair(M,i))
+
+END ppg_hls_pair_keys

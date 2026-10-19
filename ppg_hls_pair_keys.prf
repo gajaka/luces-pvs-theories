@@ -1,0 +1,169 @@
+(|ppg_hls_pair_keys|
+ (|matching_involutive| 0
+  (|matching_involutive-1| NIL 4001392375
+   ("" (THEN (SKOSIMP*) (TYPEPRED "M!1") (INST -1 "i!1") (ASSERT)) NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_pair_keys| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_pair_keys| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL))
+   SHOSTAK))
+ (|matching_adjacent| 0
+  (|matching_adjacent-1| NIL 4001392375
+   ("" (THEN (SKOSIMP*) (TYPEPRED "M!1") (GRIND :DEFS NIL :IF-MATCH ALL)) NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_pair_keys| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_pair_keys| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL))
+   SHOSTAK))
+ (|mem_pair_self| 0
+  (|mem_pair_self-1| NIL 4001392375
+   ("" (THEN (GRIND :DEFS ("matchPair" "add" "singleton"))) NIL)
+   ((|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL))
+   SHOSTAK))
+ (|mem_pair_mate| 0
+  (|mem_pair_mate-1| NIL 4001392375
+   ("" (THEN (GRIND :DEFS ("matchPair" "add" "singleton"))) NIL)
+   ((|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL))
+   SHOSTAK))
+ (|pair_mate| 0
+  (|pair_mate-1| NIL 4001392375
+   (""
+    (THEN (SKOSIMP*) (LEMMA "matching_involutive" ("M" "M!1" "i" "i!1"))
+     (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :DEFS ("matchPair" "add" "singleton")))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|matching_involutive| FORMULA-DECL NIL |ppg_hls_pair_keys| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_pair_keys| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL))
+   SHOSTAK))
+ (|pair_eq_of_mem| 0
+  (|pair_eq_of_mem-1| NIL 4001392375
+   (""
+    (THEN (SKOSIMP*) (LEMMA "matching_involutive" ("M" "M!1" "i" "i!1"))
+     (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :DEFS ("matchPair" "add" "singleton")))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|matching_involutive| FORMULA-DECL NIL |ppg_hls_pair_keys| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_pair_keys| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL))
+   SHOSTAK))
+ (|pair_disjoint_of_ne| 0
+  (|pair_disjoint_of_ne-1| NIL 4001392375
+   (""
+    (THEN (SKOSIMP*) (EXPAND "disjoint?") (EXPAND "empty?")
+     (EXPAND "intersection") (SKOSIMP*)
+     (LEMMA "pair_eq_of_mem" ("M" "M!1" "i" "i!1" "j" "x!1"))
+     (LEMMA "pair_eq_of_mem" ("M" "M!1" "i" "j!1" "j" "x!1"))
+     (GRIND :DEFS ("member") :IF-MATCH NIL :EXCLUDE ("matchPair")))
+    NIL)
+   ((|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_pair_keys| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|pair_eq_of_mem| FORMULA-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|finite_intersection1| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL))
+   SHOSTAK))
+ (|pair_is_clique| 0
+  (|pair_is_clique-1| NIL 4001392375
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "M!1")
+     (GRIND :DEFS ("LabelClique" "matchPair" "add" "singleton") :IF-MATCH ALL))
+    NIL)
+   ((|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|LabelClique| CONST-DECL "bool" |ppg_hls_clique_ranks| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_pair_keys| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_pair_keys| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL))
+   SHOSTAK)))
+
