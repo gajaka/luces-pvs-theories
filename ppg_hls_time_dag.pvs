@@ -1,0 +1,63 @@
+% A finite log prefix has one node (label,time) per step. Its arcs point
+% from earlier to later dependent occurrences, so every positive path
+% strictly increases the time coordinate.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 2.1. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSTimeDAG.lean.
+ppg_hls_time_dag[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_witness_dag[C,G],ppg_nat_range,
+    ppg_finite_bind[WNode,[WNode,WNode]] AS timePairs
+  labels: VAR [nat->C]
+  n,t,s: VAR nat
+  u,v,w: VAR WNode
+  e: VAR [WNode,WNode]
+  S: VAR finite_set[WNode]
+
+  timeNode(labels)(t): WNode = (labels(t),t)
+
+  timeNodes(labels,n): finite_set[WNode] = image[nat,WNode](timeNode(labels),natRange(n))
+
+  nodePair_eta: LEMMA (e`1,e`2)=e
+
+  nodePairs(S): finite_set[[WNode,WNode]] = timePairs.biUnion(S,
+    LAMBDA(u:WNode):image[WNode,[WNode,WNode]](LAMBDA(v:WNode):(u,v),S))
+
+  nodePairs_member: LEMMA nodePairs(S)(e) IFF S(e`1) AND S(e`2)
+
+  chronological(e): bool = e`1`2<e`2`2 AND
+    (e`1`1=e`2`1 OR G(e`1`1,e`2`1))
+
+  timeDAG(labels,n): WitnessDAG =
+    (#nodes:=timeNodes(labels,n),arcs:=intersection(nodePairs(timeNodes(labels,n)),chronological)#)
+
+  node_eta: LEMMA (u`1,u`2)=u
+
+  timeDAG_node_iff: THEOREM timeDAG(labels,n)`nodes(u) IFF
+    u`2<n AND u`1=labels(u`2)
+
+  timeDAG_timeNode_mem: THEOREM t<n IMPLIES timeDAG(labels,n)`nodes(timeNode(labels)(t))
+
+  timeDAG_edge_iff: THEOREM Edge(timeDAG(labels,n))(u,v) IFF
+    timeDAG(labels,n)`nodes(u) AND timeDAG(labels,n)`nodes(v) AND
+      u`2<v`2 AND (u`1=v`1 OR G(u`1,v`1))
+
+  timeDAG_transGen_lt: THEOREM positivePath(timeDAG(labels,n))(u,v) IMPLIES u`2<v`2
+
+  timeDAG_supported: LEMMA Edge(timeDAG(labels,n))(u,v) IMPLIES
+    timeDAG(labels,n)`nodes(u) AND timeDAG(labels,n)`nodes(v)
+
+  timeDAG_index_injective: LEMMA timeDAG(labels,n)`nodes(u) AND
+    timeDAG(labels,n)`nodes(v) AND u`2=v`2 IMPLIES u=v
+
+  timeDAG_acyclic: LEMMA dagPaths.Acyclic(Edge(timeDAG(labels,n)))
+
+  timeDAG_oriented: LEMMA timeDAG(labels,n)`nodes(u) AND timeDAG(labels,n)`nodes(v) AND u/=v IMPLIES
+    ((Edge(timeDAG(labels,n))(u,v) OR Edge(timeDAG(labels,n))(v,u)) IFF
+      (u`1=v`1 OR G(u`1,v`1)))
+
+  timeDAG_valid: THEOREM Valid(timeDAG(labels,n))
+
+END ppg_hls_time_dag
