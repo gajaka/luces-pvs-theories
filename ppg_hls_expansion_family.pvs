@@ -1,0 +1,47 @@
+% Legal choices at the original nodes produce a proper colored DAG.
+% Recovering the original and each supported choice makes this map
+% injective; no finiteness of the whole DAG family is required.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Appendix C. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSExpansionFamily.lean.
+ppg_hls_expansion_family[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},
+  universe:{S:finite_set[C]|FORALL(i:C):S(i)},alpha:C]: THEORY
+BEGIN
+  IMPORTING ppg_hls_choice_recovery[C,G,universe],ppg_hls_supported_choices[C,G],
+    ppg_hls_expansion_down_subset[C,G,universe],ppg_hls_decorated_family[C,G,universe,alpha]
+
+  M: VAR DependencyMatching
+
+  colored_family_valid: LEMMA FORALL(P:ProperDAG,c:LegalChoices(M,P)):
+    Valid(coloredExpansion(M,P,extendChoice(P)(c))`1)
+
+  colored_family_canonical: LEMMA FORALL(P:ProperDAG,c:LegalChoices(M,P)):
+    Canonical(coloredExpansion(M,P,extendChoice(P)(c))`1)
+
+  colored_family_root: LEMMA FORALL(P:ProperDAG,c:LegalChoices(M,P)):
+    EXISTS(r:WNode):coloredExpansion(M,P,extendChoice(P)(c))`1`nodes(r) AND r`1=alpha AND
+      (FORALL(w:WNode):coloredExpansion(M,P,extendChoice(P)(c))`1`nodes(w) IMPLIES
+        Reach(coloredExpansion(M,P,extendChoice(P)(c))`1)(w,r))
+
+  coloredExpansion_isProperCanonical: THEOREM FORALL(P:ProperDAG,c:LegalChoices(M,P)):
+    IsProperCanonical(coloredExpansion(M,P,extendChoice(P)(c))`1)
+
+  ExpansionFamily(M): TYPE = [P:ProperDAG,LegalChoices(M,P)]
+
+  expansionFamilyMap(M)(F:ExpansionFamily(M)): DecoratedFamily =
+    (coloredExpansion(M,F`1,extendChoice(F`1)(F`2))`1,
+      coloredExpansion(M,F`1,extendChoice(F`1)(F`2))`2)
+
+  family_original_eq: LEMMA FORALL(F,H:ExpansionFamily(M)):
+    expansionFamilyMap(M)(F)=expansionFamilyMap(M)(H) IMPLIES F`1=H`1
+
+  family_supported_choices_eq: LEMMA FORALL(F,H:ExpansionFamily(M)):
+    expansionFamilyMap(M)(F)=expansionFamilyMap(M)(H) IMPLIES
+    (FORALL(u:(F`1`nodes)):extendChoice(F`1)(F`2)(u)=extendChoice(H`1)(H`2)(u))
+
+  expansionFamilyMap_injective: THEOREM FORALL(F,H:ExpansionFamily(M)):
+    expansionFamilyMap(M)(F)=expansionFamilyMap(M)(H) IMPLIES F=H
+
+END ppg_hls_expansion_family

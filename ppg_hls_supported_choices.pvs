@@ -1,0 +1,26 @@
+% A local choice is a function on the finite node subtype. Extending it
+% by up outside that subtype does not add independent choices there.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Appendix C. https://arxiv.org/abs/2111.06527
+% Lean counterpart: extendChoice and LegalChoices in PPGraphHLSExpansionFamily.lean.
+ppg_hls_supported_choices[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_origin_rule[C,G]
+
+  D: VAR WitnessDAG
+  M: VAR DependencyMatching
+  u: VAR WNode
+
+  NodeChoice(D): TYPE = [(D`nodes)->ppg_hls_expansion_vertices[C,G].ExpansionChoice]
+
+  extendChoice(D)(c:NodeChoice(D))(u): ppg_hls_expansion_vertices[C,G].ExpansionChoice = IF D`nodes(u) THEN c(u) ELSE 0 ENDIF
+
+  extendChoice_mem: THEOREM FORALL(c:NodeChoice(D)):D`nodes(u) IMPLIES extendChoice(D)(c)(u)=c(u)
+
+  extendChoice_outside: LEMMA FORALL(c:NodeChoice(D)):NOT D`nodes(u) IMPLIES extendChoice(D)(c)(u)=0
+
+  LegalChoices(M,D): TYPE = {c:NodeChoice(D)|LegalExpansion(M,D,extendChoice(D)(c))}
+
+END ppg_hls_supported_choices

@@ -1,0 +1,25 @@
+% Normalization carries every down-colored expanded node into the graph.
+% The same map carries the actual raw proper root forward.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Appendix C. https://arxiv.org/abs/2111.06527
+% Lean counterpart: coloredExpansion_down_subset in PPGraphHLSExpansionFamily.lean.
+ppg_hls_expansion_down_subset[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},
+  universe:{S:finite_set[C]|FORALL(i:C):S(i)}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_colored_expansion[C,G,universe]
+
+  M: VAR DependencyMatching
+  Q: VAR (Valid)
+  choice: VAR [WNode->ppg_hls_expansion_vertices[C,G].ExpansionChoice]
+  w,r: VAR WNode
+
+  coloredExpansion_down_subset: THEOREM subset?(coloredExpansion(M,Q,choice)`2,
+    coloredExpansion(M,Q,choice)`1`nodes)
+
+  colored_root: LEMMA Q`nodes(r) AND (FORALL(w:WNode):Q`nodes(w) IMPLIES Reach(Q)(w,r)) IMPLIES
+    (FORALL(w:WNode):coloredExpansion(M,Q,choice)`1`nodes(w) IMPLIES
+      Reach(coloredExpansion(M,Q,choice)`1)(w,expansionName(M,Q,choice)((r,FALSE))))
+
+END ppg_hls_expansion_down_subset
