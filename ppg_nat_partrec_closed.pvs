@@ -1,0 +1,147 @@
+% Partial recursion adds minimization from zero to the seven graph operators.
+% Every member of the least closed class is proved single-valued.
+% Mario Carneiro, Mathlib Computability.Partrec, Nat.Partrec.
+ppg_nat_partrec_closed: THEORY
+BEGIN
+  IMPORTING ppg_partial_nat, ppg_nat_primrec_closed
+
+  PartialClass: TYPE = [PartialFunction -> bool]
+
+  f,g: VAR PartialFunction
+
+  u,v: VAR TotalFunction
+
+  P: VAR PartialClass
+
+  a,b,n,w: VAR nat
+
+  zeroF: PartialFunction = LAMBDA (n:nat): pureP(0)
+
+  succF: PartialFunction = LAMBDA (n:nat): pureP(n+1)
+
+  leftF: PartialFunction = LAMBDA (n:nat): pureP(unpair(n)`1)
+
+  rightF: PartialFunction = LAMBDA (n:nat): pureP(unpair(n)`2)
+
+  pairF(f,g): PartialFunction = LAMBDA (n:nat): pairP(f(n),g(n))
+
+  compF(f,g): PartialFunction = LAMBDA (n:nat): bindP(g(n),f)
+
+  precF(f,g): PartialFunction = LAMBDA (n:nat):
+    recP(f,g,unpair(n)`1,unpair(n)`2)
+
+  rfindF(f): PartialFunction = LAMBDA (a:nat): searchP(f,a,0)
+
+  PartrecClosed(P): bool = P(zeroF) AND P(succF) AND P(leftF) AND P(rightF) AND
+    (FORALL (f,g:PartialFunction): P(f) AND P(g) IMPLIES P(pairF(f,g))) AND
+    (FORALL (f,g:PartialFunction): P(f) AND P(g) IMPLIES P(compF(f,g))) AND
+    (FORALL (f,g:PartialFunction): P(f) AND P(g) IMPLIES P(precF(f,g))) AND
+    (FORALL (f:PartialFunction): P(f) IMPLIES P(rfindF(f)))
+
+  NatPartrec(f): bool = FORALL (P:PartialClass): PartrecClosed(P) IMPLIES P(f)
+
+  partrec_closed_zero: LEMMA PartrecClosed(P) IMPLIES P(zeroF)
+
+  partrec_closed_succ: LEMMA PartrecClosed(P) IMPLIES P(succF)
+
+  partrec_closed_left: LEMMA PartrecClosed(P) IMPLIES P(leftF)
+
+  partrec_closed_right: LEMMA PartrecClosed(P) IMPLIES P(rightF)
+
+  partrec_closed_pair: LEMMA PartrecClosed(P) AND P(f) AND P(g) IMPLIES P(pairF(f,g))
+
+  partrec_closed_comp: LEMMA PartrecClosed(P) AND P(f) AND P(g) IMPLIES P(compF(f,g))
+
+  partrec_closed_prec: LEMMA PartrecClosed(P) AND P(f) AND P(g) IMPLIES P(precF(f,g))
+
+  partrec_closed_rfind: LEMMA PartrecClosed(P) AND P(f) IMPLIES P(rfindF(f))
+
+  partrec_zero: LEMMA NatPartrec(zeroF)
+
+  partrec_succ: LEMMA NatPartrec(succF)
+
+  partrec_left: LEMMA NatPartrec(leftF)
+
+  partrec_right: LEMMA NatPartrec(rightF)
+
+  partrec_pair: LEMMA NatPartrec(f) AND NatPartrec(g) IMPLIES NatPartrec(pairF(f,g))
+
+  partrec_comp: LEMMA NatPartrec(f) AND NatPartrec(g) IMPLIES NatPartrec(compF(f,g))
+
+  partrec_prec: LEMMA NatPartrec(f) AND NatPartrec(g) IMPLIES NatPartrec(precF(f,g))
+
+  partrec_rfind: LEMMA NatPartrec(f) IMPLIES NatPartrec(rfindF(f))
+
+  partrec_is_closed: THEOREM PartrecClosed(NatPartrec)
+
+  partrec_least: THEOREM PartrecClosed(P) AND NatPartrec(f) IMPLIES P(f)
+
+  partrec_induction: THEOREM PartrecClosed(P) IMPLIES
+    FORALL (f:PartialFunction): NatPartrec(f) IMPLIES P(f)
+
+  functional_zeroF: LEMMA functional(zeroF)
+
+  functional_succF: LEMMA functional(succF)
+
+  functional_leftF: LEMMA functional(leftF)
+
+  functional_rightF: LEMMA functional(rightF)
+
+  functional_pairF: LEMMA functional(f) AND functional(g) IMPLIES functional(pairF(f,g))
+
+  functional_compF: LEMMA functional(f) AND functional(g) IMPLIES functional(compF(f,g))
+
+  functional_precF: LEMMA functional(f) AND functional(g) IMPLIES functional(precF(f,g))
+
+  functional_rfindF: LEMMA functional(f) IMPLIES functional(rfindF(f))
+
+  functional_is_partrec_closed: LEMMA PartrecClosed(functional)
+
+  partrec_functional: THEOREM NatPartrec(f) IMPLIES functional(f)
+
+  totalGraph(u): PartialFunction = LAMBDA (n:nat): pureP(u(n))
+
+  bindP_pure: LEMMA bindP(pureP(n),f)=f(n)
+
+  pairP_pure: LEMMA pairP(pureP(a),pureP(b))=pureP(natPair(a,b))
+
+  recP_totalGraph: LEMMA recP(totalGraph(u),totalGraph(v),a,b)=pureP(natRecT(u,v,a,b))
+
+  totalGraph_zero: LEMMA totalGraph(zeroT)=zeroF
+
+  totalGraph_succ: LEMMA totalGraph(succT)=succF
+
+  totalGraph_left: LEMMA totalGraph(leftT)=leftF
+
+  totalGraph_right: LEMMA totalGraph(rightT)=rightF
+
+  totalGraph_pair: LEMMA totalGraph(pairT(u,v))=pairF(totalGraph(u),totalGraph(v))
+
+  totalGraph_comp: LEMMA totalGraph(compT(u,v))=compF(totalGraph(u),totalGraph(v))
+
+  totalGraph_prec: LEMMA totalGraph(precT(u,v))=precF(totalGraph(u),totalGraph(v))
+
+  embedded_pr_class(u): bool = NatPartrec(totalGraph(u))
+
+  embedded_pr_zero: LEMMA embedded_pr_class(zeroT)
+
+  embedded_pr_succ: LEMMA embedded_pr_class(succT)
+
+  embedded_pr_left: LEMMA embedded_pr_class(leftT)
+
+  embedded_pr_right: LEMMA embedded_pr_class(rightT)
+
+  embedded_pr_pair: LEMMA embedded_pr_class(u) AND embedded_pr_class(v)
+    IMPLIES embedded_pr_class(pairT(u,v))
+
+  embedded_pr_comp: LEMMA embedded_pr_class(u) AND embedded_pr_class(v)
+    IMPLIES embedded_pr_class(compT(u,v))
+
+  embedded_pr_prec: LEMMA embedded_pr_class(u) AND embedded_pr_class(v)
+    IMPLIES embedded_pr_class(precT(u,v))
+
+  embedded_pr_is_closed: LEMMA PRClosed(embedded_pr_class)
+
+  primrec_to_partrec: THEOREM NatPrimrec(u) IMPLIES NatPartrec(totalGraph(u))
+
+END ppg_nat_partrec_closed

@@ -1,0 +1,112 @@
+% Primitive recursion is the least class closed under the seven natural-number
+% operators. Quantifying over closed classes gives its induction principle.
+% Mario Carneiro, Mathlib Computability.Primrec.Basic, Nat.Primrec.
+ppg_nat_primrec_closed: THEORY
+BEGIN
+  IMPORTING ppg_nat_square_pairing
+
+  TotalFunction: TYPE = [nat -> nat]
+
+  FunctionClass: TYPE = [TotalFunction -> bool]
+
+  f,g: VAR TotalFunction
+
+  P: VAR FunctionClass
+
+  a,b,n: VAR nat
+
+  zeroT: TotalFunction = LAMBDA (n:nat): 0
+
+  succT: TotalFunction = LAMBDA (n:nat): n+1
+
+  leftT: TotalFunction = LAMBDA (n:nat): unpair(n)`1
+
+  rightT: TotalFunction = LAMBDA (n:nat): unpair(n)`2
+
+  pairT(f,g): TotalFunction = LAMBDA (n:nat): natPair(f(n),g(n))
+
+  compT(f,g): TotalFunction = LAMBDA (n:nat): f(g(n))
+
+  natRecT(f,g,a,b): RECURSIVE nat = IF b=0 THEN f(a)
+    ELSE g(natPair(a,natPair(b-1,natRecT(f,g,a,b-1)))) ENDIF MEASURE b
+
+  precT(f,g): TotalFunction = LAMBDA (n:nat):
+    natRecT(f,g,unpair(n)`1,unpair(n)`2)
+
+  PRClosed(P): bool = P(zeroT) AND P(succT) AND P(leftT) AND P(rightT) AND
+    (FORALL (f,g:TotalFunction): P(f) AND P(g) IMPLIES P(pairT(f,g))) AND
+    (FORALL (f,g:TotalFunction): P(f) AND P(g) IMPLIES P(compT(f,g))) AND
+    (FORALL (f,g:TotalFunction): P(f) AND P(g) IMPLIES P(precT(f,g)))
+
+  NatPrimrec(f): bool = FORALL (P:FunctionClass): PRClosed(P) IMPLIES P(f)
+
+  pr_closed_zero: LEMMA PRClosed(P) IMPLIES P(zeroT)
+
+  pr_closed_succ: LEMMA PRClosed(P) IMPLIES P(succT)
+
+  pr_closed_left: LEMMA PRClosed(P) IMPLIES P(leftT)
+
+  pr_closed_right: LEMMA PRClosed(P) IMPLIES P(rightT)
+
+  pr_closed_pair: LEMMA PRClosed(P) AND P(f) AND P(g) IMPLIES P(pairT(f,g))
+
+  pr_closed_comp: LEMMA PRClosed(P) AND P(f) AND P(g) IMPLIES P(compT(f,g))
+
+  pr_closed_prec: LEMMA PRClosed(P) AND P(f) AND P(g) IMPLIES P(precT(f,g))
+
+  pr_zero: LEMMA NatPrimrec(zeroT)
+
+  pr_succ: LEMMA NatPrimrec(succT)
+
+  pr_left: LEMMA NatPrimrec(leftT)
+
+  pr_right: LEMMA NatPrimrec(rightT)
+
+  pr_pair: LEMMA NatPrimrec(f) AND NatPrimrec(g) IMPLIES NatPrimrec(pairT(f,g))
+
+  pr_comp: LEMMA NatPrimrec(f) AND NatPrimrec(g) IMPLIES NatPrimrec(compT(f,g))
+
+  pr_prec: LEMMA NatPrimrec(f) AND NatPrimrec(g) IMPLIES NatPrimrec(precT(f,g))
+
+  pr_is_closed: THEOREM PRClosed(NatPrimrec)
+
+  pr_least: THEOREM PRClosed(P) AND NatPrimrec(f) IMPLIES P(f)
+
+  pr_induction: THEOREM PRClosed(P) IMPLIES
+    FORALL (f:TotalFunction): NatPrimrec(f) IMPLIES P(f)
+
+  pr_extensional: LEMMA NatPrimrec(f) AND (FORALL (n:nat): f(n)=g(n))
+    IMPLIES NatPrimrec(g)
+
+  natRecT_zero: LEMMA natRecT(f,g,a,0)=f(a)
+
+  natRecT_succ: LEMMA natRecT(f,g,a,b+1)=
+    g(natPair(a,natPair(b,natRecT(f,g,a,b))))
+
+  constT(a): TotalFunction = LAMBDA (n:nat): a
+
+  idT: TotalFunction = LAMBDA (n:nat): n
+
+  constT_zero: LEMMA constT(0)=zeroT
+
+  constT_succ: LEMMA constT(a+1)=compT(succT,constT(a))
+
+  idT_pair: LEMMA idT=pairT(leftT,rightT)
+
+  pr_const: THEOREM NatPrimrec(constT(a))
+
+  pr_id: THEOREM NatPrimrec(idT)
+
+  addStepT: TotalFunction = compT(succT,compT(rightT,rightT))
+
+  addT: TotalFunction = LAMBDA (n:nat): unpair(n)`1+unpair(n)`2
+
+  natRecT_add: LEMMA natRecT(idT,addStepT,a,b)=a+b
+
+  addT_as_prec: LEMMA addT=precT(idT,addStepT)
+
+  pr_addStep: LEMMA NatPrimrec(addStepT)
+
+  pr_add: THEOREM NatPrimrec(addT)
+
+END ppg_nat_primrec_closed
