@@ -1,0 +1,60 @@
+% A finite set of lenses is a specification, ordered by reverse inclusion.
+% Its certificate requires every lens in that set. The certificate family
+% contains exactly that one predicate as a list, as in the Lean definition.
+%
+% Lean counterpart: PPGraphSelection.lean, Sections 5--5b. The reverse order
+% is the ordinary dual order; compare Davey and Priestley, Introduction to
+% Lattices and Order, second edition, Cambridge University Press, 2002.
+%
+% Author: Dragan Stosic, 2026.
+
+ppg_selection_lenses[T: TYPE, U: TYPE]: THEORY
+BEGIN
+
+  IMPORTING ppg_generic_selection[T, U], finite_sets[MorphPair]
+
+  mp: VAR MorphPair
+  F: VAR MorphFamily
+  target, u, u1, u2: VAR U
+  S1, S2: VAR finite_set[MorphPair]
+
+  lens_pred(mp)(target, u): bool = induced_equiv(mp)(u, target)
+
+  lens_family_cert(target)(u, S1): bool = FORALL (mp: MorphPair): S1(mp) IMPLIES lens_pred(mp)(target, u)
+
+  finset_le(S1, S2): bool = subset?(S2, S1)
+
+  finset_le_reflexive: LEMMA reflexive?[finite_set[MorphPair]](finset_le)
+
+  finset_le_transitive: LEMMA transitive?[finite_set[MorphPair]](finset_le)
+
+  finset_le_antisymmetric: LEMMA antisymmetric?[finite_set[MorphPair]](finset_le)
+
+  finset_le_partial_order: THEOREM partial_order?[finite_set[MorphPair]](finset_le)
+
+  IMPORTING ppg_parametric_core[U, finite_set[MorphPair], finset_le]
+
+  lens_cert_monotone: THEOREM subset?(S2, S1) AND lens_family_cert(target)(u, S1) IMPLIES
+    lens_family_cert(target)(u, S2)
+
+  lens_certificate(target): Certificate = LAMBDA (u: U, S: finite_set[MorphPair]): lens_family_cert(target)(u, S)
+
+  lens_certificate_monotone: THEOREM monotone_cert(lens_certificate(target))
+
+  lensCertFamily(target): CertFamily = cons(lens_certificate(target), null)
+
+  lens_master_refinement: THEOREM finset_le(S1, S2) AND fully_certified(lensCertFamily(target))(u, S1) IMPLIES
+    fully_certified(lensCertFamily(target))(u, S2)
+
+  lens_family_cert_iff: LEMMA fully_certified(lensCertFamily(target))(u, S1) IFF lens_family_cert(target)(u, S1)
+
+  all_lenses_iff_finest: THEOREM
+    (FORALL (mp: MorphPair): F(mp) IMPLIES lens_pred(mp)(target, u)) IFF finest_equiv(F)(u, target)
+
+  lens_pred_refl: THEOREM lens_pred(mp)(target, target)
+
+  lens_propagates: THEOREM finest_equiv(F)(u1, u2) AND
+    (FORALL (mp: MorphPair): F(mp) IMPLIES lens_pred(mp)(target, u1)) IMPLIES
+    (FORALL (mp: MorphPair): F(mp) IMPLIES lens_pred(mp)(target, u2))
+
+END ppg_selection_lenses

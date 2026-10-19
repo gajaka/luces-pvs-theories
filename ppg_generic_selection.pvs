@@ -1,0 +1,75 @@
+% Pulling back an equivalence along a concretization map gives a view on U.
+% Intersecting the views gives the finest common equivalence. A quotient
+% element is its full generated class; no representative is chosen.
+%
+% Lean counterpart: PPGraphSelection.lean, Sections 1--4. See B. A. Davey
+% and H. A. Priestley, Introduction to Lattices and Order, second edition,
+% Cambridge University Press, 2002, for equivalences and quotient orders.
+%
+% Author: Dragan Stosic, 2026.
+
+ppg_generic_selection[T: TYPE, U: TYPE]: THEORY
+BEGIN
+
+  MorphPair: TYPE = [# f: [T -> U], g: [U -> T], eq_T: (equivalence?[T]) #]
+
+  mp: VAR MorphPair
+  t, t1, t2: VAR T
+  u, u1, u2, u3: VAR U
+
+  induced_equiv(mp)(u1, u2): bool = mp`eq_T(mp`g(u1), mp`g(u2))
+
+  induced_equiv_is_equiv: THEOREM equivalence?[U](induced_equiv(mp))
+
+  fg_consistent(mp): bool = FORALL (t: T): mp`eq_T(t, mp`g(mp`f(t)))
+
+  f_preserves_equiv: THEOREM fg_consistent(mp) AND mp`eq_T(t1, t2) IMPLIES
+    induced_equiv(mp)(mp`f(t1), mp`f(t2))
+
+  g_section: THEOREM fg_consistent(mp) IMPLIES induced_equiv(mp)(mp`f(mp`g(u)), u)
+
+  MorphFamily: TYPE = {pairs: set[MorphPair] | EXISTS (mp: MorphPair): pairs(mp)}
+
+  F: VAR MorphFamily
+
+  finest_equiv(F)(u1, u2): bool = FORALL (mp: MorphPair): F(mp) IMPLIES induced_equiv(mp)(u1, u2)
+
+  finest_equiv_refl: THEOREM finest_equiv(F)(u, u)
+
+  finest_equiv_symm: THEOREM finest_equiv(F)(u1, u2) IMPLIES finest_equiv(F)(u2, u1)
+
+  finest_equiv_trans: THEOREM finest_equiv(F)(u1, u2) AND finest_equiv(F)(u2, u3) IMPLIES
+    finest_equiv(F)(u1, u3)
+
+  finest_equiv_is_equivalence: THEOREM equivalence?[U](finest_equiv(F))
+
+  finest_refines_each: THEOREM F(mp) AND finest_equiv(F)(u1, u2) IMPLIES induced_equiv(mp)(u1, u2)
+
+  finest_is_coarsest_refinement: THEOREM FORALL (eq_R: [U, U -> bool]):
+    (FORALL (mp: MorphPair, u1, u2: U): F(mp) AND eq_R(u1, u2) IMPLIES induced_equiv(mp)(u1, u2))
+    IMPLIES (FORALL (u1, u2: U): eq_R(u1, u2) IMPLIES finest_equiv(F)(u1, u2))
+
+  Property: TYPE = [U -> bool]
+
+  is_finest_canonical(F)(sel: Property, u): bool = sel(u) AND
+    (FORALL (u2: U): finest_equiv(F)(u, u2) AND sel(u2) IMPLIES u = u2)
+
+  finest_canonical_unique: THEOREM FORALL (sel: Property):
+    is_finest_canonical(F)(sel, u1) AND is_finest_canonical(F)(sel, u2) AND
+    finest_equiv(F)(u1, u2) IMPLIES u1 = u2
+
+  FinestClass(F)(u): set[U] = {v: U | finest_equiv(F)(u, v)}
+
+  FinestQuotient(F: MorphFamily): TYPE = {Q: set[U] | EXISTS (u: U): Q = FinestClass(F)(u)}
+
+  finest_mk(F)(u): FinestQuotient(F) = FinestClass(F)(u)
+
+  finest_class_contains_generator: LEMMA FinestClass(F)(u)(u)
+
+  finest_class_eq_of_equiv: LEMMA finest_equiv(F)(u1, u2) IMPLIES FinestClass(F)(u1) = FinestClass(F)(u2)
+
+  finest_class_eq_implies_equiv: LEMMA FinestClass(F)(u1) = FinestClass(F)(u2) IMPLIES finest_equiv(F)(u1, u2)
+
+  finest_mk_eq_iff: LEMMA finest_mk(F)(u1) = finest_mk(F)(u2) IFF finest_equiv(F)(u1, u2)
+
+END ppg_generic_selection
