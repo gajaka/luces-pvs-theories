@@ -1,0 +1,54 @@
+% An inserted mate vertex is immediately before its original. Reversing
+% their arc therefore preserves acyclicity. Alternate paths between old
+% vertices lift while retaining the exclusion of the deleted old arc.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Definition 2.4, Definition 3.11 and Appendix C.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSExpansionReversibility.lean.
+ppg_hls_expansion_reversibility[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},
+  universe:{S:finite_set[C]|FORALL(i:C):S(i)}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_expansion_graph[C,G,universe], ppg_hls_original_embedding[C,G],
+    ppg_hls_ordered_reversal[C,[[C,nat],bool],G] AS orderedReversal
+
+  M: VAR DependencyMatching
+  Q: VAR (Valid)
+  choice: VAR [WNode->ppg_hls_expansion_vertices[C,G].ExpansionChoice]
+  u,v,x,y,w: VAR WNode
+  z: VAR ExpandedVertex
+
+  expanded_pair_no_middle: THEOREM NOT (expandedBefore(Q)((u,TRUE),z) AND
+    expandedBefore(Q)(z,(u,FALSE)))
+
+  rawExpansion_extra_reversible: THEOREM Q`nodes(u) AND needsExtra(choice(u)) IMPLIES
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(rawExpansion(M,Q,choice)),
+      expansionEmbed(M)((u,TRUE)),expansionEmbed(M)((u,FALSE))))
+
+  erasedExpansionPositive(M,Q,choice,u,v)(x,y): bool = dagPaths.positivePath(
+    dagPaths.eraseArc(Edge(rawExpansion(M,Q,choice)),originalEmbed(M)(u),originalEmbed(M)(v)))(
+      originalEmbed(M)(x),originalEmbed(M)(y))
+
+  erased_expansion_single: LEMMA dagPaths.eraseArc(Edge(Q),u,v)(x,y) IMPLIES
+    erasedExpansionPositive(M,Q,choice,u,v)(x,y)
+
+  erased_expansion_trans: LEMMA erasedExpansionPositive(M,Q,choice,u,v)(x,y) AND
+    erasedExpansionPositive(M,Q,choice,u,v)(y,w) IMPLIES
+      erasedExpansionPositive(M,Q,choice,u,v)(x,w)
+
+  erased_expansion_closed: LEMMA dagPaths.positivePath(dagPaths.eraseArc(Edge(Q),u,v))(x,y)
+    IMPLIES erasedExpansionPositive(M,Q,choice,u,v)(x,y)
+
+  original_alternate_path_lifts: THEOREM
+    dagPaths.positivePath(dagPaths.eraseArc(Edge(Q),u,v))(u,v) IMPLIES
+    dagPaths.positivePath(dagPaths.eraseArc(Edge(rawExpansion(M,Q,choice)),
+      expansionEmbed(M)((u,FALSE)),expansionEmbed(M)((v,FALSE))))(
+        expansionEmbed(M)((u,FALSE)),expansionEmbed(M)((v,FALSE)))
+
+  original_nonreversible_persists: THEOREM Edge(Q)(u,v) AND
+    NOT dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,v)) IMPLIES
+    NOT dagPaths.Acyclic(dagPaths.reverseArc(Edge(rawExpansion(M,Q,choice)),
+      expansionEmbed(M)((u,FALSE)),expansionEmbed(M)((v,FALSE))))
+
+END ppg_hls_expansion_reversibility

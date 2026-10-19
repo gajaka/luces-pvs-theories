@@ -1,0 +1,21 @@
+% Restricting the globally injective expansion embedding to originals
+% remains injective. This fact does not use a finite label enumeration.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Definition 3.11 and Appendix C, Lemma C.1.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSExpansionReversibility.lean,
+% originalExpansion_injective.
+ppg_hls_original_embedding[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_expansion_vertices[C,G]
+
+  M: VAR DependencyMatching
+  u: VAR WNode
+
+  originalEmbed(M)(u): WNode = expansionEmbed(M)((u,FALSE))
+
+  originalExpansion_injective: THEOREM injective?(originalEmbed(M))
+
+END ppg_hls_original_embedding
