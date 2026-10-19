@@ -1,0 +1,82 @@
+% Mario Carneiro, Mathlib Computability.Primrec.List, nat_strong_rec.
+% Primitive recursion carries an optional list of all earlier values. The
+% supplied step need only return the next value on those actual prefixes.
+ppg_nat_primrec_strong_recursion: THEORY
+BEGIN
+  IMPORTING ppg_nat_primrec_list_tabulation
+
+  F,g: VAR TotalFunction
+
+  a,l,k,n,v: VAR nat
+
+  L: VAR NatList
+
+  mapNatList_length: LEMMA length(mapNatList(F,a,L))=length(L)
+
+  lookupNatList_snoc_last: LEMMA lookupNatList(append(L,cons[nat](v,null[nat])),length(L))=v+1
+
+  lookupCode_snoc_last: LEMMA lookupCode(snocCode(encodeNatList(L),v),length(L))=v+1
+
+  tabulateCode_lookup_newest: THEOREM lookupCode(tabulateCode(F,a,n+1),n)=F(natPair(a,n))+1
+
+  PrefixLaw(F,g): bool = FORALL(a,n:nat):
+    g(natPair(a,tabulateCode(F,a,n)))=F(natPair(a,n))+1
+
+  prefix_law_value: LEMMA PrefixLaw(F,g) IMPLIES
+    g(natPair(a,tabulateCode(F,a,n)))=F(natPair(a,n))+1
+
+  prefixPreviousT: TotalFunction = compT(predT,remainderT)
+
+  pr_prefixPrevious: LEMMA NatPrimrec(prefixPreviousT)
+
+  prefixNextT(g): TotalFunction = compT(g,pairT(parameterT,prefixPreviousT))
+
+  pr_prefixNext: LEMMA NatPrimrec(g) IMPLIES NatPrimrec(prefixNextT(g))
+
+  prefixSnocT(g): TotalFunction = compT(succT,
+    compT(snocCodeT,pairT(prefixPreviousT,compT(predT,prefixNextT(g)))))
+
+  pr_prefixSnoc: LEMMA NatPrimrec(g) IMPLIES NatPrimrec(prefixSnocT(g))
+
+  prefixStepT(g): TotalFunction = ifZeroT(remainderT,zeroT,
+    ifZeroT(prefixNextT(g),zeroT,prefixSnocT(g)))
+
+  pr_prefixStep: THEOREM NatPrimrec(g) IMPLIES NatPrimrec(prefixStepT(g))
+
+  prefixStep_none: LEMMA prefixStepT(g)(natPair(a,natPair(n,0)))=0
+
+  prefixStep_some: LEMMA prefixStepT(g)(natPair(a,natPair(n,l+1)))=
+    IF g(natPair(a,l))=0 THEN 0 ELSE snocCode(l,g(natPair(a,l))-1)+1 ENDIF
+
+  prefixOption(g,a,n): nat = natRecT(constT(1),prefixStepT(g),a,n)
+
+  prefixOptionT(g): TotalFunction = precT(constT(1),prefixStepT(g))
+
+  prefixOptionT_value: LEMMA prefixOptionT(g)(n)=prefixOption(g,leftT(n),rightT(n))
+
+  pr_prefixOption: THEOREM NatPrimrec(g) IMPLIES NatPrimrec(prefixOptionT(g))
+
+  prefixOption_zero: LEMMA prefixOption(g,a,0)=1
+
+  prefixOption_succ: LEMMA prefixOption(g,a,n+1)=
+    prefixStepT(g)(natPair(a,natPair(n,prefixOption(g,a,n))))
+
+  prefix_option_invariant: THEOREM PrefixLaw(F,g) IMPLIES
+    prefixOption(g,a,n)=tabulateCode(F,a,n)+1
+
+  strongRecResultT(g): TotalFunction = compT(predT,compT(lookupCodeT,
+    pairT(compT(predT,compT(prefixOptionT(g),pairT(leftT,compT(succT,rightT)))),rightT)))
+
+  pr_strongRecResult: THEOREM NatPrimrec(g) IMPLIES NatPrimrec(strongRecResultT(g))
+
+  strongRecResultT_value: LEMMA strongRecResultT(g)(n)=
+    predT(lookupCode(predT(prefixOption(g,leftT(n),rightT(n)+1)),rightT(n)))
+
+  prefix_result_recovery: LEMMA prefixOption(g,a,n+1)=tabulateCode(F,a,n+1)+1 IMPLIES
+    predT(lookupCode(predT(prefixOption(g,a,n+1)),n))=F(natPair(a,n))
+
+  strongRecResult_correct: THEOREM PrefixLaw(F,g) IMPLIES strongRecResultT(g)(n)=F(n)
+
+  pr_nat_strong_rec: THEOREM NatPrimrec(g) AND PrefixLaw(F,g) IMPLIES NatPrimrec(F)
+
+END ppg_nat_primrec_strong_recursion
