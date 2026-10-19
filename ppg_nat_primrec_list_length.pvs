@@ -1,0 +1,35 @@
+% Mario Carneiro, Mathlib Computability.Primrec.List, list_length.
+% Counting is a fold that increments its accumulator once per element.
+ppg_nat_primrec_list_length: THEORY
+BEGIN
+  IMPORTING ppg_nat_primrec_list_fold
+
+  a,z,n: VAR nat
+
+  L: VAR NatList
+
+  lengthStepT: TotalFunction = compT(succT,accumulatorT)
+
+  lengthStepT_value: LEMMA lengthStepT(natPair(a,natPair(z,n)))=z+1
+
+  pr_lengthStep: LEMMA NatPrimrec(lengthStepT)
+
+  lengthCode: TotalFunction = compT(foldCodeT(lengthStepT),pairT(zeroT,pairT(zeroT,idT)))
+
+  lengthCode_value: LEMMA lengthCode(n)=foldCode(lengthStepT,0,0,n)
+
+  pr_lengthCode: THEOREM NatPrimrec(lengthCode)
+
+  fold_length_semantics: THEOREM FORALL(a,z:nat): foldNatList(lengthStepT,a,z,L)=z+length(L)
+
+  lengthCode_semantics: THEOREM lengthCode(encodeNatList(L))=length(L)
+
+  lengthCode_decode: THEOREM lengthCode(n)=length(decodeNatList(n))
+
+  lengthCode_zero: LEMMA lengthCode(0)=0
+
+  lengthCode_cons: LEMMA lengthCode(consCode(a,n))=lengthCode(n)+1
+
+  lengthCode_bound: THEOREM lengthCode(n)<=n
+
+END ppg_nat_primrec_list_length
