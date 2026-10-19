@@ -1,0 +1,142 @@
+(|ppg_hls_expansion_family_weight|
+ (|support_fiber_coverage| 0
+  (|support_fiber_coverage-1| NIL 4001411108
+   ("" (THEN (SKOSIMP*) (INST + "F!1") (ASSERT)) NIL)
+   ((|ExpansionFamily| TYPE-EQ-DECL NIL |ppg_hls_expansion_family| NIL)
+    (|LegalChoices| TYPE-EQ-DECL NIL |ppg_hls_supported_choices| NIL)
+    (|extendChoice| CONST-DECL
+     "ppg_hls_expansion_vertices[C, G].ExpansionChoice"
+     |ppg_hls_supported_choices| NIL)
+    (|LegalExpansion| CONST-DECL "bool" |ppg_hls_origin_rule| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|NodeChoice| TYPE-EQ-DECL NIL |ppg_hls_supported_choices| NIL)
+    (|ExpansionChoice| TYPE-EQ-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|IsProperCanonical| CONST-DECL "bool" |ppg_hls_proper_family| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|ProperDAG| TYPE-EQ-DECL NIL |ppg_hls_proper_family| NIL)
+    (|alpha| FORMAL-CONST-DECL "C" |ppg_hls_expansion_family_weight| NIL)
+    (|universe| FORMAL-CONST-DECL "{S: finite_set[C] | FORALL (i: C): S(i)}"
+     |ppg_hls_expansion_family_weight| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_expansion_family_weight| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_expansion_family_weight| NIL))
+   SHOSTAK))
+ (|expansionFamilyMap_weight_TCC1| 0
+  (|expansionFamilyMap_weight_TCC1-1| NIL 4001411083 ("" (SUBTYPE-TCC) NIL NIL)
+   NIL NIL
+   (|expansionFamilyMap_weight| SUBTYPE "u"
+    "(ppg_hls_expansion_family_weight.F`1`nodes)" (27 41 27 42))))
+ (|expansionFamilyMap_weight| 0
+  (|expansionFamilyMap_weight-1| NIL 4001411083
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "coloredExpansion_weight"
+      ("M" "M!1" "Q" "F!1`1" "choice" "extendChoice(F!1`1)(F!1`2)" "up" "up!1"
+       "down" "down!1"))
+     (LEMMA "nodeDomain.full_product_image"
+      ("f"
+       "LAMBDA(u:WNode):choiceWeight(M!1,up!1,down!1,u`1,extendChoice(F!1`1)(F!1`2)(u))"))
+     (LEMMA "ppg_enn_products[(S)].eprod_congr"
+      ("F" "nodeDomain.indexFull" "f"
+       "LAMBDA(u:(S)):choiceWeight(M!1,up!1,down!1,u`1,extendChoice(F!1`1)(F!1`2)(u))"
+       "g" "LAMBDA(u:(S)):choiceWeight(M!1,up!1,down!1,u`1,F!1`2(u))"))
+     (LEMMA "extendChoice_mem" ("D" "F!1`1" "c" "F!1`2"))
+     (EXPAND "expansionFamilyMap")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("is_finite" "OriginRule" "height" "matchingArcs" "arcNodes"
+       "LegalExpansion" "originalDown" "expandedDown" "expandedNodes"
+       "needsExtra" "expandedBefore" "topo.topoBefore" "expansionEmbed"
+       "expandedBuild.build" "expandedLabel" "expandedTag" "Edge" "Reach"
+       "positivePath" "rawExpansion" "canonicalName" "labelRank" "normalize"
+       "coloredExpansion" "expansionExtras" "expansionName" "dagPaths.Acyclic"
+       "dagPaths.reverseArc" "expandedOriginWitness" "normalizedOriginWitness"
+       "originalCandidates" "originalIsoMap" "NodeIso" "nodeImages.injOn"
+       "InsertedBefore" "coloredValid" "eprod" "sum" "emul" "choiceWeight"
+       "nodeFactor" "oldFactor" "extraFactor")))
+    NIL)
+   ((|choiceWeight| CONST-DECL "ENN" |ppg_hls_choice_weights| NIL)
+    (|full_product_image| FORMULA-DECL NIL |ppg_enn_product_domain| NIL)
+    (|extendChoice_mem| FORMULA-DECL NIL |ppg_hls_supported_choices| NIL)
+    (|decorationWeight| CONST-DECL "ENN" |ppg_hls_decoration_weight| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[[C, nat]]"
+     |ppg_hls_expansion_family_weight| NIL)
+    (|finite_restrict| APPLICATION-JUDGEMENT "finite_set[S]"
+     |restrict_set_props| NIL)
+    (|expansionFamilyMap| CONST-DECL "DecoratedFamily"
+     |ppg_hls_expansion_family| NIL)
+    (|eprod_congr| FORMULA-DECL NIL |ppg_enn_products| NIL)
+    (|indexFull| CONST-DECL "finite_set[(S)]" |ppg_enn_product_domain| NIL)
+    (|coloredExpansion_weight| FORMULA-DECL NIL |ppg_hls_expansion_weight| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|alpha| FORMAL-CONST-DECL "C" |ppg_hls_expansion_family_weight| NIL)
+    (|ProperDAG| TYPE-EQ-DECL NIL |ppg_hls_proper_family| NIL)
+    (|IsProperCanonical| CONST-DECL "bool" |ppg_hls_proper_family| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|ExpansionChoice| TYPE-EQ-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|NodeChoice| TYPE-EQ-DECL NIL |ppg_hls_supported_choices| NIL)
+    (|LegalExpansion| CONST-DECL "bool" |ppg_hls_origin_rule| NIL)
+    (|extendChoice| CONST-DECL
+     "ppg_hls_expansion_vertices[C, G].ExpansionChoice"
+     |ppg_hls_supported_choices| NIL)
+    (|LegalChoices| TYPE-EQ-DECL NIL |ppg_hls_supported_choices| NIL)
+    (|ExpansionFamily| TYPE-EQ-DECL NIL |ppg_hls_expansion_family| NIL)
+    (S FORMAL-CONST-DECL "finite_set[[C, nat]]"
+     |ppg_hls_expansion_family_weight| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_expansion_family_weight| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_expansion_family_weight| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL "{S: finite_set[C] | FORALL (i: C): S(i)}"
+     |ppg_hls_expansion_family_weight| NIL))
+   SHOSTAK)))
+

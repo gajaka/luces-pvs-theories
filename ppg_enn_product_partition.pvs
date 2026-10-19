@@ -1,0 +1,42 @@
+% A predicate partitions a finite product into two disjoint factors.
+% Only the commutative multiplication laws are used, so zeros and
+% infinity require no exceptional side condition.
+%
+% Nicolas Bourbaki, Algebra I, Chapters 1--3, Springer, 1989.
+% https://link.springer.com/book/9783540642435
+ppg_enn_product_partition[T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_enn_products[T]
+
+  S,A,B: VAR finite_set[T]
+  P: VAR set[T]
+  f,g: VAR [T->ENN]
+
+  partition_union: LEMMA union(intersection(S,P),difference(S,P))=S
+
+  partition_disjoint: LEMMA disjoint?(intersection(S,P),difference(S,P))
+
+  eprod_disjoint_union: LEMMA disjoint?(A,B) IMPLIES
+    eprod(union(A,B),f)=emul(eprod(A,f),eprod(B,f))
+
+  eprod_pointwise_mul: LEMMA emul(eprod(S,f),eprod(S,g))=
+    eprod(S,LAMBDA(x:T):emul(f(x),g(x)))
+
+  eprod_all_one: LEMMA eprod(S,LAMBDA(x:T):ennFinite(1))=ennFinite(1)
+
+  partition_left_product: LEMMA
+    eprod(intersection(S,P),LAMBDA(x:T):IF P(x) THEN f(x) ELSE g(x) ENDIF)=
+      eprod(intersection(S,P),f)
+
+  partition_right_product: LEMMA
+    eprod(difference(S,P),LAMBDA(x:T):IF P(x) THEN f(x) ELSE g(x) ENDIF)=
+      eprod(difference(S,P),g)
+
+  eprod_select_partition: LEMMA
+    eprod(S,LAMBDA(x:T):IF P(x) THEN f(x) ELSE g(x) ENDIF)=
+      emul(eprod(intersection(S,P),f),eprod(difference(S,P),g))
+
+  eprod_filter_unit: LEMMA eprod(intersection(S,P),f)=
+    eprod(S,LAMBDA(x:T):IF P(x) THEN f(x) ELSE ennFinite(1) ENDIF)
+
+END ppg_enn_product_partition

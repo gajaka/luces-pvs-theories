@@ -1,0 +1,80 @@
+% Original and inserted vertices contribute the two factors of a local
+% choice. Their false and true tags give disjoint images, so the finite
+% product separates without cancellation or division.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Appendix C. https://arxiv.org/abs/2111.06527
+% Lean counterpart: first two results of PPGraphHLSExpansionWeight.lean.
+ppg_hls_choice_weights[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_supported_choices[C,G],ppg_hls_decoration_weight[C,G],
+    ppg_enn_products[WNode] AS wnProducts,ppg_enn_products[ExpandedVertex] AS evProducts,
+    ppg_enn_product_partition[WNode] AS wnPartition,
+    ppg_enn_product_partition[ExpandedVertex] AS evPartition,
+    ppg_monoid_image[WNode,ExpandedVertex,ENN,ennFinite(1),emul] AS vertexReindex
+
+  M: VAR DependencyMatching
+  D: VAR WitnessDAG
+  choice: VAR [WNode->ppg_hls_expansion_vertices[C,G].ExpansionChoice]
+  ch: VAR ppg_hls_expansion_vertices[C,G].ExpansionChoice
+  up,down: VAR [C->ENN]
+  i: VAR C
+  u: VAR WNode
+  R: VAR finite_set[WNode]
+
+  choiceWeight(M,up,down,i,ch): ENN = IF ch=0 THEN up(i) ELSIF ch=1 THEN down(i)
+    ELSIF ch=2 THEN emul(down(i),up(M(i))) ELSE emul(down(i),down(M(i))) ENDIF
+
+  decoration_intersection: LEMMA subset?(R,D`nodes) IMPLIES intersection(D`nodes,R)=R
+
+  decorationWeight_eq_prod: THEOREM subset?(R,D`nodes) IMPLIES
+    decorationWeight(up,down)(D)(R)=wnProducts.eprod(D`nodes,
+      LAMBDA(u:WNode):IF R(u) THEN down(u`1) ELSE up(u`1) ENDIF)
+
+  oldIndex(u): ExpandedVertex = (u,FALSE)
+
+  extraIndex(u): ExpandedVertex = (u,TRUE)
+
+  oldIndex_injective: LEMMA injective?(oldIndex)
+
+  extraIndex_injective: LEMMA injective?(extraIndex)
+
+  old_extra_disjoint: LEMMA disjoint?(image(oldIndex,D`nodes),
+    image(extraIndex,intersection(D`nodes,LAMBDA(u:WNode):needsExtra(choice(u)))))
+
+  expandedNodes_union: LEMMA expandedNodes(D,choice)=union(image(oldIndex,D`nodes),
+    image(extraIndex,intersection(D`nodes,LAMBDA(u:WNode):needsExtra(choice(u)))))
+
+  nodeFactor(M,choice,up,down)(x:ExpandedVertex): ENN = IF expandedDown(choice)(x)
+    THEN down(expandedLabel(M)(x)) ELSE up(expandedLabel(M)(x)) ENDIF
+
+  oldFactor(choice,up,down)(u): ENN = IF originalDown(choice)(u) THEN down(u`1) ELSE up(u`1) ENDIF
+
+  extraFactor(M,choice,up,down)(u): ENN = IF choice(u)=3 THEN down(M(u`1)) ELSE up(M(u`1)) ENDIF
+
+  oldFactor_at: LEMMA nodeFactor(M,choice,up,down)(oldIndex(u))=oldFactor(choice,up,down)(u)
+
+  extraFactor_at: LEMMA nodeFactor(M,choice,up,down)(extraIndex(u))=extraFactor(M,choice,up,down)(u)
+
+  local_factor_eq: LEMMA emul(oldFactor(choice,up,down)(u),
+    IF needsExtra(choice(u)) THEN extraFactor(M,choice,up,down)(u) ELSE ennFinite(1) ENDIF)=
+      choiceWeight(M,up,down,u`1,choice(u))
+
+  old_product: LEMMA evProducts.eprod(image(oldIndex,D`nodes),nodeFactor(M,choice,up,down))=
+    wnProducts.eprod(D`nodes,oldFactor(choice,up,down))
+
+  extra_product: LEMMA evProducts.eprod(
+    image(extraIndex,intersection(D`nodes,LAMBDA(u:WNode):needsExtra(choice(u)))),
+      nodeFactor(M,choice,up,down))=wnProducts.eprod(
+        intersection(D`nodes,LAMBDA(u:WNode):needsExtra(choice(u))),extraFactor(M,choice,up,down))
+
+  local_products: LEMMA emul(wnProducts.eprod(D`nodes,oldFactor(choice,up,down)),
+    wnProducts.eprod(intersection(D`nodes,LAMBDA(u:WNode):needsExtra(choice(u))),
+      extraFactor(M,choice,up,down)))=
+        wnProducts.eprod(D`nodes,LAMBDA(u:WNode):choiceWeight(M,up,down,u`1,choice(u)))
+
+  expandedNodes_prod: THEOREM evProducts.eprod(expandedNodes(D,choice),nodeFactor(M,choice,up,down))=
+    wnProducts.eprod(D`nodes,LAMBDA(u:WNode):choiceWeight(M,up,down,u`1,choice(u)))
+
+END ppg_hls_choice_weights

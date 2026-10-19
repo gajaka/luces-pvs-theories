@@ -1,0 +1,108 @@
+(|ppg_enn_product_domain|
+ (|reindex_TCC1| 0
+  (|reindex_TCC1-1| NIL 4001410143
+   ("" (THEN (LEMMA "multiplication_monoid") (ASSERT)) NIL)
+   ((|multiplication_monoid| FORMULA-DECL NIL |ppg_enn_semiring| NIL)) NIL
+   (|reindex| SUBTYPE "emul"
+    "{f: [ENN, ENN -> ENN] | booleans.AND(operator_defs[ENN].identity?(f)(ppg_ennreal_adt.ennFinite(1)), booleans.AND(operator_defs[ENN].associative?(f), operator_defs[ENN].commutative?(f)))}"
+    (11 44 11 48))))
+ (|indexFull_member| 0
+  (|indexFull_member-1| NIL 4001410143
+   ("" (THEN (GRIND :EXCLUDE ("eprod" "sum" "emul" "is_finite"))) NIL)
+   ((|restrict| CONST-DECL "R" |restrict| NIL)
+    (|indexFull| CONST-DECL "finite_set[(S)]" |ppg_enn_product_domain| NIL))
+   SHOSTAK))
+ (|inclusion_injective| 0
+  (|inclusion_injective-1| NIL 4001410143 ("" (THEN (GRIND)) NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_product_domain| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (S FORMAL-CONST-DECL "finite_set[T]" |ppg_enn_product_domain| NIL)
+    (|inclusion| CONST-DECL "T" |ppg_enn_product_domain| NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL))
+   SHOSTAK))
+ (|inclusion_full_image| 0
+  (|inclusion_full_image-1| NIL 4001410143
+   ("" (THEN (APPLY-EXTENSIONALITY :HIDE? T) (GRIND :IF-MATCH ALL)) NIL)
+   ((T FORMAL-TYPE-DECL NIL |ppg_enn_product_domain| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|indexFull| CONST-DECL "finite_set[(S)]" |ppg_enn_product_domain| NIL)
+    (|inclusion| CONST-DECL "T" |ppg_enn_product_domain| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (S FORMAL-CONST-DECL "finite_set[T]" |ppg_enn_product_domain| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|restrict| CONST-DECL "R" |restrict| NIL)
+    (|finite_restrict| APPLICATION-JUDGEMENT "finite_set[S]"
+     |restrict_set_props| NIL))
+   SHOSTAK))
+ (|partial_product_image| 0
+  (|partial_product_image-1| NIL 4001410143
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "reindex.sum_image" ("S" "H!1" "h" "inclusion" "f" "f!1"))
+     (LEMMA "inclusion_injective") (EXPAND "domainProducts.eprod")
+     (EXPAND "carrierProducts.eprod")
+     (GRIND :EXCLUDE ("sum" "emul" "is_finite")))
+    NIL)
+   ((|inclusion_injective| FORMULA-DECL NIL |ppg_enn_product_domain| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL)
+    (|eprod| CONST-DECL "ENN" |ppg_enn_products| NIL)
+    (|sum_image| FORMULA-DECL NIL |ppg_monoid_image| NIL)
+    (|inclusion| CONST-DECL "T" |ppg_enn_product_domain| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_product_domain| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (S FORMAL-CONST-DECL "finite_set[T]" |ppg_enn_product_domain| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|emul| CONST-DECL "ENN" |ppg_enn_multiply| NIL))
+   SHOSTAK))
+ (|full_product_image| 0
+  (|full_product_image-1| NIL 4001410143
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "partial_product_image" ("H" "indexFull" "f" "f!1"))
+     (LEMMA "inclusion_full_image") (ASSERT))
+    NIL)
+   ((|inclusion_full_image| FORMULA-DECL NIL |ppg_enn_product_domain| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|partial_product_image| FORMULA-DECL NIL |ppg_enn_product_domain| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_product_domain| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (S FORMAL-CONST-DECL "finite_set[T]" |ppg_enn_product_domain| NIL)
+    (|indexFull| CONST-DECL "finite_set[(S)]" |ppg_enn_product_domain| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL))
+   SHOSTAK)))
+

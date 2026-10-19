@@ -1,0 +1,29 @@
+% The final product is indexed by the genuine subtype of original nodes.
+% Its inclusion into the ambient finite set is a proved product reindexing.
+% The arbitrary support S indexes fibers of ExpansionFamily; every family
+% belongs to the fiber S = F`1`nodes, as proved below.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Appendix C. https://arxiv.org/abs/2111.06527
+% Lean counterpart: expansionFamilyMap_weight in PPGraphHLSExpansionWeight.lean.
+ppg_hls_expansion_family_weight[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},
+  universe:{S:finite_set[C]|FORALL(i:C):S(i)},alpha:C,
+  S:finite_set[[C,nat]]]: THEORY
+BEGIN
+  IMPORTING ppg_hls_expansion_family[C,G,universe,alpha],ppg_hls_expansion_weight[C,G,universe],
+    ppg_enn_product_domain[WNode,S] AS nodeDomain
+
+  up,down: VAR [C->ENN]
+
+  support_fiber_coverage: LEMMA FORALL(M:DependencyMatching,F:ExpansionFamily(M)):
+    EXISTS(P:{Q:ExpansionFamily(M)|Q`1`nodes=F`1`nodes}):P=F
+
+  expansionFamilyMap_weight: THEOREM FORALL(M:DependencyMatching,
+    F:{P:ExpansionFamily(M)|P`1`nodes=S}):
+    decorationWeight(up,down)(expansionFamilyMap(M)(F)`1)(expansionFamilyMap(M)(F)`2)=
+      ppg_enn_products[(S)].eprod(
+        nodeDomain.indexFull,LAMBDA(u:(S)):
+          choiceWeight(M,up,down,u`1,F`2(u)))
+
+END ppg_hls_expansion_family_weight
