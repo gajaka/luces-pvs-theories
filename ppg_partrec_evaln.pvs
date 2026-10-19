@@ -1,0 +1,91 @@
+% The budget bounds values encountered at recursive inputs, not execution steps.
+% Subcodes retain the budget; only primitive recursion and search lower it.
+%
+% Mario Carneiro, Mathlib Computability.PartrecCode, evaln and evaln_mono.
+ppg_partrec_evaln: THEORY
+BEGIN
+  IMPORTING ppg_partrec_code_encoding
+
+  OptionNat: TYPE = lift[nat]
+
+  o,p: VAR OptionNat
+
+  h: VAR [nat -> OptionNat]
+
+  k,k1,k2,n,x,a,b: VAR nat
+
+  c,f,g: VAR ppg_partrec_code
+
+  bindNat(o,h): OptionNat = IF up?[nat](o) THEN h(down[nat](o)) ELSE bottom[nat] ENDIF
+
+  pairNat(o,p): OptionNat = IF up?[nat](o) AND up?[nat](p)
+    THEN up[nat](natPair(down[nat](o),down[nat](p))) ELSE bottom[nat] ENDIF
+
+  bindNat_some: LEMMA bindNat(o,h)=up[nat](x) IFF
+    EXISTS (y:nat): o=up[nat](y) AND h(y)=up[nat](x)
+
+  upNat_injective: LEMMA up[nat](a)=up[nat](b) IMPLIES a=b
+
+  pairNat_some: LEMMA pairNat(o,p)=up[nat](x) IFF
+    EXISTS (y,z:nat): o=up[nat](y) AND p=up[nat](z) AND natPair(y,z)=x
+
+  evaln(k,c,n): RECURSIVE OptionNat =
+    IF k=0 OR k<=n THEN bottom[nat]
+    ELSE CASES c OF
+      codeZero: up[nat](0),
+      codeSucc: up[nat](n+1),
+      codeLeft: up[nat](unpair(n)`1),
+      codeRight: up[nat](unpair(n)`2),
+      codePair(f,g): pairNat(evaln(k,f,n),evaln(k,g,n)),
+      codeComp(f,g): bindNat(evaln(k,g,n),LAMBDA (y:nat): evaln(k,f,y)),
+      codePrec(f,g): LET a=unpair(n)`1,b=unpair(n)`2 IN
+        IF b=0 THEN evaln(k,f,a)
+        ELSE bindNat(evaln(k-1,codePrec(f,g),natPair(a,b-1)),
+          LAMBDA (y:nat): evaln(k,g,natPair(a,natPair(b-1,y)))) ENDIF,
+      codeRfind(f): LET a=unpair(n)`1,m=unpair(n)`2 IN
+        bindNat(evaln(k,f,natPair(a,m)),LAMBDA (y:nat):
+          IF y=0 THEN up[nat](m) ELSE evaln(k-1,codeRfind(f),natPair(a,m+1)) ENDIF)
+    ENDCASES ENDIF MEASURE lex2(k,codeSize(c)) BY <
+
+  evaln_zero_budget: LEMMA evaln(0,c,n)=bottom[nat]
+
+  evaln_outside_bound: LEMMA k<=n IMPLIES evaln(k,c,n)=bottom[nat]
+
+  evaln_zero: LEMMA evaln(k+1,codeZero,n)=
+    IF n<=k THEN up[nat](0) ELSE bottom[nat] ENDIF
+
+  evaln_succ: LEMMA evaln(k+1,codeSucc,n)=
+    IF n<=k THEN up[nat](n+1) ELSE bottom[nat] ENDIF
+
+  evaln_left: LEMMA evaln(k+1,codeLeft,n)=
+    IF n<=k THEN up[nat](unpair(n)`1) ELSE bottom[nat] ENDIF
+
+  evaln_right: LEMMA evaln(k+1,codeRight,n)=
+    IF n<=k THEN up[nat](unpair(n)`2) ELSE bottom[nat] ENDIF
+
+  evaln_pair: LEMMA evaln(k+1,codePair(f,g),n)=
+    IF n<=k THEN pairNat(evaln(k+1,f,n),evaln(k+1,g,n)) ELSE bottom[nat] ENDIF
+
+  evaln_comp: LEMMA evaln(k+1,codeComp(f,g),n)=
+    IF n<=k THEN bindNat(evaln(k+1,g,n),LAMBDA (y:nat): evaln(k+1,f,y))
+    ELSE bottom[nat] ENDIF
+
+  evaln_prec: LEMMA evaln(k+1,codePrec(f,g),n)=
+    IF n<=k THEN LET a=unpair(n)`1,b=unpair(n)`2 IN
+      IF b=0 THEN evaln(k+1,f,a)
+      ELSE bindNat(evaln(k,codePrec(f,g),natPair(a,b-1)),
+        LAMBDA (y:nat): evaln(k+1,g,natPair(a,natPair(b-1,y)))) ENDIF
+    ELSE bottom[nat] ENDIF
+
+  evaln_rfind: LEMMA evaln(k+1,codeRfind(f),n)=
+    IF n<=k THEN LET a=unpair(n)`1,m=unpair(n)`2 IN
+      bindNat(evaln(k+1,f,natPair(a,m)),LAMBDA (y:nat):
+        IF y=0 THEN up[nat](m) ELSE evaln(k,codeRfind(f),natPair(a,m+1)) ENDIF)
+    ELSE bottom[nat] ENDIF
+
+  evaln_bound: THEOREM evaln(k,c,n)=up[nat](x) IMPLIES n<k
+
+  evaln_mono: THEOREM k1<=k2 AND evaln(k1,c,n)=up[nat](x)
+    IMPLIES evaln(k2,c,n)=up[nat](x)
+
+END ppg_partrec_evaln

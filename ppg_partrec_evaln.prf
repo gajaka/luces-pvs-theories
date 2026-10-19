@@ -1,0 +1,1003 @@
+(|ppg_partrec_evaln|
+ (|bindNat_some| 0
+  (|bindNat_some-1| NIL 4001403132
+   (""
+    (THEN (SKOSIMP*) (EXPAND "bindNat")
+     (GRIND :REWRITES ("lift_up_eta" "lift_down_up") :EXCLUDE ("natPair")
+      :IF-MATCH ALL))
+    NIL)
+   ((|down| ADT-ACCESSOR-DECL "[(up?) -> T]" |lift_adt| NIL)
+    (|OptionNat| TYPE-EQ-DECL NIL |ppg_partrec_evaln| NIL)
+    (|up?| ADT-RECOGNIZER-DECL "[lift -> boolean]" |lift_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|every| ADT-DEF-DECL "boolean" |lift_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|lift| TYPE-DECL NIL |lift_adt| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|lift_up_eta| FORMULA-DECL NIL |lift_adt| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|bindNat| CONST-DECL "OptionNat" |ppg_partrec_evaln| NIL))
+   SHOSTAK))
+ (|upNat_injective| 0
+  (|upNat_injective-1| NIL 4001403623
+   ("" (SKOSIMP*)
+    (("" (CASE "down[nat](up[nat](a!1))=down[nat](up[nat](b!1))")
+      (("1" (GRIND :REWRITES ("lift_down_up") :IF-MATCH NIL) NIL NIL)
+       ("2" (REPLACE -1 :DIR LR) (("2" (PROPAX) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|lift| TYPE-DECL NIL |lift_adt| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |lift_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|up?| ADT-RECOGNIZER-DECL "[lift -> boolean]" |lift_adt| NIL)
+    (|down| ADT-ACCESSOR-DECL "[(up?) -> T]" |lift_adt| NIL)
+    (|up| ADT-CONSTRUCTOR-DECL "[T -> (up?)]" |lift_adt| NIL))
+   SHOSTAK))
+ (|pairNat_some| 0
+  (|pairNat_some-1| NIL 4001403132
+   (""
+    (THEN (SKOSIMP*) (EXPAND "pairNat")
+     (GRIND :REWRITES ("lift_up_eta" "lift_down_up") :EXCLUDE ("natPair")
+      :IF-MATCH ALL)
+     (USE "upNat_injective"
+          ("a" "natPair(down[nat](oh!1),down[nat](p!1))" "b" "x!1"))
+     (ASSERT))
+    NIL)
+   ((|lift_up_eta| FORMULA-DECL NIL |lift_adt| NIL)
+    (|down| ADT-ACCESSOR-DECL "[(up?) -> T]" |lift_adt| NIL)
+    (|OptionNat| TYPE-EQ-DECL NIL |ppg_partrec_evaln| NIL)
+    (|up?| ADT-RECOGNIZER-DECL "[lift -> boolean]" |lift_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|every| ADT-DEF-DECL "boolean" |lift_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|lift| TYPE-DECL NIL |lift_adt| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|natPair| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|upNat_injective| FORMULA-DECL NIL |ppg_partrec_evaln| NIL)
+    (|pairNat| CONST-DECL "OptionNat" |ppg_partrec_evaln| NIL))
+   SHOSTAK))
+ (|evaln_TCC1| 0
+  (|evaln_TCC1-1| NIL 4001403132
+   ("" (THEN (USE "well_founded_le") (EXPAND "restrict") (ASSERT)) NIL)
+   ((|well_founded_le| FORMULA-DECL NIL |ordinals| NIL)
+    (|restrict| CONST-DECL "R" |restrict| NIL))
+   NIL
+   (|evaln| WELL-FOUNDED
+    "restrict[[ordstruct, ordstruct], [ordinal, ordinal], bool](<)"
+    #A((3) BASE-CHAR . "NIL") (48 50 48 51))))
+ (|evaln_TCC2| 0
+  (|evaln_TCC2-1| NIL 4001403132 ("" (TERMINATION-TCC) NIL NIL)
+   ((|restrict| CONST-DECL "R" |restrict| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|codeSize| DEF-DECL "nat" |ppg_partrec_code_encoding| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|plus_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|odd_plus_even_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|evaln| TERMINATION "evaln(k, f, n)" #A((3) BASE-CHAR . "NIL")
+    (39 29 39 41))))
+ (|evaln_TCC3| 0
+  (|evaln_TCC3-1| NIL 4001403132 ("" (TERMINATION-TCC) NIL NIL)
+   ((|restrict| CONST-DECL "R" |restrict| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|codeSize| DEF-DECL "nat" |ppg_partrec_code_encoding| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|evaln| TERMINATION "evaln(k, g, n)" #A((3) BASE-CHAR . "NIL")
+    (39 42 39 54))))
+ (|evaln_TCC4| 0
+  (|evaln_TCC4-1| NIL 4001403132 ("" (TERMINATION-TCC) NIL NIL)
+   ((|restrict| CONST-DECL "R" |restrict| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|codeSize| DEF-DECL "nat" |ppg_partrec_code_encoding| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|evaln| TERMINATION "evaln(k, g, n)" #A((3) BASE-CHAR . "NIL")
+    (40 29 40 41))))
+ (|evaln_TCC5| 0
+  (|evaln_TCC5-1| NIL 4001403132 ("" (TERMINATION-TCC) NIL NIL)
+   ((|restrict| CONST-DECL "R" |restrict| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|codeSize| DEF-DECL "nat" |ppg_partrec_code_encoding| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|plus_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|odd_plus_even_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|evaln| TERMINATION "evaln(k, f, y)" #A((3) BASE-CHAR . "NIL")
+    (40 58 40 70))))
+ (|evaln_TCC6| 0
+  (|evaln_TCC6-1| NIL 4001403132 ("" (TERMINATION-TCC) NIL NIL)
+   ((|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|floorRoot| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|natSub| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|unpair| CONST-DECL "[nat, nat]" |ppg_nat_square_pairing| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|restrict| CONST-DECL "R" |restrict| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|codeSize| DEF-DECL "nat" |ppg_partrec_code_encoding| NIL)
+    (|minus_u8_u8| APPLICATION-JUDGEMENT "int16" |integertypes| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|even_minus_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|plus_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|odd_plus_even_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|int_plus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|evaln| TERMINATION "evaln(k, f, a)" #A((3) BASE-CHAR . "NIL")
+    (42 20 42 32))))
+ (|evaln_TCC7| 0
+  (|evaln_TCC7-1| NIL 4001403132 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|floorRoot| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL (|evaln| SUBTYPE "k - 1" "nat" (43 27 43 30))))
+ (|evaln_TCC8| 0
+  (|evaln_TCC8-1| NIL 4001403132 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|floorRoot| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL (|evaln| SUBTYPE "b - 1" "nat" (43 55 43 58))))
+ (|evaln_TCC9| 0
+  (|evaln_TCC9-1| NIL 4001403132 ("" (TERMINATION-TCC) NIL NIL)
+   ((|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|floorRoot| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|natSub| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|unpair| CONST-DECL "[nat, nat]" |ppg_nat_square_pairing| NIL)
+    (|codeSize| DEF-DECL "nat" |ppg_partrec_code_encoding| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|restrict| CONST-DECL "R" |restrict| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|evaln| TERMINATION "evaln(k - 1, codePrec(f, g), natPair(a, b - 1))"
+    #A((3) BASE-CHAR . "NIL") (43 21 43 60))))
+ (|evaln_TCC10| 0
+  (|evaln_TCC10-1| NIL 4001403132 ("" (TERMINATION-TCC) NIL NIL)
+   ((|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|floorRoot| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|natSub| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|unpair| CONST-DECL "[nat, nat]" |ppg_nat_square_pairing| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|restrict| CONST-DECL "R" |restrict| NIL)
+    (|codeSize| DEF-DECL "nat" |ppg_partrec_code_encoding| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_u8_u8| APPLICATION-JUDGEMENT "int16" |integertypes| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|even_minus_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|int_plus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|evaln| TERMINATION "evaln(k, g, natPair(a, natPair(b - 1, y)))"
+    #A((3) BASE-CHAR . "NIL") (44 26 44 62))))
+ (|evaln_TCC11| 0
+  (|evaln_TCC11-1| NIL 4001403132 ("" (TERMINATION-TCC) NIL NIL)
+   ((|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|floorRoot| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|natSub| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|unpair| CONST-DECL "[nat, nat]" |ppg_nat_square_pairing| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|restrict| CONST-DECL "R" |restrict| NIL)
+    (|codeSize| DEF-DECL "nat" |ppg_partrec_code_encoding| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|int_plus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|evaln| TERMINATION "evaln(k, f, natPair(a, m))" #A((3) BASE-CHAR . "NIL")
+    (46 16 46 39))))
+ (|evaln_TCC12| 0
+  (|evaln_TCC12-1| NIL 4001403132 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|floorRoot| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL (|evaln| SUBTYPE "k - 1" "nat" (47 44 47 47))))
+ (|evaln_TCC13| 0
+  (|evaln_TCC13-1| NIL 4001403132 ("" (TERMINATION-TCC) NIL NIL)
+   ((|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|floorRoot| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|natSub| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|unpair| CONST-DECL "[nat, nat]" |ppg_nat_square_pairing| NIL)
+    (|codeSize| DEF-DECL "nat" |ppg_partrec_code_encoding| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|restrict| CONST-DECL "R" |restrict| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|evaln| TERMINATION "evaln(k - 1, codeRfind(f), natPair(a, m + 1))"
+    #A((3) BASE-CHAR . "NIL") (47 38 47 76))))
+ (|evaln_zero_budget| 0
+  (|evaln_zero_budget-1| NIL 4001403132
+   (""
+    (THEN (SKOSIMP*) (EXPAND "evaln" + 1)
+     (GRIND :DEFS NIL :EXCLUDE ("evaln" "bindNat" "pairNat" "unpair" "natPair")
+      :IF-MATCH NIL))
+    NIL)
+   ((|evaln| DEF-DECL "OptionNat" |ppg_partrec_evaln| NIL)) SHOSTAK))
+ (|evaln_outside_bound| 0
+  (|evaln_outside_bound-1| NIL 4001403132
+   (""
+    (THEN (SKOSIMP*) (EXPAND "evaln" + 1)
+     (GRIND :DEFS NIL :EXCLUDE ("evaln" "bindNat" "pairNat" "unpair" "natPair")
+      :IF-MATCH NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|evaln| DEF-DECL "OptionNat" |ppg_partrec_evaln| NIL))
+   SHOSTAK))
+ (|evaln_zero| 0
+  (|evaln_zero-1| NIL 4001403132
+   (""
+    (THEN (SKOSIMP*) (EXPAND "evaln" + 1)
+     (GRIND :DEFS NIL :EXCLUDE ("evaln" "bindNat" "pairNat" "unpair" "natPair")
+      :IF-MATCH NIL))
+    NIL)
+   ((|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|evaln| DEF-DECL "OptionNat" |ppg_partrec_evaln| NIL))
+   SHOSTAK))
+ (|evaln_succ| 0
+  (|evaln_succ-1| NIL 4001403132
+   (""
+    (THEN (SKOSIMP*) (EXPAND "evaln" + 1)
+     (GRIND :DEFS NIL :EXCLUDE ("evaln" "bindNat" "pairNat" "unpair" "natPair")
+      :IF-MATCH NIL))
+    NIL)
+   ((|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|evaln| DEF-DECL "OptionNat" |ppg_partrec_evaln| NIL))
+   SHOSTAK))
+ (|evaln_left| 0
+  (|evaln_left-1| NIL 4001403132
+   (""
+    (THEN (SKOSIMP*) (EXPAND "evaln" + 1)
+     (GRIND :DEFS NIL :EXCLUDE ("evaln" "bindNat" "pairNat" "unpair" "natPair")
+      :IF-MATCH NIL))
+    NIL)
+   ((|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|evaln| DEF-DECL "OptionNat" |ppg_partrec_evaln| NIL))
+   SHOSTAK))
+ (|evaln_right| 0
+  (|evaln_right-1| NIL 4001403132
+   (""
+    (THEN (SKOSIMP*) (EXPAND "evaln" + 1)
+     (GRIND :DEFS NIL :EXCLUDE ("evaln" "bindNat" "pairNat" "unpair" "natPair")
+      :IF-MATCH NIL))
+    NIL)
+   ((|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|evaln| DEF-DECL "OptionNat" |ppg_partrec_evaln| NIL))
+   SHOSTAK))
+ (|evaln_pair| 0
+  (|evaln_pair-1| NIL 4001403132
+   (""
+    (THEN (SKOSIMP*) (EXPAND "evaln" + 1)
+     (GRIND :DEFS NIL :EXCLUDE ("evaln" "bindNat" "pairNat" "unpair" "natPair")
+      :IF-MATCH NIL))
+    NIL)
+   ((|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|evaln| DEF-DECL "OptionNat" |ppg_partrec_evaln| NIL))
+   SHOSTAK))
+ (|evaln_comp| 0
+  (|evaln_comp-1| NIL 4001403132
+   (""
+    (THEN (SKOSIMP*) (EXPAND "evaln" + 1)
+     (GRIND :DEFS NIL :EXCLUDE ("evaln" "bindNat" "pairNat" "unpair" "natPair")
+      :IF-MATCH NIL))
+    NIL)
+   ((|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|evaln| DEF-DECL "OptionNat" |ppg_partrec_evaln| NIL))
+   SHOSTAK))
+ (|evaln_prec_TCC1| 0
+  (|evaln_prec_TCC1-1| NIL 4001403132 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|floorRoot| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL (|evaln_prec| SUBTYPE "b - 1" "nat" (76 51 76 54))))
+ (|evaln_prec| 0
+  (|evaln_prec-1| NIL 4001403132
+   (""
+    (THEN (SKOSIMP*) (EXPAND "evaln" + 1)
+     (GRIND :DEFS NIL :EXCLUDE ("evaln" "bindNat" "pairNat" "unpair" "natPair")
+      :IF-MATCH NIL))
+    NIL)
+   ((|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|evaln| DEF-DECL "OptionNat" |ppg_partrec_evaln| NIL))
+   SHOSTAK))
+ (|evaln_rfind| 0
+  (|evaln_rfind-1| NIL 4001403132
+   (""
+    (THEN (SKOSIMP*) (EXPAND "evaln" + 1)
+     (GRIND :DEFS NIL :EXCLUDE ("evaln" "bindNat" "pairNat" "unpair" "natPair")
+      :IF-MATCH NIL))
+    NIL)
+   ((|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|evaln| DEF-DECL "OptionNat" |ppg_partrec_evaln| NIL))
+   SHOSTAK))
+ (|evaln_bound| 0
+  (|evaln_bound-1| NIL 4001403132
+   (""
+    (THEN (SKOSIMP*) (EXPAND "evaln" -1 1)
+     (GRIND :DEFS NIL :EXCLUDE ("evaln" "bindNat" "pairNat" "unpair" "natPair")
+      :IF-MATCH NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|evaln| DEF-DECL "OptionNat" |ppg_partrec_evaln| NIL))
+   SHOSTAK))
+ (|evaln_mono| 0
+  (|evaln_mono-1| NIL 4001403132
+   ("" (INDUCT "k1")
+    (("1" (SKOSIMP*)
+      (("1" (REWRITE "evaln_zero_budget") (("1" (GRIND :DEFS NIL) NIL NIL))
+        NIL))
+      NIL)
+     ("2" (SKOLEM 1 ("j"))
+      (("2" (FLATTEN)
+        (("2" (LABEL "BUDGET-IH" -1)
+          (("2" (INDUCT "c")
+            (("1" (SKOSIMP*)
+              (("1" (HIDE "BUDGET-IH")
+                (("1" (EXPAND "evaln" -2 1)
+                  (("1" (EXPAND "evaln" + 1)
+                    (("1"
+                      (GRIND :DEFS NIL :EXCLUDE ("evaln" "unpair" "natPair")
+                       :IF-MATCH NIL)
+                      NIL NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("2" (SKOSIMP*)
+              (("2" (HIDE "BUDGET-IH")
+                (("2" (EXPAND "evaln" -2 1)
+                  (("2" (EXPAND "evaln" + 1)
+                    (("2"
+                      (GRIND :DEFS NIL :EXCLUDE ("evaln" "unpair" "natPair")
+                       :IF-MATCH NIL)
+                      NIL NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("3" (SKOSIMP*)
+              (("3" (HIDE "BUDGET-IH")
+                (("3" (EXPAND "evaln" -2 1)
+                  (("3" (EXPAND "evaln" + 1)
+                    (("3"
+                      (GRIND :DEFS NIL :EXCLUDE ("evaln" "unpair" "natPair")
+                       :IF-MATCH NIL)
+                      NIL NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("4" (SKOSIMP*)
+              (("4" (HIDE "BUDGET-IH")
+                (("4" (EXPAND "evaln" -2 1)
+                  (("4" (EXPAND "evaln" + 1)
+                    (("4"
+                      (GRIND :DEFS NIL :EXCLUDE ("evaln" "unpair" "natPair")
+                       :IF-MATCH NIL)
+                      NIL NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("5" (SKOSIMP*)
+              (("5" (HIDE "BUDGET-IH")
+                (("5" (LABEL "RUN" -4)
+                  (("5" (LABEL "A" -1)
+                    (("5" (LABEL "B" -2)
+                      (("5"
+                        (USE "evaln_bound"
+                             ("c" "codePair(codePair1_var!1,codePair2_var!1)"
+                              "k" "j+1" "n" "n!1" "x" "x!1"))
+                        (("5" (ASSERT)
+                          (("5" (EXPAND "evaln" "RUN" 1)
+                            (("5" (EXPAND "evaln" + 1)
+                              (("5" (ASSERT)
+                                (("5" (REWRITE "pairNat_some" "RUN")
+                                  (("5" (SKOSIMP*)
+                                    (("5" (INST-CP "A" "k2!1" "n!1" "y!1")
+                                      (("5" (INST-CP "B" "k2!1" "n!1" "z!1")
+                                        (("5" (ASSERT) NIL NIL)) NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("6" (SKOSIMP*)
+              (("6" (HIDE "BUDGET-IH")
+                (("6" (LABEL "RUN" -4)
+                  (("6" (LABEL "A" -1)
+                    (("6" (LABEL "B" -2)
+                      (("6"
+                        (USE "evaln_bound"
+                             ("c" "codeComp(codeComp1_var!1,codeComp2_var!1)"
+                              "k" "j+1" "n" "n!1" "x" "x!1"))
+                        (("6" (ASSERT)
+                          (("6" (EXPAND "evaln" "RUN" 1)
+                            (("6" (EXPAND "evaln" + 1)
+                              (("6" (ASSERT)
+                                (("6" (REWRITE "bindNat_some" "RUN")
+                                  (("6" (SKOSIMP*)
+                                    (("6" (INST-CP "B" "k2!1" "n!1" "y!1")
+                                      (("6" (INST-CP "A" "k2!1" "y!1" "x!1")
+                                        (("6" (ASSERT)
+                                          (("6" (REWRITE "bindNat_some" +)
+                                            (("6" (INST 1 "y!1")
+                                              (("6" (ASSERT) NIL NIL)) NIL))
+                                            NIL))
+                                          NIL))
+                                        NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("7" (SKOSIMP*)
+              (("7" (LABEL "RUN" -4)
+                (("7" (LABEL "A" -1)
+                  (("7" (LABEL "B" -2)
+                    (("7"
+                      (USE "evaln_bound"
+                           ("c" "codePrec(codePrec1_var!1,codePrec2_var!1)" "k"
+                            "j+1" "n" "n!1" "x" "x!1"))
+                      (("7" (ASSERT)
+                        (("7" (EXPAND "evaln" "RUN" 1)
+                          (("7" (EXPAND "evaln" + 1)
+                            (("7" (ASSERT)
+                              (("7" (CASE "unpair(n!1)`2=0")
+                                (("1" (ASSERT)
+                                  (("1"
+                                    (INST-CP "A" "k2!1" "unpair(n!1)`1" "x!1")
+                                    (("1" (ASSERT) NIL NIL)) NIL))
+                                  NIL)
+                                 ("2" (ASSERT)
+                                  (("2" (REWRITE "bindNat_some" "RUN")
+                                    (("2" (SKOSIMP*)
+                                      (("2"
+                                        (INST-CP "BUDGET-IH"
+                                         "codePrec(codePrec1_var!1,codePrec2_var!1)"
+                                         "k2!1-1"
+                                         "natPair(unpair(n!1)`1,unpair(n!1)`2-1)"
+                                         "y!1")
+                                        (("2"
+                                          (INST-CP "B" "k2!1"
+                                           "natPair(unpair(n!1)`1,natPair(unpair(n!1)`2-1,y!1))"
+                                           "x!1")
+                                          (("2" (ASSERT)
+                                            (("2" (REWRITE "bindNat_some" +)
+                                              (("2" (INST 2 "y!1")
+                                                (("2" (ASSERT) NIL NIL)) NIL))
+                                              NIL))
+                                            NIL))
+                                          NIL))
+                                        NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("8" (SKOSIMP*)
+              (("8" (LABEL "RUN" -3)
+                (("8" (LABEL "A" -1)
+                  (("8"
+                    (USE "evaln_bound"
+                         ("c" "codeRfind(codeRfind1_var!1)" "k" "j+1" "n" "n!1"
+                          "x" "x!1"))
+                    (("8" (ASSERT)
+                      (("8" (EXPAND "evaln" "RUN" 1)
+                        (("8" (EXPAND "evaln" + 1)
+                          (("8" (ASSERT)
+                            (("8" (REWRITE "bindNat_some" "RUN")
+                              (("8" (SKOSIMP*)
+                                (("8"
+                                  (INST-CP "A" "k2!1"
+                                   "natPair(unpair(n!1)`1,unpair(n!1)`2)"
+                                   "y!1")
+                                  (("8" (ASSERT)
+                                    (("8" (REWRITE "bindNat_some" +)
+                                      (("8" (INST 1 "y!1")
+                                        (("8" (CASE "y!1=0")
+                                          (("1" (ASSERT) NIL NIL)
+                                           ("2" (ASSERT)
+                                            (("2"
+                                              (INST-CP "BUDGET-IH"
+                                               "codeRfind(codeRfind1_var!1)"
+                                               "k2!1-1"
+                                               "natPair(unpair(n!1)`1,unpair(n!1)`2+1)"
+                                               "x!1")
+                                              (("2" (ASSERT) NIL NIL)) NIL))
+                                            NIL))
+                                          NIL))
+                                        NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|ppg_partrec_code| TYPE-DECL NIL |ppg_partrec_code_adt| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (<= CONST-DECL "bool" |reals| NIL) (|lift| TYPE-DECL NIL |lift_adt| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |lift_adt| NIL)
+    (|OptionNat| TYPE-EQ-DECL NIL |ppg_partrec_evaln| NIL)
+    (|evaln| DEF-DECL "OptionNat" |ppg_partrec_evaln| NIL)
+    (|up?| ADT-RECOGNIZER-DECL "[lift -> boolean]" |lift_adt| NIL)
+    (|up| ADT-CONSTRUCTOR-DECL "[T -> (up?)]" |lift_adt| NIL)
+    (|nat_induction| FORMULA-DECL NIL |naturalnumbers| NIL)
+    (|evaln_zero_budget| FORMULA-DECL NIL |ppg_partrec_evaln| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|ppg_partrec_code_induction| FORMULA-DECL NIL |ppg_partrec_code_adt| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|evaln_bound| FORMULA-DECL NIL |ppg_partrec_evaln| NIL)
+    (|codePair?| ADT-RECOGNIZER-DECL "[ppg_partrec_code -> boolean]"
+     |ppg_partrec_code_adt| NIL)
+    (|codePair| ADT-CONSTRUCTOR-DECL
+     "[[ppg_partrec_code, ppg_partrec_code] -> (codePair?)]"
+     |ppg_partrec_code_adt| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|pairNat_some| FORMULA-DECL NIL |ppg_partrec_evaln| NIL)
+    (|codeComp?| ADT-RECOGNIZER-DECL "[ppg_partrec_code -> boolean]"
+     |ppg_partrec_code_adt| NIL)
+    (|codeComp| ADT-CONSTRUCTOR-DECL
+     "[[ppg_partrec_code, ppg_partrec_code] -> (codeComp?)]"
+     |ppg_partrec_code_adt| NIL)
+    (|bindNat_some| FORMULA-DECL NIL |ppg_partrec_evaln| NIL)
+    (|unpair| CONST-DECL "[nat, nat]" |ppg_nat_square_pairing| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|natPair| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|codePrec| ADT-CONSTRUCTOR-DECL
+     "[[ppg_partrec_code, ppg_partrec_code] -> (codePrec?)]"
+     |ppg_partrec_code_adt| NIL)
+    (|codePrec?| ADT-RECOGNIZER-DECL "[ppg_partrec_code -> boolean]"
+     |ppg_partrec_code_adt| NIL)
+    (|codeRfind?| ADT-RECOGNIZER-DECL "[ppg_partrec_code -> boolean]"
+     |ppg_partrec_code_adt| NIL)
+    (|codeRfind| ADT-CONSTRUCTOR-DECL "[ppg_partrec_code -> (codeRfind?)]"
+     |ppg_partrec_code_adt| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL))
+   SHOSTAK)))
+
