@@ -1,0 +1,69 @@
+% Mario Carneiro, Mathlib Computability.Primrec.List, list_reverse and list_append.
+% A left fold prepends each visited element. Reversing the first input before
+% this fold gives concatenation in its original order.
+ppg_nat_primrec_list_operations: THEORY
+BEGIN
+  IMPORTING ppg_nat_primrec_list_fold
+
+  f,u,v,w: VAR TotalFunction
+
+  a,z,l,r,n: VAR nat
+
+  L,M: VAR NatList
+
+  foldInputsT(f,u,v,w): TotalFunction = compT(foldCodeT(f),pairT(u,pairT(v,w)))
+
+  foldInputsT_value: LEMMA foldInputsT(f,u,v,w)(n)=foldCode(f,u(n),v(n),w(n))
+
+  pr_foldInputs: THEOREM NatPrimrec(f) AND NatPrimrec(u) AND NatPrimrec(v) AND NatPrimrec(w)
+    IMPLIES NatPrimrec(foldInputsT(f,u,v,w))
+
+  reverseStepT: TotalFunction = compT(consCodeT,pairT(remainderT,accumulatorT))
+
+  reverseStepT_value: LEMMA reverseStepT(natPair(a,natPair(z,n)))=consCode(n,z)
+
+  pr_reverseStep: LEMMA NatPrimrec(reverseStepT)
+
+  reverseCode: TotalFunction = foldInputsT(reverseStepT,zeroT,zeroT,idT)
+
+  reverseCode_value: LEMMA reverseCode(n)=foldCode(reverseStepT,0,0,n)
+
+  pr_reverseCode: THEOREM NatPrimrec(reverseCode)
+
+  list_reverse_nil: LEMMA reverse(null[nat])=null[nat]
+
+  list_reverse_cons: LEMMA reverse(cons[nat](n,L))=append(reverse(L),cons[nat](n,null[nat]))
+
+  list_append_nil: LEMMA append(null[nat],M)=M
+
+  list_append_cons: LEMMA append(cons[nat](n,L),M)=cons[nat](n,append(L,M))
+
+  fold_reverse_semantics: THEOREM FORALL(a:nat,M:NatList):
+    foldNatList(reverseStepT,a,encodeNatList(M),L)=encodeNatList(append(reverse(L),M))
+
+  reverseCode_semantics: THEOREM reverseCode(encodeNatList(L))=encodeNatList(reverse(L))
+
+  appendCode(l,r): nat = foldCode(reverseStepT,0,r,reverseCode(l))
+
+  appendCodeT: TotalFunction = foldInputsT(reverseStepT,zeroT,rightT,compT(reverseCode,leftT))
+
+  appendCodeT_value: LEMMA appendCodeT(n)=appendCode(leftT(n),rightT(n))
+
+  pr_appendCode: THEOREM NatPrimrec(appendCodeT)
+
+  appendCode_semantics: THEOREM appendCode(encodeNatList(L),encodeNatList(M))=
+    encodeNatList(append(L,M))
+
+  snocCode(l,a): nat = appendCode(l,consCode(a,0))
+
+  snocCodeT: TotalFunction = compT(appendCodeT,
+    pairT(leftT,compT(consCodeT,pairT(rightT,zeroT))))
+
+  snocCodeT_value: LEMMA snocCodeT(n)=snocCode(leftT(n),rightT(n))
+
+  pr_snocCode: THEOREM NatPrimrec(snocCodeT)
+
+  snocCode_semantics: THEOREM snocCode(encodeNatList(L),a)=
+    encodeNatList(append(L,cons[nat](a,null[nat])))
+
+END ppg_nat_primrec_list_operations
