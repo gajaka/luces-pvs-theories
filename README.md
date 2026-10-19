@@ -8,8 +8,8 @@ models; the generic theory keeps the data, specifications and repair actions
 abstract.
 
 As of **2026-10-19**, the translation has independently replayed counterparts
-for **1,204 of 1,824 Lean source theorems and lemmas**, with all recorded results
-checked in **112 of 191 modules**. Supporting PVS lemmas and type-correctness
+for **1,357 of 1,824 Lean source theorems and lemmas**, with all recorded results
+checked in **126 of 191 modules**. Supporting PVS lemmas and type-correctness
 conditions are additional obligations and are excluded from those source-result counts.
 The translation is still in progress.
 
@@ -91,6 +91,18 @@ Recorded translation checks on 2026-10-18 and 2026-10-19 include:
 | Acyclic relation reversal | 24/24 project obligations complete across 1 theory, including 24 new obligations and 9 source results. |
 | Witness DAGs and ancestor prefixes | 61/61 project obligations complete across 2 theories, including 37 new obligations and 15 source results. |
 | Longest-path heights and independent layers | 183/183 project obligations complete across 14 theories, including 33 new obligations and 14 source results. |
+| Pointwise complementary slackness | 5/5 new obligations complete, covering 5 source results. |
+| Certification equivalence and selection | 42/42 project obligations complete, including 7 new obligations and 4 source results. |
+| Stable-sequence encodings and products | 429/429 project obligations complete across 42 theories, including 32 new obligations and 14 source results. |
+| General self-assessment | 47/47 project obligations complete across 3 theories, including 12 new obligations and 12 source results. |
+| Canonical witness-DAG reconstruction | 437/437 project obligations complete across 38 theories, including 24 new obligations and 9 source results. |
+| Countable labels and finite witness DAGs | 108/108 project obligations complete across 8 theories, including 8 new supporting obligations; no additional source-theorem credit. |
+| Finite-list certificates, lattice instances and blocking | 63/63 project obligations complete across 7 theories, including 37 new obligations and 31 source results. |
+| Certification as self-assessment | 75/75 project obligations complete across 7 theories, including 9 new obligations and 8 source results. |
+| Specification quotients and graph projection | 88/88 project obligations complete across 8 theories, including 45 new obligations and 31 source results. |
+| Canonical proper witness-DAG weight budget | 564/564 project obligations complete across 57 proof-bearing theories from 58 source files, including 14 new obligations and 7 source results. |
+| Representative selection and finite-list lenses | 75/75 project obligations complete across 6 theories, including 37 new obligations and 23 source results. |
+| General numerical feasibility and dependent-domain resampling | 36/36 project obligations complete across 5 theories, including 12 new obligations and 9 source results. |
 
 These runs check saved proofs in isolated workspaces. Project dependencies use
 the exact committed source and proof inputs. The separately checked native
@@ -180,17 +192,23 @@ integration arguments. Each entry's imports lead to that support.
 |-------|-------|
 | [proof_preserving_graphs.pvs](proof_preserving_graphs.pvs), [pp_graphs_extended.pvs](pp_graphs_extended.pvs) | Validity, paths, evolution, invariants and graph extensions. |
 | [categorical_pp_graphs.pvs](categorical_pp_graphs.pvs), [directed_pp_graph.pvs](directed_pp_graph.pvs) | Morphisms, embeddings, quotients and directed graph structure. |
-| [parametric_certification.pvs](parametric_certification.pvs) | Monotone certification, canonical levels, lattice operations and threshold instances. |
+| [ppg_parametric_core.pvs](ppg_parametric_core.pvs), [ppg_certificate_lattice.pvs](ppg_certificate_lattice.pvs), [ppg_certificate_complete.pvs](ppg_certificate_complete.pvs), [ppg_threshold_certificates.pvs](ppg_threshold_certificates.pvs) | Actual finite lists of monotone certificates over arbitrary data and level types; canonical levels, lattices and real thresholds. |
+| [ppg_list_quotient.pvs](ppg_list_quotient.pvs), [ppg_list_quotient_lattice.pvs](ppg_list_quotient_lattice.pvs), [ppg_list_quotient_linear.pvs](ppg_list_quotient_linear.pvs), [ppg_list_quotient_bridge.pvs](ppg_list_quotient_bridge.pvs) | Full generated certification classes, quotient order, meet under certificate closure, separation and edge-or-collapse projection. |
+| [ppg_generic_selection.pvs](ppg_generic_selection.pvs), [ppg_selection_lenses.pvs](ppg_selection_lenses.pvs), [ppg_selection_quotient_graph.pvs](ppg_selection_quotient_graph.pvs) | Arbitrary morphism-pair families, singleton certificate lists over finite lens sets, and the precise representative and projection results. |
+| [ppg_list_blocking.pvs](ppg_list_blocking.pvs), [ppg_generic_self_assessment.pvs](ppg_generic_self_assessment.pvs), [ppg_list_assessment_bridge.pvs](ppg_list_assessment_bridge.pvs) | Failed certificates, general repair obligations and the complete assess, repair and recertify cycle. |
+| [parametric_certification.pvs](parametric_certification.pvs) | Earlier predicate-family certification presentation and its lattice and threshold instances. |
 | [cert_quotient.pvs](cert_quotient.pvs), [cert_selection.pvs](cert_selection.pvs), [cert_quotient_bridge.pvs](cert_quotient_bridge.pvs) | Certification equivalence, quotient order and hierarchical selection. |
 | [cert_blocking.pvs](cert_blocking.pvs), [ppg_self_assessment.pvs](ppg_self_assessment.pvs), [ppg_assessment_bridge.pvs](ppg_assessment_bridge.pvs) | Blocking diagnostics, failure containment and certification after repair. |
 | [pp_graph_repair.pvs](pp_graph_repair.pvs), [ppg_repair_semantics.pvs](ppg_repair_semantics.pvs) | Repair relations, restoration and preservation obligations. |
 | [ppg_refinement_meta.pvs](ppg_refinement_meta.pvs) | Configuration compatibility, upgrade chains and refinement preservation. |
+| [ppg_complementary_slackness.pvs](ppg_complementary_slackness.pvs) | Pointwise pair inequalities and Monge-map certificates over arbitrary index types, under their explicit hypotheses. |
 
 ### Dependency and probabilistic repair
 
 | Files | Scope |
 |-------|-------|
 | [ppg_bdd.pvs](ppg_bdd.pvs), [ppg_bdd_locality.pvs](ppg_bdd_locality.pvs), [ppg_bdd_cost.pvs](ppg_bdd_cost.pvs) | Shared-variable components, repair non-interference and component costs. |
+| [ppg_generic_probabilistic.pvs](ppg_generic_probabilistic.pvs), [ppg_dependent_resampling.pvs](ppg_dependent_resampling.pvs) | Exact finite-footprint feasibility, pair discriminant obstruction and resampling identities for arbitrary per-variable domains. |
 | [ppg_lll.pvs](ppg_lll.pvs), [ppg_lopsided_probability.pvs](ppg_lopsided_probability.pvs) | General and lopsided Local Lemma criteria. |
 | [ppg_mt_random_process.pvs](ppg_mt_random_process.pvs), [ppg_mt_trajectory_measurable.pvs](ppg_mt_trajectory_measurable.pvs) | Product-table trajectories, local counters and measurability. |
 | [ppg_mt_growing.pvs](ppg_mt_growing.pvs), [ppg_mt_injectivity.pvs](ppg_mt_injectivity.pvs), [ppg_rose_canonical_enum.pvs](ppg_rose_canonical_enum.pvs) | Witness construction, injective occurrence encodings and canonical trees. |
@@ -206,6 +224,10 @@ integration arguments. Each entry's imports lead to that support.
 | [ppg_hls_reversal.pvs](ppg_hls_reversal.pvs) | Reversible arcs of arbitrary acyclic relations. |
 | [ppg_hls_witness_dag.pvs](ppg_hls_witness_dag.pvs) | Finite witness DAGs, unique sinks, reversal and ancestor prefixes. |
 | [ppg_hls_witness_layers.pvs](ppg_hls_witness_layers.pvs), [ppg_finite_nat_sup.pvs](ppg_finite_nat_sup.pvs), [ppg_nat_rank_well_founded.pvs](ppg_nat_rank_well_founded.pvs) | Constructed longest-path heights, independent layers and their successor relation. |
+| [ppg_hls_stable_encoding.pvs](ppg_hls_stable_encoding.pvs), [ppg_hls_encoding_product.pvs](ppg_hls_encoding_product.pvs), [ppg_hls_encoding_weight.pvs](ppg_hls_encoding_weight.pvs) | Stable layer sequences, finite products in arbitrary commutative monoids, and equality of real node and sequence weights. |
+| [ppg_hls_canonical_encoding.pvs](ppg_hls_canonical_encoding.pvs) | Recovery of canonical node indices, nodes and arcs from the stable encoding. |
+| [ppg_finite_set_nat_code.pvs](ppg_finite_set_nat_code.pvs), [ppg_hls_dag_countable.pvs](ppg_hls_dag_countable.pvs) | Injective natural-number codes for finite sets and witness DAGs when the label type has such a code. |
+| [ppg_hls_proper_family.pvs](ppg_hls_proper_family.pvs), [ppg_hls_witness_budget.pvs](ppg_hls_witness_budget.pvs), [ppg_nonneg_injective_bound.pvs](ppg_nonneg_injective_bound.pvs) | Weight-preserving injection of canonical proper DAGs into stable sequences and unrestricted Shearer weight budgets. |
 
 ### Integrals, finite stochastic models and stopping bounds
 
@@ -258,12 +280,12 @@ results specify the initial state separately.
 ### Certification, blocking and probabilistic repair
 
 1. **Canonical certification.**
-   [certified_iff_above_canonical](parametric_certification.pvs) characterizes
+   [certified_iff_above_canonical](ppg_parametric_core.pvs) characterizes
    certification by `theta_c <= theta` when `theta_c` is canonical. The
    complete-lattice theory proves existence under nonemptiness and infimum closure.
 
 2. **Blocking at the frontier.**
-   [canonical_blocking_empty](cert_blocking.pvs) gives an empty blocking set at
+   [canonical_blocking_empty](ppg_list_blocking.pvs) gives an empty blocking set at
    a canonical level; `stricter_has_blocking` gives a failed certificate at a
    target outside that certified upper set.
 
@@ -342,6 +364,20 @@ results specify the initial state separately.
     certificate under a sound linear model; completeness of certificate search
     is a separate question.
 
+### Canonical witness DAGs
+
+13. **Encoding determines a canonical DAG.**
+    [eq_of_stableEncoding_eq](ppg_hls_canonical_encoding.pvs) proves equality
+    of valid canonical witness DAGs with the same stable encoding. Node indices,
+    node sets and arc sets are recovered from the layers.
+
+14. **Weighted proper DAG budget.**
+    [tsum_weight_le_stableBudget](ppg_hls_witness_budget.pvs) bounds the
+    unrestricted sum of canonical proper witness-DAG weights by the singleton
+    Shearer budget. The [inverse-slack bound](ppg_hls_witness_budget.pvs) gives
+    `1/epsilon` under the stated positive multiplicative slack. Countability,
+    runtime and occurrence-probability assumptions are not needed.
+
 ## Theory Layers
 
 The organization follows the companion Lean development, with PVS-specific
@@ -371,6 +407,12 @@ ancestor prefixes preserve validity and canonical occurrence indices.
 Longest-path heights are defined by recursion on descendant cardinality. Each
 height layer has distinct independent labels, and each positive layer belongs
 to the successor family of the preceding layer.
+The stable encoding preserves finite node products, and canonical occurrence
+indices can be reconstructed from it. Proper canonical DAGs therefore inject
+into the proper stable sequences without changing their clipped real weights.
+Suprema over finite subfamilies give the unordered sum bounds, including for
+uncountable label types. A separate coding theorem proves DAG countability
+when the label type is countable.
 
 ### Integrals and exact stochastic models
 
@@ -449,8 +491,20 @@ proofs.
   [*An Algorithmic Proof of the Lovász Local Lemma via Resampling Oracles*](https://arxiv.org/abs/1504.02044v3),
   Definition 5.2 and Section 5.3.2. The
   [layer theory](ppg_hls_witness_layers.pvs) constructs independent layers
-  and proves their closed-neighborhood successor condition. The later HLS
-  counting and policy translations remain in progress.
+  and proves their closed-neighborhood successor condition. The
+  [canonical encoding](ppg_hls_canonical_encoding.pvs) recovers the DAG, and the
+  [weight budget](ppg_hls_witness_budget.pvs) bounds its canonical proper family.
+  Later HLS occurrence and policy translations remain in progress.
+
+### Order and certification
+
+- B. A. Davey and H. A. Priestley, *Introduction to Lattices and Order*, second
+  edition, Cambridge University Press, 2002. The
+  [certificate lattice](ppg_certificate_lattice.pvs),
+  [quotient order](ppg_list_quotient.pvs) and
+  [selection lenses](ppg_selection_lenses.pvs) use the corresponding order,
+  equivalence-class and dual-order constructions. Meet on certification
+  classes requires the stated certificate closure condition.
 
 ### Integration, potentials and stopping bounds
 
@@ -495,11 +549,14 @@ The LUCES experimental background is described in:
 
 General conditional expectation is proved. The additive-drift,
 Moser–Tardos drift and execution-cost source modules are translated
-and replayed. The witness-DAG reversal, ancestor-prefix and longest-path layer
-modules are also replayed. The next proof work covers their stable and canonical
-encodings and the policy bounds built on them, followed by the computability
-limit for the encoded infinite repair family. Existing core translations also
-need further source-by-source semantic review and replay accounting.
+and replayed. Witness-DAG reversal, ancestor prefixes, longest-path layers,
+stable encodings, canonical reconstruction and the proper-family weight budget
+are also replayed. The core translation now retains actual finite certificate
+lists, arbitrary carriers, generated quotient classes and the general repair
+model. Remaining work includes the complete Local Lemma source module, later
+HLS occurrence and policy bounds, and the computability limit for the encoded
+infinite repair family. Source-by-source semantic review and replay accounting
+continue with each package.
 
 For the controller application, live measurements need a defined interpretation
 in the formal state, and the running checker must evaluate the corresponding
