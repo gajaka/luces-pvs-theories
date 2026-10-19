@@ -1,0 +1,81 @@
+% A dependent family with finite fibers can be summed fiber by fiber.
+% Both inequalities follow from finite partial sums: project a partial
+% set to its finite set of indices, or take all fibers over finitely many
+% indices. Neither argument assumes countability or a finite total mass.
+ppg_enn_finite_fibers[I,J:TYPE,fiber:[I->finite_set[J]]]: THEORY
+BEGIN
+  IMPORTING ppg_enn_add
+
+  RawPair: TYPE = [I,J]
+
+  PairIndex: TYPE = {p:RawPair|fiber(p`1)(p`2)}
+
+  IMPORTING ppg_enn_finite_order[I] AS outerOrder,
+    ppg_enn_finite_order[PairIndex] AS flatOrder,
+    ppg_nonneg_tsum[I] AS outerFinite,
+    ppg_nonneg_tsum[J] AS innerFinite,
+    ppg_enn_finite[J] AS innerFolds,
+    ppg_nonneg_tsum[PairIndex] AS flatFinite,
+    ppg_enn_unrestricted_sum[I] AS outerSums,
+    ppg_enn_unrestricted_sum[PairIndex] AS flatSums,
+    ppg_monoid_image[PairIndex,J,ENN,ennFinite(0),eadd] AS projectSecond,
+    ppg_finite_fiber_fold[PairIndex,I,ENN,ennFinite(0),eadd] AS partition,
+    ppg_finite_bind[I,PairIndex] AS familySets,
+    ppg_bind_sum[I,PairIndex,ENN,ennFinite(0),eadd] AS fiberBind
+  i,k: VAR I
+  j: VAR J
+  p,q: VAR PairIndex
+  H: VAR finite_set[PairIndex]
+  K: VAR finite_set[I]
+  f: VAR [I,J->ENN]
+
+  rawFiber(i): finite_set[RawPair] = image(LAMBDA(j:J):(i,j),fiber(i))
+
+  fullFiber(i): finite_set[PairIndex] = restrict[RawPair,PairIndex,bool](rawFiber(i))
+
+  first(p): I = p`1
+
+  second(p): J = p`2
+
+  pairWeight(f)(p): ENN = f(p`1,p`2)
+
+  fiberWeight(f)(i): ENN = innerFinite.esum(fiber(i),LAMBDA(j:J):f(i,j))
+
+  fullFiber_member: LEMMA fullFiber(i)(p) IFF p`1=i
+
+  fullFiber_second_image: LEMMA image(second,fullFiber(i))=fiber(i)
+
+  fullFiber_second_injective: LEMMA
+    fullFiber(i)(p) AND fullFiber(i)(q) AND second(p)=second(q) IMPLIES p=q
+
+  fullFiber_sum: LEMMA
+    flatFinite.esum(fullFiber(i),pairWeight(f))=fiberWeight(f)(i)
+
+  partialFiber_subset: LEMMA subset?(partition.fiber(H,first,i),fullFiber(i))
+
+  partialFiber_bound: LEMMA
+    ele(flatFinite.esum(partition.fiber(H,first,i),pairWeight(f)),fiberWeight(f)(i))
+
+  partial_sum_partition: LEMMA
+    flatFinite.esum(H,pairWeight(f))=
+      outerFinite.esum(image(first,H),LAMBDA(i:I):flatFinite.esum(partition.fiber(H,first,i),pairWeight(f)))
+
+  partial_sum_bound: LEMMA
+    ele(flatFinite.esum(H,pairWeight(f)),outerSums.eTsum(fiberWeight(f)))
+
+  fullFiber_disjoint: LEMMA familySets.disjointFamily(K,fullFiber)
+
+  finite_family_sum: LEMMA
+    flatFinite.esum(familySets.biUnion(K,fullFiber),pairWeight(f))=outerFinite.esum(K,fiberWeight(f))
+
+  finite_family_bound: LEMMA
+    ele(outerFinite.esum(K,fiberWeight(f)),flatSums.eTsum(pairWeight(f)))
+
+  flat_sum_upper: LEMMA ele(flatSums.eTsum(pairWeight(f)),outerSums.eTsum(fiberWeight(f)))
+
+  outer_sum_upper: LEMMA ele(outerSums.eTsum(fiberWeight(f)),flatSums.eTsum(pairWeight(f)))
+
+  tsum_finite_fibers: THEOREM
+    flatSums.eTsum(pairWeight(f))=outerSums.eTsum(fiberWeight(f))
+
+END ppg_enn_finite_fibers

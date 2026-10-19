@@ -1,0 +1,52 @@
+% Unordered sums of extended nonnegative values include infinite summands.
+% Every finite partial sum contributes all of its finite lower bounds;
+% their supremum gives the sum without a countability assumption.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995,
+% the nonnegative integral and monotone convergence. This is the order
+% construction used for the decorated sums in PPGraphHLSDecoratedBudget.lean.
+ppg_enn_unrestricted_sum[T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_enn_finite[T]
+  A: VAR set[ENN]
+  x,y: VAR ENN
+  b,r: VAR nonneg_real
+  f,g: VAR [T->ENN]
+  F: VAR finite_set[T]
+  h: VAR [T->nonneg_real]
+
+  finiteLower(A): set[nonneg_real] =
+    {r:nonneg_real | EXISTS(x:ENN):A(x) AND ele(ennFinite(r),x)}
+
+  finite_probe_bound: LEMMA
+    (FORALL(r:nonneg_real):ele(ennFinite(r),x) IMPLIES r<=b) IFF ele(x,ennFinite(b))
+
+  lower_finite_bound: LEMMA
+    (FORALL(r:nonneg_real):finiteLower(A)(r) IMPLIES r<=b) IFF
+      (FORALL(x:ENN):A(x) IMPLIES ele(x,ennFinite(b)))
+
+  eSup(A): ENN = sSup(finiteLower(A))
+
+  eSup_finite_bound: LEMMA ele(eSup(A),ennFinite(b)) IFF
+    (FORALL(x:ENN):A(x) IMPLIES ele(x,ennFinite(b)))
+
+  eSup_upper: LEMMA A(x) IMPLIES ele(x,eSup(A))
+
+  eSup_least: LEMMA (FORALL(x:ENN):A(x) IMPLIES ele(x,y)) IMPLIES ele(eSup(A),y)
+
+  eSup_empty: LEMMA eSup(emptyset[ENN])=ennFinite(0)
+
+  partialValues(f): set[ENN] = {x:ENN | EXISTS(F:finite_set[T]):x=esum(F,f)}
+
+  eTsum(f): ENN = eSup(partialValues(f))
+
+  eTsum_finite_bound: LEMMA ele(eTsum(f),ennFinite(b)) IFF
+    (FORALL(F:finite_set[T]):ele(esum(F,f),ennFinite(b)))
+
+  eTsum_partial: LEMMA ele(esum(F,f),eTsum(f))
+
+  eTsum_least: LEMMA (FORALL(F:finite_set[T]):ele(esum(F,f),y)) IMPLIES ele(eTsum(f),y)
+
+  eTsum_embed: THEOREM eTsum(LAMBDA(t:T):ennFinite(h(t)))=tsum(h)
+
+END ppg_enn_unrestricted_sum

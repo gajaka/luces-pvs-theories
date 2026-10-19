@@ -1,0 +1,27 @@
+% Extended nonnegative multiplication distributes over addition, with
+% zero times infinity equal to zero. These laws allow finite products
+% to expand even when some factors are infinite.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995,
+% the arithmetic used in nonnegative integration.
+ppg_enn_semiring: THEORY
+BEGIN
+  IMPORTING ppg_enn_add,ppg_enn_multiply
+  x,y,z: VAR ENN
+
+  emul_one_left: LEMMA emul(ennFinite(1),x)=x
+
+  emul_one_right: LEMMA emul(x,ennFinite(1))=x
+
+  emul_associative: LEMMA emul(x,emul(y,z))=emul(emul(x,y),z)
+
+  emul_distributes_left: LEMMA emul(x,eadd(y,z))=eadd(emul(x,y),emul(x,z))
+
+  emul_distributes_right: LEMMA emul(eadd(x,y),z)=eadd(emul(x,z),emul(y,z))
+
+  emul_zero_iff: LEMMA emul(x,y)=ennFinite(0) IFF x=ennFinite(0) OR y=ennFinite(0)
+
+  multiplication_monoid: LEMMA identity?[ENN](emul)(ennFinite(1)) AND
+    associative?[ENN](emul) AND commutative?[ENN](emul)
+
+END ppg_enn_semiring

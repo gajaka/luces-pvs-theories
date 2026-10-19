@@ -1,0 +1,27 @@
+% Finite partial sums are monotone in their summands and in their index set.
+% The same comparison passes to the supremum of all finite partial sums,
+% including infinite summands and an empty index type.
+ppg_enn_finite_order[T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_enn_unrestricted_sum[T]
+  F,H: VAR finite_set[T]
+  f,g: VAR [T->ENN]
+  x: VAR T
+  a,b: VAR ENN
+
+  eadd_upper_left: LEMMA ele(a,eadd(a,b))
+
+  eadd_upper_right: LEMMA ele(b,eadd(a,b))
+
+  esum_monotone: LEMMA
+    (FORALL(x:T):F(x) IMPLIES ele(f(x),g(x))) IMPLIES ele(esum(F,f),esum(F,g))
+
+  esum_subset: LEMMA subset?(F,H) IMPLIES ele(esum(F,f),esum(H,f))
+
+  eTsum_monotone: LEMMA
+    (FORALL(x:T):ele(f(x),g(x))) IMPLIES ele(eTsum(f),eTsum(g))
+
+  eTsum_congr: LEMMA
+    (FORALL(x:T):f(x)=g(x)) IMPLIES eTsum(f)=eTsum(g)
+
+END ppg_enn_finite_order

@@ -1,0 +1,19 @@
+% Multiplication commutes with finite extended nonnegative sums.
+% No finiteness of the scalar or summands is required.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995,
+% the distributive arithmetic of nonnegative simple functions.
+ppg_enn_sum_scale[T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_enn_semiring,ppg_enn_finite[T]
+  F: VAR finite_set[T]
+  f: VAR [T->ENN]
+  a: VAR ENN
+
+  esum_scale_left: THEOREM
+    emul(a,esum(F,f))=esum(F,LAMBDA(t:T):emul(a,f(t)))
+
+  esum_scale_right: THEOREM
+    emul(esum(F,f),a)=esum(F,LAMBDA(t:T):emul(f(t),a))
+
+END ppg_enn_sum_scale

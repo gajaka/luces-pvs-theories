@@ -1,0 +1,19 @@
+% The two nonnegative split factors add back to the reduced weight.
+% The clipping in ENNReal.ofReal therefore preserves their sum.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 3.2 and Proposition 3.9.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSDecoratedBudget.lean.
+ppg_hls_decorated_split[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},p:[C->real]]: THEORY
+BEGIN
+  IMPORTING ppg_hls_matching[C,G,p],ppg_enn_products[C]
+  O: VAR OverlapBounds
+  i: VAR C
+
+  split_weights_add: THEOREM
+    (FORALL(j:C):0<p(j)) AND (FORALL(j:C):p(j)<=1) IMPLIES
+      eadd(ofReal(splitUp(O)(i)),ofReal(splitDown(O)(i)))=ofReal(reduced(O)(i))
+
+END ppg_hls_decorated_split

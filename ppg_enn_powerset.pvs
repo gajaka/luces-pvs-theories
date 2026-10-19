@@ -1,0 +1,60 @@
+% Every node chooses one of two factors. Grouping the resulting products by
+% the set of nodes that choose the second factor gives the powerset sum.
+% The arithmetic includes zero and infinity, with zero times infinity zero.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", arXiv:2111.06527, 2021. The decoration weights use this
+% finite distributive identity before summation over witness families.
+ppg_enn_powerset[T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_enn_products[T],ppg_enn_sum_scale[finite_set[T]],
+    ppg_subsets_product[T] AS geometry,
+    ppg_monoid_image[finite_set[T],finite_set[T],ENN,ennFinite(0),eadd] AS subsetReindex
+  S,K: VAR finite_set[T]
+  e: VAR T
+  up,down: VAR [T->ENN]
+  weight: VAR [finite_set[T]->ENN]
+
+  decorationWeight(S,K,up,down): ENN =
+    emul(eprod(K,down),eprod(difference(S,K),up))
+
+  sum_powerset_empty: LEMMA
+    esum(powerset(emptyset[T]),weight)=weight(emptyset[T])
+
+  sum_powerset_add: LEMMA NOT S(e) IMPLIES
+    esum(powerset(add(e,S)),weight)=
+      eadd(esum(powerset(S),weight),
+        esum(powerset(S),LAMBDA(K:finite_set[T]):weight(add(e,K))))
+
+  difference_add_outside: LEMMA NOT S(e) AND subset?(K,S) IMPLIES
+    difference(add(e,S),K)=add(e,difference(S,K))
+
+  difference_add_inside: LEMMA NOT S(e) AND subset?(K,S) IMPLIES
+    difference(add(e,S),add(e,K))=difference(S,K)
+
+  decoration_empty: LEMMA decorationWeight(emptyset[T],emptyset[T],up,down)=ennFinite(1)
+
+  decoration_add_outside: LEMMA NOT S(e) AND subset?(K,S) IMPLIES
+    decorationWeight(add(e,S),K,up,down)=emul(up(e),decorationWeight(S,K,up,down))
+
+  decoration_add_inside: LEMMA NOT S(e) AND subset?(K,S) IMPLIES
+    decorationWeight(add(e,S),add(e,K),up,down)=emul(down(e),decorationWeight(S,K,up,down))
+
+  decoration_sum_outside: LEMMA NOT S(e) IMPLIES
+    esum(powerset(S),LAMBDA(K:finite_set[T]):decorationWeight(add(e,S),K,up,down))=
+      emul(up(e),esum(powerset(S),LAMBDA(K:finite_set[T]):decorationWeight(S,K,up,down)))
+
+  decoration_sum_inside: LEMMA NOT S(e) IMPLIES
+    esum(powerset(S),LAMBDA(K:finite_set[T]):decorationWeight(add(e,S),add(e,K),up,down))=
+      emul(down(e),esum(powerset(S),LAMBDA(K:finite_set[T]):decorationWeight(S,K,up,down)))
+
+  decoration_sum_step: LEMMA NOT S(e) IMPLIES
+    esum(powerset(add(e,S)),LAMBDA(K:finite_set[T]):decorationWeight(add(e,S),K,up,down))=
+      emul(eadd(up(e),down(e)),
+        esum(powerset(S),LAMBDA(K:finite_set[T]):decorationWeight(S,K,up,down)))
+
+  decoration_sum: THEOREM
+    esum(powerset(S),LAMBDA(K:finite_set[T]):decorationWeight(S,K,up,down))=
+      eprod(S,LAMBDA(t:T):eadd(up(t),down(t)))
+
+END ppg_enn_powerset

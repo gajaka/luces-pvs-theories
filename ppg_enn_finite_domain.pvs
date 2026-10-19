@@ -1,0 +1,42 @@
+% An unrestricted sum over the elements of a finite set is its finite sum.
+% Restriction to the subtype keeps the empty set available without choosing
+% a distinguished element of the ambient type.
+ppg_enn_finite_domain[T:TYPE,S:finite_set[T]]: THEORY
+BEGIN
+  IMPORTING ppg_enn_add,
+    ppg_enn_finite_order[T] AS carrierOrder,
+    ppg_nonneg_tsum[T] AS carrierFinite,
+    ppg_nonneg_tsum[(S)] AS domainFinite,
+    ppg_enn_unrestricted_sum[(S)] AS domainSums,
+    ppg_monoid_image[(S),T,ENN,ennFinite(0),eadd] AS reindex
+  f: VAR [T->ENN]
+  H: VAR finite_set[(S)]
+
+  inclusion(x:(S)): T = x
+
+  indexFull: finite_set[(S)] = restrict[T,(S),bool](S)
+
+  indexFull_member: LEMMA FORALL(x:(S)):indexFull(x)
+
+  inclusion_injective: LEMMA injective?(inclusion)
+
+  inclusion_full_image: LEMMA image(inclusion,indexFull)=S
+
+  inclusion_partial_subset: LEMMA subset?(image(inclusion,H),S)
+
+  partial_sum_image: LEMMA
+    domainFinite.esum(H,LAMBDA(x:(S)):f(x))=carrierFinite.esum(image(inclusion,H),f)
+
+  full_sum_image: LEMMA
+    domainFinite.esum(indexFull,LAMBDA(x:(S)):f(x))=carrierFinite.esum(S,f)
+
+  finite_domain_upper: LEMMA
+    ele(domainSums.eTsum(LAMBDA(x:(S)):f(x)),carrierFinite.esum(S,f))
+
+  finite_domain_lower: LEMMA
+    ele(carrierFinite.esum(S,f),domainSums.eTsum(LAMBDA(x:(S)):f(x)))
+
+  tsum_finite_domain: THEOREM
+    domainSums.eTsum(LAMBDA(x:(S)):f(x))=carrierFinite.esum(S,f)
+
+END ppg_enn_finite_domain

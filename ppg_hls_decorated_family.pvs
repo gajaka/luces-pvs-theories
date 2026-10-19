@@ -1,0 +1,30 @@
+% The decoration index is the dependent pair of a proper canonical DAG
+% and a subset of its finite node set. Finite-fiber summation retains
+% this index exactly, without a countability or summability assumption.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Proposition 3.9 and Appendix B.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSDecoratedBudget.lean.
+ppg_hls_decorated_family[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},B:finite_set[C],alpha:C]: THEORY
+BEGIN
+  IMPORTING ppg_hls_proper_family[C,G,B,alpha],ppg_hls_decoration_weight[C,G],
+    ppg_enn_products[WNode] AS familyProducts,
+    ppg_enn_finite_fibers[ProperDAG,finite_set[WNode],
+      LAMBDA(D:ProperDAG):decorations(D)] AS decorationFibers,
+    ppg_enn_unrestricted_sum[ProperDAG] AS properSums
+
+  DecoratedFamily: TYPE = decorationFibers.PairIndex
+
+  IMPORTING ppg_enn_unrestricted_sum[DecoratedFamily] AS decoratedSums
+  up,down: VAR [C->ENN]
+
+  decoratedTotal(up,down): ENN = decoratedSums.eTsum(
+    LAMBDA(Q:DecoratedFamily):decorationWeight(up,down)(Q`1)(Q`2))
+
+  tsum_decoratedFamily_eq: THEOREM
+    decoratedTotal(up,down)=properSums.eTsum(
+      LAMBDA(D:ProperDAG):familyProducts.eprod(D`nodes,LAMBDA(u:WNode):eadd(up(u`1),down(u`1))))
+
+END ppg_hls_decorated_family

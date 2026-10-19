@@ -1,0 +1,490 @@
+(|ppg_enn_powerset|
+ (|subsetReindex_TCC1| 0
+  (|subsetReindex_TCC1-1| NIL 4001387351
+   ("" (THEN (LEMMA "addition_monoid") (ASSERT)) NIL)
+   ((|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_powerset| NIL)
+    (|addition_monoid| FORMULA-DECL NIL |ppg_enn_finite| NIL))
+   NIL
+   (|subsetReindex| SUBTYPE "eadd"
+    "{f: [ENN, ENN -> ENN] | booleans.AND(operator_defs[ENN].identity?(f)(ppg_ennreal_adt.ennFinite(0)), booleans.AND(operator_defs[ENN].associative?(f), operator_defs[ENN].commutative?(f)))}"
+    (12 66 12 70))))
+ (|sum_powerset_empty| 0
+  (|sum_powerset_empty-1| NIL 4001387351
+   (""
+    (THEN (SKOSIMP*) (LEMMA "geometry.subsets_empty") (EXPAND "subsets")
+     (REWRITE -1)
+     (AUTO-REWRITE "choose_singleton" "rest_singleton"
+                   "remove_member_singleton" "esum_empty" "eadd_zero_right")
+     (EXPAND "esum" +)
+     (GRIND :IF-MATCH NIL :EXCLUDE ("esum" "eadd" "sum" "is_finite")))
+    NIL)
+   ((|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |ppg_enn_powerset| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |ppg_enn_powerset| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[finite_set[T]]"
+     |ppg_enn_powerset| NIL)
+    (|eadd_zero_right| FORMULA-DECL NIL |ppg_enn_add| NIL)
+    (|esum_empty| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|remove_member_singleton| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|choose_singleton| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|esum| DEF-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |ppg_enn_powerset| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[finite_set[T]]" |ppg_enn_powerset| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|subsets_empty| FORMULA-DECL NIL |ppg_subsets_product| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_powerset| NIL))
+   SHOSTAK))
+ (|sum_powerset_add| 0
+  (|sum_powerset_add-1| NIL 4001387351
+   (""
+    (THEN (SKOSIMP*) (LEMMA "geometry.subsets_add" ("S" "S!1" "e" "e!1"))
+     (LEMMA "geometry.subsets_inserted_disjoint" ("S" "S!1" "e" "e!1"))
+     (LEMMA "geometry.insert_injective" ("S" "S!1" "e" "e!1"))
+     (LEMMA "totals.sum_disj_union"
+      ("A" "powerset(S!1)" "B" "inserted(e!1,S!1)" "f" "weight!1"))
+     (LEMMA "subsetReindex.sum_image"
+      ("S" "powerset(S!1)" "h" "LAMBDA(K:finite_set[T]):add(e!1,K)" "f"
+       "weight!1"))
+     (AUTO-REWRITE "esum_as_fold")
+     (GRIND :DEFS ("inserted" "subsets") :IF-MATCH NIL :EXCLUDE
+      ("sum" "is_finite" "eadd" "powerset")))
+    NIL)
+   ((|subsets_inserted_disjoint| FORMULA-DECL NIL |ppg_subsets_product| NIL)
+    (|powerset_finite2| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|nonempty_powerset| APPLICATION-JUDGEMENT "(nonempty?[set[T]])"
+     |ppg_enn_powerset| NIL)
+    (|powerset_finite| APPLICATION-JUDGEMENT "finite_set[set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|sum_disj_union| FORMULA-DECL NIL |ppg_monoid_sum| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|powerset| CONST-DECL "setofsets" |sets| NIL)
+    (|inserted| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|subsets| CONST-DECL "finite_set[finite_set[T]]" |ppg_subsets_product|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|esum_as_fold| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|finite_intersection1| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |ppg_enn_powerset| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |ppg_enn_powerset| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|sum_image| FORMULA-DECL NIL |ppg_monoid_image| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set[T]"
+     |ppg_enn_powerset| NIL)
+    (|insert_injective| FORMULA-DECL NIL |ppg_subsets_product| NIL)
+    (|subsets_add| FORMULA-DECL NIL |ppg_subsets_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_powerset| NIL))
+   SHOSTAK))
+ (|difference_add_outside| 0
+  (|difference_add_outside-1| NIL 4001387351
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY)
+     (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")))
+    NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |ppg_enn_powerset| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set[T]"
+     |ppg_enn_powerset| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[T]"
+     |ppg_enn_powerset| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_powerset| NIL))
+   SHOSTAK))
+ (|difference_add_inside| 0
+  (|difference_add_inside-1| NIL 4001387351
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY)
+     (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")))
+    NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |ppg_enn_powerset| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set[T]"
+     |ppg_enn_powerset| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[T]"
+     |ppg_enn_powerset| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_powerset| NIL))
+   SHOSTAK))
+ (|decoration_empty| 0
+  (|decoration_empty-1| NIL 4001387351
+   (""
+    (THEN (SKOSIMP*) (EXPAND "decorationWeight")
+     (REWRITE "difference_emptyset2")
+     (AUTO-REWRITE "eprod_empty" "emul_one_left") (ASSERT))
+    NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |ppg_enn_powerset| NIL)
+    (|difference_emptyset2| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_powerset| NIL)
+    (|eprod_empty| FORMULA-DECL NIL |ppg_enn_products| NIL)
+    (|emul_one_left| FORMULA-DECL NIL |ppg_enn_semiring| NIL)
+    (|decorationWeight| CONST-DECL "ENN" |ppg_enn_powerset| NIL))
+   SHOSTAK))
+ (|decoration_add_outside| 0
+  (|decoration_add_outside-1| NIL 4001387351
+   (""
+    (THEN (SKOSIMP*) (EXPAND "decorationWeight")
+     (REWRITE "difference_add_outside")
+     (LEMMA "eprod_add" ("F" "difference(S!1,K!1)" "x" "e!1" "f" "up!1"))
+     (LEMMA "emul_associative") (LEMMA "emul_commutative")
+     (GRIND :IF-MATCH ALL :EXCLUDE ("eprod" "emul" "is_finite" "sum")))
+    NIL)
+   ((|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set[T]"
+     |ppg_enn_powerset| NIL)
+    (|finite_difference| APPLICATION-JUDGEMENT "finite_set[T]"
+     |ppg_enn_powerset| NIL)
+    (|difference_add_outside| FORMULA-DECL NIL |ppg_enn_powerset| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_powerset| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|emul_associative| FORMULA-DECL NIL |ppg_enn_semiring| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |ppg_enn_powerset| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|eprod| CONST-DECL "ENN" |ppg_enn_products| NIL)
+    (|emul| CONST-DECL "ENN" |ppg_enn_multiply| NIL)
+    (|emul_commutative| FORMULA-DECL NIL |ppg_enn_multiply| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|eprod_add| FORMULA-DECL NIL |ppg_enn_products| NIL)
+    (|decorationWeight| CONST-DECL "ENN" |ppg_enn_powerset| NIL))
+   SHOSTAK))
+ (|decoration_add_inside| 0
+  (|decoration_add_inside-1| NIL 4001387351
+   (""
+    (THEN (SKOSIMP*) (EXPAND "decorationWeight")
+     (REWRITE "difference_add_inside")
+     (LEMMA "eprod_add" ("F" "K!1" "x" "e!1" "f" "down!1"))
+     (LEMMA "emul_associative")
+     (GRIND :IF-MATCH ALL :EXCLUDE ("eprod" "emul" "is_finite" "sum")))
+    NIL)
+   ((|finite_difference| APPLICATION-JUDGEMENT "finite_set[T]"
+     |ppg_enn_powerset| NIL)
+    (|difference_add_inside| FORMULA-DECL NIL |ppg_enn_powerset| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_powerset| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|emul_associative| FORMULA-DECL NIL |ppg_enn_semiring| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |ppg_enn_powerset| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set[T]"
+     |ppg_enn_powerset| NIL)
+    (|eprod| CONST-DECL "ENN" |ppg_enn_products| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|eprod_add| FORMULA-DECL NIL |ppg_enn_products| NIL)
+    (|decorationWeight| CONST-DECL "ENN" |ppg_enn_powerset| NIL))
+   SHOSTAK))
+ (|decoration_sum_outside| 0
+  (|decoration_sum_outside-1| NIL 4001387401
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "esum_congr"
+       ("F" "powerset(S!1)" "f"
+        "LAMBDA(K:finite_set[T]):decorationWeight(add(e!1,S!1),K,up!1,down!1)"
+        "g"
+        "LAMBDA(K:finite_set[T]):emul(up!1(e!1),decorationWeight(S!1,K,up!1,down!1))"))
+      (("" (SPLIT -1)
+        (("1"
+          (LEMMA "esum_scale_left"
+           ("F" "powerset(S!1)" "a" "up!1(e!1)" "f"
+            "LAMBDA(K:finite_set[T]):decorationWeight(S!1,K,up!1,down!1)"))
+          (("1" (LEMMA "decoration_add_outside")
+            (("1"
+              (GRIND :IF-MATCH ALL :EXCLUDE
+               ("esum" "eprod" "emul" "eadd" "decorationWeight" "is_finite"
+                "sum"))
+              NIL NIL))
+            NIL))
+          NIL)
+         ("2"
+          (LEMMA "esum_scale_left"
+           ("F" "powerset(S!1)" "a" "up!1(e!1)" "f"
+            "LAMBDA(K:finite_set[T]):decorationWeight(S!1,K,up!1,down!1)"))
+          (("2" (LEMMA "decoration_add_outside")
+            (("2"
+              (GRIND :IF-MATCH ALL :EXCLUDE
+               ("esum" "eprod" "emul" "eadd" "decorationWeight" "is_finite"
+                "sum"))
+              NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|decoration_add_outside| FORMULA-DECL NIL |ppg_enn_powerset| NIL)
+    (|esum_scale_left| FORMULA-DECL NIL |ppg_enn_sum_scale| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_powerset| NIL)
+    (|emul| CONST-DECL "ENN" |ppg_enn_multiply| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|decorationWeight| CONST-DECL "ENN" |ppg_enn_powerset| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|powerset| CONST-DECL "setofsets" |sets| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|esum_congr| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set[T]"
+     |ppg_enn_powerset| NIL)
+    (|powerset_finite| APPLICATION-JUDGEMENT "finite_set[set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|nonempty_powerset| APPLICATION-JUDGEMENT "(nonempty?[set[T]])"
+     |ppg_enn_powerset| NIL)
+    (|powerset_finite2| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |finite_sets_of_sets| NIL))
+   SHOSTAK))
+ (|decoration_sum_inside| 0
+  (|decoration_sum_inside-1| NIL 4001387401
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "esum_congr"
+       ("F" "powerset(S!1)" "f"
+        "LAMBDA(K:finite_set[T]):decorationWeight(add(e!1,S!1),add(e!1,K),up!1,down!1)"
+        "g"
+        "LAMBDA(K:finite_set[T]):emul(down!1(e!1),decorationWeight(S!1,K,up!1,down!1))"))
+      (("" (SPLIT -1)
+        (("1"
+          (LEMMA "esum_scale_left"
+           ("F" "powerset(S!1)" "a" "down!1(e!1)" "f"
+            "LAMBDA(K:finite_set[T]):decorationWeight(S!1,K,up!1,down!1)"))
+          (("1" (LEMMA "decoration_add_inside")
+            (("1"
+              (GRIND :IF-MATCH ALL :EXCLUDE
+               ("esum" "eprod" "emul" "eadd" "decorationWeight" "is_finite"
+                "sum"))
+              NIL NIL))
+            NIL))
+          NIL)
+         ("2"
+          (LEMMA "esum_scale_left"
+           ("F" "powerset(S!1)" "a" "down!1(e!1)" "f"
+            "LAMBDA(K:finite_set[T]):decorationWeight(S!1,K,up!1,down!1)"))
+          (("2" (LEMMA "decoration_add_inside")
+            (("2"
+              (GRIND :IF-MATCH ALL :EXCLUDE
+               ("esum" "eprod" "emul" "eadd" "decorationWeight" "is_finite"
+                "sum"))
+              NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|decoration_add_inside| FORMULA-DECL NIL |ppg_enn_powerset| NIL)
+    (|esum_scale_left| FORMULA-DECL NIL |ppg_enn_sum_scale| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_powerset| NIL)
+    (|emul| CONST-DECL "ENN" |ppg_enn_multiply| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|decorationWeight| CONST-DECL "ENN" |ppg_enn_powerset| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|powerset| CONST-DECL "setofsets" |sets| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|esum_congr| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set[T]"
+     |ppg_enn_powerset| NIL)
+    (|powerset_finite| APPLICATION-JUDGEMENT "finite_set[set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|nonempty_powerset| APPLICATION-JUDGEMENT "(nonempty?[set[T]])"
+     |ppg_enn_powerset| NIL)
+    (|powerset_finite2| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |finite_sets_of_sets| NIL))
+   SHOSTAK))
+ (|decoration_sum_step| 0
+  (|decoration_sum_step-1| NIL 4001387401
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "sum_powerset_add"
+      ("S" "S!1" "e" "e!1" "weight"
+       "LAMBDA(K:finite_set[T]):decorationWeight(add(e!1,S!1),K,up!1,down!1)"))
+     (LEMMA "decoration_sum_outside"
+      ("S" "S!1" "e" "e!1" "up" "up!1" "down" "down!1"))
+     (LEMMA "decoration_sum_inside"
+      ("S" "S!1" "e" "e!1" "up" "up!1" "down" "down!1"))
+     (LEMMA "emul_distributes_right") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL)
+   ((|decoration_sum_outside| FORMULA-DECL NIL |ppg_enn_powerset| NIL)
+    (|emul_distributes_right| FORMULA-DECL NIL |ppg_enn_semiring| NIL)
+    (|esum| DEF-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|powerset| CONST-DECL "setofsets" |sets| NIL)
+    (|powerset_finite| APPLICATION-JUDGEMENT "finite_set[set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|nonempty_powerset| APPLICATION-JUDGEMENT "(nonempty?[set[T]])"
+     |ppg_enn_powerset| NIL)
+    (|powerset_finite2| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|decoration_sum_inside| FORMULA-DECL NIL |ppg_enn_powerset| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|decorationWeight| CONST-DECL "ENN" |ppg_enn_powerset| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_powerset| NIL)
+    (|sum_powerset_add| FORMULA-DECL NIL |ppg_enn_powerset| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set[T]"
+     |ppg_enn_powerset| NIL))
+   SHOSTAK))
+ (|decoration_sum| 0
+  (|decoration_sum-1| NIL 4001387351
+   ("" (INDUCT "S" :NAME "finite_set_ind_modified[T]")
+    (("1" (SKOSIMP*)
+      (("1"
+        (AUTO-REWRITE "sum_powerset_empty" "decoration_empty" "eprod_empty"
+                      "decoration_sum_step" "eprod_add")
+        (("1" (GRIND :DEFS NIL :IF-MATCH ALL) NIL NIL)) NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2"
+        (AUTO-REWRITE "sum_powerset_empty" "decoration_empty" "eprod_empty"
+                      "decoration_sum_step" "eprod_add")
+        (("2" (GRIND :DEFS NIL :IF-MATCH ALL) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|esum| DEF-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|powerset| CONST-DECL "setofsets" |sets| NIL)
+    (|decorationWeight| CONST-DECL "ENN" |ppg_enn_powerset| NIL)
+    (|eprod| CONST-DECL "ENN" |ppg_enn_products| NIL)
+    (|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|powerset_finite2| APPLICATION-JUDGEMENT "finite_set[finite_set[T]]"
+     |finite_sets_of_sets| NIL)
+    (|nonempty_powerset| APPLICATION-JUDGEMENT "(nonempty?[set[T]])"
+     |ppg_enn_powerset| NIL)
+    (|powerset_finite| APPLICATION-JUDGEMENT "finite_set[set[T]]"
+     |finite_sets_of_sets| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_enn_powerset| NIL)
+    (|finite_set_ind_modified| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (|decoration_empty| FORMULA-DECL NIL |ppg_enn_powerset| NIL)
+    (|sum_powerset_empty| FORMULA-DECL NIL |ppg_enn_powerset| NIL)
+    (|eprod_empty| FORMULA-DECL NIL |ppg_enn_products| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[T]" |ppg_enn_powerset| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|decoration_sum_step| FORMULA-DECL NIL |ppg_enn_powerset| NIL)
+    (|eprod_add| FORMULA-DECL NIL |ppg_enn_products| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set[T]"
+     |ppg_enn_powerset| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,21 @@
+% The finite decoration set is the exact index subtype of the unordered sum.
+% No distinguished node or decoration is needed when its ambient type is empty.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Proposition 3.9 and Appendix B.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSDecoratedBudget.lean.
+ppg_hls_decoration_tsum[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},
+  (IMPORTING ppg_hls_decoration_weight[C,G]) D:WitnessDAG]: THEORY
+BEGIN
+  IMPORTING ppg_enn_finite_domain[finite_set[WNode],decorations(D)] AS finiteIndex,
+    ppg_enn_unrestricted_sum[(decorations(D))] AS indexSums,
+    ppg_enn_products[WNode] AS nodeProducts
+  up,down: VAR [C->ENN]
+
+  tsum_decorationWeight: THEOREM
+    indexSums.eTsum(LAMBDA(R:(decorations(D))):decorationWeight(up,down)(D)(R))=
+      nodeProducts.eprod(D`nodes,LAMBDA(u:WNode):eadd(up(u`1),down(u`1)))
+
+END ppg_hls_decoration_tsum

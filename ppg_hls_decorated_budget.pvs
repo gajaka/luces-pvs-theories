@@ -1,0 +1,40 @@
+% Splitting a node changes its label factors but preserves the total
+% proper-family weight. The original Shearer budget then applies to
+% the reduced factors under its strict criterion.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Proposition 3.9 and Lemma 3.14.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSDecoratedBudget.lean.
+ppg_hls_decorated_budget[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},p:[C->real],B:finite_set[C],alpha:C]: THEORY
+BEGIN
+  IMPORTING ppg_hls_decorated_family[C,G,B,alpha],ppg_hls_decorated_split[C,G,p],
+    ppg_hls_witness_budget[C,G,B,alpha],ppg_enn_unrestricted_sum[ProperDAG] AS reducedSums,
+    ppg_enn_finite_order[ProperDAG] AS properOrder,
+    ppg_enn_products[WNode] AS nodeProducts
+  O: VAR OverlapBounds
+  q: VAR [C->real]
+  D: VAR WitnessDAG
+
+  splitTotal(O): ENN = decoratedTotal(LAMBDA(i:C):ofReal(splitUp(O)(i)),
+    LAMBDA(i:C):ofReal(splitDown(O)(i)))
+
+  proper_weight_total: LEMMA
+    reducedSums.eTsum(LAMBDA(D:ProperDAG):weight(q)(D))=totalWeight(q)
+
+  split_node_product: LEMMA
+    (FORALL(j:C):0<p(j)) AND (FORALL(j:C):p(j)<=1) IMPLIES
+      nodeProducts.eprod(D`nodes,LAMBDA(u:WNode):
+        eadd(ofReal(splitUp(O)(u`1)),ofReal(splitDown(O)(u`1))))=weight(reduced(O))(D)
+
+  tsum_split_decoratedFamily_eq: THEOREM
+    (FORALL(j:C):0<p(j)) AND (FORALL(j:C):p(j)<=1) IMPLIES
+      splitTotal(O)=reducedSums.eTsum(LAMBDA(D:ProperDAG):weight(reduced(O))(D))
+
+  tsum_split_decoratedFamily_le_budget: THEOREM
+    (FORALL(j:C):0<p(j)) AND (FORALL(j:C):p(j)<=1) AND B(alpha) AND
+    StrictCriterion(reduced(O),B) IMPLIES
+      ele(splitTotal(O),ofReal(stableBudget(reduced(O),B,sets[C].singleton(alpha))))
+
+END ppg_hls_decorated_budget
