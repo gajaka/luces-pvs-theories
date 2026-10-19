@@ -1,0 +1,223 @@
+(|ppg_lift_nat_option_codec|
+ (|encodeLiftNat_bottom| 0
+  (|encodeLiftNat_bottom-1| NIL 4001419385
+   ("" (THEN (GRIND :DEFS ("encodeLiftNat") :EXCLUDE ("natPair"))) NIL)
+   ((|encodeLiftNat| CONST-DECL "nat" |ppg_lift_nat_option_codec| NIL))
+   SHOSTAK))
+ (|encodeLiftNat_up| 0
+  (|encodeLiftNat_up-1| NIL 4001419385
+   ("" (THEN (GRIND :DEFS ("encodeLiftNat") :EXCLUDE ("natPair"))) NIL)
+   ((|encodeLiftNat| CONST-DECL "nat" |ppg_lift_nat_option_codec| NIL))
+   SHOSTAK))
+ (|decodeLiftNat_zero| 0
+  (|decodeLiftNat_zero-1| NIL 4001419385
+   ("" (THEN (EXPAND "decodeLiftNat") (ASSERT)) NIL)
+   ((|decodeLiftNat| CONST-DECL "LiftNat" |ppg_lift_nat_option_codec| NIL))
+   SHOSTAK))
+ (|decodeLiftNat_succ| 0
+  (|decodeLiftNat_succ-1| NIL 4001419385
+   ("" (THEN (SKOSIMP*) (EXPAND "decodeLiftNat") (EXPAND "predT") (ASSERT))
+    NIL)
+   ((|predT| CONST-DECL "TotalFunction" |ppg_nat_primrec_arithmetic| NIL)
+    (|decodeLiftNat| CONST-DECL "LiftNat" |ppg_lift_nat_option_codec| NIL))
+   SHOSTAK))
+ (|decode_encodeLiftNat| 0
+  (|decode_encodeLiftNat-1| NIL 4001419385
+   (""
+    (THEN (SKOSIMP*) (EXPAND "decodeLiftNat") (EXPAND "encodeLiftNat")
+     (EXPAND "predT")
+     (GRIND :REWRITES ("lift_up_eta" "lift_down_up") :EXCLUDE ("natPair")
+      :IF-MATCH ALL))
+    NIL)
+   ((|encodeLiftNat| CONST-DECL "nat" |ppg_lift_nat_option_codec| NIL)
+    (|lift_up_eta| FORMULA-DECL NIL |lift_adt| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|predT| CONST-DECL "TotalFunction" |ppg_nat_primrec_arithmetic| NIL)
+    (|decodeLiftNat| CONST-DECL "LiftNat" |ppg_lift_nat_option_codec| NIL))
+   SHOSTAK))
+ (|encode_decodeLiftNat| 0
+  (|encode_decodeLiftNat-1| NIL 4001419385
+   (""
+    (THEN (SKOSIMP*) (EXPAND "decodeLiftNat") (EXPAND "encodeLiftNat")
+     (EXPAND "predT") (GRIND :EXCLUDE ("natPair")))
+    NIL)
+   ((|encodeLiftNat| CONST-DECL "nat" |ppg_lift_nat_option_codec| NIL)
+    (|predT| CONST-DECL "TotalFunction" |ppg_nat_primrec_arithmetic| NIL)
+    (|decodeLiftNat| CONST-DECL "LiftNat" |ppg_lift_nat_option_codec| NIL))
+   SHOSTAK))
+ (|encodeLiftNat_zero_iff| 0
+  (|encodeLiftNat_zero_iff-1| NIL 4001419385
+   ("" (THEN (SKOSIMP*) (EXPAND "encodeLiftNat") (GRIND :EXCLUDE ("natPair")))
+    NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|encodeLiftNat| CONST-DECL "nat" |ppg_lift_nat_option_codec| NIL))
+   SHOSTAK))
+ (|encodeLiftNat_some_iff| 0
+  (|encodeLiftNat_some_iff-1| NIL 4001419385
+   (""
+    (THEN (SKOSIMP*) (LEMMA "decode_encodeLiftNat") (INST -1 "oh!1")
+     (USE "decodeLiftNat_succ" ("n" "n!1"))
+     (USE "encodeLiftNat_up" ("n" "n!1")) (GROUND))
+    NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|lift| TYPE-DECL NIL |lift_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |lift_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|LiftNat| TYPE-EQ-DECL NIL |ppg_lift_nat_option_codec| NIL)
+    (|encodeLiftNat_up| FORMULA-DECL NIL |ppg_lift_nat_option_codec| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|decodeLiftNat_succ| FORMULA-DECL NIL |ppg_lift_nat_option_codec| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|decode_encodeLiftNat| FORMULA-DECL NIL |ppg_lift_nat_option_codec| NIL))
+   SHOSTAK))
+ (|encodeLiftNat_positive_iff| 0
+  (|encodeLiftNat_positive_iff-1| NIL 4001419385
+   ("" (THEN (SKOSIMP*) (EXPAND "encodeLiftNat") (GRIND :EXCLUDE ("natPair")))
+    NIL)
+   ((|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|encodeLiftNat| CONST-DECL "nat" |ppg_lift_nat_option_codec| NIL))
+   SHOSTAK))
+ (|pred_encodeLiftNat| 0
+  (|pred_encodeLiftNat-1| NIL 4001419385
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "down[nat](oh!1)") (EXPAND "encodeLiftNat")
+     (EXPAND "predT") (GRIND :EXCLUDE ("natPair")))
+    NIL)
+   ((|encodeLiftNat| CONST-DECL "nat" |ppg_lift_nat_option_codec| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|predT| CONST-DECL "TotalFunction" |ppg_nat_primrec_arithmetic| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL) (|lift| TYPE-DECL NIL |lift_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |lift_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|up?| ADT-RECOGNIZER-DECL "[lift -> boolean]" |lift_adt| NIL)
+    (|down| ADT-ACCESSOR-DECL "[(up?) -> T]" |lift_adt| NIL)
+    (|LiftNat| TYPE-EQ-DECL NIL |ppg_lift_nat_option_codec| NIL))
+   SHOSTAK))
+ (|encodeLiftNat_bind_expression| 0
+  (|encodeLiftNat_bind_expression-1| NIL 4001419385
+   ("" (AUTO-REWRITE "encodeLiftNat_bottom")
+    (("" (SKOSIMP*)
+      (("" (CASE "up?[nat](oh!1)")
+        (("1" (GRIND :DEFS ("encodeLiftNat" "predT") :EXCLUDE ("natPair")) NIL
+          NIL)
+         ("2" (GRIND :DEFS ("encodeLiftNat" "predT") :EXCLUDE ("natPair")) NIL
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|LiftNat| TYPE-EQ-DECL NIL |ppg_lift_nat_option_codec| NIL)
+    (|up?| ADT-RECOGNIZER-DECL "[lift -> boolean]" |lift_adt| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|every| ADT-DEF-DECL "boolean" |lift_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|lift| TYPE-DECL NIL |lift_adt| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|encodeLiftNat| CONST-DECL "nat" |ppg_lift_nat_option_codec| NIL)
+    (|predT| CONST-DECL "TotalFunction" |ppg_nat_primrec_arithmetic| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK))
+ (|encodeLiftNat_pair_expression| 0
+  (|encodeLiftNat_pair_expression-1| NIL 4001419385
+   (""
+    (THEN (SKOSIMP*) (EXPAND "encodeLiftNat") (EXPAND "predT")
+     (GRIND :EXCLUDE ("natPair")))
+    NIL)
+   ((|predT| CONST-DECL "TotalFunction" |ppg_nat_primrec_arithmetic| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|encodeLiftNat| CONST-DECL "nat" |ppg_lift_nat_option_codec| NIL))
+   SHOSTAK))
+ (|normalizeLiftNat_as_succ| 0
+  (|normalizeLiftNat_as_succ-1| NIL 4001419385
+   (""
+    (THEN
+     (LEMMA "functions[nat,nat].extensionality"
+      ("f" "normalizeLiftNat" "g" "succT"))
+     (ASSERT) (SKOSIMP*) (EXPAND "normalizeLiftNat")
+     (REWRITE "encode_decodeLiftNat") (EXPAND "succT") (ASSERT))
+    NIL)
+   ((|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|succT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|normalizeLiftNat| CONST-DECL "TotalFunction" |ppg_lift_nat_option_codec|
+     NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|extensionality| FORMULA-DECL NIL |functions| NIL)
+    (|encode_decodeLiftNat| FORMULA-DECL NIL |ppg_lift_nat_option_codec| NIL))
+   SHOSTAK))
+ (|pr_normalizeLiftNat| 0
+  (|pr_normalizeLiftNat-1| NIL 4001419385
+   ("" (THEN (REWRITE "normalizeLiftNat_as_succ") (LEMMA "pr_succ") (ASSERT))
+    NIL)
+   ((|normalizeLiftNat_as_succ| FORMULA-DECL NIL |ppg_lift_nat_option_codec|
+     NIL)
+    (|pr_succ| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL))
+   SHOSTAK)))
+

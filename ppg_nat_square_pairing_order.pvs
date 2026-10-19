@@ -1,0 +1,26 @@
+% Coordinate order for Mathlib's square pairing. These inequalities give
+% the strict course-of-values indices used by the bounded evaluator.
+% Leonardo de Moura and Mario Carneiro, Mathlib Data.Nat.Pairing.
+ppg_nat_square_pairing_order: THEORY
+BEGIN
+  IMPORTING ppg_nat_square_pairing
+
+  a,b,c,d: VAR nat
+
+  natPair_left_strict: LEMMA a<b IMPLIES natPair(a,c)<natPair(b,c)
+
+  natPair_right_strict: LEMMA a<b IMPLIES natPair(c,a)<natPair(c,b)
+
+  natPair_left_monotone: LEMMA a<=b IMPLIES natPair(a,c)<=natPair(b,c)
+
+  natPair_right_monotone: LEMMA a<=b IMPLIES natPair(c,a)<=natPair(c,b)
+
+  natPair_both_monotone: LEMMA a<=b AND c<=d IMPLIES natPair(a,c)<=natPair(b,d)
+
+  natPair_left_strict_right_monotone: LEMMA a<b AND c<=d IMPLIES
+    natPair(a,c)<natPair(b,d)
+
+  natPair_left_monotone_right_strict: LEMMA a<=b AND c<d IMPLIES
+    natPair(a,c)<natPair(b,d)
+
+END ppg_nat_square_pairing_order

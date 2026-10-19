@@ -1,0 +1,44 @@
+% Option encoding is zero for None and one plus the payload code for Some.
+% Its decoder keeps exactly the optional failures of the original codec.
+% Mario Carneiro, Mathlib Logic.Encodable.Basic, Option.encodable;
+% Mathlib Computability.Primrec.Basic, Primcodable.option.
+ppg_primcodable_option [A:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_primcodable_core[A],ppg_primcodable_core[lift[A]]
+
+  E: VAR ppg_primcodable_core[A].Codec
+
+  n: VAR nat
+
+  optionCodec(E): ppg_primcodable_core[lift[A]].Codec =
+    (# encode:=LAMBDA(o:lift[A]): ppg_primcodable_core[A].encodeOption(E,o),
+       decode:=LAMBDA(n:nat): IF n=0 THEN up[lift[A]](bottom[A])
+         ELSIF up?[A](E`decode(n-1)) THEN
+           up[lift[A]](up[A](down[A](E`decode(n-1))))
+         ELSE bottom[lift[A]] ENDIF #)
+
+  optionInnerT(E): TotalFunction = ifZeroT(ppg_primcodable_core[A].normalization(E),
+    zeroT,compT(succT,ppg_primcodable_core[A].normalization(E)))
+
+  optionNormalizationT(E): TotalFunction = caseUnaryT(1,optionInnerT(E))
+
+  optionCodec_inverse: THEOREM ppg_primcodable_core[A].CodecLaw(E) IMPLIES
+    ppg_primcodable_core[lift[A]].CodecLaw(optionCodec(E))
+
+  optionInnerT_value: LEMMA optionInnerT(E)(n)=
+    IF ppg_primcodable_core[A].normalization(E)(n)=0 THEN 0
+      ELSE ppg_primcodable_core[A].normalization(E)(n)+1 ENDIF
+
+  pr_option_inner: LEMMA ppg_primcodable_core[A].PrimcodableLaw(E) IMPLIES
+    NatPrimrec(optionInnerT(E))
+
+  pr_option_normalization: THEOREM ppg_primcodable_core[A].PrimcodableLaw(E) IMPLIES
+    NatPrimrec(optionNormalizationT(E))
+
+  option_normalization: LEMMA
+    ppg_primcodable_core[lift[A]].normalization(optionCodec(E))=optionNormalizationT(E)
+
+  option_primcodable: THEOREM ppg_primcodable_core[A].PrimcodableLaw(E) IMPLIES
+    ppg_primcodable_core[lift[A]].PrimcodableLaw(optionCodec(E))
+
+END ppg_primcodable_option

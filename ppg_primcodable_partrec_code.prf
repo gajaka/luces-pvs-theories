@@ -1,0 +1,56 @@
+(|ppg_primcodable_partrec_code|
+ (|codeCodec_inverse| 0
+  (|codeCodec_inverse-1| NIL 4001421838
+   (""
+    (THEN (AUTO-REWRITE "ofNatCode_encode") (EXPAND "CodecLaw") (SKOSIMP*)
+     (EXPAND "codeCodec") (ASSERT))
+    NIL)
+   ((|ofNatCode_encode| FORMULA-DECL NIL |ppg_partrec_code_encoding| NIL)
+    (|codeCodec| CONST-DECL "Codec" |ppg_primcodable_partrec_code| NIL)
+    (|CodecLaw| CONST-DECL "bool" |ppg_primcodable_core| NIL))
+   SHOSTAK))
+ (|code_normalization| 0
+  (|code_normalization-1| NIL 4001421838
+   (""
+    (THEN (AUTO-REWRITE "encode_ofNatCode")
+     (LEMMA "functions[nat,nat].extensionality"
+      ("f" "normalization(codeCodec)" "g" "succT"))
+     (ASSERT) (SKOSIMP*) (EXPAND "normalization") (EXPAND "encodeOption")
+     (EXPAND "codeCodec") (EXPAND "succT") (ASSERT))
+    NIL)
+   ((|encode_ofNatCode| FORMULA-DECL NIL |ppg_partrec_code_encoding| NIL)
+    (|encodeOption| CONST-DECL "nat" |ppg_primcodable_core| NIL)
+    (|extensionality| FORMULA-DECL NIL |functions| NIL)
+    (|ppg_partrec_code| TYPE-DECL NIL |ppg_partrec_code_adt| NIL)
+    (|lift| TYPE-DECL NIL |lift_adt| NIL)
+    (|Codec| TYPE-EQ-DECL NIL |ppg_primcodable_core| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|normalization| CONST-DECL "TotalFunction" |ppg_primcodable_core| NIL)
+    (|codeCodec| CONST-DECL "Codec" |ppg_primcodable_partrec_code| NIL)
+    (|succT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK))
+ (|code_primcodable| 0
+  (|code_primcodable-1| NIL 4001421838
+   (""
+    (THEN (EXPAND "PrimcodableLaw") (REWRITE "code_normalization")
+     (LEMMA "codeCodec_inverse") (LEMMA "pr_succ") (ASSERT))
+    NIL)
+   ((|PrimcodableLaw| CONST-DECL "bool" |ppg_primcodable_core| NIL)
+    (|codeCodec_inverse| FORMULA-DECL NIL |ppg_primcodable_partrec_code| NIL)
+    (|pr_succ| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|code_normalization| FORMULA-DECL NIL |ppg_primcodable_partrec_code| NIL))
+   SHOSTAK)))
+

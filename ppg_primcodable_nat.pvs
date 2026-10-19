@@ -1,0 +1,18 @@
+% Natural numbers use the identity encoding and total Some decoder.
+% Mario Carneiro, Mathlib Logic.Encodable.Basic and Primcodable.ofDenumerable.
+ppg_primcodable_nat: THEORY
+BEGIN
+  IMPORTING ppg_primcodable_core[nat]
+
+  n: VAR nat
+
+  natCodec: Codec = (# encode:=LAMBDA(n:nat): n,
+    decode:=LAMBDA(n:nat): up[nat](n) #)
+
+  natCodec_inverse: THEOREM CodecLaw(natCodec)
+
+  nat_normalization: LEMMA normalization(natCodec)=succT
+
+  nat_primcodable: THEOREM PrimcodableLaw(natCodec)
+
+END ppg_primcodable_nat

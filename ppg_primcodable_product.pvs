@@ -1,0 +1,51 @@
+% Product encoding uses Mathlib's square Nat.pair. Both component
+% decoders must succeed; no global representative is required.
+% Mario Carneiro, Mathlib Logic.Encodable.Basic, Prod.encodable;
+% Mathlib Computability.Primrec.Basic, Primcodable.prod.
+ppg_primcodable_product [A,B:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_primcodable_core[A],ppg_primcodable_core[B],
+    ppg_primcodable_core[[A,B]]
+
+  E: VAR ppg_primcodable_core[A].Codec
+
+  F: VAR ppg_primcodable_core[B].Codec
+
+  n: VAR nat
+
+  productCodec(E,F): ppg_primcodable_core[[A,B]].Codec =
+    (# encode:=LAMBDA(p:[A,B]): natPair(E`encode(p`1),F`encode(p`2)),
+       decode:=LAMBDA(n:nat):
+         IF up?[A](E`decode(leftT(n))) AND up?[B](F`decode(rightT(n))) THEN
+           up[[A,B]]((down[A](E`decode(leftT(n))),down[B](F`decode(rightT(n)))))
+         ELSE bottom[[A,B]] ENDIF #)
+
+  leftNormalizationT(E): TotalFunction = compT(ppg_primcodable_core[A].normalization(E),leftT)
+
+  rightNormalizationT(F): TotalFunction = compT(ppg_primcodable_core[B].normalization(F),rightT)
+
+  productNormalizationT(E,F): TotalFunction = ifZeroT(leftNormalizationT(E),zeroT,
+    ifZeroT(rightNormalizationT(F),zeroT,
+      compT(succT,pairT(compT(predT,leftNormalizationT(E)),compT(predT,rightNormalizationT(F))))))
+
+  productCodec_inverse: THEOREM ppg_primcodable_core[A].CodecLaw(E) AND
+    ppg_primcodable_core[B].CodecLaw(F) IMPLIES
+      ppg_primcodable_core[[A,B]].CodecLaw(productCodec(E,F))
+
+  pr_left_normalization: LEMMA ppg_primcodable_core[A].PrimcodableLaw(E) IMPLIES
+    NatPrimrec(leftNormalizationT(E))
+
+  pr_right_normalization: LEMMA ppg_primcodable_core[B].PrimcodableLaw(F) IMPLIES
+    NatPrimrec(rightNormalizationT(F))
+
+  pr_product_normalization: THEOREM ppg_primcodable_core[A].PrimcodableLaw(E) AND
+    ppg_primcodable_core[B].PrimcodableLaw(F) IMPLIES NatPrimrec(productNormalizationT(E,F))
+
+  product_normalization: LEMMA
+    ppg_primcodable_core[[A,B]].normalization(productCodec(E,F))=productNormalizationT(E,F)
+
+  product_primcodable: THEOREM ppg_primcodable_core[A].PrimcodableLaw(E) AND
+    ppg_primcodable_core[B].PrimcodableLaw(F) IMPLIES
+      ppg_primcodable_core[[A,B]].PrimcodableLaw(productCodec(E,F))
+
+END ppg_primcodable_product

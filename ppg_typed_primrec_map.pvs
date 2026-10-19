@@ -1,0 +1,47 @@
+% Mathlib Primrec.Basic defines typed Primrec by encoding the optional
+% result of mapping a function over the decoded input. Codec certificates
+% are supplied by the corresponding Primcodable instances.
+% Mario Carneiro, Mathlib Computability.Primrec.Basic, definition Primrec.
+ppg_typed_primrec_map [A,B:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_primcodable_core[A],ppg_primcodable_core[B]
+
+  CodecA: TYPE = ppg_primcodable_core[A].Codec
+
+  CodecB: TYPE = ppg_primcodable_core[B].Codec
+
+  E: VAR CodecA
+
+  F: VAR CodecB
+
+  f,g: VAR [A -> B]
+
+  x: VAR A
+
+  n: VAR nat
+
+  normalizedMap(E,F,f): TotalFunction = LAMBDA(n:nat):
+    IF up?[A](E`decode(n)) THEN F`encode(f(down[A](E`decode(n))))+1 ELSE 0 ENDIF
+
+  TypedPrimrec(E,F,f): bool = NatPrimrec(normalizedMap(E,F,f))
+
+  normalizedMap_none: LEMMA E`decode(n)=bottom[A] IMPLIES normalizedMap(E,F,f)(n)=0
+
+  normalizedMap_some: LEMMA E`decode(n)=up[A](x) IMPLIES
+    normalizedMap(E,F,f)(n)=F`encode(f(x))+1
+
+  normalizedMap_at_code: THEOREM ppg_primcodable_core[A].CodecLaw(E) IMPLIES
+    normalizedMap(E,F,f)(E`encode(x))=F`encode(f(x))+1
+
+  normalizedMap_zero_iff: THEOREM normalizedMap(E,F,f)(n)=0 IFF E`decode(n)=bottom[A]
+
+  normalizedMap_payload: THEOREM up?[A](E`decode(n)) IMPLIES
+    predT(normalizedMap(E,F,f)(n))=F`encode(f(down[A](E`decode(n))))
+
+  normalizedMap_congr: THEOREM (FORALL(x:A): f(x)=g(x)) IMPLIES
+    normalizedMap(E,F,f)=normalizedMap(E,F,g)
+
+  typedPrimrec_extensional: THEOREM TypedPrimrec(E,F,f) AND
+    (FORALL(x:A): f(x)=g(x)) IMPLIES TypedPrimrec(E,F,g)
+
+END ppg_typed_primrec_map

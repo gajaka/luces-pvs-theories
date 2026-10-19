@@ -1,0 +1,41 @@
+% The intermediate optional result is decoded using the inverse law.
+% The numeric branch first tests for None, then applies the second map.
+% Mario Carneiro, Mathlib Computability.Primrec.Basic, Primrec.comp.
+ppg_typed_primrec_composition [A,B,C:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_typed_primrec_map[A,B],ppg_typed_primrec_map[B,C],
+    ppg_typed_primrec_map[A,C]
+
+  E0: VAR ppg_primcodable_core[A].Codec
+
+  E1: VAR ppg_primcodable_core[B].Codec
+
+  E2: VAR ppg_primcodable_core[C].Codec
+
+  f: VAR [A -> B]
+
+  g: VAR [B -> C]
+
+  v,w: VAR TotalFunction
+
+  n: VAR nat
+
+  normalizedCompT(v,w): TotalFunction = ifZeroT(v,zeroT,compT(w,compT(predT,v)))
+
+  normalizedCompT_value: LEMMA normalizedCompT(v,w)(n)=
+    IF v(n)=0 THEN 0 ELSE w(predT(v(n))) ENDIF
+
+  pr_normalized_comp: THEOREM NatPrimrec(v) AND NatPrimrec(w) IMPLIES
+    NatPrimrec(normalizedCompT(v,w))
+
+  normalized_composition: LEMMA ppg_primcodable_core[B].CodecLaw(E1) IMPLIES
+    ppg_typed_primrec_map[A,C].normalizedMap(E0,E2,LAMBDA(x:A): g(f(x)))=
+      normalizedCompT(ppg_typed_primrec_map[A,B].normalizedMap(E0,E1,f),
+        ppg_typed_primrec_map[B,C].normalizedMap(E1,E2,g))
+
+  typedPrimrec_composition: THEOREM ppg_primcodable_core[B].CodecLaw(E1) AND
+    ppg_typed_primrec_map[A,B].TypedPrimrec(E0,E1,f) AND
+    ppg_typed_primrec_map[B,C].TypedPrimrec(E1,E2,g) IMPLIES
+      ppg_typed_primrec_map[A,C].TypedPrimrec(E0,E2,LAMBDA(x:A): g(f(x)))
+
+END ppg_typed_primrec_composition

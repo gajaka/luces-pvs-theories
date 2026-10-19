@@ -1,0 +1,65 @@
+% Finite table lookup for Mathlib's course-of-values evaluator construction.
+% Mario Carneiro, Mathlib Computability.PartrecCode, primrec_evaln.
+% Outer entries code whole finite rows; each inner entry is an option code.
+ppg_nat_primrec_table_lookup: THEORY
+BEGIN
+  IMPORTING ppg_nat_primrec_strong_recursion,ppg_nat_primrec_list_length
+
+  f,h: VAR TotalFunction
+
+  a,b,i,j,k,l,n,r: VAR nat
+
+  L,M: VAR NatList
+
+  lookupNatList_append_left: LEMMA i<length(L) IMPLIES
+    lookupNatList(append(L,M),i)=lookupNatList(L,i)
+
+  lookupNatList_outside: LEMMA length(L)<=i IMPLIES lookupNatList(L,i)=0
+
+  lookupCode_snoc_before: LEMMA i<length(L) IMPLIES
+    lookupCode(snocCode(encodeNatList(L),n),i)=lookupCode(encodeNatList(L),i)
+
+  tabulateCode_lookup: THEOREM i<n IMPLIES
+    lookupCode(tabulateCode(f,a,n),i)=f(natPair(a,i))+1
+
+  tabulateCode_lookup_outside: THEOREM n<=i IMPLIES
+    lookupCode(tabulateCode(f,a,n),i)=0
+
+  lengthCode_tabulate: THEOREM lengthCode(tabulateCode(f,a,n))=n
+
+  rowArgT: TotalFunction = compT(leftT,rightT)
+
+  inputArgT: TotalFunction = compT(rightT,rightT)
+
+  pr_rowArg: LEMMA NatPrimrec(rowArgT)
+
+  pr_inputArg: LEMMA NatPrimrec(inputArgT)
+
+  selectedRowT: TotalFunction = compT(predT,compT(lookupCodeT,pairT(leftT,rowArgT)))
+
+  pr_selectedRow: LEMMA NatPrimrec(selectedRowT)
+
+  selectedRowT_value: LEMMA selectedRowT(natPair(l,natPair(r,i)))=
+    predT(lookupCode(l,r))
+
+  nestedLookupT: TotalFunction = compT(predT,compT(lookupCodeT,
+    pairT(selectedRowT,inputArgT)))
+
+  pr_nestedLookup: THEOREM NatPrimrec(nestedLookupT)
+
+  nestedLookupT_value: LEMMA nestedLookupT(natPair(l,natPair(r,i)))=
+    predT(lookupCode(predT(lookupCode(l,r)),i))
+
+  nestedLookup_tabulate: THEOREM r<n IMPLIES
+    nestedLookupT(natPair(tabulateCode(f,a,n),natPair(r,i)))=
+    predT(lookupCode(f(natPair(a,r)),i))
+
+  nestedLookup_missing_row: THEOREM n<=r IMPLIES
+    nestedLookupT(natPair(tabulateCode(f,a,n),natPair(r,i)))=0
+
+  nestedLookup_two_tabulations: THEOREM r<n AND
+    f(natPair(a,r))=tabulateCode(h,b,k) IMPLIES
+    nestedLookupT(natPair(tabulateCode(f,a,n),natPair(r,i)))=
+    IF i<k THEN h(natPair(b,i)) ELSE 0 ENDIF
+
+END ppg_nat_primrec_table_lookup

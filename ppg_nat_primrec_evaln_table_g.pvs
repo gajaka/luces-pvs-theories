@@ -1,0 +1,200 @@
+% Numeric finite-table G from Mathlib Computability.PartrecCode, primrec_evaln.
+% Each constructor reads whole earlier table rows through literal lup codes.
+% Only the seven genuine primitive-recursive closure operators are used.
+% Agreement with the evaluator on actual prefixes is a separate theorem.
+ppg_nat_primrec_evaln_table_g: THEORY
+BEGIN
+  IMPORTING ppg_nat_primrec_table_lookup,ppg_nat_primrec_code_destructors
+
+  p,b,c,u: VAR TotalFunction
+
+  a,i,k,l,n,t: VAR nat
+
+  prefixBudget(l:nat): nat = leftT(lengthCode(l))
+
+  prefixProgram(l:nat): nat = rightT(lengthCode(l))
+
+  tableLookup(l,k,c,n:nat): nat = nestedLookupT(natPair(l,natPair(natPair(k,c),n)))
+
+  lookupInputsT(p,b,c,u:TotalFunction): TotalFunction = compT(nestedLookupT,pairT(p,pairT(pairT(b,c),u)))
+
+  pr_lookupInputs: THEOREM NatPrimrec(p) AND NatPrimrec(b) AND NatPrimrec(c) AND NatPrimrec(u) IMPLIES NatPrimrec(lookupInputsT(p,b,c,u))
+
+  lookupInputsT_value: LEMMA lookupInputsT(p,b,c,u)(n)=tableLookup(p(n),b(n),c(n),u(n))
+
+  stepBudgetT: TotalFunction = compT(leftT,compT(lengthCode,leftT))
+
+  pr_stepBudget: THEOREM NatPrimrec(stepBudgetT)
+
+  stepProgramT: TotalFunction = compT(rightT,compT(lengthCode,leftT))
+
+  pr_stepProgram: THEOREM NatPrimrec(stepProgramT)
+
+  stepTagT: TotalFunction = compT(codeTagT,stepProgramT)
+
+  pr_stepTag: THEOREM NatPrimrec(stepTagT)
+
+  stepFirstT: TotalFunction = compT(codeFirstT,stepProgramT)
+
+  pr_stepFirst: THEOREM NatPrimrec(stepFirstT)
+
+  stepSecondT: TotalFunction = compT(codeSecondT,stepProgramT)
+
+  pr_stepSecond: THEOREM NatPrimrec(stepSecondT)
+
+  stepPayloadT: TotalFunction = compT(codePayloadT,stepProgramT)
+
+  pr_stepPayload: THEOREM NatPrimrec(stepPayloadT)
+
+  stepPayloadT_value: LEMMA stepPayloadT(natPair(l,n))=codePayloadT(prefixProgram(l))
+
+  stepBudgetT_value: LEMMA stepBudgetT(natPair(l,n))=prefixBudget(l)
+
+  stepProgramT_value: LEMMA stepProgramT(natPair(l,n))=prefixProgram(l)
+
+  stepTagT_value: LEMMA stepTagT(natPair(l,n))=codeTagT(prefixProgram(l))
+
+  stepFirstT_value: LEMMA stepFirstT(natPair(l,n))=codeFirstT(prefixProgram(l))
+
+  stepSecondT_value: LEMMA stepSecondT(natPair(l,n))=codeSecondT(prefixProgram(l))
+
+  firstLookupT: TotalFunction = lookupInputsT(leftT,stepBudgetT,stepFirstT,rightT)
+
+  pr_firstLookup: LEMMA NatPrimrec(firstLookupT)
+
+  secondLookupT: TotalFunction = lookupInputsT(leftT,stepBudgetT,stepSecondT,rightT)
+
+  pr_secondLookup: LEMMA NatPrimrec(secondLookupT)
+
+  pairBranchT: TotalFunction = ifZeroT(firstLookupT,zeroT,ifZeroT(secondLookupT,zeroT,compT(succT,pairT(compT(predT,firstLookupT),compT(predT,secondLookupT)))))
+
+  pr_pairBranch: THEOREM NatPrimrec(pairBranchT)
+
+  compNextT: TotalFunction = lookupInputsT(leftT,stepBudgetT,stepFirstT,compT(predT,secondLookupT))
+
+  pr_compNext: LEMMA NatPrimrec(compNextT)
+
+  compBranchT: TotalFunction = ifZeroT(secondLookupT,zeroT,compNextT)
+
+  pr_compBranch: THEOREM NatPrimrec(compBranchT)
+
+  precInitialT: TotalFunction = lookupInputsT(leftT,stepBudgetT,stepFirstT,rowArgT)
+
+  pr_precInitial: LEMMA NatPrimrec(precInitialT)
+
+  precPreviousT: TotalFunction = lookupInputsT(leftT,compT(predT,stepBudgetT),stepProgramT,pairT(rowArgT,compT(predT,inputArgT)))
+
+  pr_precPrevious: LEMMA NatPrimrec(precPreviousT)
+
+  precNextT: TotalFunction = lookupInputsT(leftT,stepBudgetT,stepSecondT,pairT(rowArgT,pairT(compT(predT,inputArgT),compT(predT,precPreviousT))))
+
+  pr_precNext: LEMMA NatPrimrec(precNextT)
+
+  precBranchT: TotalFunction = ifZeroT(inputArgT,precInitialT,ifZeroT(precPreviousT,zeroT,precNextT))
+
+  pr_precBranch: THEOREM NatPrimrec(precBranchT)
+
+  rfindTestT: TotalFunction = lookupInputsT(leftT,stepBudgetT,stepPayloadT,rightT)
+
+  pr_rfindTest: LEMMA NatPrimrec(rfindTestT)
+
+  rfindNextT: TotalFunction = lookupInputsT(leftT,compT(predT,stepBudgetT),stepProgramT,pairT(rowArgT,compT(succT,inputArgT)))
+
+  pr_rfindNext: LEMMA NatPrimrec(rfindNextT)
+
+  rfindBranchT: TotalFunction = ifZeroT(rfindTestT,zeroT,ifZeroT(compT(predT,rfindTestT),compT(succT,inputArgT),rfindNextT))
+
+  pr_rfindBranch: THEOREM NatPrimrec(rfindBranchT)
+
+  tagIsT(t:nat): TotalFunction = compT(eqT,pairT(stepTagT,constT(t)))
+
+  pr_tagIs: LEMMA NatPrimrec(tagIsT(t))
+
+  tagIsT_value: LEMMA tagIsT(t)(natPair(l,n))=
+    IF codeTagT(prefixProgram(l))=t THEN 1 ELSE 0 ENDIF
+
+  tableEvalStepT: TotalFunction = ifZeroT(stepBudgetT,zeroT,ifZeroT(tagIsT(0),ifZeroT(tagIsT(1),ifZeroT(tagIsT(2),ifZeroT(tagIsT(3),ifZeroT(tagIsT(4),ifZeroT(tagIsT(5),ifZeroT(tagIsT(6),rfindBranchT,compBranchT),precBranchT),pairBranchT),compT(succT,inputArgT)),compT(succT,rowArgT)),compT(succT,compT(succT,rightT))),constT(1)))
+
+  pr_tableEvalStep: THEOREM NatPrimrec(tableEvalStepT)
+
+  tableEvalStep_tag0: LEMMA prefixBudget(l)>0 AND codeTagT(prefixProgram(l))=0 IMPLIES tableEvalStepT(natPair(l,n))=1
+
+  tableEvalStep_tag1: LEMMA prefixBudget(l)>0 AND codeTagT(prefixProgram(l))=1 IMPLIES tableEvalStepT(natPair(l,n))=n+2
+
+  tableEvalStep_tag2: LEMMA prefixBudget(l)>0 AND codeTagT(prefixProgram(l))=2 IMPLIES tableEvalStepT(natPair(l,n))=leftT(n)+1
+
+  tableEvalStep_tag3: LEMMA prefixBudget(l)>0 AND codeTagT(prefixProgram(l))=3 IMPLIES tableEvalStepT(natPair(l,n))=rightT(n)+1
+
+  tableEvalStep_tag4: LEMMA prefixBudget(l)>0 AND codeTagT(prefixProgram(l))=4 IMPLIES tableEvalStepT(natPair(l,n))=pairBranchT(natPair(l,n))
+
+  tableEvalStep_tag5: LEMMA prefixBudget(l)>0 AND codeTagT(prefixProgram(l))=5 IMPLIES tableEvalStepT(natPair(l,n))=precBranchT(natPair(l,n))
+
+  tableEvalStep_tag6: LEMMA prefixBudget(l)>0 AND codeTagT(prefixProgram(l))=6 IMPLIES tableEvalStepT(natPair(l,n))=compBranchT(natPair(l,n))
+
+  tableEvalStep_tag7: LEMMA prefixBudget(l)>0 AND codeTagT(prefixProgram(l))=7 IMPLIES tableEvalStepT(natPair(l,n))=rfindBranchT(natPair(l,n))
+
+  tableEvalStep_zero: LEMMA prefixBudget(l)=0 IMPLIES tableEvalStepT(natPair(l,n))=0
+
+  tableEvalRowCode(l:nat): nat = tabulateCode(tableEvalStepT,l,prefixBudget(l))
+
+  tableEvalRowT: TotalFunction = compT(tabulateCodeT(tableEvalStepT),pairT(idT,compT(leftT,lengthCode)))
+
+  pr_tableEvalRow: THEOREM NatPrimrec(tableEvalRowT)
+
+  tableEvalRowT_value: LEMMA tableEvalRowT(l)=tableEvalRowCode(l)
+
+  tableEvalRowCode_semantics: THEOREM tableEvalRowCode(l)=encodeNatList(mapNatList(tableEvalStepT,l,rangeNatList(prefixBudget(l))))
+
+  tableEvalRowCode_lookup: THEOREM lookupCode(tableEvalRowCode(l),i)=IF i<prefixBudget(l) THEN tableEvalStepT(natPair(l,i))+1 ELSE 0 ENDIF
+
+  tableEvalRowCode_length: THEOREM lengthCode(tableEvalRowCode(l))=prefixBudget(l)
+
+  tableEvalGSomeT: TotalFunction = compT(succT,compT(tableEvalRowT,rightT))
+
+  pr_tableEvalGSome: THEOREM NatPrimrec(tableEvalGSomeT)
+
+  tableEvalGSomeT_value: LEMMA tableEvalGSomeT(natPair(a,l))=tableEvalRowCode(l)+1
+
+  firstLookupT_value: LEMMA firstLookupT(natPair(l,n))=
+    tableLookup(l,prefixBudget(l),codeFirstT(prefixProgram(l)),n)
+
+  secondLookupT_value: LEMMA secondLookupT(natPair(l,n))=
+    tableLookup(l,prefixBudget(l),codeSecondT(prefixProgram(l)),n)
+
+  compNextT_value: LEMMA compNextT(natPair(l,n))=
+    tableLookup(l,prefixBudget(l),codeFirstT(prefixProgram(l)),predT(tableLookup(l,prefixBudget(l),codeSecondT(prefixProgram(l)),n)))
+
+  precInitialT_value: LEMMA precInitialT(natPair(l,n))=
+    tableLookup(l,prefixBudget(l),codeFirstT(prefixProgram(l)),leftT(n))
+
+  precPreviousT_value: LEMMA precPreviousT(natPair(l,n))=
+    tableLookup(l,predT(prefixBudget(l)),prefixProgram(l),natPair(leftT(n),predT(rightT(n))))
+
+  precNextT_value: LEMMA precNextT(natPair(l,n))=
+    tableLookup(l,prefixBudget(l),codeSecondT(prefixProgram(l)),natPair(leftT(n),natPair(predT(rightT(n)),predT(tableLookup(l,predT(prefixBudget(l)),prefixProgram(l),natPair(leftT(n),predT(rightT(n))))))))
+
+  rfindTestT_value: LEMMA rfindTestT(natPair(l,n))=
+    tableLookup(l,prefixBudget(l),codePayloadT(prefixProgram(l)),n)
+
+  rfindNextT_value: LEMMA rfindNextT(natPair(l,n))=
+    tableLookup(l,predT(prefixBudget(l)),prefixProgram(l),natPair(leftT(n),rightT(n)+1))
+
+  pairBranchT_value: LEMMA pairBranchT(natPair(l,n))=
+    LET x=tableLookup(l,prefixBudget(l),codeFirstT(prefixProgram(l)),n),y=tableLookup(l,prefixBudget(l),codeSecondT(prefixProgram(l)),n) IN
+    IF x=0 THEN 0 ELSIF y=0 THEN 0 ELSE natPair(predT(x),predT(y))+1 ENDIF
+
+  compBranchT_value: LEMMA compBranchT(natPair(l,n))=
+    LET y=tableLookup(l,prefixBudget(l),codeSecondT(prefixProgram(l)),n) IN
+    IF y=0 THEN 0 ELSE tableLookup(l,prefixBudget(l),codeFirstT(prefixProgram(l)),predT(y)) ENDIF
+
+  precBranchT_value: LEMMA precBranchT(natPair(l,n))=
+    LET z=leftT(n),m=rightT(n),v=tableLookup(l,predT(prefixBudget(l)),prefixProgram(l),natPair(leftT(n),predT(rightT(n)))) IN
+    IF m=0 THEN tableLookup(l,prefixBudget(l),codeFirstT(prefixProgram(l)),z) ELSIF v=0 THEN 0
+    ELSE tableLookup(l,prefixBudget(l),codeSecondT(prefixProgram(l)),natPair(z,natPair(predT(m),predT(v)))) ENDIF
+
+  rfindBranchT_value: LEMMA rfindBranchT(natPair(l,n))=
+    LET z=leftT(n),m=rightT(n),v=tableLookup(l,prefixBudget(l),codePayloadT(prefixProgram(l)),n) IN
+    IF v=0 THEN 0 ELSIF predT(v)=0 THEN m+1
+    ELSE tableLookup(l,predT(prefixBudget(l)),prefixProgram(l),natPair(z,m+1)) ENDIF
+
+END ppg_nat_primrec_evaln_table_g

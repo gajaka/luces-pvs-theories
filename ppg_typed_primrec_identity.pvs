@@ -1,0 +1,18 @@
+% Identity maps have exactly the normalization required by Primcodable.
+% The carrier may be empty; no representative or default value is chosen.
+% Mario Carneiro, Mathlib Computability.Primrec.Basic, Primrec.id.
+ppg_typed_primrec_identity [T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_typed_primrec_map[T,T]
+
+  E: VAR ppg_primcodable_core[T].Codec
+
+  identity: [T -> T] = LAMBDA(x:T): x
+
+  normalized_identity: LEMMA
+    normalizedMap(E,E,identity)=ppg_primcodable_core[T].normalization(E)
+
+  typedPrimrec_identity: THEOREM ppg_primcodable_core[T].PrimcodableLaw(E) IMPLIES
+    TypedPrimrec(E,E,identity)
+
+END ppg_typed_primrec_identity

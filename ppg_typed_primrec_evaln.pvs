@@ -1,0 +1,64 @@
+% Mathlib primrec_evaln has input ((Nat x Code) x Nat), in that order.
+% The bounded evaluator and its entire finite-table construction are reused
+% unchanged. The final extra successor encodes the outer optional map.
+% Mario Carneiro, Mathlib Computability.PartrecCode, primrec_evaln.
+ppg_typed_primrec_evaln: THEORY
+BEGIN
+  IMPORTING ppg_nat_primrec_bounded_evaluator,ppg_primcodable_partrec_code,
+    ppg_primcodable_nat,ppg_primcodable_option[nat],
+    ppg_primcodable_product[nat,ppg_partrec_code],
+    ppg_primcodable_product[[nat,ppg_partrec_code],nat],
+    ppg_typed_primrec_map[[[nat,ppg_partrec_code],nat],lift[nat]]
+
+  EvalnInput: TYPE = [[nat,ppg_partrec_code],nat]
+
+  a: VAR EvalnInput
+
+  k,n,q: VAR nat
+
+  c: VAR ppg_partrec_code
+
+  o: VAR lift[nat]
+
+  budgetCodeCodec: ppg_primcodable_core[[nat,ppg_partrec_code]].Codec =
+    ppg_primcodable_product[nat,ppg_partrec_code].productCodec(natCodec,codeCodec)
+
+  evalnInputCodec: ppg_primcodable_core[EvalnInput].Codec =
+    ppg_primcodable_product[[nat,ppg_partrec_code],nat].productCodec(budgetCodeCodec,natCodec)
+
+  evalnOutputCodec: ppg_primcodable_core[lift[nat]].Codec =
+    ppg_primcodable_option[nat].optionCodec(natCodec)
+
+  typedEvaln(a): lift[nat] = evaln(a`1`1,a`1`2,a`2)
+
+  budget_code_primcodable: LEMMA
+    ppg_primcodable_core[[nat,ppg_partrec_code]].PrimcodableLaw(budgetCodeCodec)
+
+  evaln_input_primcodable: THEOREM
+    ppg_primcodable_core[EvalnInput].PrimcodableLaw(evalnInputCodec)
+
+  evaln_output_primcodable: THEOREM
+    ppg_primcodable_core[lift[nat]].PrimcodableLaw(evalnOutputCodec)
+
+  evaln_input_encode: LEMMA evalnInputCodec`encode(((k,c),n))=
+    natPair(natPair(k,encodeCode(c)),n)
+
+  evaln_input_decode: LEMMA evalnInputCodec`decode(q)=
+    up[EvalnInput](((leftT(leftT(q)),ofNatCode(rightT(leftT(q)))),rightT(q)))
+
+  evaln_output_encode: LEMMA evalnOutputCodec`encode(o)=encodeLiftNat(o)
+
+  evaln_output_decode: LEMMA evalnOutputCodec`decode(q)=
+    up[lift[nat]](decodeLiftNat(q))
+
+  typed_evaln_on_input: LEMMA typedEvaln(((k,c),n))=evaln(k,c,n)
+
+  typed_evaln_normalized_value: LEMMA
+    normalizedMap(evalnInputCodec,evalnOutputCodec,typedEvaln)(q)=actualElementT(q)+1
+
+  typed_evaln_normalization: LEMMA
+    normalizedMap(evalnInputCodec,evalnOutputCodec,typedEvaln)=compT(succT,actualElementT)
+
+  typed_primrec_evaln: THEOREM TypedPrimrec(evalnInputCodec,evalnOutputCodec,typedEvaln)
+
+END ppg_typed_primrec_evaln

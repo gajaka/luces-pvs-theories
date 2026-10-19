@@ -1,0 +1,166 @@
+(|ppg_primcodable_core|
+ (|codec_decode_encode| 0
+  (|codec_decode_encode-1| NIL 4001420756
+   ("" (THEN (SKOSIMP*) (EXPAND "CodecLaw") (INST -1 "x!1") (ASSERT)) NIL)
+   ((T FORMAL-TYPE-DECL NIL |ppg_primcodable_core| NIL)
+    (|CodecLaw| CONST-DECL "bool" |ppg_primcodable_core| NIL))
+   SHOSTAK))
+ (|upT_injective| 0
+  (|upT_injective-1| NIL 4001420818
+   ("" (SKOSIMP*)
+    (("" (CASE "down[T](up[T](x!1))=down[T](up[T](y!1))")
+      (("1" (GRIND :REWRITES ("lift_down_up") :IF-MATCH NIL) NIL NIL)
+       ("2" (REPLACE -1 :DIR LR) (("2" (PROPAX) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   ((T FORMAL-TYPE-DECL NIL |ppg_primcodable_core| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|lift| TYPE-DECL NIL |lift_adt| NIL)
+    (|up?| ADT-RECOGNIZER-DECL "[lift -> boolean]" |lift_adt| NIL)
+    (|down| ADT-ACCESSOR-DECL "[(up?) -> T]" |lift_adt| NIL)
+    (|up| ADT-CONSTRUCTOR-DECL "[T -> (up?)]" |lift_adt| NIL))
+   SHOSTAK))
+ (|codec_encode_injective| 0
+  (|codec_encode_injective-1| NIL 4001420756
+   (""
+    (THEN (SKOSIMP*) (USE "codec_decode_encode" ("E" "E!1" "x" "x!1"))
+     (USE "codec_decode_encode" ("E" "E!1" "x" "y!1"))
+     (USE "upT_injective" ("x" "x!1" "y" "y!1")) (GROUND))
+    NIL)
+   ((|upT_injective| FORMULA-DECL NIL |ppg_primcodable_core| NIL)
+    (|Codec| TYPE-EQ-DECL NIL |ppg_primcodable_core| NIL)
+    (|lift| TYPE-DECL NIL |lift_adt| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_primcodable_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|codec_decode_encode| FORMULA-DECL NIL |ppg_primcodable_core| NIL))
+   SHOSTAK))
+ (|encodeOption_bottom| 0
+  (|encodeOption_bottom-1| NIL 4001420756
+   ("" (THEN (GRIND :DEFS ("encodeOption"))) NIL)
+   ((|encodeOption| CONST-DECL "nat" |ppg_primcodable_core| NIL)) SHOSTAK))
+ (|encodeOption_up| 0
+  (|encodeOption_up-1| NIL 4001420756
+   ("" (THEN (GRIND :DEFS ("encodeOption"))) NIL)
+   ((|encodeOption| CONST-DECL "nat" |ppg_primcodable_core| NIL)) SHOSTAK))
+ (|normalization_at_code| 0
+  (|normalization_at_code-1| NIL 4001420756
+   (""
+    (THEN (AUTO-REWRITE "encodeOption_up") (SKOSIMP*)
+     (USE "codec_decode_encode" ("E" "E!1" "x" "x!1")) (EXPAND "normalization")
+     (ASSERT) (REPLACE -1) (ASSERT))
+    NIL)
+   ((|codec_decode_encode| FORMULA-DECL NIL |ppg_primcodable_core| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_primcodable_core| NIL)
+    (|lift| TYPE-DECL NIL |lift_adt| NIL)
+    (|Codec| TYPE-EQ-DECL NIL |ppg_primcodable_core| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|encodeOption_up| FORMULA-DECL NIL |ppg_primcodable_core| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|normalization| CONST-DECL "TotalFunction" |ppg_primcodable_core| NIL))
+   SHOSTAK))
+ (|normalization_none| 0
+  (|normalization_none-1| NIL 4001420756
+   (""
+    (THEN (AUTO-REWRITE "encodeOption_bottom") (SKOSIMP*)
+     (EXPAND "normalization") (REPLACE -1) (ASSERT))
+    NIL)
+   ((|normalization| CONST-DECL "TotalFunction" |ppg_primcodable_core| NIL)
+    (|encodeOption_bottom| FORMULA-DECL NIL |ppg_primcodable_core| NIL))
+   SHOSTAK))
+ (|normalization_some| 0
+  (|normalization_some-1| NIL 4001420756
+   (""
+    (THEN (AUTO-REWRITE "encodeOption_up") (SKOSIMP*) (EXPAND "normalization")
+     (REPLACE -1) (ASSERT))
+    NIL)
+   ((|normalization| CONST-DECL "TotalFunction" |ppg_primcodable_core| NIL)
+    (|encodeOption_up| FORMULA-DECL NIL |ppg_primcodable_core| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK))
+ (|normalization_zero_iff| 0
+  (|normalization_zero_iff-1| NIL 4001420756
+   (""
+    (THEN (SKOSIMP*) (EXPAND "normalization") (EXPAND "encodeOption")
+     (GRIND :IF-MATCH NIL :DEFS NIL))
+    NIL)
+   ((|encodeOption| CONST-DECL "nat" |ppg_primcodable_core| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|normalization| CONST-DECL "TotalFunction" |ppg_primcodable_core| NIL))
+   SHOSTAK))
+ (|normalization_positive_iff| 0
+  (|normalization_positive_iff-1| NIL 4001420756
+   (""
+    (THEN (SKOSIMP*) (EXPAND "normalization") (EXPAND "encodeOption")
+     (GRIND :IF-MATCH NIL :DEFS NIL))
+    NIL)
+   ((|encodeOption| CONST-DECL "nat" |ppg_primcodable_core| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|normalization| CONST-DECL "TotalFunction" |ppg_primcodable_core| NIL))
+   SHOSTAK))
+ (|normalization_payload| 0
+  (|normalization_payload-1| NIL 4001420756
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "E!1`encode(down[T](E!1`decode(n!1)))")
+     (EXPAND "normalization") (EXPAND "encodeOption") (EXPAND "predT")
+     (GRIND :IF-MATCH NIL :DEFS NIL))
+    NIL)
+   ((|normalization| CONST-DECL "TotalFunction" |ppg_primcodable_core| NIL)
+    (|predT| CONST-DECL "TotalFunction" |ppg_nat_primrec_arithmetic| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|encodeOption| CONST-DECL "nat" |ppg_primcodable_core| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_primcodable_core| NIL)
+    (|lift| TYPE-DECL NIL |lift_adt| NIL)
+    (|Codec| TYPE-EQ-DECL NIL |ppg_primcodable_core| NIL)
+    (|up?| ADT-RECOGNIZER-DECL "[lift -> boolean]" |lift_adt| NIL)
+    (|down| ADT-ACCESSOR-DECL "[(up?) -> T]" |lift_adt| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL))
+   SHOSTAK))
+ (|primcodable_codec_law| 0
+  (|primcodable_codec_law-1| NIL 4001420756
+   ("" (THEN (GRIND :DEFS ("PrimcodableLaw"))) NIL)
+   ((|CodecLaw| CONST-DECL "bool" |ppg_primcodable_core| NIL)
+    (|PRClosed| CONST-DECL "bool" |ppg_nat_primrec_closed| NIL)
+    (|NatPrimrec| CONST-DECL "bool" |ppg_nat_primrec_closed| NIL)
+    (|PrimcodableLaw| CONST-DECL "bool" |ppg_primcodable_core| NIL))
+   SHOSTAK))
+ (|primcodable_normalization| 0
+  (|primcodable_normalization-1| NIL 4001420756
+   ("" (THEN (GRIND :DEFS ("PrimcodableLaw"))) NIL)
+   ((|CodecLaw| CONST-DECL "bool" |ppg_primcodable_core| NIL)
+    (|PRClosed| CONST-DECL "bool" |ppg_nat_primrec_closed| NIL)
+    (|NatPrimrec| CONST-DECL "bool" |ppg_nat_primrec_closed| NIL)
+    (|PrimcodableLaw| CONST-DECL "bool" |ppg_primcodable_core| NIL))
+   SHOSTAK)))
+

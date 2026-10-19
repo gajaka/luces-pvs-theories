@@ -1,0 +1,361 @@
+(|ppg_evaln_actual_table_prefix|
+ (|actualElementT_numeric| 0
+  (|actualElementT_numeric-1| NIL 4001419669
+   (""
+    (THEN (AUTO-REWRITE "unpair_pair") (SKOSIMP*) (EXPAND "actualElementT")
+     (EXPAND "leftT") (EXPAND "rightT") (ASSERT))
+    NIL)
+   ((|actualElementT| CONST-DECL "TotalFunction"
+     |ppg_evaln_actual_table_prefix| NIL)
+    (|rightT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|unpair_pair| FORMULA-DECL NIL |ppg_nat_square_pairing| NIL)
+    (|leftT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL))
+   SHOSTAK))
+ (|actualElementT_code| 0
+  (|actualElementT_code-1| NIL 4001419669
+   (""
+    (THEN
+     (AUTO-REWRITE "actualElementT_numeric" "unpair_pair" "ofNatCode_encode")
+     (SKOSIMP*) (EXPAND "leftT") (EXPAND "rightT") (ASSERT) (EXPAND "leftT")
+     (EXPAND "rightT") (ASSERT))
+    NIL)
+   ((|actualElementT_numeric| FORMULA-DECL NIL |ppg_evaln_actual_table_prefix|
+     NIL)
+    (|rightT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|ofNatCode_encode| FORMULA-DECL NIL |ppg_partrec_code_encoding| NIL)
+    (|unpair_pair| FORMULA-DECL NIL |ppg_nat_square_pairing| NIL)
+    (|leftT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL))
+   SHOSTAK))
+ (|actualRowFamily_value| 0
+  (|actualRowFamily_value-1| NIL 4001419669
+   (""
+    (THEN (AUTO-REWRITE "unpair_pair") (SKOSIMP*) (EXPAND "actualRowFamily")
+     (EXPAND "rightT") (ASSERT))
+    NIL)
+   ((|actualRowFamily| CONST-DECL "TotalFunction"
+     |ppg_evaln_actual_table_prefix| NIL)
+    (|unpair_pair| FORMULA-DECL NIL |ppg_nat_square_pairing| NIL)
+    (|rightT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL))
+   SHOSTAK))
+ (|actualRowCode_semantics| 0
+  (|actualRowCode_semantics-1| NIL 4001419669
+   (""
+    (THEN (AUTO-REWRITE "tabulateCode_semantics") (SKOSIMP*)
+     (EXPAND "actualRowCode") (ASSERT))
+    NIL)
+   ((|actualRowCode| CONST-DECL "nat" |ppg_evaln_actual_table_prefix| NIL)
+    (|tabulateCode_semantics| FORMULA-DECL NIL
+     |ppg_nat_primrec_list_tabulation| NIL))
+   SHOSTAK))
+ (|actualRowCode_length| 0
+  (|actualRowCode_length-1| NIL 4001419669
+   (""
+    (THEN (AUTO-REWRITE "lengthCode_tabulate") (SKOSIMP*)
+     (EXPAND "actualRowCode") (ASSERT))
+    NIL)
+   ((|actualRowCode| CONST-DECL "nat" |ppg_evaln_actual_table_prefix| NIL)
+    (|lengthCode_tabulate| FORMULA-DECL NIL |ppg_nat_primrec_table_lookup|
+     NIL))
+   SHOSTAK))
+ (|actualPrefix_length| 0
+  (|actualPrefix_length-1| NIL 4001419669
+   (""
+    (THEN (AUTO-REWRITE "lengthCode_tabulate") (SKOSIMP*)
+     (EXPAND "actualPrefix") (ASSERT))
+    NIL)
+   ((|actualPrefix| CONST-DECL "nat" |ppg_evaln_actual_table_prefix| NIL)
+    (|lengthCode_tabulate| FORMULA-DECL NIL |ppg_nat_primrec_table_lookup|
+     NIL))
+   SHOSTAK))
+ (|actualPrefix_budget| 0
+  (|actualPrefix_budget-1| NIL 4001419669
+   (""
+    (THEN (AUTO-REWRITE "actualPrefix_length") (SKOSIMP*)
+     (EXPAND "prefixBudget") (ASSERT))
+    NIL)
+   ((|prefixBudget| CONST-DECL "nat" |ppg_nat_primrec_evaln_table_g| NIL)
+    (|actualPrefix_length| FORMULA-DECL NIL |ppg_evaln_actual_table_prefix|
+     NIL))
+   SHOSTAK))
+ (|actualPrefix_program| 0
+  (|actualPrefix_program-1| NIL 4001419669
+   (""
+    (THEN (AUTO-REWRITE "actualPrefix_length") (SKOSIMP*)
+     (EXPAND "prefixProgram") (ASSERT))
+    NIL)
+   ((|prefixProgram| CONST-DECL "nat" |ppg_nat_primrec_evaln_table_g| NIL)
+    (|actualPrefix_length| FORMULA-DECL NIL |ppg_evaln_actual_table_prefix|
+     NIL))
+   SHOSTAK))
+ (|actualPrefix_semantics| 0
+  (|actualPrefix_semantics-1| NIL 4001419669
+   (""
+    (THEN (AUTO-REWRITE "tabulateCode_semantics") (SKOSIMP*)
+     (EXPAND "actualPrefix") (ASSERT))
+    NIL)
+   ((|actualPrefix| CONST-DECL "nat" |ppg_evaln_actual_table_prefix| NIL)
+    (|tabulateCode_semantics| FORMULA-DECL NIL
+     |ppg_nat_primrec_list_tabulation| NIL))
+   SHOSTAK))
+ (|actualPrefix_lookup_numeric| 0
+  (|actualPrefix_lookup_numeric-1| NIL 4001419669
+   (""
+    (THEN
+     (AUTO-REWRITE "actualRowFamily_value" "actualElementT_numeric"
+                   "unpair_pair" "encodeLiftNat_bottom")
+     (SKOSIMP*)
+     (USE "nestedLookup_two_tabulations"
+          ("f" "actualRowFamily" "a" "a!1" "n" "i!1" "r" "natPair(k!1,c!1)" "i"
+           "n!1" "h" "actualElementT" "b" "natPair(k!1,c!1)" "k" "k!1"))
+     (USE "evaln_outside_bound" ("k" "k!1" "c" "ofNatCode(c!1)" "n" "n!1"))
+     (EXPAND "actualRowCode") (EXPAND "actualPrefix") (EXPAND "tableLookup")
+     (EXPAND "leftT") (EXPAND "rightT") (ASSERT) (EXPAND "actualRowCode")
+     (EXPAND "leftT") (EXPAND "rightT") (ASSERT) (GROUND) (REPLACE -1)
+     (ASSERT))
+    NIL)
+   ((|nestedLookup_two_tabulations| FORMULA-DECL NIL
+     |ppg_nat_primrec_table_lookup| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|natPair| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|actualRowFamily| CONST-DECL "TotalFunction"
+     |ppg_evaln_actual_table_prefix| NIL)
+    (|actualElementT| CONST-DECL "TotalFunction"
+     |ppg_evaln_actual_table_prefix| NIL)
+    (|actualPrefix| CONST-DECL "nat" |ppg_evaln_actual_table_prefix| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|actualElementT_numeric| FORMULA-DECL NIL |ppg_evaln_actual_table_prefix|
+     NIL)
+    (|actualRowFamily_value| FORMULA-DECL NIL |ppg_evaln_actual_table_prefix|
+     NIL)
+    (|leftT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|unpair_pair| FORMULA-DECL NIL |ppg_nat_square_pairing| NIL)
+    (|encodeLiftNat_bottom| FORMULA-DECL NIL |ppg_lift_nat_option_codec| NIL)
+    (|rightT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|actualRowCode| CONST-DECL "nat" |ppg_evaln_actual_table_prefix| NIL)
+    (|tableLookup| CONST-DECL "nat" |ppg_nat_primrec_evaln_table_g| NIL)
+    (|evaln_outside_bound| FORMULA-DECL NIL |ppg_partrec_evaln| NIL)
+    (|ppg_partrec_code| TYPE-DECL NIL |ppg_partrec_code_adt| NIL)
+    (|ofNatCode| DEF-DECL "ppg_partrec_code" |ppg_partrec_code_encoding| NIL))
+   SHOSTAK))
+ (|actualPrefix_lookup_code| 0
+  (|actualPrefix_lookup_code-1| NIL 4001419669
+   (""
+    (THEN (AUTO-REWRITE "ofNatCode_encode") (SKOSIMP*)
+     (USE "actualPrefix_lookup_numeric"
+          ("a" "a!1" "i" "i!1" "k" "k!1" "c" "encodeCode(f!1)" "n" "n!1"))
+     (ASSERT))
+    NIL)
+   ((|actualPrefix_lookup_numeric| FORMULA-DECL NIL
+     |ppg_evaln_actual_table_prefix| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|ppg_partrec_code| TYPE-DECL NIL |ppg_partrec_code_adt| NIL)
+    (|encodeCode| DEF-DECL "nat" |ppg_partrec_code_encoding| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|ofNatCode_encode| FORMULA-DECL NIL |ppg_partrec_code_encoding| NIL))
+   SHOSTAK))
+ (|actualRowCode_typed| 0
+  (|actualRowCode_typed-1| NIL 4001419669
+   (""
+    (THEN (AUTO-REWRITE "tabulateCode_semantics" "unpair_pair") (SKOSIMP*)
+     (EXPAND "actualRowCode") (ASSERT) (EXPAND "encodeOptionRow")
+     (EXPAND "actualTypedRow") (EXPAND "mapNatList")
+     (USE "map_list_composition[nat,LiftNat,nat]"
+          ("f1" "LAMBDA(n:nat): evaln(leftT(i!1),ofNatCode(rightT(i!1)),n)"
+           "f2" "encodeLiftNat" "l" "rangeNatList(leftT(i!1))"))
+     (REPLACE -1) (EXPAND "mapNatList") (EXPAND "actualElementT")
+     (EXPAND "leftT") (EXPAND "rightT") (EXPAND "o") (ASSERT))
+    NIL)
+   ((|actualRowCode| CONST-DECL "nat" |ppg_evaln_actual_table_prefix| NIL)
+    (|encodeOptionRow| CONST-DECL "nat" |ppg_evaln_actual_table_prefix| NIL)
+    (|mapNatList| CONST-DECL "NatList" |ppg_nat_primrec_list_tabulation| NIL)
+    (O CONST-DECL "T3" |function_props| NIL)
+    (|unpair_pair| FORMULA-DECL NIL |ppg_nat_square_pairing| NIL)
+    (|actualElementT| CONST-DECL "TotalFunction"
+     |ppg_evaln_actual_table_prefix| NIL)
+    (|LiftNat| TYPE-EQ-DECL NIL |ppg_lift_nat_option_codec| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|every| ADT-DEF-DECL "boolean" |lift_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|lift| TYPE-DECL NIL |lift_adt| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|rangeNatList| DEF-DECL "NatList" |ppg_nat_primrec_list_tabulation| NIL)
+    (|NatList| TYPE-EQ-DECL NIL |ppg_nat_list_square_codec| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|encodeLiftNat| CONST-DECL "nat" |ppg_lift_nat_option_codec| NIL)
+    (|rightT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|ofNatCode| DEF-DECL "ppg_partrec_code" |ppg_partrec_code_encoding| NIL)
+    (|leftT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|evaln| DEF-DECL "OptionNat" |ppg_partrec_evaln| NIL)
+    (|OptionNat| TYPE-EQ-DECL NIL |ppg_partrec_evaln| NIL)
+    (|ppg_partrec_code| TYPE-DECL NIL |ppg_partrec_code_adt| NIL)
+    (|map_list_composition| FORMULA-DECL NIL |map_props| NIL)
+    (|actualTypedRow| CONST-DECL "OptionRow" |ppg_evaln_actual_table_prefix|
+     NIL)
+    (|tabulateCode_semantics| FORMULA-DECL NIL
+     |ppg_nat_primrec_list_tabulation| NIL))
+   SHOSTAK))
+ (|actualPrefix_typed| 0
+  (|actualPrefix_typed-1| NIL 4001419669
+   (""
+    (THEN
+     (AUTO-REWRITE "tabulateCode_semantics" "unpair_pair"
+                   "actualRowFamily_value" "actualRowCode_typed")
+     (SKOSIMP*) (EXPAND "actualPrefix") (ASSERT) (EXPAND "encodeOptionTable")
+     (EXPAND "actualTypedPrefix") (EXPAND "mapNatList")
+     (USE "map_list_composition[nat,OptionRow,nat]"
+          ("f1" "actualTypedRow" "f2" "encodeOptionRow" "l"
+           "rangeNatList(i!1)"))
+     (REPLACE -1) (EXPAND "mapNatList") (EXPAND "actualRowFamily")
+     (EXPAND "rightT") (EXPAND "o") (ASSERT))
+    NIL)
+   ((|actualPrefix| CONST-DECL "nat" |ppg_evaln_actual_table_prefix| NIL)
+    (|encodeOptionTable| CONST-DECL "nat" |ppg_evaln_actual_table_prefix| NIL)
+    (|mapNatList| CONST-DECL "NatList" |ppg_nat_primrec_list_tabulation| NIL)
+    (|rightT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|actualRowCode_typed| FORMULA-DECL NIL |ppg_evaln_actual_table_prefix|
+     NIL)
+    (|unpair_pair| FORMULA-DECL NIL |ppg_nat_square_pairing| NIL)
+    (O CONST-DECL "T3" |function_props| NIL)
+    (|actualRowFamily| CONST-DECL "TotalFunction"
+     |ppg_evaln_actual_table_prefix| NIL)
+    (|OptionRow| TYPE-EQ-DECL NIL |ppg_evaln_actual_table_prefix| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|every| ADT-DEF-DECL "boolean" |lift_adt| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL) (|lift| TYPE-DECL NIL |lift_adt| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|rangeNatList| DEF-DECL "NatList" |ppg_nat_primrec_list_tabulation| NIL)
+    (|NatList| TYPE-EQ-DECL NIL |ppg_nat_list_square_codec| NIL)
+    (|encodeOptionRow| CONST-DECL "nat" |ppg_evaln_actual_table_prefix| NIL)
+    (|actualTypedRow| CONST-DECL "OptionRow" |ppg_evaln_actual_table_prefix|
+     NIL)
+    (|map_list_composition| FORMULA-DECL NIL |map_props| NIL)
+    (|actualTypedPrefix| CONST-DECL "OptionTable"
+     |ppg_evaln_actual_table_prefix| NIL)
+    (|tabulateCode_semantics| FORMULA-DECL NIL
+     |ppg_nat_primrec_list_tabulation| NIL))
+   SHOSTAK))
+ (|tabulateCode_congr| 0
+  (|tabulateCode_congr-1| NIL 4001419669
+   ("" (AUTO-REWRITE "tabulateCode_zero")
+    (("" (INDUCT "n")
+      (("1" (GRIND :IF-MATCH NIL :EXCLUDE ("tabulateCode")) NIL NIL)
+       ("2" (SKOSIMP*)
+        (("2" (LABEL "UPPER" -2)
+          (("2" (INST -1 "a!1" "h!1" "i!1" "q!1")
+            (("2" (INST-CP "UPPER" "j!1")
+              (("2"
+                (CASE
+                    "FORALL(z:nat): z<j!1 IMPLIES h!1(natPair(a!1,z))=q!1(natPair(i!1,z))")
+                (("1" (ASSERT)
+                  (("1"
+                    (USE "tabulateCode_succ" ("f" "h!1" "a" "a!1" "n" "j!1"))
+                    (("1" (REPLACE -1)
+                      (("1"
+                        (USE "tabulateCode_succ"
+                             ("f" "q!1" "a" "i!1" "n" "j!1"))
+                        (("1" (REPLACE -1) (("1" (GROUND) NIL NIL)) NIL)) NIL))
+                      NIL))
+                    NIL))
+                  NIL)
+                 ("2" (SKOSIMP*)
+                  (("2" (INST "UPPER" "z!1") (("2" (ASSERT) NIL NIL)) NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|tabulateCode_succ| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|tabulateCode_zero| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|nat_induction| FORMULA-DECL NIL |naturalnumbers| NIL)
+    (|tabulateCode| CONST-DECL "nat" |ppg_nat_primrec_list_tabulation| NIL)
+    (|natPair| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK)))
+

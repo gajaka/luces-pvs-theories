@@ -1,0 +1,79 @@
+% Mario Carneiro, Mathlib Computability.Primrec.Basic, Nat.Primrec.
+% Division by four counts with a quotient/remainder state. Each carry occurs
+% precisely when the previous remainder is three.
+ppg_nat_primrec_division4: THEORY
+BEGIN
+  IMPORTING ppg_nat_primrec_arithmetic
+
+  a,k,q,r,n: VAR nat
+
+  previous4T: TotalFunction = compT(rightT,rightT)
+
+  quotientState4T: TotalFunction = compT(leftT,previous4T)
+
+  remainderState4T: TotalFunction = compT(rightT,previous4T)
+
+  pr_previous4: LEMMA NatPrimrec(previous4T)
+
+  pr_quotientState4: LEMMA NatPrimrec(quotientState4T)
+
+  pr_remainderState4: LEMMA NatPrimrec(remainderState4T)
+
+  divisionStep4T: TotalFunction = ifZeroT(compT(eqT,pairT(remainderState4T,constT(3))),
+    pairT(quotientState4T,compT(succT,remainderState4T)),
+    pairT(compT(succT,quotientState4T),zeroT))
+
+  pr_divisionStep4: THEOREM NatPrimrec(divisionStep4T)
+
+  divisionStep4_value: LEMMA divisionStep4T(natPair(a,natPair(k,natPair(q,r))))=
+    IF r=3 THEN natPair(q+1,0) ELSE natPair(q,r+1) ENDIF
+
+  divisionState4(n): nat = natRecT(zeroT,divisionStep4T,0,n)
+
+  divisionState4T: TotalFunction = compT(precT(zeroT,divisionStep4T),pairT(zeroT,idT))
+
+  divisionState4T_value: LEMMA divisionState4T(n)=divisionState4(n)
+
+  pr_divisionState4: THEOREM NatPrimrec(divisionState4T)
+
+  divisionState4_zero: LEMMA divisionState4(0)=0
+
+  divisionState4_succ: LEMMA divisionState4(n+1)=
+    IF rightT(divisionState4(n))=3 THEN natPair(leftT(divisionState4(n))+1,0)
+    ELSE natPair(leftT(divisionState4(n)),rightT(divisionState4(n))+1) ENDIF
+
+  quotient4: TotalFunction = compT(leftT,divisionState4T)
+
+  remainder4: TotalFunction = compT(rightT,divisionState4T)
+
+  quotient4_value: LEMMA quotient4(n)=leftT(divisionState4(n))
+
+  remainder4_value: LEMMA remainder4(n)=rightT(divisionState4(n))
+
+  pr_quotient4: THEOREM NatPrimrec(quotient4)
+
+  pr_remainder4: THEOREM NatPrimrec(remainder4)
+
+  division4_zero: LEMMA quotient4(0)=0 AND remainder4(0)=0
+
+  quotient4_succ: LEMMA quotient4(n+1)=IF remainder4(n)=3 THEN quotient4(n)+1 ELSE quotient4(n) ENDIF
+
+  remainder4_succ: LEMMA remainder4(n+1)=IF remainder4(n)=3 THEN 0 ELSE remainder4(n)+1 ENDIF
+
+  division4_invariant: THEOREM 4*quotient4(n)+remainder4(n)=n AND remainder4(n)<4
+
+  quotient4_floor: THEOREM quotient4(n)=floor(n/4)
+
+  remainder4_mod: THEOREM remainder4(n)=mod(n,4)
+
+  quotient4_ndiv: THEOREM quotient4(n)=ndiv(n,4)
+
+  remainder4_rem: THEOREM remainder4(n)=rem(4)(n)
+
+  division4_unique: THEOREM r<4 IMPLIES quotient4(4*q+r)=q AND remainder4(4*q+r)=r
+
+  quotient4_le: THEOREM quotient4(n)<=n
+
+  quotient4_strict: THEOREM n>0 IMPLIES quotient4(n)<n
+
+END ppg_nat_primrec_division4

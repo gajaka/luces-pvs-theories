@@ -1,0 +1,57 @@
+% The natural-number option encoding used by Mathlib Encodable.option.
+% None has code0 and Some(n) has code n+1. The carrier is the actual
+% installed PVS lift[nat] datatype, not an assumed optional-value oracle.
+% Mario Carneiro, Mathlib Logic.Encodable.Basic and Computability.Primrec.Basic.
+ppg_lift_nat_option_codec: THEORY
+BEGIN
+  IMPORTING ppg_nat_primrec_arithmetic
+
+  LiftNat: TYPE = lift[nat]
+
+  o,p: VAR LiftNat
+
+  h: VAR [nat -> LiftNat]
+
+  n: VAR nat
+
+  encodeLiftNat(o): nat = IF up?[nat](o) THEN down[nat](o)+1 ELSE 0 ENDIF
+
+  decodeLiftNat(n): LiftNat = IF n=0 THEN bottom[nat] ELSE up[nat](predT(n)) ENDIF
+
+  encodeLiftNat_bottom: LEMMA encodeLiftNat(bottom[nat])=0
+
+  encodeLiftNat_up: LEMMA encodeLiftNat(up[nat](n))=n+1
+
+  decodeLiftNat_zero: LEMMA decodeLiftNat(0)=bottom[nat]
+
+  decodeLiftNat_succ: LEMMA decodeLiftNat(n+1)=up[nat](n)
+
+  decode_encodeLiftNat: THEOREM decodeLiftNat(encodeLiftNat(o))=o
+
+  encode_decodeLiftNat: THEOREM encodeLiftNat(decodeLiftNat(n))=n
+
+  encodeLiftNat_zero_iff: LEMMA encodeLiftNat(o)=0 IFF o=bottom[nat]
+
+  encodeLiftNat_some_iff: LEMMA encodeLiftNat(o)=n+1 IFF o=up[nat](n)
+
+  encodeLiftNat_positive_iff: LEMMA encodeLiftNat(o)>0 IFF up?[nat](o)
+
+  pred_encodeLiftNat: LEMMA up?[nat](o) IMPLIES predT(encodeLiftNat(o))=down[nat](o)
+
+  encodeLiftNat_bind_expression: THEOREM
+    encodeLiftNat(IF up?[nat](o) THEN h(down[nat](o)) ELSE bottom[nat] ENDIF)=
+    IF encodeLiftNat(o)=0 THEN 0 ELSE encodeLiftNat(h(predT(encodeLiftNat(o)))) ENDIF
+
+  encodeLiftNat_pair_expression: THEOREM
+    encodeLiftNat(IF up?[nat](o) AND up?[nat](p)
+      THEN up[nat](natPair(down[nat](o),down[nat](p))) ELSE bottom[nat] ENDIF)=
+    IF encodeLiftNat(o)=0 OR encodeLiftNat(p)=0 THEN 0
+      ELSE natPair(predT(encodeLiftNat(o)),predT(encodeLiftNat(p)))+1 ENDIF
+
+  normalizeLiftNat: TotalFunction = LAMBDA(n:nat): encodeLiftNat(decodeLiftNat(n))+1
+
+  normalizeLiftNat_as_succ: LEMMA normalizeLiftNat=succT
+
+  pr_normalizeLiftNat: THEOREM NatPrimrec(normalizeLiftNat)
+
+END ppg_lift_nat_option_codec

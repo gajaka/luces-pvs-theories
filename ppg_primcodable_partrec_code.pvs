@@ -1,0 +1,17 @@
+% The actual eight-constructor Code numbering is a bijection with Nat.
+% Its Primcodable normalization is therefore successor, with no new code.
+% Mario Carneiro, Mathlib Computability.PartrecCode, Code.instDenumerable.
+ppg_primcodable_partrec_code: THEORY
+BEGIN
+  IMPORTING ppg_partrec_code_encoding,ppg_primcodable_core[ppg_partrec_code]
+
+  codeCodec: Codec = (# encode:=encodeCode,
+    decode:=LAMBDA(n:nat): up[ppg_partrec_code](ofNatCode(n)) #)
+
+  codeCodec_inverse: THEOREM CodecLaw(codeCodec)
+
+  code_normalization: LEMMA normalization(codeCodec)=succT
+
+  code_primcodable: THEOREM PrimcodableLaw(codeCodec)
+
+END ppg_primcodable_partrec_code

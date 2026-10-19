@@ -1,0 +1,59 @@
+% The Encodable and Primcodable contracts from Mathlib Primrec.Basic.
+% The carrier may be empty. Decoding need not reject every noncanonical
+% number; only decode(encode(x))=Some(x) is required by Encodable.
+% Primitive codability concerns the actual numeric normalization below.
+% Mario Carneiro, Mathlib Logic.Encodable.Basic and Computability.Primrec.Basic.
+ppg_primcodable_core [T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_nat_primrec_arithmetic
+
+  Codec: TYPE = [# encode:[T -> nat],decode:[nat -> lift[T]] #]
+
+  E: VAR Codec
+
+  x,y: VAR T
+
+  n: VAR nat
+
+  o: VAR lift[T]
+
+  CodecLaw(E): bool = FORALL(x:T): E`decode(E`encode(x))=up[T](x)
+
+  encodeOption(E,o): nat = IF up?[T](o) THEN E`encode(down[T](o))+1 ELSE 0 ENDIF
+
+  normalization(E): TotalFunction = LAMBDA(n:nat): encodeOption(E,E`decode(n))
+
+  PrimcodableLaw(E): bool = CodecLaw(E) AND NatPrimrec(normalization(E))
+
+  Primcodable: TYPE = (PrimcodableLaw)
+
+  codec_decode_encode: THEOREM CodecLaw(E) IMPLIES E`decode(E`encode(x))=up[T](x)
+
+  upT_injective: LEMMA up[T](x)=up[T](y) IMPLIES x=y
+
+  codec_encode_injective: THEOREM CodecLaw(E) AND E`encode(x)=E`encode(y) IMPLIES x=y
+
+  encodeOption_bottom: LEMMA encodeOption(E,bottom[T])=0
+
+  encodeOption_up: LEMMA encodeOption(E,up[T](x))=E`encode(x)+1
+
+  normalization_at_code: THEOREM CodecLaw(E) IMPLIES
+    normalization(E)(E`encode(x))=E`encode(x)+1
+
+  normalization_none: LEMMA E`decode(n)=bottom[T] IMPLIES normalization(E)(n)=0
+
+  normalization_some: LEMMA E`decode(n)=up[T](x) IMPLIES
+    normalization(E)(n)=E`encode(x)+1
+
+  normalization_zero_iff: THEOREM normalization(E)(n)=0 IFF E`decode(n)=bottom[T]
+
+  normalization_positive_iff: THEOREM normalization(E)(n)>0 IFF up?[T](E`decode(n))
+
+  normalization_payload: THEOREM up?[T](E`decode(n)) IMPLIES
+    predT(normalization(E)(n))=E`encode(down[T](E`decode(n)))
+
+  primcodable_codec_law: LEMMA PrimcodableLaw(E) IMPLIES CodecLaw(E)
+
+  primcodable_normalization: LEMMA PrimcodableLaw(E) IMPLIES NatPrimrec(normalization(E))
+
+END ppg_primcodable_core

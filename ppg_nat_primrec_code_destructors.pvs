@@ -1,0 +1,76 @@
+% Mario Carneiro, Mathlib Computability.PartrecCode, encodeCode/ofNatCode.
+% Non-base codes are 4*payload+tag+4. The four remainders distinguish pair,
+% primitive recursion, composition and minimization, in that order.
+ppg_nat_primrec_code_destructors: THEORY
+BEGIN
+  IMPORTING ppg_nat_primrec_division4
+
+  n,m,t,a,b: VAR nat
+
+  tagEncode(m,t): nat = 4*m+t+4
+
+  codeSub4T: TotalFunction = compT(subT,pairT(idT,constT(4)))
+
+  pr_codeSub4: LEMMA NatPrimrec(codeSub4T)
+
+  codeSub4_value: LEMMA codeSub4T(n)=natSub(n,4)
+
+  codeSub4_tag: LEMMA codeSub4T(tagEncode(m,t))=4*m+t
+
+  codePayloadT: TotalFunction = compT(quotient4,codeSub4T)
+
+  codeRemainderT: TotalFunction = compT(remainder4,codeSub4T)
+
+  pr_codePayload: THEOREM NatPrimrec(codePayloadT)
+
+  pr_codeRemainder: THEOREM NatPrimrec(codeRemainderT)
+
+  codePayload_value: LEMMA codePayloadT(n)=ndiv(natSub(n,4),4)
+
+  codeRemainder_value: LEMMA codeRemainderT(n)=rem(4)(natSub(n,4))
+
+  codeTagT: TotalFunction = ifZeroT(compT(ltT,pairT(idT,constT(4))),
+    compT(addT,pairT(constT(4),codeRemainderT)),idT)
+
+  pr_codeTag: THEOREM NatPrimrec(codeTagT)
+
+  codeTag_value: LEMMA codeTagT(n)=IF n<4 THEN n ELSE 4+codeRemainderT(n) ENDIF
+
+  codeTag_small: LEMMA n<4 IMPLIES codeTagT(n)=n
+
+  codePayload_tag: THEOREM t<4 IMPLIES codePayloadT(tagEncode(m,t))=m
+
+  codeRemainder_tag: THEOREM t<4 IMPLIES codeRemainderT(tagEncode(m,t))=t
+
+  codeTag_tag: THEOREM t<4 IMPLIES codeTagT(tagEncode(m,t))=t+4
+
+  codeFirstT: TotalFunction = compT(leftT,codePayloadT)
+
+  codeSecondT: TotalFunction = compT(rightT,codePayloadT)
+
+  pr_codeFirst: THEOREM NatPrimrec(codeFirstT)
+
+  pr_codeSecond: THEOREM NatPrimrec(codeSecondT)
+
+  codeFirst_tag: THEOREM t<4 IMPLIES codeFirstT(tagEncode(natPair(a,b),t))=a
+
+  codeSecond_tag: THEOREM t<4 IMPLIES codeSecondT(tagEncode(natPair(a,b),t))=b
+
+  code_component_bounds: LEMMA leftT(n)<=n AND rightT(n)<=n
+
+  codePayload_strict: THEOREM n>=4 IMPLIES codePayloadT(n)<n
+
+  code_children_strict: THEOREM n>=4 IMPLIES codeFirstT(n)<n AND codeSecondT(n)<n
+
+  code_payload_roundtrip: THEOREM n>=4 IMPLIES tagEncode(codePayloadT(n),codeRemainderT(n))=n
+
+  codeTag_bound: THEOREM codeTagT(n)<8
+
+  constructorCodeT(t): TotalFunction = compT(addT,
+    pairT(compT(mulT,pairT(constT(4),idT)),constT(t+4)))
+
+  pr_constructorCode: THEOREM NatPrimrec(constructorCodeT(t))
+
+  constructorCodeT_value: LEMMA constructorCodeT(t)(n)=tagEncode(n,t)
+
+END ppg_nat_primrec_code_destructors

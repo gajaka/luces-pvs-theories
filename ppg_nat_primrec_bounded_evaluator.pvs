@@ -1,0 +1,40 @@
+% Numeric primitive recursiveness of the literal bounded evaluator.
+% The whole finite-table family has already been derived by course-of-values
+% recursion. Here a genuine primitive-recursive lookup selects its result.
+% Mario Carneiro, Mathlib Computability.PartrecCode, primrec_evaln.
+ppg_nat_primrec_bounded_evaluator: THEORY
+BEGIN
+  IMPORTING ppg_evaln_prefix_agreement
+
+  i,k,n: VAR nat
+
+  f: VAR ppg_partrec_code
+
+  actualRowT: TotalFunction = compT(actualRowFamily,pairT(zeroT,idT))
+
+  pr_actualRow: THEOREM NatPrimrec(actualRowT)
+
+  actualRowT_value: LEMMA actualRowT(i)=actualRowCode(i)
+
+  lookup_actual_row: THEOREM predT(lookupCode(actualRowCode(i),n))=
+    encodeLiftNat(evaln(leftT(i),ofNatCode(rightT(i)),n))
+
+  numericEvalnT: TotalFunction = compT(predT,compT(lookupCodeT,
+    pairT(compT(actualRowT,leftT),rightT)))
+
+  pr_numericEvaln: THEOREM NatPrimrec(numericEvalnT)
+
+  numericEvalnT_value: LEMMA numericEvalnT(natPair(i,n))=
+    predT(lookupCode(actualRowCode(i),n))
+
+  actualElement_as_numericEvaln: THEOREM actualElementT=numericEvalnT
+
+  pr_actualElement: THEOREM NatPrimrec(actualElementT)
+
+  numericEvaln_on_code: THEOREM numericEvalnT(natPair(natPair(k,encodeCode(f)),n))=
+    encodeLiftNat(evaln(k,f,n))
+
+  numericEvaln_decodes: THEOREM decodeLiftNat(numericEvalnT(natPair(natPair(k,encodeCode(f)),n)))=
+    evaln(k,f,n)
+
+END ppg_nat_primrec_bounded_evaluator

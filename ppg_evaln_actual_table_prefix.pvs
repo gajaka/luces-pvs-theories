@@ -1,0 +1,74 @@
+% The actual finite evaluator tables used in Mathlib's primrec_evaln proof.
+% Rows contain lift[nat] values; the outer prefix contains whole finite rows.
+% Numeric lookup is identified with those tables without assuming they are PR.
+% Mario Carneiro, Mathlib Computability.PartrecCode, lup, G and primrec_evaln.
+ppg_evaln_actual_table_prefix: THEORY
+BEGIN
+  IMPORTING ppg_nat_primrec_evaln_table_g,ppg_nat_primrec_code_constructor_bridge,
+    ppg_partrec_evaln,ppg_lift_nat_option_codec,ppg_nat_square_pairing_order
+
+  a,i,j,k,n,c: VAR nat
+
+  f,g: VAR ppg_partrec_code
+
+  h,q: VAR TotalFunction
+
+  actualElementT: TotalFunction = LAMBDA(x:nat):
+    encodeLiftNat(evaln(leftT(leftT(x)),ofNatCode(rightT(leftT(x))),rightT(x)))
+
+  actualElementT_numeric: LEMMA actualElementT(natPair(i,n))=
+    encodeLiftNat(evaln(leftT(i),ofNatCode(rightT(i)),n))
+
+  actualElementT_code: LEMMA actualElementT(natPair(natPair(k,encodeCode(f)),n))=
+    encodeLiftNat(evaln(k,f,n))
+
+  actualRowCode(i): nat = tabulateCode(actualElementT,i,leftT(i))
+
+  actualRowFamily: TotalFunction = LAMBDA(x:nat): actualRowCode(rightT(x))
+
+  actualRowFamily_value: LEMMA actualRowFamily(natPair(a,i))=actualRowCode(i)
+
+  actualRowCode_semantics: THEOREM actualRowCode(i)=
+    encodeNatList(mapNatList(actualElementT,i,rangeNatList(leftT(i))))
+
+  actualRowCode_length: THEOREM lengthCode(actualRowCode(i))=leftT(i)
+
+  actualPrefix(a,i): nat = tabulateCode(actualRowFamily,a,i)
+
+  actualPrefix_length: THEOREM lengthCode(actualPrefix(a,i))=i
+
+  actualPrefix_budget: LEMMA prefixBudget(actualPrefix(a,i))=leftT(i)
+
+  actualPrefix_program: LEMMA prefixProgram(actualPrefix(a,i))=rightT(i)
+
+  actualPrefix_semantics: THEOREM actualPrefix(a,i)=
+    encodeNatList(mapNatList(actualRowFamily,a,rangeNatList(i)))
+
+  actualPrefix_lookup_numeric: THEOREM natPair(k,c)<i IMPLIES
+    tableLookup(actualPrefix(a,i),k,c,n)=encodeLiftNat(evaln(k,ofNatCode(c),n))
+
+  actualPrefix_lookup_code: THEOREM natPair(k,encodeCode(f))<i IMPLIES
+    tableLookup(actualPrefix(a,i),k,encodeCode(f),n)=encodeLiftNat(evaln(k,f,n))
+
+  OptionRow: TYPE = list[LiftNat]
+
+  OptionTable: TYPE = list[OptionRow]
+
+  actualTypedRow(i): OptionRow = map(LAMBDA(n:nat):
+    evaln(leftT(i),ofNatCode(rightT(i)),n))(rangeNatList(leftT(i)))
+
+  encodeOptionRow(R:OptionRow): nat = encodeNatList(map(encodeLiftNat)(R))
+
+  actualRowCode_typed: THEOREM actualRowCode(i)=encodeOptionRow(actualTypedRow(i))
+
+  actualTypedPrefix(i): OptionTable = map(actualTypedRow)(rangeNatList(i))
+
+  encodeOptionTable(T:OptionTable): nat = encodeNatList(map(encodeOptionRow)(T))
+
+  actualPrefix_typed: THEOREM actualPrefix(a,i)=encodeOptionTable(actualTypedPrefix(i))
+
+  tabulateCode_congr: THEOREM
+    (FORALL(j:nat): j<n IMPLIES h(natPair(a,j))=q(natPair(i,j))) IMPLIES
+    tabulateCode(h,a,n)=tabulateCode(q,i,n)
+
+END ppg_evaln_actual_table_prefix

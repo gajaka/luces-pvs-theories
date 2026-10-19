@@ -1,0 +1,71 @@
+% Mario Carneiro, Mathlib Computability.PartrecCode, encodeCode/ofNatCode.
+% These are the literal eight syntax constructors with the previously proved
+% numeric PR tags and projections, rather than a second program numbering.
+ppg_nat_primrec_code_constructor_bridge: THEORY
+BEGIN
+  IMPORTING ppg_nat_primrec_code_destructors, ppg_partrec_code_encoding
+
+  c,f,g: VAR ppg_partrec_code
+
+  n: VAR nat
+
+  codeTag_zero: LEMMA codeTagT(encodeCode(codeZero))=0
+
+  codeTag_succ: LEMMA codeTagT(encodeCode(codeSucc))=1
+
+  codeTag_left: LEMMA codeTagT(encodeCode(codeLeft))=2
+
+  codeTag_right: LEMMA codeTagT(encodeCode(codeRight))=3
+
+  codeTag_pair: LEMMA codeTagT(encodeCode(codePair(f,g)))=4
+
+  codeTag_comp: LEMMA codeTagT(encodeCode(codeComp(f,g)))=6
+
+  codeTag_prec: LEMMA codeTagT(encodeCode(codePrec(f,g)))=5
+
+  codeTag_rfind: LEMMA codeTagT(encodeCode(codeRfind(f)))=7
+
+  codeTag_encode: THEOREM codeTagT(encodeCode(c))=CASES c OF
+    codeZero: 0, codeSucc: 1, codeLeft: 2, codeRight: 3,
+    codePair(f,g): 4, codeComp(f,g): 6, codePrec(f,g): 5, codeRfind(f): 7
+  ENDCASES
+
+  codePayload_pair: LEMMA codePayloadT(encodeCode(codePair(f,g)))=natPair(encodeCode(f),encodeCode(g))
+
+  codePayload_comp: LEMMA codePayloadT(encodeCode(codeComp(f,g)))=natPair(encodeCode(f),encodeCode(g))
+
+  codePayload_prec: LEMMA codePayloadT(encodeCode(codePrec(f,g)))=natPair(encodeCode(f),encodeCode(g))
+
+  codePayload_rfind: LEMMA codePayloadT(encodeCode(codeRfind(f)))=encodeCode(f)
+
+  codeFirst_pair: LEMMA codeFirstT(encodeCode(codePair(f,g)))=encodeCode(f)
+
+  codeSecond_pair: LEMMA codeSecondT(encodeCode(codePair(f,g)))=encodeCode(g)
+
+  codeFirst_comp: LEMMA codeFirstT(encodeCode(codeComp(f,g)))=encodeCode(f)
+
+  codeSecond_comp: LEMMA codeSecondT(encodeCode(codeComp(f,g)))=encodeCode(g)
+
+  codeFirst_prec: LEMMA codeFirstT(encodeCode(codePrec(f,g)))=encodeCode(f)
+
+  codeSecond_prec: LEMMA codeSecondT(encodeCode(codePrec(f,g)))=encodeCode(g)
+
+  constructorCode_pair: LEMMA constructorCodeT(0)(natPair(encodeCode(f),encodeCode(g)))=encodeCode(codePair(f,g))
+
+  constructorCode_comp: LEMMA constructorCodeT(2)(natPair(encodeCode(f),encodeCode(g)))=encodeCode(codeComp(f,g))
+
+  constructorCode_prec: LEMMA constructorCodeT(1)(natPair(encodeCode(f),encodeCode(g)))=encodeCode(codePrec(f,g))
+
+  constructorCode_rfind: LEMMA constructorCodeT(3)(encodeCode(f))=encodeCode(codeRfind(f))
+
+  actual_numeric_decoder: THEOREM ofNatCode(n)=
+    IF codeTagT(n)=0 THEN codeZero
+    ELSIF codeTagT(n)=1 THEN codeSucc
+    ELSIF codeTagT(n)=2 THEN codeLeft
+    ELSIF codeTagT(n)=3 THEN codeRight
+    ELSIF codeTagT(n)=4 THEN codePair(ofNatCode(codeFirstT(n)),ofNatCode(codeSecondT(n)))
+    ELSIF codeTagT(n)=5 THEN codePrec(ofNatCode(codeFirstT(n)),ofNatCode(codeSecondT(n)))
+    ELSIF codeTagT(n)=6 THEN codeComp(ofNatCode(codeFirstT(n)),ofNatCode(codeSecondT(n)))
+    ELSE codeRfind(ofNatCode(codePayloadT(n))) ENDIF
+
+END ppg_nat_primrec_code_constructor_bridge

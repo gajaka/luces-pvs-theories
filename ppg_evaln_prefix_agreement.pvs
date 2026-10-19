@@ -1,0 +1,112 @@
+% Agreement of the literal finite-table constructor with the actual evaluator.
+% Earlier rows are used at their real square-pair indices; changed inputs
+% stay inside the row lookup, including the original None-outside-bound rule.
+% Mario Carneiro, Mathlib Computability.PartrecCode, hG in primrec_evaln.
+ppg_evaln_prefix_agreement: THEORY
+BEGIN
+  IMPORTING ppg_evaln_actual_table_prefix
+
+  a,k,n: VAR nat
+
+  f,g: VAR ppg_partrec_code
+
+  o,p: VAR LiftNat
+
+  h: VAR [nat -> LiftNat]
+
+  predT_succ_value: LEMMA predT(k+1)=k
+
+  natPair_leftT_rightT: LEMMA natPair(leftT(n),rightT(n))=n
+
+  actualPrefix_code_budget: LEMMA prefixBudget(actualPrefix(a,natPair(k,encodeCode(f))))=k
+
+  actualPrefix_code_program: LEMMA prefixProgram(actualPrefix(a,natPair(k,encodeCode(f))))=encodeCode(f)
+
+  lookup_at_smaller_code: THEOREM encodeCode(f)<encodeCode(g) IMPLIES
+    tableLookup(actualPrefix(a,natPair(k,encodeCode(g))),k,encodeCode(f),n)=
+      encodeLiftNat(evaln(k,f,n))
+
+  lookup_at_previous_budget: THEOREM
+    tableLookup(actualPrefix(a,natPair(k+1,encodeCode(f))),k,encodeCode(f),n)=
+      encodeLiftNat(evaln(k,f,n))
+
+  prefix_lookup_pair_first: LEMMA tableLookup(actualPrefix(a,natPair(k,encodeCode(codePair(f,g)))),
+    k,encodeCode(f),n)=encodeLiftNat(evaln(k,f,n))
+
+  prefix_lookup_pair_second: LEMMA tableLookup(actualPrefix(a,natPair(k,encodeCode(codePair(f,g)))),
+    k,encodeCode(g),n)=encodeLiftNat(evaln(k,g,n))
+
+  prefix_lookup_comp_first: LEMMA tableLookup(actualPrefix(a,natPair(k,encodeCode(codeComp(f,g)))),
+    k,encodeCode(f),n)=encodeLiftNat(evaln(k,f,n))
+
+  prefix_lookup_comp_second: LEMMA tableLookup(actualPrefix(a,natPair(k,encodeCode(codeComp(f,g)))),
+    k,encodeCode(g),n)=encodeLiftNat(evaln(k,g,n))
+
+  prefix_lookup_prec_first: LEMMA tableLookup(actualPrefix(a,natPair(k,encodeCode(codePrec(f,g)))),
+    k,encodeCode(f),n)=encodeLiftNat(evaln(k,f,n))
+
+  prefix_lookup_prec_second: LEMMA tableLookup(actualPrefix(a,natPair(k,encodeCode(codePrec(f,g)))),
+    k,encodeCode(g),n)=encodeLiftNat(evaln(k,g,n))
+
+  prefix_lookup_rfind_child: LEMMA tableLookup(actualPrefix(a,natPair(k,encodeCode(codeRfind(f)))),
+    k,encodeCode(f),n)=encodeLiftNat(evaln(k,f,n))
+
+  encode_pairNat: THEOREM encodeLiftNat(pairNat(o,p))=
+    IF encodeLiftNat(o)=0 OR encodeLiftNat(p)=0 THEN 0
+    ELSE natPair(predT(encodeLiftNat(o)),predT(encodeLiftNat(p)))+1 ENDIF
+
+  encode_bindNat: THEOREM encodeLiftNat(bindNat(o,h))=
+    IF encodeLiftNat(o)=0 THEN 0 ELSE encodeLiftNat(h(predT(encodeLiftNat(o)))) ENDIF
+
+  tableEvalStep_actual_zero: THEOREM n<=k IMPLIES
+    tableEvalStepT(natPair(actualPrefix(a,natPair(k+1,encodeCode(codeZero))),n))=
+      encodeLiftNat(evaln(k+1,codeZero,n))
+
+  tableEvalStep_actual_succ: THEOREM n<=k IMPLIES
+    tableEvalStepT(natPair(actualPrefix(a,natPair(k+1,encodeCode(codeSucc))),n))=
+      encodeLiftNat(evaln(k+1,codeSucc,n))
+
+  tableEvalStep_actual_left: THEOREM n<=k IMPLIES
+    tableEvalStepT(natPair(actualPrefix(a,natPair(k+1,encodeCode(codeLeft))),n))=
+      encodeLiftNat(evaln(k+1,codeLeft,n))
+
+  tableEvalStep_actual_right: THEOREM n<=k IMPLIES
+    tableEvalStepT(natPair(actualPrefix(a,natPair(k+1,encodeCode(codeRight))),n))=
+      encodeLiftNat(evaln(k+1,codeRight,n))
+
+  tableEvalStep_actual_pair: THEOREM n<=k IMPLIES
+    tableEvalStepT(natPair(actualPrefix(a,natPair(k+1,encodeCode(codePair(f,g)))),n))=
+      encodeLiftNat(evaln(k+1,codePair(f,g),n))
+
+  tableEvalStep_actual_comp: THEOREM n<=k IMPLIES
+    tableEvalStepT(natPair(actualPrefix(a,natPair(k+1,encodeCode(codeComp(f,g)))),n))=
+      encodeLiftNat(evaln(k+1,codeComp(f,g),n))
+
+  tableEvalStep_actual_prec: THEOREM n<=k IMPLIES
+    tableEvalStepT(natPair(actualPrefix(a,natPair(k+1,encodeCode(codePrec(f,g)))),n))=
+      encodeLiftNat(evaln(k+1,codePrec(f,g),n))
+
+  tableEvalStep_actual_rfind: THEOREM n<=k IMPLIES
+    tableEvalStepT(natPair(actualPrefix(a,natPair(k+1,encodeCode(codeRfind(f)))),n))=
+      encodeLiftNat(evaln(k+1,codeRfind(f),n))
+
+  tableEvalStep_actual: THEOREM n<=k IMPLIES
+    tableEvalStepT(natPair(actualPrefix(a,natPair(k+1,encodeCode(f))),n))=
+      encodeLiftNat(evaln(k+1,f,n))
+
+  rowG_agrees_zero: LEMMA tableEvalRowCode(actualPrefix(a,natPair(0,encodeCode(f))))=
+    actualRowCode(natPair(0,encodeCode(f)))
+
+  rowG_agrees_succ: THEOREM tableEvalRowCode(actualPrefix(a,natPair(k+1,encodeCode(f))))=
+    actualRowCode(natPair(k+1,encodeCode(f)))
+
+  rowG_agrees_at_code: THEOREM tableEvalRowCode(actualPrefix(a,natPair(k,encodeCode(f))))=
+    actualRowCode(natPair(k,encodeCode(f)))
+
+  rowG_agrees: THEOREM FORALL(i:nat): tableEvalRowCode(actualPrefix(a,i))=actualRowCode(i)
+
+  actualPrefix_law: THEOREM PrefixLaw(actualRowFamily,tableEvalGSomeT)
+
+  pr_actualRowFamily: THEOREM NatPrimrec(actualRowFamily)
+
+END ppg_evaln_prefix_agreement
