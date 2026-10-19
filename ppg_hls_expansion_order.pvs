@@ -1,0 +1,32 @@
+% The existing topological order compares origins. The extra vertex
+% precedes the original vertex when their origins agree. The finite
+% covering set is exactly the source Fintype enumeration premise.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Definition 3.11 and Appendix C, Lemma C.1.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSExpansionVertices.lean, last three results.
+ppg_hls_expansion_order[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},
+  universe:{S:finite_set[C]|FORALL(i:C):S(i)}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_expansion_vertices[C,G],
+    ppg_hls_topological_order[C,G,universe] AS topo
+
+  Q: VAR (Valid)
+  choice: VAR [WNode->ppg_hls_expansion_vertices[C,G].ExpansionChoice]
+  x,y,z: VAR ExpandedVertex
+
+  expandedBefore(Q)(x,y): bool = topo.topoBefore(Q)(x`1,y`1) OR
+    (x`1=y`1 AND x`2 AND NOT y`2)
+
+  expandedBefore_irrefl: THEOREM NOT expandedBefore(Q)(x,x)
+
+  expandedBefore_trans: THEOREM expandedBefore(Q)(x,y) AND expandedBefore(Q)(y,z)
+    IMPLIES expandedBefore(Q)(x,z)
+
+  expandedBefore_total: THEOREM expandedNodes(Q,choice)(x) AND
+    expandedNodes(Q,choice)(y) AND x/=y IMPLIES
+      expandedBefore(Q)(x,y) OR expandedBefore(Q)(y,x)
+
+END ppg_hls_expansion_order

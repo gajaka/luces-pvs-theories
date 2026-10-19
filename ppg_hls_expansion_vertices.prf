@@ -1,0 +1,405 @@
+(|ppg_hls_expansion_vertices|
+ (|needsExtra_cases| 0
+  (|needsExtra_cases-1| NIL 4001400176
+   (""
+    (THEN
+     (GRIND :DEFS
+      ("needsExtra" "code.choiceInsertUp" "code.choiceInsertDown")))
+    NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|choiceInsertUp| CONST-DECL "ExpansionChoice" |ppg_hls_expansion_decoder|
+     NIL)
+    (|choiceInsertDown| CONST-DECL "ExpansionChoice"
+     |ppg_hls_expansion_decoder| NIL)
+    (|needsExtra| CONST-DECL "bool" |ppg_hls_expansion_vertices| NIL))
+   SHOSTAK))
+ (|expansionEmbed_components| 0
+  (|expansionEmbed_components-1| NIL 4001400176
+   (""
+    (THEN
+     (GRIND :DEFS ("expansionEmbed" "expandedBuild.embed") :EXCLUDE
+      ("is_finite" "expandedLabel" "expandedTag")))
+    NIL)
+   ((|expansionEmbed| CONST-DECL "WNode" |ppg_hls_expansion_vertices| NIL)
+    (|embed| CONST-DECL "WNode" |ppg_hls_ordered_dag| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_expansion_vertices| NIL))
+   SHOSTAK))
+ (|expandedVertex_eta| 0
+  (|expandedVertex_eta-1| NIL 4001400176 ("" (THEN (GRIND)) NIL) NIL SHOSTAK))
+ (|origin_eta| 0
+  (|origin_eta-1| NIL 4001400237 ("" (THEN (GRIND)) NIL) NIL SHOSTAK))
+ (|expansionEmbed_injective| 0
+  (|expansionEmbed_injective-1| NIL 4001400176
+   ("" (SKOSIMP*)
+    (("" (EXPAND "injective?")
+      (("" (SKOSIMP*)
+        (("" (LEMMA "matching_involutive" ("M" "M!1" "i" "x1!1`1`1"))
+          (("" (LEMMA "matching_involutive" ("M" "M!1" "i" "x2!1`1`1"))
+            (("" (LEMMA "expandedVertex_eta" ("x" "x1!1"))
+              (("" (LEMMA "expandedVertex_eta" ("x" "x2!1"))
+                (("" (LEMMA "origin_eta" ("u" "x1!1`1"))
+                  (("" (LEMMA "origin_eta" ("u" "x2!1`1"))
+                    (("" (CASE "x1!1`2")
+                      (("1" (CASE "x2!1`2")
+                        (("1" (CASE "x1!1`1`2=x2!1`1`2")
+                          (("1" (CASE "x1!1`1`1=x2!1`1`1")
+                            (("1"
+                              (GRIND :DEFS
+                               ("expansionEmbed" "expandedBuild.embed"
+                                "expandedLabel" "expandedTag")
+                               :EXCLUDE ("is_finite" "matchPair"))
+                              NIL NIL)
+                             ("2"
+                              (GRIND :DEFS
+                               ("expansionEmbed" "expandedBuild.embed"
+                                "expandedLabel" "expandedTag")
+                               :EXCLUDE ("is_finite" "matchPair"))
+                              NIL NIL))
+                            NIL)
+                           ("2" (CASE "x1!1`1`1=x2!1`1`1")
+                            (("1"
+                              (GRIND :DEFS
+                               ("expansionEmbed" "expandedBuild.embed"
+                                "expandedLabel" "expandedTag")
+                               :EXCLUDE ("is_finite" "matchPair"))
+                              NIL NIL)
+                             ("2"
+                              (GRIND :DEFS
+                               ("expansionEmbed" "expandedBuild.embed"
+                                "expandedLabel" "expandedTag")
+                               :EXCLUDE ("is_finite" "matchPair"))
+                              NIL NIL))
+                            NIL))
+                          NIL)
+                         ("2" (CASE "x1!1`1`2=x2!1`1`2")
+                          (("1" (CASE "x1!1`1`1=x2!1`1`1")
+                            (("1"
+                              (GRIND :DEFS
+                               ("expansionEmbed" "expandedBuild.embed"
+                                "expandedLabel" "expandedTag")
+                               :EXCLUDE ("is_finite" "matchPair"))
+                              NIL NIL)
+                             ("2"
+                              (GRIND :DEFS
+                               ("expansionEmbed" "expandedBuild.embed"
+                                "expandedLabel" "expandedTag")
+                               :EXCLUDE ("is_finite" "matchPair"))
+                              NIL NIL))
+                            NIL)
+                           ("2" (CASE "x1!1`1`1=x2!1`1`1")
+                            (("1"
+                              (GRIND :DEFS
+                               ("expansionEmbed" "expandedBuild.embed"
+                                "expandedLabel" "expandedTag")
+                               :EXCLUDE ("is_finite" "matchPair"))
+                              NIL NIL)
+                             ("2"
+                              (GRIND :DEFS
+                               ("expansionEmbed" "expandedBuild.embed"
+                                "expandedLabel" "expandedTag")
+                               :EXCLUDE ("is_finite" "matchPair"))
+                              NIL NIL))
+                            NIL))
+                          NIL))
+                        NIL)
+                       ("2" (CASE "x2!1`2")
+                        (("1" (CASE "x1!1`1`2=x2!1`1`2")
+                          (("1" (CASE "x1!1`1`1=x2!1`1`1")
+                            (("1"
+                              (GRIND :DEFS
+                               ("expansionEmbed" "expandedBuild.embed"
+                                "expandedLabel" "expandedTag")
+                               :EXCLUDE ("is_finite" "matchPair"))
+                              NIL NIL)
+                             ("2"
+                              (GRIND :DEFS
+                               ("expansionEmbed" "expandedBuild.embed"
+                                "expandedLabel" "expandedTag")
+                               :EXCLUDE ("is_finite" "matchPair"))
+                              NIL NIL))
+                            NIL)
+                           ("2" (CASE "x1!1`1`1=x2!1`1`1")
+                            (("1"
+                              (GRIND :DEFS
+                               ("expansionEmbed" "expandedBuild.embed"
+                                "expandedLabel" "expandedTag")
+                               :EXCLUDE ("is_finite" "matchPair"))
+                              NIL NIL)
+                             ("2"
+                              (GRIND :DEFS
+                               ("expansionEmbed" "expandedBuild.embed"
+                                "expandedLabel" "expandedTag")
+                               :EXCLUDE ("is_finite" "matchPair"))
+                              NIL NIL))
+                            NIL))
+                          NIL)
+                         ("2" (CASE "x1!1`1`2=x2!1`1`2")
+                          (("1" (CASE "x1!1`1`1=x2!1`1`1")
+                            (("1"
+                              (GRIND :DEFS
+                               ("expansionEmbed" "expandedBuild.embed"
+                                "expandedLabel" "expandedTag")
+                               :EXCLUDE ("is_finite" "matchPair"))
+                              NIL NIL)
+                             ("2"
+                              (GRIND :DEFS
+                               ("expansionEmbed" "expandedBuild.embed"
+                                "expandedLabel" "expandedTag")
+                               :EXCLUDE ("is_finite" "matchPair"))
+                              NIL NIL))
+                            NIL)
+                           ("2" (CASE "x1!1`1`1=x2!1`1`1")
+                            (("1"
+                              (GRIND :DEFS
+                               ("expansionEmbed" "expandedBuild.embed"
+                                "expandedLabel" "expandedTag")
+                               :EXCLUDE ("is_finite" "matchPair"))
+                              NIL NIL)
+                             ("2"
+                              (GRIND :DEFS
+                               ("expansionEmbed" "expandedBuild.embed"
+                                "expandedLabel" "expandedTag")
+                               :EXCLUDE ("is_finite" "matchPair"))
+                              NIL NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|injective?| CONST-DECL "bool" |functions| NIL)
+    (|matching_involutive| FORMULA-DECL NIL |ppg_hls_pair_keys| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|ExpandedVertex| TYPE-EQ-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_expansion_vertices| NIL)
+    (|expandedVertex_eta| FORMULA-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|origin_eta| FORMULA-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|odd_plus_even_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|expansionEmbed| CONST-DECL "WNode" |ppg_hls_expansion_vertices| NIL)
+    (|embed| CONST-DECL "WNode" |ppg_hls_ordered_dag| NIL)
+    (|expandedTag| CONST-DECL "nat" |ppg_hls_expansion_vertices| NIL)
+    (|expandedLabel| CONST-DECL "C" |ppg_hls_expansion_vertices| NIL))
+   SHOSTAK))
+ (|expandedNodes_member| 0
+  (|expandedNodes_member-1| NIL 4001400176
+   ("" (SKOSIMP*)
+    (("" (LEMMA "expandedVertex_eta" ("x" "x!1"))
+      (("" (CASE "x!1`2")
+        (("1"
+          (GRIND :DEFS ("expandedNodes" "image") :EXCLUDE
+           ("is_finite" "needsExtra"))
+          NIL NIL)
+         ("2"
+          (GRIND :DEFS ("expandedNodes" "image") :EXCLUDE
+           ("is_finite" "needsExtra"))
+          NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|ExpandedVertex| TYPE-EQ-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_expansion_vertices| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|expandedVertex_eta| FORMULA-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|expandedNodes| CONST-DECL "finite_set[ExpandedVertex]"
+     |ppg_hls_expansion_vertices| NIL)
+    (|needsExtra| CONST-DECL "bool" |ppg_hls_expansion_vertices| NIL)
+    (|ExpansionChoice| TYPE-EQ-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL))
+   SHOSTAK))
+ (|expandedNode_origin| 0
+  (|expandedNode_origin-1| NIL 4001400176
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "expandedNodes_member" ("D" "D!1" "choice" "choice!1" "x" "x!1"))
+     (ASSERT))
+    NIL)
+   ((|expandedNodes_member| FORMULA-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_expansion_vertices| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|ExpansionChoice| TYPE-EQ-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|ExpandedVertex| TYPE-EQ-DECL NIL |ppg_hls_expansion_vertices| NIL))
+   SHOSTAK))
+ (|expandedNode_original| 0
+  (|expandedNode_original-1| NIL 4001400176
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "expandedNodes_member"
+      ("D" "D!1" "choice" "choice!1" "x" "(u!1,FALSE)"))
+     (ASSERT))
+    NIL)
+   ((|expandedNodes_member| FORMULA-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_expansion_vertices| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|ExpansionChoice| TYPE-EQ-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|ExpandedVertex| TYPE-EQ-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (FALSE CONST-DECL "bool" |booleans| NIL))
+   SHOSTAK))
+ (|expandedNode_extra| 0
+  (|expandedNode_extra-1| NIL 4001400176
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "expandedNodes_member"
+      ("D" "D!1" "choice" "choice!1" "x" "(u!1,TRUE)"))
+     (GRIND :EXCLUDE ("expandedNodes" "needsExtra" "is_finite")))
+    NIL)
+   ((|expandedNodes_member| FORMULA-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_expansion_vertices| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|ExpansionChoice| TYPE-EQ-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (|ExpandedVertex| TYPE-EQ-DECL NIL |ppg_hls_expansion_vertices| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   SHOSTAK)))
+

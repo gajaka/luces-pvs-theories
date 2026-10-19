@@ -1,0 +1,61 @@
+% An occurrence produces its original vertex and, for the two insertion
+% choices, a preceding mate vertex. Even tags identify the inserted
+% vertex; odd tags identify the original. The embedding is injective.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Definition 3.11 and Appendix C, Lemma C.1.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSExpansionVertices.lean, first four results.
+ppg_hls_expansion_vertices[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_pair_keys[C,G],
+    ppg_hls_expansion_decoder[C,LAMBDA(i:C):i] AS code,
+    ppg_hls_ordered_dag[C,[[C,nat],bool],G] AS expandedBuild
+
+  ExpandedVertex: TYPE = [WNode,bool]
+
+  ExpansionChoice: TYPE = code.ExpansionChoice
+
+  M: VAR DependencyMatching
+  D: VAR WitnessDAG
+  choice: VAR [WNode->ExpansionChoice]
+  ch: VAR ExpansionChoice
+  x,y: VAR ExpandedVertex
+  u: VAR WNode
+
+  needsExtra(ch): bool = ch=code.choiceInsertUp OR ch=code.choiceInsertDown
+
+  expandedLabel(M)(x): C = IF x`2 THEN M(x`1`1) ELSE x`1`1 ENDIF
+
+  expandedTag(x): nat = 2*x`1`2 + IF x`2 THEN 0 ELSE 1 ENDIF
+
+  expansionEmbed(M)(x): WNode = expandedBuild.embed(expandedLabel(M),expandedTag)(x)
+
+  expandedNodes(D,choice): finite_set[ExpandedVertex] = union(
+    image[WNode,ExpandedVertex](LAMBDA(u:WNode):(u,FALSE),D`nodes),
+    image[WNode,ExpandedVertex](LAMBDA(u:WNode):(u,TRUE),
+      intersection(D`nodes,LAMBDA(u:WNode):needsExtra(choice(u)))))
+
+  needsExtra_cases: LEMMA needsExtra(ch) IFF ch=2 OR ch=3
+
+  expansionEmbed_components: LEMMA
+    expansionEmbed(M)(x)=(expandedLabel(M)(x),expandedTag(x))
+
+  expandedVertex_eta: LEMMA (x`1,x`2)=x
+
+  origin_eta: LEMMA (u`1,u`2)=u
+
+  expansionEmbed_injective: THEOREM injective?(expansionEmbed(M))
+
+  expandedNodes_member: LEMMA expandedNodes(D,choice)(x) IFF
+    D`nodes(x`1) AND (NOT x`2 OR needsExtra(choice(x`1)))
+
+  expandedNode_origin: THEOREM expandedNodes(D,choice)(x) IMPLIES D`nodes(x`1)
+
+  expandedNode_original: THEOREM D`nodes(u) IMPLIES expandedNodes(D,choice)((u,FALSE))
+
+  expandedNode_extra: THEOREM D`nodes(u) AND needsExtra(choice(u)) IMPLIES
+    expandedNodes(D,choice)((u,TRUE))
+
+END ppg_hls_expansion_vertices
