@@ -1,0 +1,57 @@
+% Table consistency is a finite intersection of measurable bad events.
+% Each node reads fixed local indices, and process locality identifies
+% its event from exactly the coordinates in its finite footprint.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 3.1.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSTableCheck.lean. The variable and label
+% carriers remain arbitrary; no finite-variable hypothesis is used here.
+ppg_hls_table_events[C,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_mt_native_process[C,V,Value,domain,spaces,laws])
+  process:MTProcess]: THEORY
+BEGIN
+  IMPORTING ppg_mt_random_process[C,V,Value,domain] AS eventSlots,
+    ppg_mt_semantics[C,V,Value,domain] AS eventStates,
+    ppg_mt_check_measurable[C,V,Value,domain] AS eventReads,
+    ppg_mt_read_probability[C,V,Value,domain,spaces,laws] AS eventReadLaw,
+    ppg_mt_native_spaces[C,V,Value,domain] AS eventSpaces,
+    ppg_shearer_bdd[C,V,process`footprint] AS eventGraph,
+    ppg_hls_witness_dag[C,eventGraph.dependencyGraph],
+    ppg_hls_table_coordinates[C,V,process`footprint] AS eventCoordinates,
+    ppg_measurable_map[eventSlots.LogSpace,eventStates.MTState] AS eventMaps,
+    ppg_finite_events[eventSlots.LogSpace,[C,nat],eventSpaces.NativeTableSigma(spaces)] AS eventMeets
+  D: VAR WitnessDAG
+  u: VAR WNode
+  omega,omega2: VAR eventSlots.LogSpace
+
+  badMeasurable: bool = FORALL(i:C):eventSpaces.NativeStateSigma(spaces)(process`bad(i))
+
+  tableState(D,u)(omega): eventStates.MTState =
+    eventReads.readAt(eventCoordinates.localIndex(D,u))(omega)
+
+  tableEvent(D,u): set[eventSlots.LogSpace] =
+    {omega:eventSlots.LogSpace|process`bad(u`1)(tableState(D,u)(omega))}
+
+  tableCheck(D): set[eventSlots.LogSpace] = eventMeets.finiteMeet(D`nodes,
+    LAMBDA(u:WNode):tableEvent(D,u))
+
+  tableState_readAt: LEMMA tableState(D,u)=eventReads.readAt(eventCoordinates.localIndex(D,u))
+
+  tableEvent_preimage: LEMMA tableEvent(D,u)=eventMaps.inverseImage(tableState(D,u),process`bad(u`1))
+
+  measurable_tableState: THEOREM eventMaps.measurable(
+    eventSpaces.NativeTableSigma(spaces),eventSpaces.NativeStateSigma(spaces),tableState(D,u))
+
+  measurableSet_tableEvent: THEOREM badMeasurable IMPLIES
+    eventSpaces.NativeTableSigma(spaces)(tableEvent(D,u))
+
+  tableEvent_depends_on_coordinates: THEOREM
+    (FORALL(p:[nat,V]):eventCoordinates.tableCoordinates(D,u)(p) IMPLIES omega(p)=omega2(p))
+      IMPLIES (tableEvent(D,u)(omega) IFF tableEvent(D,u)(omega2))
+
+  measurableSet_tableCheck: THEOREM badMeasurable IMPLIES
+    eventSpaces.NativeTableSigma(spaces)(tableCheck(D))
+END ppg_hls_table_events

@@ -1,0 +1,19 @@
+% Dependent endpoints of a positive path in a witness DAG already have
+% a direct arc. The opposite orientation would close a positive cycle.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 3.1.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSTableCheck.lean.
+ppg_hls_edge_completion[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_witness_dag[C,G]
+  Q: VAR (Valid)
+  u,v: VAR WNode
+
+  no_positive_cycle: LEMMA NOT positivePath(Q)(u,u)
+
+  edge_of_transGen_dependent: THEOREM positivePath(Q)(u,v) AND
+    (u`1=v`1 OR G(u`1,v`1)) IMPLIES Edge(Q)(u,v)
+END ppg_hls_edge_completion
