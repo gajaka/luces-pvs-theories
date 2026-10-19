@@ -1,0 +1,27 @@
+% The inserted-before predicate is a reversible matching predecessor
+% with a prescribed property. It is defined on a raw graph; validity
+% and finite label universes are not part of the definition.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Appendix C. https://arxiv.org/abs/2111.06527
+% Lean counterpart: InsertedBefore in PPGraphHLSChoiceRecovery.lean.
+ppg_hls_inserted_before[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_pair_keys[C,G]
+
+  M: VAR DependencyMatching
+  D: VAR WitnessDAG
+  extras: VAR finite_set[WNode]
+  u: VAR WNode
+  condition: VAR [WNode->bool]
+
+  InsertedBefore(M,D,extras,u,condition): bool = EXISTS(w:WNode):extras(w) AND
+    condition(w) AND Edge(D)(w,u) AND dagPaths.Acyclic(dagPaths.reverseArc(Edge(D),w,u)) AND
+    M(w`1)=u`1
+
+  InsertedBefore_at: LEMMA InsertedBefore(M,D,extras,u,condition) IFF
+    EXISTS(w:WNode):extras(w) AND condition(w) AND Edge(D)(w,u) AND
+      dagPaths.Acyclic(dagPaths.reverseArc(Edge(D),w,u)) AND M(w`1)=u`1
+
+END ppg_hls_inserted_before

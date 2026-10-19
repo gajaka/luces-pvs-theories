@@ -1,0 +1,82 @@
+% Reversible matching arcs identify which inserted vertex belongs to an
+% original. Its presence, its down color and the original's down color
+% distinguish the four local expansion choices.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Appendix C. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSChoiceRecovery.lean.
+ppg_hls_choice_recovery[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},
+  universe:{S:finite_set[C]|FORALL(i:C):S(i)}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_original_iso[C,G,universe], ppg_hls_matching_arc_uniqueness[C,G],
+    ppg_hls_inserted_before[C,G]
+
+  M: VAR DependencyMatching
+  Q,R: VAR (Valid)
+  c,d: VAR [WNode->ppg_hls_expansion_vertices[C,G].ExpansionChoice]
+  ch,dh: VAR ppg_hls_expansion_vertices[C,G].ExpansionChoice
+  u,v,w: VAR WNode
+  condition: VAR [WNode->bool]
+
+  coloredValid(M,Q,c): (Valid) = coloredExpansion(M,Q,c)`1
+
+  extra_image_original: LEMMA expansionExtras(M,Q,c)(w) IMPLIES
+    EXISTS(v:WNode):Q`nodes(v) AND needsExtra(c(v)) AND
+      expansionName(M,Q,c)((v,TRUE))=w
+
+  extra_name_member: LEMMA Q`nodes(u) AND needsExtra(c(u)) IMPLIES
+    expansionExtras(M,Q,c)(expansionName(M,Q,c)((u,TRUE)))
+
+  extra_to_original_edge: LEMMA Q`nodes(u) AND needsExtra(c(u)) IMPLIES
+    Edge(coloredExpansion(M,Q,c)`1)(expansionName(M,Q,c)((u,TRUE)),
+      expansionName(M,Q,c)((u,FALSE)))
+
+  extra_to_original_reverse: LEMMA Q`nodes(u) AND needsExtra(c(u)) IMPLIES
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(coloredExpansion(M,Q,c)`1),
+      expansionName(M,Q,c)((u,TRUE)),expansionName(M,Q,c)((u,FALSE))))
+
+  name_extra_mate: LEMMA M(expansionName(M,Q,c)((u,TRUE))`1)=
+    expansionName(M,Q,c)((u,FALSE))`1
+
+  expansion_extra_predecessor: THEOREM Q`nodes(u) AND expansionExtras(M,Q,c)(w) AND
+    Edge(coloredExpansion(M,Q,c)`1)(w,expansionName(M,Q,c)((u,FALSE))) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(coloredExpansion(M,Q,c)`1),
+      w,expansionName(M,Q,c)((u,FALSE)))) AND M(w`1)=u`1 IMPLIES
+      needsExtra(c(u)) AND w=expansionName(M,Q,c)((u,TRUE))
+
+  inserted_from_extra: LEMMA Q`nodes(u) AND needsExtra(c(u)) AND
+    condition(expansionName(M,Q,c)((u,TRUE))) IMPLIES
+      InsertedBefore(M,coloredExpansion(M,Q,c)`1,expansionExtras(M,Q,c),
+        expansionName(M,Q,c)((u,FALSE)),condition)
+
+  inserted_before_extra: LEMMA Q`nodes(u) AND
+    InsertedBefore(M,coloredExpansion(M,Q,c)`1,expansionExtras(M,Q,c),
+      expansionName(M,Q,c)((u,FALSE)),condition) IMPLIES needsExtra(c(u))
+
+  needsExtra_iff_insertedBefore: THEOREM Q`nodes(u) IMPLIES
+    (needsExtra(c(u)) IFF InsertedBefore(M,coloredExpansion(M,Q,c)`1,expansionExtras(M,Q,c),
+      expansionName(M,Q,c)((u,FALSE)),LAMBDA(w:WNode):TRUE))
+
+  extra_down_iff: LEMMA Q`nodes(u) AND needsExtra(c(u)) IMPLIES
+    (coloredExpansion(M,Q,c)`2(expansionName(M,Q,c)((u,TRUE))) IFF c(u)=3)
+
+  inserted_down_choice: LEMMA Q`nodes(u) AND
+    InsertedBefore(M,coloredExpansion(M,Q,c)`1,expansionExtras(M,Q,c),
+      expansionName(M,Q,c)((u,FALSE)),coloredExpansion(M,Q,c)`2) IMPLIES c(u)=3
+
+  insertDown_iff_insertedBefore: THEOREM Q`nodes(u) IMPLIES
+    (c(u)=3 IFF InsertedBefore(M,coloredExpansion(M,Q,c)`1,expansionExtras(M,Q,c),
+      expansionName(M,Q,c)((u,FALSE)),coloredExpansion(M,Q,c)`2))
+
+  original_down_color: LEMMA Q`nodes(u) IMPLIES
+    (coloredExpansion(M,Q,c)`2(expansionName(M,Q,c)((u,FALSE))) IFF originalDown(c)(u))
+
+  choice_bits_injective: LEMMA needsExtra(ch)=needsExtra(dh) AND (ch=3 IFF dh=3) AND
+    (ch/=0 IFF dh/=0) IMPLIES ch=dh
+
+  choices_eq_of_colored_eq: THEOREM Canonical(Q) AND Canonical(R) AND
+    LegalExpansion(M,Q,c) AND LegalExpansion(M,R,d) AND
+    coloredExpansion(M,Q,c)=coloredExpansion(M,R,d) AND Q`nodes(u) IMPLIES c(u)=d(u)
+
+END ppg_hls_choice_recovery
