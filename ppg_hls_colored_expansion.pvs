@@ -1,0 +1,114 @@
+% Canonical names transport the raw expansion, its down-colored nodes
+% and its inserted nodes. The intrinsic origin rule determines the last
+% set from the normalized graph and its down colors alone.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Appendix C. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSColoredExpansion.lean.
+ppg_hls_colored_expansion[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},
+  universe:{S:finite_set[C]|FORALL(i:C):S(i)}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_raw_origin_recovery[C,G,universe], ppg_hls_normalization_reversal[C,G]
+
+  M: VAR DependencyMatching
+  Q,R: VAR (Valid)
+  choice,c,d: VAR [WNode->ppg_hls_expansion_vertices[C,G].ExpansionChoice]
+  x,y: VAR ExpandedVertex
+  w,z: VAR WNode
+
+  rawValid(M,Q,choice): (Valid) = rawExpansion(M,Q,choice)
+
+  expansionName(M,Q,choice)(x): WNode =
+    canonicalName(rawExpansion(M,Q,choice),expansionEmbed(M)(x))
+
+  coloredExpansion(M,Q,choice): [WitnessDAG,finite_set[WNode]] =
+    (normalize(rawExpansion(M,Q,choice)),
+      image[ExpandedVertex,WNode](expansionName(M,Q,choice),
+        intersection(expandedNodes(Q,choice),expandedDown(choice))))
+
+  expansionExtras(M,Q,choice): finite_set[WNode] = image[ExpandedVertex,WNode](
+    expansionName(M,Q,choice),intersection(expandedNodes(Q,choice),LAMBDA(x:ExpandedVertex):x`2))
+
+  expansion_embed_node: LEMMA expandedNodes(Q,choice)(x) IMPLIES
+    rawExpansion(M,Q,choice)`nodes(expansionEmbed(M)(x))
+
+  expansionName_mem: THEOREM expandedNodes(Q,choice)(x) IMPLIES
+    coloredExpansion(M,Q,choice)`1`nodes(expansionName(M,Q,choice)(x))
+
+  expansionName_injective: THEOREM expandedNodes(Q,choice)(x) AND
+    expandedNodes(Q,choice)(y) AND expansionName(M,Q,choice)(x)=expansionName(M,Q,choice)(y)
+    IMPLIES x=y
+
+  coloredExpansion_node_iff: THEOREM coloredExpansion(M,Q,choice)`1`nodes(w) IFF
+    EXISTS(x:ExpandedVertex):expandedNodes(Q,choice)(x) AND expansionName(M,Q,choice)(x)=w
+
+  expansionName_label: LEMMA expansionName(M,Q,choice)(x)`1=expandedLabel(M)(x)
+
+  down_image_data: LEMMA coloredExpansion(M,Q,choice)`2(w) IFF
+    EXISTS(x:ExpandedVertex):expandedNodes(Q,choice)(x) AND expandedDown(choice)(x) AND
+      expansionName(M,Q,choice)(x)=w
+
+  extras_image_data: LEMMA expansionExtras(M,Q,choice)(w) IFF
+    EXISTS(x:ExpandedVertex):expandedNodes(Q,choice)(x) AND x`2 AND
+      expansionName(M,Q,choice)(x)=w
+
+  mem_expansionDown_iff: THEOREM expandedNodes(Q,choice)(x) IMPLIES
+    (coloredExpansion(M,Q,choice)`2(expansionName(M,Q,choice)(x)) IFF expandedDown(choice)(x))
+
+  mem_expansionExtras_iff: THEOREM expandedNodes(Q,choice)(x) IMPLIES
+    (expansionExtras(M,Q,choice)(expansionName(M,Q,choice)(x)) IFF x`2)
+
+  expansionName_edge_iff: THEOREM expandedNodes(Q,choice)(x) AND
+    expandedNodes(Q,choice)(y) IMPLIES
+    (Edge(coloredExpansion(M,Q,choice)`1)(expansionName(M,Q,choice)(x),
+      expansionName(M,Q,choice)(y)) IFF
+      Edge(rawExpansion(M,Q,choice))(expansionEmbed(M)(x),expansionEmbed(M)(y)))
+
+  expansionName_reversible_iff: LEMMA expandedNodes(Q,choice)(x) AND
+    expandedNodes(Q,choice)(y) AND
+    Edge(rawExpansion(M,Q,choice))(expansionEmbed(M)(x),expansionEmbed(M)(y)) IMPLIES
+    (dagPaths.Acyclic(dagPaths.reverseArc(Edge(coloredExpansion(M,Q,choice)`1),
+      expansionName(M,Q,choice)(x),expansionName(M,Q,choice)(y))) IFF
+      dagPaths.Acyclic(dagPaths.reverseArc(Edge(rawExpansion(M,Q,choice)),
+        expansionEmbed(M)(x),expansionEmbed(M)(y))))
+
+  normalizedOriginWitness(M,Q,choice)(w,z): bool = coloredExpansion(M,Q,choice)`1`nodes(z) AND
+    NOT expansionExtras(M,Q,choice)(z) AND coloredExpansion(M,Q,choice)`2(z) AND
+    Edge(coloredExpansion(M,Q,choice)`1)(w,z) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(coloredExpansion(M,Q,choice)`1),w,z)) AND
+    M(w`1)=z`1 AND w`1/=z`1
+
+  originWitness_transport: LEMMA expandedNodes(Q,choice)(x) AND expandedNodes(Q,choice)(y)
+    IMPLIES (expandedOriginWitness(M,Q,choice)(x,y) IFF
+      normalizedOriginWitness(M,Q,choice)(expansionName(M,Q,choice)(x),
+        expansionName(M,Q,choice)(y)))
+
+  origin_witness_forward: LEMMA expandedNodes(Q,choice)(x) AND
+    expandedOriginWitness(M,Q,choice)(x,y) IMPLIES
+    normalizedOriginWitness(M,Q,choice)(expansionName(M,Q,choice)(x),
+      expansionName(M,Q,choice)(y))
+
+  origin_witness_backward: LEMMA expandedNodes(Q,choice)(x) AND
+    normalizedOriginWitness(M,Q,choice)(expansionName(M,Q,choice)(x),w) IMPLIES
+    EXISTS(y:ExpandedVertex):expandedNodes(Q,choice)(y) AND expansionName(M,Q,choice)(y)=w AND
+      expandedOriginWitness(M,Q,choice)(x,y)
+
+  colored_rule_at_name: LEMMA LegalExpansion(M,Q,choice) AND expandedNodes(Q,choice)(x)
+    IMPLIES (expansionExtras(M,Q,choice)(expansionName(M,Q,choice)(x)) IFF
+      EXISTS(w:WNode):normalizedOriginWitness(M,Q,choice)(expansionName(M,Q,choice)(x),w))
+
+  coloredExpansion_originRule: THEOREM LegalExpansion(M,Q,choice) IMPLIES
+    OriginRule(M,coloredExpansion(M,Q,choice)`1,coloredExpansion(M,Q,choice)`2,
+      expansionExtras(M,Q,choice))
+
+  expansionExtras_supported: LEMMA expansionExtras(M,Q,choice)(w) IMPLIES
+    coloredExpansion(M,Q,choice)`1`nodes(w)
+
+  coloredExpansion_valid: LEMMA Valid(coloredExpansion(M,Q,choice)`1)
+
+  expansionExtras_eq_of_colored_eq: THEOREM LegalExpansion(M,Q,c) AND LegalExpansion(M,R,d)
+    AND coloredExpansion(M,Q,c)=coloredExpansion(M,R,d) IMPLIES
+      expansionExtras(M,Q,c)=expansionExtras(M,R,d)
+
+END ppg_hls_colored_expansion
