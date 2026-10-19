@@ -1,0 +1,58 @@
+% A bounded result is an actual partial result, and every partial result
+% appears at a finite budget. The budget retains Mathlib evaln semantics.
+ppg_partrec_evaln_correspondence: THEORY
+BEGIN
+  IMPORTING ppg_partrec_evaluation, ppg_partrec_evaln
+
+  c,f,g: VAR ppg_partrec_code
+
+  k,k1,k2,n,a,b,m,v,w: VAR nat
+
+  Complete(c): bool = FORALL (n,v:nat): Eval(c,n)(v) IMPLIES
+    EXISTS (k:nat): evaln(k,c,n)=up[nat](v)
+
+  evaln_pair_intro: LEMMA evaln(k1,f,n)=up[nat](a) AND evaln(k2,g,n)=up[nat](b)
+    IMPLIES EXISTS (k:nat): evaln(k,codePair(f,g),n)=up[nat](natPair(a,b))
+
+  evaln_comp_intro: LEMMA evaln(k1,g,n)=up[nat](w) AND evaln(k2,f,w)=up[nat](v)
+    IMPLIES EXISTS (k:nat): evaln(k,codeComp(f,g),n)=up[nat](v)
+
+  evaln_prec_zero_intro: LEMMA evaln(k,f,a)=up[nat](v)
+    IMPLIES EXISTS (K:nat): evaln(K,codePrec(f,g),natPair(a,0))=up[nat](v)
+
+  evaln_prec_succ_intro: LEMMA
+    evaln(k1,codePrec(f,g),natPair(a,b))=up[nat](w) AND
+      evaln(k2,g,natPair(a,natPair(b,w)))=up[nat](v)
+    IMPLIES EXISTS (k:nat): evaln(k,codePrec(f,g),natPair(a,b+1))=up[nat](v)
+
+  evaln_rfind_zero_intro: LEMMA evaln(k,f,natPair(a,m))=up[nat](0)
+    IMPLIES EXISTS (K:nat): evaln(K,codeRfind(f),natPair(a,m))=up[nat](m)
+
+  evaln_rfind_succ_intro: LEMMA
+    evaln(k1,f,natPair(a,m))=up[nat](w) AND w/=0 AND
+      evaln(k2,codeRfind(f),natPair(a,m+1))=up[nat](v)
+    IMPLIES EXISTS (k:nat): evaln(k,codeRfind(f),natPair(a,m))=up[nat](v)
+
+  evaln_sound: THEOREM evaln(k,c,n)=up[nat](v) IMPLIES Eval(c,n)(v)
+
+  complete_prec: LEMMA Complete(f) AND Complete(g) AND
+    Eval(codePrec(f,g),natPair(a,b))(v)
+    IMPLIES EXISTS (k:nat): evaln(k,codePrec(f,g),natPair(a,b))=up[nat](v)
+
+  complete_rfind_distance: LEMMA Complete(f) AND
+    Eval(codeRfind(f),natPair(a,m))(m+b)
+    IMPLIES EXISTS (k:nat): evaln(k,codeRfind(f),natPair(a,m))=up[nat](m+b)
+
+  complete_rfind: LEMMA Complete(f) AND Eval(codeRfind(f),n)(v)
+    IMPLIES EXISTS (k:nat): evaln(k,codeRfind(f),n)=up[nat](v)
+
+  evaln_complete: THEOREM Eval(c,n)(v) IMPLIES
+    EXISTS (k:nat): evaln(k,c,n)=up[nat](v)
+
+  evaln_complete_iff: THEOREM Eval(c,n)(v) IFF
+    EXISTS (k:nat): evaln(k,c,n)=up[nat](v)
+
+  evalDom_iff_budget: THEOREM evalDom(c,n) IFF
+    EXISTS (k,v:nat): evaln(k,c,n)=up[nat](v)
+
+END ppg_partrec_evaln_correspondence

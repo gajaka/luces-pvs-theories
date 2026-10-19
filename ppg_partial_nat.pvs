@@ -1,0 +1,94 @@
+% Partial natural values are single-valued graphs. Undefined values have no member.
+% Search requires every earlier test to terminate, as in Mathlib Nat.rfind.
+ppg_partial_nat: THEORY
+BEGIN
+  IMPORTING ppg_nat_square_pairing
+
+  PartialGraph: TYPE = set[nat]
+
+  PartialFunction: TYPE = [nat -> PartialGraph]
+
+  p,q: VAR PartialGraph
+
+  f,g: VAR PartialFunction
+
+  h: VAR [nat -> nat]
+
+  a,b,m,n,v,w: VAR nat
+
+  singleValued(p): bool = FORALL (v,w:nat): p(v) AND p(w) IMPLIES v=w
+
+  functional(f): bool = FORALL (n:nat): singleValued(f(n))
+
+  singleValued_unique: LEMMA singleValued(p) AND p(v) AND p(w) IMPLIES v=w
+
+  functional_unique: LEMMA functional(f) AND f(n)(v) AND f(n)(w) IMPLIES v=w
+
+  functional_at: LEMMA functional(f) IMPLIES singleValued(f(n))
+
+  functional_compose_input: LEMMA functional(f)
+    IMPLIES functional(LAMBDA (n:nat): f(h(n)))
+
+  bottomP: PartialGraph = LAMBDA (v:nat): FALSE
+
+  pureP(n): PartialGraph = LAMBDA (v:nat): v=n
+
+  bindP(p,f): PartialGraph = LAMBDA (v:nat): EXISTS (w:nat): p(w) AND f(w)(v)
+
+  mapP(h,p): PartialGraph = LAMBDA (v:nat): EXISTS (w:nat): p(w) AND h(w)=v
+
+  pairP(p,q): PartialGraph = LAMBDA (v:nat):
+    EXISTS (a,b:nat): p(a) AND q(b) AND natPair(a,b)=v
+
+  bottomP_none: LEMMA NOT bottomP(v)
+
+  pureP_member: LEMMA pureP(n)(v) IFF v=n
+
+  bindP_member: LEMMA bindP(p,f)(v) IFF EXISTS (w:nat): p(w) AND f(w)(v)
+
+  mapP_member: LEMMA mapP(h,p)(v) IFF EXISTS (w:nat): p(w) AND h(w)=v
+
+  pairP_member: LEMMA pairP(p,q)(v) IFF
+    EXISTS (a,b:nat): p(a) AND q(b) AND natPair(a,b)=v
+
+  bottomP_single: LEMMA singleValued(bottomP)
+
+  pureP_single: LEMMA singleValued(pureP(n))
+
+  bindP_single: LEMMA singleValued(p) AND functional(f)
+    IMPLIES singleValued(bindP(p,f))
+
+  mapP_single: LEMMA singleValued(p) IMPLIES singleValued(mapP(h,p))
+
+  pairP_single: LEMMA singleValued(p) AND singleValued(q)
+    IMPLIES singleValued(pairP(p,q))
+
+  recP(f,g,a,b): RECURSIVE PartialGraph =
+    IF b=0 THEN f(a)
+    ELSE bindP(recP(f,g,a,b-1),LAMBDA (w:nat): g(natPair(a,natPair(b-1,w))))
+    ENDIF MEASURE b
+
+  recP_zero: LEMMA recP(f,g,a,0)=f(a)
+
+  recP_succ: LEMMA recP(f,g,a,b+1)=
+    bindP(recP(f,g,a,b),LAMBDA (w:nat): g(natPair(a,natPair(b,w))))
+
+  recP_functional: LEMMA functional(f) AND functional(g)
+    IMPLIES singleValued(recP(f,g,a,b))
+
+  searchP(f,a,m): PartialGraph = LAMBDA (v:nat):
+    m<=v AND f(natPair(a,v))(0) AND
+      (FORALL (j:nat): m<=j AND j<v IMPLIES
+        EXISTS (w:nat): f(natPair(a,j))(w) AND w/=0)
+
+  searchP_ge: LEMMA searchP(f,a,m)(v) IMPLIES m<=v
+
+  searchP_at_start: LEMMA searchP(f,a,m)(m) IFF f(natPair(a,m))(0)
+
+  searchP_step: LEMMA searchP(f,a,m)(v) IFF
+    (v=m AND f(natPair(a,m))(0)) OR
+      ((EXISTS (w:nat): f(natPair(a,m))(w) AND w/=0) AND searchP(f,a,m+1)(v))
+
+  searchP_functional: LEMMA functional(f) IMPLIES singleValued(searchP(f,a,m))
+
+END ppg_partial_nat

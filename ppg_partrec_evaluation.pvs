@@ -1,0 +1,79 @@
+% This is the unbounded interpretation of Mathlib Nat.Partrec.Code.
+% Primitive recursion binds each preceding result; minimization uses searchP.
+ppg_partrec_evaluation: THEORY
+BEGIN
+  IMPORTING ppg_partial_nat, ppg_partrec_code_encoding
+
+  c,f,g: VAR ppg_partrec_code
+
+  n,a,b,m,v,w: VAR nat
+
+  Eval(c,n): RECURSIVE PartialGraph = CASES c OF
+    codeZero: pureP(0),
+    codeSucc: pureP(n+1),
+    codeLeft: pureP(unpair(n)`1),
+    codeRight: pureP(unpair(n)`2),
+    codePair(f,g): pairP(Eval(f,n),Eval(g,n)),
+    codeComp(f,g): bindP(Eval(g,n),LAMBDA (w:nat): Eval(f,w)),
+    codePrec(f,g): recP(LAMBDA (w:nat): Eval(f,w),LAMBDA (w:nat): Eval(g,w),
+      unpair(n)`1,unpair(n)`2),
+    codeRfind(f): searchP(LAMBDA (w:nat): Eval(f,w),unpair(n)`1,unpair(n)`2)
+  ENDCASES MEASURE codeSize(c)
+
+  Eval_zero: LEMMA Eval(codeZero,n)=pureP(0)
+
+  Eval_succ: LEMMA Eval(codeSucc,n)=pureP(n+1)
+
+  Eval_left: LEMMA Eval(codeLeft,n)=pureP(unpair(n)`1)
+
+  Eval_right: LEMMA Eval(codeRight,n)=pureP(unpair(n)`2)
+
+  Eval_pair: LEMMA Eval(codePair(f,g),n)=pairP(Eval(f,n),Eval(g,n))
+
+  Eval_comp: LEMMA Eval(codeComp(f,g),n)=
+    bindP(Eval(g,n),LAMBDA (w:nat): Eval(f,w))
+
+  Eval_prec: LEMMA Eval(codePrec(f,g),n)=
+    recP(LAMBDA (w:nat): Eval(f,w),LAMBDA (w:nat): Eval(g,w),
+      unpair(n)`1,unpair(n)`2)
+
+  Eval_rfind: LEMMA Eval(codeRfind(f),n)=
+    searchP(LAMBDA (w:nat): Eval(f,w),unpair(n)`1,unpair(n)`2)
+
+  Eval_functional: THEOREM singleValued(Eval(c,n))
+
+  Eval_prec_zero: LEMMA Eval(codePrec(f,g),natPair(a,0))=Eval(f,a)
+
+  Eval_prec_succ: LEMMA Eval(codePrec(f,g),natPair(a,b+1))=
+    bindP(Eval(codePrec(f,g),natPair(a,b)),
+      LAMBDA (w:nat): Eval(g,natPair(a,natPair(b,w))))
+
+  Eval_rfind_start: LEMMA Eval(codeRfind(f),natPair(a,m))(m)
+    IFF Eval(f,natPair(a,m))(0)
+
+  Eval_rfind_step: LEMMA Eval(codeRfind(f),natPair(a,m))(v) IFF
+    (v=m AND Eval(f,natPair(a,m))(0)) OR
+      ((EXISTS (w:nat): Eval(f,natPair(a,m))(w) AND w/=0) AND
+        Eval(codeRfind(f),natPair(a,m+1))(v))
+
+  Eval_prec_general: LEMMA Eval(codePrec(f,g),n)=
+    LET a=unpair(n)`1,b=unpair(n)`2 IN
+      IF b=0 THEN Eval(f,a)
+      ELSE bindP(Eval(codePrec(f,g),natPair(a,b-1)),
+        LAMBDA (w:nat): Eval(g,natPair(a,natPair(b-1,w)))) ENDIF
+
+  Eval_rfind_general: LEMMA Eval(codeRfind(f),n)(v) IFF
+    LET a=unpair(n)`1,m=unpair(n)`2 IN
+      (v=m AND Eval(f,natPair(a,m))(0)) OR
+        ((EXISTS (w:nat): Eval(f,natPair(a,m))(w) AND w/=0) AND
+          Eval(codeRfind(f),natPair(a,m+1))(v))
+
+  Eval_rfind_ge: LEMMA Eval(codeRfind(f),n)(v) IMPLIES unpair(n)`2<=v
+
+  PartialNat: TYPE = (singleValued)
+
+  partialEval(c,n): PartialNat = Eval(c,n)
+
+  evalDom(c,n): bool = EXISTS (v:nat): Eval(c,n)(v)
+
+END ppg_partrec_evaluation
