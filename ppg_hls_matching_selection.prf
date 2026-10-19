@@ -1,0 +1,1206 @@
+(|ppg_hls_matching_selection|
+ (|mem_pairArcs_data| 0
+  (|mem_pairArcs_data-1| NIL 4001399226
+   (""
+    (THEN
+     (GRIND :DEFS ("pairArcs" "matchingArcs" "Edge") :EXCLUDE
+      ("is_finite" "dagPaths.Acyclic" "dagPaths.reverseArc")))
+    NIL)
+   ((|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|pairArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (|matchingArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection|
+     NIL)
+    (|Edge| CONST-DECL "dagPaths.ArcRelation" |ppg_hls_witness_dag| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL))
+   SHOSTAK))
+ (|pairArc_labels_mem| 0
+  (|pairArc_labels_mem-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "mem_pairArcs_data" ("M" "M!1" "D" "D!1" "i" "i!1" "e" "e!1"))
+     (LEMMA "mem_pair_self" ("M" "M!1" "i" "e!1`1`1"))
+     (LEMMA "mem_pair_mate" ("M" "M!1" "i" "e!1`1`1"))
+     (GRIND :EXCLUDE
+      ("is_finite" "matchPair" "pairArcs" "Edge" "dagPaths.Acyclic"
+       "dagPaths.reverseArc")))
+    NIL)
+   ((|mem_pair_self| FORMULA-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|mem_pair_mate| FORMULA-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|mem_pairArcs_data| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL))
+   SHOSTAK))
+ (|pairArcs_eq_of_pair_eq| 0
+  (|pairArcs_eq_of_pair_eq-1| NIL 4001399226
+   ("" (THEN (SKOSIMP*) (EXPAND "pairArcs") (ASSERT)) NIL)
+   ((|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|pairArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection| NIL))
+   SHOSTAK))
+ (|selectedPairArcs_eq_of_pair_eq| 0
+  (|selectedPairArcs_eq_of_pair_eq-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "pairArcs_eq_of_pair_eq" ("M" "M!1" "D" "D!1" "i" "i!1" "j" "j!1"))
+     (EXPAND "selectedPairArcs") (ASSERT))
+    NIL)
+   ((|selectedPairArcs| CONST-DECL "finite_set[Arc]"
+     |ppg_hls_matching_selection| NIL)
+    (|pairArcs_eq_of_pair_eq| FORMULA-DECL NIL |ppg_hls_matching_selection|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL))
+   SHOSTAK))
+ (|selectedPairArcs_subset| 0
+  (|selectedPairArcs_subset-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*) (EXPAND "selectedPairArcs")
+     (LEMMA "parity.largerParity_subset"
+      ("E" "pairArcs(M!1,D!1,i!1)" "rank"
+       "LAMBDA(u:WNode):cliqueRank(D!1,matchPair(M!1,i!1),u)"))
+     (ASSERT))
+    NIL)
+   ((|largerParity_subset| FORMULA-DECL NIL |ppg_hls_parity_selection| NIL)
+    (|Edge| TYPE-EQ-DECL NIL |ppg_hls_parity_selection| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|pairArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection| NIL)
+    (|cliqueRank| CONST-DECL "nat" |ppg_hls_clique_ranks| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|selectedPairArcs| CONST-DECL "finite_set[Arc]"
+     |ppg_hls_matching_selection| NIL))
+   SHOSTAK))
+ (|selectedPairArcs_half| 0
+  (|selectedPairArcs_half-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*) (EXPAND "selectedPairArcs")
+     (LEMMA "parity.largerParity_half"
+      ("E" "pairArcs(M!1,D!1,i!1)" "rank"
+       "LAMBDA(u:WNode):cliqueRank(D!1,matchPair(M!1,i!1),u)"))
+     (ASSERT))
+    NIL)
+   ((|largerParity_half| FORMULA-DECL NIL |ppg_hls_parity_selection| NIL)
+    (|Edge| TYPE-EQ-DECL NIL |ppg_hls_parity_selection| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|pairArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection| NIL)
+    (|cliqueRank| CONST-DECL "nat" |ppg_hls_clique_ranks| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|selectedPairArcs| CONST-DECL "finite_set[Arc]"
+     |ppg_hls_matching_selection| NIL))
+   SHOSTAK))
+ (|selectedPairArcs_matching| 0
+  (|selectedPairArcs_matching-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "selectedPairArcs_subset" ("M" "M!1" "D" "D!1" "i" "i!1"))
+     (GRIND :DEFS ("subset?" "pairArcs") :EXCLUDE
+      ("is_finite" "matchingArcs" "selectedPairArcs")))
+    NIL)
+   ((|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (|pairArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|selectedPairArcs_subset| FORMULA-DECL NIL |ppg_hls_matching_selection|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL))
+   SHOSTAK))
+ (|arcNodes_member| 0
+  (|arcNodes_member-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "arcEndpoints.biUnion_member"
+      ("S" "E!1" "F" "parity.edgeVertices" "b" "u!1"))
+     (GRIND :DEFS ("arcNodes" "parity.endpoints" "parity.edgeVertices")
+      :EXCLUDE ("arcEndpoints.biUnion" "is_finite")))
+    NIL)
+   ((|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|arcNodes| CONST-DECL "finite_set[WNode[C, G]]"
+     |ppg_hls_matching_selection| NIL)
+    (|endpoints| CONST-DECL "finite_set[A]" |ppg_hls_parity_selection| NIL)
+    (|biUnion_member| FORMULA-DECL NIL |ppg_finite_bind| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Edge| TYPE-EQ-DECL NIL |ppg_hls_parity_selection| NIL)
+    (|edgeVertices| CONST-DECL "finite_set[A]" |ppg_hls_parity_selection| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK))
+ (|pairArcs_endpoint_data| 0
+  (|pairArcs_endpoint_data-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "mem_pairArcs_data" ("M" "M!1" "D" "Q!1" "i" "i!1" "e" "e!1"))
+     (LEMMA "pairArc_labels_mem" ("M" "M!1" "D" "Q!1" "i" "i!1" "e" "e!1"))
+     (LEMMA "valid_supported" ("D" "Q!1" "u" "e!1`1" "v" "e!1`2"))
+     (TYPEPRED "Q!1")
+     (GRIND :EXCLUDE
+      ("is_finite" "matchPair" "Valid" "Edge" "pairArcs" "dagPaths.Acyclic"
+       "dagPaths.reverseArc")))
+    NIL)
+   ((|pairArc_labels_mem| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|valid_supported| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|mem_pairArcs_data| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL))
+   SHOSTAK))
+ (|pairArcs_node_data| 0
+  (|pairArcs_node_data-1| NIL 4001399330
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "arcNodes_member" ("E" "pairArcs(M!1,Q!1,i!1)" "u" "u!1"))
+     (EXPAND "arcNodes")
+     (LEMMA "pairArcs_endpoint_data" ("M" "M!1" "Q" "Q!1" "i" "i!1" "u" "u!1"))
+     (GRIND :EXCLUDE
+      ("is_finite" "pairArcs" "parity.endpoints" "matchPair" "cliqueRank"
+       "Edge" "Valid")))
+    NIL)
+   ((|arcNodes| CONST-DECL "finite_set[WNode[C, G]]"
+     |ppg_hls_matching_selection| NIL)
+    (|pairArcs_endpoint_data| FORMULA-DECL NIL |ppg_hls_matching_selection|
+     NIL)
+    (|arcNodes_member| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|pairArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL))
+   SHOSTAK))
+ (|pairArcs_rank_injective| 0
+  (|pairArcs_rank_injective-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*) (EXPAND "parity.rankInjective") (SKOSIMP*)
+     (LEMMA "pairArcs_node_data" ("M" "M!1" "Q" "Q!1" "i" "i!1" "u" "u!1"))
+     (LEMMA "pairArcs_node_data" ("M" "M!1" "Q" "Q!1" "i" "i!1" "u" "v!1"))
+     (LEMMA "eq_of_cliqueRank_eq"
+      ("Q" "Q!1" "J" "matchPair(M!1,i!1)" "u" "u!1" "v" "v!1"))
+     (LEMMA "pair_is_clique" ("M" "M!1" "i" "i!1"))
+     (GRIND :EXCLUDE
+      ("is_finite" "pairArcs" "parity.endpoints" "matchPair" "cliqueRank"
+       "Edge" "Valid" "LabelClique")))
+    NIL)
+   ((|pair_is_clique| FORMULA-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|eq_of_cliqueRank_eq| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|pairArcs_node_data| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|rankInjective| CONST-DECL "bool" |ppg_hls_parity_selection| NIL))
+   SHOSTAK))
+ (|pairArcs_consecutive| 0
+  (|pairArcs_consecutive-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*) (EXPAND "parity.consecutive") (SKOSIMP*)
+     (LEMMA "mem_pairArcs_data" ("M" "M!1" "D" "Q!1" "i" "i!1" "e" "e!1"))
+     (LEMMA "pairArc_labels_mem" ("M" "M!1" "D" "Q!1" "i" "i!1" "e" "e!1"))
+     (LEMMA "cliqueRank_reversible_consecutive"
+      ("Q" "Q!1" "J" "matchPair(M!1,i!1)" "u" "e!1`1" "v" "e!1`2"))
+     (LEMMA "pair_is_clique" ("M" "M!1" "i" "i!1"))
+     (GRIND :EXCLUDE
+      ("is_finite" "pairArcs" "matchPair" "cliqueRank" "Edge" "LabelClique"
+       "dagPaths.Acyclic" "dagPaths.reverseArc")))
+    NIL)
+   ((|pairArc_labels_mem| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|pair_is_clique| FORMULA-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|cliqueRank_reversible_consecutive| FORMULA-DECL NIL
+     |ppg_hls_clique_ranks| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (|Edge| TYPE-EQ-DECL NIL |ppg_hls_parity_selection| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|mem_pairArcs_data| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|consecutive| CONST-DECL "bool" |ppg_hls_parity_selection| NIL))
+   SHOSTAK))
+ (|selectedPairArcs_endpoints_disjoint| 0
+  (|selectedPairArcs_endpoints_disjoint-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "pairArcs_rank_injective" ("M" "M!1" "Q" "Q!1" "i" "i!1"))
+     (LEMMA "pairArcs_consecutive" ("M" "M!1" "Q" "Q!1" "i" "i!1"))
+     (LEMMA "parity.largerParity_endpoints_disjoint"
+      ("E" "pairArcs(M!1,Q!1,i!1)" "rank"
+       "LAMBDA(u:WNode):cliqueRank(Q!1,matchPair(M!1,i!1),u)" "e" "e!1" "f"
+       "f!1"))
+     (EXPAND "selectedPairArcs") (ASSERT))
+    NIL)
+   ((|pairArcs_consecutive| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|selectedPairArcs| CONST-DECL "finite_set[Arc]"
+     |ppg_hls_matching_selection| NIL)
+    (|largerParity_endpoints_disjoint| FORMULA-DECL NIL
+     |ppg_hls_parity_selection| NIL)
+    (|Edge| TYPE-EQ-DECL NIL |ppg_hls_parity_selection| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|pairArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection| NIL)
+    (|cliqueRank| CONST-DECL "nat" |ppg_hls_clique_ranks| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (|pairArcs_rank_injective| FORMULA-DECL NIL |ppg_hls_matching_selection|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL))
+   SHOSTAK))
+ (|selectedArcs_subset| 0
+  (|selectedArcs_subset-1| NIL 4001399226
+   (""
+    (THEN
+     (GRIND :DEFS ("selectedArcs" "subset?") :EXCLUDE
+      ("is_finite" "matchingArcs" "selectedPairArcs")))
+    NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|selectedArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection|
+     NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|selectedArcs_member| 0
+  (|selectedArcs_member-1| NIL 4001399226
+   (""
+    (THEN (LEMMA "selectedPairArcs_matching")
+     (GRIND :DEFS ("selectedArcs") :EXCLUDE
+      ("is_finite" "selectedPairArcs" "matchingArcs")))
+    NIL)
+   ((|selectedPairArcs_matching| FORMULA-DECL NIL |ppg_hls_matching_selection|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|selectedArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL))
+   SHOSTAK))
+ (|selectedArcs_intro| 0
+  (|selectedArcs_intro-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "selectedArcs_member" ("M" "M!1" "D" "D!1" "e" "e!1"))
+     (GRIND :EXCLUDE ("is_finite" "selectedPairArcs" "selectedArcs")))
+    NIL)
+   ((|selectedArcs_member| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL))
+   SHOSTAK))
+ (|pairArc_endpoint_keys| 0
+  (|pairArc_endpoint_keys-1| NIL 4001399492
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "mem_pairArcs_data" ("M" "M!1" "D" "D!1" "i" "i!1" "e" "e!1"))
+     (LEMMA "pair_mate" ("M" "M!1" "i" "e!1`1`1"))
+     (GRIND :EXCLUDE
+      ("is_finite" "pairArcs" "matchPair" "Edge" "dagPaths.Acyclic"
+       "dagPaths.reverseArc")))
+    NIL)
+   ((|pair_mate| FORMULA-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|mem_pairArcs_data| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL))
+   SHOSTAK))
+ (|selectedArcs_endpoints_disjoint| 0
+  (|selectedArcs_endpoints_disjoint-1| NIL 4001399226
+   ("" (SKOSIMP*)
+    (("" (EXPAND "selectedArcs")
+      (("" (EXPAND "intersection")
+        (("" (EXPAND "member")
+          (("" (SKOSIMP*)
+            ((""
+              (LEMMA "selectedPairArcs_subset" ("M" "M!1" "D" "Q!1" "i" "i!1"))
+              ((""
+                (LEMMA "selectedPairArcs_subset"
+                 ("M" "M!1" "D" "Q!1" "i" "i!2"))
+                ((""
+                  (LEMMA "pairArc_labels_mem"
+                   ("M" "M!1" "D" "Q!1" "i" "i!1" "e" "e!1"))
+                  ((""
+                    (LEMMA "pairArc_labels_mem"
+                     ("M" "M!1" "D" "Q!1" "i" "i!2" "e" "f!1"))
+                    ((""
+                      (LEMMA "selectedPairArcs_eq_of_pair_eq"
+                       ("M" "M!1" "D" "Q!1" "i" "i!1" "j" "i!2"))
+                      ((""
+                        (LEMMA "selectedPairArcs_endpoints_disjoint"
+                         ("M" "M!1" "Q" "Q!1" "i" "i!1" "e" "e!1" "f" "f!1"))
+                        ((""
+                          (LEMMA "pair_disjoint_of_ne"
+                           ("M" "M!1" "i" "i!1" "j" "i!2"))
+                          ((""
+                            (LEMMA "pairArc_endpoint_keys"
+                             ("M" "M!1" "D" "Q!1" "i" "i!1" "e" "e!1"))
+                            ((""
+                              (LEMMA "pairArc_endpoint_keys"
+                               ("M" "M!1" "D" "Q!1" "i" "i!2" "e" "f!1"))
+                              ((""
+                                (CASE "matchPair(M!1,i!1)=matchPair(M!1,i!2)")
+                                (("1"
+                                  (GRIND :DEFS
+                                   ("parity.edgeVertices" "subset?" "disjoint?"
+                                    "member" "empty?" "intersection")
+                                   :EXCLUDE
+                                   ("is_finite" "matchingArcs"
+                                    "selectedPairArcs" "pairArcs" "matchPair"
+                                    "cliqueRank"))
+                                  NIL NIL)
+                                 ("2"
+                                  (GRIND :DEFS
+                                   ("parity.edgeVertices" "subset?" "disjoint?"
+                                    "member" "empty?" "intersection")
+                                   :EXCLUDE
+                                   ("is_finite" "matchingArcs"
+                                    "selectedPairArcs" "pairArcs" "matchPair"
+                                    "cliqueRank"))
+                                  NIL NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|selectedArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|selectedPairArcs_subset| FORMULA-DECL NIL |ppg_hls_matching_selection|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|pairArc_labels_mem| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|selectedPairArcs_eq_of_pair_eq| FORMULA-DECL NIL
+     |ppg_hls_matching_selection| NIL)
+    (|pair_disjoint_of_ne| FORMULA-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|edgeVertices| CONST-DECL "finite_set[A]" |ppg_hls_parity_selection| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|finite_intersection1| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (|pairArc_endpoint_keys| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|selectedPairArcs_endpoints_disjoint| FORMULA-DECL NIL
+     |ppg_hls_matching_selection| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL))
+   SHOSTAK))
+ (|labelEndpoint_mem| 0
+  (|labelEndpoint_mem-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*) (EXPAND "labelEndpoint")
+     (GRIND :DEFS ("parity.edgeVertices") :EXCLUDE ("is_finite")))
+    NIL)
+   ((|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|edgeVertices| CONST-DECL "finite_set[A]" |ppg_hls_parity_selection| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|labelEndpoint| CONST-DECL "WNode" |ppg_hls_matching_selection| NIL))
+   SHOSTAK))
+ (|labelEndpoint_label| 0
+  (|labelEndpoint_label-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "mem_pairArcs_data" ("M" "M!1" "D" "D!1" "i" "i!1" "e" "e!1"))
+     (LEMMA "pairArc_labels_mem" ("M" "M!1" "D" "D!1" "i" "i!1" "e" "e!1"))
+     (LEMMA "matching_involutive" ("M" "M!1" "i" "i!1"))
+     (GRIND :DEFS ("labelEndpoint" "matchPair") :EXCLUDE
+      ("is_finite" "pairArcs" "Edge" "dagPaths.Acyclic"
+       "dagPaths.reverseArc")))
+    NIL)
+   ((|pairArc_labels_mem| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (|labelEndpoint| CONST-DECL "WNode" |ppg_hls_matching_selection| NIL)
+    (|matching_involutive| FORMULA-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|mem_pairArcs_data| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL))
+   SHOSTAK))
+ (|selected_labelEndpoint_injective| 0
+  (|selected_labelEndpoint_injective-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*) (EXPAND "endpointImages.injOn") (SKOSIMP*)
+     (LEMMA "selectedPairArcs_endpoints_disjoint"
+      ("M" "M!1" "Q" "Q!1" "i" "i!1" "e" "x!1" "f" "y!1"))
+     (LEMMA "labelEndpoint_mem" ("i" "i!1" "e" "x!1"))
+     (LEMMA "labelEndpoint_mem" ("i" "i!1" "e" "y!1"))
+     (GRIND :DEFS ("disjoint?") :EXCLUDE
+      ("is_finite" "selectedPairArcs" "parity.edgeVertices" "labelEndpoint")))
+    NIL)
+   ((|labelEndpoint_mem| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|finite_intersection1| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|labelEndpoint| CONST-DECL "WNode" |ppg_hls_matching_selection| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|selectedPairArcs_endpoints_disjoint| FORMULA-DECL NIL
+     |ppg_hls_matching_selection| NIL)
+    (|injOn| CONST-DECL "bool" |ppg_finite_bijection| NIL))
+   SHOSTAK))
+ (|matchingArc_at_label| 0
+  (|matchingArc_at_label-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*) (LEMMA "pair_mate" ("M" "M!1" "i" "e!1`1`1"))
+     (LEMMA "matching_involutive" ("M" "M!1" "i" "i!1"))
+     (GRIND :DEFS ("matchingArcs" "pairArcs" "labelEndpoint") :EXCLUDE
+      ("is_finite" "matchPair" "Edge" "dagPaths.Acyclic"
+       "dagPaths.reverseArc")))
+    NIL)
+   ((|matching_involutive| FORMULA-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|matchingArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|labelEndpoint| CONST-DECL "WNode" |ppg_hls_matching_selection| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|pairArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection| NIL)
+    (|pair_mate| FORMULA-DECL NIL |ppg_hls_pair_keys| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL))
+   SHOSTAK))
+ (|incident_labelNodes_subset_image| 0
+  (|incident_labelNodes_subset_image-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*) (LEMMA "arcNodes_member" ("E" "matchingArcs(M!1,D!1)"))
+     (LEMMA "matchingArc_at_label")
+     (GRIND :DEFS ("subset?" "image") :EXCLUDE
+      ("is_finite" "arcNodes" "pairArcs" "matchingArcs" "labelEndpoint")))
+    NIL)
+   ((|matchingArc_at_label| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|pairArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection| NIL)
+    (|arcNodes_member| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|matchingArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection|
+     NIL))
+   SHOSTAK))
+ (|selected_endpoint_image_subset| 0
+  (|selected_endpoint_image_subset-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*) (LEMMA "selectedArcs_intro") (LEMMA "labelEndpoint_mem")
+     (LEMMA "labelEndpoint_label") (LEMMA "selectedPairArcs_subset")
+     (LEMMA "arcNodes_member" ("E" "selectedArcs(M!1,D!1)"))
+     (GRIND :DEFS ("subset?" "image" "parity.edgeVertices") :EXCLUDE
+      ("is_finite" "arcNodes" "pairArcs" "selectedArcs" "matchingArcs"
+       "selectedPairArcs" "labelEndpoint")))
+    NIL)
+   ((|labelEndpoint_mem| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|selectedPairArcs_subset| FORMULA-DECL NIL |ppg_hls_matching_selection|
+     NIL)
+    (|selectedPairArcs| CONST-DECL "finite_set[Arc]"
+     |ppg_hls_matching_selection| NIL)
+    (|labelEndpoint| CONST-DECL "WNode" |ppg_hls_matching_selection| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|edgeVertices| CONST-DECL "finite_set[A]" |ppg_hls_parity_selection| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|selectedArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection|
+     NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|arcNodes_member| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|labelEndpoint_label| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|selectedArcs_intro| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL))
+   SHOSTAK))
+ (|selectedArcs_half_incident_nodes| 0
+  (|selectedArcs_half_incident_nodes-1| NIL 4001399226
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "incident_labelNodes_subset_image" ("M" "M!1" "D" "Q!1" "i" "i!1"))
+     (LEMMA "selected_endpoint_image_subset" ("M" "M!1" "D" "Q!1" "i" "i!1"))
+     (LEMMA "selected_labelEndpoint_injective" ("M" "M!1" "Q" "Q!1" "i" "i!1"))
+     (LEMMA "endpointImages.card_image_injOn"
+      ("f" "labelEndpoint(i!1)" "S" "selectedPairArcs(M!1,Q!1,i!1)"))
+     (LEMMA "card_image[Arc,WNode]"
+      ("f" "labelEndpoint(i!1)" "S" "pairArcs(M!1,Q!1,i!1)"))
+     (LEMMA "card_subset[WNode]"
+      ("A"
+       "intersection(arcNodes(matchingArcs(M!1,Q!1)),LAMBDA(u:WNode):u`1=i!1)"
+       "B" "image(labelEndpoint(i!1),pairArcs(M!1,Q!1,i!1))"))
+     (LEMMA "card_subset[WNode]"
+      ("A" "image(labelEndpoint(i!1),selectedPairArcs(M!1,Q!1,i!1))" "B"
+       "intersection(arcNodes(selectedArcs(M!1,Q!1)),LAMBDA(u:WNode):u`1=i!1)"))
+     (LEMMA "selectedPairArcs_half" ("M" "M!1" "D" "Q!1" "i" "i!1"))
+     (GRIND :EXCLUDE
+      ("is_finite" "arcNodes" "pairArcs" "selectedArcs" "matchingArcs"
+       "selectedPairArcs" "labelEndpoint" "image" "subset?")))
+    NIL)
+   ((|selected_endpoint_image_subset| FORMULA-DECL NIL
+     |ppg_hls_matching_selection| NIL)
+    (|labelEndpoint| CONST-DECL "WNode" |ppg_hls_matching_selection| NIL)
+    (|selectedPairArcs| CONST-DECL "finite_set[Arc]"
+     |ppg_hls_matching_selection| NIL)
+    (|Arc| TYPE-EQ-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|card_image_injOn| FORMULA-DECL NIL |ppg_finite_bijection| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|matchingArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection|
+     NIL)
+    (|arcNodes| CONST-DECL "finite_set[WNode[C, G]]"
+     |ppg_hls_matching_selection| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|card_subset| FORMULA-DECL NIL |finite_sets| NIL)
+    (|selectedPairArcs_half| FORMULA-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|injOn| CONST-DECL "bool" |ppg_finite_bijection| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|selectedArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection|
+     NIL)
+    (|card_image| FORMULA-DECL NIL |function_image_aux| NIL)
+    (|pairArcs| CONST-DECL "finite_set[Arc]" |ppg_hls_matching_selection| NIL)
+    (|selected_labelEndpoint_injective| FORMULA-DECL NIL
+     |ppg_hls_matching_selection| NIL)
+    (|incident_labelNodes_subset_image| FORMULA-DECL NIL
+     |ppg_hls_matching_selection| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_matching_selection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_matching_selection| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL))
+   SHOSTAK)))
+
