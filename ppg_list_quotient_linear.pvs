@@ -1,0 +1,45 @@
+% Monotone certification classes in a linear order are convex. Separation
+% of distinct levels makes the quotient projection injective. The statement
+% named linear_cert_le_iff_le in Lean asserts preservation of order only;
+% its name does not supply an unproved converse.
+%
+% B. A. Davey and H. A. Priestley, Introduction to Lattices and Order,
+% second edition, Cambridge University Press, 2002. Lean counterpart:
+% PPGraphParametricQuotient.lean, Section 8. The carriers may be empty.
+%
+% Author: Dragan Stosic, 2026.
+
+ppg_list_quotient_linear[D: TYPE, Th: TYPE, le: (total_order?[Th])]: THEORY
+BEGIN
+
+  IMPORTING ppg_list_quotient[D, Th, le]
+
+  F: VAR CertFamily
+  d: VAR D
+  t1, t2, t3: VAR Th
+
+  linear_strict_not_equiv_aux: THEOREM TRUE
+
+  lt(t1, t2): bool = le(t1, t2) AND t1 /= t2
+
+  linear_strict_not_equiv: THEOREM lt(t1, t2) AND fully_certified(F)(d, t2) AND
+    NOT fully_certified(F)(d, t1) IMPLIES NOT cert_equiv(F)(t1, t2)
+
+  equiv_convex: THEOREM cert_equiv(F)(t1, t3) AND le(t1, t2) AND le(t2, t3) IMPLIES cert_equiv(F)(t1, t2)
+
+  linear_cert_le_iff_le: THEOREM le(t1, t2) IMPLIES cert_le(F)(t1, t2)
+
+  linear_join(t1, t2): Th = IF le(t1, t2) THEN t2 ELSE t1 ENDIF
+
+  linear_join_preserves: THEOREM fully_certified(F)(d, t1) IMPLIES
+    fully_certified(F)(d, linear_join(t1, t2))
+
+  separating(F): bool = FORALL (a, b: Th): lt(a, b) IMPLIES
+    EXISTS (d: D): fully_certified(F)(d, b) AND NOT fully_certified(F)(d, a)
+
+  separating_equiv_eq: THEOREM separating(F) AND cert_equiv(F)(t1, t2) IMPLIES t1 = t2
+
+  separating_quotient_trivial: THEOREM separating(F) AND
+    quotient_mk(F)(t1) = quotient_mk(F)(t2) IMPLIES t1 = t2
+
+END ppg_list_quotient_linear

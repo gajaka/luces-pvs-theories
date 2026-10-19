@@ -1,0 +1,94 @@
+% Two levels are equivalent when they certify exactly the same data.
+% A quotient element is its full equivalence class. The projection is
+% surjective and identifies exactly equivalent levels, including when
+% the data or level carrier is empty. No representative is chosen.
+%
+% B. A. Davey and H. A. Priestley, Introduction to Lattices and Order,
+% second edition, Cambridge University Press, 2002. Lean counterpart:
+% PPGraphParametricQuotient.lean, Sections 1--6.
+%
+% Author: Dragan Stosic, 2026.
+
+ppg_list_quotient[D: TYPE, Th: TYPE, le: (partial_order?[Th])]: THEORY
+BEGIN
+
+  IMPORTING ppg_parametric_core[D, Th, le]
+
+  F: VAR CertFamily
+  d: VAR D
+  t, t1, t2, t3, t1p, t2p, t_c1, t_c2: VAR Th
+
+  cert_equiv_refl: THEOREM cert_equiv(F)(t, t)
+
+  cert_equiv_symm: THEOREM cert_equiv(F)(t1, t2) IMPLIES cert_equiv(F)(t2, t1)
+
+  cert_equiv_trans: THEOREM
+    cert_equiv(F)(t1, t2) AND cert_equiv(F)(t2, t3) IMPLIES cert_equiv(F)(t1, t3)
+
+  equiv_and_order_implies_same_cert: THEOREM
+    le(t1, t2) AND cert_equiv(F)(t1, t2) IMPLIES
+      (fully_certified(F)(d, t1) IFF fully_certified(F)(d, t2))
+
+  canonical_unique: THEOREM
+    is_canonical(F)(d, t_c1) AND is_canonical(F)(d, t_c2) IMPLIES t_c1 = t_c2
+
+  canonical_unique_up_to_equiv: THEOREM
+    is_canonical(F)(d, t_c1) AND is_canonical(F)(d, t_c2) IMPLIES cert_equiv(F)(t_c1, t_c2)
+
+  SpecClass(F)(t): set[Th] = {u: Th | cert_equiv(F)(t, u)}
+
+  SpecQuotient(F: CertFamily): TYPE = {Q: set[Th] | EXISTS (t: Th): Q = SpecClass(F)(t)}
+
+  class_contains_generator: LEMMA SpecClass(F)(t)(t)
+
+  class_eq_of_equiv: LEMMA cert_equiv(F)(t1, t2) IMPLIES SpecClass(F)(t1) = SpecClass(F)(t2)
+
+  class_eq_implies_equiv: LEMMA SpecClass(F)(t1) = SpecClass(F)(t2) IMPLIES cert_equiv(F)(t1, t2)
+
+  quotient_mk(F)(t): SpecQuotient(F) = SpecClass(F)(t)
+
+  quotient_mk_eq_iff: LEMMA quotient_mk(F)(t1) = quotient_mk(F)(t2) IFF cert_equiv(F)(t1, t2)
+
+  quotient_projection_surjective: THEOREM
+    FORALL (Q: SpecQuotient(F)): EXISTS (t: Th): quotient_mk(F)(t) = Q
+
+  quotient_class_nonempty: LEMMA
+    FORALL (Q: SpecQuotient(F)): EXISTS (t: Th): Q(t)
+
+  cert_respects_equiv: THEOREM cert_equiv(F)(t1, t2) IMPLIES
+    (fully_certified(F)(d, t1) IFF fully_certified(F)(d, t2))
+
+  spec_edge_respects_equiv: THEOREM spec_edge(t1, t2) AND fully_certified(F)(d, t1) IMPLIES
+    fully_certified(F)(d, t2)
+
+  equiv_chain_collapses: THEOREM le(t1, t2) AND cert_equiv(F)(t1, t2) AND
+    fully_certified(F)(d, t2) IMPLIES fully_certified(F)(d, t1)
+
+  equiv_class_uniform: THEOREM cert_equiv(F)(t1, t2) IMPLIES
+    fully_certified(F)(d, t1) = fully_certified(F)(d, t2)
+
+  cert_le(F)(t1, t2): bool = FORALL (d: D): fully_certified(F)(d, t1) IMPLIES fully_certified(F)(d, t2)
+
+  cert_le_refl: THEOREM cert_le(F)(t, t)
+
+  cert_le_trans: THEOREM cert_le(F)(t1, t2) AND cert_le(F)(t2, t3) IMPLIES cert_le(F)(t1, t3)
+
+  cert_le_respects_equiv: THEOREM cert_equiv(F)(t1, t1p) AND cert_equiv(F)(t2, t2p) IMPLIES
+    (cert_le(F)(t1, t2) IFF cert_le(F)(t1p, t2p))
+
+  cert_le_antisym_equiv: LEMMA cert_le(F)(t1, t2) AND cert_le(F)(t2, t1) IMPLIES cert_equiv(F)(t1, t2)
+
+  quotient_le(F)(Q1, Q2: SpecQuotient(F)): bool =
+    FORALL (a, b: Th): Q1(a) AND Q2(b) IMPLIES cert_le(F)(a, b)
+
+  quotient_le_char: LEMMA quotient_le(F)(quotient_mk(F)(t1), quotient_mk(F)(t2)) IFF cert_le(F)(t1, t2)
+
+  quotient_le_refl: LEMMA FORALL (Q: SpecQuotient(F)): quotient_le(F)(Q, Q)
+
+  quotient_le_trans: LEMMA FORALL (Q1, Q2, Q3: SpecQuotient(F)):
+    quotient_le(F)(Q1, Q2) AND quotient_le(F)(Q2, Q3) IMPLIES quotient_le(F)(Q1, Q3)
+
+  quotient_le_antisymm: THEOREM FORALL (Q1, Q2: SpecQuotient(F)):
+    quotient_le(F)(Q1, Q2) AND quotient_le(F)(Q2, Q1) IMPLIES Q1 = Q2
+
+END ppg_list_quotient
