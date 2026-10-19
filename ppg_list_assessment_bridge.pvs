@@ -1,0 +1,69 @@
+% Parametric certification is the self-assessment specification with
+% system states D and vertices Th. Repair changes the datum while one
+% fixed family of certificate predicates determines every certified level.
+% Target restoration and preservation of the certified core remain
+% explicit obligations on the repair operator.
+%
+% Lean counterpart: PPGraphAssessmentBridge.lean. The data and level
+% types are arbitrary; the certificate family retains its actual finite
+% list and monotonicity proof. No least-level existence is assumed.
+ppg_list_assessment_bridge[D:TYPE,Th:TYPE,le:(partial_order?[Th])]: THEORY
+BEGIN
+  IMPORTING ppg_list_blocking[D,Th,le], ppg_generic_self_assessment[Th,D]
+  F: VAR CertFamily
+  d: VAR D
+  t,t_c_old,t_c_new,theta: VAR Th
+  C: VAR Certificate
+
+  certSpec(F): Spec = LAMBDA(d:D,t:Th):fully_certified(F)(d,t)
+
+  certSpec_broken_iff: THEOREM
+    broken(certSpec(F),d,t) IFF NOT fully_certified(F)(d,t)
+
+  ParametricRepairOp: TYPE = RepairOp
+
+  R: VAR ParametricRepairOp
+
+  valid_cert_repair(F,R,d,t): bool =
+    (NOT fully_certified(F)(d,t) IMPLIES fully_certified(F)(R(d,t),t)) AND
+    (FORALL(theta:Th):theta/=t AND fully_certified(F)(d,theta)
+      IMPLIES fully_certified(F)(R(d,t),theta))
+
+  valid_cert_repair_iff_valid_repair: LEMMA
+    valid_cert_repair(F,R,d,t) IFF valid_repair(R,certSpec(F),d,t)
+
+  cert_repair_preserves: THEOREM
+    NOT fully_certified(F)(d,t) AND valid_cert_repair(F,R,d,t) AND
+    fully_certified(F)(d,theta) IMPLIES fully_certified(F)(R(d,t),theta)
+
+  cert_repair_strict_growth: THEOREM
+    NOT fully_certified(F)(d,t) AND valid_cert_repair(F,R,d,t) IMPLIES
+      (FORALL(theta:Th):fully_certified(F)(d,theta)
+        IMPLIES fully_certified(F)(R(d,t),theta)) AND
+      fully_certified(F)(R(d,t),t) AND NOT fully_certified(F)(d,t)
+
+  canonical_after_repair: THEOREM
+    NOT fully_certified(F)(d,t) AND valid_cert_repair(F,R,d,t) AND
+    is_canonical(F)(R(d,t),t_c_new) IMPLIES le(t_c_new,t)
+
+  canonical_frontier_advances: THEOREM
+    NOT fully_certified(F)(d,t) AND valid_cert_repair(F,R,d,t) AND
+    le(t,t_c_old) AND is_canonical(F)(d,t_c_old) AND
+    is_canonical(F)(R(d,t),t_c_new) IMPLIES le(t_c_new,t) AND le(t,t_c_old)
+
+  repair_clears_blocking: THEOREM
+    NOT fully_certified(F)(d,t) AND valid_cert_repair(F,R,d,t) AND
+    member(C,F) IMPLIES NOT blocks(F,C,R(d,t),t)
+
+  repair_removes_all_blockers: THEOREM
+    NOT fully_certified(F)(d,t) AND valid_cert_repair(F,R,d,t) IMPLIES
+      blocking_set(F,R(d,t),t) = emptyset[Certificate]
+
+  complete_repair_cycle: THEOREM
+    NOT fully_certified(F)(d,t) AND valid_cert_repair(F,R,d,t) AND
+    is_canonical(F)(R(d,t),t_c_new) IMPLIES
+      fully_certified(F)(R(d,t),t) AND
+      (FORALL(theta:Th):fully_certified(F)(d,theta)
+        IMPLIES fully_certified(F)(R(d,t),theta)) AND
+      blocking_set(F,R(d,t),t) = emptyset[Certificate] AND le(t_c_new,t)
+END ppg_list_assessment_bridge

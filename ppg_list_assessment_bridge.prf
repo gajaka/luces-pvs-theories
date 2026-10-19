@@ -1,0 +1,273 @@
+(|ppg_list_assessment_bridge|
+ (|certSpec_broken_iff| 0
+  (|certSpec_broken_iff-1| NIL 4001357135
+   ("" (THEN (GRIND :DEFS ("certSpec" "broken"))) NIL)
+   ((|le| FORMAL-CONST-DECL "(partial_order?[Th])" |ppg_list_assessment_bridge|
+     NIL)
+    (|partial_order?| CONST-DECL "bool" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Th| FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (|fully_certified| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|certSpec| CONST-DECL "Spec" |ppg_list_assessment_bridge| NIL)
+    (|broken| CONST-DECL "bool" |ppg_generic_self_assessment| NIL))
+   SHOSTAK))
+ (|valid_cert_repair_iff_valid_repair| 0
+  (|valid_cert_repair_iff_valid_repair-1| NIL 4001357135
+   (""
+    (THEN
+     (GRIND :DEFS
+      ("valid_cert_repair" "valid_repair" "target_restored" "core_preserved"
+       "certSpec" "broken")))
+    NIL)
+   ((|le| FORMAL-CONST-DECL "(partial_order?[Th])" |ppg_list_assessment_bridge|
+     NIL)
+    (|partial_order?| CONST-DECL "bool" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Th| FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (|fully_certified| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|valid_cert_repair| CONST-DECL "bool" |ppg_list_assessment_bridge| NIL)
+    (|certSpec| CONST-DECL "Spec" |ppg_list_assessment_bridge| NIL)
+    (|broken| CONST-DECL "bool" |ppg_generic_self_assessment| NIL)
+    (|target_restored| CONST-DECL "bool" |ppg_generic_self_assessment| NIL)
+    (|core_preserved| CONST-DECL "bool" |ppg_generic_self_assessment| NIL)
+    (|valid_repair| CONST-DECL "bool" |ppg_generic_self_assessment| NIL))
+   SHOSTAK))
+ (|cert_repair_preserves| 0
+  (|cert_repair_preserves-1| NIL 4001357135
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "valid_cert_repair_iff_valid_repair"
+      ("F" "F!1" "R" "R!1" "d" "d!1" "t" "t!1"))
+     (LEMMA "repair_preserves_certified"
+      ("R" "R!1" "spec" "certSpec(F!1)" "s" "d!1" "v" "t!1" "w" "theta!1"))
+     (GRIND :DEFS ("broken" "certSpec")))
+    NIL)
+   ((|repair_preserves_certified| FORMULA-DECL NIL
+     |ppg_generic_self_assessment| NIL)
+    (|RepairOp| TYPE-EQ-DECL NIL |ppg_generic_self_assessment| NIL)
+    (|Spec| TYPE-EQ-DECL NIL |ppg_generic_self_assessment| NIL)
+    (|certSpec| CONST-DECL "Spec" |ppg_list_assessment_bridge| NIL)
+    (|valid_cert_repair| CONST-DECL "bool" |ppg_list_assessment_bridge| NIL)
+    (|valid_repair| CONST-DECL "bool" |ppg_generic_self_assessment| NIL)
+    (|core_preserved| CONST-DECL "bool" |ppg_generic_self_assessment| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|target_restored| CONST-DECL "bool" |ppg_generic_self_assessment| NIL)
+    (|broken| CONST-DECL "bool" |ppg_generic_self_assessment| NIL)
+    (|fully_certified| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|valid_cert_repair_iff_valid_repair| FORMULA-DECL NIL
+     |ppg_list_assessment_bridge| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (|Th| FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|partial_order?| CONST-DECL "bool" |orders| NIL)
+    (|le| FORMAL-CONST-DECL "(partial_order?[Th])" |ppg_list_assessment_bridge|
+     NIL)
+    (|Certificate| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|monotone_cert| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|CertFamily| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|ParametricRepairOp| TYPE-EQ-DECL NIL |ppg_list_assessment_bridge| NIL))
+   SHOSTAK))
+ (|cert_repair_strict_growth| 0
+  (|cert_repair_strict_growth-1| NIL 4001357135
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "valid_cert_repair_iff_valid_repair"
+      ("F" "F!1" "R" "R!1" "d" "d!1" "t" "t!1"))
+     (LEMMA "repair_strict_growth"
+      ("R" "R!1" "spec" "certSpec(F!1)" "s" "d!1" "v" "t!1"))
+     (GRIND :DEFS ("broken" "certSpec")))
+    NIL)
+   ((|repair_strict_growth| FORMULA-DECL NIL |ppg_generic_self_assessment| NIL)
+    (|RepairOp| TYPE-EQ-DECL NIL |ppg_generic_self_assessment| NIL)
+    (|Spec| TYPE-EQ-DECL NIL |ppg_generic_self_assessment| NIL)
+    (|certSpec| CONST-DECL "Spec" |ppg_list_assessment_bridge| NIL)
+    (|valid_cert_repair| CONST-DECL "bool" |ppg_list_assessment_bridge| NIL)
+    (|valid_repair| CONST-DECL "bool" |ppg_generic_self_assessment| NIL)
+    (|core_preserved| CONST-DECL "bool" |ppg_generic_self_assessment| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|target_restored| CONST-DECL "bool" |ppg_generic_self_assessment| NIL)
+    (|broken| CONST-DECL "bool" |ppg_generic_self_assessment| NIL)
+    (|fully_certified| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|valid_cert_repair_iff_valid_repair| FORMULA-DECL NIL
+     |ppg_list_assessment_bridge| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (|Th| FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|partial_order?| CONST-DECL "bool" |orders| NIL)
+    (|le| FORMAL-CONST-DECL "(partial_order?[Th])" |ppg_list_assessment_bridge|
+     NIL)
+    (|Certificate| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|monotone_cert| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|CertFamily| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|ParametricRepairOp| TYPE-EQ-DECL NIL |ppg_list_assessment_bridge| NIL))
+   SHOSTAK))
+ (|canonical_after_repair| 0
+  (|canonical_after_repair-1| NIL 4001357135
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "repair_canonical_below_target"
+      ("F" "F!1" "d_old" "d!1" "d_new" "R!1(d!1,t!1)" "t_target" "t!1"
+       "t_c_new" "t_c_new!1"))
+     (GRIND :DEFS ("repair" "valid_cert_repair")))
+    NIL)
+   ((|fully_certified| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|repair| CONST-DECL "bool" |ppg_parametric_core| NIL)
+    (|is_canonical| CONST-DECL "bool" |ppg_parametric_core| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|valid_cert_repair| CONST-DECL "bool" |ppg_list_assessment_bridge| NIL)
+    (|repair_canonical_below_target| FORMULA-DECL NIL |ppg_parametric_core|
+     NIL)
+    (|Certificate| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|monotone_cert| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|CertFamily| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|ParametricRepairOp| TYPE-EQ-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (|Th| FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|partial_order?| CONST-DECL "bool" |orders| NIL)
+    (|le| FORMAL-CONST-DECL "(partial_order?[Th])" |ppg_list_assessment_bridge|
+     NIL))
+   SHOSTAK))
+ (|canonical_frontier_advances| 0
+  (|canonical_frontier_advances-1| NIL 4001357135
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "canonical_after_repair"
+      ("F" "F!1" "R" "R!1" "d" "d!1" "t" "t!1" "t_c_new" "t_c_new!1"))
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|canonical_after_repair| FORMULA-DECL NIL |ppg_list_assessment_bridge|
+     NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (|Th| FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|partial_order?| CONST-DECL "bool" |orders| NIL)
+    (|le| FORMAL-CONST-DECL "(partial_order?[Th])" |ppg_list_assessment_bridge|
+     NIL)
+    (|Certificate| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|monotone_cert| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|CertFamily| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|ParametricRepairOp| TYPE-EQ-DECL NIL |ppg_list_assessment_bridge| NIL))
+   SHOSTAK))
+ (|repair_clears_blocking| 0
+  (|repair_clears_blocking-1| NIL 4001357135
+   (""
+    (THEN
+     (GRIND :IF-MATCH ALL :DEFS
+      ("valid_cert_repair" "blocks" "fully_certified")))
+    NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|Certificate| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|monotone_cert| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|CertFamily| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|le| FORMAL-CONST-DECL "(partial_order?[Th])" |ppg_list_assessment_bridge|
+     NIL)
+    (|partial_order?| CONST-DECL "bool" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Th| FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (|fully_certified| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|valid_cert_repair| CONST-DECL "bool" |ppg_list_assessment_bridge| NIL)
+    (|blocks| CONST-DECL "bool" |ppg_list_blocking| NIL))
+   SHOSTAK))
+ (|repair_removes_all_blockers| 0
+  (|repair_removes_all_blockers-1| NIL 4001357135
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :IF-MATCH ALL :DEFS
+      ("valid_cert_repair" "blocking_set" "blocks" "fully_certified"
+       "emptyset")))
+    NIL)
+   ((|blocks| CONST-DECL "bool" |ppg_list_blocking| NIL)
+    (|fully_certified| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|valid_cert_repair| CONST-DECL "bool" |ppg_list_assessment_bridge| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|partial_order?| CONST-DECL "bool" |orders| NIL)
+    (|le| FORMAL-CONST-DECL "(partial_order?[Th])" |ppg_list_assessment_bridge|
+     NIL)
+    (|Certificate| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|monotone_cert| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|CertFamily| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|blocking_set| CONST-DECL "set[Certificate[D, Th, le]]"
+     |ppg_list_blocking| NIL)
+    (|ParametricRepairOp| TYPE-EQ-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Th| FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL))
+   SHOSTAK))
+ (|complete_repair_cycle| 0
+  (|complete_repair_cycle-1| NIL 4001357135
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "cert_repair_strict_growth"
+      ("F" "F!1" "R" "R!1" "d" "d!1" "t" "t!1"))
+     (LEMMA "repair_removes_all_blockers"
+      ("F" "F!1" "R" "R!1" "d" "d!1" "t" "t!1"))
+     (LEMMA "canonical_after_repair"
+      ("F" "F!1" "R" "R!1" "d" "d!1" "t" "t!1" "t_c_new" "t_c_new!1"))
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|repair_removes_all_blockers| FORMULA-DECL NIL
+     |ppg_list_assessment_bridge| NIL)
+    (|canonical_after_repair| FORMULA-DECL NIL |ppg_list_assessment_bridge|
+     NIL)
+    (|cert_repair_strict_growth| FORMULA-DECL NIL |ppg_list_assessment_bridge|
+     NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (|Th| FORMAL-TYPE-DECL NIL |ppg_list_assessment_bridge| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|partial_order?| CONST-DECL "bool" |orders| NIL)
+    (|le| FORMAL-CONST-DECL "(partial_order?[Th])" |ppg_list_assessment_bridge|
+     NIL)
+    (|Certificate| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|monotone_cert| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|CertFamily| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|ParametricRepairOp| TYPE-EQ-DECL NIL |ppg_list_assessment_bridge| NIL))
+   SHOSTAK)))
+
