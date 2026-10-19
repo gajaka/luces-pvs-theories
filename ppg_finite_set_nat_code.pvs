@@ -1,0 +1,19 @@
+% An injective natural code for the carrier gives an injective code for
+% its finite subsets. A choose/rest listing supplies one finite word.
+% Equality of codes recovers that word and hence the original subset;
+% no ordering of the carrier or invariance under permutations is needed.
+%
+% Auxiliary support for the conditional Countable instance in
+% PPGraphHLSWitnessDAG.lean.
+ppg_finite_set_nat_code[T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_nat_list_code, ppg_list_sets[T]
+  e: VAR [T->nat]
+  S,U: VAR finite_set[T]
+
+  setCode(e)(S): nat = listCode(map[T,nat](e)(setList(S)))
+
+  set_code_cancel: LEMMA injective?(e) AND setCode(e)(S)=setCode(e)(U) IMPLIES S=U
+
+  set_code_injective: THEOREM injective?(e) IMPLIES injective?(setCode(e))
+END ppg_finite_set_nat_code
