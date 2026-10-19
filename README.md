@@ -8,8 +8,8 @@ models; the generic theory keeps the data, specifications and repair actions
 abstract.
 
 As of **2026-10-19**, the translation has independently replayed counterparts
-for **1,357 of 1,824 Lean source theorems and lemmas**, with all recorded results
-checked in **126 of 191 modules**. Supporting PVS lemmas and type-correctness
+for **1,401 of 1,824 Lean source theorems and lemmas**, with all recorded results
+checked in **130 of 191 modules**. Supporting PVS lemmas and type-correctness
 conditions are additional obligations and are excluded from those source-result counts.
 The translation is still in progress.
 
@@ -103,11 +103,17 @@ Recorded translation checks on 2026-10-18 and 2026-10-19 include:
 | Canonical proper witness-DAG weight budget | 564/564 project obligations complete across 57 proof-bearing theories from 58 source files, including 14 new obligations and 7 source results. |
 | Representative selection and finite-list lenses | 75/75 project obligations complete across 6 theories, including 37 new obligations and 23 source results. |
 | General numerical feasibility and dependent-domain resampling | 36/36 project obligations complete across 5 theories, including 12 new obligations and 9 source results. |
+| Ordered witness DAGs and reversal | 105/105 project obligations complete across 6 theories, including 29 new obligations and 7 source results. |
+| General Local Lemma | 407/407 project obligations complete across 39 theories, including 48 new obligations and 30 source results; 412 Native library obligations freshly replayed in the same cold PVS process. |
+| Constructed topological node order | 191/191 project obligations complete across 15 theories, including 8 new obligations and 7 source results. |
 
 These runs check saved proofs in isolated workspaces. Project dependencies use
 the exact committed source and proof inputs. The separately checked native
 library sources and proofs are hashed before and after reuse. A completed run
 requires `proved - complete`, including the relevant TCCs and dependencies.
+The Local Lemma run starts from a source-only private library copy and freshly
+checks 412 selected Native obligations. The larger 1,109-obligation support
+certificate is recorded separately.
 The table records those checks; it does not report a fresh successful replay of
 every legacy application file or of `Sterbenz/`.
 
@@ -209,7 +215,7 @@ integration arguments. Each entry's imports lead to that support.
 |-------|-------|
 | [ppg_bdd.pvs](ppg_bdd.pvs), [ppg_bdd_locality.pvs](ppg_bdd_locality.pvs), [ppg_bdd_cost.pvs](ppg_bdd_cost.pvs) | Shared-variable components, repair non-interference and component costs. |
 | [ppg_generic_probabilistic.pvs](ppg_generic_probabilistic.pvs), [ppg_dependent_resampling.pvs](ppg_dependent_resampling.pvs) | Exact finite-footprint feasibility, pair discriminant obstruction and resampling identities for arbitrary per-variable domains. |
-| [ppg_lll.pvs](ppg_lll.pvs), [ppg_lopsided_probability.pvs](ppg_lopsided_probability.pvs) | General and lopsided Local Lemma criteria. |
+| [ppg_lll_event_splits.pvs](ppg_lll_event_splits.pvs), [ppg_lll_pass_measurable.pvs](ppg_lll_pass_measurable.pvs), [ppg_lll_source_probability.pvs](ppg_lll_source_probability.pvs), [ppg_lopsided_probability.pvs](ppg_lopsided_probability.pvs) | Current general and lopsided Local Lemma criteria, event splits, measurable avoidance and the denominator telescope under its strict-subset induction hypothesis. |
 | [ppg_mt_random_process.pvs](ppg_mt_random_process.pvs), [ppg_mt_trajectory_measurable.pvs](ppg_mt_trajectory_measurable.pvs) | Product-table trajectories, local counters and measurability. |
 | [ppg_mt_growing.pvs](ppg_mt_growing.pvs), [ppg_mt_injectivity.pvs](ppg_mt_injectivity.pvs), [ppg_rose_canonical_enum.pvs](ppg_rose_canonical_enum.pvs) | Witness construction, injective occurrence encodings and canonical trees. |
 | [ppg_mt_check_probability.pvs](ppg_mt_check_probability.pvs), [ppg_mt_total_budget.pvs](ppg_mt_total_budget.pvs) | Witness probabilities, occurrence counts and the expected-work bound. |
@@ -222,6 +228,8 @@ integration arguments. Each entry's imports lead to that support.
 | Files | Scope |
 |-------|-------|
 | [ppg_hls_reversal.pvs](ppg_hls_reversal.pvs) | Reversible arcs of arbitrary acyclic relations. |
+| [ppg_hls_ordered_dag.pvs](ppg_hls_ordered_dag.pvs), [ppg_hls_ordered_reversal.pvs](ppg_hls_ordered_reversal.pvs) | Witness orders, orientation and reversal under their local order hypotheses. |
+| [ppg_hls_topological_order.pvs](ppg_hls_topological_order.pvs) | A constructed strict total node order for finite label universes, with longest-path height and an intrinsic label numbering. |
 | [ppg_hls_witness_dag.pvs](ppg_hls_witness_dag.pvs) | Finite witness DAGs, unique sinks, reversal and ancestor prefixes. |
 | [ppg_hls_witness_layers.pvs](ppg_hls_witness_layers.pvs), [ppg_finite_nat_sup.pvs](ppg_finite_nat_sup.pvs), [ppg_nat_rank_well_founded.pvs](ppg_nat_rank_well_founded.pvs) | Constructed longest-path heights, independent layers and their successor relation. |
 | [ppg_hls_stable_encoding.pvs](ppg_hls_stable_encoding.pvs), [ppg_hls_encoding_product.pvs](ppg_hls_encoding_product.pvs), [ppg_hls_encoding_weight.pvs](ppg_hls_encoding_weight.pvs) | Stable layer sequences, finite products in arbitrary commutative monoids, and equality of real node and sequence weights. |
@@ -456,7 +464,7 @@ proofs.
 
 - Noga Alon and Joel H. Spencer, *The Probabilistic Method*, fourth edition,
   Wiley, 2016, Lemma 5.1.1 and Section 5.7. The
-  [General Local Lemma](ppg_lll.pvs) and
+  [General Local Lemma](ppg_lll_source_probability.pvs) and
   [expected resampling bound](ppg_mt_total_budget.pvs) use the declared event
   probabilities, dependencies and resampling budgets.
 - Robin A. Moser and Gabor Tardos,
@@ -553,8 +561,10 @@ and replayed. Witness-DAG reversal, ancestor prefixes, longest-path layers,
 stable encodings, canonical reconstruction and the proper-family weight budget
 are also replayed. The core translation now retains actual finite certificate
 lists, arbitrary carriers, generated quotient classes and the general repair
-model. Remaining work includes the complete Local Lemma source module, later
-HLS occurrence and policy bounds, and the computability limit for the encoded
+model. All recorded results in the general Local Lemma module are translated
+and replayed. Ordered witness DAGs and their constructed topological node order
+are also checked. Remaining work includes HLS occurrence and policy bounds,
+and the computability limit for the encoded
 infinite repair family. Source-by-source semantic review and replay accounting
 continue with each package.
 
