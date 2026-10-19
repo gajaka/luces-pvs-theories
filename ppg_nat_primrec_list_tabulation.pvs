@@ -1,0 +1,89 @@
+% Mario Carneiro, Mathlib Computability.Primrec.List, list_map and list_range.
+% Mapping first builds the reversed output by a left fold, then reverses it.
+% Tabulation maps over the actual finite list 0,...,n-1.
+ppg_nat_primrec_list_tabulation: THEORY
+BEGIN
+  IMPORTING ppg_nat_primrec_list_operations
+
+  f: VAR TotalFunction
+
+  a,z,l,k,n: VAR nat
+
+  L,M: VAR NatList
+
+  mapNatList(f,a,L): NatList = map(LAMBDA(n:nat): f(natPair(a,n)))(L)
+
+  mapNatList_nil: LEMMA mapNatList(f,a,null[nat])=null[nat]
+
+  mapNatList_cons: LEMMA mapNatList(f,a,cons[nat](n,L))=
+    cons[nat](f(natPair(a,n)),mapNatList(f,a,L))
+
+  mapNatList_append: LEMMA mapNatList(f,a,append(L,M))=
+    append(mapNatList(f,a,L),mapNatList(f,a,M))
+
+  mapStepT(f): TotalFunction = compT(consCodeT,
+    pairT(compT(f,pairT(parameterT,remainderT)),accumulatorT))
+
+  mapStepT_value: LEMMA mapStepT(f)(natPair(a,natPair(z,n)))=consCode(f(natPair(a,n)),z)
+
+  pr_mapStep: LEMMA NatPrimrec(f) IMPLIES NatPrimrec(mapStepT(f))
+
+  mapCode(f,a,l): nat = reverseCode(foldCode(mapStepT(f),a,0,l))
+
+  mapCodeT(f): TotalFunction = compT(reverseCode,foldInputsT(mapStepT(f),leftT,zeroT,rightT))
+
+  mapCodeT_value: LEMMA mapCodeT(f)(n)=mapCode(f,leftT(n),rightT(n))
+
+  pr_mapCode: THEOREM NatPrimrec(f) IMPLIES NatPrimrec(mapCodeT(f))
+
+  fold_map_semantics: THEOREM FORALL(f:TotalFunction,a:nat,M:NatList):
+    foldNatList(mapStepT(f),a,encodeNatList(M),L)=
+    encodeNatList(append(reverse(mapNatList(f,a,L)),M))
+
+  mapCode_semantics: THEOREM mapCode(f,a,encodeNatList(L))=encodeNatList(mapNatList(f,a,L))
+
+  mapCode_nil: LEMMA mapCode(f,a,0)=0
+
+  mapCode_snoc: LEMMA mapCode(f,a,snocCode(encodeNatList(L),n))=
+    snocCode(mapCode(f,a,encodeNatList(L)),f(natPair(a,n)))
+
+  rangeNatList(n): RECURSIVE NatList = IF n=0 THEN null[nat]
+    ELSE append(rangeNatList(n-1),cons[nat](n-1,null[nat])) ENDIF MEASURE n
+
+  rangeNatList_zero: LEMMA rangeNatList(0)=null[nat]
+
+  rangeNatList_succ: LEMMA rangeNatList(n+1)=append(rangeNatList(n),cons[nat](n,null[nat]))
+
+  rangeNatList_length: THEOREM length(rangeNatList(n))=n
+
+  rangeStepT: TotalFunction = compT(snocCodeT,pairT(remainderT,accumulatorT))
+
+  pr_rangeStep: LEMMA NatPrimrec(rangeStepT)
+
+  rangeStepT_value: LEMMA rangeStepT(natPair(a,natPair(n,z)))=snocCode(z,n)
+
+  rangeCode: TotalFunction = compT(precT(zeroT,rangeStepT),pairT(zeroT,idT))
+
+  pr_rangeCode: THEOREM NatPrimrec(rangeCode)
+
+  rangeCode_zero: LEMMA rangeCode(0)=0
+
+  rangeCode_succ: LEMMA rangeCode(n+1)=snocCode(rangeCode(n),n)
+
+  rangeCode_semantics: THEOREM rangeCode(n)=encodeNatList(rangeNatList(n))
+
+  tabulateCode(f,a,n): nat = mapCode(f,a,rangeCode(n))
+
+  tabulateCodeT(f): TotalFunction = compT(mapCodeT(f),pairT(leftT,compT(rangeCode,rightT)))
+
+  tabulateCodeT_value: LEMMA tabulateCodeT(f)(n)=tabulateCode(f,leftT(n),rightT(n))
+
+  pr_tabulateCode: THEOREM NatPrimrec(f) IMPLIES NatPrimrec(tabulateCodeT(f))
+
+  tabulateCode_semantics: THEOREM tabulateCode(f,a,n)=encodeNatList(mapNatList(f,a,rangeNatList(n)))
+
+  tabulateCode_zero: LEMMA tabulateCode(f,a,0)=0
+
+  tabulateCode_succ: LEMMA tabulateCode(f,a,n+1)=snocCode(tabulateCode(f,a,n),f(natPair(a,n)))
+
+END ppg_nat_primrec_list_tabulation

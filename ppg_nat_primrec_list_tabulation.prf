@@ -1,0 +1,768 @@
+(|ppg_nat_primrec_list_tabulation|
+ (|mapNatList_nil| 0
+  (|mapNatList_nil-1| NIL 4001416046
+   ("" (THEN (SKOSIMP*) (EXPAND "mapNatList") (EXPAND "map" + 1) (ASSERT)) NIL)
+   ((|map| ADT-DEF-DECL "list[T1]" |list_adt_map| NIL)
+    (|mapNatList| CONST-DECL "NatList" |ppg_nat_primrec_list_tabulation| NIL))
+   SHOSTAK))
+ (|mapNatList_cons| 0
+  (|mapNatList_cons-1| NIL 4001416046
+   ("" (THEN (SKOSIMP*) (EXPAND "mapNatList") (EXPAND "map" + 1) (ASSERT)) NIL)
+   ((|map| ADT-DEF-DECL "list[T1]" |list_adt_map| NIL)
+    (|mapNatList| CONST-DECL "NatList" |ppg_nat_primrec_list_tabulation| NIL))
+   SHOSTAK))
+ (|mapNatList_append| 0
+  (|mapNatList_append-1| NIL 4001416046
+   (""
+    (AUTO-REWRITE "mapNatList_nil" "mapNatList_cons" "list_append_nil"
+                  "list_append_cons")
+    (("" (INDUCT "L")
+      (("1" (GRIND :IF-MATCH ALL :EXCLUDE ("mapNatList" "map" "append")) NIL
+        NIL)
+       ("2" (GRIND :IF-MATCH ALL :EXCLUDE ("mapNatList" "map" "append")) NIL
+        NIL))
+      NIL))
+    NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|list_append_cons| FORMULA-DECL NIL |ppg_nat_primrec_list_operations| NIL)
+    (|natPair| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|mapNatList_cons| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|list_append_nil| FORMULA-DECL NIL |ppg_nat_primrec_list_operations| NIL)
+    (|mapNatList_nil| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|list_induction| FORMULA-DECL NIL |list_adt| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|append| DEF-DECL "list[T]" |list_props| NIL)
+    (|mapNatList| CONST-DECL "NatList" |ppg_nat_primrec_list_tabulation| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|NatList| TYPE-EQ-DECL NIL |ppg_nat_list_square_codec| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL))
+   SHOSTAK))
+ (|mapStepT_value| 0
+  (|mapStepT_value-1| NIL 4001416046
+   (""
+    (THEN (AUTO-REWRITE "unpair_pair") (SKOSIMP*) (EXPAND "mapStepT")
+     (EXPAND "consCodeT") (EXPAND "succT") (EXPAND "compT") (EXPAND "pairT")
+     (EXPAND "parameterT") (EXPAND "remainderT") (EXPAND "accumulatorT")
+     (EXPAND "compT") (EXPAND "leftT") (EXPAND "rightT") (EXPAND "consCode")
+     (ASSERT))
+    NIL)
+   ((|mapStepT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|compT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|parameterT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_fold| NIL)
+    (|accumulatorT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_fold| NIL)
+    (|leftT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|consCode| CONST-DECL "nat" |ppg_nat_option_list_codes| NIL)
+    (|unpair_pair| FORMULA-DECL NIL |ppg_nat_square_pairing| NIL)
+    (|rightT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|remainderT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_fold| NIL)
+    (|pairT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|consCodeT| CONST-DECL "TotalFunction" |ppg_nat_option_list_codes| NIL))
+   SHOSTAK))
+ (|pr_mapStep| 0
+  (|pr_mapStep-1| NIL 4001416046
+   (""
+    (THEN (SKOSIMP*) (EXPAND "mapStepT") (LEMMA "pr_consCode")
+     (LEMMA "pr_parameter") (LEMMA "pr_remainder")
+     (USE "pr_pair" ("f" "parameterT" "g" "remainderT")) (ASSERT)
+     (USE "pr_comp" ("f" "f!1" "g" "pairT(parameterT,remainderT)")) (ASSERT)
+     (LEMMA "pr_accumulator")
+     (USE "pr_pair"
+          ("f" "compT(f!1,pairT(parameterT,remainderT))" "g" "accumulatorT"))
+     (ASSERT)
+     (USE "pr_comp"
+          ("f" "consCodeT" "g"
+           "pairT(compT(f!1,pairT(parameterT,remainderT)),accumulatorT)"))
+     (ASSERT) (ASSERT))
+    NIL)
+   ((|pr_consCode| FORMULA-DECL NIL |ppg_nat_option_list_codes| NIL)
+    (|pr_remainder| FORMULA-DECL NIL |ppg_nat_primrec_list_fold| NIL)
+    (|compT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|accumulatorT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_fold| NIL)
+    (|consCodeT| CONST-DECL "TotalFunction" |ppg_nat_option_list_codes| NIL)
+    (|pr_accumulator| FORMULA-DECL NIL |ppg_nat_primrec_list_fold| NIL)
+    (|pairT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|pr_comp| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|remainderT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_fold| NIL)
+    (|parameterT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_fold| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|pr_pair| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|pr_parameter| FORMULA-DECL NIL |ppg_nat_primrec_list_fold| NIL)
+    (|mapStepT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_tabulation|
+     NIL))
+   SHOSTAK))
+ (|mapCodeT_value| 0
+  (|mapCodeT_value-1| NIL 4001416046
+   (""
+    (THEN (AUTO-REWRITE "foldInputsT_value") (SKOSIMP*) (EXPAND "mapCodeT")
+     (EXPAND "mapCode") (EXPAND "compT") (EXPAND "zeroT") (ASSERT))
+    NIL)
+   ((|mapCodeT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|compT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|foldInputsT_value| FORMULA-DECL NIL |ppg_nat_primrec_list_operations|
+     NIL)
+    (|zeroT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|mapCode| CONST-DECL "nat" |ppg_nat_primrec_list_tabulation| NIL))
+   SHOSTAK))
+ (|pr_mapCode| 0
+  (|pr_mapCode-1| NIL 4001416046
+   (""
+    (THEN (SKOSIMP*) (EXPAND "mapCodeT") (USE "pr_mapStep" ("f" "f!1"))
+     (LEMMA "pr_left") (LEMMA "pr_zero") (LEMMA "pr_right")
+     (USE "pr_foldInputs"
+          ("f" "mapStepT(f!1)" "u" "leftT" "v" "zeroT" "w" "rightT"))
+     (LEMMA "pr_reverseCode")
+     (USE "pr_comp"
+          ("f" "reverseCode" "g"
+           "foldInputsT(mapStepT(f!1),leftT,zeroT,rightT)"))
+     (ASSERT) (ASSERT))
+    NIL)
+   ((|pr_mapStep| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|pr_zero| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|pr_foldInputs| FORMULA-DECL NIL |ppg_nat_primrec_list_operations| NIL)
+    (|mapStepT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|leftT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|zeroT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|rightT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|pr_comp| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|reverseCode| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_operations|
+     NIL)
+    (|foldInputsT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_operations|
+     NIL)
+    (|pr_reverseCode| FORMULA-DECL NIL |ppg_nat_primrec_list_operations| NIL)
+    (|pr_right| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|pr_left| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|mapCodeT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_tabulation|
+     NIL))
+   SHOSTAK))
+ (|fold_map_semantics| 0
+  (|fold_map_semantics-1| NIL 4001416046
+   (""
+    (AUTO-REWRITE "foldNatList_nil" "foldNatList_cons" "mapNatList_nil"
+                  "mapNatList_cons" "list_reverse_nil" "list_reverse_cons"
+                  "list_append_nil" "list_append_cons" "mapStepT_value"
+                  "encodeNatList_cons")
+    (("" (INDUCT "L")
+      (("1"
+        (GRIND :IF-MATCH NIL :EXCLUDE
+         ("foldNatList" "mapStepT" "mapNatList" "encodeNatList" "reverse"
+          "append" "consCode" "natPair"))
+        NIL NIL)
+       ("2" (SKOSIMP*)
+        (("2"
+          (INST -1 "f!1" "a!1" "cons[nat](f!1(natPair(a!1,cons1_var!1)),M!1)")
+          (("2"
+            (USE "append_assoc[nat]"
+                 ("l1" "reverse(mapNatList(f!1,a!1,cons2_var!1))" "l2"
+                  "cons[nat](f!1(natPair(a!1,cons1_var!1)),null[nat])" "l3"
+                  "M!1"))
+            (("2"
+              (GRIND :IF-MATCH NIL :EXCLUDE
+               ("foldNatList" "mapStepT" "mapNatList" "encodeNatList" "reverse"
+                "append" "consCode" "natPair"))
+              NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|append_assoc| FORMULA-DECL NIL |list_props| NIL)
+    (|null?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|null| ADT-CONSTRUCTOR-DECL "(null?)" |list_adt| NIL)
+    (|list_reverse_cons| FORMULA-DECL NIL |ppg_nat_primrec_list_operations|
+     NIL)
+    (|mapNatList_cons| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|foldNatList_cons| FORMULA-DECL NIL |ppg_nat_primrec_list_fold| NIL)
+    (|mapStepT_value| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|encodeNatList_cons| FORMULA-DECL NIL |ppg_nat_list_square_codec| NIL)
+    (|list_append_cons| FORMULA-DECL NIL |ppg_nat_primrec_list_operations| NIL)
+    (|natPair| CONST-DECL "nat" |ppg_nat_square_pairing| NIL)
+    (|cons| ADT-CONSTRUCTOR-DECL "[[T, list] -> (cons?)]" |list_adt| NIL)
+    (|cons?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|foldNatList_nil| FORMULA-DECL NIL |ppg_nat_primrec_list_fold| NIL)
+    (|mapNatList_nil| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|list_reverse_nil| FORMULA-DECL NIL |ppg_nat_primrec_list_operations| NIL)
+    (|list_append_nil| FORMULA-DECL NIL |ppg_nat_primrec_list_operations| NIL)
+    (|list_induction| FORMULA-DECL NIL |list_adt| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|mapNatList| CONST-DECL "NatList" |ppg_nat_primrec_list_tabulation| NIL)
+    (|reverse| DEF-DECL "list[T]" |list_props| NIL)
+    (|append| DEF-DECL "list[T]" |list_props| NIL)
+    (|encodeNatList| DEF-DECL "nat" |ppg_nat_list_square_codec| NIL)
+    (|mapStepT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|foldNatList| DEF-DECL "nat" |ppg_nat_primrec_list_fold| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|NatList| TYPE-EQ-DECL NIL |ppg_nat_list_square_codec| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL))
+   SHOSTAK))
+ (|mapCode_semantics| 0
+  (|mapCode_semantics-1| NIL 4001416046
+   (""
+    (THEN
+     (AUTO-REWRITE "foldCode_semantics" "encodeNatList_nil" "append_null"
+                   "reverseCode_semantics" "reverse_reverse")
+     (SKOSIMP*)
+     (USE "fold_map_semantics" ("L" "L!1" "f" "f!1" "a" "a!1" "M" "null[nat]"))
+     (EXPAND "mapCode") (ASSERT) (REPLACE -1) (ASSERT))
+    NIL)
+   ((|fold_map_semantics| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|NatList| TYPE-EQ-DECL NIL |ppg_nat_list_square_codec| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|null?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|null| ADT-CONSTRUCTOR-DECL "(null?)" |list_adt| NIL)
+    (|foldCode_semantics| FORMULA-DECL NIL |ppg_nat_primrec_list_fold| NIL)
+    (|append_null| FORMULA-DECL NIL |list_props| NIL)
+    (|encodeNatList_nil| FORMULA-DECL NIL |ppg_nat_list_square_codec| NIL)
+    (|reverseCode_semantics| FORMULA-DECL NIL |ppg_nat_primrec_list_operations|
+     NIL)
+    (|reverse_reverse| FORMULA-DECL NIL |list_props| NIL)
+    (|mapCode| CONST-DECL "nat" |ppg_nat_primrec_list_tabulation| NIL))
+   SHOSTAK))
+ (|mapCode_nil| 0
+  (|mapCode_nil-1| NIL 4001416046
+   (""
+    (THEN
+     (AUTO-REWRITE "encodeNatList_nil" "mapCode_semantics" "mapNatList_nil")
+     (SKOSIMP*) (USE "mapCode_semantics" ("f" "f!1" "a" "a!1" "L" "null[nat]"))
+     (ASSERT))
+    NIL)
+   ((|mapCode_semantics| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|NatList| TYPE-EQ-DECL NIL |ppg_nat_list_square_codec| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|null?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|null| ADT-CONSTRUCTOR-DECL "(null?)" |list_adt| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|encodeNatList_nil| FORMULA-DECL NIL |ppg_nat_list_square_codec| NIL)
+    (|mapNatList_nil| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL))
+   SHOSTAK))
+ (|mapCode_snoc| 0
+  (|mapCode_snoc-1| NIL 4001416046
+   (""
+    (THEN
+     (AUTO-REWRITE "mapCode_semantics" "snocCode_semantics" "mapNatList_append"
+                   "mapNatList_cons" "mapNatList_nil")
+     (SKOSIMP*)
+     (USE "mapCode_semantics"
+          ("f" "f!1" "a" "a!1" "L" "append(L!1,cons[nat](n!1,null[nat]))"))
+     (ASSERT))
+    NIL)
+   ((|mapCode_semantics| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|NatList| TYPE-EQ-DECL NIL |ppg_nat_list_square_codec| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|append| DEF-DECL "list[T]" |list_props| NIL)
+    (|cons?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|cons| ADT-CONSTRUCTOR-DECL "[[T, list] -> (cons?)]" |list_adt| NIL)
+    (|null?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|null| ADT-CONSTRUCTOR-DECL "(null?)" |list_adt| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|mapNatList_nil| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|mapNatList_cons| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|mapNatList_append| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|snocCode_semantics| FORMULA-DECL NIL |ppg_nat_primrec_list_operations|
+     NIL))
+   SHOSTAK))
+ (|rangeNatList_TCC1| 0
+  (|rangeNatList_TCC1-1| NIL 4001416046 ("" (THEN (GRIND)) NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   NIL (|rangeNatList| SUBTYPE "n - 1" "nat" (51 29 51 32))))
+ (|rangeNatList_TCC2| 0
+  (|rangeNatList_TCC2-1| NIL 4001416046 ("" (THEN (GRIND)) NIL) NIL NIL
+   (|rangeNatList| TERMINATION "rangeNatList(n - 1)" #A((3) BASE-CHAR . "NIL")
+    (51 16 51 33))))
+ (|rangeNatList_zero| 0
+  (|rangeNatList_zero-1| NIL 4001416046
+   ("" (THEN (EXPAND "rangeNatList" + 1) (ASSERT)) NIL)
+   ((|rangeNatList| DEF-DECL "NatList" |ppg_nat_primrec_list_tabulation| NIL))
+   SHOSTAK))
+ (|rangeNatList_succ| 0
+  (|rangeNatList_succ-1| NIL 4001416046
+   ("" (THEN (SKOSIMP*) (EXPAND "rangeNatList" + 1) (ASSERT)) NIL)
+   ((|rangeNatList| DEF-DECL "NatList" |ppg_nat_primrec_list_tabulation| NIL))
+   SHOSTAK))
+ (|rangeNatList_length| 0
+  (|rangeNatList_length-1| NIL 4001416046
+   (""
+    (AUTO-REWRITE "rangeNatList_zero" "rangeNatList_succ" "length_append[nat]")
+    (("" (INDUCT "n")
+      (("1" (GRIND :EXCLUDE ("rangeNatList" "append")) NIL NIL)
+       ("2" (GRIND :EXCLUDE ("rangeNatList" "append")) NIL NIL))
+      NIL))
+    NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|rangeNatList_succ| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|length_append| FORMULA-DECL NIL |list_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|rangeNatList_zero| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nat_induction| FORMULA-DECL NIL |naturalnumbers| NIL)
+    (|rangeNatList| DEF-DECL "NatList" |ppg_nat_primrec_list_tabulation| NIL)
+    (|NatList| TYPE-EQ-DECL NIL |ppg_nat_list_square_codec| NIL)
+    (|length| DEF-DECL "nat" |list_props| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|pr_rangeStep| 0
+  (|pr_rangeStep-1| NIL 4001416046
+   (""
+    (THEN (EXPAND "rangeStepT") (LEMMA "pr_snocCode") (LEMMA "pr_remainder")
+     (LEMMA "pr_accumulator")
+     (USE "pr_pair" ("f" "remainderT" "g" "accumulatorT")) (ASSERT)
+     (USE "pr_comp" ("f" "snocCodeT" "g" "pairT(remainderT,accumulatorT)"))
+     (ASSERT) (ASSERT))
+    NIL)
+   ((|rangeStepT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|pr_remainder| FORMULA-DECL NIL |ppg_nat_primrec_list_fold| NIL)
+    (|pr_pair| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|remainderT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_fold| NIL)
+    (|accumulatorT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_fold| NIL)
+    (|pr_comp| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|snocCodeT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_operations|
+     NIL)
+    (|pairT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|pr_accumulator| FORMULA-DECL NIL |ppg_nat_primrec_list_fold| NIL)
+    (|pr_snocCode| FORMULA-DECL NIL |ppg_nat_primrec_list_operations| NIL))
+   SHOSTAK))
+ (|rangeStepT_value| 0
+  (|rangeStepT_value-1| NIL 4001416046
+   (""
+    (THEN (AUTO-REWRITE "unpair_pair" "snocCodeT_value") (SKOSIMP*)
+     (EXPAND "rangeStepT") (EXPAND "compT") (EXPAND "pairT")
+     (EXPAND "remainderT") (EXPAND "accumulatorT") (EXPAND "compT")
+     (EXPAND "leftT") (EXPAND "rightT") (ASSERT) (EXPAND "leftT")
+     (EXPAND "rightT") (ASSERT))
+    NIL)
+   ((|rangeStepT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|pairT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|accumulatorT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_fold| NIL)
+    (|leftT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|unpair_pair| FORMULA-DECL NIL |ppg_nat_square_pairing| NIL)
+    (|snocCodeT_value| FORMULA-DECL NIL |ppg_nat_primrec_list_operations| NIL)
+    (|rightT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|remainderT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_fold| NIL)
+    (|compT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL))
+   SHOSTAK))
+ (|pr_rangeCode| 0
+  (|pr_rangeCode-1| NIL 4001416046
+   (""
+    (THEN (EXPAND "rangeCode") (LEMMA "pr_zero") (LEMMA "pr_rangeStep")
+     (USE "pr_prec" ("f" "zeroT" "g" "rangeStepT")) (ASSERT) (LEMMA "pr_id")
+     (USE "pr_pair" ("f" "zeroT" "g" "idT")) (ASSERT)
+     (USE "pr_comp" ("f" "precT(zeroT,rangeStepT)" "g" "pairT(zeroT,idT)"))
+     (ASSERT) (ASSERT))
+    NIL)
+   ((|rangeCode| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|pr_rangeStep| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|pr_pair| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|idT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|pr_comp| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|precT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|pairT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|pr_id| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|rangeStepT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|zeroT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|pr_prec| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|pr_zero| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL))
+   SHOSTAK))
+ (|rangeCode_zero| 0
+  (|rangeCode_zero-1| NIL 4001416046
+   (""
+    (THEN (AUTO-REWRITE "unpair_pair" "natRecT_zero") (EXPAND "rangeCode")
+     (EXPAND "compT") (EXPAND "pairT") (EXPAND "zeroT") (EXPAND "idT")
+     (EXPAND "precT") (ASSERT))
+    NIL)
+   ((|compT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|zeroT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|precT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|natRecT_zero| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|unpair_pair| FORMULA-DECL NIL |ppg_nat_square_pairing| NIL)
+    (|idT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|pairT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|rangeCode| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_tabulation|
+     NIL))
+   SHOSTAK))
+ (|rangeCode_succ| 0
+  (|rangeCode_succ-1| NIL 4001416046
+   (""
+    (THEN (AUTO-REWRITE "unpair_pair" "natRecT_succ" "rangeStepT_value")
+     (SKOSIMP*) (EXPAND "rangeCode") (EXPAND "compT") (EXPAND "pairT")
+     (EXPAND "zeroT") (EXPAND "idT") (EXPAND "precT") (ASSERT))
+    NIL)
+   ((|rangeCode| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|pairT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|idT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|unpair_pair| FORMULA-DECL NIL |ppg_nat_square_pairing| NIL)
+    (|rangeStepT_value| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|natRecT_succ| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|precT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|zeroT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|compT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL))
+   SHOSTAK))
+ (|rangeCode_semantics| 0
+  (|rangeCode_semantics-1| NIL 4001416046
+   (""
+    (AUTO-REWRITE "rangeCode_zero" "rangeCode_succ" "rangeNatList_zero"
+                  "rangeNatList_succ" "encodeNatList_nil" "snocCode_semantics")
+    (("" (INDUCT "n")
+      (("1"
+        (GRIND :IF-MATCH NIL :EXCLUDE
+         ("rangeCode" "rangeNatList" "snocCode" "encodeNatList" "append"))
+        NIL NIL)
+       ("2"
+        (GRIND :IF-MATCH NIL :EXCLUDE
+         ("rangeCode" "rangeNatList" "snocCode" "encodeNatList" "append"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|snocCode_semantics| FORMULA-DECL NIL |ppg_nat_primrec_list_operations|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|rangeCode_succ| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|rangeNatList_succ| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|rangeCode_zero| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|rangeNatList_zero| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|encodeNatList_nil| FORMULA-DECL NIL |ppg_nat_list_square_codec| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nat_induction| FORMULA-DECL NIL |naturalnumbers| NIL)
+    (|rangeNatList| DEF-DECL "NatList" |ppg_nat_primrec_list_tabulation| NIL)
+    (|encodeNatList| DEF-DECL "nat" |ppg_nat_list_square_codec| NIL)
+    (|NatList| TYPE-EQ-DECL NIL |ppg_nat_list_square_codec| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|every| ADT-DEF-DECL "boolean" |list_adt| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|rangeCode| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|tabulateCodeT_value| 0
+  (|tabulateCodeT_value-1| NIL 4001416046
+   (""
+    (THEN (AUTO-REWRITE "unpair_pair" "mapCodeT_value") (SKOSIMP*)
+     (EXPAND "tabulateCodeT") (EXPAND "tabulateCode") (EXPAND "compT")
+     (EXPAND "pairT") (EXPAND "leftT") (EXPAND "rightT") (ASSERT)
+     (EXPAND "leftT") (EXPAND "rightT") (ASSERT))
+    NIL)
+   ((|tabulateCodeT| CONST-DECL "TotalFunction"
+     |ppg_nat_primrec_list_tabulation| NIL)
+    (|compT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|leftT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|mapCodeT_value| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|unpair_pair| FORMULA-DECL NIL |ppg_nat_square_pairing| NIL)
+    (|rightT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|pairT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|tabulateCode| CONST-DECL "nat" |ppg_nat_primrec_list_tabulation| NIL))
+   SHOSTAK))
+ (|pr_tabulateCode| 0
+  (|pr_tabulateCode-1| NIL 4001416046
+   (""
+    (THEN (SKOSIMP*) (EXPAND "tabulateCodeT") (USE "pr_mapCode" ("f" "f!1"))
+     (LEMMA "pr_left") (LEMMA "pr_rangeCode") (LEMMA "pr_right")
+     (USE "pr_comp" ("f" "rangeCode" "g" "rightT")) (ASSERT)
+     (USE "pr_pair" ("f" "leftT" "g" "compT(rangeCode,rightT)")) (ASSERT)
+     (USE "pr_comp"
+          ("f" "mapCodeT(f!1)" "g" "pairT(leftT,compT(rangeCode,rightT))"))
+     (ASSERT) (ASSERT))
+    NIL)
+   ((|pr_mapCode| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|TotalFunction| TYPE-EQ-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|pr_rangeCode| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|rightT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|rangeCode| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|pr_comp| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|pr_pair| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|leftT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|compT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|mapCodeT| CONST-DECL "TotalFunction" |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|pairT| CONST-DECL "TotalFunction" |ppg_nat_primrec_closed| NIL)
+    (|pr_right| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|pr_left| FORMULA-DECL NIL |ppg_nat_primrec_closed| NIL)
+    (|tabulateCodeT| CONST-DECL "TotalFunction"
+     |ppg_nat_primrec_list_tabulation| NIL))
+   SHOSTAK))
+ (|tabulateCode_semantics| 0
+  (|tabulateCode_semantics-1| NIL 4001416046
+   (""
+    (THEN (AUTO-REWRITE "rangeCode_semantics" "mapCode_semantics") (SKOSIMP*)
+     (EXPAND "tabulateCode") (ASSERT))
+    NIL)
+   ((|tabulateCode| CONST-DECL "nat" |ppg_nat_primrec_list_tabulation| NIL)
+    (|rangeCode_semantics| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|mapCode_semantics| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation|
+     NIL))
+   SHOSTAK))
+ (|tabulateCode_zero| 0
+  (|tabulateCode_zero-1| NIL 4001416046
+   (""
+    (THEN (AUTO-REWRITE "rangeCode_zero" "mapCode_nil") (SKOSIMP*)
+     (EXPAND "tabulateCode") (ASSERT))
+    NIL)
+   ((|tabulateCode| CONST-DECL "nat" |ppg_nat_primrec_list_tabulation| NIL)
+    (|rangeCode_zero| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|mapCode_nil| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL))
+   SHOSTAK))
+ (|tabulateCode_succ| 0
+  (|tabulateCode_succ-1| NIL 4001416046
+   (""
+    (THEN
+     (AUTO-REWRITE "tabulateCode_semantics" "rangeNatList_succ"
+                   "mapNatList_append" "mapNatList_cons" "mapNatList_nil"
+                   "snocCode_semantics")
+     (SKOSIMP*) (ASSERT))
+    NIL)
+   ((|rangeNatList_succ| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|mapNatList_nil| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|mapNatList_cons| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation| NIL)
+    (|mapNatList_append| FORMULA-DECL NIL |ppg_nat_primrec_list_tabulation|
+     NIL)
+    (|tabulateCode_semantics| FORMULA-DECL NIL
+     |ppg_nat_primrec_list_tabulation| NIL)
+    (|snocCode_semantics| FORMULA-DECL NIL |ppg_nat_primrec_list_operations|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK)))
+
