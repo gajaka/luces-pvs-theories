@@ -1,0 +1,122 @@
+(|ppg_threshold_certificates|
+ (|le_thresh_partial_order| 0
+  (|le_thresh_partial_order-1| NIL 4001355613
+   (""
+    (THEN
+     (GRIND :DEFS
+      ("partial_order?" "preorder?" "reflexive?" "transitive?" "antisymmetric?"
+       "le_thresh"))
+     (APPLY-EXTENSIONALITY) (ASSERT))
+    NIL)
+   ((|le_thresh| CONST-DECL "bool" |ppg_threshold_certificates| NIL)
+    (|reflexive?| CONST-DECL "bool" |relations| NIL)
+    (|transitive?| CONST-DECL "bool" |relations| NIL)
+    (|preorder?| CONST-DECL "bool" |orders| NIL)
+    (|antisymmetric?| CONST-DECL "bool" |relations| NIL)
+    (|partial_order?| CONST-DECL "bool" |orders| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|Threshold| TYPE-EQ-DECL NIL |ppg_threshold_certificates| NIL))
+   SHOSTAK))
+ (|threshold_cert_monotone| 0
+  (|threshold_cert_monotone-1| NIL 4001355613 ("" (THEN (GRIND)) NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|le_thresh| CONST-DECL "bool" |ppg_threshold_certificates| NIL)
+    (|threshold_cert| CONST-DECL "bool" |ppg_threshold_certificates| NIL))
+   SHOSTAK))
+ (|canonical_threshold_self_cert| 0
+  (|canonical_threshold_self_cert-1| NIL 4001355613 ("" (THEN (GRIND)) NIL)
+   ((|canonical_threshold| CONST-DECL "Threshold" |ppg_threshold_certificates|
+     NIL)
+    (|threshold_cert| CONST-DECL "bool" |ppg_threshold_certificates| NIL))
+   SHOSTAK))
+ (|canonical_threshold_tightest| 0
+  (|canonical_threshold_tightest-1| NIL 4001355613 ("" (THEN (GRIND)) NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|threshold_cert| CONST-DECL "bool" |ppg_threshold_certificates| NIL)
+    (|canonical_threshold| CONST-DECL "Threshold" |ppg_threshold_certificates|
+     NIL)
+    (|le_thresh| CONST-DECL "bool" |ppg_threshold_certificates| NIL))
+   SHOSTAK))
+ (|threshold_meet_glb| 0
+  (|threshold_meet_glb-1| NIL 4001355613
+   (""
+    (THEN (SKOSIMP*) (EXPAND "le_thresh") (EXPAND "threshold_meet")
+     (REWRITE "max_le") (GRIND))
+    NIL)
+   ((|threshold_meet| CONST-DECL "Threshold" |ppg_threshold_certificates| NIL)
+    (|max| CONST-DECL "{p: real | p >= m AND p >= n}" |real_defs| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|Threshold| TYPE-EQ-DECL NIL |ppg_threshold_certificates| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|max_le| FORMULA-DECL NIL |real_defs| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|le_thresh| CONST-DECL "bool" |ppg_threshold_certificates| NIL))
+   SHOSTAK))
+ (|threshold_join_lub| 0
+  (|threshold_join_lub-1| NIL 4001355613
+   (""
+    (THEN (SKOSIMP*) (EXPAND "le_thresh") (EXPAND "threshold_join")
+     (REWRITE "le_min") (GRIND))
+    NIL)
+   ((|threshold_join| CONST-DECL "Threshold" |ppg_threshold_certificates| NIL)
+    (|min| CONST-DECL "{p: real | p <= m AND p <= n}" |real_defs| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|Threshold| TYPE-EQ-DECL NIL |ppg_threshold_certificates| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|le_min| FORMULA-DECL NIL |real_defs| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|le_thresh| CONST-DECL "bool" |ppg_threshold_certificates| NIL))
+   SHOSTAK))
+ (|threshold_meet_val| 0
+  (|threshold_meet_val-1| NIL 4001355613 ("" (THEN (GRIND)) NIL)
+   ((|max| CONST-DECL "{p: real | p >= m AND p >= n}" |real_defs| NIL)
+    (|threshold_meet| CONST-DECL "Threshold" |ppg_threshold_certificates| NIL))
+   SHOSTAK))
+ (|threshold_join_val| 0
+  (|threshold_join_val-1| NIL 4001355613 ("" (THEN (GRIND)) NIL)
+   ((|min| CONST-DECL "{p: real | p <= m AND p <= n}" |real_defs| NIL)
+    (|threshold_join| CONST-DECL "Threshold" |ppg_threshold_certificates| NIL))
+   SHOSTAK))
+ (|threshold_cert_inf_closed| 0
+  (|threshold_cert_inf_closed-1| NIL 4001355613
+   (""
+    (THEN (SKOSIMP*) (EXPAND "threshold_cert") (EXPAND "threshold_meet")
+     (REWRITE "ge_max") (ASSERT))
+    NIL)
+   ((|threshold_meet| CONST-DECL "Threshold" |ppg_threshold_certificates| NIL)
+    (|Threshold| TYPE-EQ-DECL NIL |ppg_threshold_certificates| NIL)
+    (|Observable| TYPE-EQ-DECL NIL |ppg_threshold_certificates| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|ge_max| FORMULA-DECL NIL |real_defs| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|threshold_cert| CONST-DECL "bool" |ppg_threshold_certificates| NIL))
+   SHOSTAK)))
+

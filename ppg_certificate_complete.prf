@@ -1,0 +1,119 @@
+(|ppg_certificate_complete|
+ (|complete_carrier_inhabited| 0
+  (|complete_carrier_inhabited-1| NIL 4001355613
+   ("" (THEN (INST + "infimum(emptyset[Th])") (ASSERT)) NIL)
+   ((|Th| FORMAL-TYPE-DECL NIL |ppg_certificate_complete| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|partial_order?| CONST-DECL "bool" |orders| NIL)
+    (|le| FORMAL-CONST-DECL "(partial_order?[Th])" |ppg_certificate_complete|
+     NIL)
+    (|infimum| FORMAL-CONST-DECL "{g: [set[Th] -> Th] |
+   FORALL (S: set[Th]):
+     (FORALL (t: Th): S(t) IMPLIES le(g(S), t)) AND
+      (FORALL (t: Th):
+         (FORALL (u: Th): S(u) IMPLIES le(t, u)) IMPLIES le(t, g(S)))}"
+     |ppg_certificate_complete| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL))
+   SHOSTAK))
+ (|canonical_spec_le| 0
+  (|canonical_spec_le-1| NIL 4001355613
+   (""
+    (THEN (SKOSIMP*) (EXPAND "canonical_spec") (TYPEPRED "infimum")
+     (INST - "{t:Th|fully_certified(F!1)(d!1,t)}") (FLATTEN) (INST - "t!1")
+     (ASSERT))
+    NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|Th| FORMAL-TYPE-DECL NIL |ppg_certificate_complete| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|partial_order?| CONST-DECL "bool" |orders| NIL)
+    (|le| FORMAL-CONST-DECL "(partial_order?[Th])" |ppg_certificate_complete|
+     NIL)
+    (|infimum| FORMAL-CONST-DECL "{g: [set[Th] -> Th] |
+   FORALL (S: set[Th]):
+     (FORALL (t: Th): S(t) IMPLIES le(g(S), t)) AND
+      (FORALL (t: Th):
+         (FORALL (u: Th): S(u) IMPLIES le(t, u)) IMPLIES le(t, g(S)))}"
+     |ppg_certificate_complete| NIL)
+    (|fully_certified| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|CertFamily| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|monotone_cert| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|Certificate| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_certificate_complete| NIL)
+    (|canonical_spec| CONST-DECL "Th" |ppg_certificate_complete| NIL))
+   SHOSTAK))
+ (|canonical_spec_certified| 0
+  (|canonical_spec_certified-1| NIL 4001355613
+   (""
+    (THEN (SKOSIMP*) (EXPAND "nonempty_inf_closed")
+     (INST - "{t:Th|fully_certified(F!1)(d!1,t)}")
+     (GRIND :DEFS ("canonical_spec") :EXCLUDE
+      ("fully_certified" "monotone_cert")))
+    NIL)
+   ((|Th| FORMAL-TYPE-DECL NIL |ppg_certificate_complete| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_certificate_complete| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|partial_order?| CONST-DECL "bool" |orders| NIL)
+    (|le| FORMAL-CONST-DECL "(partial_order?[Th])" |ppg_certificate_complete|
+     NIL)
+    (|Certificate| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (|monotone_cert| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|CertFamily| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|fully_certified| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|canonical_spec| CONST-DECL "Th" |ppg_certificate_complete| NIL)
+    (|nonempty_inf_closed| CONST-DECL "bool" |ppg_certificate_complete| NIL))
+   SHOSTAK))
+ (|canonical_spec_is_canonical| 0
+  (|canonical_spec_is_canonical-1| NIL 4001355613
+   ("" (SKOSIMP*)
+    (("" (EXPAND "is_canonical")
+      (("" (SPLIT +)
+        (("1" (LEMMA "canonical_spec_certified" ("F" "F!1" "d" "d!1"))
+          (("1" (CASE "EXISTS(t:Th):fully_certified(F!1)(d!1,t)")
+            (("1" (PROP) NIL NIL) ("2" (INST + "t!1") NIL NIL)) NIL))
+          NIL)
+         ("2" (SKOSIMP*)
+          (("2" (LEMMA "canonical_spec_le" ("F" "F!1" "d" "d!1" "t" "t!2"))
+            (("2" (ASSERT) NIL NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|fully_certified| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|CertFamily| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|monotone_cert| CONST-DECL "bool" |ppg_list_certificates| NIL)
+    (|member| DEF-DECL "bool" |list_props| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|Certificate| TYPE-EQ-DECL NIL |ppg_list_certificates| NIL)
+    (|le| FORMAL-CONST-DECL "(partial_order?[Th])" |ppg_certificate_complete|
+     NIL)
+    (|partial_order?| CONST-DECL "bool" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Th| FORMAL-TYPE-DECL NIL |ppg_certificate_complete| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_certificate_complete| NIL)
+    (|canonical_spec_certified| FORMULA-DECL NIL |ppg_certificate_complete|
+     NIL)
+    (|canonical_spec_le| FORMULA-DECL NIL |ppg_certificate_complete| NIL)
+    (|is_canonical| CONST-DECL "bool" |ppg_parametric_core| NIL))
+   SHOSTAK)))
+

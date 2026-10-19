@@ -1,0 +1,47 @@
+% Binary meet and join are supplied with their complete greatest-lower-bound
+% and least-upper-bound laws. Their carrier may be empty. Certification at
+% a meet implies certification at both arguments; the converse requires the
+% source hypothesis that every listed certificate is closed under meet.
+%
+% B. A. Davey and H. A. Priestley, Introduction to Lattices and Order,
+% second edition, Cambridge University Press, 2002. Lean counterpart:
+% PPGraphParametric.lean, Section 6.
+%
+% Author: Dragan Stosic, 2026.
+
+ppg_certificate_lattice[D: TYPE, Th: TYPE, le: (partial_order?[Th]),
+  meet: {m: [Th, Th -> Th] | FORALL (a, b, c: Th):
+    le(m(a, b), a) AND le(m(a, b), b) AND
+    (le(c, a) AND le(c, b) IMPLIES le(c, m(a, b)))},
+  join: {j: [Th, Th -> Th] | FORALL (a, b, c: Th):
+    le(a, j(a, b)) AND le(b, j(a, b)) AND
+    (le(a, c) AND le(b, c) IMPLIES le(j(a, b), c))}]: THEORY
+BEGIN
+
+  IMPORTING ppg_parametric_core[D, Th, le]
+
+  F: VAR CertFamily
+  d: VAR D
+  t1, t2, t_c, t: VAR Th
+
+  meet_closed(F): bool = FORALL (C: Certificate): member(C, F) IMPLIES
+    (FORALL (d: D, a, b: Th): C(d, a) AND C(d, b) IMPLIES C(d, meet(a, b)))
+
+  certified_meet_implies_both: THEOREM
+    fully_certified(F)(d, meet(t1, t2)) IMPLIES
+      fully_certified(F)(d, t1) AND fully_certified(F)(d, t2)
+
+  certified_either_implies_join_left: THEOREM
+    fully_certified(F)(d, t1) IMPLIES fully_certified(F)(d, join(t1, t2))
+
+  certified_either_implies_join_right: THEOREM
+    fully_certified(F)(d, t2) IMPLIES fully_certified(F)(d, join(t1, t2))
+
+  certified_both_implies_meet: THEOREM
+    fully_certified(F)(d, t1) AND fully_certified(F)(d, t2) AND meet_closed(F) IMPLIES
+      fully_certified(F)(d, meet(t1, t2))
+
+  canonical_is_inf: THEOREM
+    is_canonical(F)(d, t_c) AND fully_certified(F)(d, t) IMPLIES meet(t_c, t) = t_c
+
+END ppg_certificate_lattice

@@ -1,0 +1,45 @@
+% A total infimum operation gives the greatest lower bound of every set,
+% including the empty set. Its value on the empty set already supplies a
+% carrier element; no separate nonempty-carrier premise is imposed.
+% The infimum of satisfying levels is certified only under the original
+% nonempty satisfying-set and nonempty-infimum closure hypotheses.
+%
+% B. A. Davey and H. A. Priestley, Introduction to Lattices and Order,
+% second edition, Cambridge University Press, 2002. Lean counterpart:
+% PPGraphParametric.lean, Section 6b.
+%
+% Author: Dragan Stosic, 2026.
+
+ppg_certificate_complete[D: TYPE, Th: TYPE, le: (partial_order?[Th]),
+  infimum: {g: [set[Th] -> Th] | FORALL (S: set[Th]):
+    (FORALL (t: Th): S(t) IMPLIES le(g(S), t)) AND
+    (FORALL (t: Th): (FORALL (u: Th): S(u) IMPLIES le(t, u)) IMPLIES le(t, g(S)))}]: THEORY
+BEGIN
+
+  IMPORTING ppg_parametric_core[D, Th, le]
+
+  F: VAR CertFamily
+  d: VAR D
+  t: VAR Th
+
+  complete_carrier_inhabited: LEMMA EXISTS (t: Th): TRUE
+
+  canonical_spec(F, d): Th = infimum({t: Th | fully_certified(F)(d, t)})
+
+  nonempty_inf_closed(F, d): bool = FORALL (S: set[Th]):
+    (EXISTS (t: Th): S(t)) AND
+    (FORALL (t: Th): S(t) IMPLIES fully_certified(F)(d, t)) IMPLIES
+      fully_certified(F)(d, infimum(S))
+
+  canonical_spec_le: THEOREM
+    fully_certified(F)(d, t) IMPLIES le(canonical_spec(F, d), t)
+
+  canonical_spec_certified: THEOREM
+    (EXISTS (t: Th): fully_certified(F)(d, t)) AND nonempty_inf_closed(F, d) IMPLIES
+      fully_certified(F)(d, canonical_spec(F, d))
+
+  canonical_spec_is_canonical: THEOREM
+    (EXISTS (t: Th): fully_certified(F)(d, t)) AND nonempty_inf_closed(F, d) IMPLIES
+      is_canonical(F)(d, canonical_spec(F, d))
+
+END ppg_certificate_complete

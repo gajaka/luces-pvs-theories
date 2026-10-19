@@ -1,0 +1,49 @@
+% Blocking records the listed certificates that fail at the chosen level.
+% A canonical level has no blocker. The proof that stricter levels have a
+% blocker retains the source's explicit nonempty-list hypothesis.
+%
+% Lean counterpart: PPGraphBlocking.lean. Certification and canonical
+% levels use the order convention of B. A. Davey and H. A. Priestley,
+% Introduction to Lattices and Order, second edition, Cambridge, 2002.
+%
+% Author: Dragan Stosic, 2026.
+
+ppg_list_blocking[D: TYPE, Th: TYPE, le: (partial_order?[Th])]: THEORY
+BEGIN
+
+  IMPORTING ppg_parametric_core[D, Th, le]
+
+  F: VAR CertFamily
+  C: VAR Certificate
+  d: VAR D
+  t, t_c: VAR Th
+
+  blocks(F, C, d, t): bool = member(C, F) AND NOT C(d, t)
+
+  blocking_set(F, d, t): set[Certificate] = {C: Certificate | blocks(F, C, d, t)}
+
+  empty_blocking_means_certified: THEOREM
+    blocking_set(F, d, t) = emptyset[Certificate] IMPLIES fully_certified(F)(d, t)
+
+  nonempty_blocking_means_not_certified: THEOREM
+    blocks(F, C, d, t) IMPLIES NOT fully_certified(F)(d, t)
+
+  canonical_blocking_empty: THEOREM
+    is_canonical(F)(d, t_c) IMPLIES blocking_set(F, d, t_c) = emptyset[Certificate]
+
+  stricter_than_canonical_fails: THEOREM
+    is_canonical(F)(d, t_c) AND NOT le(t_c, t) IMPLIES NOT fully_certified(F)(d, t)
+
+  stricter_has_blocking: THEOREM
+    is_canonical(F)(d, t_c) AND NOT le(t_c, t) AND F /= null[Certificate] IMPLIES
+      blocking_set(F, d, t) /= emptyset[Certificate]
+
+  CertState: TYPE = [# canonical: Th #]
+
+  at_canonical_all_pass: THEOREM
+    is_canonical(F)(d, t_c) AND member(C, F) IMPLIES C(d, t_c)
+
+  above_canonical_all_pass: THEOREM
+    is_canonical(F)(d, t_c) AND le(t_c, t) AND member(C, F) IMPLIES C(d, t)
+
+END ppg_list_blocking

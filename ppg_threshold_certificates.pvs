@@ -1,0 +1,56 @@
+% A threshold and an observation each carry one real value. The threshold
+% order is reversed: a larger requested value is stricter. Meet takes the
+% larger value and join the smaller, exactly the source record operations.
+%
+% B. A. Davey and H. A. Priestley, Introduction to Lattices and Order,
+% second edition, Cambridge University Press, 2002. Lean counterpart:
+% PPGraphParametric.lean, Sections 7--8.
+%
+% Author: Dragan Stosic, 2026.
+
+ppg_threshold_certificates: THEORY
+BEGIN
+
+  Threshold: TYPE = [# val: real #]
+
+  Observable: TYPE = [# val: real #]
+
+  a, b, c, t, t1, t2: VAR Threshold
+  o: VAR Observable
+
+  le_thresh(a, b): bool = b`val <= a`val
+
+  le_thresh_partial_order: LEMMA partial_order?[Threshold](le_thresh)
+
+  threshold_cert(o, t): bool = o`val >= t`val
+
+  threshold_cert_monotone: THEOREM
+    le_thresh(t1, t2) AND threshold_cert(o, t1) IMPLIES threshold_cert(o, t2)
+
+  canonical_threshold(o): Threshold = (# val := o`val #)
+
+  canonical_threshold_self_cert: THEOREM threshold_cert(o, canonical_threshold(o))
+
+  canonical_threshold_tightest: THEOREM
+    threshold_cert(o, t) IMPLIES le_thresh(canonical_threshold(o), t)
+
+  threshold_meet(a, b): Threshold = (# val := max(a`val, b`val) #)
+
+  threshold_join(a, b): Threshold = (# val := min(a`val, b`val) #)
+
+  threshold_meet_glb: LEMMA
+    le_thresh(threshold_meet(a, b), a) AND le_thresh(threshold_meet(a, b), b) AND
+    (le_thresh(c, a) AND le_thresh(c, b) IMPLIES le_thresh(c, threshold_meet(a, b)))
+
+  threshold_join_lub: LEMMA
+    le_thresh(a, threshold_join(a, b)) AND le_thresh(b, threshold_join(a, b)) AND
+    (le_thresh(a, c) AND le_thresh(b, c) IMPLIES le_thresh(threshold_join(a, b), c))
+
+  threshold_meet_val: THEOREM threshold_meet(a, b)`val = max(a`val, b`val)
+
+  threshold_join_val: THEOREM threshold_join(a, b)`val = min(a`val, b`val)
+
+  threshold_cert_inf_closed: THEOREM
+    threshold_cert(o, t1) AND threshold_cert(o, t2) IMPLIES threshold_cert(o, threshold_meet(t1, t2))
+
+END ppg_threshold_certificates

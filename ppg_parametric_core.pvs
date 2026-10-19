@@ -1,0 +1,76 @@
+% A family is the actual finite list of monotone certificate predicates.
+% Certification at one level passes to every weaker level. A canonical
+% level is a certified least element of the satisfying upper set.
+%
+% Lean counterpart: PPGraphParametric.lean, Sections 1--5. For the order
+% conventions, see B. A. Davey and H. A. Priestley, Introduction to Lattices
+% and Order, second edition, Cambridge University Press, 2002.
+%
+% Author: Dragan Stosic, 2026.
+
+ppg_parametric_core[D: TYPE, Th: TYPE, le: (partial_order?[Th])]: THEORY
+BEGIN
+
+  IMPORTING ppg_list_certificates[D, Th, le], directed_pp_graph[Th]
+
+  F: VAR CertFamily
+  d, d_old, d_new: VAR D
+  t, t1, t2, t_c, t_target, t_relax, t_c_new: VAR Th
+
+  master_refinement: THEOREM
+    le(t1, t2) AND fully_certified(F)(d, t1) IMPLIES fully_certified(F)(d, t2)
+
+  is_canonical(F)(d, t_c): bool =
+    fully_certified(F)(d, t_c) AND
+      (FORALL (t: Th): fully_certified(F)(d, t) IMPLIES le(t_c, t))
+
+  certified_iff_above_canonical: THEOREM
+    is_canonical(F)(d, t_c) IMPLIES
+      (fully_certified(F)(d, t) IFF le(t_c, t))
+
+  spec_edge(t1, t2): bool = le(t1, t2) AND t1 /= t2
+
+  certification_propagates: THEOREM
+    spec_edge(t1, t2) AND fully_certified(F)(d, t1) IMPLIES fully_certified(F)(d, t2)
+
+  spec_graph: Graph =
+    (# vertices := (LAMBDA (t: Th): TRUE), edges := spec_edge #)
+
+  spec_rr(t1, t2): bool = le(t1, t2)
+
+  spec_edge_is_pp: THEOREM
+    spec_edge(t1, t2) AND fully_certified(F)(d, t1) IMPLIES
+      pp_edge(spec_rr, LAMBDA (t: Th): fully_certified(F)(d, t), t1, t2)
+
+  certified_subgraph(F, d): Graph =
+    (# vertices := (LAMBDA (t: Th): fully_certified(F)(d, t)),
+       edges := (LAMBDA (t1, t2: Th): spec_edge(t1, t2) AND fully_certified(F)(d, t1)) #)
+
+  certified_subgraph_pp_valid: THEOREM
+    pp_valid(certified_subgraph(F, d), spec_rr, LAMBDA (t: Th): fully_certified(F)(d, t))
+
+  relaxation(t1, t2): bool = le(t1, t2) AND t1 /= t2
+
+  repair(F)(d_old, d_new, t): bool =
+    NOT fully_certified(F)(d_old, t) AND fully_certified(F)(d_new, t)
+
+  relaxation_preserves: THEOREM
+    relaxation(t1, t2) AND fully_certified(F)(d, t1) IMPLIES fully_certified(F)(d, t2)
+
+  repair_raises_canonical: THEOREM
+    repair(F)(d_old, d_new, t) AND is_canonical(F)(d_new, t_c_new) IMPLIES le(t_c_new, t)
+
+  repair_vs_relaxation: THEOREM
+    repair(F)(d_old, d_new, t_target) AND relaxation(t_target, t_relax) AND
+    fully_certified(F)(d_old, t_relax) IMPLIES
+      fully_certified(F)(d_new, t_target) AND fully_certified(F)(d_new, t_relax)
+
+  repair_canonical_below_target: THEOREM
+    repair(F)(d_old, d_new, t_target) AND is_canonical(F)(d_new, t_c_new) IMPLIES
+      fully_certified(F)(d_new, t_target) AND le(t_c_new, t_target)
+
+  no_repair_below_canonical: THEOREM
+    is_canonical(F)(d_new, t_c_new) AND NOT le(t_c_new, t) IMPLIES
+      NOT fully_certified(F)(d_new, t)
+
+END ppg_parametric_core
