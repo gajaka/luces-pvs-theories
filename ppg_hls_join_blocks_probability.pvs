@@ -1,0 +1,88 @@
+% A measurable state event determined by F union H has the same mass
+% under the assembled block law and the finite product state law.
+% Finiteness of the whole variable type is used only in this law comparison.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Lean counterpart: measure_joinBlocks_preimage in PPGraphHLSBlockAssembly.lean.
+ppg_hls_join_blocks_probability[V,Value:TYPE,domain:[V->set[Value]],
+  universe:{U:finite_set[V]|U=fullset[V]},F,H:finite_set[V],
+  (IMPORTING ppg_mt_native_spaces[bool,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_hls_join_blocks[V,Value,domain,F,H,spaces,laws] AS probabilityAssembly,
+    ppg_probability_finite_union[V,Value,domain,F,H,spaces,laws] AS probabilityUnion,
+    ppg_probability_supported_events[V,Value,domain,spaces,laws] AS probabilitySupport,
+    ppg_mt_state_probability[bool,V,Value,domain,universe,spaces,laws] AS probabilityState,
+    ppg_measurable_block[V,Value,domain,spaces] AS probabilityBlocks,
+    ppg_probability_finite_product[V,Value,domain,spaces,laws] AS probabilityFinite,
+    ppg_probability_pair[probabilityBlocks.Block(F),probabilityBlocks.Block(H),
+      probabilityBlocks.blockSigma(F),probabilityBlocks.blockSigma(H)] AS probabilityPair,
+    ppg_measurable_block_update[V,Value,domain,spaces] AS probabilityUpdate,
+    ppg_probability_cylinder_coherence[V,Value,domain,spaces,laws] AS probabilityDefaults,
+    ppg_probability_infinite_product[V,Value,domain,spaces,laws] AS probabilityInfinite,
+    ppg_probability_block_union[V,Value,domain,F,H,spaces] AS probabilityBlockUnion,
+    ppg_measurable_block_union[V,Value,domain,F,H,spaces] AS probabilityBlockJoin,
+    ppg_measurable_map
+
+  StateEvent: TYPE = (probabilityAssembly.AssemblyStateSigma)
+
+  A: VAR StateEvent
+  B: VAR set[V]
+
+  stateDepends(B,A):bool = FORALL(x,z:probabilityAssembly.AssemblyState):
+    (FORALL(v:V):B(v) IMPLIES x(v)=z(v)) IMPLIES A(x)=A(z)
+
+  pullStateEvent(A):(probabilityAssembly.AssemblyFullSigma) =
+    {x:probabilityAssembly.AssemblyFull|A(probabilityAssembly.decodeFull(x))}
+
+  pairEvent(A):(probabilityAssembly.AssemblyPairSigma) =
+    {xy:probabilityAssembly.AssemblyPair|A(probabilityAssembly.joinBlocks(xy))}
+
+  pair_sigma_eq: LEMMA probabilityPair.JointSpace=probabilityAssembly.AssemblyPairSigma
+
+  blockProductLaw:ppg_probability_measure[probabilityAssembly.AssemblyPair,
+    probabilityAssembly.AssemblyPairSigma].Probability =
+      probabilityPair.productLaw(probabilityFinite.finiteLaw(F),probabilityFinite.finiteLaw(H))
+
+  pull_event_depends: LEMMA stateDepends(B,A) IMPLIES
+    probabilityUpdate.dependsOn(B,pullStateEvent(A))
+
+  full_block_agreement: LEMMA FORALL(x,z:probabilityAssembly.AssemblyFull):
+    probabilityUpdate.agreeOn(universe,x,z) IMPLIES x=z
+
+  full_pull_depends: LEMMA probabilityUpdate.dependsOn(universe,pullStateEvent(A))
+
+  finiteStateEvent(A):(probabilityBlocks.blockSigma(universe)) =
+    {x:probabilityBlocks.Block(universe)|A(probabilityState.stateDecode(x))}
+
+  full_default_decode: LEMMA FORALL(x:probabilityBlocks.Block(universe)):
+    probabilityAssembly.decodeFull(probabilityUpdate.putBlock(universe,
+      probabilityDefaults.anchor)(x))=probabilityState.stateDecode(x)
+
+  full_event_base_eq: LEMMA
+    probabilitySupport.eventBase(universe,pullStateEvent(A))=finiteStateEvent(A)
+
+  state_measure_apply: LEMMA
+    probabilityState.stateMeasure(A)=probabilityFinite.finiteLaw(universe)(finiteStateEvent(A))
+
+  full_event_mass: LEMMA
+    probabilityInfinite.infiniteLaw(pullStateEvent(A))=probabilityState.stateMeasure(A)
+
+  pair_event_preimage: LEMMA pairEvent(A)=
+    {xy:probabilityAssembly.AssemblyPair|
+      probabilitySupport.eventBase(union(F,H),pullStateEvent(A))(
+        probabilityBlockJoin.join(xy))}
+
+  assembled_union_mass: LEMMA
+    blockProductLaw(pairEvent(A))=
+      probabilityBlockUnion.unionLaw(probabilityFinite.finiteLaw(F),probabilityFinite.finiteLaw(H))(
+        probabilitySupport.eventBase(union(F,H),pullStateEvent(A)))
+
+  assembled_finite_mass: LEMMA disjoint?(F,H) IMPLIES
+    blockProductLaw(pairEvent(A))=probabilityFinite.finiteLaw(union(F,H))(
+      probabilitySupport.eventBase(union(F,H),pullStateEvent(A)))
+
+  measure_joinBlocks_preimage: THEOREM disjoint?(F,H) AND stateDepends(union(F,H),A) IMPLIES
+    blockProductLaw(pairEvent(A))=probabilityState.stateMeasure(A)
+
+END ppg_hls_join_blocks_probability

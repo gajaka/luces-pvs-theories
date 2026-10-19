@@ -1,0 +1,64 @@
+% Three assignments are assembled in the order ((F,Z),H). The first
+% joining map combines F with Z; the outer map adds H and fills the
+% remaining coordinates with the same defaults.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Lean counterpart: PPGraphHLSBlockAssembly.lean.
+ppg_hls_join_three[V,Value:TYPE,domain:[V->set[Value]],F,H,Z:finite_set[V],
+  (IMPORTING ppg_mt_native_spaces[bool,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_hls_join_blocks[V,Value,domain,union(F,Z),H,spaces,laws] AS threeOuter,
+    ppg_measurable_block_union[V,Value,domain,F,Z,spaces] AS threeLeft,
+    ppg_measurable_block[V,Value,domain,spaces] AS threeBlocks,
+    ppg_measurable_compose
+
+  inner_carrier_eq: LEMMA threeLeft.U=union(F,Z)
+
+  AssemblyTriple: TYPE = [threeLeft.BlockPair,threeBlocks.Block(H)]
+
+  AssemblyOuterPair: TYPE = threeOuter.AssemblyPair
+
+  IMPORTING ppg_measurable_pair[AssemblyTriple,threeLeft.BlockPair,
+      threeBlocks.Block(H)] AS threeProjections,
+    ppg_measurable_pair[AssemblyTriple,threeBlocks.Block(union(F,Z)),
+      threeBlocks.Block(H)] AS threePairing
+
+  AssemblyTripleSigma: MACRO ppg_measurable_space[AssemblyTriple].MeasurableSpace =
+    threeProjections.pairSigma(threeLeft.pairSpace,threeBlocks.blockSigma(H))
+
+  outerInput(xyz:AssemblyTriple):AssemblyOuterPair = (threeLeft.join(xyz`1),xyz`2)
+
+  outer_space_eq: LEMMA threePairing.pairSigma(threeBlocks.blockSigma(union(F,Z)),
+    threeBlocks.blockSigma(H))=threeOuter.AssemblyPairSigma
+
+  inner_join_measurable: LEMMA
+    ppg_measurable_map[AssemblyTriple,threeBlocks.Block(union(F,Z))].measurable(
+      AssemblyTripleSigma,threeBlocks.blockSigma(union(F,Z)),
+      LAMBDA(xyz:AssemblyTriple):threeLeft.join(xyz`1))
+
+  outer_input_measurable: LEMMA
+    ppg_measurable_map[AssemblyTriple,AssemblyOuterPair].measurable(
+      AssemblyTripleSigma,threeOuter.AssemblyPairSigma,outerInput)
+
+  joinThree(xyz:AssemblyTriple):threeOuter.AssemblyState =
+    threeOuter.joinBlocks(outerInput(xyz))
+
+  join_three_measurable_any: LEMMA
+    ppg_measurable_map[AssemblyTriple,threeOuter.AssemblyState].measurable(
+      AssemblyTripleSigma,threeOuter.AssemblyStateSigma,joinThree)
+
+  measurable_joinThree: THEOREM disjoint?(F,Z) AND disjoint?(union(F,Z),H) IMPLIES
+    ppg_measurable_map[AssemblyTriple,threeOuter.AssemblyState].measurable(
+      AssemblyTripleSigma,threeOuter.AssemblyStateSigma,joinThree)
+
+  joinThree_left: THEOREM FORALL(xyz:AssemblyTriple,a:(F)):
+    disjoint?(F,Z) AND disjoint?(union(F,Z),H) IMPLIES joinThree(xyz)(a)=xyz`1`1(a)
+
+  joinThree_middle: THEOREM FORALL(xyz:AssemblyTriple,a:(H)):
+    disjoint?(F,Z) AND disjoint?(union(F,Z),H) IMPLIES joinThree(xyz)(a)=xyz`2(a)
+
+  joinThree_right: THEOREM FORALL(xyz:AssemblyTriple,a:(Z)):
+    disjoint?(F,Z) AND disjoint?(union(F,Z),H) IMPLIES joinThree(xyz)(a)=xyz`1`2(a)
+
+END ppg_hls_join_three

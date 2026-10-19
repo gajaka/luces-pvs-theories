@@ -1,0 +1,359 @@
+(|ppg_hls_join_three|
+ (|inner_carrier_eq| 0
+  (|inner_carrier_eq-1| NIL 4001401685
+   ("" (THEN (EXPAND "ppg_measurable_block_union.U") (ASSERT)) NIL NIL)
+   ((U CONST-DECL "set[I]" |ppg_measurable_block_union| NIL)) SHOSTAK))
+ (|outerInput_TCC1| 0
+  (|outerInput_TCC1-1| NIL 4001401088 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|union| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (U CONST-DECL "set[I]" |ppg_measurable_block_union| NIL))
+   NIL
+   (|outerInput| SUBTYPE
+    "threeLeft[V, Value, domain, F, Z, spaces].join(xyz`1)"
+    "LeftBlock[V, Value, domain, union[V](F, Z), H, spaces]" (30 54 30 75))))
+ (|outer_space_eq| 0
+  (|outer_space_eq-1| NIL 4001401088
+   (""
+    (THEN (EXPAND "ppg_measurable_block_union.pairSpace") (EXPAND "pairSigma")
+     (EXPAND "pairGenerators") (EXPAND "leftCylinder") (EXPAND "rightCylinder")
+     (ASSERT) (EXPAND "ppg_measurable_block_union.U")
+     (EXPAND "ppg_measurable_map.measurable") (EXPAND "inverseImage") (ASSERT))
+    NIL NIL)
+   ((|pairSpace| CONST-DECL "ppg_measurable_space[BlockPair].MeasurableSpace"
+     |ppg_measurable_block_union| NIL)
+    (|pairGenerators| CONST-DECL "set[set[Pair]]" |ppg_measurable_pair| NIL)
+    (|rightCylinder| CONST-DECL "set[Pair]" |ppg_measurable_pair| NIL)
+    (|leftCylinder| CONST-DECL "set[Pair]" |ppg_measurable_pair| NIL)
+    (|pairSigma| CONST-DECL "ppg_measurable_space[Pair].MeasurableSpace"
+     |ppg_measurable_pair| NIL))
+   SHOSTAK))
+ (|inner_join_measurable| 0
+  (|inner_join_measurable-1| NIL 4001401088
+   (""
+    (LEMMA "threeProjections.measurable_fst"
+     ("SX" "threeLeft.pairSpace" "SY" "threeBlocks.blockSigma(H)"))
+    (("" (LEMMA "threeLeft.join_measurable")
+      ((""
+        (LEMMA
+         "measurable_compose[AssemblyTriple,threeLeft.BlockPair,threeBlocks.Block(union(F,Z))]"
+         ("SX" "AssemblyTripleSigma" "SY" "threeLeft.pairSpace" "SZ"
+          "threeBlocks.blockSigma(union(F,Z))" "f"
+          "LAMBDA(xyz:AssemblyTriple):xyz`1" "g" "threeLeft.join"))
+        (("1" (ASSERT)
+          (("1" (EXPAND "ppg_measurable_block_union.U")
+            (("1" (EXPAND "ppg_measurable_map.measurable")
+              (("1" (EXPAND "inverseImage")
+                (("1" (ASSERT)
+                  (("1" (LEMMA "inner_carrier_eq")
+                    (("1" (REPLACE -1 :ACTUALS? T) (("1" (PROPAX) NIL NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL)
+         ("2" (ASSERT)
+          (("2" (EXPAND "ppg_measurable_block_union.U")
+            (("2" (PROPAX) NIL NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|join_measurable| FORMULA-DECL NIL |ppg_measurable_block_union| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set" |ppg_hls_join_three|
+     NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|inner_carrier_eq| FORMULA-DECL NIL |ppg_hls_join_three| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (IFF CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|measurable_compose| FORMULA-DECL NIL |ppg_measurable_compose| NIL)
+    (|Pair| TYPE-EQ-DECL NIL |ppg_measurable_pair| NIL)
+    (|pairSigma| CONST-DECL "ppg_measurable_space[Pair].MeasurableSpace"
+     |ppg_measurable_pair| NIL)
+    (U CONST-DECL "set[I]" |ppg_measurable_block_union| NIL)
+    (|UnionBlock| TYPE-EQ-DECL NIL |ppg_measurable_block_union| NIL)
+    (|join| CONST-DECL "UnionBlock" |ppg_measurable_block_union| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|measurable_fst| FORMULA-DECL NIL |ppg_measurable_pair| NIL)
+    (|pairSpace| CONST-DECL "ppg_measurable_space[BlockPair].MeasurableSpace"
+     |ppg_measurable_block_union| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_join_three| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (F FORMAL-CONST-DECL "finite_set[V]" |ppg_hls_join_three| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_join_three| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_join_three| NIL)
+    (Z FORMAL-CONST-DECL "finite_set[V]" |ppg_hls_join_three| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_hls_join_three| NIL)
+    (|LeftBlock| TYPE-EQ-DECL NIL |ppg_measurable_block_union| NIL)
+    (|RightBlock| TYPE-EQ-DECL NIL |ppg_measurable_block_union| NIL)
+    (|BlockPair| TYPE-EQ-DECL NIL |ppg_measurable_block_union| NIL)
+    (H FORMAL-CONST-DECL "finite_set[V]" |ppg_hls_join_three| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|AssemblyTriple| TYPE-EQ-DECL NIL |ppg_hls_join_three| NIL))
+   SHOSTAK))
+ (|outer_input_measurable| 0
+  (|outer_input_measurable-1| NIL 4001401089
+   ("" (LEMMA "inner_join_measurable")
+    ((""
+      (LEMMA "threeProjections.measurable_snd"
+       ("SX" "threeLeft.pairSpace" "SY" "threeBlocks.blockSigma(H)"))
+      ((""
+        (LEMMA "threePairing.measurable_pair"
+         ("SA" "AssemblyTripleSigma" "SX" "threeBlocks.blockSigma(union(F,Z))"
+          "SY" "threeBlocks.blockSigma(H)" "f"
+          "LAMBDA(xyz:AssemblyTriple):threeLeft.join(xyz`1)" "g"
+          "LAMBDA(xyz:AssemblyTriple):xyz`2"))
+        (("1" (LEMMA "outer_space_eq")
+          (("1" (REPLACE -1 :ACTUALS? T)
+            (("1" (EXPAND "outerInput") (("1" (ASSERT) NIL NIL)) NIL)) NIL))
+          NIL)
+         ("2" (LEMMA "outer_space_eq")
+          (("2" (EXPAND "outerInput")
+            (("2" (ASSERT)
+              (("2" (EXPAND "ppg_measurable_block_union.U")
+                (("2" (PROPAX) NIL NIL)) NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|measurable_snd| FORMULA-DECL NIL |ppg_measurable_pair| NIL)
+    (|pairSpace| CONST-DECL "ppg_measurable_space[BlockPair].MeasurableSpace"
+     |ppg_measurable_block_union| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_join_three| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (F FORMAL-CONST-DECL "finite_set[V]" |ppg_hls_join_three| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_join_three| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_join_three| NIL)
+    (Z FORMAL-CONST-DECL "finite_set[V]" |ppg_hls_join_three| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_hls_join_three| NIL)
+    (|LeftBlock| TYPE-EQ-DECL NIL |ppg_measurable_block_union| NIL)
+    (|RightBlock| TYPE-EQ-DECL NIL |ppg_measurable_block_union| NIL)
+    (|BlockPair| TYPE-EQ-DECL NIL |ppg_measurable_block_union| NIL)
+    (H FORMAL-CONST-DECL "finite_set[V]" |ppg_hls_join_three| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|AssemblyTriple| TYPE-EQ-DECL NIL |ppg_hls_join_three| NIL)
+    (|outer_space_eq| FORMULA-DECL NIL |ppg_hls_join_three| NIL)
+    (|outerInput| CONST-DECL "AssemblyOuterPair" |ppg_hls_join_three| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set" |ppg_hls_join_three|
+     NIL)
+    (IFF CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|measurable_pair| FORMULA-DECL NIL |ppg_measurable_pair| NIL)
+    (|Pair| TYPE-EQ-DECL NIL |ppg_measurable_pair| NIL)
+    (|pairSigma| CONST-DECL "ppg_measurable_space[Pair].MeasurableSpace"
+     |ppg_measurable_pair| NIL)
+    (U CONST-DECL "set[I]" |ppg_measurable_block_union| NIL)
+    (|UnionBlock| TYPE-EQ-DECL NIL |ppg_measurable_block_union| NIL)
+    (|join| CONST-DECL "UnionBlock" |ppg_measurable_block_union| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|inner_join_measurable| FORMULA-DECL NIL |ppg_hls_join_three| NIL))
+   SHOSTAK))
+ (|join_three_measurable_any| 0
+  (|join_three_measurable_any-1| NIL 4001401089
+   (""
+    (THEN (LEMMA "outer_input_measurable")
+     (LEMMA "threeOuter.join_blocks_measurable_any")
+     (LEMMA
+      "measurable_compose[AssemblyTriple,AssemblyOuterPair,threeOuter.AssemblyState]"
+      ("SX" "AssemblyTripleSigma" "SY" "threeOuter.AssemblyPairSigma" "SZ"
+       "threeOuter.AssemblyStateSigma" "f" "outerInput" "g"
+       "threeOuter.joinBlocks"))
+     (EXPAND "joinThree") (ASSERT))
+    NIL NIL)
+   ((|outer_input_measurable| FORMULA-DECL NIL |ppg_hls_join_three| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set" |ppg_hls_join_three|
+     NIL)
+    (|AssemblyState| TYPE-EQ-DECL NIL |ppg_hls_join_blocks| NIL)
+    (|AssemblyOuterPair| TYPE-EQ-DECL NIL |ppg_hls_join_three| NIL)
+    (|AssemblyTriple| TYPE-EQ-DECL NIL |ppg_hls_join_three| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|BlockPair| TYPE-EQ-DECL NIL |ppg_measurable_block_union| NIL)
+    (|RightBlock| TYPE-EQ-DECL NIL |ppg_measurable_block_union| NIL)
+    (|LeftBlock| TYPE-EQ-DECL NIL |ppg_measurable_block_union| NIL)
+    (|joinBlocks| CONST-DECL "AssemblyState" |ppg_hls_join_blocks| NIL)
+    (|AssemblyPair| TYPE-EQ-DECL NIL |ppg_hls_join_blocks| NIL)
+    (|outerInput| CONST-DECL "AssemblyOuterPair" |ppg_hls_join_three| NIL)
+    (|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|MTState| TYPE-EQ-DECL NIL |ppg_mt_semantics| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|pairSpace| CONST-DECL "ppg_measurable_space[BlockPair].MeasurableSpace"
+     |ppg_measurable_block_union| NIL)
+    (|pairSigma| CONST-DECL "ppg_measurable_space[Pair].MeasurableSpace"
+     |ppg_measurable_pair| NIL)
+    (|Pair| TYPE-EQ-DECL NIL |ppg_measurable_pair| NIL)
+    (|measurable_compose| FORMULA-DECL NIL |ppg_measurable_compose| NIL)
+    (|joinThree| CONST-DECL "threeOuter.AssemblyState" |ppg_hls_join_three|
+     NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)" |ppg_hls_join_three| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces" |ppg_hls_join_three| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (H FORMAL-CONST-DECL "finite_set[V]" |ppg_hls_join_three| NIL)
+    (Z FORMAL-CONST-DECL "finite_set[V]" |ppg_hls_join_three| NIL)
+    (F FORMAL-CONST-DECL "finite_set[V]" |ppg_hls_join_three| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]" |ppg_hls_join_three| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_hls_join_three| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_join_three| NIL)
+    (|join_blocks_measurable_any| FORMULA-DECL NIL |ppg_hls_join_blocks| NIL))
+   SHOSTAK))
+ (|measurable_joinThree| 0
+  (|measurable_joinThree-1| NIL 4001401089
+   ("" (THEN (LEMMA "join_three_measurable_any") (ASSERT)) NIL NIL)
+   ((|join_three_measurable_any| FORMULA-DECL NIL |ppg_hls_join_three| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set" |ppg_hls_join_three|
+     NIL))
+   SHOSTAK))
+ (|joinThree_left| 0
+  (|joinThree_left-1| NIL 4001401089
+   (""
+    (THEN (SKOSIMP) (TYPEPRED "a!1") (EXPAND "joinThree") (EXPAND "outerInput")
+     (EXPAND "ppg_hls_join_blocks.joinBlocks")
+     (EXPAND "ppg_hls_join_blocks.decodeFull")
+     (EXPAND "ppg_probability_cylinder_coherence.extendBlock")
+     (EXPAND "ppg_measurable_block_union.join")
+     (EXPAND "ppg_measurable_block_union.U") (GRIND :EXCLUDE ("is_finite")))
+    NIL NIL)
+   ((|joinThree| CONST-DECL "threeOuter.AssemblyState" |ppg_hls_join_three|
+     NIL)
+    (|joinBlocks| CONST-DECL "AssemblyState" |ppg_hls_join_blocks| NIL)
+    (|extendBlock| CONST-DECL "FullBlock" |ppg_probability_cylinder_coherence|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set" |ppg_hls_join_three|
+     NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_hls_join_three| NIL)
+    (|join| CONST-DECL "UnionBlock" |ppg_measurable_block_union| NIL)
+    (|decodeFull| CONST-DECL "AssemblyState" |ppg_hls_join_blocks| NIL)
+    (|outerInput| CONST-DECL "AssemblyOuterPair" |ppg_hls_join_three| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_join_three| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (F FORMAL-CONST-DECL "finite_set[V]" |ppg_hls_join_three| NIL))
+   SHOSTAK))
+ (|joinThree_middle| 0
+  (|joinThree_middle-1| NIL 4001401089
+   (""
+    (THEN (SKOSIMP) (TYPEPRED "a!1") (EXPAND "joinThree") (EXPAND "outerInput")
+     (EXPAND "ppg_hls_join_blocks.joinBlocks")
+     (EXPAND "ppg_hls_join_blocks.decodeFull")
+     (EXPAND "ppg_probability_cylinder_coherence.extendBlock")
+     (EXPAND "ppg_measurable_block_union.join")
+     (EXPAND "ppg_measurable_block_union.U") (GRIND :EXCLUDE ("is_finite")))
+    NIL NIL)
+   ((|joinThree| CONST-DECL "threeOuter.AssemblyState" |ppg_hls_join_three|
+     NIL)
+    (|joinBlocks| CONST-DECL "AssemblyState" |ppg_hls_join_blocks| NIL)
+    (|extendBlock| CONST-DECL "FullBlock" |ppg_probability_cylinder_coherence|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_hls_join_three| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set" |ppg_hls_join_three|
+     NIL)
+    (|join| CONST-DECL "UnionBlock" |ppg_measurable_block_union| NIL)
+    (|decodeFull| CONST-DECL "AssemblyState" |ppg_hls_join_blocks| NIL)
+    (|outerInput| CONST-DECL "AssemblyOuterPair" |ppg_hls_join_three| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_join_three| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (H FORMAL-CONST-DECL "finite_set[V]" |ppg_hls_join_three| NIL))
+   SHOSTAK))
+ (|joinThree_right| 0
+  (|joinThree_right-1| NIL 4001401089
+   (""
+    (THEN (SKOSIMP) (TYPEPRED "a!1") (EXPAND "joinThree") (EXPAND "outerInput")
+     (EXPAND "ppg_hls_join_blocks.joinBlocks")
+     (EXPAND "ppg_hls_join_blocks.decodeFull")
+     (EXPAND "ppg_probability_cylinder_coherence.extendBlock")
+     (EXPAND "ppg_measurable_block_union.join")
+     (EXPAND "ppg_measurable_block_union.U") (GRIND :EXCLUDE ("is_finite")))
+    NIL NIL)
+   ((|joinThree| CONST-DECL "threeOuter.AssemblyState" |ppg_hls_join_three|
+     NIL)
+    (|joinBlocks| CONST-DECL "AssemblyState" |ppg_hls_join_blocks| NIL)
+    (|extendBlock| CONST-DECL "FullBlock" |ppg_probability_cylinder_coherence|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_hls_join_three| NIL)
+    (|finite_union| APPLICATION-JUDGEMENT "finite_set" |ppg_hls_join_three|
+     NIL)
+    (|join| CONST-DECL "UnionBlock" |ppg_measurable_block_union| NIL)
+    (|decodeFull| CONST-DECL "AssemblyState" |ppg_hls_join_blocks| NIL)
+    (|outerInput| CONST-DECL "AssemblyOuterPair" |ppg_hls_join_three| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_hls_join_three| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (Z FORMAL-CONST-DECL "finite_set[V]" |ppg_hls_join_three| NIL))
+   SHOSTAK)))
+
