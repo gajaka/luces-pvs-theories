@@ -1,0 +1,92 @@
+% Replace each occurrence name by its predecessor rank within that label.
+% Images of the actual finite node and arc sets define the renamed graph,
+% even when the original graph is invalid. An inverse chooses a preimage
+% when one exists and otherwise returns the supplied node itself.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 1.2.1. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSNormalization.lean.
+ppg_hls_normalization[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_label_ranks[C,G]
+  D: VAR WitnessDAG
+  Q: VAR (Valid)
+  u,v,w,x,y,r: VAR WNode
+  i: VAR C
+  m,n: VAR nat
+
+  normalize(D): WitnessDAG =
+    (#nodes:=image[WNode,WNode](LAMBDA(u:WNode):canonicalName(D,u),D`nodes),
+      arcs:=image[[WNode,WNode],[WNode,WNode]](
+        LAMBDA(e:[WNode,WNode]):(canonicalName(D,e`1),canonicalName(D,e`2)),D`arcs)#)
+
+  normalize_node_iff: THEOREM normalize(D)`nodes(x) IFF
+    (EXISTS(u:WNode):D`nodes(u) AND canonicalName(D,u)=x)
+
+  normalize_node_forward: LEMMA D`nodes(u) IMPLIES normalize(D)`nodes(canonicalName(D,u))
+
+  normalize_edge_forward: THEOREM Edge(D)(u,v) IMPLIES
+    Edge(normalize(D))(canonicalName(D,u),canonicalName(D,v))
+
+  normalize_edge_witness: THEOREM Edge(normalize(Q))(x,y) IFF
+    (EXISTS(u,v:WNode):Q`nodes(u) AND Q`nodes(v) AND Edge(Q)(u,v) AND
+      canonicalName(Q,u)=x AND canonicalName(Q,v)=y)
+
+  sourceCandidates(D,x): finite_set[WNode] =
+    intersection(D`nodes,LAMBDA(u:WNode):canonicalName(D,u)=x)
+
+  sourceNode(D,x): WNode =
+    IF empty?(sourceCandidates(D,x)) THEN x ELSE choose(sourceCandidates(D,x)) ENDIF
+
+  sourceNode_of_mem_normalize: THEOREM normalize(D)`nodes(x) IMPLIES
+    D`nodes(sourceNode(D,x)) AND canonicalName(D,sourceNode(D,x))=x
+
+  sourceNode_name: THEOREM Q`nodes(u) IMPLIES sourceNode(Q,canonicalName(Q,u))=u
+
+  normalize_edge_backward: THEOREM Edge(normalize(Q))(x,y) IMPLIES
+    Edge(Q)(sourceNode(Q,x),sourceNode(Q,y))
+
+  normalize_edge_iff: THEOREM Q`nodes(u) AND Q`nodes(v) IMPLIES
+    (Edge(normalize(Q))(canonicalName(Q,u),canonicalName(Q,v)) IFF Edge(Q)(u,v))
+
+  mappedPath(D)(u,v): bool = Reach(normalize(D))(canonicalName(D,u),canonicalName(D,v))
+
+  mappedPath_single: LEMMA Edge(D)(u,v) IMPLIES mappedPath(D)(u,v)
+
+  mappedPath_trans: LEMMA mappedPath(D)(u,v) AND mappedPath(D)(v,w) IMPLIES mappedPath(D)(u,w)
+
+  positive_mappedPath: LEMMA positivePath(D)(u,v) IMPLIES mappedPath(D)(u,v)
+
+  normalize_reach_forward: THEOREM Reach(D)(u,v) IMPLIES
+    Reach(normalize(D))(canonicalName(D,u),canonicalName(D,v))
+
+  inversePositive(Q)(x,y): bool = positivePath(Q)(sourceNode(Q,x),sourceNode(Q,y))
+
+  inversePositive_single: LEMMA Edge(normalize(Q))(x,y) IMPLIES inversePositive(Q)(x,y)
+
+  inversePositive_trans: LEMMA inversePositive(Q)(u,v) AND inversePositive(Q)(v,w) IMPLIES inversePositive(Q)(u,w)
+
+  positive_inverse: LEMMA positivePath(normalize(Q))(x,y) IMPLIES inversePositive(Q)(x,y)
+
+  normalized_supported: LEMMA Edge(normalize(Q))(x,y) IMPLIES
+    normalize(Q)`nodes(x) AND normalize(Q)`nodes(y)
+
+  normalized_acyclic: LEMMA dagPaths.Acyclic(Edge(normalize(Q)))
+
+  sourceNode_label: LEMMA normalize(D)`nodes(x) IMPLIES sourceNode(D,x)`1=x`1
+
+  normalized_oriented: LEMMA normalize(Q)`nodes(x) AND normalize(Q)`nodes(y) AND x/=y IMPLIES
+    ((Edge(normalize(Q))(x,y) OR Edge(normalize(Q))(y,x)) IFF (x`1=y`1 OR G(x`1,y`1)))
+
+  normalize_valid: THEOREM Valid(normalize(Q))
+
+  normalized_predecessor: LEMMA normalize(Q)`nodes((i,n+1)) IMPLIES normalize(Q)`nodes((i,n))
+
+  normalized_chain: LEMMA normalize(Q)`nodes((i,m)) AND normalize(Q)`nodes((i,n)) AND m<n IMPLIES
+    Edge(normalize(Q))((i,m),(i,n))
+
+  normalize_canonical: THEOREM Canonical(normalize(Q))
+
+  normalize_proper: THEOREM Proper(D) IMPLIES Proper(normalize(D))
+END ppg_hls_normalization
