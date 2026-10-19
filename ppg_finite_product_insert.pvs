@@ -1,0 +1,14 @@
+% Inserting a new factor multiplies the finite product by that factor.
+% The argument uses the proved order independence of the choose/rest fold.
+ppg_finite_product_insert[T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_product[T] AS insertFold,ppg_real_product[T] AS insertLaws
+  F: VAR finite_set[T]
+  f: VAR [T->real]
+  a: VAR T
+
+  product_empty: LEMMA insertFold.product(emptyset[T],f)=1
+
+  product_add: LEMMA insertFold.product(add(a,F),f)=
+    IF F(a) THEN insertFold.product(F,f) ELSE f(a)*insertFold.product(F,f) ENDIF
+END ppg_finite_product_insert

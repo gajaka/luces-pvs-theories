@@ -1,0 +1,56 @@
+% Applying a separate measurable map to each factor transports the actual
+% binary product law to the product of the two image laws.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_probability_pair_map[A,B,C,D:TYPE,
+  (IMPORTING ppg_measurable_space)
+  SA:ppg_measurable_space[A].MeasurableSpace,
+  SB:ppg_measurable_space[B].MeasurableSpace,
+  SC:ppg_measurable_space[C].MeasurableSpace,
+  SD:ppg_measurable_space[D].MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_probability_pair[A,B,SA,SB] AS mapSourcePair,
+    ppg_probability_pair[C,D,SC,SD] AS mapTargetPair,
+    ppg_probability_pair_unique[C,D,SC,SD] AS mapTargetUnique,
+    ppg_measurable_pair[[A,B],A,B] AS mapProjections,
+    ppg_measurable_pair[[A,B],C,D] AS mapPairing,
+    ppg_measurable_compose,
+    ppg_probability_map[A,C,SA,SC] AS mapLeftPush,
+    ppg_probability_map[B,D,SB,SD] AS mapRightPush
+
+  SourceSigma: MACRO ppg_measurable_space[[A,B]].MeasurableSpace = mapSourcePair.JointSpace
+
+  TargetSigma: MACRO ppg_measurable_space[[C,D]].MeasurableSpace = mapTargetPair.JointSpace
+
+  IMPORTING ppg_probability_map[[A,B],[C,D],SourceSigma,TargetSigma] AS mapPairPush
+
+  f:VAR mapLeftPush.MeasurableMap
+  g:VAR mapRightPush.MeasurableMap
+  mu:VAR mapLeftPush.SourceLaw
+  nu:VAR mapRightPush.SourceLaw
+  E:VAR (SC)
+  F:VAR (SD)
+
+  pairMap(f,g)(p:[A,B]):[C,D] = (f(p`1),g(p`2))
+
+  source_space_eq: LEMMA SourceSigma=mapProjections.pairSigma(SA,SB)
+
+  target_space_eq: LEMMA TargetSigma=mapPairing.pairSigma(SC,SD)
+
+  pair_left_measurable: LEMMA ppg_measurable_map[[A,B],C].measurable(
+    SourceSigma,SC,LAMBDA(p:[A,B]):f(p`1))
+
+  pair_right_measurable: LEMMA ppg_measurable_map[[A,B],D].measurable(
+    SourceSigma,SD,LAMBDA(p:[A,B]):g(p`2))
+
+  pair_map_measurable: LEMMA ppg_measurable_map[[A,B],[C,D]].measurable(SourceSigma,TargetSigma,pairMap(f,g))
+
+  pair_map_preimage: LEMMA ppg_measurable_map[[A,B],[C,D]].inverseImage(
+    pairMap(f,g),cross_product(E,F))=cross_product(
+      ppg_measurable_map[A,C].inverseImage(f,E),ppg_measurable_map[B,D].inverseImage(g,F))
+
+  mapped_rectangle: LEMMA mapPairPush.pushforward(mapSourcePair.productLaw(mu,nu),pairMap(f,g))(
+    cross_product(E,F))=mapLeftPush.pushforward(mu,f)(E)*mapRightPush.pushforward(nu,g)(F)
+
+  product_map_law: THEOREM mapPairPush.pushforward(mapSourcePair.productLaw(mu,nu),pairMap(f,g))=
+    mapTargetPair.productLaw(mapLeftPush.pushforward(mu,f),mapRightPush.pushforward(nu,g))
+END ppg_probability_pair_map

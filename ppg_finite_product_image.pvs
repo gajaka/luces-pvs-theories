@@ -1,0 +1,26 @@
+% An injective change of finite coordinates preserves every product factor.
+% No enumeration of either carrier is part of the statement.
+ppg_finite_product_image[Source,Target:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_product[Source] AS imageDomain,
+    ppg_finite_product[Target] AS imageTarget,
+    ppg_finite_product_insert[Source] AS imageDomainInsert,
+    ppg_finite_product_insert[Target] AS imageTargetInsert,
+    ppg_finite_induction[Source],ppg_sum_image[Source,Target] AS imageSets
+  F: VAR finite_set[Source]
+  h: VAR [Source->Target]
+  f: VAR [Target->real]
+  x: VAR Source
+
+  image_step_injective: LEMMA
+    (FORALL(a,b:Source):add(x,F)(a) AND add(x,F)(b) AND h(a)=h(b) IMPLIES a=b) IMPLIES
+      (FORALL(a,b:Source):F(a) AND F(b) AND h(a)=h(b) IMPLIES a=b)
+
+  image_step_fresh: LEMMA NOT F(x) AND
+    (FORALL(a,b:Source):add(x,F)(a) AND add(x,F)(b) AND h(a)=h(b) IMPLIES a=b) IMPLIES
+      NOT image(h,F)(h(x))
+
+  product_image: THEOREM
+    (FORALL(a,b:Source):F(a) AND F(b) AND h(a)=h(b) IMPLIES a=b) IMPLIES
+      imageTarget.product(image(h,F),f)=imageDomain.product(F,LAMBDA(a:Source):f(h(a)))
+END ppg_finite_product_image

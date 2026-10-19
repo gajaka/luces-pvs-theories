@@ -1,0 +1,233 @@
+(|ppg_probability_pair_unique|
+ (|rectangles_intersection| 0
+  (|rectangles_intersection-1| NIL 4001394716
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :DEFS ("cross_product" "intersection" "member")))
+    NIL NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|subset_algebra_intersection| APPLICATION-JUDGEMENT "(S)" |sigma_algebra|
+     |measure_integration|)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|cross_product| CONST-DECL "set[[T1, T2]]" |cross_product| |topology|)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (SX FORMAL-CONST-DECL "ppg_measurable_space[X].MeasurableSpace"
+     |ppg_probability_pair_unique| NIL)
+    (SY FORMAL-CONST-DECL "ppg_measurable_space[Y].MeasurableSpace"
+     |ppg_probability_pair_unique| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_probability_pair_unique| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_pair_unique| NIL))
+   SHOSTAK))
+ (|rectangles_closed| 0
+  (|rectangles_closed-1| NIL 4001394716
+   (""
+    (THEN (EXPAND "intersectionClosed?") (EXPAND "Rectangles") (SKOSIMP*)
+     (LEMMA "ppg_measurable_space[X].measurable_intersection"
+      ("S" "SX" "A" "B!2" "B" "B!3"))
+     (LEMMA "ppg_measurable_space[Y].measurable_intersection"
+      ("S" "SY" "A" "D!1" "B" "D!2"))
+     (ASSERT) (INST + "intersection(B!2,B!3)" "intersection(D!1,D!2)")
+     (LEMMA "rectangles_intersection")
+     (GRIND :DEFS NIL :EXCLUDE ("cross_product" "intersection" "sigma?")))
+    NIL NIL)
+   ((|intersectionClosed?| CONST-DECL "bool" |ppg_dynkin_system| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_probability_pair_unique| NIL)
+    (SY FORMAL-CONST-DECL "ppg_measurable_space[Y].MeasurableSpace"
+     |ppg_probability_pair_unique| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|rectangles_intersection| FORMULA-DECL NIL |ppg_probability_pair_unique|
+     NIL)
+    (|subset_algebra_intersection| APPLICATION-JUDGEMENT "(S)" |sigma_algebra|
+     |measure_integration|)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_pair_unique| NIL)
+    (SX FORMAL-CONST-DECL "ppg_measurable_space[X].MeasurableSpace"
+     |ppg_probability_pair_unique| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|measurable_intersection| FORMULA-DECL NIL |ppg_measurable_space| NIL)
+    (|Rectangles| CONST-DECL "set[set[[X, Y]]]" |ppg_probability_pair_unique|
+     NIL))
+   SHOSTAK))
+ (|rectangles_measurable| 0
+  (|rectangles_measurable-1| NIL 4001394716
+   (""
+    (THEN (LEMMA "uniqueProduct.rectangle_in_space")
+     (GRIND :DEFS ("Rectangles" "subset?") :EXCLUDE
+      ("pairSigma" "cross_product" "sigma?")))
+    NIL NIL)
+   ((SY FORMAL-CONST-DECL "ppg_measurable_space[Y].MeasurableSpace"
+     |ppg_probability_pair_unique| NIL)
+    (SX FORMAL-CONST-DECL "ppg_measurable_space[X].MeasurableSpace"
+     |ppg_probability_pair_unique| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_probability_pair_unique| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_pair_unique| NIL)
+    (|rectangle_in_space| FORMULA-DECL NIL |ppg_probability_pair| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|JointSpace| CONST-DECL "ppg_measurable_space[[X, Y]].MeasurableSpace"
+     |ppg_probability_pair| NIL)
+    (|Rectangles| CONST-DECL "set[set[[X, Y]]]" |ppg_probability_pair_unique|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL))
+   SHOSTAK))
+ (|rectangles_native| 0
+  (|rectangles_native-1| NIL 4001394716
+   (""
+    (THEN (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :DEFS ("Rectangles" "measurable_rectangle?" "asNasa") :EXCLUDE
+      ("cross_product" "sigma?")))
+    NIL NIL)
+   ((X FORMAL-TYPE-DECL NIL |ppg_probability_pair_unique| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_probability_pair_unique| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (SY FORMAL-CONST-DECL "ppg_measurable_space[Y].MeasurableSpace"
+     |ppg_probability_pair_unique| NIL)
+    (SX FORMAL-CONST-DECL "ppg_measurable_space[X].MeasurableSpace"
+     |ppg_probability_pair_unique| NIL)
+    (|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|measurable_rectangle?| CONST-DECL "bool" |product_sigma_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Rectangles| CONST-DECL "set[set[[X, Y]]]" |ppg_probability_pair_unique|
+     NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL))
+   SHOSTAK))
+ (|rectangles_generate| 0
+  (|rectangles_generate-1| NIL 4001394716
+   (""
+    (THEN (EXPAND "uniqueProduct.JointSpace")
+     (LEMMA "uniquePair.pair_nasa_eq" ("SX" "SX" "SY" "SY"))
+     (LEMMA "uniquePair.rectangle_family_eq" ("SX" "SX" "SY" "SY"))
+     (LEMMA "uniqueGenerated.generated_eq" ("G" "Rectangles"))
+     (LEMMA "rectangles_native")
+     (GRIND :DEFS ("sigma_times") :EXCLUDE
+      ("generated" "generated_sigma_algebra" "asNasa" "pairSigma"
+       "measurable_rectangle?" "sigma?")))
+    NIL NIL)
+   ((|JointSpace| CONST-DECL "ppg_measurable_space[[X, Y]].MeasurableSpace"
+     |ppg_probability_pair| NIL)
+    (|rectangle_family_eq| FORMULA-DECL NIL |ppg_nasa_pair| NIL)
+    (|rectangles_native| FORMULA-DECL NIL |ppg_probability_pair_unique| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|generated_eq| FORMULA-DECL NIL |ppg_nasa_generated| NIL)
+    (|Rectangles| CONST-DECL "set[set[[X, Y]]]" |ppg_probability_pair_unique|
+     NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_probability_pair_unique| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_pair_unique| NIL)
+    (SY FORMAL-CONST-DECL "ppg_measurable_space[Y].MeasurableSpace"
+     |ppg_probability_pair_unique| NIL)
+    (SX FORMAL-CONST-DECL "ppg_measurable_space[X].MeasurableSpace"
+     |ppg_probability_pair_unique| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|pair_nasa_eq| FORMULA-DECL NIL |ppg_nasa_pair| NIL))
+   SHOSTAK))
+ (|pair_law_unique_TCC1| 0
+  (|pair_law_unique_TCC1-1| NIL 4001394716
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "uniqueProduct.rectangle_in_space" ("B" "B!1" "D" "D!1")) (ASSERT))
+    NIL NIL)
+   ((|rectangle_in_space| FORMULA-DECL NIL |ppg_probability_pair| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_pair_unique| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_probability_pair_unique| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (SX FORMAL-CONST-DECL "ppg_measurable_space[X].MeasurableSpace"
+     |ppg_probability_pair_unique| NIL)
+    (SY FORMAL-CONST-DECL "ppg_measurable_space[Y].MeasurableSpace"
+     |ppg_probability_pair_unique| NIL))
+   NIL
+   (|pair_law_unique| SUBTYPE "cross_product[X, Y](B, D)"
+    "(ppg_probability_pair[ppg_probability_pair_unique.X, ppg_probability_pair_unique.Y, ppg_probability_pair_unique.SX, ppg_probability_pair_unique.SY].JointSpace)"
+    (37 30 37 48))))
+ (|pair_law_unique| 0
+  (|pair_law_unique-1| NIL 4001394716
+   (""
+    (THEN (SKOSIMP*) (LEMMA "rectangles_closed")
+     (LEMMA "rectangles_measurable") (LEMMA "rectangles_generate")
+     (LEMMA "pairUnique.probability_unique"
+      ("G" "Rectangles" "mu" "mu!1" "nu" "nu!1"))
+     (GRIND :DEFS ("Rectangles") :EXCLUDE
+      ("generated" "intersectionClosed?" "pairSigma" "sigma?" "probability?"
+       "cross_product")))
+    NIL NIL)
+   ((|rectangles_measurable| FORMULA-DECL NIL |ppg_probability_pair_unique|
+     NIL)
+    (|probability_unique| FORMULA-DECL NIL |ppg_probability_unique| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|Rectangles| CONST-DECL "set[set[[X, Y]]]" |ppg_probability_pair_unique|
+     NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_pair_unique| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_probability_pair_unique| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (SX FORMAL-CONST-DECL "ppg_measurable_space[X].MeasurableSpace"
+     |ppg_probability_pair_unique| NIL)
+    (SY FORMAL-CONST-DECL "ppg_measurable_space[Y].MeasurableSpace"
+     |ppg_probability_pair_unique| NIL)
+    (|JointSpace| CONST-DECL "ppg_measurable_space[[X, Y]].MeasurableSpace"
+     |ppg_probability_pair| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|cross_product| CONST-DECL "set[[T1, T2]]" |cross_product| |topology|)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|rectangles_generate| FORMULA-DECL NIL |ppg_probability_pair_unique| NIL)
+    (|rectangles_closed| FORMULA-DECL NIL |ppg_probability_pair_unique| NIL))
+   SHOSTAK)))
+

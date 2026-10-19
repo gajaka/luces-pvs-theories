@@ -1,0 +1,97 @@
+% Distinct table slots have their prescribed coordinate product law.
+% A query may read the same variable at several times; injectivity is
+% required only of the complete pair (time, variable).
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Proposition 3.3. https://arxiv.org/abs/2111.06527
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Lean counterpart: the first two theorems of PPGraphHLSQueryLaw.lean.
+% The variable carrier is arbitrary. Only the query carrier is finite.
+ppg_hls_table_query[V,Value,K:TYPE,domain:[V->set[Value]],
+  universe:{F:finite_set[K]|F=fullset[K]},
+  (IMPORTING ppg_mt_native_spaces[bool,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),variable:[K->V]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_random_process[bool,V,Value,domain] AS querySlots,
+    ppg_mt_native_spaces[bool,V,Value,domain] AS querySpaces,
+    ppg_mt_coordinate_laws[bool,V,Value,domain] AS queryCoins,
+    ppg_mt_check_measurable[bool,V,Value,domain] AS queryReads,
+    ppg_mt_read_probability[bool,V,Value,domain,spaces,laws] AS queryReadLaw,
+    ppg_mt_log_probability[bool,V,Value,domain,spaces,laws] AS queryTableLaw,
+    ppg_mt_log_family[bool,V,Value,K,domain,spaces,laws] AS queryFamily
+
+  queryDomain: MACRO [K->set[Value]] = LAMBDA(k:K):domain(variable(k))
+
+  queryCoordinates: MACRO [k:K->ppg_measurable_space[(queryDomain(k))].MeasurableSpace] =
+    LAMBDA(k:K):spaces(variable(k))
+
+  queryLaws: MACRO [k:K->ppg_probability_measure[(queryDomain(k)),queryCoordinates(k)].Probability] =
+    LAMBDA(k:K):laws(variable(k))
+
+  IMPORTING ppg_measurable_block[K,Value,queryDomain,queryCoordinates] AS queryBlocks,
+    ppg_measurable_block_box[K,Value,queryDomain,queryCoordinates] AS queryBoxes,
+    ppg_measurable_block_map[querySlots.LogSpace,K,Value,queryDomain,queryCoordinates] AS queryMaps,
+    ppg_probability_finite_consistency[K,Value,queryDomain,queryCoordinates,queryLaws] AS queryUnique,
+    ppg_probability_finite_product[K,Value,queryDomain,queryCoordinates,queryLaws] AS queryFinite,
+    ppg_probability_event_product[querySlots.LogSpace,K,querySpaces.NativeTableSigma(spaces)] AS queryFactors,
+    ppg_finite_events[querySlots.LogSpace,K,querySpaces.NativeTableSigma(spaces)] AS queryMeets,
+    ppg_finite_product[K] AS queryFold
+
+  QueryValue: TYPE = queryBlocks.Block(universe)
+
+  QuerySigma: MACRO ppg_measurable_space[QueryValue].MeasurableSpace = queryBlocks.blockSigma(universe)
+
+  QueryEvents: TYPE = queryBoxes.CoordinateEvents
+
+  n,m: VAR [K->nat]
+  E: VAR QueryEvents
+  k: VAR K
+
+  tableQuery(n)(omega:querySlots.LogSpace): QueryValue =
+    LAMBDA(k:(universe)):omega((n(k),variable(k)))
+
+  injectiveQuery(n): bool = FORALL(k,j:K):
+    (n(k),variable(k))=(n(j),variable(j)) IMPLIES k=j
+
+  query_coordinate_measurable: LEMMA ppg_measurable_map[querySlots.LogSpace,(domain(variable(k)))].measurable(
+    querySpaces.NativeTableSigma(spaces),spaces(variable(k)),
+    LAMBDA(omega:querySlots.LogSpace):omega((n(k),variable(k))))
+
+  measurable_tableQuery: LEMMA ppg_measurable_map[querySlots.LogSpace,QueryValue].measurable(
+    querySpaces.NativeTableSigma(spaces),QuerySigma,tableQuery(n))
+
+  queryEvents(n,E): queryFamily.LogEvents = LAMBDA(k:K):
+    queryTableLaw.log_coin_event(n(k),variable(k),E(k))
+
+  queryBlock(n)(k): set[[nat,V]] = singleton[[nat,V]]((n(k),variable(k)))
+
+  query_blocks_disjoint: LEMMA injectiveQuery(n) IMPLIES
+    FORALL(k,j:K):k/=j IMPLIES disjoint?(queryBlock(n)(k),queryBlock(n)(j))
+
+  query_event_depends: LEMMA queryFamily.logDepends(queryBlock(n)(k),queryEvents(n,E)(k))
+
+  query_box_preimage: LEMMA ppg_measurable_map[querySlots.LogSpace,QueryValue].inverseImage(
+    tableQuery(n),queryBoxes.blockBox(universe,E))=queryMeets.finiteMeet(universe,queryEvents(n,E))
+
+  query_event_factors: LEMMA queryFactors.eventFactors(queryTableLaw.logMeasure,queryEvents(n,E))=
+    LAMBDA(k:K):laws(variable(k))(E(k))
+
+  query_box_mass: LEMMA injectiveQuery(n) IMPLIES
+    queryTableLaw.logMeasure(queryMeets.finiteMeet(universe,queryEvents(n,E)))=
+      queryFold.product(universe,LAMBDA(k:K):laws(variable(k))(E(k)))
+
+  IMPORTING ppg_probability_map[querySlots.LogSpace,QueryValue,
+    querySpaces.NativeTableSigma(spaces),QuerySigma] AS queryPush
+
+  tableQueryLaw(n): queryPush.TargetLaw = queryPush.pushforward(queryTableLaw.logMeasure,tableQuery(n))
+
+  query_law_box: LEMMA injectiveQuery(n) IMPLIES
+    tableQueryLaw(n)(queryBoxes.blockBox(universe,E))=
+      queryFold.product(universe,LAMBDA(k:K):laws(variable(k))(E(k)))
+
+  map_tableQuery: THEOREM injectiveQuery(n) IMPLIES
+    tableQueryLaw(n)=queryFinite.finiteLaw(universe)
+
+  tableQuery_equidistributed: THEOREM injectiveQuery(n) AND injectiveQuery(m) IMPLIES
+    tableQueryLaw(n)=tableQueryLaw(m)
+END ppg_hls_table_query

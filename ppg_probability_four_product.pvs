@@ -1,0 +1,88 @@
+% Four groups are split by the three actual binary sum decompositions.
+% No disjointness of the variable names is needed for this identity of
+% finite coordinate product laws. Injectivity enters only when the
+% independent table is queried.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_probability_four_product[X,Y,Z,Value:TYPE,
+  domainX:[X->set[Value]],domainY:[Y->set[Value]],domainZ:[Z->set[Value]],
+  universeX:{F:finite_set[X]|F=fullset[X]},
+  universeY:{F:finite_set[Y]|F=fullset[Y]},
+  universeZ:{F:finite_set[Z]|F=fullset[Z]},
+  (IMPORTING ppg_probability_coordinates[X,Value,domainX],
+    ppg_probability_coordinates[Y,Value,domainY],ppg_probability_coordinates[Z,Value,domainZ])
+  spacesX:ppg_probability_coordinates[X,Value,domainX].CoordinateSpaces,
+  spacesY:ppg_probability_coordinates[Y,Value,domainY].CoordinateSpaces,
+  spacesZ:ppg_probability_coordinates[Z,Value,domainZ].CoordinateSpaces,
+  lawsX:ppg_probability_coordinates[X,Value,domainX].ProbabilityFamily(spacesX),
+  lawsY:ppg_probability_coordinates[Y,Value,domainY].ProbabilityFamily(spacesY),
+  lawsZ:ppg_probability_coordinates[Z,Value,domainZ].ProbabilityFamily(spacesZ)]: THEORY
+BEGIN
+  IMPORTING ppg_probability_sum_product[X,Z,Value,domainX,domainZ,
+      universeX,universeZ,spacesX,spacesZ,lawsX,lawsZ] AS fourLeft,
+    ppg_probability_sum_product[Y,Y,Value,domainY,domainY,
+      universeY,universeY,spacesY,spacesY,lawsY,lawsY] AS fourRight
+
+  LeftIndex: TYPE = union[X,Z]
+
+  RightIndex: TYPE = union[Y,Y]
+
+  FourIndex: TYPE = union[LeftIndex,RightIndex]
+
+  IMPORTING ppg_probability_sum_product[LeftIndex,RightIndex,Value,
+    fourLeft.sumDomain,fourRight.sumDomain,fourLeft.sumUniverse,fourRight.sumUniverse,
+    fourLeft.sumSpaces,fourRight.sumSpaces,fourLeft.sumLaws,fourRight.sumLaws] AS fourOuter
+
+  fourDomain: MACRO [FourIndex->set[Value]] = fourOuter.sumDomain
+
+  fourSpaces: MACRO [k:FourIndex->ppg_measurable_space[(fourDomain(k))].MeasurableSpace] = fourOuter.sumSpaces
+
+  fourLaws: MACRO [k:FourIndex->ppg_probability_measure[(fourDomain(k)),fourSpaces(k)].Probability] = fourOuter.sumLaws
+
+  fourUniverse: MACRO finite_set[FourIndex] = fourOuter.sumUniverse
+
+  four_universe_full: LEMMA fourUniverse=fullset[FourIndex]
+
+  FourValue: TYPE = fourOuter.SumValue
+
+  IntermediateValue: TYPE = fourOuter.PairValue
+
+  ResultValue: TYPE = [fourLeft.PairValue,fourRight.PairValue]
+
+  FourSigma: MACRO ppg_measurable_space[FourValue].MeasurableSpace = fourOuter.SumSigma
+
+  IntermediateSigma: MACRO ppg_measurable_space[IntermediateValue].MeasurableSpace = fourOuter.PairSigma
+
+  IMPORTING ppg_probability_pair_map[fourLeft.SumValue,fourRight.SumValue,
+      fourLeft.PairValue,fourRight.PairValue,fourLeft.SumSigma,fourRight.SumSigma,
+      fourLeft.PairSigma,fourRight.PairSigma] AS fourInner,
+    ppg_probability_pair[fourLeft.PairValue,fourRight.PairValue,
+      fourLeft.PairSigma,fourRight.PairSigma] AS fourResultLaw,
+    ppg_probability_finite_product[FourIndex,Value,fourOuter.sumDomain,
+      fourOuter.sumSpaces,fourOuter.sumLaws] AS fourProduct
+
+  ResultSigma: MACRO ppg_measurable_space[ResultValue].MeasurableSpace = fourResultLaw.JointSpace
+
+  splitInner(p:IntermediateValue):ResultValue = (fourLeft.splitSum(p`1),fourRight.splitSum(p`2))
+
+  splitFour(f:FourValue):ResultValue = splitInner(fourOuter.splitSum(f))
+
+  inner_split_measurable: LEMMA ppg_measurable_map[IntermediateValue,ResultValue].measurable(
+    IntermediateSigma,ResultSigma,splitInner)
+
+  split_four_measurable: LEMMA ppg_measurable_map[FourValue,ResultValue].measurable(
+    FourSigma,ResultSigma,splitFour)
+
+  IMPORTING ppg_probability_map[IntermediateValue,ResultValue,
+      IntermediateSigma,ResultSigma] AS fourInnerPush,
+    ppg_probability_map[FourValue,ResultValue,FourSigma,ResultSigma] AS fourPush,
+    ppg_probability_push_compose[FourValue,IntermediateValue,ResultValue,
+      FourSigma,IntermediateSigma,ResultSigma] AS fourCompose
+
+  nestedLaw: fourPush.TargetLaw = fourResultLaw.productLaw(fourLeft.pairLaw,fourRight.pairLaw)
+
+  inner_split_law: LEMMA fourInnerPush.pushforward(fourOuter.pairLaw,splitInner)=nestedLaw
+
+  measurePreserving_splitFour: THEOREM
+    ppg_measurable_map[FourValue,ResultValue].measurable(FourSigma,ResultSigma,splitFour) AND
+      fourPush.pushforward(fourProduct.finiteLaw(fourOuter.sumUniverse),splitFour)=nestedLaw
+END ppg_probability_four_product

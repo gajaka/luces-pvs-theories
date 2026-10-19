@@ -1,0 +1,106 @@
+% The four reads used in Proposition 3.3 have the prescribed nested product
+% law when their complete (slot, variable) addresses are distinct.
+% Measurability itself does not require distinct addresses.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Proposition 3.3. https://arxiv.org/abs/2111.06527
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_hls_query_four[V,Value,X,Y,Z:TYPE,domain:[V->set[Value]],
+  universeX:{F:finite_set[X]|F=fullset[X]},
+  universeY:{F:finite_set[Y]|F=fullset[Y]},
+  universeZ:{F:finite_set[Z]|F=fullset[Z]},
+  (IMPORTING ppg_mt_native_spaces[bool,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  variableX:[X->V],variableY:[Y->V],variableZ:[Z->V]]: THEORY
+BEGIN
+  domainX: MACRO [X->set[Value]] = LAMBDA(x:X):domain(variableX(x))
+
+  domainY: MACRO [Y->set[Value]] = LAMBDA(y:Y):domain(variableY(y))
+
+  domainZ: MACRO [Z->set[Value]] = LAMBDA(z:Z):domain(variableZ(z))
+
+  spacesX: MACRO [x:X->ppg_measurable_space[(domainX(x))].MeasurableSpace] = LAMBDA(x:X):spaces(variableX(x))
+
+  spacesY: MACRO [y:Y->ppg_measurable_space[(domainY(y))].MeasurableSpace] = LAMBDA(y:Y):spaces(variableY(y))
+
+  spacesZ: MACRO [z:Z->ppg_measurable_space[(domainZ(z))].MeasurableSpace] = LAMBDA(z:Z):spaces(variableZ(z))
+
+  lawsX: MACRO [x:X->ppg_probability_measure[(domainX(x)),spacesX(x)].Probability] = LAMBDA(x:X):laws(variableX(x))
+
+  lawsY: MACRO [y:Y->ppg_probability_measure[(domainY(y)),spacesY(y)].Probability] = LAMBDA(y:Y):laws(variableY(y))
+
+  lawsZ: MACRO [z:Z->ppg_probability_measure[(domainZ(z)),spacesZ(z)].Probability] = LAMBDA(z:Z):laws(variableZ(z))
+
+  IMPORTING ppg_probability_four_product[X,Y,Z,Value,domainX,domainY,domainZ,
+    universeX,universeY,universeZ,spacesX,spacesY,spacesZ,lawsX,lawsY,lawsZ] AS fourLaw,
+    ppg_mt_random_process[bool,V,Value,domain] AS fourSlots,
+    ppg_mt_native_spaces[bool,V,Value,domain] AS fourTableSpaces,
+    ppg_mt_log_probability[bool,V,Value,domain,spaces,laws] AS fourTableLaw
+
+  FourIndex: TYPE = union[union[X,Z],union[Y,Y]]
+
+  fourVariable(k:FourIndex):V = IF inl?(k)
+    THEN IF inl?(left(k)) THEN variableX(left(left(k))) ELSE variableZ(right(left(k))) ENDIF
+    ELSE IF inl?(right(k)) THEN variableY(left(right(k))) ELSE variableY(right(right(k))) ENDIF ENDIF
+
+  nX:VAR [X->nat]
+  nY1,nY2:VAR [Y->nat]
+  nZ:VAR [Z->nat]
+
+  fourSlot(nX,nY1,nY2,nZ)(k:FourIndex):nat = CASES k OF
+    inl(a):CASES a OF inl(x):nX(x),inr(z):nZ(z) ENDCASES,
+    inr(b):CASES b OF inl(y):nY1(y),inr(y):nY2(y) ENDCASES ENDCASES
+
+  IMPORTING ppg_hls_table_query[V,Value,FourIndex,domain,fourLaw.fourUniverse,
+    spaces,laws,fourVariable] AS fourQuery
+
+  % The nested tagged family and the direct table-query family describe
+  % the same coordinate carriers, sigma algebras and marginal laws.
+  four_domains_eq: LEMMA fourLaw.fourDomain=fourQuery.queryDomain
+
+  four_spaces_eq: LEMMA fourLaw.fourSpaces=fourQuery.queryCoordinates
+
+  four_laws_eq: LEMMA fourLaw.fourLaws=fourQuery.queryLaws
+
+  four_sigma_eq: LEMMA fourQuery.QuerySigma=fourLaw.FourSigma
+
+  IMPORTING ppg_probability_finite_product[FourIndex,Value,fourQuery.queryDomain,
+    fourQuery.queryCoordinates,fourQuery.queryLaws] AS fourQueryProduct,
+    ppg_probability_finite_product[FourIndex,Value,fourLaw.fourDomain,
+    fourLaw.fourSpaces,fourLaw.fourLaws] AS fourSplitProduct
+
+  four_product_eq: LEMMA fourQueryProduct.finiteLaw(fourLaw.fourUniverse)=
+    fourSplitProduct.finiteLaw(fourLaw.fourUniverse)
+
+  splitFour(f:fourQuery.QueryValue):fourLaw.ResultValue = fourLaw.splitFour(f)
+
+  % Changing the carrier notation leaves the actual split function unchanged.
+  split_four_map_eq: LEMMA splitFour=(fourLaw.splitFour::[fourQuery.QueryValue->fourLaw.ResultValue])
+
+  split_four_measurable: LEMMA ppg_measurable_map[fourQuery.QueryValue,fourLaw.ResultValue].measurable(
+    fourQuery.QuerySigma,fourLaw.ResultSigma,splitFour)
+
+  IMPORTING ppg_probability_map[fourQuery.QueryValue,fourLaw.ResultValue,
+    fourQuery.QuerySigma,fourLaw.ResultSigma] AS fourQuerySplitPush,
+    ppg_probability_map[fourSlots.LogSpace,fourLaw.ResultValue,
+    fourTableSpaces.NativeTableSigma(spaces),fourLaw.ResultSigma] AS fourReadPush,
+    ppg_probability_push_compose[fourSlots.LogSpace,fourQuery.QueryValue,fourLaw.ResultValue,
+    fourTableSpaces.NativeTableSigma(spaces),fourQuery.QuerySigma,fourLaw.ResultSigma] AS fourReadCompose
+
+  split_four_law: LEMMA fourQuerySplitPush.pushforward(
+    fourQueryProduct.finiteLaw(fourLaw.fourUniverse),splitFour)=fourLaw.nestedLaw
+
+  measurePreserving_splitFour: THEOREM
+    ppg_measurable_map[fourQuery.QueryValue,fourLaw.ResultValue].measurable(
+      fourQuery.QuerySigma,fourLaw.ResultSigma,splitFour) AND
+    fourQuerySplitPush.pushforward(fourQueryProduct.finiteLaw(fourLaw.fourUniverse),splitFour)=fourLaw.nestedLaw
+
+  readFour(nX,nY1,nY2,nZ)(omega:fourSlots.LogSpace):fourLaw.ResultValue =
+    splitFour(fourQuery.tableQuery(fourSlot(nX,nY1,nY2,nZ))(omega))
+
+  measurable_readFour: THEOREM ppg_measurable_map[fourSlots.LogSpace,fourLaw.ResultValue].measurable(
+    fourTableSpaces.NativeTableSigma(spaces),fourLaw.ResultSigma,readFour(nX,nY1,nY2,nZ))
+
+  map_readFour: THEOREM fourQuery.injectiveQuery(fourSlot(nX,nY1,nY2,nZ)) IMPLIES
+    fourReadPush.pushforward(fourTableLaw.logMeasure,readFour(nX,nY1,nY2,nZ))=fourLaw.nestedLaw
+END ppg_hls_query_four

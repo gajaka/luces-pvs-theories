@@ -1,0 +1,38 @@
+% Measurable rectangles determine the binary probability law.
+% The argument is the pi-lambda theorem; see Patrick Billingsley,
+% Probability and Measure, third edition, Wiley, 1995, Section 3.
+ppg_probability_pair_unique[X,Y:TYPE,
+  (IMPORTING ppg_measurable_space[X],ppg_measurable_space[Y])
+  SX:ppg_measurable_space[X].MeasurableSpace,
+  SY:ppg_measurable_space[Y].MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_nasa_pair[[X,Y],X,Y] AS uniquePair,
+    ppg_measurable_pair[[X,Y],X,Y] AS uniquePairSpace,
+    ppg_probability_pair[X,Y,SX,SY] AS uniqueProduct,
+    ppg_nasa_generated[[X,Y]] AS uniqueGenerated
+
+  PairSigma: MACRO ppg_measurable_space[[X,Y]].MeasurableSpace = uniqueProduct.JointSpace
+
+  IMPORTING ppg_probability_unique[[X,Y],PairSigma] AS pairUnique
+
+  Rectangles:set[set[[X,Y]]] = {E:set[[X,Y]]|EXISTS(B:(SX),D:(SY)):E=cross_product(B,D)}
+
+  B,C:VAR (SX)
+  D,H:VAR (SY)
+
+  rectangles_intersection: LEMMA intersection(cross_product(B,D),cross_product(C,H))=
+    cross_product(intersection(B,C),intersection(D,H))
+
+  rectangles_closed: LEMMA ppg_dynkin_system[[X,Y]].intersectionClosed?(Rectangles)
+
+  rectangles_measurable: LEMMA subset?(Rectangles,PairSigma)
+
+  rectangles_native: LEMMA Rectangles=
+    measure_integration@product_sigma_def[X,Y].measurable_rectangle?(
+      ppg_nasa_sigma[X].asNasa(SX),ppg_nasa_sigma[Y].asNasa(SY))
+
+  rectangles_generate: LEMMA PairSigma=ppg_measurable_space[[X,Y]].generated(Rectangles)
+
+  pair_law_unique: THEOREM FORALL(mu,nu:ppg_probability_measure[[X,Y],PairSigma].Probability):
+    (FORALL(B:(SX),D:(SY)):mu(cross_product(B,D))=nu(cross_product(B,D))) IMPLIES mu=nu
+END ppg_probability_pair_unique
