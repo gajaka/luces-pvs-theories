@@ -1,0 +1,45 @@
+% Code uses the actual bijective Mathlib numbering, so every Nat decodes.
+% Typed Bool and Unit predicates therefore have the literal numeric graphs.
+% Halting hardness and complementary nonenumerability use the proved compiler.
+% Mario Carneiro, Mathlib Computability.Halting, halting_problem and its RE forms.
+ppg_code_predicate_halting: THEORY
+BEGIN
+  IMPORTING ppg_primcodable_partrec_code,ppg_typed_predicate_core[ppg_partrec_code]
+
+  P: VAR set[ppg_partrec_code]
+
+  c: VAR ppg_partrec_code
+
+  a,n,v: VAR nat
+
+  codePull(P): set[nat] = LAMBDA(n:nat):P(ofNatCode(n))
+
+  codeHalt(a): set[ppg_partrec_code] = LAMBDA(c:ppg_partrec_code):evalDom(c,a)
+
+  codeNonhalt(a): set[ppg_partrec_code] = LAMBDA(c:ppg_partrec_code):NOT evalDom(c,a)
+
+  code_decoded_member: LEMMA decodedPredicate(codeCodec,P)(n) IFF codePull(P)(n)
+
+  code_decoded: LEMMA decodedPredicate(codeCodec,P)=codePull(P)
+
+  code_boolNormalized_member: LEMMA boolNormalized(codeCodec,P)(n)(v) IFF v=indicatorT(codePull(P))(n)
+
+  code_boolNormalized: LEMMA boolNormalized(codeCodec,P)=totalGraph(indicatorT(codePull(P)))
+
+  code_re_iff: THEOREM TypedREPred(codeCodec,P) IFF NatREPred(codePull(P))
+
+  code_computable_iff: THEOREM TypedComputablePred(codeCodec,P) IFF NatComputablePred(codePull(P))
+
+  codeHalt_pull: LEMMA codePull(codeHalt(a))=fixedHalt(a)
+
+  codeNonhalt_pull: LEMMA codePull(codeNonhalt(a))=complementPred(fixedHalt(a))
+
+  halting_problem_re: THEOREM TypedREPred(codeCodec,codeHalt(a))
+
+  halting_problem_not_computable: THEOREM NOT TypedComputablePred(codeCodec,codeHalt(a))
+
+  halting_problem_not_re: THEOREM NOT TypedREPred(codeCodec,codeNonhalt(a))
+
+  nonhalting_not_computable: THEOREM NOT TypedComputablePred(codeCodec,codeNonhalt(a))
+
+END ppg_code_predicate_halting

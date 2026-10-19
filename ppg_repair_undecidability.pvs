@@ -1,0 +1,62 @@
+% Repairability in the budget counter-family is exactly actual Code halting.
+% A sound complete finite-certificate checker would enumerate its complement;
+% a total decider would decide it. The preceding typed results rule both out.
+% Lean counterpart: PPGraphRepairUndecidability, with actual Mathlib predicates.
+ppg_repair_undecidability: THEORY
+BEGIN
+  IMPORTING ppg_repair_budget_counterfamily,ppg_repair_certificate_enumeration[ppg_partrec_code]
+
+  input,start,k: VAR nat
+
+  c: VAR ppg_partrec_code
+
+  check: VAR [[ppg_partrec_code,nat] -> bool]
+
+  test: VAR [ppg_partrec_code -> bool]
+
+  P: VAR set[ppg_partrec_code]
+
+  repairable(input,start): set[ppg_partrec_code] = LAMBDA(c:ppg_partrec_code):
+    EXISTS(k:nat):budgetGraph(input,c)`reach_rel(start,k) AND budgetGraph(input,c)`invariant_holds(k)
+
+  infeasible(input,start): set[ppg_partrec_code] = LAMBDA(c:ppg_partrec_code):NoReachableGood(budgetGraph(input,c),start)
+
+  repairable_eq_halting: LEMMA repairable(input,start)=codeHalt(input)
+
+  infeasible_eq_nonhalting: LEMMA infeasible(input,start)=codeNonhalt(input)
+
+  repairability_re: THEOREM TypedREPred(codeCodec,repairable(input,start))
+
+  repairability_not_computable: THEOREM NOT TypedComputablePred(codeCodec,repairable(input,start))
+
+  infeasibility_not_re: THEOREM NOT TypedREPred(codeCodec,infeasible(input,start))
+
+  infeasibility_not_computable: THEOREM NOT TypedComputablePred(codeCodec,infeasible(input,start))
+
+  certificate_exact_point: LEMMA (FORALL(c:ppg_partrec_code,k:nat):check((c,k)) IMPLIES P(c)) AND
+    (FORALL(c:ppg_partrec_code):P(c) IMPLIES EXISTS(k:nat):check((c,k)))
+    IMPLIES (certificatePred(check)(c) IFF P(c))
+
+  certificate_exact: LEMMA (FORALL(c:ppg_partrec_code,k:nat):check((c,k)) IMPLIES P(c)) AND
+    (FORALL(c:ppg_partrec_code):P(c) IMPLIES EXISTS(k:nat):check((c,k)))
+    IMPLIES certificatePred(check)=P
+
+  decider_indicator: LEMMA (FORALL(c:ppg_partrec_code):test(c) IFF P(c)) IMPLIES test=indicator(P)
+
+  decider_computable: LEMMA ppg_typed_partrec_map[ppg_partrec_code,bool].TypedComputable(codeCodec,boolCodec,test) AND
+    (FORALL(c:ppg_partrec_code):test(c) IFF P(c)) IMPLIES TypedComputablePred(codeCodec,P)
+
+  no_complete_refutation_checker: THEOREM NOT EXISTS(check:[[ppg_partrec_code,nat] -> bool]):
+    CheckComputable(codeCodec,check) AND
+    (FORALL(c:ppg_partrec_code,k:nat):check((c,k)) IMPLIES NoReachableGood(budgetGraph(input,c),start)) AND
+    (FORALL(c:ppg_partrec_code):NoReachableGood(budgetGraph(input,c),start) IMPLIES EXISTS(k:nat):check((c,k)))
+
+  no_total_impossibility_decider: THEOREM NOT EXISTS(test:[ppg_partrec_code -> bool]):
+    ppg_typed_partrec_map[ppg_partrec_code,bool].TypedComputable(codeCodec,boolCodec,test) AND
+    (FORALL(c:ppg_partrec_code):test(c) IFF NoReachableGood(budgetGraph(input,c),start))
+
+  no_total_repairability_decider: THEOREM NOT EXISTS(test:[ppg_partrec_code -> bool]):
+    ppg_typed_partrec_map[ppg_partrec_code,bool].TypedComputable(codeCodec,boolCodec,test) AND
+    (FORALL(c:ppg_partrec_code):test(c) IFF EXISTS(k:nat):budgetGraph(input,c)`reach_rel(start,k) AND budgetGraph(input,c)`invariant_holds(k))
+
+END ppg_repair_undecidability

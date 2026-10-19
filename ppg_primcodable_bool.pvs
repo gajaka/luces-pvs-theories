@@ -1,0 +1,32 @@
+% Bool has the literal Mathlib codes false=0 and true=1.
+% Only these two natural numbers decode; the normalizer is two natural cases.
+% Mario Carneiro, Mathlib Encodable.Basic and Primrec.Basic, Bool instances.
+ppg_primcodable_bool: THEORY
+BEGIN
+  IMPORTING ppg_primcodable_core[bool]
+
+  b: VAR bool
+
+  n: VAR nat
+
+  boolCodec: Codec = (# encode:=LAMBDA(b:bool):IF b THEN 1 ELSE 0 ENDIF,
+    decode:=LAMBDA(n:nat):IF n=0 THEN up[bool](FALSE)
+      ELSIF n=1 THEN up[bool](TRUE) ELSE bottom[bool] ENDIF #)
+
+  bool_encode_false: LEMMA boolCodec`encode(FALSE)=0
+
+  bool_encode_true: LEMMA boolCodec`encode(TRUE)=1
+
+  bool_decode_zero: LEMMA boolCodec`decode(0)=up[bool](FALSE)
+
+  bool_decode_one: LEMMA boolCodec`decode(1)=up[bool](TRUE)
+
+  bool_decode_other: LEMMA 2<=n IMPLIES boolCodec`decode(n)=bottom[bool]
+
+  bool_codec_law: THEOREM CodecLaw(boolCodec)
+
+  bool_normalization_cases: LEMMA normalization(boolCodec)=caseUnaryT(1,caseUnaryT(2,zeroT))
+
+  bool_primcodable_law: THEOREM PrimcodableLaw(boolCodec)
+
+END ppg_primcodable_bool

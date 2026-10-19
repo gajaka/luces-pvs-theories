@@ -1,0 +1,15 @@
+% The instance codec is an actual Primcodable instance, possibly empty.
+% Only computability of the total checker is required for enumeration.
+% Lean counterpart: PPGraphRepairUndecidability.checked_certificate_exists_re.
+ppg_repair_certificate_enumeration [Instance:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_typed_certificate_search[Instance]
+
+  E: VAR ppg_primcodable_core[Instance].Primcodable
+
+  check: VAR [[Instance,nat] -> bool]
+
+  checked_certificate_exists_re: THEOREM CheckComputable(E,check)
+    IMPLIES TypedREPred(E,certificatePred(check))
+
+END ppg_repair_certificate_enumeration

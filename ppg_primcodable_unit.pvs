@@ -1,0 +1,25 @@
+% A singleton subtype models PUnit without an abstract inhabitance premise.
+% Its only element has code0; every positive natural number fails to decode.
+% Mario Carneiro, Mathlib Encodable.Basic and Primrec.Basic, PUnit instances.
+ppg_primcodable_unit: THEORY
+BEGIN
+  PUnit: TYPE = {q:nat|q=0}
+
+  IMPORTING ppg_primcodable_core[PUnit]
+
+  u: VAR PUnit
+
+  n: VAR nat
+
+  unitCodec: Codec = (# encode:=LAMBDA(u:PUnit):0,
+    decode:=LAMBDA(n:nat):IF n=0 THEN up[PUnit](0) ELSE bottom[PUnit] ENDIF #)
+
+  unit_unique: LEMMA u=0
+
+  unit_codec_law: THEOREM CodecLaw(unitCodec)
+
+  unit_normalization_zeroTest: LEMMA normalization(unitCodec)=zeroTestT
+
+  unit_primcodable_law: THEOREM PrimcodableLaw(unitCodec)
+
+END ppg_primcodable_unit

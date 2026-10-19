@@ -1,0 +1,79 @@
+% Numerical predicates use the actual Bool codes false=0 and true=1.
+% Enumeration is the assertion graph returning the sole Unit code0.
+% The diagonal uses a real Code witness, not an assumed universal property.
+% Mario Carneiro, Mathlib Computability.RE and Computability.Halting.
+ppg_nat_computable_predicates: THEORY
+BEGIN
+  IMPORTING ppg_partrec_universal_evaluator
+
+  P: VAR set[nat]
+
+  u: VAR TotalFunction
+
+  f: VAR PartialFunction
+
+  c: VAR ppg_partrec_code
+
+  n,q,v: VAR nat
+
+  indicatorT(P): TotalFunction = LAMBDA(n:nat):IF P(n) THEN 1 ELSE 0 ENDIF
+
+  complementPred(P): set[nat] = LAMBDA(n:nat):NOT P(n)
+
+  assertGraph(P): PartialFunction = LAMBDA(n:nat):{v:nat|P(n) AND v=0}
+
+  NatComputablePred(P): bool = NatPartrec(totalGraph(indicatorT(P)))
+
+  NatREPred(P): bool = NatPartrec(assertGraph(P))
+
+  domainPred(f): set[nat] = LAMBDA(n:nat):EXISTS(v:nat):f(n)(v)
+
+  repeatTestF(u): PartialFunction = compF(totalGraph(u),totalGraph(leftT))
+
+  zeroSearchF(u): PartialFunction = rfindF(repeatTestF(u))
+
+  positiveAssertF: PartialFunction = zeroSearchF(zeroTestT)
+
+  selfHalt: set[nat] = LAMBDA(n:nat):evalDom(ofNatCode(n),n)
+
+  pureP_nonzero: LEMMA (EXISTS(v:nat):pureP(q)(v) AND v/=0) IFF q/=0
+
+  repeatTest_value: LEMMA repeatTestF(u)(natPair(n,q))=pureP(u(n))
+
+  partrec_repeatTest: LEMMA NatPartrec(totalGraph(u)) IMPLIES NatPartrec(repeatTestF(u))
+
+  partrec_zeroSearch: LEMMA NatPartrec(totalGraph(u)) IMPLIES NatPartrec(zeroSearchF(u))
+
+  zeroSearch_member: THEOREM zeroSearchF(u)(n)(v) IFF u(n)=0 AND v=0
+
+  zeroSearch_domain: THEOREM (EXISTS(v:nat):zeroSearchF(u)(n)(v)) IFF u(n)=0
+
+  partrec_positiveAssert: LEMMA NatPartrec(positiveAssertF)
+
+  positiveAssert_member: LEMMA positiveAssertF(n)(v) IFF 0<n AND v=0
+
+  assertDomain_member: LEMMA compF(totalGraph(zeroT),f)(n)(v) IFF assertGraph(domainPred(f))(n)(v)
+
+  assertDomain_as_comp: LEMMA assertGraph(domainPred(f))=compF(totalGraph(zeroT),f)
+
+  partrec_domain_re: THEOREM NatPartrec(f) IMPLIES NatREPred(domainPred(f))
+
+  indicator_complement: LEMMA indicatorT(complementPred(P))=compT(zeroTestT,indicatorT(P))
+
+  computable_pred_complement: THEOREM NatComputablePred(P) IMPLIES NatComputablePred(complementPred(P))
+
+  computedAssert_member: LEMMA compF(positiveAssertF,totalGraph(indicatorT(P)))(n)(v) IFF assertGraph(P)(n)(v)
+
+  assert_as_positive_comp: LEMMA assertGraph(P)=compF(positiveAssertF,totalGraph(indicatorT(P)))
+
+  computable_pred_re: THEOREM NatComputablePred(P) IMPLIES NatREPred(P)
+
+  denote_point: LEMMA codeDenote(c)=f IMPLIES Eval(c,n)=f(n)
+
+  denote_domain: LEMMA codeDenote(c)=f IMPLIES (evalDom(c,n) IFF domainPred(f)(n))
+
+  selfHalt_at_code: LEMMA selfHalt(encodeCode(c)) IFF evalDom(c,encodeCode(c))
+
+  selfHalting_not_computable: THEOREM NOT NatComputablePred(selfHalt)
+
+END ppg_nat_computable_predicates

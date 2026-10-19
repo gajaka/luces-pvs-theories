@@ -1,0 +1,66 @@
+% Two genuine enumerators can be raced through their literal bounded tables.
+% The first successful budget decides which complementary assertion holds.
+% This proves the complementation criterion; no decision procedure is assumed.
+% Mario Carneiro, Mathlib Computability.RE, computable_iff_re_compl_re'.
+ppg_nat_re_complement: THEORY
+BEGIN
+  IMPORTING ppg_fixed_input_halting
+
+  c,d: VAR ppg_partrec_code
+
+  P: VAR set[nat]
+
+  a,n,k,v: VAR nat
+
+  semiArgT(c): TotalFunction = pairT(pairT(constT(encodeCode(c)),leftT),rightT)
+
+  semiT(c): TotalFunction = compT(approxT,semiArgT(c))
+
+  raceT(c,d): TotalFunction = ifZeroT(semiT(c),ifZeroT(semiT(d),zeroT,constT(1)),constT(2))
+
+  pr_semiArg: LEMMA NatPrimrec(semiArgT(c))
+
+  pr_semi: LEMMA NatPrimrec(semiT(c))
+
+  semi_value: LEMMA semiT(c)(natPair(n,k))=encodeLiftNat(evaln(k,c,n))
+
+  semi_some: LEMMA semiT(c)(natPair(n,k))=v+1 IFF evaln(k,c,n)=up[nat](v)
+
+  semi_positive: LEMMA 0<semiT(c)(natPair(n,k)) IMPLIES EXISTS(v:nat):evaln(k,c,n)=up[nat](v)
+
+  represented_semi_positive: LEMMA codeDenote(c)=assertGraph(P) AND
+    0<semiT(c)(natPair(n,k)) IMPLIES P(n)
+
+  represented_semi_absent: LEMMA codeDenote(c)=assertGraph(P) AND NOT P(n)
+    IMPLIES semiT(c)(natPair(n,k))=0
+
+  represented_semi_eventually: LEMMA codeDenote(c)=assertGraph(P) AND P(n)
+    IMPLIES EXISTS(k:nat):0<semiT(c)(natPair(n,k))
+
+  pr_race: LEMMA NatPrimrec(raceT(c,d))
+
+  race_positive_left: LEMMA 0<semiT(c)(natPair(n,k)) IMPLIES 0<raceT(c,d)(natPair(n,k))
+
+  race_positive_right: LEMMA 0<semiT(d)(natPair(n,k)) IMPLIES 0<raceT(c,d)(natPair(n,k))
+
+  race_value_represented: LEMMA codeDenote(c)=assertGraph(P) AND
+    codeDenote(d)=assertGraph(complementPred(P)) AND raceT(c,d)(natPair(n,k))=v+1
+    IMPLIES v=indicatorT(P)(n)
+
+  race_defined: LEMMA codeDenote(c)=assertGraph(P) AND
+    codeDenote(d)=assertGraph(complementPred(P)) IMPLIES EXISTS(v:nat):findSomeF(raceT(c,d))(n)(v)
+
+  race_member_iff: LEMMA codeDenote(c)=assertGraph(P) AND
+    codeDenote(d)=assertGraph(complementPred(P)) IMPLIES
+    (findSomeF(raceT(c,d))(n)(v) IFF v=indicatorT(P)(n))
+
+  race_as_indicator: LEMMA codeDenote(c)=assertGraph(P) AND
+    codeDenote(d)=assertGraph(complementPred(P)) IMPLIES findSomeF(raceT(c,d))=totalGraph(indicatorT(P))
+
+  re_compl_re_to_computable: THEOREM NatREPred(P) AND NatREPred(complementPred(P)) IMPLIES NatComputablePred(P)
+
+  computable_iff_re_compl_re: THEOREM NatComputablePred(P) IFF NatREPred(P) AND NatREPred(complementPred(P))
+
+  fixedHalting_complement_not_re: THEOREM NOT NatREPred(complementPred(fixedHalt(a)))
+
+END ppg_nat_re_complement

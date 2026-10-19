@@ -1,0 +1,73 @@
+% A total computable checker can be searched from certificate zero.
+% At a decoded input every earlier test terminates; least success supplies
+% the predecessor condition of Mathlib Nat.rfind. Invalid inputs stay undefined.
+% Mario Carneiro, Mathlib Computability.RE, Partrec.rfind and Partrec.dom_re.
+ppg_typed_certificate_search [A:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_typed_predicate_core[A],ppg_primcodable_nat,
+    ppg_primcodable_product[A,nat],ppg_typed_partrec_map[[A,nat],bool]
+
+  E: VAR ppg_primcodable_core[A].Codec
+
+  check: VAR [[A,nat] -> bool]
+
+  x: VAR A
+
+  n,k,j,v: VAR nat
+
+  checkInputCodec(E): ppg_primcodable_core[[A,nat]].Codec = productCodec(E,natCodec)
+
+  checkNormalized(E,check): PartialFunction =
+    ppg_typed_partrec_map[[A,nat],bool].normalizedPartial(checkInputCodec(E),boolCodec,
+      ppg_typed_partrec_map[[A,nat],bool].someMap(check))
+
+  CheckComputable(E,check): bool =
+    ppg_typed_partrec_map[[A,nat],bool].TypedComputable(checkInputCodec(E),boolCodec,check)
+
+  checkTestF(E,check): PartialFunction = compF(totalGraph(zeroTestT),checkNormalized(E,check))
+
+  checkSuccessT(E,check): TotalFunction = LAMBDA(p:nat):
+    IF EXISTS(x:A):E`decode(leftT(p))=up[A](x) AND check((x,rightT(p))) THEN 1 ELSE 0 ENDIF
+
+  checkerSearch(E,check): PartialFunction = rfindF(checkTestF(E,check))
+
+  certificatePred(check): set[A] = LAMBDA(x:A):EXISTS(k:nat):check((x,k))
+
+  product_decode_some: LEMMA E`decode(n)=up[A](x) IMPLIES
+    checkInputCodec(E)`decode(natPair(n,k))=up[[A,nat]]((x,k))
+
+  checkNormalized_some_member: LEMMA E`decode(n)=up[A](x) IMPLIES
+    (checkNormalized(E,check)(natPair(n,k))(v) IFF v=IF check((x,k)) THEN 1 ELSE 0 ENDIF)
+
+  checkNormalized_some: LEMMA E`decode(n)=up[A](x) IMPLIES
+    checkNormalized(E,check)(natPair(n,k))=pureP(IF check((x,k)) THEN 1 ELSE 0 ENDIF)
+
+  checkTest_some: LEMMA E`decode(n)=up[A](x) IMPLIES
+    checkTestF(E,check)(natPair(n,k))=pureP(IF check((x,k)) THEN 0 ELSE 1 ENDIF)
+
+  checkSuccess_some: LEMMA E`decode(n)=up[A](x) IMPLIES
+    checkSuccessT(E,check)(natPair(n,k))=IF check((x,k)) THEN 1 ELSE 0 ENDIF
+
+  checkTest_zero_origin: LEMMA checkTestF(E,check)(natPair(n,k))(0) IMPLIES
+    EXISTS(x:A):E`decode(n)=up[A](x) AND check((x,k))
+
+  search_from_first: LEMMA E`decode(n)=up[A](x) AND firstPositive(checkSuccessT(E,check),n,k)
+    IMPLIES checkerSearch(E,check)(n)(k)
+
+  search_defined_some: LEMMA E`decode(n)=up[A](x) IMPLIES
+    ((EXISTS(v:nat):checkerSearch(E,check)(n)(v)) IFF EXISTS(k:nat):check((x,k)))
+
+  search_defined: LEMMA (EXISTS(v:nat):checkerSearch(E,check)(n)(v)) IFF
+    decodedPredicate(E,certificatePred(check))(n)
+
+  search_domain: LEMMA domainPred(checkerSearch(E,check))=decodedPredicate(E,certificatePred(check))
+
+  checkNormalized_partrec: LEMMA CheckComputable(E,check) IMPLIES NatPartrec(checkNormalized(E,check))
+
+  checkTest_partrec: LEMMA CheckComputable(E,check) IMPLIES NatPartrec(checkTestF(E,check))
+
+  checkerSearch_partrec: LEMMA CheckComputable(E,check) IMPLIES NatPartrec(checkerSearch(E,check))
+
+  checked_certificate_exists_re: THEOREM CheckComputable(E,check) IMPLIES TypedREPred(E,certificatePred(check))
+
+END ppg_typed_certificate_search

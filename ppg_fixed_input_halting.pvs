@@ -1,0 +1,77 @@
+% A uniform constant-Code compiler reduces self-input halting to any fixed input.
+% Its numeric encoding is obtained by actual primitive recursion over constructors.
+% A nonuniform choice of a constant program would not establish this reduction.
+% Mario Carneiro, Mathlib Computability.PartrecCode and Halting.halting_problem.
+ppg_fixed_input_halting: THEORY
+BEGIN
+  IMPORTING ppg_nat_computable_predicates
+
+  c: VAR ppg_partrec_code
+
+  u: VAR TotalFunction
+
+  P: VAR set[nat]
+
+  a,n,x: VAR nat
+
+  constantCode(n): RECURSIVE ppg_partrec_code = IF n=0 THEN codeZero
+    ELSE codeComp(codeSucc,constantCode(n-1)) ENDIF MEASURE n
+
+  constantStepT: TotalFunction = compT(constructorCodeT(2),pairT(constT(1),idT))
+
+  constantCodeT: TotalFunction = unaryRecT(0,compT(constantStepT,rightT))
+
+  selfFixedCode(n): ppg_partrec_code = codeComp(ofNatCode(n),constantCode(n))
+
+  selfFixedT: TotalFunction = compT(constructorCodeT(2),pairT(idT,constantCodeT))
+
+  fixedHalt(a): set[nat] = LAMBDA(n:nat):evalDom(ofNatCode(n),a)
+
+  haltingPartial(a): PartialFunction = compF(universalEval,totalGraph(pairT(idT,constT(a))))
+
+  pullPred(P,u): set[nat] = LAMBDA(n:nat):P(u(n))
+
+  constantCode_zero: LEMMA constantCode(0)=codeZero
+
+  constantCode_succ: LEMMA constantCode(n+1)=codeComp(codeSucc,constantCode(n))
+
+  Eval_constant: THEOREM Eval(constantCode(n),x)=pureP(n)
+
+  constantStep_value: LEMMA constantStepT(encodeCode(c))=encodeCode(codeComp(codeSucc,c))
+
+  pr_constantStep: LEMMA NatPrimrec(constantStepT)
+
+  unaryRec_zero: LEMMA unaryRecT(a,u)(0)=a
+
+  unaryRec_succ: LEMMA unaryRecT(a,u)(n+1)=u(natPair(n,unaryRecT(a,u)(n)))
+
+  constantCodeT_value: THEOREM constantCodeT(n)=encodeCode(constantCode(n))
+
+  pr_constantCode: THEOREM NatPrimrec(constantCodeT)
+
+  selfFixedT_value: THEOREM selfFixedT(n)=encodeCode(selfFixedCode(n))
+
+  pr_selfFixed: THEOREM NatPrimrec(selfFixedT)
+
+  Eval_selfFixed: THEOREM Eval(selfFixedCode(n),a)=Eval(ofNatCode(n),n)
+
+  fixedHalt_selfFixed: THEOREM fixedHalt(a)(selfFixedT(n)) IFF selfHalt(n)
+
+  indicator_pull: LEMMA indicatorT(pullPred(P,u))=compT(indicatorT(P),u)
+
+  computable_pred_pull: THEOREM NatComputablePred(P) AND NatPartrec(totalGraph(u))
+    IMPLIES NatComputablePred(pullPred(P,u))
+
+  pull_selfFixed: LEMMA pullPred(fixedHalt(a),selfFixedT)=selfHalt
+
+  fixedHalting_not_computable: THEOREM NOT NatComputablePred(fixedHalt(a))
+
+  partrec_haltingPartial: LEMMA NatPartrec(haltingPartial(a))
+
+  haltingPartial_value: LEMMA haltingPartial(a)(n)=Eval(ofNatCode(n),a)
+
+  halting_domain: LEMMA domainPred(haltingPartial(a))=fixedHalt(a)
+
+  fixedHalting_re: THEOREM NatREPred(fixedHalt(a))
+
+END ppg_fixed_input_halting

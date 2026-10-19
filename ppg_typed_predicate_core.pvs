@@ -1,0 +1,77 @@
+% Mathlib predicates use the actual Bool indicator and Unit assertion.
+% Normalization first decodes the input; invalid codes remain undefined.
+% The input carrier may be empty, and no canonical-code test is assumed.
+% Mario Carneiro, Mathlib Computability.RE, ComputablePred and REPred.
+ppg_typed_predicate_core [A:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_primcodable_unit,ppg_primcodable_bool,
+    ppg_typed_partrec_map[A,bool],ppg_typed_partrec_map[A,PUnit],ppg_nat_re_complement
+
+  InputCodec: TYPE = ppg_primcodable_core[A].Codec
+
+  E: VAR InputCodec
+
+  P,Q: VAR set[A]
+
+  x: VAR A
+
+  n,v: VAR nat
+
+  decodedPredicate(E,P): set[nat] = LAMBDA(n:nat):
+    EXISTS(x:A):E`decode(n)=up[A](x) AND P(x)
+
+  unitAssertion(P): ppg_typed_partrec_map[A,PUnit].PartialMap =
+    LAMBDA(x:A):{u:PUnit|P(x)}
+
+  indicator(P): [A -> bool] = LAMBDA(x:A):P(x)
+
+  boolNormalized(E,P): PartialFunction =
+    ppg_typed_partrec_map[A,bool].normalizedPartial(E,boolCodec,
+      ppg_typed_partrec_map[A,bool].someMap(indicator(P)))
+
+  TypedREPred(E,P): bool = ppg_typed_partrec_map[A,PUnit].TypedPartrec(E,unitCodec,unitAssertion(P))
+
+  TypedComputablePred(E,P): bool = ppg_typed_partrec_map[A,bool].TypedComputable(E,boolCodec,indicator(P))
+
+  decodedPredicate_some: LEMMA E`decode(n)=up[A](x) IMPLIES
+    (decodedPredicate(E,P)(n) IFF P(x))
+
+  decodedPredicate_at_code: LEMMA ppg_primcodable_core[A].CodecLaw(E) IMPLIES
+    (decodedPredicate(E,P)(E`encode(x)) IFF P(x))
+
+  unitAssertion_normalized_member: LEMMA
+    ppg_typed_partrec_map[A,PUnit].normalizedPartial(E,unitCodec,unitAssertion(P))(n)(v)
+    IFF assertGraph(decodedPredicate(E,P))(n)(v)
+
+  unitAssertion_normalized: LEMMA
+    ppg_typed_partrec_map[A,PUnit].normalizedPartial(E,unitCodec,unitAssertion(P))
+    =assertGraph(decodedPredicate(E,P))
+
+  typed_RE_numeric: THEOREM TypedREPred(E,P) IFF NatREPred(decodedPredicate(E,P))
+
+  decodedPredicate_congr: LEMMA (FORALL(x:A):P(x) IFF Q(x)) IMPLIES
+    decodedPredicate(E,P)=decodedPredicate(E,Q)
+
+  typed_RE_congr: THEOREM TypedREPred(E,P) AND (FORALL(x:A):P(x) IFF Q(x))
+    IMPLIES TypedREPred(E,Q)
+
+  indicator_congr: LEMMA (FORALL(x:A):P(x) IFF Q(x)) IMPLIES indicator(P)=indicator(Q)
+
+  typed_computable_congr: THEOREM TypedComputablePred(E,P) AND
+    (FORALL(x:A):P(x) IFF Q(x)) IMPLIES TypedComputablePred(E,Q)
+
+  boolNormalized_member: LEMMA boolNormalized(E,P)(n)(v) IFF
+    EXISTS(x:A):E`decode(n)=up[A](x) AND v=IF P(x) THEN 1 ELSE 0 ENDIF
+
+  boolNormalized_true: LEMMA boolNormalized(E,P)(n)(1) IFF decodedPredicate(E,P)(n)
+
+  boolNormalized_partrec: LEMMA TypedComputablePred(E,P) IMPLIES NatPartrec(boolNormalized(E,P))
+
+  computed_assert_member: LEMMA compF(positiveAssertF,boolNormalized(E,P))(n)(v)
+    IFF assertGraph(decodedPredicate(E,P))(n)(v)
+
+  computed_assert: LEMMA compF(positiveAssertF,boolNormalized(E,P))=assertGraph(decodedPredicate(E,P))
+
+  typed_computable_re: THEOREM TypedComputablePred(E,P) IMPLIES TypedREPred(E,P)
+
+END ppg_typed_predicate_core
