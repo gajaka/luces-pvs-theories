@@ -1,0 +1,60 @@
+% The natural-number program encoding uses Mathlib's square pairing.
+% The inverse is computed by a bounded descending search for the integer
+% square root, followed by the two sides of the current square shell.
+%
+% Leonardo de Moura and Mario Carneiro, Mathlib Data.Nat.Pairing.
+% Mario Carneiro, "Formalizing Computability Theory via Partial Recursive
+% Functions", ITP 2019, Section 2, Figure 1.
+ppg_nat_square_pairing: THEORY
+BEGIN
+  a,b,c,d,n,k,s: VAR nat
+
+  natSub(a,b): nat = IF b<=a THEN a-b ELSE 0 ENDIF
+
+  natPair(a,b): nat = IF a<b THEN b*b+a ELSE a*a+a+b ENDIF
+
+  sqrtSearch(n,k): RECURSIVE nat =
+    IF k=0 OR k*k<=n THEN k ELSE sqrtSearch(n,k-1) ENDIF MEASURE k
+
+  floorRoot(n): nat = sqrtSearch(n,n)
+
+  nat_square_ge_self: LEMMA a<=a*a
+
+  square_successor: LEMMA (a+1)*(a+1)=a*a+2*a+1
+
+  squares_strict: LEMMA a<b IMPLIES a*a<b*b
+
+  squares_monotone: LEMMA a<=b IMPLIES a*a<=b*b
+
+  sqrtSearch_bounded: LEMMA sqrtSearch(n,k)<=k
+
+  sqrtSearch_square_bound: LEMMA sqrtSearch(n,k)*sqrtSearch(n,k)<=n
+
+  sqrtSearch_upper: LEMMA n<(k+1)*(k+1) IMPLIES
+    n<(sqrtSearch(n,k)+1)*(sqrtSearch(n,k)+1)
+
+  root_input_upper: LEMMA n<(n+1)*(n+1)
+
+  floorRoot_square_bound: LEMMA floorRoot(n)*floorRoot(n)<=n
+
+  floorRoot_upper: LEMMA n<(floorRoot(n)+1)*(floorRoot(n)+1)
+
+  floorRoot_unique: LEMMA s*s<=n AND n<(s+1)*(s+1) IMPLIES floorRoot(n)=s
+
+  natPair_shell: LEMMA LET s=IF a<b THEN b ELSE a ENDIF IN
+    s*s<=natPair(a,b) AND natPair(a,b)<(s+1)*(s+1)
+
+  floorRoot_natPair: LEMMA floorRoot(natPair(a,b))=IF a<b THEN b ELSE a ENDIF
+
+  unpair(n): [nat,nat] = LET s=floorRoot(n),r=natSub(n,s*s) IN
+    IF r<s THEN (r,s) ELSE (s,natSub(r,s)) ENDIF
+
+  unpair_pair: LEMMA unpair(natPair(a,b))=(a,b)
+
+  pair_unpair: LEMMA natPair(unpair(n)`1,unpair(n)`2)=n
+
+  natPair_injective: LEMMA natPair(a,b)=natPair(c,d) IMPLIES a=c AND b=d
+
+  add_le_natPair: LEMMA a+b<=natPair(a,b)
+
+END ppg_nat_square_pairing
