@@ -1,0 +1,80 @@
+% The four-choice expansion uses the existing ordered build. Original
+% vertices retain exactly the old edges; every extra vertex points to
+% its original, so a root of the old DAG is still a root after expansion.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Definition 3.11 and Appendix C, Lemma C.1.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSExpansionGraph.lean.
+ppg_hls_expansion_graph[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},
+  universe:{S:finite_set[C]|FORALL(i:C):S(i)}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_expansion_order[C,G,universe]
+
+  M: VAR DependencyMatching
+  Q: VAR (Valid)
+  choice: VAR [WNode->ppg_hls_expansion_vertices[C,G].ExpansionChoice]
+  u,v,w,r: VAR WNode
+  x,y,z: VAR ExpandedVertex
+  n: VAR WNode
+
+  rawExpansion(M,Q,choice): WitnessDAG = expandedBuild.build(
+    expandedNodes(Q,choice),expandedLabel(M),expandedTag,expandedBefore(Q))
+
+  expansion_local_injective: LEMMA expandedBuild.localInjective(
+    expandedNodes(Q,choice),expandedLabel(M),expandedTag)
+
+  expansion_order_irreflexive: LEMMA expandedBuild.orderIrreflexive(
+    expandedNodes(Q,choice),expandedBefore(Q))
+
+  expansion_order_transitive: LEMMA expandedBuild.orderTransitive(
+    expandedNodes(Q,choice),expandedBefore(Q))
+
+  expansion_order_total: LEMMA expandedBuild.orderTotal(
+    expandedNodes(Q,choice),expandedBefore(Q))
+
+  rawExpansion_valid: THEOREM Valid(rawExpansion(M,Q,choice))
+
+  rawExpansion_node_iff: LEMMA rawExpansion(M,Q,choice)`nodes(n) IFF
+    EXISTS(x:ExpandedVertex):expandedNodes(Q,choice)(x) AND expansionEmbed(M)(x)=n
+
+  rawExpansion_original_mem: THEOREM Q`nodes(u) IMPLIES
+    rawExpansion(M,Q,choice)`nodes(expansionEmbed(M)((u,FALSE)))
+
+  rawExpansion_original_edge_iff: THEOREM Q`nodes(u) AND Q`nodes(v) IMPLIES
+    (Edge(rawExpansion(M,Q,choice))(expansionEmbed(M)((u,FALSE)),
+      expansionEmbed(M)((v,FALSE))) IFF Edge(Q)(u,v))
+
+  rawExpansion_original_edge: THEOREM Edge(Q)(u,v) IMPLIES
+    Edge(rawExpansion(M,Q,choice))(expansionEmbed(M)((u,FALSE)),
+      expansionEmbed(M)((v,FALSE)))
+
+  originalExpansionReach(M,Q,choice)(u,v): bool = Reach(rawExpansion(M,Q,choice))(
+    expansionEmbed(M)((u,FALSE)),expansionEmbed(M)((v,FALSE)))
+
+  original_expansion_reach_single: LEMMA Edge(Q)(u,v) IMPLIES
+    originalExpansionReach(M,Q,choice)(u,v)
+
+  original_expansion_reach_trans: LEMMA originalExpansionReach(M,Q,choice)(u,v) AND
+    originalExpansionReach(M,Q,choice)(v,w) IMPLIES originalExpansionReach(M,Q,choice)(u,w)
+
+  original_expansion_positive_reach: LEMMA positivePath(Q)(u,v) IMPLIES
+    originalExpansionReach(M,Q,choice)(u,v)
+
+  rawExpansion_original_reach: THEOREM Reach(Q)(u,v) IMPLIES
+    Reach(rawExpansion(M,Q,choice))(expansionEmbed(M)((u,FALSE)),
+      expansionEmbed(M)((v,FALSE)))
+
+  rawExpansion_extra_edge: THEOREM Q`nodes(u) AND needsExtra(choice(u)) IMPLIES
+    Edge(rawExpansion(M,Q,choice))(expansionEmbed(M)((u,TRUE)),
+      expansionEmbed(M)((u,FALSE)))
+
+  rawExpansion_proper_root: THEOREM Q`nodes(r) AND
+    (FORALL(u:WNode):Q`nodes(u) IMPLIES Reach(Q)(u,r)) IMPLIES
+    (FORALL(n:WNode):rawExpansion(M,Q,choice)`nodes(n) IMPLIES
+      Reach(rawExpansion(M,Q,choice))(n,expansionEmbed(M)((r,FALSE))))
+
+  rawExpansion_proper: THEOREM Proper(Q) IMPLIES Proper(rawExpansion(M,Q,choice))
+
+END ppg_hls_expansion_graph
