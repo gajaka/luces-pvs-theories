@@ -8,8 +8,8 @@ models; the generic theory keeps the data, specifications and repair actions
 abstract.
 
 As of **2026-10-19**, the translation has independently replayed counterparts
-for **1,401 of 1,824 Lean source theorems and lemmas**, with all recorded results
-checked in **130 of 191 modules**. Supporting PVS lemmas and type-correctness
+for **1,709 of 1,824 Lean source theorems and lemmas**, with all recorded results
+checked in **173 of 191 modules**. Supporting PVS lemmas and type-correctness
 conditions are additional obligations and are excluded from those source-result counts.
 The translation is still in progress.
 
@@ -106,6 +106,7 @@ Recorded translation checks on 2026-10-18 and 2026-10-19 include:
 | Ordered witness DAGs and reversal | 105/105 project obligations complete across 6 theories, including 29 new obligations and 7 source results. |
 | General Local Lemma | 407/407 project obligations complete across 39 theories, including 48 new obligations and 30 source results; 412 Native library obligations freshly replayed in the same cold PVS process. |
 | Constructed topological node order | 191/191 project obligations complete across 15 theories, including 8 new obligations and 7 source results. |
+| Computability limit for infinite repair models | 935/935 project obligations complete across 50 proof-bearing theories, including 144 new obligations and all 14 source results. The run includes 66 TCCs and uses no Native library proof bodies. |
 
 These runs check saved proofs in isolated workspaces. Project dependencies use
 the exact committed source and proof inputs. The separately checked native
@@ -262,6 +263,7 @@ integration arguments. Each entry's imports lead to that support.
 | [ppg_correction_duality.pvs](ppg_correction_duality.pvs) | Minimal-core and correction-set duality. |
 | [ppg_farkas_certificate.pvs](ppg_farkas_certificate.pvs), [ppg_farkas_refutation.pvs](ppg_farkas_refutation.pvs) | Soundness of rational Farkas certificates and model-based reachability refutations. |
 | [ppg_finite_abstraction_repair.pvs](ppg_finite_abstraction_repair.pvs), [ppg_find_good_path.pvs](ppg_find_good_path.pvs) | Repair traces and refutations through supplied executable exact finite abstractions. |
+| [ppg_repair_budget_counterfamily.pvs](ppg_repair_budget_counterfamily.pvs), [ppg_repair_certificate_enumeration.pvs](ppg_repair_certificate_enumeration.pvs), [ppg_repair_undecidability.pvs](ppg_repair_undecidability.pvs) | An encoded infinite repair family: repairability is recursively enumerable and undecidable; infeasibility is not recursively enumerable. No total repairability or impossibility decider, or complete computable refutation checker, exists for this family. |
 
 ### Transport, observability and boot applications
 
@@ -434,9 +436,13 @@ under transition-mass and good-state compatibility conditions.
 
 Finite search and exact abstraction provide concrete repair witnesses or checked
 refutations. Minimal cores and correction sets describe infeasible obligation
-families. The companion Lean library also contains intersection-sensitive HLS
-policy bounds and an infinite-model undecidability result; their PVS translations
-remain to be completed.
+families. For an encoded infinite repair family, the translation now proves
+that repairability is recursively enumerable and undecidable, while
+infeasibility is not recursively enumerable. The reduction uses a constructed
+partial-recursive evaluator and bounded computations; computability and the
+halting obstruction are proved in PVS. This result concerns the encoded family
+and does not prevent decisions for the finite models above.
+Intersection-sensitive HLS probability and expectation bounds remain in progress.
 
 ## Related
 
@@ -563,10 +569,11 @@ are also replayed. The core translation now retains actual finite certificate
 lists, arbitrary carriers, generated quotient classes and the general repair
 model. All recorded results in the general Local Lemma module are translated
 and replayed. Ordered witness DAGs and their constructed topological node order
-are also checked. Remaining work includes HLS occurrence and policy bounds,
-and the computability limit for the encoded
-infinite repair family. Source-by-source semantic review and replay accounting
-continue with each package.
+are also checked. All 14 source results about the computability limit for the
+encoded infinite repair family are translated and replayed. The remaining 115
+source results cover HLS coin and footprint constructions, intersection-sensitive
+probability and expectation bounds, and policy expectation. Source-by-source
+semantic review and replay accounting continue with each package.
 
 For the controller application, live measurements need a defined interpretation
 in the formal state, and the running checker must evaluate the corresponding
