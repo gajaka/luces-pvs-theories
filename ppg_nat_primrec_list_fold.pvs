@@ -1,0 +1,91 @@
+% Mario Carneiro, Mathlib Computability.Primrec.List, list_foldl'.
+% Iteration carries the parameter, accumulator and remaining list. Once the
+% remainder is empty, the state is fixed. The list code bounds its length.
+ppg_nat_primrec_list_fold: THEORY
+BEGIN
+  IMPORTING ppg_nat_list_square_codec
+
+  f,g: VAR TotalFunction
+
+  a,z,l,k,seed,n: VAR nat
+
+  L: VAR NatList
+
+  parameterT: TotalFunction = leftT
+
+  accumulatorT: TotalFunction = compT(leftT,rightT)
+
+  remainderT: TotalFunction = compT(rightT,rightT)
+
+  foldState(a,z,l): nat = natPair(a,natPair(z,l))
+
+  pr_parameter: LEMMA NatPrimrec(parameterT)
+
+  pr_accumulator: LEMMA NatPrimrec(accumulatorT)
+
+  pr_remainder: LEMMA NatPrimrec(remainderT)
+
+  foldState_projections: LEMMA foldState(parameterT(n),accumulatorT(n),remainderT(n))=n
+
+  iterStepT(g): TotalFunction = compT(g,remainderT)
+
+  iterateCode(g,seed,k): nat = natRecT(idT,iterStepT(g),seed,k)
+
+  iterCodeT(g): TotalFunction = LAMBDA(n:nat): iterateCode(g,leftT(n),rightT(n))
+
+  iterCodeT_as_prec: LEMMA iterCodeT(g)=precT(idT,iterStepT(g))
+
+  pr_iterStep: LEMMA NatPrimrec(g) IMPLIES NatPrimrec(iterStepT(g))
+
+  pr_iterCode: THEOREM NatPrimrec(g) IMPLIES NatPrimrec(iterCodeT(g))
+
+  iterateCode_zero: LEMMA iterateCode(g,seed,0)=seed
+
+  iterateCode_succ: LEMMA iterateCode(g,seed,k+1)=g(iterateCode(g,seed,k))
+
+  iterateCode_first: LEMMA iterateCode(g,seed,k+1)=iterateCode(g,g(seed),k)
+
+  iterateCode_fixed: LEMMA g(seed)=seed IMPLIES iterateCode(g,seed,k)=seed
+
+  foldAdvanceT(f): TotalFunction = pairT(parameterT,
+    pairT(compT(f,pairT(parameterT,pairT(accumulatorT,compT(headCode,remainderT)))),
+      compT(tailCode,remainderT)))
+
+  foldStepT(f): TotalFunction = ifZeroT(remainderT,idT,foldAdvanceT(f))
+
+  pr_foldAdvance: LEMMA NatPrimrec(f) IMPLIES NatPrimrec(foldAdvanceT(f))
+
+  pr_foldStep: THEOREM NatPrimrec(f) IMPLIES NatPrimrec(foldStepT(f))
+
+  foldStep_nil: LEMMA foldStepT(f)(foldState(a,z,0))=foldState(a,z,0)
+
+  foldStep_cons: LEMMA foldStepT(f)(foldState(a,z,consCode(n,l)))=
+    foldState(a,f(natPair(a,natPair(z,n))),l)
+
+  foldNatList(f,a,z,L): RECURSIVE nat = IF null?(L) THEN z
+    ELSE foldNatList(f,a,f(natPair(a,natPair(z,car(L)))),cdr(L)) ENDIF MEASURE length(L)
+
+  foldNatList_nil: LEMMA foldNatList(f,a,z,null[nat])=z
+
+  foldNatList_cons: LEMMA foldNatList(f,a,z,cons[nat](n,L))=
+    foldNatList(f,a,f(natPair(a,natPair(z,n))),L)
+
+  iterate_fold_nil: LEMMA iterateCode(foldStepT(f),foldState(a,z,0),k)=foldState(a,z,0)
+
+  iterate_fold_complete: THEOREM FORALL(f:TotalFunction,a,z,k:nat): length(L)<=k IMPLIES
+    iterateCode(foldStepT(f),foldState(a,z,encodeNatList(L)),k)=
+    foldState(a,foldNatList(f,a,z,L),0)
+
+  foldCode(f,a,z,l): nat = accumulatorT(iterateCode(foldStepT(f),foldState(a,z,l),l))
+
+  foldCode_semantics: THEOREM foldCode(f,a,z,encodeNatList(L))=foldNatList(f,a,z,L)
+
+  foldCodeT(f): TotalFunction = compT(accumulatorT,
+    compT(iterCodeT(foldStepT(f)),pairT(idT,remainderT)))
+
+  foldCodeT_value: LEMMA foldCodeT(f)(n)=
+    foldCode(f,parameterT(n),accumulatorT(n),remainderT(n))
+
+  pr_foldCode: THEOREM NatPrimrec(f) IMPLIES NatPrimrec(foldCodeT(f))
+
+END ppg_nat_primrec_list_fold
