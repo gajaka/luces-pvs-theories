@@ -1,0 +1,22 @@
+% A finite product is the union of its finite coordinate fibers. This
+% construction also covers empty carrier types and empty factors.
+% Its membership law is the usual product law for finite sets.
+
+ppg_finite_pairs[A,B:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_bind[A,[A,B]] AS pairUnions
+  S: VAR finite_set[A]
+  T: VAR finite_set[B]
+  a,x: VAR A
+  y: VAR B
+  p: VAR [A,B]
+
+  pairFiber(a,T): finite_set[[A,B]] = image[B,[A,B]](LAMBDA(y:B):(a,y),T)
+
+  finitePairs(S,T): finite_set[[A,B]] = pairUnions.biUnion(S,LAMBDA(a:A):pairFiber(a,T))
+
+  pairFiber_member: LEMMA pairFiber(a,T)(p) IFF p`1=a AND T(p`2)
+
+  finitePairs_member: LEMMA finitePairs(S,T)(p) IFF S(p`1) AND T(p`2)
+
+END ppg_finite_pairs

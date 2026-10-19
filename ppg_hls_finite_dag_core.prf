@@ -1,0 +1,435 @@
+(|ppg_hls_finite_dag_core|
+ (|labelNodes_subset| 0
+  (|labelNodes_subset-1| NIL 4001391996
+   (""
+    (THEN
+     (GRIND :DEFS ("labelNodes" "subset?" "intersection" "member") :EXCLUDE
+      ("Edge" "is_finite")))
+    NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|labelNodes| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_label_ranks|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_finite_dag_core| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_finite_dag_core| NIL))
+   SHOSTAK))
+ (|canonical_index_lt_card| 0
+  (|canonical_index_lt_card-1| NIL 4001391996
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "labelRank_eq_index_of_canonical" ("Q" "Q!1" "u" "u!1"))
+     (LEMMA "labelRank_lt_card" ("Q" "Q!1" "u" "u!1"))
+     (LEMMA "labelNodes_subset" ("D" "Q!1" "u" "u!1"))
+     (LEMMA "card_subset" ("A" "labelNodes(Q!1,u!1`1)" "B" "Q!1`nodes"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|labelRank_lt_card| FORMULA-DECL NIL |ppg_hls_label_ranks| NIL)
+    (|labelNodes| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_label_ranks|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|card_subset| FORMULA-DECL NIL |finite_sets| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|labelNodes_subset| FORMULA-DECL NIL |ppg_hls_finite_dag_core| NIL)
+    (|labelRank_eq_index_of_canonical| FORMULA-DECL NIL |ppg_hls_label_ranks|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_finite_dag_core| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_finite_dag_core| NIL))
+   SHOSTAK))
+ (|rooted_proper| 0
+  (|rooted_proper-1| NIL 4001391996
+   (""
+    (THEN (SKOSIMP*) (EXPAND "RootedCanonical") (FLATTEN) (EXPAND "Proper")
+     (INST + "r!1") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_hls_finite_dag_core| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_finite_dag_core| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Proper| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|RootedCanonical| CONST-DECL "bool" |ppg_hls_finite_dag_core| NIL))
+   SHOSTAK))
+ (|rooted_flippedPrefix| 0
+  (|rooted_flippedPrefix-1| NIL 4001391996
+   ("" (SKOSIMP*)
+    (("" (LEMMA "reverse_valid" ("D" "D!1" "u" "u!1" "v" "v!1"))
+      (("" (LEMMA "reverse_canonical" ("D" "D!1" "u" "u!1" "v" "v!1"))
+        (("" (LEMMA "prefix_valid" ("D" "reverse(D!1,u!1,v!1)" "r" "r!1"))
+          ((""
+            (LEMMA "prefix_canonical" ("D" "reverse(D!1,u!1,v!1)" "r" "r!1"))
+            (("" (LEMMA "reverse_nodes" ("D" "D!1" "u" "u!1" "v" "v!1"))
+              ((""
+                (LEMMA "prefix_node_iff"
+                 ("D" "reverse(D!1,u!1,v!1)" "r" "r!1"))
+                ((""
+                  (LEMMA "reach_refl" ("D" "reverse(D!1,u!1,v!1)" "u" "r!1"))
+                  ((""
+                    (LEMMA "reach_prefix"
+                     ("D" "reverse(D!1,u!1,v!1)" "r" "r!1"))
+                    ((""
+                      (GRIND :DEFS ("RootedCanonical") :IF-MATCH ALL :EXCLUDE
+                       ("Edge" "Reach" "Valid" "Canonical" "labelRank"
+                        "labelPrior" "labelNodes" "height" "reverse"
+                        "ancestorPrefix" "dagPaths.Acyclic"
+                        "dagPaths.reverseArc" "dagPaths.positivePath"
+                        "is_finite"))
+                      (("1"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("1" (ASSERT) NIL NIL)) NIL)
+                       ("2"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("2" (ASSERT) NIL NIL)) NIL)
+                       ("3"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("3" (ASSERT) NIL NIL)) NIL)
+                       ("4"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("4" (ASSERT) NIL NIL)) NIL)
+                       ("5"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("5" (ASSERT) NIL NIL)) NIL)
+                       ("6"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("6" (ASSERT) NIL NIL)) NIL)
+                       ("7"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("7" (ASSERT) NIL NIL)) NIL)
+                       ("8"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("8" (ASSERT) NIL NIL)) NIL)
+                       ("9"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("9" (ASSERT) NIL NIL)) NIL)
+                       ("10"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("10" (ASSERT) NIL NIL)) NIL)
+                       ("11"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("11" (ASSERT) NIL NIL)) NIL)
+                       ("12"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("12" (ASSERT) NIL NIL)) NIL)
+                       ("13"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("13" (ASSERT) NIL NIL)) NIL)
+                       ("14"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("14" (ASSERT) NIL NIL)) NIL)
+                       ("15"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("15" (ASSERT) NIL NIL)) NIL)
+                       ("16"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("16" (ASSERT) NIL NIL)) NIL)
+                       ("17"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("17" (ASSERT) NIL NIL)) NIL)
+                       ("18"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("18" (ASSERT) NIL NIL)) NIL)
+                       ("19"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("19" (ASSERT) NIL NIL)) NIL)
+                       ("20"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("20" (ASSERT) NIL NIL)) NIL)
+                       ("21"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("21" (ASSERT) NIL NIL)) NIL)
+                       ("22"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("22" (ASSERT) NIL NIL)) NIL)
+                       ("23"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("23" (ASSERT) NIL NIL)) NIL)
+                       ("24"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("24" (ASSERT) NIL NIL)) NIL)
+                       ("25"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("25" (ASSERT) NIL NIL)) NIL)
+                       ("26"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("26" (ASSERT) NIL NIL)) NIL)
+                       ("27"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("27" (ASSERT) NIL NIL)) NIL)
+                       ("28"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("28" (ASSERT) NIL NIL)) NIL)
+                       ("29"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("29" (ASSERT) NIL NIL)) NIL)
+                       ("30"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("30" (ASSERT) NIL NIL)) NIL)
+                       ("31"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("31" (ASSERT) NIL NIL)) NIL)
+                       ("32"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("32" (ASSERT) NIL NIL)) NIL)
+                       ("33"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("33" (ASSERT) NIL NIL)) NIL)
+                       ("34"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("34" (ASSERT) NIL NIL)) NIL)
+                       ("35"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("35" (ASSERT) NIL NIL)) NIL)
+                       ("36"
+                        (LEMMA "reach_prefix"
+                         ("D" "reverse(D!1,u!1,v!1)" "r" "r!1" "u" "u!2"))
+                        (("36" (ASSERT) NIL NIL)) NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|reverse_canonical| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|prefix_canonical| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|prefix_node_iff| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|reach_prefix| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|RootedCanonical| CONST-DECL "bool" |ppg_hls_finite_dag_core| NIL)
+    (|reach_refl| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|reverse_nodes| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|prefix_valid| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|reverse| CONST-DECL "WitnessDAG" |ppg_hls_witness_dag| NIL)
+    (|reverse_valid| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_finite_dag_core| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_finite_dag_core| NIL))
+   SHOSTAK))
+ (|arcs_supported| 0
+  (|arcs_supported-1| NIL 4001391996
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "valid_supported" ("D" "Q!1" "u" "e!1`1" "v" "e!1`2"))
+     (TYPEPRED "Q!1") (GRIND :DEFS ("Edge") :EXCLUDE ("Valid" "is_finite")))
+    NIL)
+   ((|Edge| CONST-DECL "dagPaths.ArcRelation" |ppg_hls_witness_dag| NIL)
+    (|valid_supported| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_finite_dag_core| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_finite_dag_core| NIL))
+   SHOSTAK))
+ (|prefix_arcs_eq_of_nodes_eq| 0
+  (|prefix_arcs_eq_of_nodes_eq-1| NIL 4001391996
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY) (LEMMA "arcs_supported")
+     (LEMMA "prefix_node_iff")
+     (GRIND :DEFS ("ancestorPrefix" "intersection" "member") :IF-MATCH ALL
+      :EXCLUDE
+      ("Edge" "Reach" "Valid" "Canonical" "labelRank" "labelPrior" "labelNodes"
+       "height" "is_finite")))
+    NIL)
+   ((|arcs_supported| FORMULA-DECL NIL |ppg_hls_finite_dag_core| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|prefix_node_iff| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|ancestorPrefix| CONST-DECL "WitnessDAG" |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_finite_dag_core| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_finite_dag_core| NIL))
+   SHOSTAK))
+ (|prefix_eq_of_nodes_eq| 0
+  (|prefix_eq_of_nodes_eq-1| NIL 4001391996
+   (""
+    (THEN (SKOSIMP*) (LEMMA "prefix_arcs_eq_of_nodes_eq" ("Q" "Q!1" "r" "r!1"))
+     (GRIND :DEFS ("ancestorPrefix") :EXCLUDE
+      ("Edge" "Reach" "Valid" "Canonical" "labelRank" "labelPrior" "labelNodes"
+       "height" "is_finite"))
+     (APPLY-EXTENSIONALITY) (ASSERT))
+    NIL)
+   ((|ancestorPrefix| CONST-DECL "WitnessDAG" |ppg_hls_witness_dag| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|prefix_arcs_eq_of_nodes_eq| FORMULA-DECL NIL |ppg_hls_finite_dag_core|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_finite_dag_core| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_finite_dag_core| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL))
+   SHOSTAK)))
+

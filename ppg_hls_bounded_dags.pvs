@@ -1,0 +1,41 @@
+% Enumerate every supported graph whose nodes use bounded occurrence
+% indices. The construction takes powersets of the finite node universe
+% and of each candidate node set's square; no validity is imposed here.
+%
+% Lean counterpart: PPGraphHLSFiniteDAG.lean, nodeUniverse and boundedDAGs.
+
+ppg_hls_bounded_dags[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},universe:{U:finite_set[C]|FORALL(c:C):U(c)}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_finite_dag_core[C,G],ppg_nat_range,
+    ppg_finite_pairs[C,nat] AS nodePairs,
+    ppg_finite_pairs[[C,nat],[C,nat]] AS arcPairs,
+    ppg_finite_bind[finite_set[[C,nat]],WitnessDAG] AS dagUnions
+  D: VAR WitnessDAG
+  Q: VAR (Valid)
+  N: VAR nat
+  u: VAR WNode
+
+  nodeUniverse(N): finite_set[WNode] = nodePairs.finitePairs(universe,natRange(N))
+
+  arcUniverse(ns:finite_set[WNode]): finite_set[[WNode,WNode]] = arcPairs.finitePairs(ns,ns)
+
+  candidateDAGs(ns:finite_set[WNode]): finite_set[WitnessDAG] =
+    image[finite_set[[WNode,WNode]],WitnessDAG](
+      LAMBDA(es:finite_set[[WNode,WNode]]):(#nodes:=ns,arcs:=es#),powerset(arcUniverse(ns)))
+
+  boundedDAGs(N): finite_set[WitnessDAG] =
+    dagUnions.biUnion(powerset(nodeUniverse(N)),candidateDAGs)
+
+  nodeUniverse_member: LEMMA nodeUniverse(N)(u) IFF u`2<N
+
+  arcUniverse_member: LEMMA FORALL(ns:finite_set[WNode],e:[WNode,WNode]):
+    arcUniverse(ns)(e) IFF ns(e`1) AND ns(e`2)
+
+  mem_boundedDAGs_iff: THEOREM boundedDAGs(N)(D) IFF
+    subset?(D`nodes,nodeUniverse(N)) AND subset?(D`arcs,arcUniverse(D`nodes))
+
+  mem_boundedDAGs_of_canonical: THEOREM Canonical(Q) AND card(Q`nodes)<=N IMPLIES
+    boundedDAGs(N)(Q)
+
+END ppg_hls_bounded_dags

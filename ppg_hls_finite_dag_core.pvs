@@ -1,0 +1,40 @@
+% A canonical occurrence index is bounded by the graph's node count.
+% Rooted canonical graphs stay rooted after a reversible arc is flipped
+% and an ancestor prefix is taken. No finite label universe is needed.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 1.2.1, witness DAGs and canonical names.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSFiniteDAG.lean.
+
+ppg_hls_finite_dag_core[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_label_ranks[C,G]
+  D: VAR WitnessDAG
+  Q: VAR (Valid)
+  u,v,r: VAR WNode
+  e: VAR [WNode,WNode]
+
+  labelNodes_subset: LEMMA subset?(labelNodes(D,u`1),D`nodes)
+
+  canonical_index_lt_card: THEOREM Canonical(Q) AND Q`nodes(u) IMPLIES u`2<card(Q`nodes)
+
+  RootedCanonical(D,r): bool = Valid(D) AND Canonical(D) AND D`nodes(r) AND
+    (FORALL(u:WNode):D`nodes(u) IMPLIES Reach(D)(u,r))
+
+  rooted_proper: THEOREM RootedCanonical(D,r) IMPLIES Proper(D)
+
+  rooted_flippedPrefix: THEOREM RootedCanonical(D,r) AND Edge(D)(u,v) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(D),u,v)) AND u`1/=v`1 IMPLIES
+      RootedCanonical(ancestorPrefix(reverse(D,u,v),r),r)
+
+  arcs_supported: LEMMA Q`arcs(e) IMPLIES Q`nodes(e`1) AND Q`nodes(e`2)
+
+  prefix_arcs_eq_of_nodes_eq: LEMMA ancestorPrefix(Q,r)`nodes=Q`nodes IMPLIES
+    ancestorPrefix(Q,r)`arcs=Q`arcs
+
+  prefix_eq_of_nodes_eq: THEOREM ancestorPrefix(Q,r)`nodes=Q`nodes IMPLIES
+    ancestorPrefix(Q,r)=Q
+
+END ppg_hls_finite_dag_core
