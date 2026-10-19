@@ -1,0 +1,119 @@
+% Mario Carneiro, Mathlib Computability.Primrec.Basic, Nat.Primrec.
+% Each arithmetic operation below is obtained from the seven closure operators.
+% The recursion equations identify those constructions with ordinary arithmetic.
+ppg_nat_primrec_arithmetic: THEORY
+BEGIN
+  IMPORTING ppg_nat_primrec_closed
+
+  f,g,c: VAR TotalFunction
+
+  a,b,n: VAR nat
+
+  unaryRecT(a,f): TotalFunction = compT(precT(constT(a),compT(f,rightT)),pairT(zeroT,idT))
+
+  unaryRecT_value: LEMMA unaryRecT(a,f)(n)=natRecT(constT(a),compT(f,rightT),0,n)
+
+  pr_unary_rec: THEOREM NatPrimrec(f) IMPLIES NatPrimrec(unaryRecT(a,f))
+
+  caseStepT(g): TotalFunction = compT(g,pairT(leftT,compT(leftT,rightT)))
+
+  caseT(f,g): TotalFunction = LAMBDA(n:nat): IF rightT(n)=0 THEN f(leftT(n))
+    ELSE g(natPair(leftT(n),rightT(n)-1)) ENDIF
+
+  caseT_as_prec: LEMMA caseT(f,g)=precT(f,caseStepT(g))
+
+  pr_caseStep: LEMMA NatPrimrec(g) IMPLIES NatPrimrec(caseStepT(g))
+
+  pr_case: THEOREM NatPrimrec(f) AND NatPrimrec(g) IMPLIES NatPrimrec(caseT(f,g))
+
+  caseUnaryT(a,f): TotalFunction = LAMBDA(n:nat): IF n=0 THEN a ELSE f(n-1) ENDIF
+
+  caseUnaryT_as_case: LEMMA caseUnaryT(a,f)=
+    compT(caseT(constT(a),compT(f,rightT)),pairT(zeroT,idT))
+
+  pr_case_unary: THEOREM NatPrimrec(f) IMPLIES NatPrimrec(caseUnaryT(a,f))
+
+  predT: TotalFunction = LAMBDA(n:nat): IF n=0 THEN 0 ELSE n-1 ENDIF
+
+  predT_as_case: LEMMA predT=caseUnaryT(0,idT)
+
+  pr_pred: THEOREM NatPrimrec(predT)
+
+  subStepT: TotalFunction = compT(predT,compT(rightT,rightT))
+
+  subT: TotalFunction = LAMBDA(n:nat): IF leftT(n)<rightT(n) THEN 0 ELSE leftT(n)-rightT(n) ENDIF
+
+  natRecT_sub: LEMMA natRecT(idT,subStepT,a,b)=IF a<b THEN 0 ELSE a-b ENDIF
+
+  subT_as_prec: LEMMA subT=precT(idT,subStepT)
+
+  pr_subStep: LEMMA NatPrimrec(subStepT)
+
+  pr_sub: THEOREM NatPrimrec(subT)
+
+  mulStepT: TotalFunction = compT(addT,pairT(leftT,compT(rightT,rightT)))
+
+  mulT: TotalFunction = LAMBDA(n:nat): leftT(n)*rightT(n)
+
+  natRecT_mul: LEMMA natRecT(zeroT,mulStepT,a,b)=a*b
+
+  mulT_as_prec: LEMMA mulT=precT(zeroT,mulStepT)
+
+  pr_mulStep: LEMMA NatPrimrec(mulStepT)
+
+  pr_mul: THEOREM NatPrimrec(mulT)
+
+  natPower(a,b): RECURSIVE nat = IF b=0 THEN 1 ELSE natPower(a,b-1)*a ENDIF MEASURE b
+
+  natPower_zero: LEMMA natPower(a,0)=1
+
+  natPower_succ: LEMMA natPower(a,b+1)=natPower(a,b)*a
+
+  powStepT: TotalFunction = compT(mulT,pairT(compT(rightT,rightT),leftT))
+
+  powT: TotalFunction = LAMBDA(n:nat): natPower(leftT(n),rightT(n))
+
+  natRecT_pow: LEMMA natRecT(constT(1),powStepT,a,b)=natPower(a,b)
+
+  powT_as_prec: LEMMA powT=precT(constT(1),powStepT)
+
+  pr_powStep: LEMMA NatPrimrec(powStepT)
+
+  pr_pow: THEOREM NatPrimrec(powT)
+
+  zeroTestT: TotalFunction = LAMBDA(n:nat): IF n=0 THEN 1 ELSE 0 ENDIF
+
+  zeroTestT_as_case: LEMMA zeroTestT=caseUnaryT(1,zeroT)
+
+  pr_zero_test: THEOREM NatPrimrec(zeroTestT)
+
+  ifZeroT(c,f,g): TotalFunction = LAMBDA(n:nat): IF c(n)=0 THEN f(n) ELSE g(n) ENDIF
+
+  ifZeroT_as_case: LEMMA ifZeroT(c,f,g)=compT(caseT(f,compT(g,leftT)),pairT(idT,c))
+
+  pr_if_zero: THEOREM NatPrimrec(c) AND NatPrimrec(f) AND NatPrimrec(g)
+    IMPLIES NatPrimrec(ifZeroT(c,f,g))
+
+  leqT: TotalFunction = LAMBDA(n:nat): IF leftT(n)<=rightT(n) THEN 1 ELSE 0 ENDIF
+
+  leqT_as_sub: LEMMA leqT=compT(zeroTestT,subT)
+
+  pr_le: THEOREM NatPrimrec(leqT)
+
+  ltT: TotalFunction = LAMBDA(n:nat): IF leftT(n)<rightT(n) THEN 1 ELSE 0 ENDIF
+
+  ltT_as_le: LEMMA ltT=compT(leqT,pairT(compT(succT,leftT),rightT))
+
+  pr_lt: THEOREM NatPrimrec(ltT)
+
+  eqT: TotalFunction = LAMBDA(n:nat): IF leftT(n)=rightT(n) THEN 1 ELSE 0 ENDIF
+
+  swapT: TotalFunction = pairT(rightT,leftT)
+
+  eqT_as_sub: LEMMA eqT=compT(zeroTestT,compT(addT,pairT(subT,compT(subT,swapT))))
+
+  pr_swap: LEMMA NatPrimrec(swapT)
+
+  pr_eq: THEOREM NatPrimrec(eqT)
+
+END ppg_nat_primrec_arithmetic
