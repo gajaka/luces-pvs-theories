@@ -1,0 +1,39 @@
+% The original product-log law integrates the actual stopped count.
+% Reindexing its active times by their earlier-occurrence rank gives a
+% sum of ordinal-event probabilities, with infinity allowed on both sides.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley,
+% 1995, the monotone convergence theorem and integrals of indicators.
+% Lean counterpart: PPGraphHLSOrdinalOccurrence.lean.
+ppg_hls_ordinal_expectation[C,V,Value:TYPE,domain:[V->set[Value]],
+  footprint:[C->finite_set[V]],universe:{S:finite_set[C]|FORALL(a:C):S(a)},
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_mt_check_probability[C,V,Value,domain,spaces,laws])bad:NativeBad]: THEORY
+BEGIN
+  IMPORTING ppg_hls_ordinal_measurable[C,V,Value,domain,footprint,bad,universe,
+      variableAmbient(spaces)],
+    ppg_mt_time_expectation[C,V,Value,domain,spaces,laws] AS ordinalExpectation,
+    ppg_count_integral[LogSpace,NativeTableSigma(spaces),logMeasure] AS ordinalCountIntegral,
+    ppg_extended_integral[LogSpace,NativeTableSigma(spaces),logMeasure] AS ordinalIntegral
+  fallback,a: VAR C
+  enumeration: VAR ordinalExpectation.FullEnumeration
+  r: VAR nat
+
+  ordinal_event_native_measurable: LEMMA
+    NativeTableSigma(spaces)(ordinalOccurrence(fallback,enumeration,a,r))
+
+  ordinalEvents(fallback,enumeration,a): [nat->(NativeTableSigma(spaces))] =
+    LAMBDA(r:nat):ordinalOccurrence(fallback,enumeration,a,r)
+
+  expected_count_integral: LEMMA
+    ordinalExpectation.randomInitExpectedResamplingCount(footprint,bad,fallback,enumeration,a)=
+      ordinalIntegral.lintegral(LAMBDA(omega:LogSpace):
+        eventCount(ordinalEvents(fallback,enumeration,a),omega))
+
+  randomInitExpectedResamplingCount_eq_tsum_ordinalOccurrence: THEOREM
+    ordinalExpectation.randomInitExpectedResamplingCount(footprint,bad,fallback,enumeration,a)=
+      ppg_nonneg_tsum[nat].tsum(LAMBDA(r:nat):
+        logMeasure(ordinalEvents(fallback,enumeration,a)(r)))
+
+END ppg_hls_ordinal_expectation
