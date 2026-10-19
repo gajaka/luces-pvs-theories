@@ -1,0 +1,77 @@
+% The four HLS expansion choices encode one original occurrence as one
+% or two tokens. The backward decoder consumes an inserted predecessor
+% exactly when the original down token marks it. It recovers labels and
+% choices; the boundary flags need not be recoverable.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Appendix C. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSExpansionDecoder.lean.
+ppg_hls_expansion_decoder[C:TYPE,mate:[C->C]]: THEORY
+BEGIN
+  ExpansionChoice: TYPE = below(4)
+
+  choiceUp: ExpansionChoice = 0
+
+  choiceDown: ExpansionChoice = 1
+
+  choiceInsertUp: ExpansionChoice = 2
+
+  choiceInsertDown: ExpansionChoice = 3
+
+  ExpansionToken: TYPE = [#label:C,down:bool,predecessorMarked:bool#]
+
+  ExpansionAtom: TYPE = [#label:C,choice:ExpansionChoice,boundaryMarked:bool#]
+
+  ChoicePair: TYPE = [C,ExpansionChoice]
+
+  a: VAR ExpansionAtom
+  L,K: VAR list[ExpansionAtom]
+  T: VAR list[ExpansionToken]
+  ch: VAR ExpansionChoice
+
+  choices_exhaustive: LEMMA ch=choiceUp OR ch=choiceDown OR
+    ch=choiceInsertUp OR ch=choiceInsertDown
+
+  expansionBlock(a): list[ExpansionToken] =
+    IF a`choice=choiceUp THEN
+      cons((#label:=a`label,down:=FALSE,predecessorMarked:=a`boundaryMarked#),null)
+    ELSIF a`choice=choiceDown THEN
+      cons((#label:=a`label,down:=TRUE,predecessorMarked:=FALSE#),null)
+    ELSE
+      cons((#label:=a`label,down:=TRUE,predecessorMarked:=TRUE#),
+        cons((#label:=mate(a`label),down:=a`choice=choiceInsertDown,
+          predecessorMarked:=a`boundaryMarked#),null))
+    ENDIF
+
+  encodeExpansion(L): RECURSIVE list[ExpansionToken] =
+    IF null?(L) THEN null ELSE append(expansionBlock(car(L)),encodeExpansion(cdr(L))) ENDIF
+    MEASURE length(L)
+
+  decodeExpansion(T): RECURSIVE list[ChoicePair] =
+    IF null?(T) THEN null
+    ELSIF NOT car(T)`down THEN cons((car(T)`label,choiceUp),decodeExpansion(cdr(T)))
+    ELSIF NOT car(T)`predecessorMarked OR null?(cdr(T)) THEN
+      cons((car(T)`label,choiceDown),decodeExpansion(cdr(T)))
+    ELSE cons((car(T)`label,
+      IF car(cdr(T))`down THEN choiceInsertDown ELSE choiceInsertUp ENDIF),
+      decodeExpansion(cdr(cdr(T)))) ENDIF
+    MEASURE length(T)
+
+  atomChoices(L): RECURSIVE list[ChoicePair] =
+    IF null?(L) THEN null ELSE cons((car(L)`label,car(L)`choice),atomChoices(cdr(L))) ENDIF
+    MEASURE length(L)
+
+  decode_expansionBlock_append: THEOREM
+    decodeExpansion(append(expansionBlock(a),T))=
+      cons((a`label,a`choice),decodeExpansion(T))
+
+  decode_encodeExpansion: THEOREM decodeExpansion(encodeExpansion(L))=atomChoices(L)
+
+  encoded_equality_recovers_choices: THEOREM encodeExpansion(L)=encodeExpansion(K) IMPLIES
+    atomChoices(L)=atomChoices(K)
+
+  atomChoices_length: LEMMA length(atomChoices(L))=length(L)
+
+  decoded_length_eq_original: THEOREM length(decodeExpansion(encodeExpansion(L)))=length(L)
+
+END ppg_hls_expansion_decoder
