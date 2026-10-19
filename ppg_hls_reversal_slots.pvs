@@ -1,0 +1,69 @@
+% Reversing a reversible arc exchanges the consecutive shared-variable
+% table slots at its endpoints. Private-variable slots and every other
+% node's slots stay fixed. Only the actual finite footprint is used.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", proof of Lemma 3.4. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSReversalSlots.lean.
+ppg_hls_reversal_slots[C,V:TYPE,footprint:[C->finite_set[V]]]: THEORY
+BEGIN
+  IMPORTING ppg_hls_table_coordinates[C,V,footprint]
+  D: VAR WitnessDAG
+  Q: VAR (Valid)
+  u,v,w: VAR WNode
+  a: VAR V
+  S: VAR finite_set[WNode]
+
+  readers_no_self: LEMMA NOT priorReaders(Q,u,a)(u)
+
+  reader_remove_nonmember: LEMMA NOT S(u) IMPLIES remove(u,S)=S
+
+  readers_subset_along_arc: THEOREM Edge(Q)(u,v) AND footprint(v`1)(a) IMPLIES
+    subset?(priorReaders(Q,u,a),priorReaders(Q,v,a))
+
+  reader_two_step_path: LEMMA Edge(D)(u,w) AND Edge(D)(w,v) AND w/=u AND w/=v IMPLIES
+    dagPaths.positivePath(dagPaths.eraseArc(Edge(D),u,v))(u,v)
+
+  reader_no_alternate: LEMMA Edge(Q)(u,v) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,v)) IMPLIES
+      NOT dagPaths.positivePath(dagPaths.eraseArc(Edge(Q),u,v))(u,v)
+
+  priorReaders_reversible_eq_insert: THEOREM Edge(Q)(u,v) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,v)) AND
+    footprint(u`1)(a) AND footprint(v`1)(a) IMPLIES
+      priorReaders(Q,v,a)=add(u,priorReaders(Q,u,a))
+
+  localIndex_reversible_consecutive: THEOREM Edge(Q)(u,v) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,v)) AND
+    footprint(u`1)(a) AND footprint(v`1)(a) IMPLIES
+      localIndex(Q,v)(a)=localIndex(Q,u)(a)+1
+
+  priorReaders_reverse_other: THEOREM w/=u AND w/=v IMPLIES
+    priorReaders(reverse(D,u,v),w,a)=priorReaders(D,w,a)
+
+  priorReaders_reverse_source: THEOREM Edge(Q)(u,v) IMPLIES
+    priorReaders(reverse(Q,u,v),u,a)=
+      IF footprint(v`1)(a) THEN add(v,priorReaders(Q,u,a)) ELSE priorReaders(Q,u,a) ENDIF
+
+  priorReaders_reverse_target: THEOREM Edge(Q)(u,v) IMPLIES
+    priorReaders(reverse(Q,u,v),v,a)=remove(u,priorReaders(Q,v,a))
+
+  localIndex_reverse_source_private: THEOREM Edge(Q)(u,v) AND NOT footprint(v`1)(a) IMPLIES
+    localIndex(reverse(Q,u,v),u)(a)=localIndex(Q,u)(a)
+
+  localIndex_reverse_target_private: THEOREM Edge(Q)(u,v) AND NOT footprint(u`1)(a) IMPLIES
+    localIndex(reverse(Q,u,v),v)(a)=localIndex(Q,v)(a)
+
+  reader_no_reverse: LEMMA Edge(Q)(u,v) IMPLIES NOT Edge(Q)(v,u)
+
+  localIndex_reverse_source_shared: THEOREM Edge(Q)(u,v) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,v)) AND
+    footprint(u`1)(a) AND footprint(v`1)(a) IMPLIES
+      localIndex(reverse(Q,u,v),u)(a)=localIndex(Q,v)(a)
+
+  localIndex_reverse_target_shared: THEOREM Edge(Q)(u,v) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,v)) AND
+    footprint(u`1)(a) AND footprint(v`1)(a) IMPLIES
+      localIndex(reverse(Q,u,v),v)(a)=localIndex(Q,u)(a)
+
+END ppg_hls_reversal_slots
