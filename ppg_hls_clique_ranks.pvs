@@ -1,0 +1,84 @@
+% A clique of labels is totally ordered by the arcs of a valid witness
+% DAG. Counting predecessors gives consecutive ranks at a reversible arc;
+% reversing that arc exchanges its two endpoint ranks.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 3.1, the auxiliary-table index lambda.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSCliqueRanks.lean.
+
+ppg_hls_clique_ranks[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_edge_completion[C,G]
+  D: VAR WitnessDAG
+  Q: VAR (Valid)
+  J: VAR finite_set[C]
+  u,v,w,r: VAR WNode
+
+  LabelClique(J): bool = FORALL(i,j:C):J(i) AND J(j) IMPLIES i=j OR G(i,j)
+
+  cliquePrior(D,J,u): finite_set[WNode] =
+    intersection(D`nodes,LAMBDA(w:WNode):J(w`1) AND Edge(D)(w,u))
+
+  cliqueRank(D,J,u): nat = card(cliquePrior(D,J,u))
+
+  mem_cliquePrior: LEMMA cliquePrior(D,J,u)(w) IFF
+    D`nodes(w) AND J(w`1) AND Edge(D)(w,u)
+
+  cliquePrior_subset_nodes: LEMMA subset?(cliquePrior(D,J,u),D`nodes)
+
+  cliquePrior_no_self: LEMMA NOT cliquePrior(Q,J,u)(u)
+
+  cliquePrior_subset_of_edge: THEOREM LabelClique(J) AND Edge(Q)(u,v) AND J(v`1) IMPLIES
+    subset?(cliquePrior(Q,J,u),cliquePrior(Q,J,v))
+
+  cliquePrior_strict: LEMMA LabelClique(J) AND Edge(Q)(u,v) AND J(u`1) AND J(v`1) IMPLIES
+    strict_subset?(cliquePrior(Q,J,u),cliquePrior(Q,J,v))
+
+  cliqueRank_lt_of_edge: THEOREM LabelClique(J) AND Edge(Q)(u,v) AND J(u`1) AND J(v`1) IMPLIES
+    cliqueRank(Q,J,u)<cliqueRank(Q,J,v)
+
+  cliqueRank_lt_card: THEOREM Q`nodes(u) IMPLIES cliqueRank(Q,J,u)<card(Q`nodes)
+
+  eq_of_cliqueRank_eq: THEOREM LabelClique(J) AND Q`nodes(u) AND Q`nodes(v) AND
+    J(u`1) AND J(v`1) AND cliqueRank(Q,J,u)=cliqueRank(Q,J,v) IMPLIES u=v
+
+  erase_two_step_path: LEMMA Edge(D)(u,w) AND Edge(D)(w,v) AND w/=u AND w/=v IMPLIES
+    dagPaths.positivePath(dagPaths.eraseArc(Edge(D),u,v))(u,v)
+
+  reversible_no_alternate: LEMMA Edge(Q)(u,v) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,v)) IMPLIES
+      NOT dagPaths.positivePath(dagPaths.eraseArc(Edge(Q),u,v))(u,v)
+
+  cliquePrior_reversible_eq_insert: THEOREM LabelClique(J) AND Edge(Q)(u,v) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,v)) AND J(u`1) AND J(v`1) IMPLIES
+      cliquePrior(Q,J,v)=add(u,cliquePrior(Q,J,u))
+
+  cliqueRank_reversible_consecutive: THEOREM LabelClique(J) AND Edge(Q)(u,v) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,v)) AND J(u`1) AND J(v`1) IMPLIES
+      cliqueRank(Q,J,v)=cliqueRank(Q,J,u)+1
+
+  cliquePrior_reverse_other: THEOREM w/=u AND w/=v IMPLIES
+    cliquePrior(reverse(D,u,v),J,w)=cliquePrior(D,J,w)
+
+  cliquePrior_reverse_source: THEOREM Edge(Q)(u,v) AND J(v`1) IMPLIES
+    cliquePrior(reverse(Q,u,v),J,u)=add(v,cliquePrior(Q,J,u))
+
+  cliquePrior_reverse_target: THEOREM Edge(Q)(u,v) IMPLIES
+    cliquePrior(reverse(Q,u,v),J,v)=remove(u,cliquePrior(Q,J,v))
+
+  edge_no_reverse: LEMMA Edge(Q)(u,v) IMPLIES NOT Edge(Q)(v,u)
+
+  cliqueRank_reverse_source: THEOREM LabelClique(J) AND Edge(Q)(u,v) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,v)) AND J(u`1) AND J(v`1) IMPLIES
+      cliqueRank(reverse(Q,u,v),J,u)=cliqueRank(Q,J,v)
+
+  cliqueRank_reverse_target: THEOREM LabelClique(J) AND Edge(Q)(u,v) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,v)) AND J(u`1) AND J(v`1) IMPLIES
+      cliqueRank(reverse(Q,u,v),J,v)=cliqueRank(Q,J,u)
+
+  cliquePrior_prefix_eq: THEOREM Reach(D)(u,r) IMPLIES
+    cliquePrior(ancestorPrefix(D,r),J,u)=cliquePrior(D,J,u)
+
+END ppg_hls_clique_ranks

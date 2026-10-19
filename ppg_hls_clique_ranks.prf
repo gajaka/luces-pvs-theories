@@ -1,0 +1,919 @@
+(|ppg_hls_clique_ranks|
+ (|mem_cliquePrior| 0
+  (|mem_cliquePrior-1| NIL 4001390809
+   (""
+    (THEN
+     (GRIND :DEFS ("cliquePrior" "intersection" "member") :EXCLUDE
+      ("Edge" "is_finite")))
+    NIL)
+   ((|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|cliquePrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_clique_ranks|
+     NIL))
+   SHOSTAK))
+ (|cliquePrior_subset_nodes| 0
+  (|cliquePrior_subset_nodes-1| NIL 4001390809
+   (""
+    (THEN
+     (GRIND :DEFS ("cliquePrior" "subset?" "intersection" "member") :EXCLUDE
+      ("Edge" "is_finite")))
+    NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|cliquePrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_clique_ranks|
+     NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK))
+ (|cliquePrior_no_self| 0
+  (|cliquePrior_no_self-1| NIL 4001390809
+   (""
+    (THEN (SKOSIMP*) (LEMMA "edge_ne" ("D" "Q!1" "u" "u!1" "v" "u!1"))
+     (TYPEPRED "Q!1")
+     (GRIND :DEFS ("cliquePrior") :EXCLUDE ("Edge" "Valid" "is_finite")))
+    NIL)
+   ((|cliquePrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_clique_ranks|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|edge_ne| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL))
+   SHOSTAK))
+ (|cliquePrior_subset_of_edge| 0
+  (|cliquePrior_subset_of_edge-1| NIL 4001390809
+   (""
+    (THEN (SKOSIMP*) (EXPAND "subset?") (SKOSIMP*) (EXPAND "cliquePrior")
+     (EXPAND "intersection") (EXPAND "member") (FLATTEN)
+     (LEMMA "positivePath_single" ("D" "Q!1" "u" "x!1" "v" "u!1"))
+     (LEMMA "positivePath_single" ("D" "Q!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "positivePath_trans" ("D" "Q!1" "u" "x!1" "v" "u!1" "w" "v!1"))
+     (LEMMA "edge_of_transGen_dependent" ("Q" "Q!1" "u" "x!1" "v" "v!1"))
+     (EXPAND "LabelClique")
+     (GRIND :DEFS ("member") :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "LabelClique" "is_finite")))
+    NIL)
+   ((|intersection| CONST-DECL "set" |sets| NIL)
+    (|edge_of_transGen_dependent| FORMULA-DECL NIL |ppg_hls_edge_completion|
+     NIL)
+    (|LabelClique| CONST-DECL "bool" |ppg_hls_clique_ranks| NIL)
+    (|positivePath_trans| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|positivePath_single| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|cliquePrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_clique_ranks|
+     NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL))
+   SHOSTAK))
+ (|cliquePrior_strict| 0
+  (|cliquePrior_strict-1| NIL 4001390809
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "cliquePrior_subset_of_edge"
+      ("Q" "Q!1" "J" "J!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "valid_supported" ("D" "Q!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "cliquePrior_no_self" ("Q" "Q!1" "J" "J!1" "u" "u!1"))
+     (LEMMA "mem_cliquePrior" ("D" "Q!1" "J" "J!1" "u" "v!1" "w" "u!1"))
+     (TYPEPRED "Q!1")
+     (GRIND :DEFS ("strict_subset?") :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "cliquePrior" "cliqueRank"
+       "LabelClique" "is_finite")))
+    NIL)
+   ((|valid_supported| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|mem_cliquePrior| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|strict_subset_is_strict_order| NAME-JUDGEMENT "(strict_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|strict_subset?| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|cliquePrior_no_self| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|cliquePrior_subset_of_edge| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL))
+   SHOSTAK))
+ (|cliqueRank_lt_of_edge| 0
+  (|cliqueRank_lt_of_edge-1| NIL 4001390809
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "cliquePrior_strict" ("Q" "Q!1" "J" "J!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "card_strict_subset"
+      ("A" "cliquePrior(Q!1,J!1,u!1)" "B" "cliquePrior(Q!1,J!1,v!1)"))
+     (GRIND :DEFS ("cliqueRank") :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "LabelClique" "is_finite")))
+    NIL)
+   ((|cliquePrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_clique_ranks|
+     NIL)
+    (|card_strict_subset| FORMULA-DECL NIL |finite_sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|strict_subset?| CONST-DECL "bool" |sets| NIL)
+    (|cliqueRank| CONST-DECL "nat" |ppg_hls_clique_ranks| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|strict_subset_is_strict_order| NAME-JUDGEMENT "(strict_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|cliquePrior_strict| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL))
+   SHOSTAK))
+ (|cliqueRank_lt_card| 0
+  (|cliqueRank_lt_card-1| NIL 4001390809
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "cliquePrior_subset_nodes" ("D" "Q!1" "J" "J!1" "u" "u!1"))
+     (LEMMA "cliquePrior_no_self" ("Q" "Q!1" "J" "J!1" "u" "u!1"))
+     (LEMMA "card_strict_subset"
+      ("A" "cliquePrior(Q!1,J!1,u!1)" "B" "Q!1`nodes"))
+     (EXPAND "cliqueRank")
+     (GRIND :DEFS ("strict_subset?") :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "cliquePrior" "LabelClique"
+       "is_finite")))
+    NIL)
+   ((|cliquePrior_no_self| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|cliqueRank| CONST-DECL "nat" |ppg_hls_clique_ranks| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|strict_subset?| CONST-DECL "bool" |sets| NIL)
+    (|strict_subset_is_strict_order| NAME-JUDGEMENT "(strict_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|card_strict_subset| FORMULA-DECL NIL |finite_sets| NIL)
+    (|cliquePrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_clique_ranks|
+     NIL)
+    (|cliquePrior_subset_nodes| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL))
+   SHOSTAK))
+ (|eq_of_cliqueRank_eq| 0
+  (|eq_of_cliqueRank_eq-1| NIL 4001390809
+   (""
+    (THEN (SKOSIMP*) (LEMMA "valid_oriented" ("D" "Q!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "cliqueRank_lt_of_edge" ("Q" "Q!1" "J" "J!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "cliqueRank_lt_of_edge" ("Q" "Q!1" "J" "J!1" "u" "v!1" "v" "u!1"))
+     (TYPEPRED "Q!1") (EXPAND "LabelClique")
+     (GRIND :DEFS NIL :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "LabelClique" "is_finite")))
+    NIL)
+   ((|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|cliqueRank_lt_of_edge| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|LabelClique| CONST-DECL "bool" |ppg_hls_clique_ranks| NIL)
+    (|valid_oriented| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL))
+   SHOSTAK))
+ (|erase_two_step_path| 0
+  (|erase_two_step_path-1| NIL 4001390809
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "dagPaths.positivePath_single"
+      ("r" "dagPaths.eraseArc(Edge(D!1),u!1,v!1)" "x" "u!1" "y" "w!1"))
+     (LEMMA "dagPaths.positivePath_single"
+      ("r" "dagPaths.eraseArc(Edge(D!1),u!1,v!1)" "x" "w!1" "y" "v!1"))
+     (LEMMA "dagPaths.positivePath_trans"
+      ("r" "dagPaths.eraseArc(Edge(D!1),u!1,v!1)" "x" "u!1" "y" "w!1" "z"
+       "v!1"))
+     (GRIND :DEFS ("dagPaths.eraseArc") :EXCLUDE
+      ("Edge" "dagPaths.positivePath" "is_finite")))
+    NIL)
+   ((|positivePath_trans| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (|positivePath_single| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL)
+    (|eraseArc| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Edge| CONST-DECL "dagPaths.ArcRelation" |ppg_hls_witness_dag| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK))
+ (|reversible_no_alternate| 0
+  (|reversible_no_alternate-1| NIL 4001390809
+   (""
+    (THEN (SKOSIMP*) (LEMMA "valid_acyclic" ("D" "Q!1"))
+     (LEMMA "dagPaths.reversible_iff_no_alternate_path"
+      ("r" "Edge(Q!1)" "u" "u!1" "v" "v!1"))
+     (TYPEPRED "Q!1") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|Edge| CONST-DECL "dagPaths.ArcRelation" |ppg_hls_witness_dag| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL)
+    (|reversible_iff_no_alternate_path| FORMULA-DECL NIL |ppg_hls_reversal|
+     NIL)
+    (|valid_acyclic| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL))
+   SHOSTAK))
+ (|cliquePrior_reversible_eq_insert| 0
+  (|cliquePrior_reversible_eq_insert-1| NIL 4001390809
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY) (EXPAND "cliquePrior" 1)
+     (EXPAND "intersection" 1) (EXPAND "add" 1) (EXPAND "member" 1)
+     (LEMMA "reversible_no_alternate" ("Q" "Q!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "valid_supported" ("D" "Q!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "valid_oriented" ("D" "Q!1" "u" "(x!1,x!2)" "v" "u!1"))
+     (LEMMA "edge_ne" ("D" "Q!1" "u" "(x!1,x!2)" "v" "v!1"))
+     (LEMMA "erase_two_step_path"
+      ("D" "Q!1" "u" "u!1" "w" "(x!1,x!2)" "v" "v!1"))
+     (LEMMA "cliquePrior_subset_of_edge"
+      ("Q" "Q!1" "J" "J!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "mem_cliquePrior" ("D" "Q!1" "J" "J!1" "u" "u!1" "w" "(x!1,x!2)"))
+     (LEMMA "mem_cliquePrior" ("D" "Q!1" "J" "J!1" "u" "v!1" "w" "(x!1,x!2)"))
+     (LEMMA "cliquePrior_no_self" ("Q" "Q!1" "J" "J!1" "u" "u!1"))
+     (LEMMA "positivePath_single" ("D" "Q!1" "u" "(x!1,x!2)" "v" "u!1"))
+     (LEMMA "positivePath_single" ("D" "Q!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "positivePath_trans"
+      ("D" "Q!1" "u" "(x!1,x!2)" "v" "u!1" "w" "v!1"))
+     (LEMMA "edge_of_transGen_dependent" ("Q" "Q!1" "u" "(x!1,x!2)" "v" "v!1"))
+     (TYPEPRED "Q!1") (EXPAND "LabelClique")
+     (GRIND :DEFS ("subset?") :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "cliquePrior" "cliqueRank"
+       "dagPaths.Acyclic" "dagPaths.reverseArc" "dagPaths.eraseArc"
+       "dagPaths.positivePath" "LabelClique" "is_finite")))
+    NIL)
+   ((|reversible_no_alternate| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|valid_oriented| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|erase_two_step_path| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|mem_cliquePrior| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|cliquePrior_no_self| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|edge_of_transGen_dependent| FORMULA-DECL NIL |ppg_hls_edge_completion|
+     NIL)
+    (|LabelClique| CONST-DECL "bool" |ppg_hls_clique_ranks| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|positivePath_trans| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|positivePath_single| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|cliquePrior_subset_of_edge| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|edge_ne| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|valid_supported| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|cliquePrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_clique_ranks|
+     NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL))
+   SHOSTAK))
+ (|cliqueRank_reversible_consecutive| 0
+  (|cliqueRank_reversible_consecutive-1| NIL 4001390809
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "cliquePrior_reversible_eq_insert"
+      ("Q" "Q!1" "J" "J!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "cliquePrior_no_self" ("Q" "Q!1" "J" "J!1" "u" "u!1"))
+     (LEMMA "card_add" ("x" "u!1" "S" "cliquePrior(Q!1,J!1,u!1)"))
+     (GRIND :DEFS ("cliqueRank") :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "LabelClique" "is_finite")))
+    NIL)
+   ((|cliquePrior_no_self| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|cliqueRank| CONST-DECL "nat" |ppg_hls_clique_ranks| NIL)
+    (|Acyclic| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|reverseArc| CONST-DECL "ArcRelation" |ppg_hls_reversal| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|card_add| FORMULA-DECL NIL |finite_sets| NIL)
+    (|cliquePrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_clique_ranks|
+     NIL)
+    (|cliquePrior_reversible_eq_insert| FORMULA-DECL NIL |ppg_hls_clique_ranks|
+     NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL))
+   SHOSTAK))
+ (|cliquePrior_reverse_other| 0
+  (|cliquePrior_reverse_other-1| NIL 4001390809
+   ("" (SKOSIMP*)
+    (("" (APPLY-EXTENSIONALITY)
+      (("1"
+        (GRIND :DEFS
+         ("cliquePrior" "reverse" "Edge" "dagPaths.reverseArc"
+          "dagPaths.addArc" "dagPaths.eraseArc" "add" "remove" "intersection"
+          "member")
+         :EXCLUDE ("is_finite"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS
+         ("cliquePrior" "reverse" "Edge" "dagPaths.reverseArc"
+          "dagPaths.addArc" "dagPaths.eraseArc" "add" "remove" "intersection"
+          "member")
+         :EXCLUDE ("is_finite"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((|reverse| CONST-DECL "WitnessDAG" |ppg_hls_witness_dag| NIL)
+    (|Edge| CONST-DECL "dagPaths.ArcRelation" |ppg_hls_witness_dag| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|cliquePrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_clique_ranks|
+     NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL))
+   SHOSTAK))
+ (|cliquePrior_reverse_source| 0
+  (|cliquePrior_reverse_source-1| NIL 4001390809
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY)
+     (LEMMA "edge_ne" ("D" "Q!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "valid_supported" ("D" "Q!1" "u" "u!1" "v" "v!1")) (TYPEPRED "Q!1")
+     (GRIND :DEFS
+      ("cliquePrior" "reverse" "Edge" "dagPaths.reverseArc" "dagPaths.addArc"
+       "dagPaths.eraseArc" "add" "remove" "intersection" "member")
+      :EXCLUDE ("is_finite")))
+    NIL)
+   ((|edge_ne| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Edge| CONST-DECL "dagPaths.ArcRelation" |ppg_hls_witness_dag| NIL)
+    (|positivePath| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|Acyclic| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|valid_supported| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|cliquePrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_clique_ranks|
+     NIL)
+    (|reverse| CONST-DECL "WitnessDAG" |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL))
+   SHOSTAK))
+ (|cliquePrior_reverse_target| 0
+  (|cliquePrior_reverse_target-1| NIL 4001390809
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY)
+     (LEMMA "edge_ne" ("D" "Q!1" "u" "u!1" "v" "v!1")) (TYPEPRED "Q!1")
+     (GRIND :DEFS
+      ("cliquePrior" "reverse" "Edge" "dagPaths.reverseArc" "dagPaths.addArc"
+       "dagPaths.eraseArc" "add" "remove" "intersection" "member")
+      :EXCLUDE ("is_finite")))
+    NIL)
+   ((|edge_ne| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|Acyclic| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|positivePath| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|Edge| CONST-DECL "dagPaths.ArcRelation" |ppg_hls_witness_dag| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|cliquePrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_clique_ranks|
+     NIL)
+    (|reverse| CONST-DECL "WitnessDAG" |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL))
+   SHOSTAK))
+ (|edge_no_reverse| 0
+  (|edge_no_reverse-1| NIL 4001390809
+   (""
+    (THEN (SKOSIMP*) (LEMMA "valid_acyclic" ("D" "Q!1"))
+     (LEMMA "dagPaths.acyclic_asymm" ("r" "Edge(Q!1)" "u" "u!1" "v" "v!1"))
+     (TYPEPRED "Q!1") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL)
+   ((|Edge| CONST-DECL "dagPaths.ArcRelation" |ppg_hls_witness_dag| NIL)
+    (|ArcRelation| TYPE-EQ-DECL NIL |ppg_hls_reversal| NIL)
+    (|acyclic_asymm| FORMULA-DECL NIL |ppg_hls_reversal| NIL)
+    (|valid_acyclic| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL))
+   SHOSTAK))
+ (|cliqueRank_reverse_source| 0
+  (|cliqueRank_reverse_source-1| NIL 4001390809
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "cliquePrior_reverse_source"
+      ("Q" "Q!1" "J" "J!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "cliqueRank_reversible_consecutive"
+      ("Q" "Q!1" "J" "J!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "edge_no_reverse" ("Q" "Q!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "mem_cliquePrior" ("D" "Q!1" "J" "J!1" "u" "u!1" "w" "v!1"))
+     (LEMMA "card_add" ("x" "v!1" "S" "cliquePrior(Q!1,J!1,u!1)"))
+     (GRIND :DEFS ("cliqueRank") :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "LabelClique" "is_finite")))
+    NIL)
+   ((|cliqueRank_reversible_consecutive| FORMULA-DECL NIL
+     |ppg_hls_clique_ranks| NIL)
+    (|mem_cliquePrior| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|reverse| CONST-DECL "WitnessDAG" |ppg_hls_witness_dag| NIL)
+    (|cliqueRank| CONST-DECL "nat" |ppg_hls_clique_ranks| NIL)
+    (|Acyclic| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|reverseArc| CONST-DECL "ArcRelation" |ppg_hls_reversal| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|card_add| FORMULA-DECL NIL |finite_sets| NIL)
+    (|cliquePrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_clique_ranks|
+     NIL)
+    (|edge_no_reverse| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|cliquePrior_reverse_source| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL))
+   SHOSTAK))
+ (|cliqueRank_reverse_target| 0
+  (|cliqueRank_reverse_target-1| NIL 4001390809
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "cliquePrior_reverse_target"
+      ("Q" "Q!1" "J" "J!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "cliquePrior_reversible_eq_insert"
+      ("Q" "Q!1" "J" "J!1" "u" "u!1" "v" "v!1"))
+     (LEMMA "cliquePrior_no_self" ("Q" "Q!1" "J" "J!1" "u" "u!1"))
+     (LEMMA "remove_add_member" ("x" "u!1" "a" "cliquePrior(Q!1,J!1,u!1)"))
+     (GRIND :DEFS ("cliqueRank") :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "LabelClique" "is_finite")))
+    NIL)
+   ((|cliquePrior_reversible_eq_insert| FORMULA-DECL NIL |ppg_hls_clique_ranks|
+     NIL)
+    (|cliquePrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_clique_ranks|
+     NIL)
+    (|remove_add_member| FORMULA-DECL NIL |sets_lemmas| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |finite_sets| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|cliqueRank| CONST-DECL "nat" |ppg_hls_clique_ranks| NIL)
+    (|reverse| CONST-DECL "WitnessDAG" |ppg_hls_witness_dag| NIL)
+    (|Acyclic| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|reverseArc| CONST-DECL "ArcRelation" |ppg_hls_reversal| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|cliquePrior_no_self| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|cliquePrior_reverse_target| FORMULA-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|Valid| CONST-DECL "bool" |ppg_hls_witness_dag| NIL))
+   SHOSTAK))
+ (|cliquePrior_prefix_eq| 0
+  (|cliquePrior_prefix_eq-1| NIL 4001390809
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY)
+     (LEMMA "edge_reach" ("D" "D!1" "u" "(x!1,x!2)" "v" "u!1" "w" "r!1"))
+     (LEMMA "prefix_node_iff" ("D" "D!1" "r" "r!1" "u" "(x!1,x!2)"))
+     (LEMMA "prefix_edge_iff" ("D" "D!1" "r" "r!1" "u" "(x!1,x!2)" "v" "u!1"))
+     (GRIND :DEFS ("cliquePrior" "intersection" "member") :EXCLUDE
+      ("Edge" "positivePath" "Valid" "Canonical" "LabelClique" "is_finite")))
+    NIL)
+   ((|edge_reach| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|prefix_edge_iff| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (RTC CONST-DECL "bool" |relations| NIL)
+    (|path| CONST-DECL "bool" |ppg_hls_reversal| NIL)
+    (|Reach| CONST-DECL "bool" |ppg_hls_witness_dag| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|prefix_node_iff| FORMULA-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|WitnessDAG| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|cliquePrior| CONST-DECL "finite_set[WNode[C, G]]" |ppg_hls_clique_ranks|
+     NIL)
+    (|ancestorPrefix| CONST-DECL "WitnessDAG" |ppg_hls_witness_dag| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|WNode| TYPE-EQ-DECL NIL |ppg_hls_witness_dag| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_clique_ranks| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_clique_ranks| NIL))
+   SHOSTAK)))
+
