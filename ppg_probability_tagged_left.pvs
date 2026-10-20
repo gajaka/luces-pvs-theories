@@ -1,0 +1,49 @@
+% A constructor identifies its actual supported tagged value subtype
+% with the original coordinate space. Both inverse maps and the exact
+% probability transport are proved, including empty ambient carriers.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_probability_tagged_left[T,U:TYPE,D:set[T],
+  (IMPORTING ppg_measurable_space[(D)]) S:MeasurableSpace,
+  (IMPORTING ppg_probability_measure[(D),S]) mu:Probability]: THEORY
+BEGIN
+  TaggedValue: TYPE = union[T,U]
+
+  taggedDomain: set[TaggedValue] = {z:TaggedValue|inl?(z) AND D(left(z))}
+
+  Source: TYPE = (D)
+
+  Target: TYPE = (taggedDomain)
+
+  encode(x:Source): Target = inl(x)
+
+  decode(y:Target): Source = left(y)
+
+  IMPORTING ppg_measurable_map[Source,Target] AS tagForwardMaps,
+    ppg_measurable_map[Target,Source] AS tagBackwardMaps
+
+  taggedSpace: ppg_measurable_space[Target].MeasurableSpace =
+    tagForwardMaps.imageSigma(S,encode)
+
+  encode_measurable: LEMMA tagForwardMaps.measurable(S,taggedSpace,encode)
+
+  decode_encode: LEMMA FORALL(x:Source):decode(encode(x))=x
+
+  encode_decode: LEMMA FORALL(y:Target):encode(decode(y))=y
+
+  decode_encode_preimage: LEMMA FORALL(A:set[Source]):
+    tagForwardMaps.inverseImage(encode,tagBackwardMaps.inverseImage(decode,A))=A
+
+  decode_measurable: LEMMA tagBackwardMaps.measurable(taggedSpace,S,decode)
+
+  IMPORTING ppg_probability_map[Source,Target,S,taggedSpace] AS tagForwardLaw,
+    ppg_probability_map[Target,Source,taggedSpace,S] AS tagBackwardLaw
+
+  taggedLaw: tagForwardLaw.TargetLaw = tagForwardLaw.pushforward(mu,encode)
+
+  tagged_decode_law: THEOREM tagBackwardLaw.pushforward(taggedLaw,decode)=mu
+
+  tagged_decode_mass: LEMMA FORALL(A:(S)):
+    taggedLaw(tagBackwardMaps.inverseImage(decode,A))=mu(A)
+
+END ppg_probability_tagged_left

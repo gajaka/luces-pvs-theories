@@ -1,0 +1,35 @@
+% Equal support predicates describe the same measurable subtype. The
+% primitive set operations are compared extensionally before transferring
+% sigma-algebra and countable-additivity predicates. This keeps the
+% original probability law, rather than constructing another law.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_subtype_measure_congruence[X:TYPE,D,E:set[X]]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_space[(D)] AS sourceSets,
+    ppg_measurable_space[(E)] AS targetSets,
+    sets_aux@indexed_sets_aux[nat,(D)],
+    sets_aux@indexed_sets_aux[nat,(E)]
+
+  A: VAR set[(D)]
+  H: VAR [nat->set[(D)]]
+  S: VAR set[set[(D)]]
+
+  empty_equal: LEMMA D=E IMPLIES emptyset[(D)]=emptyset[(E)]
+
+  full_equal: LEMMA D=E IMPLIES fullset[(D)]=fullset[(E)]
+
+  complement_equal: LEMMA D=E IMPLIES complement[(D)](A)=complement[(E)](A)
+
+  countable_union_equal: LEMMA D=E IMPLIES
+    sourceSets.countableUnion(H)=targetSets.countableUnion(H)
+
+  indexed_union_equal: LEMMA D=E IMPLIES indexed_sets[nat,(D)].IUnion(H)=indexed_sets[nat,(E)].IUnion(H)
+
+  disjoint_equal: LEMMA D=E IMPLIES
+    (sets_aux@indexed_sets_aux[nat,(D)].disjoint?(H) IFF
+      sets_aux@indexed_sets_aux[nat,(E)].disjoint?(H))
+
+  sigma_equal: LEMMA D=E AND sourceSets.sigma?(S) IMPLIES targetSets.sigma?(S)
+
+END ppg_subtype_measure_congruence

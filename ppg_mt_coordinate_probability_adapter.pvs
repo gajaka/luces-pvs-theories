@@ -1,0 +1,18 @@
+% The table at (n,v) uses exactly the carrier, sigma algebra and law of v.
+% These typing bridges unfold the existing coordinate definitions; they
+% add no measure, independence or locality assumption.
+ppg_mt_coordinate_probability_adapter[C,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_subtype_measure_congruence,ppg_subtype_probability_congruence,
+    ppg_probability_space_congruence
+
+  p: VAR [nat,V]
+
+  table_domain_sigma: LEMMA ppg_measurable_space[(TableDomain(p))].sigma?(TableSpaces(spaces)(p))
+
+  table_coordinate_probability: LEMMA
+    ppg_probability_measure[(TableDomain(p)),TableSpaces(spaces)(p)].probability?(coinLaw(spaces,laws)(p))
+
+END ppg_mt_coordinate_probability_adapter

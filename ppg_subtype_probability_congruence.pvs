@@ -1,0 +1,15 @@
+% A probability law is unchanged when equal support predicates are used
+% to name its carrier. Set extensionality transfers the empty, full and
+% disjoint-union arguments; countable additivity itself is reused.
+ppg_subtype_probability_congruence[X:TYPE,D,E:set[X],
+  (IMPORTING ppg_measurable_space) S:ppg_measurable_space[(D)].MeasurableSpace,
+  (IMPORTING ppg_probability_measure) mu:ppg_probability_measure[(D),S].Probability]: THEORY
+BEGIN
+  IMPORTING ppg_subtype_measure_congruence[X,D,E] AS support
+
+  sigma_target: LEMMA D=E IMPLIES ppg_measurable_space[(E)].sigma?(S)
+
+  probability_target: THEOREM D=E IMPLIES
+    ppg_probability_measure[(E),S].probability?(mu)
+
+END ppg_subtype_probability_congruence

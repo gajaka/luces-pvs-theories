@@ -1,0 +1,56 @@
+% Pulling the running events back to the augmented table preserves each
+% event probability. Their unrestricted indicator counts therefore have
+% the same nonnegative integral, including an infinite expectation.
+%
+% The complete enumeration and fallback encode the finite, nonempty
+% event-label carrier of the source theorem. Variable types remain arbitrary.
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 3.1. https://arxiv.org/abs/2111.06527
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_hls_augmented_expectation[C,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_hls_augmented_space[C,V,Value,domain,spaces,laws] AS augmentation,
+    ppg_mt_time_expectation[C,V,Value,domain,spaces,laws] AS originalExpectation,
+    ppg_mt_log_probability[C,V,Value,domain,spaces,laws] AS originalLaw,
+    ppg_count_integral[augmentation.AugTable,augmentation.AugSigma,
+      augmentation.augmentedMeasure] AS augmentedCountIntegral,
+    ppg_extended_integral[augmentation.AugTable,augmentation.AugSigma,
+      augmentation.augmentedMeasure] AS augmentedIntegral,
+    ppg_event_count[augmentation.AugTable] AS augmentedCounts,
+    ppg_event_count[augmentation.OriginalTable] AS originalCounts,
+    ppg_mt_extended_count[C,V,Value,domain] AS originalStopped
+
+  AugmentedLaw: MACRO ppg_probability_measure[augmentation.AugTable,augmentation.AugSigma].Probability =
+    augmentation.augmentedMeasure
+
+  vars: VAR [C->finite_set[V]]
+  bad: VAR ppg_mt_check_probability[C,V,Value,domain,spaces,laws].NativeBad
+  fallback: VAR C
+  enumeration: VAR originalExpectation.FullEnumeration
+  n: VAR nat
+
+  pulledRun(vars,bad,fallback,enumeration): [nat->(augmentation.AugSigma)] =
+    LAMBDA(n:nat):ppg_measurable_map[augmentation.AugTable,augmentation.OriginalTable].inverseImage(
+      augmentation.originalTable,originalExpectation.randomRun(vars,bad,fallback,enumeration)(n))
+
+  pulled_run_mass: LEMMA AugmentedLaw(pulledRun(vars,bad,fallback,enumeration)(n))=
+    originalLaw.logMeasure(originalExpectation.randomRun(vars,bad,fallback,enumeration)(n))
+
+  pulled_mass_function: LEMMA
+    (LAMBDA(n:nat):AugmentedLaw(pulledRun(vars,bad,fallback,enumeration)(n)))=
+    (LAMBDA(n:nat):originalLaw.logMeasure(originalExpectation.randomRun(vars,bad,fallback,enumeration)(n)))
+
+  augmented_count_function: LEMMA
+    (LAMBDA(eta:augmentation.AugTable):
+      originalStopped.randomInitTLog(vars,bad,fallback,enumeration,augmentation.originalTable(eta)))=
+    (LAMBDA(eta:augmentation.AugTable):
+      augmentedCounts.eventCount(pulledRun(vars,bad,fallback,enumeration),eta))
+
+  augmented_expectedWork_eq: THEOREM
+    augmentedIntegral.lintegral(LAMBDA(eta:augmentation.AugTable):
+      originalStopped.randomInitTLog(vars,bad,fallback,enumeration,augmentation.originalTable(eta)))=
+    originalExpectation.randomInitETLog(vars,bad,fallback,enumeration)
+
+END ppg_hls_augmented_expectation

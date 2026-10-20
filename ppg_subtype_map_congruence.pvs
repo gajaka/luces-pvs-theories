@@ -1,0 +1,26 @@
+% Changing a carrier's support predicate to an equal predicate leaves
+% inverse images and measurability unchanged. The two carrier equalities
+% are used explicitly; no measurable isomorphism is assumed.
+ppg_subtype_map_congruence[X,Y:TYPE,D,E:set[X],R,S:set[Y],
+  (IMPORTING ppg_measurable_space)
+  SX:ppg_measurable_space[(D)].MeasurableSpace,
+  SY:ppg_measurable_space[(R)].MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_map,ppg_subtype_measure_congruence
+
+  f: VAR [(D)->(R)]
+  A: VAR set[(R)]
+
+  sigma_domain: LEMMA D=E IMPLIES ppg_measurable_space[(E)].sigma?(SX)
+
+  sigma_codomain: LEMMA R=S IMPLIES ppg_measurable_space[(S)].sigma?(SY)
+
+  inverse_image_equal: LEMMA D=E AND R=S IMPLIES
+    ppg_measurable_map[(D),(R)].inverseImage(f,A)=
+      ppg_measurable_map[(E),(S)].inverseImage(f,A)
+
+  measurable_transfer: THEOREM D=E AND R=S AND
+    ppg_measurable_map[(D),(R)].measurable(SX,SY,f) IMPLIES
+      ppg_measurable_map[(E),(S)].measurable(SX,SY,f)
+
+END ppg_subtype_map_congruence

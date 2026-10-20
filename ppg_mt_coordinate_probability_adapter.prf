@@ -1,0 +1,156 @@
+(|ppg_mt_coordinate_probability_adapter|
+ (|table_domain_sigma_TCC1| 0
+  (|table_domain_sigma_TCC1-1| NIL 4001419942
+   ("" (THEN (EXPAND "TableDomain") (GRIND :DEFS NIL)) NIL)
+   ((|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)) NIL
+   (|table_domain_sigma| SUBTYPE "TableSpaces[C, V, Value, domain](spaces)(p)"
+    "set[Event[(TableDomain[C, V, Value, domain](p))]]" (13 74 13 96))))
+ (|table_domain_sigma| 0
+  (|table_domain_sigma-1| NIL 4001419943
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "TableSpaces(spaces)(p!1)")
+     (LEMMA
+      "ppg_subtype_measure_congruence[Value,domain(p!1`2),TableDomain(p!1)].sigma_equal"
+      ("S" "TableSpaces(spaces)(p!1)"))
+     (EXPAND "TableDomain") (GRIND :DEFS NIL))
+    NIL)
+   ((|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|sigma_equal| FORMULA-DECL NIL |ppg_subtype_measure_congruence| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_coordinate_probability_adapter| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_coordinate_probability_adapter| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_mt_coordinate_probability_adapter| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_coordinate_probability_adapter| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|TableSpaces| CONST-DECL
+     "ppg_measurable_space[(domain(p`2))].MeasurableSpace"
+     |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces"
+     |ppg_mt_coordinate_probability_adapter| NIL))
+   SHOSTAK))
+ (|table_coordinate_probability_TCC1| 0
+  (|table_coordinate_probability_TCC1-1| NIL 4001419942
+   ("" (THEN (EXPAND "TableDomain") (EXPAND "TableSpaces") (GRIND :DEFS NIL))
+    NIL)
+   ((|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|TableSpaces| CONST-DECL
+     "ppg_measurable_space[(domain(p`2))].MeasurableSpace"
+     |ppg_mt_coordinate_laws| NIL))
+   NIL
+   (|table_coordinate_probability| SUBTYPE
+    "coinLaw[C, V, Value, domain](spaces, laws)(p)"
+    "Mass[(TableDomain[C, V, Value, domain](p)), TableSpaces[C, V, Value, domain](spaces)(p)]"
+    (16 82 16 105))))
+ (|table_coordinate_probability_TCC2| 0
+  (|table_coordinate_probability_TCC2-1| NIL 4001419942
+   (""
+    (THEN (LEMMA "table_domain_sigma") (EXPAND "TableDomain")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|table_domain_sigma| FORMULA-DECL NIL
+     |ppg_mt_coordinate_probability_adapter| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL))
+   NIL
+   (|table_coordinate_probability| SUBTYPE
+    "TableSpaces[C, V, Value, domain](spaces)(p)"
+    "MeasurableSpace[(TableDomain[C, V, Value, domain](p))]" (16 4 16 81))))
+ (|table_coordinate_probability| 0
+  (|table_coordinate_probability-1| NIL 4001419943
+   ("" (SKOSIMP*)
+    (("" (TYPEPRED "spaces(p!1`2)")
+      ((""
+        (LEMMA
+         "ppg_subtype_measure_congruence[Value,domain(p!1`2),TableDomain(p!1)].sigma_equal"
+         ("S" "spaces(p!1`2)"))
+        ((""
+          (LEMMA
+           "ppg_subtype_probability_congruence[Value,domain(p!1`2),TableDomain(p!1),spaces(p!1`2),laws(p!1`2)].probability_target")
+          ((""
+            (LEMMA
+             "ppg_probability_space_congruence[(TableDomain(p!1)),spaces(p!1`2),TableSpaces(spaces)(p!1),laws(p!1`2)].space_probability_target")
+            (("1" (EXPAND "coinLaw")
+              (("1" (EXPAND "TableDomain")
+                (("1" (EXPAND "TableSpaces") (("1" (PROPAX) NIL NIL)) NIL))
+                NIL))
+              NIL)
+             ("2" (EXPAND "coinLaw")
+              (("2" (EXPAND "TableDomain") (("2" (PROPAX) NIL NIL)) NIL)) NIL)
+             ("3" (EXPAND "coinLaw")
+              (("3" (EXPAND "TableDomain")
+                (("3" (EXPAND "TableSpaces") (("3" (PROPAX) NIL NIL)) NIL))
+                NIL))
+              NIL)
+             ("4" (EXPAND "coinLaw")
+              (("4" (EXPAND "TableDomain") (("4" (PROPAX) NIL NIL)) NIL)) NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)
+    (|sigma_equal| FORMULA-DECL NIL |ppg_subtype_measure_congruence| NIL)
+    (|TableSpaces| CONST-DECL
+     "ppg_measurable_space[(domain(p`2))].MeasurableSpace"
+     |ppg_mt_coordinate_laws| NIL)
+    (|space_probability_target| FORMULA-DECL NIL
+     |ppg_probability_space_congruence| NIL)
+    (IFF CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|coinLaw| CONST-DECL
+     "ppg_probability_measure[(domain(p`2)), spaces(p`2)].Probability"
+     |ppg_mt_coordinate_laws| NIL)
+    (|probability_target| FORMULA-DECL NIL |ppg_subtype_probability_congruence|
+     NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|VariableLaws| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|laws| FORMAL-CONST-DECL "VariableLaws(spaces)"
+     |ppg_mt_coordinate_probability_adapter| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_mt_coordinate_probability_adapter| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_mt_coordinate_probability_adapter| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|domain| FORMAL-CONST-DECL "[V -> set[Value]]"
+     |ppg_mt_coordinate_probability_adapter| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_mt_coordinate_probability_adapter| NIL)
+    (|VariableSpaces| TYPE-EQ-DECL NIL |ppg_mt_coordinate_laws| NIL)
+    (|spaces| FORMAL-CONST-DECL "VariableSpaces"
+     |ppg_mt_coordinate_probability_adapter| NIL))
+   SHOSTAK)))
+

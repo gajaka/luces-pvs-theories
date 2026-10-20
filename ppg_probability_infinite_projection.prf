@@ -1,0 +1,1396 @@
+(|ppg_probability_infinite_projection|
+ (|project_TCC1| 0
+  (|project_TCC1-1| NIL 4001418043 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)) NIL
+   (|project| SUBTYPE "address(j)"
+    "(sets[ppg_probability_infinite_projection.I].fullset)" (57 65 57 75))))
+ (|project_TCC2| 0
+  (|project_TCC2-1| NIL 4001418043 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)) NIL
+   (|project| SUBTYPE "LAMBDA (j: J): decoder(j)(x(address(j)))" "TargetTable"
+    (57 40 57 77))))
+ (|projected_coordinate_measurable| 0
+  (|projected_coordinate_measurable-1| NIL 4001418044
+   ("" (SKOSIMP*)
+    (("" (TYPEPRED "decoder")
+      ((""
+        (LEMMA "sourceBlocks.block_coordinate_measurable"
+         ("F" "fullset[I]" "i" "address(j!1)"))
+        (("1"
+          (LEMMA
+           "ppg_measurable_compose[SourceTable,(sourceDomain(address(j!1))),(targetDomain(j!1))].measurable_compose"
+           ("SX" "SourceSigma" "SY" "sourceSpaces(address(j!1))" "SZ"
+            "targetSpaces(j!1)" "f" "LAMBDA(x:SourceTable):x(address(j!1))" "g"
+            "decoder(j!1)"))
+          (("1"
+            (GRIND :EXCLUDE ("nativeProduct" "measurable") :DEFS ("project"))
+            NIL NIL)
+           ("2"
+            (GRIND :EXCLUDE ("nativeProduct" "measurable") :DEFS ("project"))
+            NIL NIL))
+          NIL)
+         ("2"
+          (LEMMA
+           "ppg_measurable_compose[SourceTable,(sourceDomain(address(j!1))),(targetDomain(j!1))].measurable_compose"
+           ("SX" "SourceSigma" "SY" "sourceSpaces(address(j!1))" "SZ"
+            "targetSpaces(j!1)" "f" "LAMBDA(x:SourceTable):x(address(j!1))" "g"
+            "decoder(j!1)"))
+          (("1"
+            (GRIND :EXCLUDE ("nativeProduct" "measurable") :DEFS ("project"))
+            NIL NIL)
+           ("2"
+            (GRIND :EXCLUDE ("nativeProduct" "measurable") :DEFS ("project"))
+            NIL NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)
+    (|block_coordinate_measurable| FORMULA-DECL NIL |ppg_measurable_block| NIL)
+    (|project| CONST-DECL "TargetTable" |ppg_probability_infinite_projection|
+     NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|measurable_compose| FORMULA-DECL NIL |ppg_measurable_compose| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL)
+    (|SourceTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|SourceValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sourceDomain| FORMAL-CONST-DECL "[I -> set[SourceValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|address| FORMAL-CONST-DECL "[J -> I]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|sourceSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[I, SourceValue, sourceDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|decoder| FORMAL-CONST-DECL
+     "{f: [j: J -> [(sourceDomain(address(j))) -> (targetDomain(j))]] |
+   FORALL (j: J):
+     ppg_measurable_map
+         [(sourceDomain(address(j))), (targetDomain(j))].measurable
+         (sourceSpaces(address(j)), targetSpaces(j), f(j))}"
+     |ppg_probability_infinite_projection| NIL))
+   SHOSTAK))
+ (|project_measurable| 0
+  (|project_measurable-1| NIL 4001418044
+   (""
+    (THEN
+     (LEMMA "projectionMaps.block_map_measurable"
+      ("F" "fullset[J]" "SA" "SourceSigma" "f" "project"))
+     (LEMMA "projected_coordinate_measurable")
+     (GRIND :EXCLUDE ("nativeProduct" "measurable")))
+    NIL)
+   ((|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|SourceTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|sourceDomain| FORMAL-CONST-DECL "[I -> set[SourceValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|SourceValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|project| CONST-DECL "TargetTable" |ppg_probability_infinite_projection|
+     NIL)
+    (|TargetTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|sourceSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[I, SourceValue, sourceDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|block_map_measurable| FORMULA-DECL NIL |ppg_measurable_block_map| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|projected_coordinate_measurable| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL))
+   SHOSTAK))
+ (|coordinateLawsMatch_TCC1| 0
+  (|coordinateLawsMatch_TCC1-1| NIL 4001418043
+   (""
+    (THEN (TYPEPRED "decoder") (GRIND :EXCLUDE ("nativeProduct" "measurable")))
+    NIL)
+   ((|decoder| FORMAL-CONST-DECL
+     "{f: [j: J -> [(sourceDomain(address(j))) -> (targetDomain(j))]] |
+   FORALL (j: J):
+     ppg_measurable_map
+         [(sourceDomain(address(j))), (targetDomain(j))].measurable
+         (sourceSpaces(address(j)), targetSpaces(j), f(j))}"
+     |ppg_probability_infinite_projection| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|sourceSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[I, SourceValue, sourceDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|address| FORMAL-CONST-DECL "[J -> I]"
+     |ppg_probability_infinite_projection| NIL)
+    (|sourceDomain| FORMAL-CONST-DECL "[I -> set[SourceValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|SourceValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|coordinateLawsMatch| SUBTYPE "decoder(j)"
+    "MeasurableMap[(sourceDomain(address(j))), (targetDomain(j)), sourceSpaces(address(j)), targetSpaces(j)]"
+    (67 83 67 93))))
+ (|coordinatePreimage_TCC1| 0
+  (|coordinatePreimage_TCC1-1| NIL 4001418043
+   ("" (THEN (TYPEPRED "decoder") (GRIND :DEFS ("measurable"))) NIL)
+   ((|decoder| FORMAL-CONST-DECL
+     "{f: [j: J -> [(sourceDomain(address(j))) -> (targetDomain(j))]] |
+   FORALL (j: J):
+     ppg_measurable_map
+         [(sourceDomain(address(j))), (targetDomain(j))].measurable
+         (sourceSpaces(address(j)), targetSpaces(j), f(j))}"
+     |ppg_probability_infinite_projection| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|sourceSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[I, SourceValue, sourceDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|address| FORMAL-CONST-DECL "[J -> I]"
+     |ppg_probability_infinite_projection| NIL)
+    (|sourceDomain| FORMAL-CONST-DECL "[I -> set[SourceValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|SourceValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|coordinatePreimage| SUBTYPE
+    "ppg_measurable_map[(sourceDomain(address(j))), (targetDomain(j))].inverseImage(decoder(j), A)"
+    "(ppg_probability_infinite_projection.sourceSpaces(ppg_probability_infinite_projection.address(ppg_probability_infinite_projection.j)))"
+    (70 4 70 95))))
+ (|projectedEvent_TCC1| 0
+  (|projectedEvent_TCC1-1| NIL 4001418043
+   (""
+    (THEN (SKOSIMP*) (LEMMA "projected_coordinate_measurable" ("j" "j!1"))
+     (EXPAND "ppg_measurable_map[SourceTable,(targetDomain(j!1))].measurable")
+     (INST -1 "A!1")
+     (EXPAND
+      "ppg_measurable_map[SourceTable,(targetDomain(j!1))].inverseImage")
+     (ASSERT))
+    NIL)
+   ((|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|projected_coordinate_measurable| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL))
+   NIL
+   (|projectedEvent| SUBTYPE "{x: SourceTable | A(project(x)(j))}"
+    "(sourceCylinders[ppg_probability_infinite_projection.I, ppg_probability_infinite_projection.SourceValue, ppg_probability_infinite_projection.sourceDomain, ppg_probability_infinite_projection.sourceSpaces].tableSigma)"
+    (72 59 72 91))))
+ (|projected_event_coordinate_TCC1| 0
+  (|projected_event_coordinate_TCC1-1| NIL 4001418043
+   ("" (SUBTYPE-TCC) NIL NIL) ((|fullset| CONST-DECL "set" |sets| NIL)) NIL
+   (|projected_event_coordinate| SUBTYPE "address(j)"
+    "(sets[ppg_probability_infinite_projection.I].fullset)" (75 42 75 52))))
+ (|projected_event_coordinate| 0
+  (|projected_event_coordinate-1| NIL 4001418044
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :DEFS
+      ("projectedEvent" "project" "coordinatePreimage" "inverseImage"
+       "blockCylinder")))
+    NIL)
+   ((|project| CONST-DECL "TargetTable" |ppg_probability_infinite_projection|
+     NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|sourceSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[I, SourceValue, sourceDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL)
+    (|projectedEvent| CONST-DECL "(sourceCylinders.tableSigma)"
+     |ppg_probability_infinite_projection| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockCylinder| CONST-DECL "set[Block(F)]" |ppg_measurable_block| NIL)
+    (|address| FORMAL-CONST-DECL "[J -> I]"
+     |ppg_probability_infinite_projection| NIL)
+    (|coordinatePreimage| CONST-DECL "(sourceSpaces(address(j)))"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|SourceTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|sourceDomain| FORMAL-CONST-DECL "[I -> set[SourceValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|SourceValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL))
+   SHOSTAK))
+ (|projected_event_mass| 0
+  (|projected_event_mass-1| NIL 4001418044
+   (""
+    (THEN (SKOSIMP*) (EXPAND "coordinateLawsMatch") (INST -1 "j!1")
+     (EXPAND
+      "ppg_probability_map[(sourceDomain(address(j!1))),(targetDomain(j!1)),sourceSpaces(address(j!1)),targetSpaces(j!1)].pushforward")
+     (EXPAND
+      "ppg_probability_map[(sourceDomain(address(j!1))),(targetDomain(j!1)),sourceSpaces(address(j!1)),targetSpaces(j!1)].imageMass")
+     (REPLACE -1 :DIR RL)
+     (LEMMA "sourceMarginals.infinite_coordinate_mass"
+      ("i" "address(j!1)" "B" "coordinatePreimage(j!1,A!1)"))
+     (LEMMA "projected_event_coordinate" ("j" "j!1" "A" "A!1"))
+     (EXPAND "coordinatePreimage") (ASSERT))
+    NIL)
+   ((J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|imageMass| CONST-DECL "nnreal" |ppg_probability_map| NIL)
+    (|infinite_coordinate_mass| FORMULA-DECL NIL
+     |ppg_probability_infinite_marginals| NIL)
+    (|address| FORMAL-CONST-DECL "[J -> I]"
+     |ppg_probability_infinite_projection| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|coordinatePreimage| CONST-DECL "(sourceSpaces(address(j)))"
+     |ppg_probability_infinite_projection| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|SourceValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sourceDomain| FORMAL-CONST-DECL "[I -> set[SourceValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|sourceSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[I, SourceValue, sourceDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|ProbabilityFamily| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|sourceLaws| FORMAL-CONST-DECL "ppg_probability_coordinates
+    [I, SourceValue, sourceDomain].ProbabilityFamily(sourceSpaces)"
+     |ppg_probability_infinite_projection| NIL)
+    (|projected_event_coordinate| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL)
+    (|pushforward| CONST-DECL "TargetLaw" |ppg_probability_map| NIL)
+    (|coordinateLawsMatch| CONST-DECL "bool"
+     |ppg_probability_infinite_projection| NIL))
+   SHOSTAK))
+ (|projected_blocks_disjoint| 0
+  (|projected_blocks_disjoint-1| NIL 4001418044
+   (""
+    (THEN
+     (GRIND :DEFS
+      ("injective?" "pairwiseDisjoint" "projectedBlocks" "singleton"
+       "disjoint?")))
+    NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|pairwiseDisjoint| CONST-DECL "bool" |ppg_probability_disjoint_family|
+     NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|SourceValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sourceDomain| FORMAL-CONST-DECL "[I -> set[SourceValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|sourceSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[I, SourceValue, sourceDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|ProbabilityFamily| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|sourceLaws| FORMAL-CONST-DECL "ppg_probability_coordinates
+    [I, SourceValue, sourceDomain].ProbabilityFamily(sourceSpaces)"
+     |ppg_probability_infinite_projection| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|projectedBlocks| CONST-DECL "[J -> set[I]]"
+     |ppg_probability_infinite_projection| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL)
+    (|finite_intersection1| APPLICATION-JUDGEMENT "finite_set"
+     |ppg_probability_infinite_projection| NIL))
+   SHOSTAK))
+ (|projected_event_depends| 0
+  (|projected_event_depends-1| NIL 4001418044
+   (""
+    (THEN
+     (GRIND :DEFS
+      ("dependsOn" "projectedBlocks" "projectedEvent" "project" "singleton")))
+    NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|address| FORMAL-CONST-DECL "[J -> I]"
+     |ppg_probability_infinite_projection| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|projectedBlocks| CONST-DECL "[J -> set[I]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|agreeOn| CONST-DECL "bool" |ppg_measurable_block_update| NIL)
+    (|project| CONST-DECL "TargetTable" |ppg_probability_infinite_projection|
+     NIL)
+    (|projectedEvent| CONST-DECL "(sourceCylinders.tableSigma)"
+     |ppg_probability_infinite_projection| NIL)
+    (|dependsOn| CONST-DECL "bool" |ppg_measurable_block_update| NIL))
+   SHOSTAK))
+ (|projected_event_factors| 0
+  (|projected_event_factors-1| NIL 4001418044
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "projected_event_mass" ("j" "x!1" "A" "E!1(x!1)"))
+     (GRIND :DEFS ("eventFactors" "projectedEvents") :EXCLUDE ("infiniteLaw")))
+    NIL)
+   ((|projected_event_mass| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL)
+    (|pushforward| CONST-DECL "TargetLaw" |ppg_probability_map| NIL)
+    (|coordinateLawsMatch| CONST-DECL "bool"
+     |ppg_probability_infinite_projection| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|fullset| CONST-DECL "set" |sets| NIL)
+    (|SourceValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|sourceDomain| FORMAL-CONST-DECL "[I -> set[SourceValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|sourceSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[I, SourceValue, sourceDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|MeasurableFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|eventFactors| CONST-DECL "[K -> real]" |ppg_probability_event_product|
+     NIL)
+    (|ProbabilityFamily| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|sourceLaws| FORMAL-CONST-DECL "ppg_probability_coordinates
+    [I, SourceValue, sourceDomain].ProbabilityFamily(sourceSpaces)"
+     |ppg_probability_infinite_projection| NIL)
+    (|infiniteLaw| CONST-DECL "ppg_probability_measure
+    [FullBlock[I, Value, domain, spaces], tableSigma].Probability"
+     |ppg_probability_infinite_product| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|TargetEvents| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|SourceTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|projectedEvents| CONST-DECL "[J -> (sourceCylinders.tableSigma)]"
+     |ppg_probability_infinite_projection| NIL)
+    (|targetLaws| FORMAL-CONST-DECL "ppg_probability_coordinates
+    [J, TargetValue, targetDomain].ProbabilityFamily(targetSpaces)"
+     |ppg_probability_infinite_projection| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL))
+   SHOSTAK))
+ (|projected_complete_family| 0
+  (|projected_complete_family-1| NIL 4001418044
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (EXPAND "projectionMeets.completeFamily")
+     (LEMMA "projectionMeets.complete_event_eq"
+      ("A" "projectedEvents(E!1)(x!1)"))
+     (ASSERT))
+    NIL)
+   ((|complete_event_eq| FORMULA-DECL NIL |ppg_finite_events| NIL)
+    (|EventFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|MeasurableFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|completeFamily| CONST-DECL "MeasurableFamily" |ppg_finite_events| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|TargetEvents| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|SourceTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|projectedEvents| CONST-DECL "[J -> (sourceCylinders.tableSigma)]"
+     |ppg_probability_infinite_projection| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|sourceSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[I, SourceValue, sourceDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sourceDomain| FORMAL-CONST-DECL "[I -> set[SourceValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|SourceValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL))
+   SHOSTAK))
+ (|projected_meet_mass_TCC1| 0
+  (|projected_meet_mass_TCC1-1| NIL 4001418043
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "projectionMeets.finite_meet_measurable"
+      ("F" "F!1" "E" "projectedEvents(E!1)"))
+     (ASSERT))
+    NIL)
+   ((|finite_meet_measurable| FORMULA-DECL NIL |ppg_finite_events| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|MeasurableFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|TargetEvents| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|SourceTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|projectedEvents| CONST-DECL "[J -> (sourceCylinders.tableSigma)]"
+     |ppg_probability_infinite_projection| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|fullset| CONST-DECL "set" |sets| NIL)
+    (|SourceValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|sourceDomain| FORMAL-CONST-DECL "[I -> set[SourceValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|sourceSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[I, SourceValue, sourceDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL))
+   NIL
+   (|projected_meet_mass| SUBTYPE
+    "projectionMeets[FullBlock[I, SourceValue, sourceDomain, sourceSpaces], J, tableSigma].finiteMeet(F, projectedEvents(E))"
+    "(ppg_measurable_cylinder[ppg_probability_infinite_projection.I, ppg_probability_infinite_projection.SourceValue, ppg_probability_infinite_projection.sourceDomain, ppg_probability_infinite_projection.sourceSpaces].tableSigma)"
+    (96 30 96 78))))
+ (|projected_meet_mass| 0
+  (|projected_meet_mass-1| NIL 4001418044
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "sourceFamily.infinitePi_iInter_eq_prod_of_dependsOn"
+       ("F" "F!1" "blk" "projectedBlocks" "E" "projectedEvents(E!1)"))
+      (("" (LEMMA "projected_blocks_disjoint" ("F" "F!1"))
+        (("" (LEMMA "projected_complete_family" ("E" "E!1"))
+          (("" (LEMMA "projected_event_factors" ("E" "E!1"))
+            (("" (REWRITE "projected_complete_family")
+              ((""
+                (CASE
+                    "FORALL(k:J):F!1(k) IMPLIES sourceUpdates.dependsOn(projectedBlocks(k),projectedEvents(E!1)(k)) AND SourceSigma(projectedEvents(E!1)(k))")
+                (("1" (ASSERT) NIL NIL)
+                 ("2" (ASSERT)
+                  (("2" (SKOSIMP*)
+                    (("2"
+                      (LEMMA "projected_event_depends"
+                       ("j" "k!1" "A" "E!1(k!1)"))
+                      (("2"
+                        (GRIND :DEFS ("projectedEvents") :EXCLUDE
+                         ("infiniteLaw" "finiteMeet" "dependsOn" "eventFactors"
+                          "product" "nativeProduct"))
+                        NIL NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|projected_blocks_disjoint| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL)
+    (|projected_event_factors| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL)
+    (|dependsOn| CONST-DECL "bool" |ppg_measurable_block_update| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |ppg_probability_infinite_projection| NIL)
+    (|projected_event_depends| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL)
+    (|projected_complete_family| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL)
+    (|infinitePi_iInter_eq_prod_of_dependsOn| FORMULA-DECL NIL
+     |ppg_probability_disjoint_family| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|projectedBlocks| CONST-DECL "[J -> set[I]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL)
+    (|EventFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|TargetEvents| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|SourceTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|projectedEvents| CONST-DECL "[J -> (sourceCylinders.tableSigma)]"
+     |ppg_probability_infinite_projection| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|SourceValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sourceDomain| FORMAL-CONST-DECL "[I -> set[SourceValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|sourceSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[I, SourceValue, sourceDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|ProbabilityFamily| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|sourceLaws| FORMAL-CONST-DECL "ppg_probability_coordinates
+    [I, SourceValue, sourceDomain].ProbabilityFamily(sourceSpaces)"
+     |ppg_probability_infinite_projection| NIL))
+   SHOSTAK))
+ (|query_TCC1| 0
+  (|query_TCC1-1| NIL 4001418043 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)) NIL
+   (|query| SUBTYPE "j" "(sets[ppg_probability_infinite_projection.J].fullset)"
+    (99 76 99 77))))
+ (|query_restriction_TCC1| 0
+  (|query_restriction_TCC1-1| NIL 4001418254 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL))
+   NIL
+   (|query_restriction| SUBTYPE "F"
+    "{G: sets[ppg_probability_infinite_projection.J].set | sets[ppg_probability_infinite_projection.J].subset?(G, sets[ppg_probability_infinite_projection.J].fullset)}"
+    (102 103 102 104))))
+ (|query_restriction| 0
+  (|query_restriction-1| NIL 4001418255
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (EXPAND
+      "ppg_measurable_block_restriction[J,TargetValue,targetDomain,targetSpaces].restrictBlock")
+     (EXPAND "query") (ASSERT))
+    NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (|restrictBlock| CONST-DECL "Block(G)" |ppg_measurable_block_restriction|
+     NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|SourceValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|sourceDomain| FORMAL-CONST-DECL "[I -> set[SourceValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|SourceTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|TargetTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|project| CONST-DECL "TargetTable" |ppg_probability_infinite_projection|
+     NIL)
+    (|query| CONST-DECL "targetBlocks.Block(F)"
+     |ppg_probability_infinite_projection| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL))
+   SHOSTAK))
+ (|query_measurable| 0
+  (|query_measurable-1| NIL 4001418044
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "projectionMaps.block_map_measurable"
+      ("F" "F!1" "SA" "SourceSigma" "f" "query(F!1)"))
+     (LEMMA "projected_coordinate_measurable")
+     (GRIND :DEFS ("query") :EXCLUDE ("nativeProduct" "measurable")))
+    NIL)
+   ((|projected_coordinate_measurable| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|project| CONST-DECL "TargetTable" |ppg_probability_infinite_projection|
+     NIL)
+    (|block_map_measurable| FORMULA-DECL NIL |ppg_measurable_block_map| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|sourceSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[I, SourceValue, sourceDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|query| CONST-DECL "targetBlocks.Block(F)"
+     |ppg_probability_infinite_projection| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|fullset| CONST-DECL "set" |sets| NIL)
+    (|SourceValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|sourceDomain| FORMAL-CONST-DECL "[I -> set[SourceValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|SourceTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL))
+   SHOSTAK))
+ (|query_box_preimage| 0
+  (|query_box_preimage-1| NIL 4001418044
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :DEFS
+      ("inverseImage" "query" "blockBox" "finiteMeet" "projectedEvents"
+       "projectedEvent")))
+    NIL)
+   ((|project| CONST-DECL "TargetTable" |ppg_probability_infinite_projection|
+     NIL)
+    (|projectedEvent| CONST-DECL "(sourceCylinders.tableSigma)"
+     |ppg_probability_infinite_projection| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|query| CONST-DECL "targetBlocks.Block(F)"
+     |ppg_probability_infinite_projection| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|blockBox| CONST-DECL "set[Block[I, Value, domain, spaces](F)]"
+     |ppg_measurable_block_box| NIL)
+    (|TargetEvents| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|sourceSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[I, SourceValue, sourceDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL)
+    (|EventFamily| TYPE-EQ-DECL NIL |ppg_finite_events| NIL)
+    (|finiteMeet| CONST-DECL "Event" |ppg_finite_events| NIL)
+    (|projectedEvents| CONST-DECL "[J -> (sourceCylinders.tableSigma)]"
+     |ppg_probability_infinite_projection| NIL)
+    (|SourceTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|sourceDomain| FORMAL-CONST-DECL "[I -> set[SourceValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|SourceValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL))
+   SHOSTAK))
+ (|queryLaw_TCC1| 0
+  (|queryLaw_TCC1-1| NIL 4001418043
+   ("" (THEN (LEMMA "query_measurable") (ASSERT)) NIL)
+   ((|query_measurable| FORMULA-DECL NIL |ppg_probability_infinite_projection|
+     NIL))
+   NIL
+   (|queryLaw| SUBTYPE "query(F)"
+    "MeasurableMap[SourceTable, Block[J, TargetValue, targetDomain, targetSpaces](F), sourceCylinders[I, SourceValue, sourceDomain, sourceSpaces].tableSigma, targetBlocks[J, TargetValue, targetDomain, targetSpaces].blockSigma(F)]"
+    (113 32 113 40))))
+ (|query_law_box_TCC1| 0
+  (|query_law_box_TCC1-1| NIL 4001418043
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "targetBoxes.block_box_measurable" ("F" "F!1" "E" "E!1")) (ASSERT))
+    NIL)
+   ((|block_box_measurable| FORMULA-DECL NIL |ppg_measurable_block_box| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|TargetEvents| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL))
+   NIL
+   (|query_law_box| SUBTYPE
+    "targetBoxes[J, TargetValue, targetDomain, targetSpaces].blockBox(F, E)"
+    "(targetBlocks[ppg_probability_infinite_projection.J, ppg_probability_infinite_projection.TargetValue, ppg_probability_infinite_projection.targetDomain, ppg_probability_infinite_projection.targetSpaces].blockSigma(ppg_probability_infinite_projection.F))"
+    (116 16 116 41))))
+ (|query_law_box| 0
+  (|query_law_box-1| NIL 4001418044
+   (""
+    (THEN (SKOSIMP*) (LEMMA "query_box_preimage" ("F" "F!1" "E" "E!1"))
+     (LEMMA "projected_meet_mass" ("F" "F!1" "E" "E!1")) (EXPAND "queryLaw")
+     (EXPAND "pushforward") (EXPAND "imageMass")
+     (GRIND :EXCLUDE
+      ("infiniteLaw" "finiteLaw" "projectedEvents" "finiteMeet")))
+    NIL)
+   ((|projected_meet_mass| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL)
+    (|pushforward| CONST-DECL "TargetLaw" |ppg_probability_map| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|coordinateLawsMatch| CONST-DECL "bool"
+     |ppg_probability_infinite_projection| NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|imageMass| CONST-DECL "nnreal" |ppg_probability_map| NIL)
+    (|queryLaw| CONST-DECL "ppg_probability_measure
+    [Block[J, TargetValue, targetDomain, targetSpaces](F),
+     targetBlocks.blockSigma(F)].Probability"
+     |ppg_probability_infinite_projection| NIL)
+    (|query_box_preimage| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|TargetEvents| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL))
+   SHOSTAK))
+ (|finite_projection_law| 0
+  (|finite_projection_law-1| NIL 4001418044
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "targetUnique.finite_law_unique" ("F" "F!1" "mu" "queryLaw(F!1)"))
+     (LEMMA "query_law_box" ("F" "F!1"))
+     (GRIND :EXCLUDE
+      ("infiniteLaw" "finiteLaw" "queryLaw" "blockBox" "product")))
+    NIL)
+   ((|query_law_box| FORMULA-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL)
+    (|pushforward| CONST-DECL "TargetLaw" |ppg_probability_map| NIL)
+    (|coordinateLawsMatch| CONST-DECL "bool"
+     |ppg_probability_infinite_projection| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|finite_law_unique| FORMULA-DECL NIL |ppg_probability_finite_consistency|
+     NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|BlockLaw| TYPE-EQ-DECL NIL |ppg_probability_block_restriction| NIL)
+    (|queryLaw| CONST-DECL "ppg_probability_measure
+    [Block[J, TargetValue, targetDomain, targetSpaces](F),
+     targetBlocks.blockSigma(F)].Probability"
+     |ppg_probability_infinite_projection| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|ProbabilityFamily| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|targetLaws| FORMAL-CONST-DECL "ppg_probability_coordinates
+    [J, TargetValue, targetDomain].ProbabilityFamily(targetSpaces)"
+     |ppg_probability_infinite_projection| NIL))
+   SHOSTAK))
+ (|projectionLaw_TCC1| 0
+  (|projectionLaw_TCC1-1| NIL 4001418043
+   ("" (THEN (LEMMA "project_measurable") (ASSERT)) NIL)
+   ((|project_measurable| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL))
+   NIL
+   (|projectionLaw| SUBTYPE "project"
+    "MeasurableMap[SourceTable, TargetTable, sourceCylinders[I, SourceValue, sourceDomain, sourceSpaces].tableSigma, targetCylinders[J, TargetValue, targetDomain, targetSpaces].tableSigma]"
+    (122 57 122 64))))
+ (|cylinder_query_preimage| 0
+  (|cylinder_query_preimage-1| NIL 4001418044
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (EXPAND "ppg_measurable_map[SourceTable,TargetTable].inverseImage")
+     (EXPAND
+      "ppg_measurable_map[SourceTable,targetBlocks.Block(F!1)].inverseImage")
+     (EXPAND "targetCylinders.tableCylinder")
+     (LEMMA "query_restriction" ("F" "F!1" "x" "x!1")) (ASSERT))
+    NIL)
+   ((|query_restriction| FORMULA-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|TargetTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|project| CONST-DECL "TargetTable" |ppg_probability_infinite_projection|
+     NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|tableCylinder| CONST-DECL "TableEvent" |ppg_measurable_cylinder| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|query| CONST-DECL "targetBlocks.Block(F)"
+     |ppg_probability_infinite_projection| NIL)
+    (|SourceTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|sourceDomain| FORMAL-CONST-DECL "[I -> set[SourceValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|SourceValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL) (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL))
+   SHOSTAK))
+ (|projection_cylinder_mass_TCC1| 0
+  (|projection_cylinder_mass_TCC1-1| NIL 4001418043
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "targetCylinders.cylinder_measurable" ("F" "F!1" "B" "B!1"))
+     (ASSERT))
+    NIL)
+   ((|cylinder_measurable| FORMULA-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL))
+   NIL
+   (|projection_cylinder_mass| SUBTYPE
+    "targetCylinders[J, TargetValue, targetDomain, targetSpaces].tableCylinder(F, B)"
+    "(targetCylinders[ppg_probability_infinite_projection.J, ppg_probability_infinite_projection.TargetValue, ppg_probability_infinite_projection.targetDomain, ppg_probability_infinite_projection.targetSpaces].tableSigma)"
+    (130 20 130 54))))
+ (|projection_cylinder_mass| 0
+  (|projection_cylinder_mass-1| NIL 4001418044
+   ("" (SKOSIMP*)
+    (("" (LEMMA "cylinder_query_preimage" ("F" "F!1" "B" "B!1"))
+      (("" (LEMMA "finite_projection_law" ("F" "F!1"))
+        (("" (LEMMA "project_measurable")
+          (("" (LEMMA "query_measurable" ("F" "F!1"))
+            ((""
+              (LEMMA "projectionPush.pushforward_apply"
+               ("mu" "sourceProduct.infiniteLaw" "f" "project" "B"
+                "targetCylinders.tableCylinder(F!1,B!1)"))
+              (("1"
+                (LEMMA
+                 "ppg_probability_map[SourceTable,targetBlocks.Block(F!1),SourceSigma,targetBlocks.blockSigma(F!1)].pushforward_apply"
+                 ("mu" "sourceProduct.infiniteLaw" "f" "query(F!1)" "B" "B!1"))
+                (("1" (EXPAND "projectionLaw")
+                  (("1" (EXPAND "queryLaw") (("1" (ASSERT) NIL NIL)) NIL)) NIL)
+                 ("2" (PROPAX) NIL NIL))
+                NIL)
+               ("2" (PROPAX) NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|finite_projection_law| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL)
+    (|query_measurable| FORMULA-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|query| CONST-DECL "targetBlocks.Block(F)"
+     |ppg_probability_infinite_projection| NIL)
+    (|queryLaw| CONST-DECL "ppg_probability_measure
+    [Block[J, TargetValue, targetDomain, targetSpaces](F),
+     targetBlocks.blockSigma(F)].Probability"
+     |ppg_probability_infinite_projection| NIL)
+    (|projectionLaw| CONST-DECL
+     "ppg_probability_measure[TargetTable, targetCylinders.tableSigma].Probability"
+     |ppg_probability_infinite_projection| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|sourceSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[I, SourceValue, sourceDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|TargetTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|SourceTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|sourceDomain| FORMAL-CONST-DECL "[I -> set[SourceValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|SourceValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|infiniteLaw| CONST-DECL "ppg_probability_measure
+    [FullBlock[I, Value, domain, spaces], tableSigma].Probability"
+     |ppg_probability_infinite_product| NIL)
+    (|sourceLaws| FORMAL-CONST-DECL "ppg_probability_coordinates
+    [I, SourceValue, sourceDomain].ProbabilityFamily(sourceSpaces)"
+     |ppg_probability_infinite_projection| NIL)
+    (|ProbabilityFamily| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|SourceLaw| TYPE-EQ-DECL NIL |ppg_probability_map| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|project| CONST-DECL "TargetTable" |ppg_probability_infinite_projection|
+     NIL)
+    (|MeasurableMap| TYPE-EQ-DECL NIL |ppg_probability_map| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|tableCylinder| CONST-DECL "TableEvent" |ppg_measurable_cylinder| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|pushforward_apply| FORMULA-DECL NIL |ppg_probability_map| NIL)
+    (|project_measurable| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL)
+    (|cylinder_query_preimage| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL))
+   SHOSTAK))
+ (|projection_content_TCC1| 0
+  (|projection_content_TCC1-1| NIL 4001418043
+   (""
+    (THEN (SKOSIMP*) (LEMMA "targetAlgebra.cylinders_measurable")
+     (GRIND :DEFS ("subset?") :EXCLUDE ("nativeProduct" "Cylinders")))
+    NIL)
+   ((|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|pushforward| CONST-DECL "TargetLaw" |ppg_probability_map| NIL)
+    (|coordinateLawsMatch| CONST-DECL "bool"
+     |ppg_probability_infinite_projection| NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|cylinders_measurable| FORMULA-DECL NIL |ppg_cylinder_algebra| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL))
+   NIL
+   (|projection_content| SUBTYPE "A"
+    "(targetCylinders[ppg_probability_infinite_projection.J, ppg_probability_infinite_projection.TargetValue, ppg_probability_infinite_projection.targetDomain, ppg_probability_infinite_projection.targetSpaces].tableSigma)"
+    (133 54 133 55))))
+ (|projection_content| 0
+  (|projection_content-1| NIL 4001418044
+   (""
+    (THEN (SKOSIMP*) (LEMMA "targetContent.representation_spec" ("A" "A!1"))
+     (LEMMA "projection_cylinder_mass"
+      ("F" "targetContent.representation(A!1)`1"))
+     (INST -1 "targetContent.representation(A!1)`2")
+     (LEMMA "targetContent.content_data"
+      ("R" "targetContent.representation(A!1)"))
+     (GRIND :DEFS ("dataCylinder" "dataMass") :EXCLUDE
+      ("projectionLaw" "queryLaw" "content" "infiniteLaw" "finiteLaw"
+       "representation")))
+    NIL)
+   ((|representation| CONST-DECL "(representations(A))"
+     |ppg_probability_cylinder_content| NIL)
+    (|representations| CONST-DECL "set[CylinderData]"
+     |ppg_probability_cylinder_content| NIL)
+    (|CylinderData| TYPE-EQ-DECL NIL |ppg_probability_cylinder_content| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|projection_cylinder_mass| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|coordinateLawsMatch| CONST-DECL "bool"
+     |ppg_probability_infinite_projection| NIL)
+    (|pushforward| CONST-DECL "TargetLaw" |ppg_probability_map| NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL)
+    (|dataMass| CONST-DECL "nnreal" |ppg_probability_cylinder_content| NIL)
+    (|dataCylinder| CONST-DECL "TableEvent" |ppg_probability_cylinder_content|
+     NIL)
+    (|content_data| FORMULA-DECL NIL |ppg_probability_cylinder_content| NIL)
+    (|representation_spec| FORMULA-DECL NIL |ppg_probability_cylinder_content|
+     NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|TableEvent| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|Cylinders| CONST-DECL "set[TableEvent[I, Value, domain, spaces]]"
+     |ppg_cylinder_algebra| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|ProbabilityFamily| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|targetLaws| FORMAL-CONST-DECL "ppg_probability_coordinates
+    [J, TargetValue, targetDomain].ProbabilityFamily(targetSpaces)"
+     |ppg_probability_infinite_projection| NIL))
+   SHOSTAK))
+ (|infinite_product_projection| 0
+  (|infinite_product_projection-1| NIL 4001418045
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "targetProduct.infinite_law_unique" ("beta" "projectionLaw"))
+     (LEMMA "projection_content")
+     (GRIND :EXCLUDE
+      ("projectionLaw" "queryLaw" "content" "infiniteLaw" "finiteLaw")))
+    NIL)
+   ((|projection_content| FORMULA-DECL NIL
+     |ppg_probability_infinite_projection| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|infinite_law_unique| FORMULA-DECL NIL |ppg_probability_infinite_product|
+     NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|FullBlock| TYPE-EQ-DECL NIL |ppg_measurable_cylinder| NIL)
+    (|tableSigma| CONST-DECL "ppg_measurable_space[FullBlock].MeasurableSpace"
+     |ppg_measurable_cylinder| NIL)
+    (|TargetTable| TYPE-EQ-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|projectionLaw| CONST-DECL
+     "ppg_probability_measure[TargetTable, targetCylinders.tableSigma].Probability"
+     |ppg_probability_infinite_projection| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection| NIL)
+    (|TargetValue| FORMAL-TYPE-DECL NIL |ppg_probability_infinite_projection|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|targetDomain| FORMAL-CONST-DECL "[J -> set[TargetValue]]"
+     |ppg_probability_infinite_projection| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|targetSpaces| FORMAL-CONST-DECL
+     "ppg_probability_coordinates[J, TargetValue, targetDomain].CoordinateSpaces"
+     |ppg_probability_infinite_projection| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|ProbabilityFamily| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|targetLaws| FORMAL-CONST-DECL "ppg_probability_coordinates
+    [J, TargetValue, targetDomain].ProbabilityFamily(targetSpaces)"
+     |ppg_probability_infinite_projection| NIL))
+   SHOSTAK)))
+
