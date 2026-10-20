@@ -7,9 +7,9 @@ The application theories describe transport, observability and secure-boot
 models; the generic theory keeps the data, specifications and repair actions
 abstract.
 
-As of **2026-10-19**, the translation has independently replayed counterparts
-for **1,709 of 1,824 Lean source theorems and lemmas**, with all recorded results
-checked in **173 of 191 modules**. Supporting PVS lemmas and type-correctness
+As of **2026-10-20**, the translation has independently replayed counterparts
+for **1,714 of 1,824 Lean source theorems and lemmas**, with all recorded results
+checked in **174 of 191 modules**. Supporting PVS lemmas and type-correctness
 conditions are additional obligations and are excluded from those source-result counts.
 The translation is still in progress.
 
@@ -78,13 +78,14 @@ This loop leaves `Sterbenz/` out of the batch. That older Frama-C/Jessie
 development has separate floating-point library dependencies; see its
 [README](Sterbenz/README.md).
 
-Recorded translation checks on 2026-10-18 and 2026-10-19 include:
+Recorded translation checks on 2026-10-18 through 2026-10-20 include:
 
 | Check | Result |
 |-------|--------|
 | General active-count integral and positive-drift budget | 318/318 project obligations complete across 32 theories, including all 87 new obligations. |
 | Full resampling, complete dependency graphs and drift-region support | 2,216/2,216 project obligations complete, including 172 new obligations. |
 | Native measure and integration support | 1,109 library proof bodies freshly forced over three disjoint rounds, with ordinary complete proof chains. The certificate includes general monotone convergence and the weighted-measure support. |
+| Augmented HLS sample space and expectation transport | 960/960 project obligations complete, including all 177 new obligations and five source results; 1,204 Native obligations freshly replayed in the same cold PVS process, including 453 additional original-library bodies. |
 | General conditional expectation | 600/600 project obligations complete across 52 theories, including all 52 new obligations. |
 | General drift, Moser–Tardos certificates and execution cost | 2,241/2,241 project obligations complete across 230 theories, including all 69 new obligations and 14 source results. |
 | Generic repair, growing lists and meta refinement | 80/80 project obligations complete across 10 theories, including 13 new obligations and 30 source results. |
@@ -115,6 +116,10 @@ requires `proved - complete`, including the relevant TCCs and dependencies.
 The Local Lemma run starts from a source-only private library copy and freshly
 checks 412 selected Native obligations. The larger 1,109-obligation support
 certificate is recorded separately.
+The augmented-space run replays 751 of those original library bodies and 453
+additional bodies from the unchanged library sources and saved proofs. Both
+product-law projections and transport of the existing extended expected work
+are checked in that run.
 The table records those checks; it does not report a fresh successful replay of
 every legacy application file or of `Sterbenz/`.
 
@@ -228,6 +233,7 @@ integration arguments. Each entry's imports lead to that support.
 
 | Files | Scope |
 |-------|-------|
+| [ppg_hls_fair_orientation.pvs](ppg_hls_fair_orientation.pvs), [ppg_hls_augmented_space.pvs](ppg_hls_augmented_space.pvs), [ppg_hls_augmented_expectation.pvs](ppg_hls_augmented_expectation.pvs) | Tagged data and fair orientation coordinates, measurable projections, both full product-law pushforwards, and preservation of the existing random-start expected work, including infinity. |
 | [ppg_hls_reversal.pvs](ppg_hls_reversal.pvs) | Reversible arcs of arbitrary acyclic relations. |
 | [ppg_hls_ordered_dag.pvs](ppg_hls_ordered_dag.pvs), [ppg_hls_ordered_reversal.pvs](ppg_hls_ordered_reversal.pvs) | Witness orders, orientation and reversal under their local order hypotheses. |
 | [ppg_hls_topological_order.pvs](ppg_hls_topological_order.pvs) | A constructed strict total node order for finite label universes, with longest-path height and an intrinsic label numbering. |
@@ -565,12 +571,14 @@ General conditional expectation is proved. The additive-drift,
 Moser–Tardos drift and execution-cost source modules are translated
 and replayed. Witness-DAG reversal, ancestor prefixes, longest-path layers,
 stable encodings, canonical reconstruction and the proper-family weight budget
-are also replayed. The core translation now retains actual finite certificate
+are also replayed. The augmented HLS sample space, its two product-law
+projections and preservation of random-start expected work are checked as well.
+The core translation now retains actual finite certificate
 lists, arbitrary carriers, generated quotient classes and the general repair
 model. All recorded results in the general Local Lemma module are translated
 and replayed. Ordered witness DAGs and their constructed topological node order
 are also checked. All 14 source results about the computability limit for the
-encoded infinite repair family are translated and replayed. The remaining 115
+encoded infinite repair family are translated and replayed. The remaining 110
 source results cover HLS coin and footprint constructions, intersection-sensitive
 probability and expectation bounds, and policy expectation. Source-by-source
 semantic review and replay accounting continue with each package.
