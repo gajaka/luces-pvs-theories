@@ -1,0 +1,58 @@
+% A general S-finite law is the image of its finite-fiber lift.
+% Symmetry is first proved for those finite covers and then
+% transported along the fiber projections on every measurable event.
+% No uniqueness principle for arbitrary S-finite rectangle laws is used.
+%
+% Mathlib, MeasureTheory/Measure/Prod.lean, prod_swap;
+% MeasureTheory/Measure/Typeclasses/SFinite.lean, SFinite.
+ppg_general_sfinite_product_symmetry[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING ppg_sfinite_measure[X,SX]) mu:(ppg_sfinite_measure[X,SX].sfinite?),
+  (IMPORTING ppg_sfinite_measure[Y,SY]) nu:(ppg_sfinite_measure[Y,SY].sfinite?)]: THEORY
+BEGIN
+  IMPORTING ppg_sfinite_lifted_product_symmetry[X,Y,SX,SY,mu,nu],
+    ppg_sfinite_symmetry_transport[[nat,X],[nat,Y],X,Y,
+      ppg_sfinite_sigma_lift[X,SX].LiftSigma,ppg_sfinite_sigma_lift[Y,SY].LiftSigma,
+      SX,SY,sfiniteLeft,liftRight,ppg_sfinite_sigma_lift[X,SX].projectionMap,
+      ppg_sfinite_sigma_lift[Y,SY].projectionMap]
+
+  firstMarginal: (ppg_sfinite_measure[X,SX].sfinite?) =
+    ppg_general_measure_map[[nat,X],X,ppg_sfinite_sigma_lift[X,SX].LiftSigma,SX].mapMeasure(
+      sfiniteLeft,ppg_sfinite_sigma_lift[X,SX].projectionMap)
+
+  secondMarginal: (ppg_sfinite_measure[Y,SY].sfinite?) =
+    ppg_general_measure_map[[nat,Y],Y,ppg_sfinite_sigma_lift[Y,SY].LiftSigma,SY].mapMeasure(
+      liftRight,ppg_sfinite_sigma_lift[Y,SY].projectionMap)
+
+  IMPORTING ppg_sfinite_product_congruence[X,Y,SX,SY,firstMarginal,mu,secondMarginal,nu],
+    ppg_sfinite_product_congruence[Y,X,SY,SX,secondMarginal,nu,firstMarginal,mu],
+    ppg_product_measure_definition[X,Y,SX,SY,mu],
+    ppg_product_measure_definition[Y,X,SY,SX,nu]
+
+  originalForward: measure_type[[X,Y],sigma_times(SX,SY)] =
+    ppg_product_measure_definition[X,Y,SX,SY,mu].productMeasure(nu)
+
+  originalReverse: measure_type[[Y,X],sigma_times(SY,SX)] =
+    ppg_product_measure_definition[Y,X,SY,SX,nu].productMeasure(mu)
+
+  originalSwapped: measure_type[[X,Y],sigma_times(SX,SY)] =
+    ppg_general_measure_map[[Y,X],[X,Y],sigma_times(SY,SX),sigma_times(SX,SY)].mapMeasure(originalReverse,targetSwap)
+
+  lifted_symmetry_hypothesis: LEMMA sameMeasure(forwardSource,swappedSource)
+
+  projected_symmetry: LEMMA sameMeasure(forwardTarget,swappedTarget)
+
+  first_marginal_original: LEMMA sameMeasure(firstMarginal,mu)
+
+  second_marginal_original: LEMMA sameMeasure(secondMarginal,nu)
+
+  forward_target_original: LEMMA sameMeasure(forwardTarget,originalForward)
+
+  reverse_target_original: LEMMA sameMeasure(reverseTarget,originalReverse)
+
+  swapped_target_original: LEMMA sameMeasure(swappedTarget,originalSwapped)
+
+  original_product_symmetry: THEOREM sameMeasure(originalForward,originalSwapped)
+
+END ppg_general_sfinite_product_symmetry

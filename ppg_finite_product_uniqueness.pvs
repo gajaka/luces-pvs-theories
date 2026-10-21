@@ -1,0 +1,44 @@
+% Finite laws on the product sigma are determined by all rectangles.
+% The finite-measure monotone-class theorem is used only for finite laws;
+% this statement is not asserted for arbitrary S-finite measures.
+%
+% David Lester, NASALib monotone_classes, monotone_finite_measures.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1991, 4.6.7.
+ppg_finite_product_uniqueness[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y]]: THEORY
+BEGIN
+  IMPORTING measure_integration@product_sigma[X,Y,SX,SY]
+
+  rectangleFamily: MACRO (nonempty?[set[[X,Y]]]) = fullset[measurable_rectangle(SX,SY)]
+
+  IMPORTING measure_integration@monotone_classes[[X,Y],fullset[measurable_rectangle(SX,SY)]],
+    measure_integration@measure_def[[X,Y],sigma_times(SX,SY)]
+
+  E: VAR set[[X,Y]]
+  A,C: VAR (SX)
+  B,D: VAR (SY)
+  r,s: VAR (rectangleFamily)
+  m,n: VAR finite_measure[[X,Y],generated_sigma_algebra(fullset[measurable_rectangle(SX,SY)])]
+
+  rectangle_family_exact: THEOREM rectangleFamily=measurable_rectangle?(SX,SY)
+
+  rectangle_intersection: LEMMA
+    intersection(cross_product(A,B),cross_product(C,D))=
+      cross_product(intersection(A,C),intersection(B,D))
+
+  rectangle_family_intersections: THEOREM rectangleFamily(intersection(r,s))
+
+  rectangle_family_complements: THEOREM finite_disjoint_union?(rectangleFamily)(complement(r))
+
+  rectangle_sigma_generated: LEMMA generated_sigma_algebra(rectangleFamily)=sigma_times(SX,SY)
+
+  rectangle_agreement_generators: LEMMA
+    (FORALL(A:(SX),B:(SY)):m(cross_product(A,B))=n(cross_product(A,B))) IMPLIES
+      (FORALL(r:(rectangleFamily)):m(r)=n(r))
+
+  finite_product_measures_unique: THEOREM
+    (FORALL(A:(SX),B:(SY)):m(cross_product(A,B))=n(cross_product(A,B))) IMPLIES
+      (FORALL(E:(generated_sigma_algebra(fullset[measurable_rectangle(SX,SY)]))):m(E)=n(E))
+
+END ppg_finite_product_uniqueness

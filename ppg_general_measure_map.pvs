@@ -1,0 +1,79 @@
+% Pushforward is evaluated on the measurable inverse image.
+% Countable additivity and finite decomposition are transported along
+% that same inverse-image operation; no representative or inverse is chosen.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, induced measures.
+% Mathlib, MeasureTheory/Measure/Map.lean, Measure.map_apply.
+ppg_general_measure_map[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y]]: THEORY
+BEGIN
+  IMPORTING ppg_sfinite_measure[X,SX],ppg_sfinite_measure[Y,SY],
+    measure_integration@sigma_algebra[X,SX],measure_integration@sigma_algebra[Y,SY]
+
+  j: VAR [X->Y]
+  A,B: VAR (SY)
+  E: VAR [nat->(SY)]
+  mu: VAR measure_type[X,SX]
+  m: VAR finite_measure[X,SX]
+  F: VAR [nat->finite_measure[X,SX]]
+
+  inverseEvent(j,A): set[X] = {x:X|A(j(x))}
+
+  measurableMap?(j): bool = FORALL(A:(SY)):SX(inverseEvent(j,A))
+
+  MeasurableMap: TYPE = (measurableMap?)
+
+  h: VAR MeasurableMap
+
+  inverse_event_empty: LEMMA inverseEvent(j,emptyset[Y])=emptyset[X]
+
+  inverse_event_union: LEMMA inverseEvent(j,union(A,B))=
+    union(inverseEvent(j,A),inverseEvent(j,B))
+
+  inverse_event_disjoint: LEMMA disjoint?(A,B) IMPLIES
+    disjoint?(inverseEvent(j,A),inverseEvent(j,B))
+
+  inverse_event_measurable: LEMMA SX(inverseEvent(h,A))
+
+  inverseRows(h,E)(n:nat): (SX) = inverseEvent(h,E(n))
+
+  inverse_event_countable: LEMMA inverseEvent(h,IUnion(E))=IUnion(inverseRows(h,E))
+
+  inverse_rows_disjoint: LEMMA disjoint?(E) IMPLIES disjoint?(inverseRows(h,E))
+
+  mapMeasureFunction(mu,h)(A:(SY)): extended_nnreal = mu(inverseEvent(h,A))
+
+  mapped_measure_empty: LEMMA mapMeasureFunction(mu,h)(emptyset[Y])=(TRUE,0)
+
+  original_left_countable: LEMMA FORALL(Q:[nat->(SX)]):disjoint?(Q) IMPLIES
+    x_eq(x_sum(LAMBDA(n:nat):mu(Q(n))),mu(IUnion(Q)))
+
+  map_measure_countable: THEOREM disjoint?(E) IMPLIES
+    x_eq(x_sum(LAMBDA(n:nat):mapMeasureFunction(mu,h)(E(n))),
+      mapMeasureFunction(mu,h)(IUnion(E)))
+
+  map_measure_is_measure: THEOREM
+    measure?[Y,SY](mapMeasureFunction(mu,h))
+
+  mapMeasure(mu,h): measure_type[Y,SY] = mapMeasureFunction(mu,h)
+
+  mapFiniteFunction(m,h)(A:(SY)): nonneg_real = m(inverseEvent(h,A))
+
+  map_finite_sequence: LEMMA mapFiniteFunction(m,h) o E = m o inverseRows(h,E)
+
+  original_finite_countable: LEMMA FORALL(Q:[nat->(SX)]):disjoint?(Q) IMPLIES
+    convergence(series(m o Q),m(IUnion(Q)))
+
+  map_finite_is_finite_measure: THEOREM finite_measure?[Y,SY](mapFiniteFunction(m,h))
+
+  mapFinite(m,h): finite_measure[Y,SY] = mapFiniteFunction(m,h)
+
+  map_finite_embedding: LEMMA mapMeasure(to_measure(m),h)=to_measure(mapFinite(m,h))
+
+  map_finite_decomposition: THEOREM finiteDecomposition(mu,F) IMPLIES
+    finiteDecomposition(mapMeasure(mu,h),LAMBDA(n:nat):mapFinite(F(n),h))
+
+  map_preserves_sfinite: THEOREM sfinite?(mu) IMPLIES sfinite?(mapMeasure(mu,h))
+
+END ppg_general_measure_map

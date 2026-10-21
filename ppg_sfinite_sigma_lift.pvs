@@ -1,0 +1,111 @@
+% Separate natural fibers retain a finite decomposition of a measure.
+% Their sum is sigma-finite on nat times the original carrier, and
+% forgetting the fiber index gives exactly the original countable sum.
+% No countability or nonemptiness condition is imposed on the carrier.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, induced measures.
+% Mathlib, MeasureTheory/Measure/Typeclasses/SFinite.lean, SFinite.
+ppg_sfinite_sigma_lift[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) SX:sigma_algebra]: THEORY
+BEGIN
+  IMPORTING ppg_sfinite_measure[X,SX],ppg_extended_indexed_spike,
+    measure_integration@subset_algebra_def[nat]
+
+  DiscreteNat: sigma_algebra[nat] = fullset[set[nat]]
+
+  IMPORTING measure_integration@product_sigma[nat,X,DiscreteNat,SX]
+
+  LiftSigma: sigma_algebra[[nat,X]] = sigma_times(DiscreteNat,SX)
+
+  IMPORTING ppg_general_measure_map[X,[nat,X],SX,LiftSigma],
+    ppg_general_measure_map[[nat,X],X,LiftSigma,SX],
+    ppg_sfinite_measure[[nat,X],LiftSigma],
+    measure_integration@measure_def[[nat,X],LiftSigma]
+
+  D: VAR set[nat]
+  F: VAR [nat->finite_measure[X,SX]]
+  mu: VAR measure_type[X,SX]
+  E: VAR (LiftSigma)
+  A: VAR (SX)
+  n,i: VAR nat
+  x: VAR X
+
+  discrete_event_measurable: LEMMA DiscreteNat(D)
+
+  fiberEmbedding(n)(x:X): [nat,X] = (n,x)
+
+  fiber_preimage: LEMMA
+    ppg_general_measure_map[X,[nat,X],SX,LiftSigma].inverseEvent(fiberEmbedding(n),E)=
+      x_section(E)(n)
+
+  fiber_section_measurable: LEMMA SX(x_section(E)(n))
+
+  fiber_embedding_measurable: THEOREM
+    ppg_general_measure_map[X,[nat,X],SX,LiftSigma].measurableMap?(fiberEmbedding(n))
+
+  fiberMap(n): ppg_general_measure_map[X,[nat,X],SX,LiftSigma].MeasurableMap = fiberEmbedding(n)
+
+  liftComponent(F,n): finite_measure[[nat,X],LiftSigma] =
+    ppg_general_measure_map[X,[nat,X],SX,LiftSigma].mapFinite(F(n),fiberMap(n))
+
+  liftMeasure(F): measure_type[[nat,X],LiftSigma] =
+    ppg_sfinite_measure[[nat,X],LiftSigma].sumFinite(LAMBDA(n:nat):liftComponent(F,n))
+
+  lift_component_at: LEMMA liftComponent(F,n)(E)=F(n)(x_section(E)(n))
+
+  lift_measure_rows: LEMMA
+    (LAMBDA(n:nat):(TRUE,liftComponent(F,n)(E)))=
+      (LAMBDA(n:nat):(TRUE,F(n)(x_section(E)(n))))
+
+  lift_measure_at: LEMMA liftMeasure(F)(E)=
+    x_sum(LAMBDA(n:nat):(TRUE,F(n)(x_section(E)(n))))
+
+  fiberEvent(n): (LiftSigma) = cross_product(singleton(n),fullset[X])
+
+  fiber_events_disjoint: LEMMA disjoint?(LAMBDA(n:nat):fiberEvent(n))
+
+  fiber_events_cover: LEMMA IUnion(LAMBDA(n:nat):fiberEvent(n))=fullset[[nat,X]]
+
+  fiber_event_section: LEMMA x_section(fiberEvent(n))(i)=
+    IF i=n THEN fullset[X] ELSE emptyset[X] ENDIF
+
+  finite_component_empty: LEMMA F(i)(emptyset[X])=0
+
+  lift_fiber_row: LEMMA
+    (LAMBDA(i:nat):(TRUE,F(i)(x_section(fiberEvent(n))(i))))=
+      (LAMBDA(i:nat):(TRUE,indexedRealSpike(n,F(n)(fullset[X]))(i)))
+
+  lift_fiber_finite: THEOREM liftMeasure(F)(fiberEvent(n))=(TRUE,F(n)(fullset[X]))
+
+  lift_is_sigma_finite: THEOREM sigma_finite_measure?[[nat,X],LiftSigma](liftMeasure(F))
+
+  sigmaLift(F): sigma_finite_measure[[nat,X],LiftSigma] = liftMeasure(F)
+
+  forgetFiber(w:[nat,X]): X = w`2
+
+  forget_preimage: LEMMA
+    ppg_general_measure_map[[nat,X],X,LiftSigma,SX].inverseEvent(forgetFiber,A)=
+      cross_product(fullset[nat],A)
+
+  forget_fiber_measurable: THEOREM
+    ppg_general_measure_map[[nat,X],X,LiftSigma,SX].measurableMap?(forgetFiber)
+
+  projectionMap: ppg_general_measure_map[[nat,X],X,LiftSigma,SX].MeasurableMap = forgetFiber
+
+  fiber_forget_inverse: LEMMA
+    ppg_general_measure_map[X,[nat,X],SX,LiftSigma].inverseEvent(fiberMap(n),
+      ppg_general_measure_map[[nat,X],X,LiftSigma,SX].inverseEvent(projectionMap,A))=A
+
+  lift_projection_event: THEOREM
+    ppg_general_measure_map[[nat,X],X,LiftSigma,SX].mapMeasure(liftMeasure(F),projectionMap)(A)=
+      x_sum(LAMBDA(n:nat):(TRUE,F(n)(A)))
+
+  lift_projects_to_sum: THEOREM
+    ppg_general_measure_map[[nat,X],X,LiftSigma,SX].mapMeasure(liftMeasure(F),projectionMap)=
+      ppg_sfinite_measure[X,SX].sumFinite(F)
+
+  lift_projects_decomposition: THEOREM ppg_sfinite_measure[X,SX].finiteDecomposition(mu,F)
+    IMPLIES ppg_sfinite_measure[X,SX].sameMeasure(mu,
+      ppg_general_measure_map[[nat,X],X,LiftSigma,SX].mapMeasure(liftMeasure(F),projectionMap))
+
+END ppg_sfinite_sigma_lift

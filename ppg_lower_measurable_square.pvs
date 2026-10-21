@@ -1,0 +1,25 @@
+% The lower level set of f squared is the lower level set of f at the
+% nonnegative square root of the threshold. Measurability is derived
+% from this identity, including infinite values.
+%
+% Mathlib, MeasureTheory/Function/StronglyMeasurable/ENNReal.lean.
+ppg_lower_measurable_square[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_simple_comparison_regions[X,S,mu],ppg_enn_square_threshold
+
+  f: VAR LowerMeasurable
+  a: VAR nonneg_real
+
+  squareFunction(f)(x:X): ENN = emul(f(x),f(x))
+
+  square_level_set: LEMMA
+    {x:X|ele(ennFinite(a),squareFunction(f)(x))}=
+      {x:X|ele(ennFinite(sqrt(a)),f(x))}
+
+  square_measurable: THEOREM lowerMeasurable(squareFunction(f))
+
+  squaredFunction(f): LowerMeasurable = squareFunction(f)
+
+END ppg_lower_measurable_square

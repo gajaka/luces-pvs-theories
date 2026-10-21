@@ -1,0 +1,565 @@
+(|ppg_sfinite_bind_product|
+ (|native_value_encode| 0
+  (|native_value_encode-1| NIL 4001435304
+   ("" (INDUCT "z")
+    (("1" (GRIND :DEFS ("nativeValue" "encodeENN")) NIL NIL)
+     ("2" (GRIND :DEFS ("nativeValue" "encodeENN")) NIL NIL))
+    NIL)
+   ((|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (X FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_sfinite_bind_product| NIL)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_sfinite_bind_product| NIL)
+    (|nativeValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL)
+    (|encodeENN| CONST-DECL "extended_nnreal" |ppg_sfinite_bind_product| NIL)
+    (|ppg_ennreal_induction| FORMULA-DECL NIL |ppg_ennreal_adt| NIL))
+   SHOSTAK))
+ (|encode_zero| 0
+  (|encode_zero-1| NIL 4001435304 ("" (THEN (GRIND :DEFS ("encodeENN"))) NIL)
+   ((|encodeENN| CONST-DECL "extended_nnreal" |ppg_sfinite_bind_product| NIL))
+   SHOSTAK))
+ (|product_integral_empty| 0
+  (|product_integral_empty-1| NIL 4001435304
+   (""
+    (THEN (SKOSIMP) (EXPAND "productIntegralValue")
+     (REWRITE "measurable_section_empty") (REWRITE "zero_function_integral"))
+    NIL)
+   ((|measurable_section_empty| FORMULA-DECL NIL |ppg_sfinite_section_unions|
+     NIL)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_sfinite_bind_product| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_sfinite_bind_product| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_sfinite_bind_product| NIL)
+    (|zero_function_integral| FORMULA-DECL NIL |ppg_general_integral_series|
+     NIL)
+    (|productIntegralValue| CONST-DECL "ENN" |ppg_sfinite_bind_product| NIL))
+   SHOSTAK))
+ (|bind_product_empty| 0
+  (|bind_product_empty-1| NIL 4001435305
+   (""
+    (THEN (SKOSIMP) (EXPAND "bindProductFunction")
+     (REWRITE "product_integral_empty") (REWRITE "encode_zero"))
+    NIL)
+   ((|product_integral_empty| FORMULA-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_sfinite_bind_product| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|encode_zero| FORMULA-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|bindProductFunction| CONST-DECL "extended_nnreal"
+     |ppg_sfinite_bind_product| NIL))
+   SHOSTAK))
+ (|product_integral_countable| 0
+  (|product_integral_countable-1| NIL 4001435305
+   (""
+    (THEN (SKOSIMP) (LEMMA "measurable_section_union" ("nu" "nu!1" "E" "Q!1"))
+     (ASSERT) (EXPAND "productIntegralValue")
+     (LEMMA "general_integral_series" ("H" "measurableSectionRows(nu!1,Q!1)"))
+     (REPLACE -2) (EXPAND "measurableSectionRows") (ASSERT))
+    NIL)
+   ((|sigma_algebra_IUnion_rew| APPLICATION-JUDGEMENT "(S)" |sigma_algebra|
+     |measure_integration|)
+    (|measurableSectionRows| CONST-DECL "LowerMeasurable"
+     |ppg_sfinite_section_unions| NIL)
+    (|LowerMeasurable| TYPE-EQ-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (|lowerMeasurable| CONST-DECL "bool" |ppg_simple_comparison_regions| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|general_integral_series| FORMULA-DECL NIL |ppg_general_integral_series|
+     NIL)
+    (|productIntegralValue| CONST-DECL "ENN" |ppg_sfinite_bind_product| NIL)
+    (|measurable_section_union| FORMULA-DECL NIL |ppg_sfinite_section_unions|
+     NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_sfinite_bind_product| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_sfinite_bind_product| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_sfinite_bind_product| NIL))
+   SHOSTAK))
+ (|bind_product_value| 0
+  (|bind_product_value-1| NIL 4001435305
+   (""
+    (THEN (SKOSIMP) (EXPAND "bindProductFunction")
+     (REWRITE "native_value_encode"))
+    NIL)
+   ((|native_value_encode| FORMULA-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_sfinite_bind_product| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_sfinite_bind_product| NIL)
+    (|productIntegralValue| CONST-DECL "ENN" |ppg_sfinite_bind_product| NIL)
+    (|bindProductFunction| CONST-DECL "extended_nnreal"
+     |ppg_sfinite_bind_product| NIL))
+   SHOSTAK))
+ (|bind_product_value_function| 0
+  (|bind_product_value_function-1| NIL 4001435305
+   (""
+    (THEN (SKOSIMP) (APPLY-EXTENSIONALITY :HIDE? T)
+     (REWRITE "bind_product_value"))
+    NIL)
+   ((|bind_product_value| FORMULA-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_sfinite_bind_product| NIL)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_sfinite_bind_product| NIL)
+    (|nativeValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_sfinite_bind_product| NIL)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|bindProductFunction| CONST-DECL "extended_nnreal"
+     |ppg_sfinite_bind_product| NIL)
+    (|productIntegralValue| CONST-DECL "ENN" |ppg_sfinite_bind_product| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|bind_product_countable| 0
+  (|bind_product_countable-1| NIL 4001435305
+   (""
+    (THEN (SKOSIMP)
+     (LEMMA "native_sum_canonical_series"
+      ("U" "LAMBDA(n:nat):bindProductFunction(nu!1)(Q!1(n))"))
+     (LEMMA "product_integral_countable" ("nu" "nu!1" "Q" "Q!1"))
+     (LEMMA "native_semantic_equality"
+      ("u" "x_sum(LAMBDA(n:nat):bindProductFunction(nu!1)(Q!1(n)))" "v"
+       "bindProductFunction(nu!1)(IUnion(Q!1))"))
+     (AUTO-REWRITE "bind_product_value" "bind_product_value_function") (BETA)
+     (GROUND))
+    NIL)
+   ((|product_integral_countable| FORMULA-DECL NIL |ppg_sfinite_bind_product|
+     NIL)
+    (|bind_product_value| FORMULA-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|native_semantic_equality| FORMULA-DECL NIL |ppg_general_measure_values|
+     NIL)
+    (|x_sum| CONST-DECL "extended_nnreal" |extended_nnreal| |extended_nnreal|)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|IUnion| CONST-DECL "set[T]" |indexed_sets| NIL)
+    (|sigma_algebra_IUnion_rew| APPLICATION-JUDGEMENT "(S)" |sigma_algebra|
+     |measure_integration|)
+    (|native_sum_canonical_series| FORMULA-DECL NIL |ppg_native_sum_bridge|
+     NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_sfinite_bind_product| NIL)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|bindProductFunction| CONST-DECL "extended_nnreal"
+     |ppg_sfinite_bind_product| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_sfinite_bind_product| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_sfinite_bind_product| NIL))
+   SHOSTAK))
+ (|bind_product_is_measure| 0
+  (|bind_product_is_measure-1| NIL 4001435305
+   ("" (SKOSIMP)
+    (("" (EXPAND "measure?")
+      (("" (EXPAND "measure_empty?")
+        (("" (EXPAND "measure_countably_additive?")
+          (("" (SPLIT)
+            (("1" (LEMMA "bind_product_empty" ("nu" "nu!1"))
+              (("1" (PROPAX) NIL NIL)) NIL)
+             ("2" (SKOSIMP)
+              (("2" (TYPEPRED "X!1")
+                (("2" (EXPAND "disjoint_indexed_measurable?")
+                  (("2"
+                    (LEMMA "bind_product_countable" ("nu" "nu!1" "Q" "X!1"))
+                    (("2" (EXPAND "o") (("2" (GROUND) NIL NIL)) NIL)) NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|measure_empty?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_sfinite_bind_product| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|bind_product_empty| FORMULA-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_sfinite_bind_product| NIL)
+    (|disjoint_indexed_measurable?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|disjoint_indexed_measurable| NONEMPTY-TYPE-EQ-DECL NIL
+     |generalized_measure_def| |measure_integration|)
+    (|bind_product_countable| FORMULA-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (O CONST-DECL "T3" |function_props| NIL)
+    (|measure_countably_additive?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|sigma_algebra_IUnion_rew| APPLICATION-JUDGEMENT "(S)" |sigma_algebra|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|))
+   SHOSTAK))
+ (|bindProduct_TCC1| 0
+  (|bindProduct_TCC1-1| NIL 4001435303
+   (""
+    (THEN (SKOSIMP) (LEMMA "bind_product_is_measure" ("nu" "nu!1")) (ASSERT))
+    NIL)
+   ((|bind_product_is_measure| FORMULA-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_sfinite_bind_product| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL))
+   NIL
+   (|bindProduct| SUBTYPE "bindProductFunction(nu)"
+    "measure_type[[X, Y], sigma_times[X, Y](SX, SY)]" (55 60 55 83))))
+ (|bind_product_sections| 0
+  (|bind_product_sections-1| NIL 4001435305
+   (""
+    (THEN (SKOSIMP) (EXPAND "bindProduct") (REWRITE "bind_product_value")
+     (EXPAND "productIntegralValue") (ASSERT))
+    NIL)
+   ((|bind_product_value| FORMULA-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_sfinite_bind_product| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_sfinite_bind_product| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|productIntegralValue| CONST-DECL "ENN" |ppg_sfinite_bind_product| NIL)
+    (|bindProduct| CONST-DECL "measure_type[[X, Y], sigma_times(SX, SY)]"
+     |ppg_sfinite_bind_product| NIL))
+   SHOSTAK))
+ (|bind_finite_decomposition| 0
+  (|bind_finite_decomposition-1| NIL 4001435305
+   (""
+    (THEN (SKOSIMP) (REWRITE "bind_product_sections")
+     (LEMMA "decomposed_section_function" ("nu" "nu!1" "E" "E!1" "F" "F!1"))
+     (EXPAND "measurableSection") (GROUND))
+    NIL)
+   ((|mu| FORMAL-CONST-DECL "measure_type" |ppg_sfinite_bind_product| NIL)
+    (|finite_measure| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|finite_measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|decomposed_section_function| FORMULA-DECL NIL |ppg_sfinite_sections| NIL)
+    (|measurableSection| CONST-DECL "LowerMeasurable" |ppg_sfinite_sections|
+     NIL)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_sfinite_bind_product| NIL)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_sfinite_bind_product| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|bind_product_sections| FORMULA-DECL NIL |ppg_sfinite_bind_product| NIL))
+   SHOSTAK))
+ (|bind_decomposition_independence| 0
+  (|bind_decomposition_independence-1| NIL 4001435305
+   (""
+    (THEN (SKOSIMP)
+     (LEMMA "decomposed_section_function" ("nu" "nu!1" "E" "E!1" "F" "F!1"))
+     (LEMMA "decomposed_section_function" ("nu" "nu!1" "E" "E!1" "F" "G!1"))
+     (GROUND))
+    NIL)
+   ((|decomposed_section_function| FORMULA-DECL NIL |ppg_sfinite_sections| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|finite_measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|finite_measure| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_sfinite_bind_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_sfinite_bind_product| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_sfinite_bind_product| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_sfinite_bind_product| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,53 @@
+% A finite indicator list gives a measurable comparison region by binary
+% partitions. No finite mass or nonempty underlying carrier is needed.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+ppg_simple_comparison_regions[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_simple_integral_scaling[X,S,mu]
+
+  lowerMeasurable(f:[X->ENN]): bool =
+    FORALL(a:nonneg_real):S({x:X|ele(ennFinite(a),f(x))})
+
+  LowerMeasurable: TYPE = (lowerMeasurable)
+
+  L: VAR Simple
+  t: VAR SimpleTerm
+  k,c: VAR nonneg_real
+  f,g: VAR LowerMeasurable
+  x: VAR X
+
+  comparisonSet(k,L,f): RECURSIVE (S) = IF null?(L) THEN
+    {x:X|ele(ennFinite(k),f(x))} ELSE
+    union(intersection(car(L)`2,comparisonSet(k+car(L)`1,cdr(L),f)),
+      intersection(complement(car(L)`2),comparisonSet(k,cdr(L),f)))
+    ENDIF MEASURE length(L)
+
+  comparison_set_nil: LEMMA comparisonSet(k,null,f)=
+    {x:X|ele(ennFinite(k),f(x))}
+
+  comparison_set_cons: LEMMA comparisonSet(k,cons(t,L),f)=
+    union(intersection(t`2,comparisonSet(k+t`1,L,f)),
+      intersection(complement(t`2),comparisonSet(k,L,f)))
+
+  comparison_set_description: THEOREM FORALL(k:nonneg_real,f:LowerMeasurable,x:X):
+    comparisonSet(k,L,f)(x) IFF ele(ennFinite(k+simpleValue(L)(x)),f(x))
+
+  comparison_set_zero: LEMMA comparisonSet(0,L,f)(x) IFF
+    ele(ennFinite(simpleValue(L)(x)),f(x))
+
+  comparison_set_monotone: LEMMA (FORALL(x:X):ele(f(x),g(x))) IMPLIES
+    subset?(comparisonSet(k,L,f),comparisonSet(k,L,g))
+
+  scaled_comparison_description: LEMMA comparisonSet(0,scaleSimple(c,L),f)(x) IFF
+    ele(ennFinite(c*simpleValue(L)(x)),f(x))
+
+  restricted_comparison_minorant: LEMMA
+    simpleMinorant(restrictSimple(L,comparisonSet(0,L,f)),f)
+
+  scaled_comparison_integral: LEMMA
+    ele(regionIntegral(scaleSimple(c,L),comparisonSet(0,scaleSimple(c,L),f)),lintegral(f))
+
+END ppg_simple_comparison_regions

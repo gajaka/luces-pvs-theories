@@ -1,0 +1,227 @@
+(|ppg_product_measurable_map|
+ (|target_generator_is_rectangle| 0
+  (|target_generator_is_rectangle-1| NIL 4001438398
+   (""
+    (THEN (SKOSIMP) (EXPAND "targetGenerators") (EXPAND "extend")
+     (GRIND :DEFS ("fullset") :EXCLUDE ("measurable_rectangle?")))
+    NIL)
+   ((|extend| CONST-DECL "R" |extend| NIL)
+    (|targetGenerators| CONST-DECL "set[set[[U, V]]]"
+     |ppg_product_measurable_map| NIL))
+   SHOSTAK))
+ (|product_map_rectangle_inverse| 0
+  (|product_map_rectangle_inverse-1| NIL 4001438398
+   (""
+    (THEN (SKOSIMP) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :DEFS
+      ("inverseImage" "inverseEvent" "pairFunction" "cross_product" "member")))
+    NIL)
+   ((U FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|pairFunction| CONST-DECL "[U, V]" |ppg_product_measurable_map| NIL)
+    (|cross_product| CONST-DECL "set[[T1, T2]]" |cross_product| |topology|)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SU FORMAL-CONST-DECL "sigma_algebra[U]" |ppg_product_measurable_map| NIL)
+    (SV FORMAL-CONST-DECL "sigma_algebra[V]" |ppg_product_measurable_map| NIL)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_product_measurable_map| NIL)
+    (|inverseEvent| CONST-DECL "set[X]" |ppg_general_measure_map| NIL)
+    (|measurableMap?| CONST-DECL "bool" |ppg_general_measure_map| NIL)
+    (|MeasurableMap| TYPE-EQ-DECL NIL |ppg_general_measure_map| NIL)
+    (|f| FORMAL-CONST-DECL
+     "ppg_general_measure_map[X, U, SX, SU].MeasurableMap"
+     |ppg_product_measurable_map| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_product_measurable_map| NIL)
+    (|g| FORMAL-CONST-DECL
+     "ppg_general_measure_map[Y, V, SY, SV].MeasurableMap"
+     |ppg_product_measurable_map| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL))
+   SHOSTAK))
+ (|product_map_rectangle_measurable| 0
+  (|product_map_rectangle_measurable-1| NIL 4001438398
+   (""
+    (THEN (SKOSIMP) (REWRITE "product_map_rectangle_inverse")
+     (LEMMA "inverse_event_measurable[X,U,SX,SU]" ("h" "f" "A" "A!1"))
+     (LEMMA "inverse_event_measurable[Y,V,SY,SV]" ("h" "g" "A" "B!1")) (ASSERT)
+     (LEMMA "cross_product_is_sigma_times[X,Y,SX,SY]"
+      ("X" "ppg_general_measure_map[X,U,SX,SU].inverseEvent(f,A!1)" "Y"
+       "ppg_general_measure_map[Y,V,SY,SV].inverseEvent(g,B!1)"))
+     (ASSERT))
+    NIL)
+   ((|inverse_event_measurable| FORMULA-DECL NIL |ppg_general_measure_map| NIL)
+    (|measurableMap?| CONST-DECL "bool" |ppg_general_measure_map| NIL)
+    (|MeasurableMap| TYPE-EQ-DECL NIL |ppg_general_measure_map| NIL)
+    (|f| FORMAL-CONST-DECL
+     "ppg_general_measure_map[X, U, SX, SU].MeasurableMap"
+     |ppg_product_measurable_map| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_product_measurable_map| NIL)
+    (|inverseEvent| CONST-DECL "set[X]" |ppg_general_measure_map| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|cross_product_is_sigma_times| FORMULA-DECL NIL |product_sigma|
+     |measure_integration|)
+    (|g| FORMAL-CONST-DECL
+     "ppg_general_measure_map[Y, V, SY, SV].MeasurableMap"
+     |ppg_product_measurable_map| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_product_measurable_map| NIL)
+    (SV FORMAL-CONST-DECL "sigma_algebra[V]" |ppg_product_measurable_map| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (SU FORMAL-CONST-DECL "sigma_algebra[U]" |ppg_product_measurable_map| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (U FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (|product_map_rectangle_inverse| FORMULA-DECL NIL
+     |ppg_product_measurable_map| NIL))
+   SHOSTAK))
+ (|product_map_generators_measurable| 0
+  (|product_map_generators_measurable-1| NIL 4001438398
+   ("" (SKOSIMP)
+    (("" (LEMMA "target_generator_is_rectangle" ("D" "D!1"))
+      (("" (ASSERT)
+        (("" (EXPAND "measurable_rectangle?")
+          (("" (SKOSIMP)
+            (("" (REPLACE -1)
+              ((""
+                (LEMMA "product_map_rectangle_measurable"
+                 ("A" "X!1" "B" "Y!1"))
+                (("1" (PROPAX) NIL NIL) ("2" (PROPAX) NIL NIL)
+                 ("3" (PROPAX) NIL NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|product_map_rectangle_measurable| FORMULA-DECL NIL
+     |ppg_product_measurable_map| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SU FORMAL-CONST-DECL "sigma_algebra[U]" |ppg_product_measurable_map| NIL)
+    (SV FORMAL-CONST-DECL "sigma_algebra[V]" |ppg_product_measurable_map| NIL)
+    (|measurable_rectangle?| CONST-DECL "bool" |product_sigma_def|
+     |measure_integration|)
+    (|target_generator_is_rectangle| FORMULA-DECL NIL
+     |ppg_product_measurable_map| NIL)
+    (U FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL))
+   SHOSTAK))
+ (|product_map_generated_preimages| 0
+  (|product_map_generated_preimages-1| NIL 4001438398
+   (""
+    (THEN
+     (LEMMA "generated_preimage_subset[[X,Y],[U,V],sigma_times(SX,SY)]"
+      ("j" "pairFunction" "G" "targetGenerators"))
+     (LEMMA "product_map_generators_measurable")
+     (GRIND :EXCLUDE
+      ("pairFunction" "targetGenerators" "sigma_times" "preimageSigma"
+       "inverseImage")))
+    NIL)
+   ((SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_product_measurable_map| NIL)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_product_measurable_map| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (U FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (|pairFunction| CONST-DECL "[U, V]" |ppg_product_measurable_map| NIL)
+    (|targetGenerators| CONST-DECL "set[set[[U, V]]]"
+     |ppg_product_measurable_map| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|generated_preimage_subset| FORMULA-DECL NIL
+     |ppg_native_measurable_generators| NIL)
+    (|product_map_generators_measurable| FORMULA-DECL NIL
+     |ppg_product_measurable_map| NIL))
+   SHOSTAK))
+ (|target_product_generated| 0
+  (|target_product_generated-1| NIL 4001438398
+   ("" (THEN (EXPAND "targetGenerators") (EXPAND "sigma_times") (ASSERT)) NIL)
+   ((|targetGenerators| CONST-DECL "set[set[[U, V]]]"
+     |ppg_product_measurable_map| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|))
+   SHOSTAK))
+ (|product_map_measurable| 0
+  (|product_map_measurable-1| NIL 4001438398
+   (""
+    (THEN (LEMMA "product_map_generated_preimages")
+     (REWRITE "target_product_generated" -1 :DIR RL) (EXPAND "subset?" -1)
+     (EXPAND "measurableMap?") (SKOSIMP) (INST -1 "A!1") (ASSERT)
+     (LEMMA "preimage_sigma_at[[X,Y],[U,V],sigma_times(SX,SY)]"
+      ("j" "pairFunction" "D" "A!1"))
+     (EXPAND "inverseEvent") (EXPAND "inverseImage") (ASSERT))
+    NIL)
+   ((|product_map_generated_preimages| FORMULA-DECL NIL
+     |ppg_product_measurable_map| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|inverseEvent| CONST-DECL "set[X]" |ppg_general_measure_map| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_product_measurable_map| NIL)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_product_measurable_map| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (|pairFunction| CONST-DECL "[U, V]" |ppg_product_measurable_map| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|preimage_sigma_at| FORMULA-DECL NIL |ppg_native_measurable_generators|
+     NIL)
+    (SV FORMAL-CONST-DECL "sigma_algebra[V]" |ppg_product_measurable_map| NIL)
+    (SU FORMAL-CONST-DECL "sigma_algebra[U]" |ppg_product_measurable_map| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (U FORMAL-TYPE-DECL NIL |ppg_product_measurable_map| NIL)
+    (|measurableMap?| CONST-DECL "bool" |ppg_general_measure_map| NIL)
+    (|target_product_generated| FORMULA-DECL NIL |ppg_product_measurable_map|
+     NIL))
+   SHOSTAK))
+ (|pairMap_TCC1| 0
+  (|pairMap_TCC1-1| NIL 4001438398
+   ("" (THEN (LEMMA "product_map_measurable") (ASSERT)) NIL)
+   ((|product_map_measurable| FORMULA-DECL NIL |ppg_product_measurable_map|
+     NIL))
+   NIL
+   (|pairMap| SUBTYPE "pairFunction"
+    "MeasurableMap[[X, Y], [U, V], sigma_times[X, Y](SX, SY), sigma_times[U, V](SU, SV)]"
+    (52 4 52 16)))))
+

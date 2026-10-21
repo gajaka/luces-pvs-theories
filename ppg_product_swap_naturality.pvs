@@ -1,0 +1,57 @@
+% The two paths in the coordinate-swap square are the same function.
+% Pushforward composition therefore makes the square commute on every
+% measurable event, for an arbitrary source measure.
+%
+% Mathlib, MeasureTheory/Measure/Prod.lean, Measure.map_prod_map;
+% MeasureTheory/Measure/Map.lean, Measure.map_map.
+ppg_product_swap_naturality[X,Y,U,V:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],SU:sigma_algebra[U],SV:sigma_algebra[V],
+  (IMPORTING ppg_general_measure_map[X,U,SX,SU]) f:ppg_general_measure_map[X,U,SX,SU].MeasurableMap,
+  (IMPORTING ppg_general_measure_map[Y,V,SY,SV]) g:ppg_general_measure_map[Y,V,SY,SV].MeasurableMap]: THEORY
+BEGIN
+  IMPORTING ppg_product_measurable_map[X,Y,U,V,SX,SY,SU,SV,f,g],
+    ppg_product_measurable_map[Y,X,V,U,SY,SX,SV,SU,g,f],
+    ppg_native_product_swap[X,Y,SX,SY],ppg_native_product_swap[U,V,SU,SV],
+    ppg_general_map_composition[[Y,X],[X,Y],[U,V],sigma_times(SY,SX),sigma_times(SX,SY),sigma_times(SU,SV)],
+    ppg_general_map_composition[[Y,X],[V,U],[U,V],sigma_times(SY,SX),sigma_times(SV,SU),sigma_times(SU,SV)]
+
+  forwardPair: ppg_general_measure_map[[X,Y],[U,V],sigma_times(SX,SY),sigma_times(SU,SV)].MeasurableMap =
+    ppg_product_measurable_map[X,Y,U,V,SX,SY,SU,SV,f,g].pairMap
+
+  reversePair: ppg_general_measure_map[[Y,X],[V,U],sigma_times(SY,SX),sigma_times(SV,SU)].MeasurableMap =
+    ppg_product_measurable_map[Y,X,V,U,SY,SX,SV,SU,g,f].pairMap
+
+  sourceSwap: ppg_general_measure_map[[Y,X],[X,Y],sigma_times(SY,SX),sigma_times(SX,SY)].MeasurableMap =
+    ppg_native_product_swap[X,Y,SX,SY].swapMap
+
+  targetSwap: ppg_general_measure_map[[V,U],[U,V],sigma_times(SV,SU),sigma_times(SU,SV)].MeasurableMap =
+    ppg_native_product_swap[U,V,SU,SV].swapMap
+
+  upperComposite: ppg_general_measure_map[[Y,X],[U,V],sigma_times(SY,SX),sigma_times(SU,SV)].MeasurableMap =
+    ppg_general_map_composition[[Y,X],[X,Y],[U,V],sigma_times(SY,SX),sigma_times(SX,SY),sigma_times(SU,SV)].composeMap(sourceSwap,forwardPair)
+
+  lowerComposite: ppg_general_measure_map[[Y,X],[U,V],sigma_times(SY,SX),sigma_times(SU,SV)].MeasurableMap =
+    ppg_general_map_composition[[Y,X],[V,U],[U,V],sigma_times(SY,SX),sigma_times(SV,SU),sigma_times(SU,SV)].composeMap(reversePair,targetSwap)
+
+  swap_square_commutes: THEOREM upperComposite=lowerComposite
+
+  rho: VAR measure_type[[Y,X],sigma_times(SY,SX)]
+
+  upper_map_composition: THEOREM
+    ppg_general_measure_map[[Y,X],[U,V],sigma_times(SY,SX),sigma_times(SU,SV)].mapMeasure(rho,upperComposite)=
+      ppg_general_measure_map[[X,Y],[U,V],sigma_times(SX,SY),sigma_times(SU,SV)].mapMeasure(
+        ppg_general_measure_map[[Y,X],[X,Y],sigma_times(SY,SX),sigma_times(SX,SY)].mapMeasure(rho,sourceSwap),forwardPair)
+
+  lower_map_composition: THEOREM
+    ppg_general_measure_map[[Y,X],[U,V],sigma_times(SY,SX),sigma_times(SU,SV)].mapMeasure(rho,lowerComposite)=
+      ppg_general_measure_map[[V,U],[U,V],sigma_times(SV,SU),sigma_times(SU,SV)].mapMeasure(
+        ppg_general_measure_map[[Y,X],[V,U],sigma_times(SY,SX),sigma_times(SV,SU)].mapMeasure(rho,reversePair),targetSwap)
+
+  swap_map_naturality: THEOREM
+    ppg_general_measure_map[[X,Y],[U,V],sigma_times(SX,SY),sigma_times(SU,SV)].mapMeasure(
+      ppg_general_measure_map[[Y,X],[X,Y],sigma_times(SY,SX),sigma_times(SX,SY)].mapMeasure(rho,sourceSwap),forwardPair)=
+    ppg_general_measure_map[[V,U],[U,V],sigma_times(SV,SU),sigma_times(SU,SV)].mapMeasure(
+      ppg_general_measure_map[[Y,X],[V,U],sigma_times(SY,SX),sigma_times(SV,SU)].mapMeasure(rho,reversePair),targetSwap)
+
+END ppg_product_swap_naturality

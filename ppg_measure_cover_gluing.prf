@@ -1,0 +1,336 @@
+(|ppg_measure_cover_gluing|
+ (|intersect_rows_disjoint| 0
+  (|intersect_rows_disjoint-1| NIL 4001440133
+   (""
+    (THEN (SKOSIMP)
+     (GRIND :DEFS
+      ("intersectRows" "disjoint?" "intersection" "empty?" "member")))
+    NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|intersectRows| CONST-DECL "(S)" |ppg_measure_cover_gluing| NIL)
+    (|disjoint?| CONST-DECL "bool" |indexed_sets_aux| |sets_aux|)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_measure_cover_gluing| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|subset_algebra_intersection| APPLICATION-JUDGEMENT "(S)"
+     |ppg_measure_cover_gluing| NIL))
+   SHOSTAK))
+ (|cover_member| 0
+  (|cover_member-1| NIL 4001440133
+   ("" (THEN (SKOSIMP) (REPLACE -1) (EXPAND "fullset") (ASSERT)) NIL)
+   ((|fullset| CONST-DECL "set" |sets| NIL)) SHOSTAK))
+ (|intersect_rows_cover| 0
+  (|intersect_rows_cover-1| NIL 4001440133
+   (""
+    (THEN (SKOSIMP) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "cover_member" ("Q" "Q!1" "x" "x!1")) (ASSERT)
+     (GRIND :DEFS ("IUnion" "intersectRows" "intersection" "member")))
+    NIL)
+   ((|cover_member| FORMULA-DECL NIL |ppg_measure_cover_gluing| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(S)" |ppg_measure_cover_gluing|
+     NIL)
+    (|measurable_fullset| NAME-JUDGEMENT "measurable_set[X, S]"
+     |ppg_measure_cover_gluing| NIL)
+    (|sigma_algebra_IUnion_rew| APPLICATION-JUDGEMENT "(S)"
+     |ppg_measure_cover_gluing| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|IUnion| CONST-DECL "set[T]" |indexed_sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_measure_cover_gluing| NIL)
+    (|intersectRows| CONST-DECL "(S)" |ppg_measure_cover_gluing| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_measure_cover_gluing| NIL))
+   SHOSTAK))
+ (|original_countable_identity| 0
+  (|original_countable_identity-1| NIL 4001440133
+   (""
+    (THEN (SKOSIMP) (TYPEPRED "mu!1") (EXPAND "measure?") (FLATTEN)
+     (EXPAND "measure_countably_additive?")
+     (GRIND :DEFS ("disjoint_indexed_measurable?" "o") :EXCLUDE
+      ("IUnion" "x_eq" "x_sum" "disjoint?" "measure_empty?"))
+     (EXPAND "o") (ASSERT))
+    NIL)
+   ((|sigma_algebra_IUnion_rew| APPLICATION-JUDGEMENT "(S)"
+     |ppg_measure_cover_gluing| NIL)
+    (|measure_countably_additive?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (O CONST-DECL "T3" |function_props| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|disjoint_indexed_measurable| NONEMPTY-TYPE-EQ-DECL NIL
+     |generalized_measure_def| |measure_integration|)
+    (|disjoint_indexed_measurable?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_measure_cover_gluing| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_measure_cover_gluing| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|))
+   SHOSTAK))
+ (|canonical_countable_identity| 0
+  (|canonical_countable_identity-1| NIL 4001440133
+   (""
+    (THEN (SKOSIMP)
+     (LEMMA "original_countable_identity" ("mu" "mu!1" "Q" "Q!1"))
+     (LEMMA "native_semantic_equality"
+      ("u" "x_sum(LAMBDA(n:nat):mu!1(Q!1(n)))" "v" "mu!1(IUnion(Q!1))"))
+     (LEMMA "native_sum_canonical_series" ("U" "LAMBDA(n:nat):mu!1(Q!1(n))"))
+     (ASSERT))
+    NIL)
+   ((|sigma_algebra_IUnion_rew| APPLICATION-JUDGEMENT "(S)"
+     |ppg_measure_cover_gluing| NIL)
+    (|lawOne| FORMAL-CONST-DECL "measure_type" |ppg_measure_cover_gluing| NIL)
+    (|IUnion| CONST-DECL "set[T]" |indexed_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|x_sum| CONST-DECL "extended_nnreal" |extended_nnreal| |extended_nnreal|)
+    (|native_semantic_equality| FORMULA-DECL NIL |ppg_general_measure_values|
+     NIL)
+    (|native_sum_canonical_series| FORMULA-DECL NIL |ppg_native_sum_bridge|
+     NIL)
+    (|original_countable_identity| FORMULA-DECL NIL |ppg_measure_cover_gluing|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_measure_cover_gluing| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_measure_cover_gluing| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|))
+   SHOSTAK))
+ (|equal_cell_value_arrays| 0
+  (|equal_cell_value_arrays-1| NIL 4001440133
+   (""
+    (THEN (SKOSIMP) (EXPAND "cellAgreement") (LABEL "CELLS" -1)
+     (APPLY-EXTENSIONALITY :HIDE? T) (INST "CELLS" "x!1" "A!1")
+     (LEMMA "native_semantic_equality"
+      ("u" "lawOne(intersection(Q!1(x!1),A!1))" "v"
+       "lawTwo(intersection(Q!1(x!1),A!1))"))
+     (EXPAND "intersectRows") (ASSERT))
+    NIL)
+   ((|native_semantic_equality| FORMULA-DECL NIL |ppg_general_measure_values|
+     NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|subset_algebra_intersection| APPLICATION-JUDGEMENT "(S)"
+     |ppg_measure_cover_gluing| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|lawTwo| FORMAL-CONST-DECL "measure_type" |ppg_measure_cover_gluing| NIL)
+    (|intersectRows| CONST-DECL "(S)" |ppg_measure_cover_gluing| NIL)
+    (|nativeValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL)
+    (|lawOne| FORMAL-CONST-DECL "measure_type" |ppg_measure_cover_gluing| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_measure_cover_gluing| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_measure_cover_gluing| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|cellAgreement| CONST-DECL "bool" |ppg_measure_cover_gluing| NIL))
+   SHOSTAK))
+ (|glued_event_value| 0
+  (|glued_event_value-1| NIL 4001440133
+   (""
+    (THEN (SKOSIMP) (LEMMA "intersect_rows_disjoint" ("Q" "Q!1" "A" "A!1"))
+     (LEMMA "intersect_rows_cover" ("Q" "Q!1" "A" "A!1"))
+     (LEMMA "equal_cell_value_arrays" ("Q" "Q!1" "A" "A!1")) (ASSERT)
+     (LEMMA "canonical_countable_identity"
+      ("mu" "lawOne" "Q" "intersectRows(Q!1,A!1)"))
+     (LEMMA "canonical_countable_identity"
+      ("mu" "lawTwo" "Q" "intersectRows(Q!1,A!1)"))
+     (ASSERT))
+    NIL)
+   ((|intersect_rows_cover| FORMULA-DECL NIL |ppg_measure_cover_gluing| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(S)" |ppg_measure_cover_gluing|
+     NIL)
+    (|measurable_fullset| NAME-JUDGEMENT "measurable_set[X, S]"
+     |ppg_measure_cover_gluing| NIL)
+    (|sigma_algebra_IUnion_rew| APPLICATION-JUDGEMENT "(S)"
+     |ppg_measure_cover_gluing| NIL)
+    (|lawTwo| FORMAL-CONST-DECL "measure_type" |ppg_measure_cover_gluing| NIL)
+    (|canonical_countable_identity| FORMULA-DECL NIL |ppg_measure_cover_gluing|
+     NIL)
+    (|intersectRows| CONST-DECL "(S)" |ppg_measure_cover_gluing| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|lawOne| FORMAL-CONST-DECL "measure_type" |ppg_measure_cover_gluing| NIL)
+    (|equal_cell_value_arrays| FORMULA-DECL NIL |ppg_measure_cover_gluing| NIL)
+    (|intersect_rows_disjoint| FORMULA-DECL NIL |ppg_measure_cover_gluing| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_measure_cover_gluing| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_measure_cover_gluing| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK))
+ (|measures_glue_on_cover| 0
+  (|measures_glue_on_cover-1| NIL 4001440133
+   (""
+    (THEN (SKOSIMP) (EXPAND "sameMeasure") (SKOSIMP)
+     (LEMMA "glued_event_value" ("Q" "Q!1" "A" "A!1"))
+     (LEMMA "native_semantic_equality" ("u" "lawOne(A!1)" "v" "lawTwo(A!1)"))
+     (ASSERT))
+    NIL)
+   ((|lawOne| FORMAL-CONST-DECL "measure_type" |ppg_measure_cover_gluing| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|lawTwo| FORMAL-CONST-DECL "measure_type" |ppg_measure_cover_gluing| NIL)
+    (|native_semantic_equality| FORMULA-DECL NIL |ppg_general_measure_values|
+     NIL)
+    (|sigma_algebra_IUnion_rew| APPLICATION-JUDGEMENT "(S)"
+     |ppg_measure_cover_gluing| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT "measurable_set[X, S]"
+     |ppg_measure_cover_gluing| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(S)" |ppg_measure_cover_gluing|
+     NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_measure_cover_gluing| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_measure_cover_gluing| NIL)
+    (|glued_event_value| FORMULA-DECL NIL |ppg_measure_cover_gluing| NIL)
+    (|sameMeasure| CONST-DECL "bool" |ppg_sfinite_measure| NIL))
+   SHOSTAK)))
+

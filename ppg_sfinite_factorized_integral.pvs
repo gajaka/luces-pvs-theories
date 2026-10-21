@@ -1,0 +1,36 @@
+% Tonelli and unrestricted ENN homogeneity evaluate a
+% measurable product function. The factors may have infinite integral;
+% the formula retains the convention zero times infinity equals zero.
+%
+% Mathlib, MeasureTheory/Integral/Prod.lean, lintegral_prod_mul.
+ppg_sfinite_factorized_integral[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING measure_integration@measure_def[X,SX]) mu:measure_type,
+  (IMPORTING ppg_sfinite_measure[Y,SY]) nu:(sfinite?[Y,SY])]: THEORY
+BEGIN
+  IMPORTING ppg_general_sfinite_tonelli[X,Y,SX,SY,mu,nu],
+    ppg_general_integral_extended_scale[X,SX,mu],ppg_general_integral_extended_scale[Y,SY,nu]
+
+  f: VAR ppg_simple_comparison_regions[X,SX,mu].LowerMeasurable
+  g: VAR ppg_simple_comparison_regions[Y,SY,nu].LowerMeasurable
+  h: VAR JointMeasurable
+  x: VAR X
+
+  factorized(f,g,h): bool = FORALL(x:X,y:Y):h((x,y))=emul(f(x),g(y))
+
+  factorized_section: LEMMA factorized(f,g,h) IMPLIES sectionMeasurable(h,x)=
+    ppg_general_integral_extended_scale[Y,SY,nu].extendedScaled(f(x),g)
+
+  factorized_section_integral: LEMMA factorized(f,g,h) IMPLIES sectionIntegral(h)(x)=
+    emul(f(x),ppg_general_lintegral[Y,SY,nu].lintegral(g))
+
+  factorized_outer_function: LEMMA factorized(f,g,h) IMPLIES measurableSectionIntegral(h)=
+    ppg_general_integral_extended_scale[X,SX,mu].extendedScaled(
+      ppg_general_lintegral[Y,SY,nu].lintegral(g),f)
+
+  factorized_product_integral: THEOREM factorized(f,g,h) IMPLIES
+    ppg_general_lintegral[[X,Y],sigma_times(SX,SY),productLaw].lintegral(h)=
+      emul(ppg_general_lintegral[X,SX,mu].lintegral(f),ppg_general_lintegral[Y,SY,nu].lintegral(g))
+
+END ppg_sfinite_factorized_integral

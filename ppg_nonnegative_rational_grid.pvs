@@ -1,0 +1,25 @@
+% The diagonal pairing enumerates every nonnegative rational of the form
+% i/(j+1). Archimedes and the integer floor give density between real bounds.
+%
+% David Lester, NASALib code_product.
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+ppg_nonnegative_rational_grid: THEORY
+BEGIN
+  IMPORTING extended_nnreal@code_product
+
+  a,b: VAR nonneg_real
+  i,j,n: VAR nat
+
+  gridCoeff(n): nonneg_real = double_index_i(n)/(1+double_index_j(n))
+
+  grid_coeff_pair: LEMMA gridCoeff(double_index_n(i,j))=i/(1+j)
+
+  floor_gap_bound: LEMMA FORALL(k:posnat):1/k<b-a IMPLIES
+    a<(floor(k*a)+1)/k AND (floor(k*a)+1)/k<b
+
+  rational_gap_witness: LEMMA a<b IMPLIES
+    EXISTS(i,j:nat):a<i/(1+j) AND i/(1+j)<b
+
+  grid_dense: THEOREM a<b IMPLIES EXISTS(n:nat):a<gridCoeff(n) AND gridCoeff(n)<b
+
+END ppg_nonnegative_rational_grid

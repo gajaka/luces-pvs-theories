@@ -1,0 +1,53 @@
+% Finite partial sums are measurable, and their increasing pointwise
+% supremum is the countable sum. Monotone convergence therefore
+% interchanges a general measure integral with a nonnegative series.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+ppg_general_integral_series[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_general_integral_add[X,S,mu],ppg_enn_nat_series
+
+  H: VAR [nat->LowerMeasurable]
+  N: VAR nat
+  x: VAR X
+
+  zeroFunction: LowerMeasurable = simpleAsMeasurable(list_adt[SimpleTerm].null)
+
+  zero_function_at: LEMMA zeroFunction(x)=ennFinite(0)
+
+  zero_function_integral: LEMMA lintegral(zeroFunction)=ennFinite(0)
+
+  partialFunctions(H)(N:nat): RECURSIVE LowerMeasurable = IF N=0 THEN zeroFunction ELSE
+    measurableAdd(partialFunctions(H)(N-1),H(N-1)) ENDIF MEASURE N
+
+  partial_functions_zero: LEMMA partialFunctions(H)(0)=zeroFunction
+
+  partial_functions_succ: LEMMA partialFunctions(H)(N+1)=
+    measurableAdd(partialFunctions(H)(N),H(N))
+
+  partial_functions_value: THEOREM FORALL(N:nat,H:[nat->LowerMeasurable],x:X):
+    partialFunctions(H)(N)(x)=partialSum(LAMBDA(n:nat):H(n)(x),N)
+
+  partial_functions_increasing: LEMMA increasingFunctions(partialFunctions(H))
+
+  partial_functions_integral: THEOREM FORALL(N:nat,H:[nat->LowerMeasurable]):
+    lintegral(partialFunctions(H)(N))=partialSum(LAMBDA(n:nat):lintegral(H(n)),N)
+
+  partial_integral_function: LEMMA
+    (LAMBDA(N:nat):lintegral(partialFunctions(H)(N)))=
+      (LAMBDA(N:nat):partialSum(LAMBDA(n:nat):lintegral(H(n)),N))
+
+  partial_value_function: LEMMA
+    (LAMBDA(N:nat):partialFunctions(H)(N)(x))=
+      (LAMBDA(N:nat):partialSum(LAMBDA(n:nat):H(n)(x),N))
+
+  sumFunction(H): LowerMeasurable = measurableSup(partialFunctions(H))
+
+  sum_function_at: THEOREM sumFunction(H)(x)=totalSum(LAMBDA(n:nat):H(n)(x))
+
+  general_integral_series: THEOREM lintegral(sumFunction(H))=
+    totalSum(LAMBDA(n:nat):lintegral(H(n)))
+
+END ppg_general_integral_series

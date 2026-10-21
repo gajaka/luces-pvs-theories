@@ -1,0 +1,627 @@
+(|ppg_simple_function_lattice|
+ (|thresholdResidual_TCC1| 0
+  (|thresholdResidual_TCC1-1| NIL 4001431485 ("" (THEN (SUBTYPE-TCC)) NIL)
+   ((|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL (|thresholdResidual| SUBTYPE "k - a" "nonneg_real" (18 52 18 55))))
+ (|threshold_residual_order| 0
+  (|threshold_residual_order-1| NIL 4001431485
+   ("" (THEN (SKOSIMP) (EXPAND "thresholdResidual") (GRIND :DEFS NIL)) NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|thresholdResidual| CONST-DECL "nonneg_real" |ppg_simple_function_lattice|
+     NIL))
+   SHOSTAK))
+ (|thresholdSet_TCC1| 0
+  (|thresholdSet_TCC1-1| NIL 4001431485 ("" (THEN (TERMINATION-TCC)) NIL) NIL
+   NIL
+   (|thresholdSet| SUBTYPE "L" "(list_adt[SimpleTerm[X, S, mu]].cons?)"
+    (24 27 24 28))))
+ (|thresholdSet_TCC2| 0
+  (|thresholdSet_TCC2-1| NIL 4001431485 ("" (THEN (TERMINATION-TCC)) NIL)
+   ((|length| DEF-DECL "nat" |list_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   NIL
+   (|thresholdSet| TERMINATION
+    "thresholdSet(thresholdResidual(k, car[SimpleTerm[X, S, mu]](L)`1), cdr[SimpleTerm[X, S, mu]](L))"
+    #A((3) BASE-CHAR . "NIL") (24 32 24 82))))
+ (|threshold_set_nil| 0
+  (|threshold_set_nil-1| NIL 4001431485
+   ("" (THEN (GRIND :DEFS ("thresholdSet"))) NIL)
+   ((|thresholdSet| DEF-DECL "(S)" |ppg_simple_function_lattice| NIL))
+   SHOSTAK))
+ (|threshold_set_cons| 0
+  (|threshold_set_cons-1| NIL 4001431485
+   ("" (THEN (SKOSIMP) (EXPAND "thresholdSet" 1 1) (ASSERT)) NIL)
+   ((|thresholdSet| DEF-DECL "(S)" |ppg_simple_function_lattice| NIL))
+   SHOSTAK))
+ (|threshold_set_description| 0
+  (|threshold_set_description-1| NIL 4001431485
+   ("" (INDUCT "L")
+    (("1" (SKOSIMP)
+      (("1" (AUTO-REWRITE "threshold_set_nil" "simple_value_nil")
+        (("1" (GRIND :DEFS ("fullset" "emptyset")) NIL NIL)) NIL))
+      NIL)
+     ("2" (SKOSIMP)
+      (("2" (LABEL "IH" -1)
+        (("2" (SKOSIMP)
+          (("2" (INST-CP "IH" "thresholdResidual(k!1,cons1_var!1`1)" "x!1")
+            (("2" (INST "IH" "k!1" "x!1")
+              (("2"
+                (AUTO-REWRITE "threshold_set_cons" "simple_value_cons"
+                              "threshold_residual_order")
+                (("2" (GRIND :DEFS ("union" "intersection" "complement")) NIL
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|list| TYPE-DECL NIL |list_adt| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (IFF CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|thresholdSet| DEF-DECL "(S)" |ppg_simple_function_lattice| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|simpleValue| DEF-DECL "nonneg_real" |ppg_general_lintegral| NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_function_lattice| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_function_lattice| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|list_induction| FORMULA-DECL NIL |list_adt| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|thresholdResidual| CONST-DECL "nonneg_real" |ppg_simple_function_lattice|
+     NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_plus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|subset_algebra_complement| APPLICATION-JUDGEMENT "(S)"
+     |ppg_simple_function_lattice| NIL)
+    (|subset_algebra_intersection| APPLICATION-JUDGEMENT "(S)"
+     |ppg_simple_function_lattice| NIL)
+    (|subset_algebra_union| APPLICATION-JUDGEMENT "(S)"
+     |ppg_simple_function_lattice| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|complement| CONST-DECL "set" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|threshold_residual_order| FORMULA-DECL NIL |ppg_simple_function_lattice|
+     NIL))
+   SHOSTAK))
+ (|simple_level_set| 0
+  (|simple_level_set-1| NIL 4001431485
+   (""
+    (THEN (SKOSIMP) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "threshold_set_description" ("L" "L!1" "k" "k!1" "x" "x!1"))
+     (REWRITE "finite_le") (GROUND))
+    NIL)
+   ((|threshold_set_description| FORMULA-DECL NIL |ppg_simple_function_lattice|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|finite_le| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_function_lattice| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_function_lattice| NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|simpleValue| DEF-DECL "nonneg_real" |ppg_general_lintegral| NIL)
+    (|thresholdSet| DEF-DECL "(S)" |ppg_simple_function_lattice| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_function_lattice| NIL))
+   SHOSTAK))
+ (|simple_lower_measurable| 0
+  (|simple_lower_measurable-1| NIL 4001431485
+   (""
+    (THEN (SKOSIMP) (EXPAND "lowerMeasurable") (SKOSIMP)
+     (LEMMA "simple_level_set" ("L" "L!1" "k" "a!1")) (REPLACE -1)
+     (TYPEPRED "thresholdSet(a!1,L!1)") (ASSERT))
+    NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|thresholdSet| DEF-DECL "(S)" |ppg_simple_function_lattice| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_function_lattice| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_function_lattice| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|simple_level_set| FORMULA-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|lowerMeasurable| CONST-DECL "bool" |ppg_simple_comparison_regions| NIL))
+   SHOSTAK))
+ (|simpleAsMeasurable_TCC1| 0
+  (|simpleAsMeasurable_TCC1-1| NIL 4001431485
+   ("" (THEN (SKOSIMP) (LEMMA "simple_lower_measurable" ("L" "L!1")) (ASSERT))
+    NIL)
+   ((|simple_lower_measurable| FORMULA-DECL NIL |ppg_simple_function_lattice|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_function_lattice| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_function_lattice| NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL))
+   NIL
+   (|simpleAsMeasurable| SUBTYPE
+    "LAMBDA (x: X): ennFinite(simpleValue[X, S, mu](L)(x))"
+    "LowerMeasurable[X, S, mu]" (43 43 43 83))))
+ (|concat_simple_nil| 0
+  (|concat_simple_nil-1| NIL 4001431485
+   ("" (THEN (GRIND :DEFS ("concatSimple"))) NIL)
+   ((|concatSimple| DEF-DECL "Simple" |ppg_simple_function_lattice| NIL))
+   SHOSTAK))
+ (|concat_simple_cons| 0
+  (|concat_simple_cons-1| NIL 4001431485
+   ("" (THEN (SKOSIMP) (EXPAND "concatSimple" 1 1) (ASSERT)) NIL)
+   ((|concatSimple| DEF-DECL "Simple" |ppg_simple_function_lattice| NIL))
+   SHOSTAK))
+ (|concat_simple_value| 0
+  (|concat_simple_value-1| NIL 4001431485
+   ("" (INDUCT "L")
+    (("1" (SKOSIMP*)
+      (("1"
+        (AUTO-REWRITE "concat_simple_nil" "concat_simple_cons"
+                      "simple_value_nil" "simple_value_cons")
+        (("1" (GRIND :DEFS NIL) NIL NIL)) NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2"
+        (AUTO-REWRITE "concat_simple_nil" "concat_simple_cons"
+                      "simple_value_nil" "simple_value_cons")
+        (("2" (GRIND :DEFS NIL) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   ((|list| TYPE-DECL NIL |list_adt| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|simpleValue| DEF-DECL "nonneg_real" |ppg_general_lintegral| NIL)
+    (|concatSimple| DEF-DECL "Simple" |ppg_simple_function_lattice| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_function_lattice| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_function_lattice| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|list_induction| FORMULA-DECL NIL |list_adt| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|concat_simple_nil| FORMULA-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|simple_value_nil| FORMULA-DECL NIL |ppg_general_lintegral| NIL)
+    (|concat_simple_cons| FORMULA-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|simple_value_cons| FORMULA-DECL NIL |ppg_simple_integral_regions| NIL)
+    (|real_plus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL))
+   SHOSTAK))
+ (|concat_simple_integral| 0
+  (|concat_simple_integral-1| NIL 4001431485
+   ("" (INDUCT "L")
+    (("1" (SKOSIMP*)
+      (("1"
+        (AUTO-REWRITE "concat_simple_nil" "concat_simple_cons"
+                      "simple_integral_nil" "simple_integral_cons"
+                      "eadd_zero_left" "eadd_associative")
+        (("1" (GRIND :DEFS NIL) NIL NIL)) NIL))
+      NIL)
+     ("2" (SKOSIMP*)
+      (("2"
+        (AUTO-REWRITE "concat_simple_nil" "concat_simple_cons"
+                      "simple_integral_nil" "simple_integral_cons"
+                      "eadd_zero_left" "eadd_associative")
+        (("2" (GRIND :DEFS NIL) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   ((|list| TYPE-DECL NIL |list_adt| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|simpleIntegral| DEF-DECL "ENN" |ppg_general_lintegral| NIL)
+    (|concatSimple| DEF-DECL "Simple" |ppg_simple_function_lattice| NIL)
+    (|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_function_lattice| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_function_lattice| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|list_induction| FORMULA-DECL NIL |list_adt| NIL)
+    (|concat_simple_nil| FORMULA-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|simple_integral_nil| FORMULA-DECL NIL |ppg_general_lintegral| NIL)
+    (|eadd_zero_left| FORMULA-DECL NIL |ppg_enn_add| NIL)
+    (|concat_simple_cons| FORMULA-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|simple_integral_cons| FORMULA-DECL NIL |ppg_simple_integral_scaling| NIL)
+    (|eadd_associative| FORMULA-DECL NIL |ppg_enn_add| NIL))
+   SHOSTAK))
+ (|max_region_description| 0
+  (|max_region_description-1| NIL 4001431485
+   (""
+    (THEN (SKOSIMP) (EXPAND "maxRegion")
+     (LEMMA "comparison_set_zero"
+      ("L" "R!1" "f" "simpleAsMeasurable(L!1)" "x" "x!1"))
+     (EXPAND "simpleAsMeasurable") (REWRITE "finite_le") (ASSERT))
+    NIL)
+   ((|comparison_set_zero| FORMULA-DECL NIL |ppg_simple_comparison_regions|
+     NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|lowerMeasurable| CONST-DECL "bool" |ppg_simple_comparison_regions| NIL)
+    (|LowerMeasurable| TYPE-EQ-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (|simpleAsMeasurable| CONST-DECL "LowerMeasurable"
+     |ppg_simple_function_lattice| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_function_lattice| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_function_lattice| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|finite_le| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|simpleValue| DEF-DECL "nonneg_real" |ppg_general_lintegral| NIL)
+    (|maxRegion| CONST-DECL "(S)" |ppg_simple_function_lattice| NIL))
+   SHOSTAK))
+ (|max_simple_value| 0
+  (|max_simple_value-1| NIL 4001431485
+   (""
+    (THEN (SKOSIMP) (EXPAND "maxSimple") (REWRITE "concat_simple_value")
+     (LEMMA "restricted_value" ("L" "L!1" "A" "maxRegion(L!1,R!1)" "x" "x!1"))
+     (LEMMA "restricted_value"
+      ("L" "R!1" "A" "complement(maxRegion(L!1,R!1))" "x" "x!1"))
+     (LEMMA "max_region_description" ("L" "L!1" "R" "R!1" "x" "x!1"))
+     (GRIND :DEFS ("complement" "max")))
+    NIL)
+   ((|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|subset_algebra_complement| APPLICATION-JUDGEMENT "(S)"
+     |ppg_simple_function_lattice| NIL)
+    (|concat_simple_value| FORMULA-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_function_lattice| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_function_lattice| NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|restrictSimple| DEF-DECL "Simple" |ppg_simple_integral_regions| NIL)
+    (|maxRegion| CONST-DECL "(S)" |ppg_simple_function_lattice| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|complement| CONST-DECL "set" |sets| NIL)
+    (|max| CONST-DECL "{p: real | p >= m AND p >= n}" |real_defs| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nonneg_real_max| APPLICATION-JUDGEMENT
+     "{z: nonneg_real | z >= x AND z >= y}" |real_defs| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|max_region_description| FORMULA-DECL NIL |ppg_simple_function_lattice|
+     NIL)
+    (|restricted_value| FORMULA-DECL NIL |ppg_simple_integral_regions| NIL)
+    (|maxSimple| CONST-DECL "Simple" |ppg_simple_function_lattice| NIL))
+   SHOSTAK))
+ (|max_simple_left_bound| 0
+  (|max_simple_left_bound-1| NIL 4001431485
+   ("" (THEN (SKOSIMP) (REWRITE "max_simple_value") (GRIND :DEFS ("max"))) NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nonneg_real_max| APPLICATION-JUDGEMENT
+     "{z: nonneg_real | z >= x AND z >= y}" |real_defs| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_function_lattice| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_function_lattice| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|max_simple_value| FORMULA-DECL NIL |ppg_simple_function_lattice| NIL))
+   SHOSTAK))
+ (|max_simple_right_bound| 0
+  (|max_simple_right_bound-1| NIL 4001431485
+   ("" (THEN (SKOSIMP) (REWRITE "max_simple_value") (GRIND :DEFS ("max"))) NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nonneg_real_max| APPLICATION-JUDGEMENT
+     "{z: nonneg_real | z >= x AND z >= y}" |real_defs| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_function_lattice| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_function_lattice| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|max_simple_value| FORMULA-DECL NIL |ppg_simple_function_lattice| NIL))
+   SHOSTAK))
+ (|max_simple_minorant| 0
+  (|max_simple_minorant-1| NIL 4001431485
+   (""
+    (THEN (SKOSIMP) (LABEL "LM" -1) (LABEL "RM" -2)
+     (EXPAND "simpleMinorant" "LM") (EXPAND "simpleMinorant" "RM")
+     (EXPAND "simpleMinorant" +) (SKOSIMP) (INST "LM" "x!1") (INST "RM" "x!1")
+     (REWRITE "max_simple_value") (EXPAND "max")
+     (GRIND :DEFS ("max") :IF-MATCH NIL))
+    NIL)
+   ((|max| CONST-DECL "{p: real | p >= m AND p >= n}" |real_defs| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_function_lattice| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_function_lattice| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|max_simple_value| FORMULA-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|nonneg_real_max| APPLICATION-JUDGEMENT
+     "{z: nonneg_real | z >= x AND z >= y}" |real_defs| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_function_lattice| NIL)
+    (|simpleMinorant| CONST-DECL "bool" |ppg_general_lintegral| NIL))
+   SHOSTAK)))
+

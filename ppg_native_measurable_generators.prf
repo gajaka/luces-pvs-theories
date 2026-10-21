@@ -1,0 +1,61 @@
+(|ppg_native_measurable_generators|
+ (|preimage_sigma_at| 0
+  (|preimage_sigma_at-1| NIL 4001437926
+   (""
+    (THEN (SKOSIMP) (EXPAND "preimageSigma") (EXPAND "asNasa")
+     (EXPAND "asProject") (EXPAND "imageSigma") (ASSERT))
+    NIL)
+   ((|asNasa| CONST-DECL "sigma_algebra" |ppg_nasa_sigma| NIL)
+    (|imageSigma| CONST-DECL "ppg_measurable_space[Y].MeasurableSpace"
+     |ppg_measurable_map| NIL)
+    (|asProject| CONST-DECL "MeasurableSpace" |ppg_nasa_sigma| NIL)
+    (|preimageSigma| CONST-DECL
+     "measure_integration@subset_algebra_def[Y].sigma_algebra"
+     |ppg_native_measurable_generators| NIL))
+   SHOSTAK))
+ (|generators_belong| 0
+  (|generators_belong-1| NIL 4001437926
+   (""
+    (THEN (SKOSIMP) (AUTO-REWRITE "preimage_sigma_at")
+     (GRIND :DEFS ("subset?" "member") :EXCLUDE
+      ("inverseImage" "preimageSigma")))
+    NIL)
+   ((|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|preimage_sigma_at| FORMULA-DECL NIL |ppg_native_measurable_generators|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL))
+   SHOSTAK))
+ (|generated_preimage_subset| 0
+  (|generated_preimage_subset-1| NIL 4001437926
+   (""
+    (THEN (SKOSIMP) (LEMMA "generators_belong" ("G" "G!1" "j" "j!1")) (ASSERT)
+     (TYPEPRED "preimageSigma(j!1)")
+     (LEMMA "generated_sigma_algebra_subset2[Y]"
+      ("X" "G!1" "Y" "preimageSigma(j!1)"))
+     (ASSERT))
+    NIL)
+   ((|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|generated_sigma_algebra_subset2| FORMULA-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|preimageSigma| CONST-DECL
+     "measure_integration@subset_algebra_def[Y].sigma_algebra"
+     |ppg_native_measurable_generators| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|generators_belong| FORMULA-DECL NIL |ppg_native_measurable_generators|
+     NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_native_measurable_generators| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_native_measurable_generators| NIL))
+   SHOSTAK)))
+

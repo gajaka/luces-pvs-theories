@@ -1,0 +1,34 @@
+% An ENN-valued indicator is built by scaling the simple unit
+% indicator. Its integral formula retains both zero and infinite masses.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+ppg_general_indicator_integral[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_general_integral_extended_scale[X,S,mu]
+
+  A: VAR (S)
+  z: VAR ENN
+  x: VAR X
+
+  unitIndicator(A): LowerMeasurable =
+    simpleAsMeasurable(cons((1,A),list_adt[SimpleTerm].null))
+
+  unit_indicator_at: LEMMA unitIndicator(A)(x)=
+    IF A(x) THEN ennFinite(1) ELSE ennFinite(0) ENDIF
+
+  unit_indicator_integral: THEOREM lintegral(unitIndicator(A))=measureValue(A)
+
+  extendedIndicator(z,A): LowerMeasurable = extendedScaled(z,unitIndicator(A))
+
+  extended_indicator_at: LEMMA extendedIndicator(z,A)(x)=
+    IF A(x) THEN z ELSE ennFinite(0) ENDIF
+
+  extended_indicator_function: LEMMA extendedIndicator(z,A)=
+    (LAMBDA(x:X):IF A(x) THEN z ELSE ennFinite(0) ENDIF)
+
+  extended_indicator_integral: THEOREM
+    lintegral(extendedIndicator(z,A))=emul(z,measureValue(A))
+
+END ppg_general_indicator_integral

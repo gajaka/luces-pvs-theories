@@ -1,0 +1,23 @@
+% Squaring transports finite lower thresholds through the
+% nonnegative square root. Infinity satisfies every such threshold.
+%
+% Mathlib, MeasureTheory/Function/StronglyMeasurable/ENNReal.lean;
+% NASALib reals@sqrt (Rick Butler and Cesar Munoz), and reals@sq.
+ppg_enn_square_threshold: THEORY
+BEGIN
+  IMPORTING ppg_enn_to_real,reals@sqrt
+
+  a,b: VAR nonneg_real
+  z: VAR ENN
+
+  finite_square_threshold: LEMMA a<=b*b IFF sqrt(a)<=b
+
+  finite_square_bound: LEMMA b<=1 IMPLIES b*b<=1
+
+  square_threshold: THEOREM ele(ennFinite(a),emul(z,z)) IFF
+    ele(ennFinite(sqrt(a)),z)
+
+  square_unit_bound: THEOREM ele(z,ennFinite(1)) IMPLIES
+    ele(emul(z,z),ennFinite(1))
+
+END ppg_enn_square_threshold

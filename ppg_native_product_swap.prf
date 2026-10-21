@@ -1,0 +1,244 @@
+(|ppg_native_product_swap|
+ (|swap_cancel| 0
+  (|swap_cancel-1| NIL 4001440354
+   ("" (THEN (GRIND :DEFS ("swapFunction" "reverseFunction"))) NIL)
+   ((|reverseFunction| CONST-DECL "[Y, X]" |ppg_native_product_swap| NIL)
+    (|swapFunction| CONST-DECL "[X, Y]" |ppg_native_product_swap| NIL))
+   SHOSTAK))
+ (|reverse_cancel| 0
+  (|reverse_cancel-1| NIL 4001440354
+   ("" (THEN (GRIND :DEFS ("swapFunction" "reverseFunction"))) NIL)
+   ((|swapFunction| CONST-DECL "[X, Y]" |ppg_native_product_swap| NIL)
+    (|reverseFunction| CONST-DECL "[Y, X]" |ppg_native_product_swap| NIL))
+   SHOSTAK))
+ (|target_generator_is_rectangle| 0
+  (|target_generator_is_rectangle-1| NIL 4001440354
+   (""
+    (THEN (SKOSIMP) (EXPAND "targetGenerators") (EXPAND "extend")
+     (GRIND :DEFS ("fullset") :EXCLUDE ("measurable_rectangle?")))
+    NIL)
+   ((|extend| CONST-DECL "R" |extend| NIL)
+    (|targetGenerators| CONST-DECL "set[set[[X, Y]]]" |ppg_native_product_swap|
+     NIL))
+   SHOSTAK))
+ (|swap_rectangle_inverse| 0
+  (|swap_rectangle_inverse-1| NIL 4001440355
+   (""
+    (THEN (SKOSIMP) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :DEFS ("inverseImage" "swapFunction" "cross_product" "member")))
+    NIL)
+   ((|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|swapFunction| CONST-DECL "[X, Y]" |ppg_native_product_swap| NIL)
+    (|cross_product| CONST-DECL "set[[T1, T2]]" |cross_product| |topology|)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_native_product_swap| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_native_product_swap| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_native_product_swap| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_native_product_swap| NIL))
+   SHOSTAK))
+ (|swap_rectangle_measurable| 0
+  (|swap_rectangle_measurable-1| NIL 4001440355
+   (""
+    (THEN (SKOSIMP) (REWRITE "swap_rectangle_inverse")
+     (LEMMA "cross_product_is_sigma_times[Y,X,SY,SX]" ("X" "B!1" "Y" "A!1"))
+     (ASSERT))
+    NIL)
+   ((|cross_product_is_sigma_times| FORMULA-DECL NIL |product_sigma|
+     |measure_integration|)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_native_product_swap| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_native_product_swap| NIL)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_native_product_swap| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_native_product_swap| NIL)
+    (|swap_rectangle_inverse| FORMULA-DECL NIL |ppg_native_product_swap| NIL))
+   SHOSTAK))
+ (|swap_generators_measurable| 0
+  (|swap_generators_measurable-1| NIL 4001440355
+   ("" (SKOSIMP)
+    (("" (LEMMA "target_generator_is_rectangle" ("D" "D!1"))
+      (("" (ASSERT)
+        (("" (EXPAND "measurable_rectangle?")
+          (("" (SKOSIMP)
+            (("" (REPLACE -1)
+              (("" (LEMMA "swap_rectangle_measurable" ("A" "X!1" "B" "Y!1"))
+                (("1" (PROPAX) NIL NIL) ("2" (PROPAX) NIL NIL)
+                 ("3" (PROPAX) NIL NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|swap_rectangle_measurable| FORMULA-DECL NIL |ppg_native_product_swap|
+     NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_native_product_swap| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_native_product_swap| NIL)
+    (|measurable_rectangle?| CONST-DECL "bool" |product_sigma_def|
+     |measure_integration|)
+    (|target_generator_is_rectangle| FORMULA-DECL NIL |ppg_native_product_swap|
+     NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_native_product_swap| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_native_product_swap| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL))
+   SHOSTAK))
+ (|swap_generated_preimages| 0
+  (|swap_generated_preimages-1| NIL 4001440355
+   (""
+    (THEN
+     (LEMMA "generated_preimage_subset[[Y,X],[X,Y],sigma_times(SY,SX)]"
+      ("j" "swapFunction" "G" "targetGenerators"))
+     (LEMMA "swap_generators_measurable")
+     (GRIND :EXCLUDE
+      ("swapFunction" "targetGenerators" "sigma_times" "preimageSigma"
+       "inverseImage")))
+    NIL)
+   ((SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_native_product_swap| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_native_product_swap| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_native_product_swap| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_native_product_swap| NIL)
+    (|swapFunction| CONST-DECL "[X, Y]" |ppg_native_product_swap| NIL)
+    (|targetGenerators| CONST-DECL "set[set[[X, Y]]]" |ppg_native_product_swap|
+     NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|generated_preimage_subset| FORMULA-DECL NIL
+     |ppg_native_measurable_generators| NIL)
+    (|swap_generators_measurable| FORMULA-DECL NIL |ppg_native_product_swap|
+     NIL))
+   SHOSTAK))
+ (|target_product_generated| 0
+  (|target_product_generated-1| NIL 4001440355
+   ("" (THEN (EXPAND "targetGenerators") (EXPAND "sigma_times") (ASSERT)) NIL)
+   ((|targetGenerators| CONST-DECL "set[set[[X, Y]]]" |ppg_native_product_swap|
+     NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|))
+   SHOSTAK))
+ (|swap_measurable| 0
+  (|swap_measurable-1| NIL 4001440355
+   (""
+    (THEN (LEMMA "swap_generated_preimages")
+     (REWRITE "target_product_generated" -1 :DIR RL) (EXPAND "subset?" -1)
+     (EXPAND "measurableMap?") (SKOSIMP) (INST -1 "A!1") (ASSERT)
+     (LEMMA "preimage_sigma_at[[Y,X],[X,Y],sigma_times(SY,SX)]"
+      ("j" "swapFunction" "D" "A!1"))
+     (EXPAND "inverseEvent") (EXPAND "inverseImage") (ASSERT))
+    NIL)
+   ((|swap_generated_preimages| FORMULA-DECL NIL |ppg_native_product_swap| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|inverseEvent| CONST-DECL "set[X]" |ppg_general_measure_map| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|preimage_sigma_at| FORMULA-DECL NIL |ppg_native_measurable_generators|
+     NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|swapFunction| CONST-DECL "[X, Y]" |ppg_native_product_swap| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_native_product_swap| NIL)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_native_product_swap| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_native_product_swap| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_native_product_swap| NIL)
+    (|measurableMap?| CONST-DECL "bool" |ppg_general_measure_map| NIL)
+    (|target_product_generated| FORMULA-DECL NIL |ppg_native_product_swap|
+     NIL))
+   SHOSTAK))
+ (|swapMap_TCC1| 0
+  (|swapMap_TCC1-1| NIL 4001440354
+   ("" (THEN (LEMMA "swap_measurable") (ASSERT)) NIL)
+   ((|swap_measurable| FORMULA-DECL NIL |ppg_native_product_swap| NIL)) NIL
+   (|swapMap| SUBTYPE "swapFunction"
+    "MeasurableMap[[Y, X], [X, Y], sigma_times[Y, X](SY, SX), sigma_times[X, Y](SX, SY)]"
+    (51 27 51 39))))
+ (|swap_map_rectangle_TCC1| 0
+  (|swap_map_rectangle_TCC1-1| NIL 4001440354
+   (""
+    (THEN (SKOSIMP)
+     (LEMMA "cross_product_is_sigma_times[X,Y,SX,SY]" ("X" "A!1" "Y" "B!1"))
+     (ASSERT))
+    NIL)
+   ((|cross_product_is_sigma_times| FORMULA-DECL NIL |product_sigma|
+     |measure_integration|)
+    (X FORMAL-TYPE-DECL NIL |ppg_native_product_swap| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_native_product_swap| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_native_product_swap| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_native_product_swap| NIL))
+   NIL
+   (|swap_map_rectangle| SUBTYPE "cross_product[X, Y](A, B)"
+    "(product_sigma_def[ppg_native_product_swap.X, ppg_native_product_swap.Y].sigma_times(ppg_native_product_swap.SX, ppg_native_product_swap.SY))"
+    (53 51 53 69))))
+ (|swap_map_rectangle| 0
+  (|swap_map_rectangle-1| NIL 4001440355
+   (""
+    (THEN (SKOSIMP) (EXPAND "inverseEvent") (EXPAND "swapMap")
+     (EXPAND "swapFunction") (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :DEFS ("cross_product" "member")))
+    NIL)
+   ((|swapMap| CONST-DECL "MeasurableMap" |ppg_native_product_swap| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|cross_product| CONST-DECL "set[[T1, T2]]" |cross_product| |topology|)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_native_product_swap| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_native_product_swap| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_native_product_swap| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_native_product_swap| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|swapFunction| CONST-DECL "[X, Y]" |ppg_native_product_swap| NIL)
+    (|inverseEvent| CONST-DECL "set[X]" |ppg_general_measure_map| NIL))
+   SHOSTAK)))
+

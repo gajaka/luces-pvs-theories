@@ -1,0 +1,703 @@
+(|ppg_product_symmetry_finite_covers|
+ (|product_rectangles_agree| 0
+  (|product_rectangles_agree-1| NIL 4001440446
+   (""
+    (THEN (EXPAND "rectangleAgreement") (SKOSIMP)
+     (LEMMA "product_rectangle_value[X,Y,SX,SY,mu]"
+      ("nu" "nu" "A" "A!1" "B" "B!1"))
+     (LEMMA "product_rectangle_value[Y,X,SY,SX,nu]"
+      ("nu" "mu" "A" "B!1" "B" "A!1"))
+     (LEMMA "emul_commutative"
+      ("x" "ppg_general_measure_values[X,SX,mu].nativeValue(mu(A!1))" "y"
+       "ppg_general_measure_values[X,SX,mu].nativeValue(nu(B!1))"))
+     (LEMMA "native_semantic_equality[X,SX,mu]"
+      ("u" "sourceLaw(cross_product(A!1,B!1))" "v"
+       "swappedLaw(cross_product(A!1,B!1))"))
+     (EXPAND "sourceLaw") (EXPAND "swappedLaw") (EXPAND "mapMeasure")
+     (EXPAND "mapMeasureFunction") (REWRITE "swap_map_rectangle")
+     (EXPAND "reverseLaw") (EXPAND "measurableRectangle")
+     (EXPAND "measureValue") (EXPAND "nativeValue") (ASSERT) (GRIND :DEFS NIL))
+    NIL)
+   ((|rectangleAgreement| CONST-DECL "bool"
+     |ppg_finite_rectangle_restriction_unique| NIL)
+    (|product_rectangle_value| FORMULA-DECL NIL
+     |ppg_sfinite_product_rectangles| NIL)
+    (|nu| FORMAL-CONST-DECL "(ppg_sfinite_measure[Y, SY].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "(ppg_sfinite_measure[X, SX].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|nativeValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|emul_commutative| FORMULA-DECL NIL |ppg_enn_multiply| NIL)
+    (|mapMeasure| CONST-DECL "measure_type[Y, SY]" |ppg_general_measure_map|
+     NIL)
+    (|swap_map_rectangle| FORMULA-DECL NIL |ppg_native_product_swap| NIL)
+    (|measurableRectangle| CONST-DECL "(sigma_times(SX, SY))"
+     |ppg_sfinite_product_rectangles| NIL)
+    (|measureValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL)
+    (|reverseLaw| CONST-DECL "measure_type[[Y, X], sigma_times(SY, SX)]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|mapMeasureFunction| CONST-DECL "extended_nnreal"
+     |ppg_general_measure_map| NIL)
+    (|native_semantic_equality| FORMULA-DECL NIL |ppg_general_measure_values|
+     NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|sourceLaw| CONST-DECL "measure_type[[X, Y], sigma_times(SX, SY)]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|cross_product| CONST-DECL "set[[T1, T2]]" |cross_product| |topology|)
+    (|swappedLaw| CONST-DECL "measure_type[[X, Y], sigma_times(SX, SY)]"
+     |ppg_product_symmetry_finite_covers| NIL))
+   SHOSTAK))
+ (|rectangle_flags_equal_TCC1| 0
+  (|rectangle_flags_equal_TCC1-1| NIL 4001440446
+   (""
+    (THEN (SKOSIMP)
+     (LEMMA "cross_product_is_sigma_times[X,Y,SX,SY]" ("X" "A!1" "Y" "B!1"))
+     (ASSERT))
+    NIL)
+   ((|cross_product_is_sigma_times| FORMULA-DECL NIL |product_sigma|
+     |measure_integration|)
+    (X FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_product_symmetry_finite_covers| NIL))
+   NIL
+   (|rectangle_flags_equal| SUBTYPE "cross_product[X, Y](A, B)"
+    "(product_sigma_def[ppg_product_symmetry_finite_covers.X, ppg_product_symmetry_finite_covers.Y].sigma_times(ppg_product_symmetry_finite_covers.SX, ppg_product_symmetry_finite_covers.SY))"
+    (36 41 36 59))))
+ (|rectangle_flags_equal| 0
+  (|rectangle_flags_equal-1| NIL 4001440446
+   (""
+    (THEN (SKOSIMP) (LEMMA "product_rectangles_agree")
+     (EXPAND "rectangleAgreement") (INST -1 "A!1" "B!1") (EXPAND "x_eq")
+     (GROUND))
+    NIL)
+   ((|rectangleAgreement| CONST-DECL "bool"
+     |ppg_finite_rectangle_restriction_unique| NIL)
+    (|x_eq| CONST-DECL "bool" |extended_nnreal| |extended_nnreal|)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (|product_rectangles_agree| FORMULA-DECL NIL
+     |ppg_product_symmetry_finite_covers| NIL))
+   SHOSTAK))
+ (|cover_event_rows| 0
+  (|cover_event_rows-1| NIL 4001440446
+   (""
+    (THEN (SKOSIMP) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "rectEvent")
+     (EXPAND "coverRows") (EXPAND "rectCover") (EXPAND "measurableRectangle")
+     (ASSERT))
+    NIL)
+   ((|measurableRectangle| CONST-DECL "(sigma_times(SX, SY))"
+     |ppg_sfinite_product_rectangles| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|sourceLaw| CONST-DECL "measure_type[[X, Y], sigma_times(SX, SY)]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|swappedLaw| CONST-DECL "measure_type[[X, Y], sigma_times(SX, SY)]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|rectEvent| CONST-DECL "(sigma_times(SX, SY))"
+     |ppg_product_finite_cover_uniqueness| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |indexed_sets_aux| |sets_aux|)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|IUnion| CONST-DECL "set[T]" |indexed_sets| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "(ppg_sfinite_measure[X, SX].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|nu| FORMAL-CONST-DECL "(ppg_sfinite_measure[Y, SY].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|Covers| TYPE-EQ-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (|coverRows| CONST-DECL "[(SX), (SY)]" |ppg_product_symmetry_finite_covers|
+     NIL)
+    (|rectCover| CONST-DECL "(sigma_times(SX, SY))" |ppg_product_finite_cover|
+     NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|cover_rows_disjoint| 0
+  (|cover_rows_disjoint-1| NIL 4001440446
+   (""
+    (THEN (SKOSIMP) (TYPEPRED "c!1")
+     (LEMMA "rect_cover_disjoint" ("C" "c!1`1" "D" "c!1`2"))
+     (REWRITE "cover_event_rows") (GROUND))
+    NIL)
+   ((|rect_cover_disjoint| FORMULA-DECL NIL |ppg_product_finite_cover| NIL)
+    (|cover_event_rows| FORMULA-DECL NIL |ppg_product_symmetry_finite_covers|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |indexed_sets_aux| |sets_aux|)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|IUnion| CONST-DECL "set[T]" |indexed_sets| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "(ppg_sfinite_measure[X, SX].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|nu| FORMAL-CONST-DECL "(ppg_sfinite_measure[Y, SY].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|Covers| TYPE-EQ-DECL NIL |ppg_product_symmetry_finite_covers| NIL))
+   SHOSTAK))
+ (|cover_rows_full| 0
+  (|cover_rows_full-1| NIL 4001440446
+   (""
+    (THEN (SKOSIMP) (TYPEPRED "c!1")
+     (LEMMA "rect_cover_union" ("C" "c!1`1" "D" "c!1`2"))
+     (REWRITE "cover_event_rows") (GROUND))
+    NIL)
+   ((|rect_cover_union| FORMULA-DECL NIL |ppg_product_finite_cover| NIL)
+    (|cover_event_rows| FORMULA-DECL NIL |ppg_product_symmetry_finite_covers|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |indexed_sets_aux| |sets_aux|)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|IUnion| CONST-DECL "set[T]" |indexed_sets| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "(ppg_sfinite_measure[X, SX].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|nu| FORMAL-CONST-DECL "(ppg_sfinite_measure[Y, SY].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|Covers| TYPE-EQ-DECL NIL |ppg_product_symmetry_finite_covers| NIL))
+   SHOSTAK))
+ (|cover_left_finite| 0
+  (|cover_left_finite-1| NIL 4001440793
+   ("" (THEN (SKOSIMP) (TYPEPRED "c!1") (INST -5 "n!1") (GROUND)) NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |indexed_sets_aux| |sets_aux|)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|IUnion| CONST-DECL "set[T]" |indexed_sets| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "(ppg_sfinite_measure[X, SX].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|nu| FORMAL-CONST-DECL "(ppg_sfinite_measure[Y, SY].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|Covers| TYPE-EQ-DECL NIL |ppg_product_symmetry_finite_covers| NIL))
+   SHOSTAK))
+ (|cover_right_finite| 0
+  (|cover_right_finite-1| NIL 4001440794
+   ("" (THEN (SKOSIMP) (TYPEPRED "c!1") (INST -5 "n!1") (GROUND)) NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |indexed_sets_aux| |sets_aux|)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|IUnion| CONST-DECL "set[T]" |indexed_sets| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "(ppg_sfinite_measure[X, SX].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|nu| FORMAL-CONST-DECL "(ppg_sfinite_measure[Y, SY].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|Covers| TYPE-EQ-DECL NIL |ppg_product_symmetry_finite_covers| NIL))
+   SHOSTAK))
+ (|cover_rows_left_finite| 0
+  (|cover_rows_left_finite-1| NIL 4001440447
+   (""
+    (THEN (SKOSIMP) (LEMMA "cover_left_finite" ("c" "c!1"))
+     (LEMMA "cover_right_finite" ("c" "c!1"))
+     (LEMMA "rect_cover_finite" ("C" "c!1`1" "D" "c!1`2" "n" "n!1"))
+     (EXPAND "sourceLaw") (EXPAND "productLaw") (EXPAND "rectEvent")
+     (EXPAND "coverRows") (EXPAND "rectCover") (EXPAND "measurableRectangle")
+     (ASSERT) (GRIND :DEFS NIL))
+    NIL)
+   ((|cover_right_finite| FORMULA-DECL NIL |ppg_product_symmetry_finite_covers|
+     NIL)
+    (|sourceLaw| CONST-DECL "measure_type[[X, Y], sigma_times(SX, SY)]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|rectEvent| CONST-DECL "(sigma_times(SX, SY))"
+     |ppg_product_finite_cover_uniqueness| NIL)
+    (|rectCover| CONST-DECL "(sigma_times(SX, SY))" |ppg_product_finite_cover|
+     NIL)
+    (|measurableRectangle| CONST-DECL "(sigma_times(SX, SY))"
+     |ppg_sfinite_product_rectangles| NIL)
+    (|coverRows| CONST-DECL "[(SX), (SY)]" |ppg_product_symmetry_finite_covers|
+     NIL)
+    (|productLaw| CONST-DECL "measure_type[[X, Y], sigma_times(SX, SY)]"
+     |ppg_product_finite_cover| NIL)
+    (|rect_cover_finite| FORMULA-DECL NIL |ppg_product_finite_cover| NIL)
+    (|cover_left_finite| FORMULA-DECL NIL |ppg_product_symmetry_finite_covers|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |indexed_sets_aux| |sets_aux|)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|IUnion| CONST-DECL "set[T]" |indexed_sets| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "(ppg_sfinite_measure[X, SX].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|nu| FORMAL-CONST-DECL "(ppg_sfinite_measure[Y, SY].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|Covers| TYPE-EQ-DECL NIL |ppg_product_symmetry_finite_covers| NIL))
+   SHOSTAK))
+ (|cover_rows_right_finite| 0
+  (|cover_rows_right_finite-1| NIL 4001440447
+   (""
+    (THEN (SKOSIMP) (LEMMA "cover_rows_left_finite" ("c" "c!1" "n" "n!1"))
+     (LEMMA "rectangle_flags_equal"
+      ("A" "c!1`1(double_index_i(n!1))" "B" "c!1`2(double_index_j(n!1))"))
+     (EXPAND "rectEvent") (EXPAND "coverRows") (ASSERT))
+    NIL)
+   ((|double_index_j| CONST-DECL "nat" |code_product| |extended_nnreal|)
+    (|double_index_i| CONST-DECL "nat" |code_product| |extended_nnreal|)
+    (|rectangle_flags_equal| FORMULA-DECL NIL
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|coverRows| CONST-DECL "[(SX), (SY)]" |ppg_product_symmetry_finite_covers|
+     NIL)
+    (|rectEvent| CONST-DECL "(sigma_times(SX, SY))"
+     |ppg_product_finite_cover_uniqueness| NIL)
+    (|cover_rows_left_finite| FORMULA-DECL NIL
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |indexed_sets_aux| |sets_aux|)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|IUnion| CONST-DECL "set[T]" |indexed_sets| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "(ppg_sfinite_measure[X, SX].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|nu| FORMAL-CONST-DECL "(ppg_sfinite_measure[Y, SY].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|Covers| TYPE-EQ-DECL NIL |ppg_product_symmetry_finite_covers| NIL))
+   SHOSTAK))
+ (|coverCertificate_TCC1| 0
+  (|coverCertificate_TCC1-1| NIL 4001440446
+   (""
+    (THEN (SKOSIMP) (LEMMA "cover_rows_disjoint" ("c" "c!1"))
+     (LEMMA "cover_rows_full" ("c" "c!1"))
+     (LEMMA "cover_rows_left_finite" ("c" "c!1"))
+     (LEMMA "cover_rows_right_finite" ("c" "c!1")) (EXPAND "rectangleCover")
+     (GRIND :EXCLUDE ("rectEvent" "coverRows" "sourceLaw" "swappedLaw")))
+    NIL)
+   ((|cover_rows_full| FORMULA-DECL NIL |ppg_product_symmetry_finite_covers|
+     NIL)
+    (|cover_rows_right_finite| FORMULA-DECL NIL
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|subset_algebra_intersection| APPLICATION-JUDGEMENT "(S)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(S)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|measurable_fullset| NAME-JUDGEMENT "measurable_set[X, S]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|subset_algebra_fullset| NAME-JUDGEMENT "(generated_sigma_algebra(extend
+                             [set[[X, Y]],
+                              measurable_rectangle[X, Y](SX, SY), bool,
+                              FALSE]
+                             (fullset[measurable_rectangle[X, Y](SX, SY)])))"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|sigma_algebra_IUnion_rew| APPLICATION-JUDGEMENT "(S)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|rectangleCover| CONST-DECL "bool" |ppg_product_finite_cover_uniqueness|
+     NIL)
+    (|cover_rows_left_finite| FORMULA-DECL NIL
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|cover_rows_disjoint| FORMULA-DECL NIL
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |indexed_sets_aux| |sets_aux|)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|IUnion| CONST-DECL "set[T]" |indexed_sets| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "(ppg_sfinite_measure[X, SX].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|nu| FORMAL-CONST-DECL "(ppg_sfinite_measure[Y, SY].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|Covers| TYPE-EQ-DECL NIL |ppg_product_symmetry_finite_covers| NIL))
+   NIL
+   (|coverCertificate| SUBTYPE "coverRows(c)"
+    "RectangleCover[X, Y, SX, SY, sourceLaw, swappedLaw]" (63 40 63 52))))
+ (|product_symmetry_from_finite_covers| 0
+  (|product_symmetry_from_finite_covers-1| NIL 4001440447
+   (""
+    (THEN (SKOSIMP) (LEMMA "product_rectangles_agree")
+     (LEMMA "rectangle_cover_unique" ("Q" "coverCertificate(c!1)")) (ASSERT))
+    NIL)
+   ((|rectangle_cover_unique| FORMULA-DECL NIL
+     |ppg_product_finite_cover_uniqueness| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|RectRows| TYPE-EQ-DECL NIL |ppg_product_finite_cover_uniqueness| NIL)
+    (|rectangleCover| CONST-DECL "bool" |ppg_product_finite_cover_uniqueness|
+     NIL)
+    (|RectangleCover| TYPE-EQ-DECL NIL |ppg_product_finite_cover_uniqueness|
+     NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|disjoint?| CONST-DECL "bool" |indexed_sets_aux| |sets_aux|)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|IUnion| CONST-DECL "set[T]" |indexed_sets| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "(ppg_sfinite_measure[X, SX].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|nu| FORMAL-CONST-DECL "(ppg_sfinite_measure[Y, SY].sfinite?)"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|Covers| TYPE-EQ-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (|coverCertificate| CONST-DECL "RectangleCover"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_product_symmetry_finite_covers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|sourceLaw| CONST-DECL "measure_type[[X, Y], sigma_times(SX, SY)]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|swappedLaw| CONST-DECL "measure_type[[X, Y], sigma_times(SX, SY)]"
+     |ppg_product_symmetry_finite_covers| NIL)
+    (|product_rectangles_agree| FORMULA-DECL NIL
+     |ppg_product_symmetry_finite_covers| NIL))
+   SHOSTAK)))
+

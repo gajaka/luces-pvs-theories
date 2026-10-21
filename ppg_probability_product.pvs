@@ -1,0 +1,31 @@
+% The full measurable rectangle has product mass one. Hence the
+% product of two probability laws is again a probability law; SFinite
+% inputs are obtained from the proved finite-measure representation.
+%
+% Mathlib, MeasureTheory/Measure/Prod.lean, IsProbabilityMeasure.prod.
+ppg_probability_product[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING ppg_probability_law[X,SX]) mu:ppg_probability_law[X,SX].ProbabilityLaw,
+  (IMPORTING ppg_probability_law[Y,SY]) nu:ppg_probability_law[Y,SY].ProbabilityLaw]: THEORY
+BEGIN
+  IMPORTING ppg_general_probability_measure[X,SX,mu],ppg_general_probability_measure[Y,SY,nu],
+    ppg_sfinite_product_rectangles[X,Y,SX,SY,mu],
+    ppg_probability_law[[X,Y],sigma_times(SX,SY)]
+
+  rightSfinite: (ppg_sfinite_measure[Y,SY].sfinite?) =
+    ppg_general_probability_measure[Y,SY,nu].sfiniteLaw
+
+  probProduct: measure_type[[X,Y],sigma_times(SX,SY)] =
+    ppg_product_measure_definition[X,Y,SX,SY,mu].productMeasure(nu)
+
+  product_full_rectangle: LEMMA measurableRectangle(fullset[X],fullset[Y])=fullset[[X,Y]]
+
+  product_full_value: LEMMA ppg_general_measure_values[X,SX,mu].nativeValue(probProduct(fullset[[X,Y]]))=ennFinite(1)
+
+  product_is_probability: THEOREM
+    ppg_probability_law[[X,Y],sigma_times(SX,SY)].probability?(probProduct)
+
+  probabilityProduct: ppg_probability_law[[X,Y],sigma_times(SX,SY)].ProbabilityLaw = probProduct
+
+END ppg_probability_product

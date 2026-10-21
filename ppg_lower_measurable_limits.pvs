@@ -1,0 +1,48 @@
+% Countable supremum levels are countable intersections of countable
+% unions of rational lower levels. This uses the original sigma algebra,
+% with no finiteness condition on either the carrier or its measure.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+ppg_lower_measurable_limits[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_general_simple_approximation[X,S,mu]
+
+  F: VAR [nat->ENN]
+  H: VAR [nat->LowerMeasurable]
+  z: VAR ENN
+  a: VAR nonneg_real
+  x: VAR X
+
+  grid_lower_test: LEMMA
+    (FORALL(k:nat):gridCoeff(k)<a IMPLIES ele(ennFinite(gridCoeff(k)),z))
+      IMPLIES ele(ennFinite(a),z)
+
+  sup_grid_lower_test: LEMMA ele(ennFinite(a),natSup(F)) IFF
+    FORALL(k:nat):gridCoeff(k)<a IMPLIES
+      EXISTS(n:nat):ele(ennFinite(gridCoeff(k)),F(n))
+
+  thresholdSequence(H,a)(n:nat): (S) = {x:X|ele(ennFinite(a),H(n)(x))}
+
+  threshold_sequence_at: LEMMA FORALL(n:nat):thresholdSequence(H,a)(n)(x) IFF
+    ele(ennFinite(a),H(n)(x))
+
+  threshold_union_at: LEMMA IUnion(thresholdSequence(H,a))(x) IFF
+    EXISTS(n:nat):ele(ennFinite(a),H(n)(x))
+
+  supLevel(H,a): (S) = IIntersection(LAMBDA(k:nat):
+    IF gridCoeff(k)<a THEN IUnion(thresholdSequence(H,gridCoeff(k)))
+    ELSE fullset[X] ENDIF)
+
+  sup_level_description: LEMMA supLevel(H,a)(x) IFF
+    FORALL(k:nat):gridCoeff(k)<a IMPLIES
+      EXISTS(n:nat):ele(ennFinite(gridCoeff(k)),H(n)(x))
+
+  sup_level_set: LEMMA {x:X|ele(ennFinite(a),pointwiseSup(H)(x))}=supLevel(H,a)
+
+  pointwise_sup_lower_measurable: THEOREM lowerMeasurable(pointwiseSup(H))
+
+  measurableSup(H): LowerMeasurable = pointwiseSup(H)
+
+END ppg_lower_measurable_limits

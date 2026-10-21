@@ -1,0 +1,39 @@
+% The natural-fiber lifts have disjoint finite-mass covers.
+% They therefore instantiate finite-cover symmetry without supplying
+% an equality of measures or an external covering assumption.
+%
+% Mathlib, MeasureTheory/Measure/Typeclasses/SFinite.lean;
+% MeasureTheory/Measure/Prod.lean, prod_swap.
+ppg_sfinite_lifted_product_symmetry[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING ppg_sfinite_measure[X,SX]) mu:(ppg_sfinite_measure[X,SX].sfinite?),
+  (IMPORTING ppg_sfinite_measure[Y,SY]) nu:(ppg_sfinite_measure[Y,SY].sfinite?)]: THEORY
+BEGIN
+  IMPORTING ppg_sfinite_product_closure[X,Y,SX,SY,mu,nu]
+
+  lift_left_is_sfinite: LEMMA
+    ppg_sfinite_measure[[nat,X],ppg_sfinite_sigma_lift[X,SX].LiftSigma].sfinite?(liftLeft)
+
+  sfiniteLeft: (ppg_sfinite_measure[[nat,X],ppg_sfinite_sigma_lift[X,SX].LiftSigma].sfinite?) = liftLeft
+
+  IMPORTING ppg_product_symmetry_finite_covers[[nat,X],[nat,Y],
+    ppg_sfinite_sigma_lift[X,SX].LiftSigma,ppg_sfinite_sigma_lift[Y,SY].LiftSigma,
+    sfiniteLeft,liftRight]
+
+  fiberCovers: Covers = (leftFibers,rightFibers)
+
+  liftedForward: measure_type[[[nat,X],[nat,Y]],sigma_times(
+    ppg_sfinite_sigma_lift[X,SX].LiftSigma,ppg_sfinite_sigma_lift[Y,SY].LiftSigma)] = sourceLaw
+
+  liftedReverse: measure_type[[[nat,Y],[nat,X]],sigma_times(
+    ppg_sfinite_sigma_lift[Y,SY].LiftSigma,ppg_sfinite_sigma_lift[X,SX].LiftSigma)] = reverseLaw
+
+  liftedSwapped: measure_type[[[nat,X],[nat,Y]],sigma_times(
+    ppg_sfinite_sigma_lift[X,SX].LiftSigma,ppg_sfinite_sigma_lift[Y,SY].LiftSigma)] = swappedLaw
+
+  lifted_product_symmetry: THEOREM sameMeasure(liftedForward,liftedSwapped)
+
+  lifted_forward_is_original: LEMMA liftedForward=sourceProduct
+
+END ppg_sfinite_lifted_product_symmetry

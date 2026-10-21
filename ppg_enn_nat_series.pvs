@@ -1,0 +1,53 @@
+% Countable ENN sums are suprema of the finite partial sums.
+% Zero and infinity use the same arithmetic as the finite sums.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+ppg_enn_nat_series: THEORY
+BEGIN
+  IMPORTING ppg_enn_increasing_sup
+
+  F,G: VAR [nat->ENN]
+  n,N: VAR nat
+  x,y,z,w: VAR ENN
+
+  partialSum(F,N): RECURSIVE ENN = IF N=0 THEN ennFinite(0) ELSE
+    eadd(partialSum(F,N-1),F(N-1)) ENDIF MEASURE N
+
+  partial_sum_zero: LEMMA partialSum(F,0)=ennFinite(0)
+
+  partial_sum_succ: LEMMA partialSum(F,N+1)=eadd(partialSum(F,N),F(N))
+
+  partial_sum_step: LEMMA ele(partialSum(F,N),partialSum(F,N+1))
+
+  partial_sum_monotone: THEOREM FORALL(M,N:nat,F:[nat->ENN]):N<=M IMPLIES
+    ele(partialSum(F,N),partialSum(F,M))
+
+  partial_sums_increasing: LEMMA increasingENN(LAMBDA(N:nat):partialSum(F,N))
+
+  partial_sum_term: LEMMA FORALL(N,n:nat,F:[nat->ENN]):n<N IMPLIES
+    ele(F(n),partialSum(F,N))
+
+  sum_four_rearrange: LEMMA eadd(eadd(x,y),eadd(z,w))=eadd(eadd(x,z),eadd(y,w))
+
+  partial_sum_add: THEOREM FORALL(N:nat,F,G:[nat->ENN]):
+    partialSum(LAMBDA(n:nat):eadd(F(n),G(n)),N)=
+      eadd(partialSum(F,N),partialSum(G,N))
+
+  partial_sum_zero_family: LEMMA partialSum(LAMBDA(n:nat):ennFinite(0),N)=ennFinite(0)
+
+  totalSum(F): ENN = natSup(LAMBDA(N:nat):partialSum(F,N))
+
+  total_sum_partial: LEMMA ele(partialSum(F,N),totalSum(F))
+
+  total_sum_term: LEMMA ele(F(n),totalSum(F))
+
+  total_sum_zero: LEMMA totalSum(LAMBDA(n:nat):ennFinite(0))=ennFinite(0)
+
+  partial_sum_add_function: LEMMA
+    (LAMBDA(N:nat):partialSum(LAMBDA(n:nat):eadd(F(n),G(n)),N))=
+      (LAMBDA(N:nat):eadd(partialSum(F,N),partialSum(G,N)))
+
+  total_sum_add: THEOREM totalSum(LAMBDA(n:nat):eadd(F(n),G(n)))=
+    eadd(totalSum(F),totalSum(G))
+
+END ppg_enn_nat_series

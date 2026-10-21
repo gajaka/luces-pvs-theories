@@ -1,0 +1,76 @@
+% Finite simple functions are closed under sums and maxima. Threshold
+% regions use finite binary partitions and truncated subtraction, so
+% neither the carrier nor the measure is assumed finite.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+ppg_simple_function_lattice[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_general_monotone_integral[X,S,mu]
+
+  L,R: VAR Simple
+  t: VAR SimpleTerm
+  k,a,v: VAR nonneg_real
+  x: VAR X
+  f: VAR [X->ENN]
+
+  thresholdResidual(k,a): nonneg_real = IF k>a THEN k-a ELSE 0 ENDIF
+
+  threshold_residual_order: LEMMA thresholdResidual(k,a)<=v IFF k<=a+v
+
+  thresholdSet(k,L): RECURSIVE (S) = IF null?(L) THEN
+    IF k=0 THEN fullset[X] ELSE emptyset[X] ENDIF ELSE
+    union(intersection(car(L)`2,thresholdSet(thresholdResidual(k,car(L)`1),cdr(L))),
+      intersection(complement(car(L)`2),thresholdSet(k,cdr(L))))
+    ENDIF MEASURE length(L)
+
+  threshold_set_nil: LEMMA thresholdSet(k,null)=
+    IF k=0 THEN fullset[X] ELSE emptyset[X] ENDIF
+
+  threshold_set_cons: LEMMA thresholdSet(k,cons(t,L))=
+    union(intersection(t`2,thresholdSet(thresholdResidual(k,t`1),L)),
+      intersection(complement(t`2),thresholdSet(k,L)))
+
+  threshold_set_description: THEOREM FORALL(k:nonneg_real,x:X):
+    thresholdSet(k,L)(x) IFF k<=simpleValue(L)(x)
+
+  simple_level_set: LEMMA
+    {x:X|ele(ennFinite(k),ennFinite(simpleValue(L)(x)))}=thresholdSet(k,L)
+
+  simple_lower_measurable: LEMMA lowerMeasurable(LAMBDA(x:X):ennFinite(simpleValue(L)(x)))
+
+  simpleAsMeasurable(L): LowerMeasurable = LAMBDA(x:X):ennFinite(simpleValue(L)(x))
+
+  concatSimple(L,R): RECURSIVE Simple = IF null?(L) THEN R ELSE
+    cons(car(L),concatSimple(cdr(L),R)) ENDIF MEASURE length(L)
+
+  concat_simple_nil: LEMMA concatSimple(null,R)=R
+
+  concat_simple_cons: LEMMA concatSimple(cons(t,L),R)=cons(t,concatSimple(L,R))
+
+  concat_simple_value: LEMMA simpleValue(concatSimple(L,R))(x)=
+    simpleValue(L)(x)+simpleValue(R)(x)
+
+  concat_simple_integral: LEMMA simpleIntegral(concatSimple(L,R))=
+    eadd(simpleIntegral(L),simpleIntegral(R))
+
+  maxRegion(L,R): (S) = comparisonSet(0,R,simpleAsMeasurable(L))
+
+  maxSimple(L,R): Simple = concatSimple(restrictSimple(L,maxRegion(L,R)),
+    restrictSimple(R,complement(maxRegion(L,R))))
+
+  max_region_description: LEMMA maxRegion(L,R)(x) IFF
+    simpleValue(R)(x)<=simpleValue(L)(x)
+
+  max_simple_value: THEOREM simpleValue(maxSimple(L,R))(x)=
+    max(simpleValue(L)(x),simpleValue(R)(x))
+
+  max_simple_left_bound: LEMMA simpleValue(L)(x)<=simpleValue(maxSimple(L,R))(x)
+
+  max_simple_right_bound: LEMMA simpleValue(R)(x)<=simpleValue(maxSimple(L,R))(x)
+
+  max_simple_minorant: LEMMA simpleMinorant(L,f) AND simpleMinorant(R,f) IMPLIES
+    simpleMinorant(maxSimple(L,R),f)
+
+END ppg_simple_function_lattice

@@ -1,0 +1,72 @@
+% Product naturality is proved on every measurable event by the
+% section integral and pushforward integral identities. Equality only on
+% rectangles would be insufficient for general S-finite laws.
+%
+% Mathlib, MeasureTheory/Measure/Prod.lean, Measure.map_prod_map.
+% Paul R. Halmos, Measure Theory, Springer, 1974, induced measures.
+ppg_sfinite_product_map[X,Y,U,V:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],SU:sigma_algebra[U],SV:sigma_algebra[V],
+  (IMPORTING measure_integration@measure_def[X,SX]) mu:measure_type,
+  (IMPORTING ppg_sfinite_measure[Y,SY]) nu:(sfinite?[Y,SY]),
+  (IMPORTING ppg_general_measure_map[X,U,SX,SU]) f:ppg_general_measure_map[X,U,SX,SU].MeasurableMap,
+  (IMPORTING ppg_general_measure_map[Y,V,SY,SV]) g:ppg_general_measure_map[Y,V,SY,SV].MeasurableMap]: THEORY
+BEGIN
+  IMPORTING ppg_product_measurable_map[X,Y,U,V,SX,SY,SU,SV,f,g],
+    ppg_product_measure_definition[X,Y,SX,SY,mu],
+    ppg_general_integral_map[X,U,SX,SU,mu,f]
+
+  right_map_is_sfinite: LEMMA ppg_sfinite_measure[V,SV].sfinite?(
+    ppg_general_measure_map[Y,V,SY,SV].mapMeasure(nu,g))
+
+  mappedRight: (ppg_sfinite_measure[V,SV].sfinite?) =
+    ppg_general_measure_map[Y,V,SY,SV].mapMeasure(nu,g)
+
+  IMPORTING ppg_product_measure_definition[U,V,SU,SV,mappedLaw]
+
+  sourceProduct: measure_type[[X,Y],sigma_times(SX,SY)] =
+    ppg_product_measure_definition[X,Y,SX,SY,mu].productMeasure(nu)
+
+  targetProduct: measure_type[[U,V],sigma_times(SU,SV)] =
+    ppg_product_measure_definition[U,V,SU,SV,mappedLaw].productMeasure(mappedRight)
+
+  productMapped: measure_type[[U,V],sigma_times(SU,SV)] =
+    ppg_general_measure_map[[X,Y],[U,V],sigma_times(SX,SY),sigma_times(SU,SV)].mapMeasure(sourceProduct,pairMap)
+
+  E: VAR (sigma_times(SU,SV))
+  x: VAR X
+
+  productPreimage(E): (sigma_times(SX,SY)) =
+    ppg_general_measure_map[[X,Y],[U,V],sigma_times(SX,SY),sigma_times(SU,SV)].inverseEvent(pairMap,E)
+
+  product_preimage_section: THEOREM x_section(productPreimage(E))(x)=
+    ppg_general_measure_map[Y,V,SY,SV].inverseEvent(g,x_section(E)(f(x)))
+
+  TargetSection: TYPE = ppg_simple_comparison_regions[U,SU,mappedLaw].LowerMeasurable
+
+  targetSection(E): TargetSection =
+    ppg_sfinite_sections[U,V,SU,SV,mappedLaw].measurableSection(mappedRight,E)
+
+  SourceSection: TYPE = ppg_simple_comparison_regions[X,SX,mu].LowerMeasurable
+
+  sourceSection(E): SourceSection =
+    ppg_sfinite_sections[X,Y,SX,SY,mu].measurableSection(nu,productPreimage(E))
+
+  source_section_pull_at: THEOREM sourceSection(E)(x)=
+    ppg_general_integral_map[X,U,SX,SU,mu,f].pullMeasurable(targetSection(E))(x)
+
+  source_section_pull: THEOREM sourceSection(E)=
+    ppg_general_integral_map[X,U,SX,SU,mu,f].pullMeasurable(targetSection(E))
+
+  section_integrals_map: THEOREM
+    ppg_general_lintegral[X,SX,mu].lintegral(sourceSection(E))=
+      ppg_general_lintegral[U,SU,mappedLaw].lintegral(targetSection(E))
+
+  product_map_event_value: THEOREM
+    ppg_general_measure_values[U,SU,mappedLaw].nativeValue(productMapped(E))=
+      ppg_general_measure_values[U,SU,mappedLaw].nativeValue(targetProduct(E))
+
+  product_map_same_measure: THEOREM
+    ppg_sfinite_measure[[U,V],sigma_times(SU,SV)].sameMeasure(productMapped,targetProduct)
+
+END ppg_sfinite_product_map

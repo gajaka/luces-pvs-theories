@@ -1,0 +1,35 @@
+% A disjoint measurable finite-mass cover gives finite restricted
+% measures. Original countable additivity says that their sum is the
+% original law. Sigma-finiteness is used only to supply such a cover.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+ppg_sigma_finite_is_sfinite[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_general_finite_restriction[X,S,mu],ppg_sfinite_measure[X,S]
+
+  C: VAR [nat->FiniteRegion]
+  A: VAR (S)
+  n: VAR nat
+
+  finiteComponents(C)(n:nat): finite_measure[X,S] = regionFinite(C(n))
+
+  coverRows(C,A)(n:nat): (S) = intersection(C(n),A)
+
+  cover_rows_disjoint: LEMMA disjoint?(C) IMPLIES disjoint?(coverRows(C,A))
+
+  cover_member: LEMMA FORALL(x:X):IUnion(C)=fullset[X] IMPLIES IUnion(C)(x)
+
+  cover_rows_union: LEMMA IUnion(C)=fullset[X] IMPLIES IUnion(coverRows(C,A))=A
+
+  finite_cover_native_rows: LEMMA
+    (LAMBDA(n:nat):(TRUE,finiteComponents(C)(n)(A)))=
+      (LAMBDA(n:nat):mu(coverRows(C,A)(n)))
+
+  finite_cover_decomposition: THEOREM disjoint?(C) AND IUnion(C)=fullset[X] IMPLIES
+    finiteDecomposition(mu,finiteComponents(C))
+
+  sigma_finite_is_sfinite: THEOREM sigma_finite_measure?[X,S](mu) IMPLIES sfinite?(mu)
+
+END ppg_sigma_finite_is_sfinite

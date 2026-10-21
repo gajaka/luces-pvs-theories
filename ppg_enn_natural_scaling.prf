@@ -1,0 +1,267 @@
+(|ppg_enn_natural_scaling|
+ (|natural_exceeds| 0
+  (|natural_exceeds-1| NIL 4001436024
+   (""
+    (THEN (SKOSIMP) (LEMMA "floor_def" ("x" "b!1")) (INST + "floor(b!1)+1")
+     (ASSERT))
+    NIL)
+   ((|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|integer| NONEMPTY-TYPE-FROM-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (<= CONST-DECL "bool" |reals| NIL) (< CONST-DECL "bool" |reals| NIL)
+    (|floor| CONST-DECL "{i | i <= x & x < i + 1}" |floor_ceil| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nonneg_floor_is_nat| APPLICATION-JUDGEMENT "nat" |floor_ceil| NIL)
+    (|floor_def| FORMULA-DECL NIL |floor_ceil| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL))
+   SHOSTAK))
+ (|natural_sup_no_finite_bound| 0
+  (|natural_sup_no_finite_bound-1| NIL 4001436024
+   (""
+    (THEN (SKOSIMP) (REWRITE "nat_sup_finite_bound") (LABEL "ALL" -1)
+     (LEMMA "natural_exceeds" ("b" "b!1")) (SKOSIMP) (INST "ALL" "n!1")
+     (GRIND :DEFS ("ele") :IF-MATCH NIL))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|natural_exceeds| FORMULA-DECL NIL |ppg_enn_natural_scaling| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nat_sup_finite_bound| FORMULA-DECL NIL |ppg_enn_increasing_sup| NIL))
+   SHOSTAK))
+ (|natural_sup_infinite| 0
+  (|natural_sup_infinite-1| NIL 4001436024
+   (""
+    (THEN
+     (LEMMA "finite_bounds_separate"
+      ("x" "natSup(LAMBDA(n:nat):ennFinite(n))" "y" "ennInfinity"))
+     (GROUND) (SKOSIMP) (LEMMA "natural_sup_no_finite_bound" ("b" "b!1"))
+     (GRIND :DEFS ("ele")))
+    NIL)
+   ((|ennInfinity| ADT-CONSTRUCTOR-DECL "(ennInfinity?)" |ppg_ennreal_adt| NIL)
+    (|ennInfinity?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|natSup| CONST-DECL "ENN" |ppg_enn_increasing_sup| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|finite_bounds_separate| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|lowerFinite| CONST-DECL "set[nonneg_real]" |ppg_enn_complete_sup| NIL)
+    (|bounded| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|extendedSup| CONST-DECL "ENN" |ppg_enn_complete_sup| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|natural_sup_no_finite_bound| FORMULA-DECL NIL |ppg_enn_natural_scaling|
+     NIL))
+   SHOSTAK))
+ (|natural_finite_scale_function| 0
+  (|natural_finite_scale_function-1| NIL 4001436024
+   (""
+    (THEN (SKOSIMP) (APPLY-EXTENSIONALITY :HIDE? T)
+     (REWRITE "emul_commutative"))
+    NIL)
+   ((|emul_commutative| FORMULA-DECL NIL |ppg_enn_multiply| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|emul| CONST-DECL "ENN" |ppg_enn_multiply| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|natural_scale_infinity| 0
+  (|natural_scale_infinity-1| NIL 4001436024
+   (""
+    (THEN
+     (LEMMA "nat_sup_upper"
+      ("F" "LAMBDA(n:nat):emul(ennFinite(n),ennInfinity)" "n" "1"))
+     (GRIND :DEFS ("emul" "ele") :EXCLUDE ("natSup")))
+    NIL)
+   ((|ennInfinity| ADT-CONSTRUCTOR-DECL "(ennInfinity?)" |ppg_ennreal_adt| NIL)
+    (|ennInfinity?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|emul| CONST-DECL "ENN" |ppg_enn_multiply| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|nat_sup_upper| FORMULA-DECL NIL |ppg_enn_increasing_sup| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK))
+ (|natural_scale_limit| 0
+  (|natural_scale_limit-1| NIL 4001436024
+   ("" (INDUCT "z")
+    (("1" (SKOSIMP)
+      (("1" (REWRITE "natural_finite_scale_function")
+        (("1" (REWRITE "nat_sup_scale")
+          (("1" (REWRITE "natural_sup_infinite")
+            (("1" (REWRITE "emul_commutative") NIL NIL)) NIL))
+          NIL))
+        NIL))
+      NIL)
+     ("2" (REWRITE "natural_scale_infinity")
+      (("2" (GRIND :DEFS ("emul")) NIL NIL)) NIL))
+    NIL)
+   ((|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|natSup| CONST-DECL "ENN" |ppg_enn_increasing_sup| NIL)
+    (|emul| CONST-DECL "ENN" |ppg_enn_multiply| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ennInfinity?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennInfinity| ADT-CONSTRUCTOR-DECL "(ennInfinity?)" |ppg_ennreal_adt| NIL)
+    (|ppg_ennreal_induction| FORMULA-DECL NIL |ppg_ennreal_adt| NIL)
+    (|natural_finite_scale_function| FORMULA-DECL NIL |ppg_enn_natural_scaling|
+     NIL)
+    (|natural_sup_infinite| FORMULA-DECL NIL |ppg_enn_natural_scaling| NIL)
+    (|emul_commutative| FORMULA-DECL NIL |ppg_enn_multiply| NIL)
+    (|nat_sup_scale| FORMULA-DECL NIL |ppg_enn_increasing_sup| NIL)
+    (|natural_scale_infinity| FORMULA-DECL NIL |ppg_enn_natural_scaling| NIL))
+   SHOSTAK))
+ (|natural_scale_monotone| 0
+  (|natural_scale_monotone-1| NIL 4001436024
+   ("" (SKOSIMP)
+    (("" (CASE "ennFinite?(z!1)")
+      (("1"
+        (LEMMA "both_sides_times_pos_le1_imp"
+         ("x" "i!1" "y" "j!1" "nnw" "ennValue(z!1)"))
+        (("1" (GRIND :DEFS ("emul" "ele")) NIL NIL) ("2" (PROPAX) NIL NIL))
+        NIL)
+       ("2" (GRIND :DEFS ("emul" "ele")) NIL NIL))
+      NIL))
+    NIL)
+   ((|both_sides_times_pos_le1_imp| FORMULA-DECL NIL |extra_real_props| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennValue| ADT-ACCESSOR-DECL "[(ennFinite?) -> nonneg_real]"
+     |ppg_ennreal_adt| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|emul| CONST-DECL "ENN" |ppg_enn_multiply| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,19 @@
+% A probability law is a measure whose full mass is one.
+% The subtype may be empty when the measurable carrier is empty.
+%
+% Mathlib, MeasureTheory/Measure/Typeclasses/Probability.lean,
+% IsProbabilityMeasure.
+ppg_probability_law[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra]: THEORY
+BEGIN
+  IMPORTING measure_integration@measure_def[X,S]
+
+  probability?(mu:measure_type[X,S]): bool = x_eq(mu(fullset[X]),(TRUE,1))
+
+  ProbabilityLaw: TYPE = (probability?)
+
+  mu: VAR ProbabilityLaw
+
+  probability_full_pair: LEMMA mu(fullset[X])=(TRUE,1)
+
+END ppg_probability_law

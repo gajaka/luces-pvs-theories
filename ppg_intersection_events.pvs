@@ -1,0 +1,29 @@
+% Independent shared-block samples are used for the two tests in the
+% forward order. The excluded part is exactly the event passing both
+% tests with both shared samples; no probabilistic premise is used here.
+% Kun He, Qian Li and Xiaoming Sun, Moser-Tardos Algorithm: Beyond
+% Shearer's Bound, arXiv:2111.06527, Proposition 3.3.
+ppg_intersection_events[X,Y,Z:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_double_sample_events[[X,Z],Y]
+
+  A: VAR set[[X,Y]]
+  B: VAR set[[Y,Z]]
+
+  jointEvent(A,B): set[[[X,Z],Y]] =
+    {w:[[X,Z],Y] | A(w`1`1,w`2) AND B(w`2,w`1`2)}
+
+  forwardEvent(A,B): set[[[X,Z],[Y,Y]]] =
+    {w:[[X,Z],[Y,Y]] | A(w`1`1,w`2`1) AND B(w`2`2,w`1`2)}
+
+  oneOrderOnly(A,B): set[[[X,Z],[Y,Y]]] =
+    {w:[[X,Z],[Y,Y]] | A(w`1`1,w`2`1) AND B(w`2`2,w`1`2)
+      AND (NOT A(w`1`1,w`2`2) OR NOT B(w`2`1,w`1`2))}
+
+  doubleJoint_subset_forward: LEMMA
+    subset?(doubleEvent(jointEvent(A,B)),forwardEvent(A,B))
+
+  oneOrderOnly_eq_sdiff: LEMMA oneOrderOnly(A,B)=
+    difference(forwardEvent(A,B),doubleEvent(jointEvent(A,B)))
+
+END ppg_intersection_events

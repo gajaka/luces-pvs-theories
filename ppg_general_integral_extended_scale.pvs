@@ -1,0 +1,46 @@
+% Infinite scaling is the increasing limit of natural multiples. This
+% gives unrestricted ENN homogeneity, including a zero integral, infinite
+% mass, and an empty measurable carrier.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+ppg_general_integral_extended_scale[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_general_integral_scale[X,S,mu],ppg_enn_natural_scaling
+
+  f: VAR LowerMeasurable
+  z: VAR ENN
+  n: VAR nat
+  x: VAR X
+
+  naturalScaled(f)(n:nat): LowerMeasurable = scaledFunction(n,f)
+
+  natural_scaled_at: LEMMA naturalScaled(f)(n)(x)=emul(ennFinite(n),f(x))
+
+  natural_scaled_value_sequence: LEMMA
+    (LAMBDA(n:nat):naturalScaled(f)(n)(x))=
+      (LAMBDA(n:nat):emul(ennFinite(n),f(x)))
+
+  natural_scaled_increasing: LEMMA increasingFunctions(naturalScaled(f))
+
+  infiniteScaled(f): LowerMeasurable = measurableSup(naturalScaled(f))
+
+  infinite_scaled_at: LEMMA infiniteScaled(f)(x)=emul(ennInfinity,f(x))
+
+  natural_scaled_integral_sequence: LEMMA
+    (LAMBDA(n:nat):lintegral(naturalScaled(f)(n)))=
+      (LAMBDA(n:nat):emul(ennFinite(n),lintegral(f)))
+
+  general_integral_infinity_scale: THEOREM
+    lintegral(infiniteScaled(f))=emul(ennInfinity,lintegral(f))
+
+  extendedScaled(z,f): LowerMeasurable = IF ennFinite?(z) THEN
+    scaledFunction(ennValue(z),f) ELSE infiniteScaled(f) ENDIF
+
+  extended_scaled_at: LEMMA extendedScaled(z,f)(x)=emul(z,f(x))
+
+  general_integral_extended_scale: THEOREM
+    lintegral(extendedScaled(z,f))=emul(z,lintegral(f))
+
+END ppg_general_integral_extended_scale

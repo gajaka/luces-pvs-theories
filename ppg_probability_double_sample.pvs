@@ -1,0 +1,53 @@
+% Probability section masses lie in the unit interval. The proved
+% second-moment inequality applies to that measurable function;
+% the two original product identities identify its first two moments.
+%
+% Kun He, Qian Li and Xiaoming Sun, Moser-Tardos Algorithm: Beyond
+% Shearer's Bound, arXiv:2111.06527, Proposition 3.3.
+ppg_probability_double_sample[U,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SU:sigma_algebra[U],SY:sigma_algebra[Y],
+  (IMPORTING ppg_probability_law[U,SU]) mu:ppg_probability_law[U,SU].ProbabilityLaw,
+  (IMPORTING ppg_probability_law[Y,SY]) nu:ppg_probability_law[Y,SY].ProbabilityLaw]: THEORY
+BEGIN
+  IMPORTING ppg_general_probability_measure[U,SU,mu],ppg_general_probability_measure[Y,SY,nu],
+    ppg_probability_second_moment[U,SU,mu]
+
+  sampleRight: (ppg_sfinite_measure[Y,SY].sfinite?) =
+    ppg_general_probability_measure[Y,SY,nu].sfiniteLaw
+
+  IMPORTING ppg_general_double_sample[U,Y,SU,SY,mu,sampleRight],
+    ppg_product_measure_definition[U,Y,SU,SY,mu],
+    ppg_product_measure_definition[Y,Y,SY,SY,nu]
+
+  singleLaw: measure_type[[U,Y],sigma_times(SU,SY)] =
+    ppg_product_measure_definition[U,Y,SU,SY,mu].productMeasure(nu)
+
+  originalDouble: measure_type[[U,[Y,Y]],sigma_times(SU,sigma_times(SY,SY))] =
+    ppg_product_measure_definition[U,[Y,Y],SU,sigma_times(SY,SY),mu].productMeasure(
+      ppg_product_measure_definition[Y,Y,SY,SY,nu].productMeasure(nu))
+
+  C: VAR (sigma_times(SU,SY))
+
+  sectionMass(C): ppg_simple_comparison_regions[U,SU,mu].LowerMeasurable =
+    ppg_sfinite_sections[U,Y,SU,SY,mu].measurableSection(sampleRight,C)
+
+  section_mass_bounded: THEOREM bounded?(sectionMass(C))
+
+  section_square_identity: LEMMA squaredFunction(sectionMass(C))=sectionSquare(C)
+
+  double_law_original: LEMMA doubleLaw=originalDouble
+
+  single_real_mean: LEMMA
+    ennToReal(ppg_general_measure_values[U,SU,mu].nativeValue(singleLaw(C)))=mean(sectionMass(C))
+
+  double_real_second: LEMMA
+    ennToReal(ppg_general_measure_values[U,SU,mu].nativeValue(originalDouble(measurableDoubleEvent(C))))=
+      mean(squaredFunction(sectionMass(C)))
+
+  sq_measureReal_le_doubleEvent: THEOREM
+    ennToReal(ppg_general_measure_values[U,SU,mu].nativeValue(singleLaw(C)))*
+    ennToReal(ppg_general_measure_values[U,SU,mu].nativeValue(singleLaw(C)))<=
+      ennToReal(ppg_general_measure_values[U,SU,mu].nativeValue(originalDouble(measurableDoubleEvent(C))))
+
+END ppg_probability_double_sample

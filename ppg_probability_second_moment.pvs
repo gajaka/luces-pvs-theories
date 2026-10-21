@@ -1,0 +1,50 @@
+% Integrate the pointwise inequality 2tf <= f squared + t squared.
+% Full mass one evaluates the constant term. For 0 <= f <= 1 both
+% integrals are proved finite; t equal to the mean gives Jensen's
+% second-moment bound without a variance or integrability assumption.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, nonnegative integration.
+% Kun He, Qian Li and Xiaoming Sun, arXiv:2111.06527, Proposition 3.3.
+ppg_probability_second_moment[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING ppg_probability_law[X,S]) mu:ProbabilityLaw]: THEORY
+BEGIN
+  IMPORTING ppg_probability_integral_bound[X,S,mu],ppg_lower_measurable_square[X,S,mu],
+    ppg_general_integral_add[X,S,mu]
+
+  f: VAR LowerMeasurable
+  x: VAR X
+  t: VAR nonneg_real
+
+  constantSquare(t): LowerMeasurable = extendedIndicator(ennFinite(t*t),fullset[X])
+
+  momentLinear(t,f): LowerMeasurable = extendedScaled(ennFinite(2*t),f)
+
+  momentQuadratic(t,f): LowerMeasurable = measurableAdd(squaredFunction(f),constantSquare(t))
+
+  constant_square_at: LEMMA constantSquare(t)(x)=ennFinite(t*t)
+
+  constant_square_integral: LEMMA lintegral(constantSquare(t))=ennFinite(t*t)
+
+  moment_linear_at: LEMMA momentLinear(t,f)(x)=emul(ennFinite(2*t),f(x))
+
+  moment_quadratic_at: LEMMA momentQuadratic(t,f)(x)=eadd(emul(f(x),f(x)),ennFinite(t*t))
+
+  moment_tangent_at: LEMMA ele(momentLinear(t,f)(x),momentQuadratic(t,f)(x))
+
+  moment_linear_integral: LEMMA lintegral(momentLinear(t,f))=emul(ennFinite(2*t),lintegral(f))
+
+  moment_quadratic_integral: LEMMA lintegral(momentQuadratic(t,f))=
+    eadd(lintegral(squaredFunction(f)),ennFinite(t*t))
+
+  moment_comparison_integral: LEMMA ele(lintegral(momentLinear(t,f)),lintegral(momentQuadratic(t,f)))
+
+  integral_tangent: THEOREM ele(emul(ennFinite(2*t),lintegral(f)),
+    eadd(lintegral(squaredFunction(f)),ennFinite(t*t)))
+
+  bounded_square: LEMMA bounded?(f) IMPLIES bounded?(squaredFunction(f))
+
+  second_moment_inequality: THEOREM bounded?(f) IMPLIES
+    mean(f)*mean(f)<=mean(squaredFunction(f))
+
+END ppg_probability_second_moment

@@ -1,0 +1,412 @@
+(|ppg_simple_comparison_regions|
+ (|comparisonSet_TCC1| 0
+  (|comparisonSet_TCC1-1| NIL 4001430202
+   (""
+    (THEN (SKOSIMP) (TYPEPRED "f!1") (EXPAND "lowerMeasurable") (INST -1 "k!1")
+     (ASSERT))
+    NIL)
+   ((|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|lowerMeasurable| CONST-DECL "bool" |ppg_simple_comparison_regions| NIL)
+    (|LowerMeasurable| TYPE-EQ-DECL NIL |ppg_simple_comparison_regions| NIL))
+   NIL
+   (|comparisonSet| SUBTYPE "{x: X | ele(ennFinite(k), f(x))}"
+    "(ppg_simple_comparison_regions.S)" (23 4 23 32))))
+ (|comparisonSet_TCC2| 0
+  (|comparisonSet_TCC2-1| NIL 4001430202 ("" (THEN (TERMINATION-TCC)) NIL)
+   ((|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|LowerMeasurable| TYPE-EQ-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (|lowerMeasurable| CONST-DECL "bool" |ppg_simple_comparison_regions| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|comparisonSet| SUBTYPE "L" "(list_adt[SimpleTerm[X, S, mu]].cons?)"
+    (24 27 24 28))))
+ (|comparisonSet_TCC3| 0
+  (|comparisonSet_TCC3-1| NIL 4001430202 ("" (THEN (TERMINATION-TCC)) NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|length| DEF-DECL "nat" |list_props| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|LowerMeasurable| TYPE-EQ-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (|lowerMeasurable| CONST-DECL "bool" |ppg_simple_comparison_regions| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|comparisonSet| TERMINATION
+    "comparisonSet(k + car[SimpleTerm[X, S, mu]](L)`1, cdr[SimpleTerm[X, S, mu]](L), f)"
+    #A((3) BASE-CHAR . "NIL") (24 32 24 66))))
+ (|comparison_set_nil| 0
+  (|comparison_set_nil-1| NIL 4001430202
+   ("" (THEN (GRIND :DEFS ("comparisonSet"))) NIL)
+   ((|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|comparisonSet| DEF-DECL "(S)" |ppg_simple_comparison_regions| NIL))
+   SHOSTAK))
+ (|comparison_set_cons| 0
+  (|comparison_set_cons-1| NIL 4001430202
+   ("" (THEN (SKOSIMP) (EXPAND "comparisonSet" 1 1) (ASSERT)) NIL)
+   ((|comparisonSet| DEF-DECL "(S)" |ppg_simple_comparison_regions| NIL))
+   SHOSTAK))
+ (|comparison_set_description| 0
+  (|comparison_set_description-1| NIL 4001430202
+   ("" (INDUCT "L")
+    (("1" (SKOSIMP)
+      (("1" (AUTO-REWRITE "comparison_set_nil" "simple_value_nil")
+        (("1" (ASSERT) NIL NIL)) NIL))
+      NIL)
+     ("2" (SKOSIMP)
+      (("2" (LABEL "IH" -1)
+        (("2" (SKOSIMP)
+          (("2" (INST-CP "IH" "k!1+cons1_var!1`1" "f!1" "x!1")
+            (("2" (INST "IH" "k!1" "f!1" "x!1")
+              (("2" (AUTO-REWRITE "comparison_set_cons" "simple_value_cons")
+                (("2" (GRIND :DEFS ("union" "intersection" "complement")) NIL
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|lowerMeasurable| CONST-DECL "bool" |ppg_simple_comparison_regions| NIL)
+    (|LowerMeasurable| TYPE-EQ-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (IFF CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|comparisonSet| DEF-DECL "(S)" |ppg_simple_comparison_regions| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|simpleValue| DEF-DECL "nonneg_real" |ppg_general_lintegral| NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_comparison_regions| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_comparison_regions| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|list_induction| FORMULA-DECL NIL |list_adt| NIL)
+    (|comparison_set_nil| FORMULA-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (|simple_value_nil| FORMULA-DECL NIL |ppg_general_lintegral| NIL)
+    (|real_plus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|subset_algebra_complement| APPLICATION-JUDGEMENT "(S)"
+     |ppg_simple_comparison_regions| NIL)
+    (|subset_algebra_intersection| APPLICATION-JUDGEMENT "(S)"
+     |ppg_simple_comparison_regions| NIL)
+    (|subset_algebra_union| APPLICATION-JUDGEMENT "(S)"
+     |ppg_simple_comparison_regions| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|union| CONST-DECL "set" |sets| NIL)
+    (|complement| CONST-DECL "set" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK))
+ (|comparison_set_zero| 0
+  (|comparison_set_zero-1| NIL 4001430202
+   (""
+    (THEN (SKOSIMP)
+     (LEMMA "comparison_set_description"
+      ("L" "L!1" "k" "0" "f" "f!1" "x" "x!1"))
+     (ASSERT))
+    NIL)
+   ((|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|comparison_set_description| FORMULA-DECL NIL
+     |ppg_simple_comparison_regions| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_comparison_regions| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_comparison_regions| NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|lowerMeasurable| CONST-DECL "bool" |ppg_simple_comparison_regions| NIL)
+    (|LowerMeasurable| TYPE-EQ-DECL NIL |ppg_simple_comparison_regions| NIL))
+   SHOSTAK))
+ (|comparison_set_monotone| 0
+  (|comparison_set_monotone-1| NIL 4001430202
+   (""
+    (THEN (SKOSIMP) (LABEL "FG" -1) (EXPAND "subset?") (SKOSIMP)
+     (INST "FG" "x!1")
+     (LEMMA "comparison_set_description"
+      ("L" "L!1" "k" "k!1" "f" "f!1" "x" "x!1"))
+     (LEMMA "comparison_set_description"
+      ("L" "L!1" "k" "k!1" "f" "g!1" "x" "x!1"))
+     (LEMMA "extended_order_transitive"
+      ("a" "ennFinite(k!1+simpleValue(L!1)(x!1))" "b" "f!1(x!1)" "c"
+       "g!1(x!1)"))
+     (GROUND))
+    NIL)
+   ((|subset?| CONST-DECL "bool" |sets| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|extended_order_transitive| FORMULA-DECL NIL |ppg_general_lintegral| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|simpleValue| DEF-DECL "nonneg_real" |ppg_general_lintegral| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|LowerMeasurable| TYPE-EQ-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (|lowerMeasurable| CONST-DECL "bool" |ppg_simple_comparison_regions| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_comparison_regions| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_comparison_regions| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|comparison_set_description| FORMULA-DECL NIL
+     |ppg_simple_comparison_regions| NIL))
+   SHOSTAK))
+ (|scaled_comparison_description| 0
+  (|scaled_comparison_description-1| NIL 4001430202
+   (""
+    (THEN (SKOSIMP)
+     (LEMMA "comparison_set_zero"
+      ("L" "scaleSimple(c!1,L!1)" "f" "f!1" "x" "x!1"))
+     (REWRITE "scale_simple_value") (ASSERT))
+    NIL)
+   ((|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|scale_simple_value| FORMULA-DECL NIL |ppg_simple_integral_scaling| NIL)
+    (|comparison_set_zero| FORMULA-DECL NIL |ppg_simple_comparison_regions|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_comparison_regions| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_comparison_regions| NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|scaleSimple| DEF-DECL "Simple" |ppg_simple_integral_scaling| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|lowerMeasurable| CONST-DECL "bool" |ppg_simple_comparison_regions| NIL)
+    (|LowerMeasurable| TYPE-EQ-DECL NIL |ppg_simple_comparison_regions| NIL))
+   SHOSTAK))
+ (|restricted_comparison_minorant| 0
+  (|restricted_comparison_minorant-1| NIL 4001430202
+   (""
+    (THEN (SKOSIMP) (EXPAND "simpleMinorant") (SKOSIMP)
+     (LEMMA "restricted_value"
+      ("L" "L!1" "A" "comparisonSet(0,L!1,f!1)" "x" "x!1"))
+     (LEMMA "comparison_set_zero" ("L" "L!1" "f" "f!1" "x" "x!1"))
+     (GRIND :DEFS ("ele")))
+    NIL)
+   ((|comparison_set_zero| FORMULA-DECL NIL |ppg_simple_comparison_regions|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_comparison_regions| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_comparison_regions| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (|comparisonSet| DEF-DECL "(S)" |ppg_simple_comparison_regions| NIL)
+    (|LowerMeasurable| TYPE-EQ-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (|lowerMeasurable| CONST-DECL "bool" |ppg_simple_comparison_regions| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|restricted_value| FORMULA-DECL NIL |ppg_simple_integral_regions| NIL)
+    (|simpleMinorant| CONST-DECL "bool" |ppg_general_lintegral| NIL))
+   SHOSTAK))
+ (|scaled_comparison_integral| 0
+  (|scaled_comparison_integral-1| NIL 4001430202
+   (""
+    (THEN (SKOSIMP)
+     (LEMMA "restricted_comparison_minorant"
+      ("L" "scaleSimple(c!1,L!1)" "f" "f!1"))
+     (LEMMA "simple_integral_le_lintegral"
+      ("L"
+       "restrictSimple(scaleSimple(c!1,L!1),comparisonSet(0,scaleSimple(c!1,L!1),f!1))"
+       "f" "f!1"))
+     (EXPAND "regionIntegral") (ASSERT))
+    NIL)
+   ((|comparisonSet| DEF-DECL "(S)" |ppg_simple_comparison_regions| NIL)
+    (|restrictSimple| DEF-DECL "Simple" |ppg_simple_integral_regions| NIL)
+    (|simple_integral_le_lintegral| FORMULA-DECL NIL |ppg_general_lintegral|
+     NIL)
+    (|regionIntegral| CONST-DECL "ENN" |ppg_simple_integral_regions| NIL)
+    (|restricted_comparison_minorant| FORMULA-DECL NIL
+     |ppg_simple_comparison_regions| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_simple_comparison_regions| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_simple_comparison_regions| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_simple_comparison_regions| NIL)
+    (|SimpleTerm| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|Simple| TYPE-EQ-DECL NIL |ppg_general_lintegral| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|scaleSimple| DEF-DECL "Simple" |ppg_simple_integral_scaling| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|lowerMeasurable| CONST-DECL "bool" |ppg_simple_comparison_regions| NIL)
+    (|LowerMeasurable| TYPE-EQ-DECL NIL |ppg_simple_comparison_regions| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,44 @@
+% A common disjoint countable rectangle cover of finite mass reduces
+% rectangle uniqueness to finite restrictions. Countable
+% additivity then glues these restrictions over the whole space.
+% This uniqueness statement requires the finite-mass cover.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, sigma-finite products.
+ppg_product_finite_cover_uniqueness[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING measure_integration@product_sigma[X,Y,SX,SY],
+    measure_integration@measure_def[[X,Y],sigma_times(SX,SY)]) lawOne,lawTwo:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_finite_rectangle_restriction_unique[X,Y,SX,SY,lawOne,lawTwo],
+    ppg_measure_cover_gluing[[X,Y],sigma_times(SX,SY),lawOne,lawTwo]
+
+  RectRows: TYPE = [nat->[(SX),(SY)]]
+
+  R: VAR RectRows
+  n: VAR nat
+
+  rectEvent(r:[(SX),(SY)]): (sigma_times(SX,SY)) = cross_product(r`1,r`2)
+
+  rectangleCover(R): bool = disjoint?(LAMBDA(n:nat):rectEvent(R(n))) AND
+    IUnion(LAMBDA(n:nat):rectEvent(R(n)))=fullset[[X,Y]] AND
+    (FORALL(n:nat):lawOne(rectEvent(R(n)))`1 AND lawTwo(rectEvent(R(n)))`1)
+
+  RectangleCover: TYPE = (rectangleCover)
+
+  Q: VAR RectangleCover
+
+  coverEvents(Q)(n:nat): (sigma_times(SX,SY)) = rectEvent(Q(n))
+
+  cover_events_disjoint: LEMMA disjoint?(coverEvents(Q))
+
+  cover_events_full: LEMMA IUnion(coverEvents(Q))=fullset[[X,Y]]
+
+  typedCell(Q,n): CommonRectangle = Q(n)
+
+  cover_cells_agree: THEOREM rectangleAgreement IMPLIES cellAgreement(coverEvents(Q))
+
+  rectangle_cover_unique: THEOREM FORALL(Q:RectangleCover):rectangleAgreement IMPLIES
+    sameMeasure(lawOne,lawTwo)
+
+END ppg_product_finite_cover_uniqueness

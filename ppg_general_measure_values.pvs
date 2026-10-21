@@ -1,0 +1,41 @@
+% The original NASALib pair has several encodings of infinity. This
+% view preserves semantic equality and order in the canonical ENN type.
+% Measurable disjoint unions use the original countably additive measure;
+% no finiteness or sigma-finiteness condition is imposed on its mass.
+% David Lester, NASALib generalized_measure_def and measure_def.
+ppg_general_measure_values[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_enn_order,ppg_enn_multiply
+
+  u,v: VAR extended_nnreal
+  A,B: VAR (S)
+
+  nativeValue(u): ENN = IF u`1 THEN ennFinite(u`2) ELSE ennInfinity ENDIF
+
+  measureValue(A): ENN = nativeValue(mu(A))
+
+  native_semantic_equality: LEMMA x_eq(u,v) IFF nativeValue(u)=nativeValue(v)
+
+  native_semantic_order: LEMMA x_le(u,v) IFF ele(nativeValue(u),nativeValue(v))
+
+  native_addition_value: LEMMA nativeValue(x_add(u,v))=eadd(nativeValue(u),nativeValue(v))
+
+  native_product_value: LEMMA nativeValue(x_times(u,v))=emul(nativeValue(u),nativeValue(v))
+
+  measure_value_empty: LEMMA measureValue(emptyset[X])=ennFinite(0)
+
+  measure_value_monotone: LEMMA subset?(A,B) IMPLIES ele(measureValue(A),measureValue(B))
+
+  measure_value_disjoint_union: LEMMA disjoint?(A,B) IMPLIES
+    measureValue(union(A,B))=eadd(measureValue(A),measureValue(B))
+
+  split_union_identity: LEMMA union(intersection(A,B),difference(A,B))=A
+
+  split_disjoint: LEMMA disjoint?(intersection(A,B),difference(A,B))
+
+  measure_value_split: LEMMA measureValue(A)=
+    eadd(measureValue(intersection(A,B)),measureValue(difference(A,B)))
+
+END ppg_general_measure_values

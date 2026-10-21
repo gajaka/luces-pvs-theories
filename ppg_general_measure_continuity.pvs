@@ -1,0 +1,88 @@
+% Continuity from below is used for arbitrary measures, including measures
+% that are not sigma finite. Finite upper tests determine the full ENN value.
+%
+% David Lester, NASALib measure_props, m_increasing_convergence.
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+ppg_general_measure_continuity[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_simple_integral_regions[X,S,mu],ppg_enn_complete_sup,
+    measure_integration@measure_props[X,S,mu]
+
+  E: VAR [nat->(S)]
+  A: VAR (S)
+  F: VAR [nat->ENN]
+  b: VAR nonneg_real
+  u: VAR [nat->real]
+  a: VAR real
+  U: VAR [nat->extended_nnreal]
+  z: VAR extended_nnreal
+
+  increasingSets(E): bool = FORALL(i,j:nat):
+    i<=j IMPLIES subset?(E(i),E(j))
+
+  increasingValues(F): bool = FORALL(i,j:nat):
+    i<=j IMPLIES ele(F(i),F(j))
+
+  sequenceSup(F): ENN = extendedSup({z:ENN|EXISTS(n:nat):z=F(n)})
+
+  sequence_sup_finite_bound: LEMMA ele(sequenceSup(F),ennFinite(b)) IFF
+    FORALL(n:nat):ele(F(n),ennFinite(b))
+
+  sequence_sup_upper: LEMMA FORALL(n:nat):ele(F(n),sequenceSup(F))
+
+  sequence_sup_least: LEMMA FORALL(z:ENN):
+    (FORALL(n:nat):ele(F(n),z)) IMPLIES ele(sequenceSup(F),z)
+
+  sequence_upper_bounded: LEMMA (FORALL(n:nat):u(n)<=a)
+    IMPLIES bounded_above?(u)
+
+  increasing_sequence_converges: LEMMA
+    (FORALL(i,j:nat):i<=j IMPLIES u(i)<=u(j)) AND
+    (FORALL(n:nat):u(n)<=a) IMPLIES analysis@convergence_sequences.convergent?(u)
+
+  convergence_upper_bound: LEMMA analysis@convergence_sequences.convergence(u,a) AND
+    (FORALL(n:nat):u(n)<=b) IMPLIES a<=b
+
+  native_bound_coordinates: LEMMA (FORALL(n:nat):x_le(U(n),(TRUE,b))) IMPLIES
+    (FORALL(n:nat):U(n)`1) AND (FORALL(n:nat):U(n)`2<=b)
+
+  native_increasing_coordinates: LEMMA
+    (FORALL(i,j:nat):i<=j IMPLIES x_le(U(i),U(j))) AND
+    (FORALL(n:nat):U(n)`1) IMPLIES
+    (FORALL(i,j:nat):i<=j IMPLIES U(i)`2<=U(j)`2)
+
+  native_convergence_finite_bound: LEMMA x_converges?(U,z) AND
+    (FORALL(i,j:nat):i<=j IMPLIES x_le(U(i),U(j))) AND
+    (FORALL(n:nat):x_le(U(n),(TRUE,b))) IMPLIES x_le(z,(TRUE,b))
+
+  union_contains_member: LEMMA FORALL(n:nat):subset?(E(n),IUnion(E))
+
+  increasing_measure_values: LEMMA increasingSets(E) IMPLIES
+    increasingValues(LAMBDA(n:nat):measureValue(E(n)))
+
+  increasing_measure_converges: LEMMA increasingSets(E) IMPLIES
+    x_converges?(mu o E,mu(IUnion(E)))
+
+  increasing_native_measure: LEMMA increasingSets(E) IMPLIES
+    FORALL(i,j:nat):i<=j IMPLIES x_le(mu(E(i)),mu(E(j)))
+
+  increasing_measure_native_finite_bound: LEMMA increasingSets(E) AND
+    (FORALL(n:nat):x_le(mu(E(n)),(TRUE,b))) IMPLIES
+    x_le(mu(IUnion(E)),(TRUE,b))
+
+  measure_finite_test: LEMMA x_le(mu(A),(TRUE,b)) IFF
+    ele(measureValue(A),ennFinite(b))
+
+  union_measure_member: LEMMA FORALL(n:nat):
+    ele(measureValue(E(n)),measureValue(IUnion(E)))
+
+  increasing_measure_finite_bound: LEMMA increasingSets(E) IMPLIES
+    (ele(measureValue(IUnion(E)),ennFinite(b)) IFF
+      FORALL(n:nat):ele(measureValue(E(n)),ennFinite(b)))
+
+  measure_value_increasing_union: THEOREM increasingSets(E) IMPLIES
+    measureValue(IUnion(E))=sequenceSup(LAMBDA(n:nat):measureValue(E(n)))
+
+END ppg_general_measure_continuity

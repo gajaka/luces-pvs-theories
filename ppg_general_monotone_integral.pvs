@@ -1,0 +1,61 @@
+% A scaled simple minorant is captured on increasing comparison regions.
+% Their union is the full carrier. Continuity of the original measure
+% then gives monotone convergence, without a sigma-finiteness premise.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+% Mathlib, MeasureTheory/Integral/Lebesgue/Basic.lean.
+ppg_general_monotone_integral[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_simple_comparison_regions[X,S,mu]
+
+  H: VAR [nat->LowerMeasurable]
+  L: VAR Simple
+  c,b: VAR nonneg_real
+  n: VAR nat
+  x: VAR X
+
+  pointwiseSup(H)(x:X): ENN = natSup(LAMBDA(n:nat):H(n)(x))
+
+  increasingFunctions(H): bool = FORALL(i,j:nat,x:X):
+    i<=j IMPLIES ele(H(i)(x),H(j)(x))
+
+  comparisonSequence(c,L,H)(n:nat): (S) = comparisonSet(0,scaleSimple(c,L),H(n))
+
+  comparison_sequence_at: LEMMA comparisonSequence(c,L,H)(n)(x) IFF
+    ele(ennFinite(c*simpleValue(L)(x)),H(n)(x))
+
+  pointwise_sup_upper: LEMMA ele(H(n)(x),pointwiseSup(H)(x))
+
+  comparison_sequence_increasing: LEMMA increasingFunctions(H) IMPLIES
+    increasingSets(comparisonSequence(c,L,H))
+
+  comparison_eventually: LEMMA c<1 AND simpleMinorant(L,pointwiseSup(H)) IMPLIES
+    FORALL(x:X):EXISTS(n:nat):comparisonSequence(c,L,H)(n)(x)
+
+  comparison_sequence_cover: LEMMA c<1 AND simpleMinorant(L,pointwiseSup(H)) IMPLIES
+    IUnion(comparisonSequence(c,L,H))=fullset[X]
+
+  comparison_integral_common_bound: LEMMA
+    (FORALL(n:nat):ele(lintegral(H(n)),ennFinite(b))) IMPLIES
+    FORALL(n:nat):ele(regionIntegral(scaleSimple(c,L),comparisonSequence(c,L,H)(n)),ennFinite(b))
+
+  scaled_simple_limit_bound: LEMMA c<1 AND simpleMinorant(L,pointwiseSup(H)) AND
+    increasingFunctions(H) AND (FORALL(n:nat):ele(lintegral(H(n)),ennFinite(b))) IMPLIES
+    ele(emul(ennFinite(c),simpleIntegral(L)),ennFinite(b))
+
+  simple_limit_integral_bound: LEMMA simpleMinorant(L,pointwiseSup(H)) AND
+    increasingFunctions(H) AND (FORALL(n:nat):ele(lintegral(H(n)),ennFinite(b))) IMPLIES
+    ele(simpleIntegral(L),ennFinite(b))
+
+  integral_member_below_sup: LEMMA ele(lintegral(H(n)),lintegral(pointwiseSup(H)))
+
+  monotone_integral_finite_bound: LEMMA increasingFunctions(H) IMPLIES
+    (ele(lintegral(pointwiseSup(H)),ennFinite(b)) IFF
+      FORALL(n:nat):ele(lintegral(H(n)),ennFinite(b)))
+
+  general_monotone_convergence: THEOREM increasingFunctions(H) IMPLIES
+    lintegral(pointwiseSup(H))=natSup(LAMBDA(n:nat):lintegral(H(n)))
+
+END ppg_general_monotone_integral

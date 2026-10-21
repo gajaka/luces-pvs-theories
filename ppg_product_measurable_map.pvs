@@ -1,0 +1,54 @@
+% A product map preserves the generated product sigma algebra.
+% Rectangle inverse images are rectangles of the two measurable
+% inverse images; the generated-sigma argument adds no carrier restriction.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, product sigma algebras.
+% Mathlib, MeasureTheory/MeasurableSpace/Constructions.lean, Measurable.prodMap.
+ppg_product_measurable_map[X,Y,U,V:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],SU:sigma_algebra[U],SV:sigma_algebra[V],
+  (IMPORTING ppg_general_measure_map[X,U,SX,SU]) f:ppg_general_measure_map[X,U,SX,SU].MeasurableMap,
+  (IMPORTING ppg_general_measure_map[Y,V,SY,SV]) g:ppg_general_measure_map[Y,V,SY,SV].MeasurableMap]: THEORY
+BEGIN
+  IMPORTING measure_integration@product_sigma[X,Y,SX,SY],
+    measure_integration@product_sigma[U,V,SU,SV],
+    ppg_general_measure_map[[X,Y],[U,V],sigma_times(SX,SY),sigma_times(SU,SV)],
+    ppg_native_measurable_generators[[X,Y],[U,V],sigma_times(SX,SY)]
+
+  A: VAR (SU)
+  B: VAR (SV)
+  D: VAR set[[U,V]]
+
+  pairFunction(w:[X,Y]): [U,V] = (f(w`1),g(w`2))
+
+  targetGenerators: set[set[[U,V]]] = fullset[measurable_rectangle(SU,SV)]
+
+  target_generator_is_rectangle: LEMMA targetGenerators(D) IMPLIES
+    measurable_rectangle?(SU,SV)(D)
+
+  product_map_rectangle_inverse: THEOREM
+    ppg_measurable_map[[X,Y],[U,V]].inverseImage(pairFunction,cross_product(A,B))=
+      cross_product(ppg_general_measure_map[X,U,SX,SU].inverseEvent(f,A),
+        ppg_general_measure_map[Y,V,SY,SV].inverseEvent(g,B))
+
+  product_map_rectangle_measurable: THEOREM
+    sigma_times(SX,SY)(ppg_measurable_map[[X,Y],[U,V]].inverseImage(
+      pairFunction,cross_product(A,B)))
+
+  product_map_generators_measurable: THEOREM targetGenerators(D) IMPLIES
+    sigma_times(SX,SY)(ppg_measurable_map[[X,Y],[U,V]].inverseImage(pairFunction,D))
+
+  product_map_generated_preimages: THEOREM
+    subset?(measure_integration@subset_algebra_def[[U,V]].generated_sigma_algebra(targetGenerators),
+      preimageSigma(pairFunction))
+
+  target_product_generated: LEMMA sigma_times(SU,SV)=
+    measure_integration@subset_algebra_def[[U,V]].generated_sigma_algebra(targetGenerators)
+
+  product_map_measurable: THEOREM
+    ppg_general_measure_map[[X,Y],[U,V],sigma_times(SX,SY),sigma_times(SU,SV)].measurableMap?(pairFunction)
+
+  pairMap: ppg_general_measure_map[[X,Y],[U,V],sigma_times(SX,SY),sigma_times(SU,SV)].MeasurableMap =
+    pairFunction
+
+END ppg_product_measurable_map

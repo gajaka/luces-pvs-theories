@@ -1,0 +1,35 @@
+% A rectangle section is either its right factor or the empty set.
+% The constructed bind product therefore has the full ENN rectangle law,
+% even when the arbitrary left measure or the S-finite right measure is
+% infinite. This is a consequence of the product construction.
+%
+% Mathlib, MeasureTheory/Measure/Prod.lean, prod_apply and prod_prod.
+ppg_sfinite_product_rectangles[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING measure_integration@measure_def[X,SX]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_product_measure_definition[X,Y,SX,SY,mu],
+    ppg_general_indicator_integral[X,SX,mu]
+
+  nu: VAR (sfinite?[Y,SY])
+  A: VAR (SX)
+  B: VAR (SY)
+  x: VAR X
+
+  measurableRectangle(A,B): (sigma_times(SX,SY)) = cross_product(A,B)
+
+  rectangle_section: LEMMA x_section(measurableRectangle(A,B))(x)=
+    IF A(x) THEN B ELSE emptyset[Y] ENDIF
+
+  rectangle_section_value: LEMMA sectionMeasure(nu,measurableRectangle(A,B))(x)=
+    IF A(x) THEN nativeValue(nu(B)) ELSE ennFinite(0) ENDIF
+
+  rectangle_section_function: LEMMA measurableSection(nu,measurableRectangle(A,B))=
+    extendedIndicator(nativeValue(nu(B)),A)
+
+  product_rectangle_value: THEOREM
+    nativeValue(productMeasure(nu)(measurableRectangle(A,B)))=
+      emul(measureValue(A),nativeValue(nu(B)))
+
+END ppg_sfinite_product_rectangles

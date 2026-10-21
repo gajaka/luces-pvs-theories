@@ -1,0 +1,45 @@
+% Both independent tests are inverse images under measurable
+% coordinate maps. The argument uses only the product sigma algebras.
+%
+% Kun He, Qian Li and Xiaoming Sun, Moser-Tardos Algorithm: Beyond
+% Shearer's Bound, arXiv:2111.06527, Proposition 3.3.
+ppg_native_double_measurable[U,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SU:sigma_algebra[U],SY:sigma_algebra[Y]]: THEORY
+BEGIN
+  IMPORTING ppg_double_sample_events[U,Y],
+    ppg_native_product_projections[Y,Y,SY,SY],
+    ppg_native_product_projections[U,[Y,Y],SU,sigma_times(SY,SY)],
+    ppg_general_map_composition[[U,[Y,Y]],[Y,Y],Y,sigma_times(SU,sigma_times(SY,SY)),sigma_times(SY,SY),SY],
+    ppg_native_pair_maps[[U,[Y,Y]],U,Y,sigma_times(SU,sigma_times(SY,SY)),SU,SY],
+    measure_integration@sigma_algebra[[U,[Y,Y]],sigma_times(SU,sigma_times(SY,SY))]
+
+  privateMap: ppg_general_measure_map[[U,[Y,Y]],U,sigma_times(SU,sigma_times(SY,SY)),SU].MeasurableMap =
+    ppg_native_product_projections[U,[Y,Y],SU,sigma_times(SY,SY)].firstMap
+
+  firstY: ppg_general_measure_map[[U,[Y,Y]],Y,sigma_times(SU,sigma_times(SY,SY)),SY].MeasurableMap =
+    ppg_general_map_composition[[U,[Y,Y]],[Y,Y],Y,sigma_times(SU,sigma_times(SY,SY)),sigma_times(SY,SY),SY].composeMap(ppg_native_product_projections[U,[Y,Y],SU,sigma_times(SY,SY)].secondMap,ppg_native_product_projections[Y,Y,SY,SY].firstMap)
+
+  secondY: ppg_general_measure_map[[U,[Y,Y]],Y,sigma_times(SU,sigma_times(SY,SY)),SY].MeasurableMap =
+    ppg_general_map_composition[[U,[Y,Y]],[Y,Y],Y,sigma_times(SU,sigma_times(SY,SY)),sigma_times(SY,SY),SY].composeMap(ppg_native_product_projections[U,[Y,Y],SU,sigma_times(SY,SY)].secondMap,ppg_native_product_projections[Y,Y,SY,SY].secondMap)
+
+  firstTest: ppg_general_measure_map[[U,[Y,Y]],[U,Y],sigma_times(SU,sigma_times(SY,SY)),sigma_times(SU,SY)].MeasurableMap =
+    ppg_native_pair_maps[[U,[Y,Y]],U,Y,sigma_times(SU,sigma_times(SY,SY)),SU,SY].pairMap(privateMap,firstY)
+
+  secondTest: ppg_general_measure_map[[U,[Y,Y]],[U,Y],sigma_times(SU,sigma_times(SY,SY)),sigma_times(SU,SY)].MeasurableMap =
+    ppg_native_pair_maps[[U,[Y,Y]],U,Y,sigma_times(SU,sigma_times(SY,SY)),SU,SY].pairMap(privateMap,secondY)
+
+  C: VAR (sigma_times(SU,SY))
+  w: VAR [U,[Y,Y]]
+
+  first_test_at: LEMMA firstTest(w)=(w`1,w`2`1)
+
+  second_test_at: LEMMA secondTest(w)=(w`1,w`2`2)
+
+  double_event_preimages: LEMMA doubleEvent(C)=
+    intersection(ppg_general_measure_map[[U,[Y,Y]],[U,Y],sigma_times(SU,sigma_times(SY,SY)),sigma_times(SU,SY)].inverseEvent(firstTest,C),
+      ppg_general_measure_map[[U,[Y,Y]],[U,Y],sigma_times(SU,sigma_times(SY,SY)),sigma_times(SU,SY)].inverseEvent(secondTest,C))
+
+  measurableSet_doubleEvent: THEOREM sigma_times(SU,sigma_times(SY,SY))(doubleEvent(C))
+
+END ppg_native_double_measurable

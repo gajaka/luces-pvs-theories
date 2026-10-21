@@ -1,0 +1,95 @@
+% S-finiteness is a countable sum of finite measures, rather than a
+% countable cover by finite-measure sets. The decomposition is compared
+% pointwise with semantic equality of the original extended values.
+% This permits an arbitrary measurable carrier, including an empty one.
+%
+% Mathlib, MeasureTheory/Measure/Typeclasses/SFinite.lean, class SFinite.
+% David Lester, NASALib generalized_measure_def, finite_measure/to_measure.
+ppg_sfinite_measure[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra]: THEORY
+BEGIN
+  IMPORTING measure_integration@generalized_measure_def[X,S],
+    ppg_extended_countable_sum
+
+  mu,nu: VAR measure_type
+  m: VAR finite_measure
+  F: VAR [nat->finite_measure]
+  A: VAR (S)
+
+  sameMeasure(mu,nu): bool = FORALL(A:(S)):x_eq(mu(A),nu(A))
+
+  finiteDecomposition(mu,F): bool = FORALL(A:(S)):
+    x_eq(mu(A),x_sum(LAMBDA(n:nat):(TRUE,F(n)(A))))
+
+  sfinite?(mu): bool = EXISTS(F:[nat->finite_measure]):finiteDecomposition(mu,F)
+
+  singleFinite(m)(n:nat): finite_measure =
+    IF n=0 THEN m ELSE trivial_finite_measure ENDIF
+
+  single_finite_event_sum: LEMMA
+    x_sum(LAMBDA(n:nat):(TRUE,singleFinite(m)(n)(A)))=(TRUE,m(A))
+
+  finite_decomposition_embedding: LEMMA finiteDecomposition(to_measure(m),singleFinite(m))
+
+  finite_is_sfinite: LEMMA sfinite?(to_measure(m))
+
+  same_measure_reflexive: LEMMA sameMeasure(mu,mu)
+
+  same_measure_symmetric: LEMMA sameMeasure(mu,nu) IMPLIES sameMeasure(nu,mu)
+
+  decomposition_congruence: LEMMA sameMeasure(mu,nu) AND finiteDecomposition(mu,F)
+    IMPLIES finiteDecomposition(nu,F)
+
+  sfinite_congruence: LEMMA sameMeasure(mu,nu) IMPLIES (sfinite?(mu) IFF sfinite?(nu))
+
+  zero_is_sfinite: LEMMA sfinite?(zero_measure)
+
+
+  same_measure_transitive: LEMMA FORALL(mu,nu,rho:measure_type):
+    sameMeasure(mu,nu) AND sameMeasure(nu,rho) IMPLIES sameMeasure(mu,rho)
+
+  sumMeasures(Q:[nat->measure_type]): measure_type =
+    LAMBDA(A:(S)):x_sum(LAMBDA(n:nat):Q(n)(A))
+
+  sumFinite(F): measure_type = sumMeasures(LAMBDA(n:nat):to_measure(F(n)))
+
+  finite_sum_event: LEMMA
+    sumFinite(F)(A)=x_sum(LAMBDA(n:nat):(TRUE,F(n)(A)))
+
+  finite_sum_decomposition: LEMMA finiteDecomposition(sumFinite(F),F)
+
+  finite_sum_is_sfinite: LEMMA sfinite?(sumFinite(F))
+
+  decomposition_is_sum_measure: LEMMA
+    finiteDecomposition(mu,F) IFF sameMeasure(mu,sumFinite(F))
+
+  sfinite_iff_countable_finite_sum: LEMMA sfinite?(mu) IFF
+    EXISTS(F:[nat->finite_measure]):sameMeasure(mu,sumFinite(F))
+
+
+  FiniteSeries: TYPE = [nat->finite_measure]
+
+  finiteDiagonal(H:[nat->FiniteSeries])(n:nat): finite_measure =
+    H(double_index_i(n))(double_index_j(n))
+
+  decomposed_countable_sum: LEMMA FORALL(Q:[nat->measure_type],H:[nat->FiniteSeries]):
+    (FORALL(i:nat):finiteDecomposition(Q(i),H(i))) IMPLIES
+      finiteDecomposition(sumMeasures(Q),finiteDiagonal(H))
+
+  chooseDecomposition(mu:(sfinite?)): FiniteSeries =
+    choose({F:FiniteSeries | finiteDecomposition(mu,F)})
+
+  chosen_decomposition: LEMMA FORALL(mu:(sfinite?)):
+    finiteDecomposition(mu,chooseDecomposition(mu))
+
+  chosen_rows_decompose: LEMMA FORALL(Q:[nat->(sfinite?)],i:nat):
+    finiteDecomposition(Q(i),chooseDecomposition(Q(i)))
+
+  sfinite_sum_decomposition: LEMMA FORALL(Q:[nat->(sfinite?)]):
+    finiteDecomposition(sumMeasures(Q),
+      finiteDiagonal(LAMBDA(i:nat):chooseDecomposition(Q(i))))
+
+  sfinite_countable_sum: LEMMA FORALL(Q:[nat->(sfinite?)]):
+    sfinite?(sumMeasures(Q))
+
+END ppg_sfinite_measure

@@ -1,0 +1,97 @@
+% Restricting each simple-function support to a section gives its
+% simple function on the right carrier. The integral of these section
+% integrals is computed by finite additivity and the constructed product.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, Tonelli's theorem.
+ppg_sfinite_simple_sections[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING measure_integration@measure_def[X,SX]) mu:measure_type,
+  (IMPORTING ppg_sfinite_measure[Y,SY]) nu:(sfinite?[Y,SY])]: THEORY
+BEGIN
+  IMPORTING ppg_product_measure_definition[X,Y,SX,SY,mu],
+    ppg_general_integral_add[X,SX,mu],ppg_general_integral_scale[X,SX,mu],
+    ppg_simple_function_lattice[Y,SY,nu]
+
+  productLaw: measure_type[[X,Y],sigma_times(SX,SY)] = productMeasure(nu)
+
+  IMPORTING ppg_general_simple_approximation[[X,Y],sigma_times(SX,SY),productLaw]
+
+  JointSimple: TYPE = ppg_general_lintegral[[X,Y],sigma_times(SX,SY),productLaw].Simple
+
+  JointTerm: TYPE = ppg_general_lintegral[[X,Y],sigma_times(SX,SY),productLaw].SimpleTerm
+
+  RightSimple: TYPE = ppg_general_lintegral[Y,SY,nu].Simple
+
+  LeftMeasurable: TYPE = ppg_simple_comparison_regions[X,SX,mu].LowerMeasurable
+
+  t: VAR JointTerm
+  L: VAR JointSimple
+  x: VAR X
+  y: VAR Y
+  c: VAR nonneg_real
+  E: VAR (sigma_times(SX,SY))
+
+  jointValue(L)(w:[X,Y]): nonneg_real =
+    ppg_general_lintegral[[X,Y],sigma_times(SX,SY),productLaw].simpleValue(L)(w)
+
+  jointIntegral(L): ENN =
+    ppg_general_lintegral[[X,Y],sigma_times(SX,SY),productLaw].simpleIntegral(L)
+
+  sectionSimple(L,x): RECURSIVE RightSimple = IF null?(L) THEN null ELSE
+    cons((car(L)`1,x_section(car(L)`2)(x)),sectionSimple(cdr(L),x))
+    ENDIF MEASURE length(L)
+
+  rowValue(L,x)(y:Y): nonneg_real =
+    ppg_general_lintegral[Y,SY,nu].simpleValue(sectionSimple(L,x))(y)
+
+  rowIntegral(L,x): ENN =
+    ppg_general_lintegral[Y,SY,nu].simpleIntegral(sectionSimple(L,x))
+
+  simpleSectionIntegral(L): RECURSIVE LeftMeasurable = IF null?(L) THEN
+    ppg_general_integral_series[X,SX,mu].zeroFunction ELSE
+    ppg_general_integral_add[X,SX,mu].measurableAdd(
+      scaledFunction(car(L)`1,measurableSection(nu,car(L)`2)),
+      simpleSectionIntegral(cdr(L))) ENDIF MEASURE length(L)
+
+  section_simple_nil: LEMMA sectionSimple(list_adt[JointTerm].null,x)=
+    list_adt[ppg_general_lintegral[Y,SY,nu].SimpleTerm].null
+
+  section_simple_cons: LEMMA sectionSimple(cons(t,L),x)=
+    cons((t`1,x_section(t`2)(x)),sectionSimple(L,x))
+
+  row_integral_nil: LEMMA rowIntegral(list_adt[JointTerm].null,x)=ennFinite(0)
+
+  row_integral_cons: LEMMA rowIntegral(cons(t,L),x)=
+    eadd(emul(ennFinite(t`1),sectionMeasure(nu,t`2)(x)),rowIntegral(L,x))
+
+  section_integral_nil: LEMMA simpleSectionIntegral(list_adt[JointTerm].null)=
+    ppg_general_integral_series[X,SX,mu].zeroFunction
+
+  section_integral_cons: LEMMA simpleSectionIntegral(cons(t,L))=
+    ppg_general_integral_add[X,SX,mu].measurableAdd(
+      scaledFunction(t`1,measurableSection(nu,t`2)),simpleSectionIntegral(L))
+
+  section_integral_cons_at: LEMMA simpleSectionIntegral(cons(t,L))(x)=
+    eadd(emul(ennFinite(t`1),sectionMeasure(nu,t`2)(x)),simpleSectionIntegral(L)(x))
+
+  joint_integral_nil: LEMMA jointIntegral(list_adt[JointTerm].null)=ennFinite(0)
+
+  joint_integral_cons: LEMMA jointIntegral(cons(t,L))=
+    eadd(emul(ennFinite(t`1),
+      ppg_general_measure_values[[X,Y],sigma_times(SX,SY),productLaw].nativeValue(productLaw(t`2))),
+      jointIntegral(L))
+
+  row_simple_value: THEOREM rowValue(L,x)(y)=jointValue(L)((x,y))
+
+  simple_section_integral_at: THEOREM simpleSectionIntegral(L)(x)=rowIntegral(L,x)
+
+  scaled_section_integral: LEMMA
+    ppg_general_lintegral[X,SX,mu].lintegral(scaledFunction(c,measurableSection(nu,E)))=
+      emul(ennFinite(c),
+        ppg_general_measure_values[[X,Y],sigma_times(SX,SY),productLaw].nativeValue(productLaw(E)))
+
+  simple_section_integral_integral: THEOREM
+    ppg_general_lintegral[X,SX,mu].lintegral(simpleSectionIntegral(L))=jointIntegral(L)
+
+END ppg_sfinite_simple_sections

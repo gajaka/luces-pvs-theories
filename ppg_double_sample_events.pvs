@@ -1,0 +1,19 @@
+% The private block is fixed while the shared block is sampled twice.
+% The section identity is purely set-theoretic and needs no measure.
+% Kun He, Qian Li and Xiaoming Sun, Moser-Tardos Algorithm: Beyond
+% Shearer's Bound, arXiv:2111.06527, Proposition 3.3.
+ppg_double_sample_events[U,Y:TYPE]: THEORY
+BEGIN
+  C: VAR set[[U,Y]]
+  u: VAR U
+
+  doubleEvent(C): set[[U,[Y,Y]]] =
+    {w:[U,[Y,Y]] | C(w`1,w`2`1) AND C(w`1,w`2`2)}
+
+  repeatedSection(C,u): set[[Y,Y]] =
+    {ys:[Y,Y] | C(u,ys`1) AND C(u,ys`2)}
+
+  double_section: LEMMA FORALL(ys:[Y,Y]):
+    doubleEvent(C)(u,ys) IFF repeatedSection(C,u)(ys)
+
+END ppg_double_sample_events

@@ -1,0 +1,350 @@
+(|ppg_native_intersection_measurable|
+ (|joint_event_preimages| 0
+  (|joint_event_preimages-1| NIL 4001441463
+   (""
+    (THEN (SKOSIMP) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "jointEvent")
+     (EXPAND "inverseEvent") (EXPAND "intersection") (EXPAND "member")
+     (REWRITE "jointLeft_at") (REWRITE "jointRight_at") (ASSERT))
+    NIL)
+   ((|jointLeft_at| FORMULA-DECL NIL |ppg_native_intersection_coordinates| NIL)
+    (|jointRight_at| FORMULA-DECL NIL |ppg_native_intersection_coordinates|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|jointEvent| CONST-DECL "set[[[X, Z], Y]]" |ppg_intersection_events| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_native_intersection_measurable| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_native_intersection_measurable| NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]"
+     |ppg_native_intersection_measurable| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|inverseEvent| CONST-DECL "set[X]" |ppg_general_measure_map| NIL)
+    (|measurableMap?| CONST-DECL "bool" |ppg_general_measure_map| NIL)
+    (|MeasurableMap| TYPE-EQ-DECL NIL |ppg_general_measure_map| NIL)
+    (|jointLeft| CONST-DECL "ppg_general_measure_map
+    [[[X, Z], Y], [X, Y], sigma_times(sigma_times(SX, SZ), SY),
+     sigma_times(SX, SY)].MeasurableMap"
+     |ppg_native_intersection_coordinates| NIL)
+    (|jointRight| CONST-DECL "ppg_general_measure_map
+    [[[X, Z], Y], [Y, Z], sigma_times(sigma_times(SX, SZ), SY),
+     sigma_times(SY, SZ)].MeasurableMap"
+     |ppg_native_intersection_coordinates| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL))
+   SHOSTAK))
+ (|measurableSet_jointEvent| 0
+  (|measurableSet_jointEvent-1| NIL 4001441463
+   (""
+    (THEN (SKOSIMP) (REWRITE "joint_event_preimages")
+     (LEMMA
+      "inverse_event_measurable[[[X,Z],Y],[X,Y],sigma_times(sigma_times(SX,SZ),SY),sigma_times(SX,SY)]"
+      ("h" "jointLeft" "A" "A!1"))
+     (LEMMA
+      "inverse_event_measurable[[[X,Z],Y],[Y,Z],sigma_times(sigma_times(SX,SZ),SY),sigma_times(SY,SZ)]"
+      ("h" "jointRight" "A" "B!1"))
+     (ASSERT)
+     (LEMMA
+      "sigma_algebra_intersection[[[X,Z],Y],sigma_times(sigma_times(SX,SZ),SY)]"
+      ("x"
+       "ppg_general_measure_map[[[X,Z],Y],[X,Y],sigma_times(sigma_times(SX,SZ),SY),sigma_times(SX,SY)].inverseEvent(jointLeft,A!1)"
+       "y"
+       "ppg_general_measure_map[[[X,Z],Y],[Y,Z],sigma_times(sigma_times(SX,SZ),SY),sigma_times(SY,SZ)].inverseEvent(jointRight,B!1)"))
+     (ASSERT))
+    NIL)
+   ((|inverse_event_measurable| FORMULA-DECL NIL |ppg_general_measure_map| NIL)
+    (|measurableMap?| CONST-DECL "bool" |ppg_general_measure_map| NIL)
+    (|MeasurableMap| TYPE-EQ-DECL NIL |ppg_general_measure_map| NIL)
+    (|jointLeft| CONST-DECL "ppg_general_measure_map
+    [[[X, Z], Y], [X, Y], sigma_times(sigma_times(SX, SZ), SY),
+     sigma_times(SX, SY)].MeasurableMap"
+     |ppg_native_intersection_coordinates| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|inverseEvent| CONST-DECL "set[X]" |ppg_general_measure_map| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra_intersection| FORMULA-DECL NIL |sigma_algebra|
+     |measure_integration|)
+    (|jointRight| CONST-DECL "ppg_general_measure_map
+    [[[X, Z], Y], [Y, Z], sigma_times(sigma_times(SX, SZ), SY),
+     sigma_times(SY, SZ)].MeasurableMap"
+     |ppg_native_intersection_coordinates| NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]"
+     |ppg_native_intersection_measurable| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_native_intersection_measurable| NIL)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_native_intersection_measurable| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (|joint_event_preimages| FORMULA-DECL NIL
+     |ppg_native_intersection_measurable| NIL))
+   SHOSTAK))
+ (|forward_event_preimages| 0
+  (|forward_event_preimages-1| NIL 4001441463
+   (""
+    (THEN (SKOSIMP) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "forwardEvent")
+     (EXPAND "inverseEvent") (EXPAND "intersection") (EXPAND "member")
+     (REWRITE "forwardLeft_at") (REWRITE "forwardRight_at") (ASSERT))
+    NIL)
+   ((|forwardLeft_at| FORMULA-DECL NIL |ppg_native_intersection_coordinates|
+     NIL)
+    (|forwardRight_at| FORMULA-DECL NIL |ppg_native_intersection_coordinates|
+     NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|forwardEvent| CONST-DECL "set[[[X, Z], [Y, Y]]]"
+     |ppg_intersection_events| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_native_intersection_measurable| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_native_intersection_measurable| NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]"
+     |ppg_native_intersection_measurable| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|inverseEvent| CONST-DECL "set[X]" |ppg_general_measure_map| NIL)
+    (|measurableMap?| CONST-DECL "bool" |ppg_general_measure_map| NIL)
+    (|MeasurableMap| TYPE-EQ-DECL NIL |ppg_general_measure_map| NIL)
+    (|forwardLeft| CONST-DECL "ppg_general_measure_map
+    [[[X, Z], [Y, Y]], [X, Y],
+     sigma_times(sigma_times(SX, SZ), sigma_times(SY, SY)),
+     sigma_times(SX, SY)].MeasurableMap"
+     |ppg_native_intersection_coordinates| NIL)
+    (|forwardRight| CONST-DECL "ppg_general_measure_map
+    [[[X, Z], [Y, Y]], [Y, Z],
+     sigma_times(sigma_times(SX, SZ), sigma_times(SY, SY)),
+     sigma_times(SY, SZ)].MeasurableMap"
+     |ppg_native_intersection_coordinates| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL))
+   SHOSTAK))
+ (|measurableSet_forwardEvent| 0
+  (|measurableSet_forwardEvent-1| NIL 4001441463
+   (""
+    (THEN (SKOSIMP) (REWRITE "forward_event_preimages")
+     (LEMMA
+      "inverse_event_measurable[[[X,Z],[Y,Y]],[X,Y],sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),sigma_times(SX,SY)]"
+      ("h" "forwardLeft" "A" "A!1"))
+     (LEMMA
+      "inverse_event_measurable[[[X,Z],[Y,Y]],[Y,Z],sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),sigma_times(SY,SZ)]"
+      ("h" "forwardRight" "A" "B!1"))
+     (ASSERT)
+     (LEMMA
+      "sigma_algebra_intersection[[[X,Z],[Y,Y]],sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY))]"
+      ("x"
+       "ppg_general_measure_map[[[X,Z],[Y,Y]],[X,Y],sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),sigma_times(SX,SY)].inverseEvent(forwardLeft,A!1)"
+       "y"
+       "ppg_general_measure_map[[[X,Z],[Y,Y]],[Y,Z],sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),sigma_times(SY,SZ)].inverseEvent(forwardRight,B!1)"))
+     (ASSERT))
+    NIL)
+   ((|inverse_event_measurable| FORMULA-DECL NIL |ppg_general_measure_map| NIL)
+    (|measurableMap?| CONST-DECL "bool" |ppg_general_measure_map| NIL)
+    (|MeasurableMap| TYPE-EQ-DECL NIL |ppg_general_measure_map| NIL)
+    (|forwardLeft| CONST-DECL "ppg_general_measure_map
+    [[[X, Z], [Y, Y]], [X, Y],
+     sigma_times(sigma_times(SX, SZ), sigma_times(SY, SY)),
+     sigma_times(SX, SY)].MeasurableMap"
+     |ppg_native_intersection_coordinates| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|inverseEvent| CONST-DECL "set[X]" |ppg_general_measure_map| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra_intersection| FORMULA-DECL NIL |sigma_algebra|
+     |measure_integration|)
+    (|forwardRight| CONST-DECL "ppg_general_measure_map
+    [[[X, Z], [Y, Y]], [Y, Z],
+     sigma_times(sigma_times(SX, SZ), sigma_times(SY, SY)),
+     sigma_times(SY, SZ)].MeasurableMap"
+     |ppg_native_intersection_coordinates| NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]"
+     |ppg_native_intersection_measurable| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_native_intersection_measurable| NIL)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_native_intersection_measurable| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (|forward_event_preimages| FORMULA-DECL NIL
+     |ppg_native_intersection_measurable| NIL))
+   SHOSTAK))
+ (|jointAsEvent_TCC1| 0
+  (|jointAsEvent_TCC1-1| NIL 4001441463
+   (""
+    (THEN (SKOSIMP) (LEMMA "measurableSet_jointEvent" ("A" "A!1" "B" "B!1"))
+     (ASSERT))
+    NIL)
+   ((|measurableSet_jointEvent| FORMULA-DECL NIL
+     |ppg_native_intersection_measurable| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_native_intersection_measurable| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_native_intersection_measurable| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]"
+     |ppg_native_intersection_measurable| NIL))
+   NIL
+   (|jointAsEvent| SUBTYPE "jointEvent[X, Y, Z](A, B)"
+    "(product_sigma_def[[ppg_native_intersection_measurable.X, ppg_native_intersection_measurable.Z], ppg_native_intersection_measurable.Y].sigma_times(product_sigma_def[ppg_native_intersection_measurable.X, ppg_native_intersection_measurable.Z].sigma_times(ppg_native_intersection_measurable.SX, ppg_native_intersection_measurable.SZ), ppg_native_intersection_measurable.SY))"
+    (32 60 32 75))))
+ (|forwardAsEvent_TCC1| 0
+  (|forwardAsEvent_TCC1-1| NIL 4001441463
+   (""
+    (THEN (SKOSIMP) (LEMMA "measurableSet_forwardEvent" ("A" "A!1" "B" "B!1"))
+     (ASSERT))
+    NIL)
+   ((|measurableSet_forwardEvent| FORMULA-DECL NIL
+     |ppg_native_intersection_measurable| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_native_intersection_measurable| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_native_intersection_measurable| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]"
+     |ppg_native_intersection_measurable| NIL))
+   NIL
+   (|forwardAsEvent| SUBTYPE "forwardEvent[X, Y, Z](A, B)"
+    "(product_sigma_def[[ppg_native_intersection_measurable.X, ppg_native_intersection_measurable.Z], [ppg_native_intersection_measurable.Y, ppg_native_intersection_measurable.Y]].sigma_times(product_sigma_def[ppg_native_intersection_measurable.X, ppg_native_intersection_measurable.Z].sigma_times(ppg_native_intersection_measurable.SX, ppg_native_intersection_measurable.SZ), product_sigma_def[ppg_native_intersection_measurable.Y, ppg_native_intersection_measurable.Y].sigma_times(ppg_native_intersection_measurable.SY, ppg_native_intersection_measurable.SY)))"
+    (34 78 34 95))))
+ (|double_joint_measurable| 0
+  (|double_joint_measurable-1| NIL 4001441463
+   (""
+    (THEN (SKOSIMP)
+     (LEMMA "measurableSet_doubleEvent" ("C" "jointAsEvent(A!1,B!1)"))
+     (EXPAND "jointAsEvent") (ASSERT))
+    NIL)
+   ((|measurableSet_doubleEvent| FORMULA-DECL NIL
+     |ppg_native_double_measurable| NIL)
+    (|jointAsEvent| CONST-DECL "(sigma_times(sigma_times(SX, SZ), SY))"
+     |ppg_native_intersection_measurable| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_native_intersection_measurable| NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]"
+     |ppg_native_intersection_measurable| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_native_intersection_measurable| NIL))
+   SHOSTAK))
+ (|measurableSet_oneOrderOnly| 0
+  (|measurableSet_oneOrderOnly-1| NIL 4001441463
+   (""
+    (THEN (SKOSIMP) (REWRITE "oneOrderOnly_eq_sdiff")
+     (LEMMA "measurableSet_forwardEvent" ("A" "A!1" "B" "B!1"))
+     (LEMMA "double_joint_measurable" ("A" "A!1" "B" "B!1")) (ASSERT)
+     (LEMMA
+      "sigma_algebra_difference[[[X,Z],[Y,Y]],sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY))]"
+      ("x" "forwardEvent(A!1,B!1)" "y" "doubleEvent(jointEvent(A!1,B!1))"))
+     (ASSERT))
+    NIL)
+   ((|measurableSet_forwardEvent| FORMULA-DECL NIL
+     |ppg_native_intersection_measurable| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|jointEvent| CONST-DECL "set[[[X, Z], Y]]" |ppg_intersection_events| NIL)
+    (|doubleEvent| CONST-DECL "set[[U, [Y, Y]]]" |ppg_double_sample_events|
+     NIL)
+    (|forwardEvent| CONST-DECL "set[[[X, Z], [Y, Y]]]"
+     |ppg_intersection_events| NIL)
+    (|sigma_algebra_difference| FORMULA-DECL NIL |sigma_algebra|
+     |measure_integration|)
+    (|double_joint_measurable| FORMULA-DECL NIL
+     |ppg_native_intersection_measurable| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_native_intersection_measurable| NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]"
+     |ppg_native_intersection_measurable| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]"
+     |ppg_native_intersection_measurable| NIL)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]"
+     |ppg_native_intersection_measurable| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|oneOrderOnly_eq_sdiff| FORMULA-DECL NIL |ppg_intersection_events| NIL))
+   SHOSTAK)))
+

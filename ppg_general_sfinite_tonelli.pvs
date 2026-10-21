@@ -1,0 +1,100 @@
+% Joint simple approximations restrict to increasing approximations
+% of every section. Monotone convergence first on the right and then on
+% the left proves Tonelli and the measurability of the section integral.
+% Only the right measure is S-finite; the left measure is arbitrary.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, Tonelli's theorem.
+% Mathlib, MeasureTheory/Integral/Prod.lean, lintegral_prod.
+ppg_general_sfinite_tonelli[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING measure_integration@measure_def[X,SX]) mu:measure_type,
+  (IMPORTING ppg_sfinite_measure[Y,SY]) nu:(sfinite?[Y,SY])]: THEORY
+BEGIN
+  IMPORTING ppg_sfinite_simple_sections[X,Y,SX,SY,mu,nu],
+    ppg_general_integral_add[Y,SY,nu]
+
+  JointMeasurable: TYPE =
+    ppg_simple_comparison_regions[[X,Y],sigma_times(SX,SY),productLaw].LowerMeasurable
+
+  RightMeasurable: TYPE = ppg_simple_comparison_regions[Y,SY,nu].LowerMeasurable
+
+  f: VAR JointMeasurable
+  x: VAR X
+  y: VAR Y
+  n: VAR nat
+  a: VAR nonneg_real
+
+  sectionFunction(f,x)(y:Y): ENN = f((x,y))
+
+  joint_level_measurable: LEMMA sigma_times(SX,SY)({w:[X,Y]|ele(ennFinite(a),f(w))})
+
+  section_level_set: LEMMA {y:Y|ele(ennFinite(a),sectionFunction(f,x)(y))}=
+    x_section({w:[X,Y]|ele(ennFinite(a),f(w))})(x)
+
+  section_function_measurable: THEOREM
+    ppg_simple_comparison_regions[Y,SY,nu].lowerMeasurable(sectionFunction(f,x))
+
+  sectionMeasurable(f,x): RightMeasurable = sectionFunction(f,x)
+
+  jointPrefix(f,n): JointSimple =
+    ppg_general_simple_approximation[[X,Y],sigma_times(SX,SY),productLaw].simplePrefix(f,n)
+
+  sectionPrefix(f,x)(n:nat): RightMeasurable =
+    ppg_simple_function_lattice[Y,SY,nu].simpleAsMeasurable(sectionSimple(jointPrefix(f,n),x))
+
+  section_prefix_at: LEMMA sectionPrefix(f,x)(n)(y)=
+    ppg_general_simple_approximation[[X,Y],sigma_times(SX,SY),productLaw].prefixValues(f)(n)((x,y))
+
+  section_prefix_value_sequence: LEMMA
+    (LAMBDA(n:nat):sectionPrefix(f,x)(n)(y))=
+      (LAMBDA(n:nat):ppg_general_simple_approximation[[X,Y],sigma_times(SX,SY),productLaw].prefixValues(f)(n)((x,y)))
+
+  section_prefix_increasing: LEMMA
+    ppg_general_monotone_integral[Y,SY,nu].increasingFunctions(sectionPrefix(f,x))
+
+  joint_prefix_pointwise_sup_at: LEMMA
+    ppg_general_monotone_integral[[X,Y],sigma_times(SX,SY),productLaw].pointwiseSup(
+      ppg_general_simple_approximation[[X,Y],sigma_times(SX,SY),productLaw].prefixValues(f))((x,y))=f((x,y))
+
+  joint_prefix_nat_sup_at: LEMMA
+    natSup(LAMBDA(n:nat):ppg_general_simple_approximation[[X,Y],sigma_times(SX,SY),productLaw].prefixValues(f)(n)((x,y)))=f((x,y))
+
+  section_prefix_sup_at: LEMMA
+    ppg_general_monotone_integral[Y,SY,nu].pointwiseSup(sectionPrefix(f,x))(y)=f((x,y))
+
+  section_prefix_sup: THEOREM
+    ppg_general_monotone_integral[Y,SY,nu].pointwiseSup(sectionPrefix(f,x))=sectionMeasurable(f,x)
+
+  integralPrefix(f)(n:nat): LeftMeasurable = simpleSectionIntegral(jointPrefix(f,n))
+
+  integral_prefix_at: LEMMA integralPrefix(f)(n)(x)=
+    ppg_general_lintegral[Y,SY,nu].lintegral(sectionPrefix(f,x)(n))
+
+  integral_prefix_value_sequence: LEMMA
+    (LAMBDA(n:nat):integralPrefix(f)(n)(x))=
+      (LAMBDA(n:nat):ppg_general_lintegral[Y,SY,nu].lintegral(sectionPrefix(f,x)(n)))
+
+  integral_prefix_increasing: LEMMA
+    ppg_general_monotone_integral[X,SX,mu].increasingFunctions(integralPrefix(f))
+
+  sectionIntegral(f)(x:X): ENN =
+    ppg_general_lintegral[Y,SY,nu].lintegral(sectionMeasurable(f,x))
+
+  integral_prefix_sup_at: THEOREM
+    ppg_general_monotone_integral[X,SX,mu].pointwiseSup(integralPrefix(f))(x)=sectionIntegral(f)(x)
+
+  measurableSectionIntegral(f): LeftMeasurable =
+    ppg_lower_measurable_limits[X,SX,mu].measurableSup(integralPrefix(f))
+
+  measurable_section_integral_at: THEOREM measurableSectionIntegral(f)(x)=sectionIntegral(f)(x)
+
+  integral_prefix_integrals: LEMMA
+    (LAMBDA(n:nat):ppg_general_lintegral[X,SX,mu].lintegral(integralPrefix(f)(n)))=
+      (LAMBDA(n:nat):jointIntegral(jointPrefix(f,n)))
+
+  general_sfinite_tonelli: THEOREM
+    ppg_general_lintegral[X,SX,mu].lintegral(measurableSectionIntegral(f))=
+      ppg_general_lintegral[[X,Y],sigma_times(SX,SY),productLaw].lintegral(f)
+
+END ppg_general_sfinite_tonelli

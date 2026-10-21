@@ -1,0 +1,68 @@
+% Restrict an arbitrary measure to a measurable region of finite mass.
+% The original countable-additivity identity then has a finite sum, so
+% its real masses satisfy the original finite-measure convergence law.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, restricted measures.
+ppg_general_finite_restriction[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_native_sum_bridge[X,S,mu],ppg_general_measure_map[X,X,S,S]
+
+  FiniteRegion: TYPE = {B:(S)|mu(B)`1}
+
+  B: VAR FiniteRegion
+  A: VAR (S)
+  Q: VAR [nat->(S)]
+  W: VAR [nat->nnreal]
+  b: VAR nnreal
+  n: VAR nat
+
+  finite_native_sum_value: LEMMA
+    x_eq(x_sum(LAMBDA(n:nat):(TRUE,W(n))),(TRUE,b)) IMPLIES
+      nativeValue(x_sum(LAMBDA(n:nat):(TRUE,W(n))))=ennFinite(b)
+
+  finite_native_sum_convergent: LEMMA
+    x_eq(x_sum(LAMBDA(n:nat):(TRUE,W(n))),(TRUE,b)) IMPLIES
+      analysis@convergence_sequences.convergent?(series(W))
+
+  finite_native_sum_limit: LEMMA
+    x_eq(x_sum(LAMBDA(n:nat):(TRUE,W(n))),(TRUE,b)) IMPLIES
+      analysis@convergence_sequences.limit(series(W))=b
+
+  finite_native_sum_convergence: THEOREM
+    x_eq(x_sum(LAMBDA(n:nat):(TRUE,W(n))),(TRUE,b)) IMPLIES
+      convergence(series(W),b)
+
+  finite_intersection_flag: THEOREM mu(intersection(B,A))`1
+
+  regionMass(B)(A:(S)): nnreal = mu(intersection(B,A))`2
+
+  finite_region_pair: LEMMA mu(intersection(B,A))=(TRUE,regionMass(B)(A))
+
+  regionRows(B,Q)(n:nat): (S) = intersection(B,Q(n))
+
+  region_rows_disjoint: LEMMA disjoint?(Q) IMPLIES disjoint?(regionRows(B,Q))
+
+  region_rows_union: LEMMA IUnion(regionRows(B,Q))=intersection(B,IUnion(Q))
+
+  region_native_sequence: LEMMA
+    (LAMBDA(n:nat):mu(regionRows(B,Q)(n)))=
+      (LAMBDA(n:nat):(TRUE,regionMass(B)(Q(n))))
+
+  region_countable_identity: THEOREM disjoint?(Q) IMPLIES
+    x_eq(x_sum(LAMBDA(n:nat):(TRUE,regionMass(B)(Q(n)))),
+      (TRUE,regionMass(B)(IUnion(Q))))
+
+  region_empty_mass: LEMMA regionMass(B)(emptyset[X])=0
+
+  region_series_convergence: THEOREM disjoint?(Q) IMPLIES
+    convergence(series(regionMass(B) o Q),regionMass(B)(IUnion(Q)))
+
+  region_is_finite_measure: THEOREM finite_measure?[X,S](regionMass(B))
+
+  regionFinite(B): finite_measure[X,S] = regionMass(B)
+
+  region_to_measure: THEOREM to_measure(regionFinite(B))(A)=mu(intersection(B,A))
+
+END ppg_general_finite_restriction

@@ -1,0 +1,30 @@
+% The pointwise tangent bound is the nonnegativity of (a-t) squared.
+% Its ENN form also holds at infinity. Finite real projection identities
+% below are used only after the integral has been proved finite.
+%
+% NASALib reals@sq, square identities; Paul R. Halmos, Measure Theory,
+% Springer, 1974, second-moment inequality.
+ppg_enn_moment_inequality: THEORY
+BEGIN
+  IMPORTING ppg_enn_to_real,reals@sq
+
+  x,y: VAR ENN
+  a,t: VAR nonneg_real
+
+  enn_finite_real_identity: LEMMA ennFinite?(x) IMPLIES ennFinite(ennToReal(x))=x
+
+  enn_real_finite_bound: LEMMA ele(x,ennFinite(a)) IFF
+    ennFinite?(x) AND ennToReal(x)<=a
+
+  enn_finite_real_order: LEMMA ennFinite?(x) AND ennFinite?(y) IMPLIES
+    (ele(x,y) IFF ennToReal(x)<=ennToReal(y))
+
+  enn_real_add_finite: LEMMA ennFinite?(x) AND ennFinite?(y) IMPLIES
+    ennToReal(eadd(x,y))=ennToReal(x)+ennToReal(y)
+
+  finite_tangent_bound: LEMMA 2*t*a<=a*a+t*t
+
+  enn_tangent_bound: THEOREM
+    ele(emul(ennFinite(2*t),x),eadd(emul(x,x),ennFinite(t*t)))
+
+END ppg_enn_moment_inequality

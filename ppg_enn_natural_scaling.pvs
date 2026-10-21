@@ -1,0 +1,32 @@
+% Natural multiples increase to the infinite multiple, with 0 * infinity
+% equal to zero. Finite factors reduce to homogeneity of countable suprema.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, nonnegative integration.
+ppg_enn_natural_scaling: THEORY
+BEGIN
+  IMPORTING ppg_enn_increasing_sup
+
+  z: VAR ENN
+  b: VAR nonneg_real
+
+  natural_exceeds: LEMMA EXISTS(n:nat):b<n
+
+  natural_sup_no_finite_bound: LEMMA
+    NOT ele(natSup(LAMBDA(n:nat):ennFinite(n)),ennFinite(b))
+
+  natural_sup_infinite: THEOREM natSup(LAMBDA(n:nat):ennFinite(n))=ennInfinity
+
+  natural_finite_scale_function: LEMMA
+    (LAMBDA(n:nat):emul(ennFinite(n),ennFinite(b)))=
+      (LAMBDA(n:nat):emul(ennFinite(b),ennFinite(n)))
+
+  natural_scale_infinity: LEMMA
+    natSup(LAMBDA(n:nat):emul(ennFinite(n),ennInfinity))=ennInfinity
+
+  natural_scale_limit: THEOREM
+    natSup(LAMBDA(n:nat):emul(ennFinite(n),z))=emul(ennInfinity,z)
+
+  natural_scale_monotone: LEMMA FORALL(i,j:nat):i<=j IMPLIES
+    ele(emul(ennFinite(i),z),emul(ennFinite(j),z))
+
+END ppg_enn_natural_scaling

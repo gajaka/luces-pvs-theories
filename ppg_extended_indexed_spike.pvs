@@ -1,0 +1,25 @@
+% A finite point mass may occur at any natural index. The original
+% nonnegative series converges to that mass, so its extended sum is finite.
+%
+% David Lester, NASALib series_aux.single_nz_series.
+ppg_extended_indexed_spike: THEORY
+BEGIN
+  IMPORTING ppg_extended_countable_sum,series@series_aux
+
+  k,n: VAR nat
+  c: VAR nnreal
+
+  indexedRealSpike(k,c)(n): nnreal = IF n=k THEN c ELSE 0 ENDIF
+
+  indexed_spike_convergence: LEMMA
+    convergence(series(indexedRealSpike(k,c)),c)
+
+  indexed_spike_convergent: LEMMA convergent?(series(indexedRealSpike(k,c)))
+
+  indexed_spike_limit: LEMMA
+    convergence_sequences.limit(series(indexedRealSpike(k,c)))=c
+
+  extended_indexed_spike_sum: THEOREM
+    x_sum(LAMBDA(n:nat):(TRUE,indexedRealSpike(k,c)(n)))=(TRUE,c)
+
+END ppg_extended_indexed_spike

@@ -1,0 +1,89 @@
+% All laws below are the original products, with probability subtypes
+% proved from full mass one. The excluded order is the measurable
+% difference. Its exact real mass split and the proved double-sample
+% second-moment inequality give the three intersection savings.
+%
+% Kun He, Qian Li and Xiaoming Sun, Moser-Tardos Algorithm: Beyond
+% Shearer's Bound, arXiv:2111.06527, Proposition 3.3, p. 12.
+ppg_probability_intersection[X,Y,Z:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],SZ:sigma_algebra[Z],
+  (IMPORTING ppg_probability_law[X,SX]) muX:ppg_probability_law[X,SX].ProbabilityLaw,
+  (IMPORTING ppg_probability_law[Y,SY]) muY:ppg_probability_law[Y,SY].ProbabilityLaw,
+  (IMPORTING ppg_probability_law[Z,SZ]) muZ:ppg_probability_law[Z,SZ].ProbabilityLaw]: THEORY
+BEGIN
+  IMPORTING ppg_probability_product[X,Z,SX,SZ,muX,muZ],
+    ppg_probability_product[Y,Y,SY,SY,muY,muY]
+
+  privateProb: ppg_probability_law[[X,Z],sigma_times(SX,SZ)].ProbabilityLaw =
+    ppg_probability_product[X,Z,SX,SZ,muX,muZ].probabilityProduct
+
+  sharedProb: ppg_probability_law[[Y,Y],sigma_times(SY,SY)].ProbabilityLaw =
+    ppg_probability_product[Y,Y,SY,SY,muY,muY].probabilityProduct
+
+  IMPORTING ppg_probability_product[[X,Z],[Y,Y],sigma_times(SX,SZ),sigma_times(SY,SY),privateProb,sharedProb]
+
+  fourProb: ppg_probability_law[[[X,Z],[Y,Y]],sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY))].ProbabilityLaw =
+    ppg_probability_product[[X,Z],[Y,Y],sigma_times(SX,SZ),sigma_times(SY,SY),privateProb,sharedProb].probabilityProduct
+
+  leftSfinite: (ppg_sfinite_measure[X,SX].sfinite?) = ppg_general_probability_measure[X,SX,muX].sfiniteLaw
+
+  middleSfinite: (ppg_sfinite_measure[Y,SY].sfinite?) = ppg_general_probability_measure[Y,SY,muY].sfiniteLaw
+
+  rightSfinite: (ppg_sfinite_measure[Z,SZ].sfinite?) = ppg_general_probability_measure[Z,SZ,muZ].sfiniteLaw
+
+  IMPORTING ppg_general_forward_event[X,Y,Z,SX,SY,SZ,leftSfinite,middleSfinite,rightSfinite],
+    ppg_probability_double_sample[[X,Z],Y,sigma_times(SX,SZ),SY,privateProb,muY],
+    ppg_probability_real_difference[[[X,Z],[Y,Y]],sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),fourProb],
+    ppg_product_measure_definition[X,Y,SX,SY,muX],
+    ppg_product_measure_definition[Y,Z,SY,SZ,muY]
+
+  A: VAR (sigma_times(SX,SY))
+  B: VAR (sigma_times(SY,SZ))
+  delta: VAR real
+
+  firstReal(A): nonneg_real = ennToReal(ppg_general_measure_values[X,SX,muX].nativeValue(
+    ppg_product_measure_definition[X,Y,SX,SY,muX].productMeasure(muY)(A)))
+
+  secondReal(B): nonneg_real = ennToReal(ppg_general_measure_values[X,SX,muX].nativeValue(
+    ppg_product_measure_definition[Y,Z,SY,SZ,muY].productMeasure(muZ)(B)))
+
+  overlapReal(A,B): nonneg_real = ennToReal(
+    ppg_general_measure_values[[X,Z],sigma_times(SX,SZ),privateProb].nativeValue(singleLaw(jointAsEvent(A,B))))
+
+  oneOrderAsEvent(A,B): (sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY))) = oneOrderOnly(A,B)
+
+  private_probability_original: LEMMA privateProb=
+    ppg_product_measure_definition[X,Z,SX,SZ,muX].productMeasure(muZ)
+
+  shared_probability_original: LEMMA sharedProb=
+    ppg_product_measure_definition[Y,Y,SY,SY,muY].productMeasure(muY)
+
+  double_four_law: LEMMA originalDouble=fourProb
+
+  forward_four_law: LEMMA fourLaw=fourProb
+
+  excluded_subset_forward: LEMMA
+    subset?(measurableDoubleEvent(jointAsEvent(A,B)),forwardAsEvent(A,B))
+
+  one_order_difference: LEMMA oneOrderAsEvent(A,B)=
+    difference(forwardAsEvent(A,B),measurableDoubleEvent(jointAsEvent(A,B)))
+
+  loss_real_difference: LEMMA realMass(oneOrderAsEvent(A,B))=
+    realMass(forwardAsEvent(A,B))-realMass(measurableDoubleEvent(jointAsEvent(A,B)))
+
+  forward_probability_real: LEMMA realMass(forwardAsEvent(A,B))=firstReal(A)*secondReal(B)
+
+  intersection_second_moment: LEMMA overlapReal(A,B)*overlapReal(A,B)<=
+    realMass(measurableDoubleEvent(jointAsEvent(A,B)))
+
+  intersection_saving: THEOREM realMass(oneOrderAsEvent(A,B))<=
+    firstReal(A)*secondReal(B)-overlapReal(A,B)*overlapReal(A,B)
+
+  intersection_saving_of_lower_bound: THEOREM delta>=0 AND delta<=overlapReal(A,B) IMPLIES
+    realMass(oneOrderAsEvent(A,B))<=firstReal(A)*secondReal(B)-delta*delta
+
+  intersection_saving_strict: THEOREM overlapReal(A,B)>0 IMPLIES
+    realMass(oneOrderAsEvent(A,B))<firstReal(A)*secondReal(B)
+
+END ppg_probability_intersection

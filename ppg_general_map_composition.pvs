@@ -1,0 +1,53 @@
+% Pushforwards compose by the equality of inverse images.
+% Semantic equality of arbitrary measures is preserved by the same map.
+% No finite mass or nonempty carrier is needed.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, induced measures.
+% Mathlib, MeasureTheory/Measure/Map.lean, map_map and map_congr.
+ppg_general_map_composition[X,Y,Z:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],SZ:sigma_algebra[Z]]: THEORY
+BEGIN
+  IMPORTING ppg_general_measure_map[X,Y,SX,SY],
+    ppg_general_measure_map[Y,Z,SY,SZ],ppg_general_measure_map[X,Z,SX,SZ]
+
+  FMap: TYPE = ppg_general_measure_map[X,Y,SX,SY].MeasurableMap
+
+  GMap: TYPE = ppg_general_measure_map[Y,Z,SY,SZ].MeasurableMap
+
+  HMap: TYPE = ppg_general_measure_map[X,Z,SX,SZ].MeasurableMap
+
+  f: VAR FMap
+  g: VAR GMap
+  A: VAR (SZ)
+  mu,nu: VAR measure_type[X,SX]
+
+  composedFunction(f,g)(x:X): Z = g(f(x))
+
+  composed_preimage: LEMMA
+    ppg_general_measure_map[X,Z,SX,SZ].inverseEvent(composedFunction(f,g),A)=
+      ppg_general_measure_map[X,Y,SX,SY].inverseEvent(f,
+        ppg_general_measure_map[Y,Z,SY,SZ].inverseEvent(g,A))
+
+  composed_measurable: THEOREM
+    ppg_general_measure_map[X,Z,SX,SZ].measurableMap?(composedFunction(f,g))
+
+  composeMap(f,g): HMap = composedFunction(f,g)
+
+  composed_map_event: THEOREM
+    ppg_general_measure_map[X,Z,SX,SZ].mapMeasure(mu,composeMap(f,g))(A)=
+      ppg_general_measure_map[Y,Z,SY,SZ].mapMeasure(
+        ppg_general_measure_map[X,Y,SX,SY].mapMeasure(mu,f),g)(A)
+
+  map_composition: THEOREM
+    ppg_general_measure_map[X,Z,SX,SZ].mapMeasure(mu,composeMap(f,g))=
+      ppg_general_measure_map[Y,Z,SY,SZ].mapMeasure(
+        ppg_general_measure_map[X,Y,SX,SY].mapMeasure(mu,f),g)
+
+  map_preserves_semantic_equality: THEOREM
+    ppg_sfinite_measure[X,SX].sameMeasure(mu,nu) IMPLIES
+      ppg_sfinite_measure[Y,SY].sameMeasure(
+        ppg_general_measure_map[X,Y,SX,SY].mapMeasure(mu,f),
+        ppg_general_measure_map[X,Y,SX,SY].mapMeasure(nu,f))
+
+END ppg_general_map_composition

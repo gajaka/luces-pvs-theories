@@ -1,0 +1,245 @@
+(|ppg_general_measure_values|
+ (|native_semantic_equality| 0
+  (|native_semantic_equality-1| NIL 4001427522
+   (""
+    (THEN (SKOSIMP) (AUTO-REWRITE "finite_embedding_eq") (EXPAND "x_eq")
+     (EXPAND "nativeValue") (GRIND))
+    NIL)
+   ((|x_eq| CONST-DECL "bool" |extended_nnreal| |extended_nnreal|)
+    (|finite_embedding_eq| FORMULA-DECL NIL |ppg_enn_multiply| NIL)
+    (|nativeValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL))
+   SHOSTAK))
+ (|native_semantic_order| 0
+  (|native_semantic_order-1| NIL 4001427522
+   (""
+    (THEN (SKOSIMP) (EXPAND "x_le") (EXPAND "nativeValue") (EXPAND "ele")
+     (GRIND))
+    NIL)
+   ((|nativeValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|ele| CONST-DECL "bool" |ppg_enn_sup| NIL)
+    (|x_le| CONST-DECL "bool" |extended_nnreal| |extended_nnreal|))
+   SHOSTAK))
+ (|native_addition_value| 0
+  (|native_addition_value-1| NIL 4001427522
+   (""
+    (THEN (SKOSIMP) (EXPAND "x_add") (EXPAND "nativeValue") (EXPAND "eadd")
+     (GRIND))
+    NIL)
+   ((|nativeValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL)
+    (|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|x_add| CONST-DECL "extended_nnreal" |extended_nnreal| |extended_nnreal|))
+   SHOSTAK))
+ (|native_product_value| 0
+  (|native_product_value-1| NIL 4001427522
+   (""
+    (THEN (SKOSIMP) (AUTO-REWRITE "finite_embedding_eq") (EXPAND "x_times")
+     (EXPAND "x_eq") (EXPAND "nativeValue") (EXPAND "emul") (GRIND))
+    NIL)
+   ((|x_times| CONST-DECL "extended_nnreal" |extended_nnreal|
+     |extended_nnreal|)
+    (|nativeValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL)
+    (|finite_embedding_eq| FORMULA-DECL NIL |ppg_enn_multiply| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|emul| CONST-DECL "ENN" |ppg_enn_multiply| NIL)
+    (|x_eq| CONST-DECL "bool" |extended_nnreal| |extended_nnreal|))
+   SHOSTAK))
+ (|measure_value_empty| 0
+  (|measure_value_empty-1| NIL 4001427522
+   (""
+    (THEN (TYPEPRED "mu") (EXPAND "measure?") (EXPAND "measure_empty?")
+     (FLATTEN) (EXPAND "measureValue") (REPLACE -1) (EXPAND "nativeValue")
+     (ASSERT))
+    NIL)
+   ((|mu| FORMAL-CONST-DECL "measure_type" |ppg_general_measure_values| NIL)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_general_measure_values| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_general_measure_values| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|measure_empty?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measureValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL)
+    (|nativeValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL))
+   SHOSTAK))
+ (|measure_value_monotone| 0
+  (|measure_value_monotone-1| NIL 4001427522
+   (""
+    (THEN (SKOSIMP) (TYPEPRED "mu")
+     (LEMMA "measure_monotone" ("f" "mu" "a" "A!1" "b" "B!1"))
+     (LEMMA "native_semantic_order" ("u" "mu(A!1)" "v" "mu(B!1)"))
+     (EXPAND "measureValue") (ASSERT))
+    NIL)
+   ((|measure_monotone| FORMULA-DECL NIL |measure_def| |measure_integration|)
+    (|measureValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|native_semantic_order| FORMULA-DECL NIL |ppg_general_measure_values| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_general_measure_values| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_general_measure_values| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_general_measure_values| NIL))
+   SHOSTAK))
+ (|measure_value_disjoint_union| 0
+  (|measure_value_disjoint_union-1| NIL 4001427522
+   (""
+    (THEN (SKOSIMP) (TYPEPRED "mu") (LEMMA "measure_def" ("f" "mu"))
+     (LEMMA "native_semantic_equality"
+      ("u" "mu(union(A!1,B!1))" "v" "x_add(mu(A!1),mu(B!1))"))
+     (REWRITE "native_addition_value") (EXPAND "measureValue")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|measure_def| FORMULA-DECL NIL |measure_def| |measure_integration|)
+    (|native_addition_value| FORMULA-DECL NIL |ppg_general_measure_values| NIL)
+    (|measureValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL)
+    (|native_semantic_equality| FORMULA-DECL NIL |ppg_general_measure_values|
+     NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|union| CONST-DECL "set" |sets| NIL)
+    (|x_add| CONST-DECL "extended_nnreal" |extended_nnreal| |extended_nnreal|)
+    (|subset_algebra_union| APPLICATION-JUDGEMENT "(S)"
+     |ppg_general_measure_values| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_general_measure_values| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_general_measure_values| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|mu| FORMAL-CONST-DECL "measure_type" |ppg_general_measure_values| NIL))
+   SHOSTAK))
+ (|split_union_identity| 0
+  (|split_union_identity-1| NIL 4001427522
+   ("" (THEN (SKOSIMP) (APPLY-EXTENSIONALITY :HIDE? T) (GRIND)) NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|subset_algebra_intersection| APPLICATION-JUDGEMENT "(S)"
+     |ppg_general_measure_values| NIL)
+    (|subset_algebra_difference| APPLICATION-JUDGEMENT "(S)"
+     |ppg_general_measure_values| NIL)
+    (|subset_algebra_union| APPLICATION-JUDGEMENT "(S)"
+     |ppg_general_measure_values| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|union| CONST-DECL "set" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_general_measure_values| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_general_measure_values| NIL))
+   SHOSTAK))
+ (|split_disjoint| 0
+  (|split_disjoint-1| NIL 4001427522 ("" (THEN (GRIND)) NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_general_measure_values| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_general_measure_values| NIL)
+    (|disjoint?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset_algebra_intersection| APPLICATION-JUDGEMENT "(S)"
+     |ppg_general_measure_values| NIL))
+   SHOSTAK))
+ (|measure_value_split| 0
+  (|measure_value_split-1| NIL 4001427522
+   (""
+    (THEN (SKOSIMP) (LEMMA "split_disjoint" ("A" "A!1" "B" "B!1"))
+     (LEMMA "measure_value_disjoint_union"
+      ("A" "intersection(A!1,B!1)" "B" "difference(A!1,B!1)"))
+     (REWRITE "split_union_identity") (ASSERT))
+    NIL)
+   ((|subset_algebra_intersection| APPLICATION-JUDGEMENT "(S)"
+     |ppg_general_measure_values| NIL)
+    (|subset_algebra_difference| APPLICATION-JUDGEMENT "(S)"
+     |ppg_general_measure_values| NIL)
+    (|measure_value_disjoint_union| FORMULA-DECL NIL
+     |ppg_general_measure_values| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|difference| CONST-DECL "set" |sets| NIL)
+    (|split_union_identity| FORMULA-DECL NIL |ppg_general_measure_values| NIL)
+    (|split_disjoint| FORMULA-DECL NIL |ppg_general_measure_values| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_general_measure_values| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (S FORMAL-CONST-DECL "sigma_algebra" |ppg_general_measure_values| NIL))
+   SHOSTAK)))
+

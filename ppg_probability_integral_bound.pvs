@@ -1,0 +1,34 @@
+% Monotonicity compares a bounded nonnegative function with the
+% full-set unit indicator. Full mass one makes its integral one.
+% Thus finite means are derived from the probability law.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, nonnegative integration.
+ppg_probability_integral_bound[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING ppg_probability_law[X,S]) mu:ProbabilityLaw]: THEORY
+BEGIN
+  IMPORTING ppg_general_probability_measure[X,S,mu],ppg_general_indicator_integral[X,S,mu],
+    ppg_enn_moment_inequality
+
+  f: VAR LowerMeasurable
+  x: VAR X
+
+  oneFunction: LowerMeasurable = unitIndicator(fullset[X])
+
+  one_function_at: LEMMA oneFunction(x)=ennFinite(1)
+
+  one_function_integral: LEMMA lintegral(oneFunction)=ennFinite(1)
+
+  bounded?(f): bool = FORALL(x:X):ele(f(x),ennFinite(1))
+
+  bounded_function_integral: THEOREM bounded?(f) IMPLIES ele(lintegral(f),ennFinite(1))
+
+  bounded_integral_finite: THEOREM bounded?(f) IMPLIES ennFinite?(lintegral(f))
+
+  mean(f): nonneg_real = ennToReal(lintegral(f))
+
+  bounded_mean_identity: THEOREM bounded?(f) IMPLIES lintegral(f)=ennFinite(mean(f))
+
+  bounded_mean_le_one: THEOREM bounded?(f) IMPLIES mean(f)<=1
+
+END ppg_probability_integral_bound

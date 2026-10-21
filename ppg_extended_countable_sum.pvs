@@ -1,0 +1,62 @@
+% Nonnegative series use the original NASALib extended values. Infinity
+% has several pair representations, so comparisons use x_eq throughout.
+% David Lester, NASALib extended_nnreal and generalized_measure_def.
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+ppg_extended_countable_sum: THEORY
+BEGIN
+  IMPORTING extended_nnreal@extended_nnreal
+
+  c: VAR nnreal
+  n: VAR nat
+  x,y,z: VAR extended_nnreal
+
+  realSpike(c)(n): nnreal = IF n=0 THEN c ELSE 0 ENDIF
+
+  spike_partial_sum: LEMMA sigma(0,n,realSpike(c))=c
+
+  spike_series_constant: LEMMA series(realSpike(c))=(LAMBDA(n:nat):c)
+
+  spike_series_converges: LEMMA convergent?(series(realSpike(c)))
+
+  spike_series_limit: LEMMA convergence_sequences.limit(series(realSpike(c)))=c
+
+  extended_spike_sum: LEMMA
+    x_sum(LAMBDA(n:nat):(TRUE,realSpike(c)(n)))=(TRUE,c)
+
+  extended_zero_sum: LEMMA x_sum(LAMBDA(n:nat):(TRUE,0))=(TRUE,0)
+
+  extended_eq_reflexive: LEMMA x_eq(x,x)
+
+  extended_eq_symmetric: LEMMA x_eq(x,y) IMPLIES x_eq(y,x)
+
+  extended_eq_transitive: LEMMA x_eq(x,y) AND x_eq(y,z) IMPLIES x_eq(x,z)
+
+  extended_finite_product: LEMMA FORALL(a,b:nnreal):
+    x_times((TRUE,a),(TRUE,b))=(TRUE,a*b)
+
+  extended_product_sum: LEMMA FORALL(x:extended_nnreal,S:[nat->extended_nnreal]):
+    x_eq(x_times(x,x_sum(S)),x_sum(LAMBDA(i:nat):x_times(x,S(i))))
+
+  extended_product_family_commutes: LEMMA FORALL(x:extended_nnreal,S:[nat->extended_nnreal]):
+    (LAMBDA(i:nat):x_times(S(i),x))=(LAMBDA(i:nat):x_times(x,S(i)))
+
+  extended_sum_product: LEMMA FORALL(x:extended_nnreal,S:[nat->extended_nnreal]):
+    x_eq(x_times(x_sum(S),x),x_sum(LAMBDA(i:nat):x_times(S(i),x)))
+
+  extended_double_sum_product: LEMMA FORALL(S,T:[nat->extended_nnreal]):
+    x_eq(x_times(x_sum(S),x_sum(T)),
+      x_sum(LAMBDA(i:nat):x_sum(LAMBDA(j:nat):x_times(S(i),T(j)))))
+
+  extended_finite_product_row: LEMMA FORALL(S,T:[nat->nnreal],i:nat):
+    (LAMBDA(j:nat):x_times((TRUE,S(i)),(TRUE,T(j))))=
+      (LAMBDA(j:nat):(TRUE,S(i)*T(j)))
+
+  extended_finite_product_family: LEMMA FORALL(S,T:[nat->nnreal]):
+    (LAMBDA(i:nat):x_sum(LAMBDA(j:nat):x_times((TRUE,S(i)),(TRUE,T(j)))))=
+      (LAMBDA(i:nat):x_sum(LAMBDA(j:nat):(TRUE,S(i)*T(j))))
+
+  extended_finite_double_sum_product: LEMMA FORALL(S,T:[nat->nnreal]):
+    x_eq(x_times(x_sum(LAMBDA(i:nat):(TRUE,S(i))),x_sum(LAMBDA(j:nat):(TRUE,T(j)))),
+      x_sum(LAMBDA(i:nat):x_sum(LAMBDA(j:nat):(TRUE,S(i)*T(j)))))
+
+END ppg_extended_countable_sum

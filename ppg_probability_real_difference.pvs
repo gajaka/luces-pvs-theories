@@ -1,0 +1,21 @@
+% Finite probability masses turn the disjoint measure split into
+% a real subtraction identity. The subset premise is the original one.
+%
+% Mathlib, MeasureTheory/Measure/Real.lean, measureReal_sdiff.
+ppg_probability_real_difference[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING ppg_probability_law[X,S]) mu:ProbabilityLaw]: THEORY
+BEGIN
+  IMPORTING ppg_general_probability_measure[X,S,mu],ppg_enn_moment_inequality
+
+  A,B: VAR (S)
+
+  realMass(A): nonneg_real = ennToReal(measureValue(A))
+
+  probability_real_mass: LEMMA realMass(A)=mu(A)`2
+
+  real_mass_split: LEMMA realMass(A)=realMass(intersection(A,B))+realMass(difference(A,B))
+
+  probability_real_sdiff: THEOREM subset?(B,A) IMPLIES realMass(difference(A,B))=realMass(A)-realMass(B)
+
+END ppg_probability_real_difference

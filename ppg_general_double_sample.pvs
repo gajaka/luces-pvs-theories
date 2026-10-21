@@ -1,0 +1,65 @@
+% The double test is an intersection of two measurable preimages.
+% Its section is a rectangle, so its product measure is the integral
+% of the square of the original section mass. The left law is arbitrary.
+%
+% Kun He, Qian Li and Xiaoming Sun, Moser-Tardos Algorithm: Beyond
+% Shearer's Bound, arXiv:2111.06527, Proposition 3.3.
+ppg_general_double_sample[U,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SU:sigma_algebra[U],SY:sigma_algebra[Y],
+  (IMPORTING measure_integration@measure_def[U,SU]) mu:measure_type,
+  (IMPORTING ppg_sfinite_measure[Y,SY]) nu:(sfinite?[Y,SY])]: THEORY
+BEGIN
+  IMPORTING ppg_double_sample_events[U,Y],ppg_native_identity_map[U,SU],
+    ppg_native_product_projections[Y,Y,SY,SY],
+    ppg_product_measurable_map[U,[Y,Y],U,Y,SU,sigma_times(SY,SY),SU,SY,ppg_native_identity_map[U,SU].identityMap,ppg_native_product_projections[Y,Y,SY,SY].firstMap],ppg_product_measurable_map[U,[Y,Y],U,Y,SU,sigma_times(SY,SY),SU,SY,ppg_native_identity_map[U,SU].identityMap,ppg_native_product_projections[Y,Y,SY,SY].secondMap],
+    ppg_sfinite_product_closure[Y,Y,SY,SY,nu,nu],
+    ppg_sfinite_product_rectangles[Y,Y,SY,SY,nu],
+    ppg_product_measure_definition[U,[Y,Y],SU,sigma_times(SY,SY),mu]
+
+  C: VAR (sigma_times(SU,SY))
+  u: VAR U
+
+  firstPass(C): (sigma_times(SU,sigma_times(SY,SY))) =
+    ppg_general_measure_map[[U,[Y,Y]],[U,Y],sigma_times(SU,sigma_times(SY,SY)),sigma_times(SU,SY)].inverseEvent(ppg_product_measurable_map[U,[Y,Y],U,Y,SU,sigma_times(SY,SY),SU,SY,ppg_native_identity_map[U,SU].identityMap,ppg_native_product_projections[Y,Y,SY,SY].firstMap].pairMap,C)
+
+  secondPass(C): (sigma_times(SU,sigma_times(SY,SY))) =
+    ppg_general_measure_map[[U,[Y,Y]],[U,Y],sigma_times(SU,sigma_times(SY,SY)),sigma_times(SU,SY)].inverseEvent(ppg_product_measurable_map[U,[Y,Y],U,Y,SU,sigma_times(SY,SY),SU,SY,ppg_native_identity_map[U,SU].identityMap,ppg_native_product_projections[Y,Y,SY,SY].secondMap].pairMap,C)
+
+  double_event_preimages: THEOREM doubleEvent(C)=intersection(firstPass(C),secondPass(C))
+
+  measurableSet_doubleEvent: THEOREM sigma_times(SU,sigma_times(SY,SY))(doubleEvent(C))
+
+  measurableDoubleEvent(C): (sigma_times(SU,sigma_times(SY,SY))) = doubleEvent(C)
+
+  repeated_law_sfinite: THEOREM ppg_sfinite_measure[[Y,Y],sigma_times(SY,SY)].sfinite?(
+    ppg_product_measure_definition[Y,Y,SY,SY,nu].productMeasure(nu))
+
+  doubleRight: (ppg_sfinite_measure[[Y,Y],sigma_times(SY,SY)].sfinite?) =
+    ppg_product_measure_definition[Y,Y,SY,SY,nu].productMeasure(nu)
+
+  doubleLaw: measure_type[[U,[Y,Y]],sigma_times(SU,sigma_times(SY,SY))] =
+    ppg_product_measure_definition[U,[Y,Y],SU,sigma_times(SY,SY),mu].productMeasure(doubleRight)
+
+  original_section_measurable: LEMMA SY(x_section(C)(u))
+
+  double_section_rectangle: THEOREM x_section(measurableDoubleEvent(C))(u)=
+    cross_product(x_section(C)(u),x_section(C)(u))
+
+  sectionSquare(C)(u:U): ENN = emul(
+    ppg_general_measure_values[U,SU,mu].nativeValue(nu(x_section(C)(u))),
+    ppg_general_measure_values[U,SU,mu].nativeValue(nu(x_section(C)(u))))
+
+  double_section_value: THEOREM
+    ppg_general_measure_values[U,SU,mu].nativeValue(doubleRight(x_section(measurableDoubleEvent(C))(u)))=
+      sectionSquare(C)(u)
+
+  double_section_function: THEOREM
+    ppg_sfinite_sections[U,[Y,Y],SU,sigma_times(SY,SY),mu].measurableSection(doubleRight,measurableDoubleEvent(C))=
+      sectionSquare(C)
+
+  measure_doubleEvent: THEOREM
+    ppg_general_measure_values[U,SU,mu].nativeValue(doubleLaw(measurableDoubleEvent(C)))=
+      ppg_general_lintegral[U,SU,mu].lintegral(sectionSquare(C))
+
+END ppg_general_double_sample

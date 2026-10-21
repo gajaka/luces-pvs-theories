@@ -1,0 +1,55 @@
+% Swapping coordinates is a measurable map of the product sigma
+% algebras. Its rectangle preimage is the reversed rectangle.
+% Both raw inverse identities hold without any nonempty carrier premise.
+%
+% Mathlib, MeasureTheory/MeasurableSpace/Constructions.lean, measurable_swap.
+ppg_native_product_swap[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y]]: THEORY
+BEGIN
+  IMPORTING measure_integration@product_sigma[X,Y,SX,SY],
+    measure_integration@product_sigma[Y,X,SY,SX],
+    ppg_general_measure_map[[Y,X],[X,Y],sigma_times(SY,SX),sigma_times(SX,SY)],
+    ppg_native_measurable_generators[[Y,X],[X,Y],sigma_times(SY,SX)]
+
+  A: VAR (SX)
+  B: VAR (SY)
+  D: VAR set[[X,Y]]
+  w: VAR [X,Y]
+  v: VAR [Y,X]
+
+  swapFunction(v:[Y,X]): [X,Y] = (v`2,v`1)
+
+  reverseFunction(w:[X,Y]): [Y,X] = (w`2,w`1)
+
+  swap_cancel: LEMMA swapFunction(reverseFunction(w))=w
+
+  reverse_cancel: LEMMA reverseFunction(swapFunction(v))=v
+
+  targetGenerators: set[set[[X,Y]]] = fullset[measurable_rectangle(SX,SY)]
+
+  target_generator_is_rectangle: LEMMA targetGenerators(D) IMPLIES measurable_rectangle?(SX,SY)(D)
+
+  swap_rectangle_inverse: THEOREM
+    ppg_measurable_map[[Y,X],[X,Y]].inverseImage(swapFunction,cross_product(A,B))=cross_product(B,A)
+
+  swap_rectangle_measurable: THEOREM sigma_times(SY,SX)(
+    ppg_measurable_map[[Y,X],[X,Y]].inverseImage(swapFunction,cross_product(A,B)))
+
+  swap_generators_measurable: THEOREM targetGenerators(D) IMPLIES sigma_times(SY,SX)(
+    ppg_measurable_map[[Y,X],[X,Y]].inverseImage(swapFunction,D))
+
+  swap_generated_preimages: THEOREM
+    subset?(measure_integration@subset_algebra_def[[X,Y]].generated_sigma_algebra(targetGenerators),
+      preimageSigma(swapFunction))
+
+  target_product_generated: LEMMA sigma_times(SX,SY)=
+    measure_integration@subset_algebra_def[[X,Y]].generated_sigma_algebra(targetGenerators)
+
+  swap_measurable: THEOREM measurableMap?(swapFunction)
+
+  swapMap: MeasurableMap = swapFunction
+
+  swap_map_rectangle: THEOREM inverseEvent(swapMap,cross_product(A,B))=cross_product(B,A)
+
+END ppg_native_product_swap

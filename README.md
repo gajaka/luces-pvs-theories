@@ -7,9 +7,9 @@ The application theories describe transport, observability and secure-boot
 models; the generic theory keeps the data, specifications and repair actions
 abstract.
 
-As of **2026-10-20**, the translation has independently replayed counterparts
-for **1,714 of 1,824 Lean source theorems and lemmas**, with all recorded results
-checked in **174 of 191 modules**. Supporting PVS lemmas and type-correctness
+As of **2026-10-22**, the translation has independently replayed counterparts
+for **1,727 of 1,824 Lean source theorems and lemmas**, with all recorded results
+checked in **175 of 191 modules**. Supporting PVS lemmas and type-correctness
 conditions are additional obligations and are excluded from those source-result counts.
 The translation is still in progress.
 
@@ -78,7 +78,7 @@ This loop leaves `Sterbenz/` out of the batch. That older Frama-C/Jessie
 development has separate floating-point library dependencies; see its
 [README](Sterbenz/README.md).
 
-Recorded translation checks on 2026-10-18 through 2026-10-20 include:
+Recorded translation checks on 2026-10-18 through 2026-10-22 include:
 
 | Check | Result |
 |-------|--------|
@@ -108,6 +108,7 @@ Recorded translation checks on 2026-10-18 through 2026-10-20 include:
 | General Local Lemma | 407/407 project obligations complete across 39 theories, including 48 new obligations and 30 source results; 412 Native library obligations freshly replayed in the same cold PVS process. |
 | Constructed topological node order | 191/191 project obligations complete across 15 theories, including 8 new obligations and 7 source results. |
 | Computability limit for infinite repair models | 935/935 project obligations complete across 50 proof-bearing theories, including 144 new obligations and all 14 source results. The run includes 66 TCCs and uses no Native library proof bodies. |
+| General double-sampling and Moser–Tardos intersection | 897/897 project obligations complete across 77 theories, including all 13 source results; 683 Native library obligations freshly replayed in the same cold PVS process. Measurable double, joint and forward events, product-measure identities and intersection bounds. |
 
 These runs check saved proofs in isolated workspaces. Project dependencies use
 the exact committed source and proof inputs. The separately checked native
@@ -228,6 +229,7 @@ integration arguments. Each entry's imports lead to that support.
 | [ppg_mt_termination.pvs](ppg_mt_termination.pvs), [ppg_mt_budget_repair.pvs](ppg_mt_budget_repair.pvs) | Almost-sure termination and the repair reachability bridge. |
 | [ppg_pegden_expectation.pvs](ppg_pegden_expectation.pvs), [ppg_pegden_termination.pvs](ppg_pegden_termination.pvs) | Independent-subset budgets, expected resamplings and termination. |
 | [ppg_shearer_total_expectation.pvs](ppg_shearer_total_expectation.pvs), [ppg_shearer_component_integral.pvs](ppg_shearer_component_integral.pvs) | Strict Shearer expected-work bounds and component integrals. |
+| [ppg_general_double_sample.pvs](ppg_general_double_sample.pvs), [ppg_general_forward_event.pvs](ppg_general_forward_event.pvs), [ppg_intersection_events.pvs](ppg_intersection_events.pvs), [ppg_native_double_measurable.pvs](ppg_native_double_measurable.pvs), [ppg_native_intersection_measurable.pvs](ppg_native_intersection_measurable.pvs), [ppg_probability_double_sample.pvs](ppg_probability_double_sample.pvs), [ppg_probability_intersection.pvs](ppg_probability_intersection.pvs) | General double-sample and intersection events, their measurability and measure identities, and probability bounds. |
 
 ### HLS witness DAGs
 
@@ -578,8 +580,9 @@ lists, arbitrary carriers, generated quotient classes and the general repair
 model. All recorded results in the general Local Lemma module are translated
 and replayed. Ordered witness DAGs and their constructed topological node order
 are also checked. All 14 source results about the computability limit for the
-encoded infinite repair family are translated and replayed. The remaining 110
-source results cover HLS coin and footprint constructions, intersection-sensitive
+encoded infinite repair family are translated and replayed. General double-sample
+and intersection-event identities are also checked. The remaining 97 source
+results cover HLS coin and footprint constructions, intersection-sensitive
 probability and expectation bounds, and policy expectation. Source-by-source
 semantic review and replay accounting continue with each package.
 

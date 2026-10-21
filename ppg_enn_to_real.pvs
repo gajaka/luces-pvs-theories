@@ -1,0 +1,24 @@
+% The real projection of infinity is zero, as in ENNReal.toReal.
+% Multiplicativity includes zero times infinity and needs no finiteness
+% or integrability premise.
+%
+% Mathlib, Data/ENNReal/Real.lean, toReal_mul.
+ppg_enn_to_real: THEORY
+BEGIN
+  IMPORTING ppg_enn_multiply
+
+  x,y: VAR ENN
+  a: VAR nonneg_real
+
+  ennToReal(x): nonneg_real = CASES x OF
+    ennInfinity: 0,
+    ennFinite(a): a
+  ENDCASES
+
+  enn_to_real_finite: LEMMA ennToReal(ennFinite(a))=a
+
+  enn_to_real_infinity: LEMMA ennToReal(ennInfinity)=0
+
+  enn_to_real_mul: THEOREM ennToReal(emul(x,y))=ennToReal(x)*ennToReal(y)
+
+END ppg_enn_to_real

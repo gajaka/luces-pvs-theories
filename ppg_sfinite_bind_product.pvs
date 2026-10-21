@@ -1,0 +1,67 @@
+% Integrating the section mass defines a countably additive
+% product measure for an arbitrary left measure and an S-finite right
+% measure. The finite decomposition proves measurability; it is not a
+% parameter of the resulting product.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, product measures.
+% Mathlib, MeasureTheory/Measure/Prod.lean, prod_apply.
+ppg_sfinite_bind_product[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING measure_integration@measure_def[X,SX]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_sfinite_section_unions[X,Y,SX,SY,mu]
+
+  nu: VAR (sfinite?[Y,SY])
+  E: VAR (sigma_times(SX,SY))
+  Q: VAR [nat->(sigma_times(SX,SY))]
+  F,G: VAR [nat->finite_measure[Y,SY]]
+  z: VAR ENN
+
+  encodeENN(z): extended_nnreal = CASES z OF
+    ennFinite(a):(TRUE,a),ennInfinity:(FALSE,0) ENDCASES
+
+  native_value_encode: LEMMA nativeValue(encodeENN(z))=z
+
+  encode_zero: LEMMA encodeENN(ennFinite(0))=(TRUE,0)
+
+  productIntegralValue(nu,E): ENN = lintegral(measurableSection(nu,E))
+
+  bindProductFunction(nu)(E:(sigma_times(SX,SY))): extended_nnreal =
+    encodeENN(productIntegralValue(nu,E))
+
+  product_integral_empty: LEMMA productIntegralValue(nu,emptyset[[X,Y]])=ennFinite(0)
+
+  bind_product_empty: LEMMA bindProductFunction(nu)(emptyset[[X,Y]])=(TRUE,0)
+
+  product_integral_countable: THEOREM disjoint?(Q) IMPLIES
+    productIntegralValue(nu,IUnion(Q))=
+      totalSum(LAMBDA(n:nat):productIntegralValue(nu,Q(n)))
+
+  bind_product_value: LEMMA nativeValue(bindProductFunction(nu)(E))=
+    productIntegralValue(nu,E)
+
+  bind_product_value_function: LEMMA
+    (LAMBDA(n:nat):nativeValue(bindProductFunction(nu)(Q(n))))=
+      (LAMBDA(n:nat):productIntegralValue(nu,Q(n)))
+
+  bind_product_countable: THEOREM disjoint?(Q) IMPLIES
+    x_eq(x_sum(LAMBDA(n:nat):bindProductFunction(nu)(Q(n))),
+      bindProductFunction(nu)(IUnion(Q)))
+
+  bind_product_is_measure: THEOREM
+    measure?[ [X,Y],sigma_times(SX,SY)](bindProductFunction(nu))
+
+  bindProduct(nu): measure_type[[X,Y],sigma_times(SX,SY)] = bindProductFunction(nu)
+
+  bind_product_sections: THEOREM nativeValue(bindProduct(nu)(E))=
+    lintegral(measurableSection(nu,E))
+
+  bind_finite_decomposition: THEOREM finiteDecomposition(nu,F) IMPLIES
+    nativeValue(bindProduct(nu)(E))=lintegral(sectionSum(E,F))
+
+  bind_decomposition_independence: THEOREM
+    finiteDecomposition(nu,F) AND finiteDecomposition(nu,G) IMPLIES
+      lintegral(sectionSum(E,F))=lintegral(sectionSum(E,G))
+
+END ppg_sfinite_bind_product

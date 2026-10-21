@@ -1,0 +1,19 @@
+% The identity map preserves measurable events by inverse image.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, induced measures.
+ppg_native_identity_map[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra]: THEORY
+BEGIN
+  IMPORTING ppg_general_measure_map[X,X,S,S]
+
+  A: VAR (S)
+
+  identityFunction(x:X): X = x
+
+  identity_preimage: LEMMA inverseEvent(identityFunction,A)=A
+
+  identity_measurable: LEMMA measurableMap?(identityFunction)
+
+  identityMap: MeasurableMap = identityFunction
+
+END ppg_native_identity_map

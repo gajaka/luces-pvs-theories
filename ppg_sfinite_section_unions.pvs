@@ -1,0 +1,46 @@
+% Sections commute with countable unions and preserve disjointness.
+% Countable additivity below is a property of the original right measure;
+% S-finiteness is used only when the section-mass function is made measurable.
+%
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1991,
+% section 7.2.
+ppg_sfinite_section_unions[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING measure_integration@measure_def[X,SX]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_sfinite_sections[X,Y,SX,SY,mu]
+
+  E: VAR [nat->(sigma_times(SX,SY))]
+  Q: VAR [nat->(SY)]
+  nu: VAR measure_type[Y,SY]
+  x: VAR X
+
+  sectionSequence(E)(x:X)(n:nat): (SY) = x_section(E(n))(x)
+
+  section_empty_set: LEMMA x_section(emptyset[[X,Y]])(x)=emptyset[Y]
+
+  section_countable_union: LEMMA x_section(IUnion(E))(x)=IUnion(sectionSequence(E)(x))
+
+  sections_disjoint: LEMMA disjoint?(E) IMPLIES disjoint?(sectionSequence(E)(x))
+
+  right_measure_empty: LEMMA nativeValue(nu(emptyset[Y]))=ennFinite(0)
+
+  native_right_countable: THEOREM disjoint?(Q) IMPLIES
+    x_eq(x_sum(LAMBDA(n:nat):nu(Q(n))),nu(IUnion(Q)))
+
+  original_section_countable: THEOREM disjoint?(E) IMPLIES
+    sectionMeasure(nu,IUnion(E))(x)=
+      totalSum(LAMBDA(n:nat):sectionMeasure(nu,E(n))(x))
+
+  measurable_section_empty: LEMMA FORALL(nu:(sfinite?[Y,SY])):
+    measurableSection(nu,emptyset[[X,Y]])=zeroFunction
+
+  measurableSectionRows(nu:(sfinite?[Y,SY]),E)(n:nat): LowerMeasurable =
+    measurableSection(nu,E(n))
+
+  measurable_section_union: THEOREM FORALL(nu:(sfinite?[Y,SY])):
+    disjoint?(E) IMPLIES measurableSection(nu,IUnion(E))=
+      sumFunction(measurableSectionRows(nu,E))
+
+END ppg_sfinite_section_unions

@@ -1,0 +1,99 @@
+% The forward section is the product of the two shared-block
+% sections. Product integration factors it, and the proved
+% S-finite right-section identity evaluates the second factor.
+%
+% Kun He, Qian Li and Xiaoming Sun, Moser-Tardos Algorithm: Beyond
+% Shearer's Bound, arXiv:2111.06527, Proposition 3.3.
+% Mathlib, MeasureTheory/Integral/Prod.lean, lintegral_prod_mul.
+ppg_general_forward_event[X,Y,Z:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],SZ:sigma_algebra[Z],
+  (IMPORTING ppg_sfinite_measure[X,SX]) muX:(ppg_sfinite_measure[X,SX].sfinite?),
+  (IMPORTING ppg_sfinite_measure[Y,SY]) muY:(ppg_sfinite_measure[Y,SY].sfinite?),
+  (IMPORTING ppg_sfinite_measure[Z,SZ]) muZ:(ppg_sfinite_measure[Z,SZ].sfinite?)]: THEORY
+BEGIN
+  IMPORTING ppg_native_intersection_measurable[X,Y,Z,SX,SY,SZ],
+    ppg_sfinite_product_closure[X,Z,SX,SZ,muX,muZ],
+    ppg_sfinite_product_closure[Y,Y,SY,SY,muY,muY],
+    ppg_sfinite_product_rectangles[Y,Y,SY,SY,muY],
+    ppg_sfinite_factorized_integral[X,Z,SX,SZ,muX,muZ],
+    ppg_sfinite_right_sections[Y,Z,SY,SZ,muY,muZ],
+    ppg_product_measure_definition[X,Y,SX,SY,muX],ppg_enn_to_real
+
+  lawXZ: (ppg_sfinite_measure[[X,Z],sigma_times(SX,SZ)].sfinite?) =
+    ppg_sfinite_simple_sections[X,Z,SX,SZ,muX,muZ].productLaw
+
+  lawYY: (ppg_sfinite_measure[[Y,Y],sigma_times(SY,SY)].sfinite?) =
+    ppg_product_measure_definition[Y,Y,SY,SY,muY].productMeasure(muY)
+
+  IMPORTING ppg_product_measure_definition[[X,Z],[Y,Y],sigma_times(SX,SZ),sigma_times(SY,SY),lawXZ]
+
+  fourLaw: measure_type[[[X,Z],[Y,Y]],sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY))] =
+    ppg_product_measure_definition[[X,Z],[Y,Y],sigma_times(SX,SZ),sigma_times(SY,SY),lawXZ].productMeasure(lawYY)
+
+  A: VAR (sigma_times(SX,SY))
+  B: VAR (sigma_times(SY,SZ))
+  x: VAR X
+  z: VAR Z
+
+  leftFiber(A,x): (SY) = x_section(A)(x)
+
+  rightFiber(B,z): (SY) = ppg_sfinite_right_sections[Y,Z,SY,SZ,muY,muZ].rightSection(B,z)
+
+  factorA(A): ppg_simple_comparison_regions[X,SX,muX].LowerMeasurable =
+    ppg_sfinite_sections[X,Y,SX,SY,muX].measurableSection(muY,A)
+
+  factorB(B): ppg_simple_comparison_regions[Z,SZ,muZ].LowerMeasurable =
+    ppg_sfinite_right_sections[Y,Z,SY,SZ,muY,muZ].rightMass(B)
+
+  forwardH(A,B): ppg_general_sfinite_tonelli[X,Z,SX,SZ,muX,muZ].JointMeasurable =
+    ppg_sfinite_sections[[X,Z],[Y,Y],sigma_times(SX,SZ),sigma_times(SY,SY),lawXZ].measurableSection(
+      lawYY,forwardAsEvent(A,B))
+
+  forward_section_rectangle: LEMMA x_section(forwardAsEvent(A,B))((x,z))=
+    ppg_sfinite_product_rectangles[Y,Y,SY,SY,muY].measurableRectangle(leftFiber(A,x),rightFiber(B,z))
+
+  factor_a_at: LEMMA factorA(A)(x)=
+    ppg_general_measure_values[X,SX,muX].nativeValue(muY(leftFiber(A,x)))
+
+  factor_b_at: LEMMA factorB(B)(z)=
+    ppg_general_measure_values[Z,SZ,muZ].nativeValue(muY(rightFiber(B,z)))
+
+  forward_h_at: LEMMA forwardH(A,B)((x,z))=emul(factorA(A)(x),factorB(B)(z))
+
+  forward_factorized: LEMMA factorized(factorA(A),factorB(B),forwardH(A,B))
+
+  first_factor_integral: LEMMA
+    ppg_general_measure_values[X,SX,muX].nativeValue(
+      ppg_product_measure_definition[X,Y,SX,SY,muX].productMeasure(muY)(A))=
+      ppg_general_lintegral[X,SX,muX].lintegral(factorA(A))
+
+  second_factor_integral: LEMMA
+    ppg_general_measure_values[Z,SZ,muZ].nativeValue(
+      ppg_product_measure_definition[Y,Z,SY,SZ,muY].productMeasure(muZ)(B))=
+      ppg_general_lintegral[Z,SZ,muZ].lintegral(factorB(B))
+
+  forward_product_apply: LEMMA
+    ppg_general_measure_values[X,SX,muX].nativeValue(fourLaw(forwardAsEvent(A,B)))=
+      ppg_general_lintegral[[X,Z],sigma_times(SX,SZ),lawXZ].lintegral(forwardH(A,B))
+
+  forward_integral_factorization: LEMMA
+    ppg_general_lintegral[[X,Z],sigma_times(SX,SZ),lawXZ].lintegral(forwardH(A,B))=
+      emul(ppg_general_lintegral[X,SX,muX].lintegral(factorA(A)),
+        ppg_general_lintegral[Z,SZ,muZ].lintegral(factorB(B)))
+
+  measure_forwardEvent: THEOREM
+    ppg_general_measure_values[X,SX,muX].nativeValue(fourLaw(forwardAsEvent(A,B)))=
+      emul(ppg_general_measure_values[X,SX,muX].nativeValue(
+        ppg_product_measure_definition[X,Y,SX,SY,muX].productMeasure(muY)(A)),
+        ppg_general_measure_values[X,SX,muX].nativeValue(
+        ppg_product_measure_definition[Y,Z,SY,SZ,muY].productMeasure(muZ)(B)))
+
+  measureReal_forwardEvent: THEOREM
+    ennToReal(ppg_general_measure_values[X,SX,muX].nativeValue(fourLaw(forwardAsEvent(A,B))))=
+      ennToReal(ppg_general_measure_values[X,SX,muX].nativeValue(
+        ppg_product_measure_definition[X,Y,SX,SY,muX].productMeasure(muY)(A)))*
+      ennToReal(ppg_general_measure_values[X,SX,muX].nativeValue(
+        ppg_product_measure_definition[Y,Z,SY,SZ,muY].productMeasure(muZ)(B)))
+
+END ppg_general_forward_event

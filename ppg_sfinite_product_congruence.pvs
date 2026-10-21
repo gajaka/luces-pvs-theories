@@ -1,0 +1,47 @@
+% Semantic equality of both laws preserves their constructed product.
+% The proof compares the section functions and then the
+% nonnegative integrals; it does not appeal to rectangle uniqueness.
+%
+% Mathlib, MeasureTheory/Measure/Prod.lean, Measure.prod_apply.
+ppg_sfinite_product_congruence[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING measure_integration@measure_def[X,SX]) mu1,mu2:measure_type,
+  (IMPORTING ppg_sfinite_measure[Y,SY]) nu1,nu2:(sfinite?[Y,SY])]: THEORY
+BEGIN
+  IMPORTING ppg_product_measure_definition[X,Y,SX,SY,mu1],
+    ppg_product_measure_definition[X,Y,SX,SY,mu2],
+    ppg_general_integral_congruence[X,SX,mu1,mu2],
+    ppg_sfinite_measure[[X,Y],sigma_times(SX,SY)]
+
+  productOne: measure_type[[X,Y],sigma_times(SX,SY)] =
+    ppg_product_measure_definition[X,Y,SX,SY,mu1].productMeasure(nu1)
+
+  productTwo: measure_type[[X,Y],sigma_times(SX,SY)] =
+    ppg_product_measure_definition[X,Y,SX,SY,mu2].productMeasure(nu2)
+
+  E: VAR (sigma_times(SX,SY))
+  x: VAR X
+
+  right_section_values_congruent: LEMMA sameMeasure(nu1,nu2) IMPLIES
+    ppg_sfinite_sections[X,Y,SX,SY,mu1].measurableSection(nu1,E)(x)=
+      ppg_sfinite_sections[X,Y,SX,SY,mu2].measurableSection(nu2,E)(x)
+
+  right_section_functions_congruent: THEOREM sameMeasure(nu1,nu2) IMPLIES
+    ppg_sfinite_sections[X,Y,SX,SY,mu1].measurableSection(nu1,E)=
+      ppg_sfinite_sections[X,Y,SX,SY,mu2].measurableSection(nu2,E)
+
+  section_integrals_congruent: THEOREM sameMeasure(mu1,mu2) AND sameMeasure(nu1,nu2) IMPLIES
+    ppg_general_lintegral[X,SX,mu1].lintegral(
+      ppg_sfinite_sections[X,Y,SX,SY,mu1].measurableSection(nu1,E))=
+    ppg_general_lintegral[X,SX,mu2].lintegral(
+      ppg_sfinite_sections[X,Y,SX,SY,mu2].measurableSection(nu2,E))
+
+  product_event_congruent: THEOREM sameMeasure(mu1,mu2) AND sameMeasure(nu1,nu2) IMPLIES
+    ppg_general_measure_values[X,SX,mu1].nativeValue(productOne(E))=
+      ppg_general_measure_values[X,SX,mu1].nativeValue(productTwo(E))
+
+  product_semantic_congruence: THEOREM sameMeasure(mu1,mu2) AND sameMeasure(nu1,nu2) IMPLIES
+    ppg_sfinite_measure[[X,Y],sigma_times(SX,SY)].sameMeasure(productOne,productTwo)
+
+END ppg_sfinite_product_congruence

@@ -1,0 +1,55 @@
+% Two disjoint finite-mass covers give a disjoint rectangle cover of
+% the constructed product. A natural pairing enumerates every rectangle.
+% Thus this product is sigma-finite, and its finite restrictions
+% give an S-finite decomposition.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+% Mathlib, MeasureTheory/Measure/Prod.lean, FiniteSpanningSetsIn.prod.
+ppg_product_finite_cover[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING measure_integration@measure_def[X,SX]) mu:measure_type,
+  (IMPORTING ppg_sfinite_measure[Y,SY]) nu:(sfinite?[Y,SY])]: THEORY
+BEGIN
+  IMPORTING ppg_sfinite_product_rectangles[X,Y,SX,SY,mu]
+
+  productLaw: measure_type[[X,Y],sigma_times(SX,SY)] = productMeasure(nu)
+
+  IMPORTING ppg_sigma_finite_is_sfinite[[X,Y],sigma_times(SX,SY),productLaw]
+
+  C: VAR [nat->(SX)]
+  D: VAR [nat->(SY)]
+  i,j,n: VAR nat
+  x: VAR X
+  y: VAR Y
+
+  rectCover(C,D)(n:nat): (sigma_times(SX,SY)) =
+    measurableRectangle(C(double_index_i(n)),D(double_index_j(n)))
+
+  index_pair_injective: LEMMA double_index_i(i)=double_index_i(j) AND
+    double_index_j(i)=double_index_j(j) IMPLIES i=j
+
+  rect_cover_disjoint: THEOREM disjoint?(C) AND disjoint?(D) IMPLIES
+    disjoint?(rectCover(C,D))
+
+  left_cover_member: LEMMA IUnion(C)=fullset[X] IMPLIES IUnion(C)(x)
+
+  right_cover_member: LEMMA IUnion(D)=fullset[Y] IMPLIES IUnion(D)(y)
+
+  rect_cover_union: THEOREM IUnion(C)=fullset[X] AND IUnion(D)=fullset[Y] IMPLIES
+    IUnion(rectCover(C,D))=fullset[[X,Y]]
+
+  rect_cover_finite: THEOREM (FORALL(i:nat):mu(C(i))`1) AND
+    (FORALL(j:nat):nu(D(j))`1) IMPLIES productLaw(rectCover(C,D)(n))`1
+
+  finite_cover_product_sigma_finite: THEOREM disjoint?(C) AND disjoint?(D) AND
+    IUnion(C)=fullset[X] AND IUnion(D)=fullset[Y] AND
+    (FORALL(i:nat):mu(C(i))`1) AND (FORALL(j:nat):nu(D(j))`1) IMPLIES
+      sigma_finite_measure?[[X,Y],sigma_times(SX,SY)](productLaw)
+
+  finite_cover_product_sfinite: THEOREM disjoint?(C) AND disjoint?(D) AND
+    IUnion(C)=fullset[X] AND IUnion(D)=fullset[Y] AND
+    (FORALL(i:nat):mu(C(i))`1) AND (FORALL(j:nat):nu(D(j))`1) IMPLIES
+      ppg_sfinite_measure[[X,Y],sigma_times(SX,SY)].sfinite?(productLaw)
+
+END ppg_product_finite_cover

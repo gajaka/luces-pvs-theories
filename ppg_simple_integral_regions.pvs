@@ -1,0 +1,156 @@
+% Finite indicator sums may overlap. Restricting every term to a measurable
+% region allows comparisons to be proved by successive binary partitions.
+% Coefficients remain finite; the corresponding measure masses may be infinite.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_simple_integral_regions[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_general_lintegral[X,S,mu],ppg_enn_semiring
+
+  L,R: VAR Simple
+  t: VAR SimpleTerm
+  A,B,E: VAR (S)
+  c,d: VAR nonneg_real
+  x: VAR X
+
+  restrictSimple(L,A): RECURSIVE Simple = IF null?(L) THEN null ELSE
+    cons((car(L)`1,intersection(A,car(L)`2)),restrictSimple(cdr(L),A))
+    ENDIF MEASURE length(L)
+
+  regionIntegral(L,A): ENN = simpleIntegral(restrictSimple(L,A))
+
+  offsetIntegral(c,L,A): ENN = eadd(emul(ennFinite(c),measureValue(A)),regionIntegral(L,A))
+
+  regionPointwise(c,L,d,R,A): bool = FORALL(x:X):A(x) IMPLIES
+    c+simpleValue(L)(x)<=d+simpleValue(R)(x)
+
+  restrict_nil: LEMMA restrictSimple(null,A)=null
+
+  restrict_cons: LEMMA restrictSimple(cons(t,L),A)=
+    cons((t`1,intersection(A,t`2)),restrictSimple(L,A))
+
+  full_region: LEMMA intersection(fullset[X],A)=A
+
+  empty_region: LEMMA intersection(emptyset[X],A)=emptyset[X]
+
+  simple_value_cons: LEMMA simpleValue(cons(t,L))(x)=
+    (IF t`2(x) THEN t`1 ELSE 0 ENDIF)+simpleValue(L)(x)
+
+  term_eta: LEMMA (t`1,t`2)=t
+
+  restrict_full: LEMMA restrictSimple(L,fullset[X])=L
+
+  restricted_value: LEMMA simpleValue(restrictSimple(L,A))(x)=
+    IF A(x) THEN simpleValue(L)(x) ELSE 0 ENDIF
+
+  region_integral_full: LEMMA regionIntegral(L,fullset[X])=simpleIntegral(L)
+
+  region_integral_nil: LEMMA regionIntegral(null,A)=ennFinite(0)
+
+  region_integral_cons: LEMMA regionIntegral(cons(t,L),A)=
+    eadd(emul(ennFinite(t`1),measureValue(intersection(A,t`2))),regionIntegral(L,A))
+
+  region_integral_empty: LEMMA regionIntegral(L,emptyset[X])=ennFinite(0)
+
+  split_first_region: LEMMA intersection(intersection(A,E),B)=intersection(intersection(A,B),E)
+
+  split_second_region: LEMMA difference(intersection(A,E),B)=intersection(difference(A,B),E)
+
+  split_region_measure: LEMMA measureValue(intersection(A,E))=
+    eadd(measureValue(intersection(intersection(A,B),E)),measureValue(intersection(difference(A,B),E)))
+
+  add_four_shuffle: LEMMA FORALL(a,b,c,d:ENN):
+    eadd(eadd(a,b),eadd(c,d))=eadd(eadd(a,c),eadd(b,d))
+
+  region_integral_split: LEMMA regionIntegral(L,A)=
+    eadd(regionIntegral(L,intersection(A,B)),regionIntegral(L,difference(A,B)))
+
+  offset_integral_split: LEMMA offsetIntegral(c,L,A)=
+    eadd(offsetIntegral(c,L,intersection(A,B)),offsetIntegral(c,L,difference(A,B)))
+
+  finite_sum_embedding: LEMMA eadd(ennFinite(c),ennFinite(d))=ennFinite(c+d)
+
+  scalar_sum: LEMMA FORALL(z:ENN):
+    emul(ennFinite(c+d),z)=eadd(emul(ennFinite(c),z),emul(ennFinite(d),z))
+
+  scalar_monotone: LEMMA FORALL(z:ENN):c<=d IMPLIES
+    ele(emul(ennFinite(c),z),emul(ennFinite(d),z))
+
+  offset_integral_nil: LEMMA offsetIntegral(c,null,A)=emul(ennFinite(c),measureValue(A))
+
+  offset_integral_zero_full: LEMMA offsetIntegral(0,L,fullset[X])=simpleIntegral(L)
+
+  region_subset_identity: LEMMA subset?(A,B) IMPLIES intersection(A,B)=A
+
+  region_disjoint_empty: LEMMA disjoint?(A,B) IMPLIES intersection(A,B)=emptyset[X]
+
+  constant_region_empty: LEMMA (FORALL(x:X):A(x) IMPLIES c<=d) AND NOT c<=d
+    IMPLIES A=emptyset[X]
+
+  constant_region_order: LEMMA (FORALL(x:X):A(x) IMPLIES c<=d) IMPLIES
+    ele(emul(ennFinite(c),measureValue(A)),emul(ennFinite(d),measureValue(A)))
+
+  offset_cons_inside: LEMMA subset?(A,t`2) IMPLIES
+    offsetIntegral(c,cons(t,L),A)=offsetIntegral(c+t`1,L,A)
+
+  offset_cons_outside: LEMMA disjoint?(A,t`2) IMPLIES
+    offsetIntegral(c,cons(t,L),A)=offsetIntegral(c,L,A)
+
+  offset_cons_split: LEMMA offsetIntegral(c,cons(t,L),A)=
+    eadd(offsetIntegral(c+t`1,L,intersection(A,t`2)),offsetIntegral(c,L,difference(A,t`2)))
+
+  pointwise_left_inside: LEMMA regionPointwise(c,cons(t,L),d,R,A) IMPLIES
+    regionPointwise(c+t`1,L,d,R,intersection(A,t`2))
+
+  pointwise_left_outside: LEMMA regionPointwise(c,cons(t,L),d,R,A) IMPLIES
+    regionPointwise(c,L,d,R,difference(A,t`2))
+
+  pointwise_right_inside: LEMMA regionPointwise(c,L,d,cons(t,R),A) IMPLIES
+    regionPointwise(c,L,d+t`1,R,intersection(A,t`2))
+
+  pointwise_right_outside: LEMMA regionPointwise(c,L,d,cons(t,R),A) IMPLIES
+    regionPointwise(c,L,d,R,difference(A,t`2))
+
+  offset_order_nil: LEMMA regionPointwise(c,null,d,null,A) IMPLIES
+    ele(offsetIntegral(c,null,A),offsetIntegral(d,null,A))
+
+  left_head_order: LEMMA
+    ele(offsetIntegral(c+t`1,L,intersection(A,t`2)),offsetIntegral(d,R,intersection(A,t`2))) AND
+    ele(offsetIntegral(c,L,difference(A,t`2)),offsetIntegral(d,R,difference(A,t`2))) IMPLIES
+    ele(offsetIntegral(c,cons(t,L),A),offsetIntegral(d,R,A))
+
+  right_head_order: LEMMA
+    ele(offsetIntegral(c,L,intersection(A,t`2)),offsetIntegral(d+t`1,R,intersection(A,t`2))) AND
+    ele(offsetIntegral(c,L,difference(A,t`2)),offsetIntegral(d,R,difference(A,t`2))) IMPLIES
+    ele(offsetIntegral(c,L,A),offsetIntegral(d,cons(t,R),A))
+
+  offset_order: THEOREM regionPointwise(c,L,d,R,A) IMPLIES
+    ele(offsetIntegral(c,L,A),offsetIntegral(d,R,A))
+
+  simple_integral_monotone: THEOREM (FORALL(x:X):simpleValue(L)(x)<=simpleValue(R)(x))
+    IMPLIES ele(simpleIntegral(L),simpleIntegral(R))
+
+  simple_integral_extensional: THEOREM (FORALL(x:X):simpleValue(L)(x)=simpleValue(R)(x))
+    IMPLIES simpleIntegral(L)=simpleIntegral(R)
+
+  simple_is_minorant: LEMMA simpleMinorant(L,LAMBDA(x:X):ennFinite(simpleValue(L)(x)))
+
+  minorant_simple_pointwise: LEMMA
+    simpleMinorant(L,LAMBDA(x:X):ennFinite(simpleValue(R)(x))) IFF
+      FORALL(x:X):simpleValue(L)(x)<=simpleValue(R)(x)
+
+  minorant_simple_integral_bound: LEMMA
+    simpleMinorant(L,LAMBDA(x:X):ennFinite(simpleValue(R)(x))) IMPLIES
+      ele(simpleIntegral(L),simpleIntegral(R))
+
+  simple_lintegral_bound: LEMMA FORALL(b:nonneg_real):
+    ele(lintegral(LAMBDA(x:X):ennFinite(simpleValue(R)(x))),ennFinite(b)) IFF
+      ele(simpleIntegral(R),ennFinite(b))
+
+  simple_integral_agrees: THEOREM
+    lintegral(LAMBDA(x:X):ennFinite(simpleValue(R)(x)))=simpleIntegral(R)
+
+END ppg_simple_integral_regions

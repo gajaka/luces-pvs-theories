@@ -1,0 +1,38 @@
+% Product coordinate projections are measurable on the product
+% sigma algebra. Their event preimages are measurable rectangles.
+%
+% Mathlib, MeasureTheory/MeasurableSpace/Constructions.lean.
+ppg_native_product_projections[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y]]: THEORY
+BEGIN
+  IMPORTING measure_integration@product_sigma[X,Y,SX,SY],
+    ppg_general_measure_map[[X,Y],X,sigma_times(SX,SY),SX],
+    ppg_general_measure_map[[X,Y],Y,sigma_times(SX,SY),SY]
+
+  A: VAR (SX)
+  B: VAR (SY)
+
+  firstFunction(w:[X,Y]): X = w`1
+
+  secondFunction(w:[X,Y]): Y = w`2
+
+  first_preimage: LEMMA
+    ppg_general_measure_map[[X,Y],X,sigma_times(SX,SY),SX].inverseEvent(firstFunction,A)=
+      cross_product(A,fullset[Y])
+
+  second_preimage: LEMMA
+    ppg_general_measure_map[[X,Y],Y,sigma_times(SX,SY),SY].inverseEvent(secondFunction,B)=
+      cross_product(fullset[X],B)
+
+  first_measurable: THEOREM
+    ppg_general_measure_map[[X,Y],X,sigma_times(SX,SY),SX].measurableMap?(firstFunction)
+
+  second_measurable: THEOREM
+    ppg_general_measure_map[[X,Y],Y,sigma_times(SX,SY),SY].measurableMap?(secondFunction)
+
+  firstMap: ppg_general_measure_map[[X,Y],X,sigma_times(SX,SY),SX].MeasurableMap = firstFunction
+
+  secondMap: ppg_general_measure_map[[X,Y],Y,sigma_times(SX,SY),SY].MeasurableMap = secondFunction
+
+END ppg_native_product_projections

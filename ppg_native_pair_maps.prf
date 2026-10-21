@@ -1,0 +1,230 @@
+(|ppg_native_pair_maps|
+ (|target_generator_is_rectangle| 0
+  (|target_generator_is_rectangle-1| NIL 4001441279
+   (""
+    (THEN (SKOSIMP) (EXPAND "targetGenerators") (EXPAND "extend")
+     (GRIND :DEFS ("fullset") :EXCLUDE ("measurable_rectangle?")))
+    NIL)
+   ((|extend| CONST-DECL "R" |extend| NIL)
+    (|targetGenerators| CONST-DECL "set[set[[U, V]]]" |ppg_native_pair_maps|
+     NIL))
+   SHOSTAK))
+ (|pair_rectangle_inverse| 0
+  (|pair_rectangle_inverse-1| NIL 4001441279
+   (""
+    (THEN (SKOSIMP) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :DEFS
+      ("inverseImage" "inverseEvent" "pairFunction" "cross_product"
+       "intersection" "member")))
+    NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (U FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (ST FORMAL-CONST-DECL "sigma_algebra[T]" |ppg_native_pair_maps| NIL)
+    (SU FORMAL-CONST-DECL "sigma_algebra[U]" |ppg_native_pair_maps| NIL)
+    (|measurableMap?| CONST-DECL "bool" |ppg_general_measure_map| NIL)
+    (|MeasurableMap| TYPE-EQ-DECL NIL |ppg_general_measure_map| NIL)
+    (SV FORMAL-CONST-DECL "sigma_algebra[V]" |ppg_native_pair_maps| NIL)
+    (|pairFunction| CONST-DECL "[U, V]" |ppg_native_pair_maps| NIL)
+    (|cross_product| CONST-DECL "set[[T1, T2]]" |cross_product| |topology|)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|inverseEvent| CONST-DECL "set[X]" |ppg_general_measure_map| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL))
+   SHOSTAK))
+ (|pair_rectangle_measurable| 0
+  (|pair_rectangle_measurable-1| NIL 4001441279
+   (""
+    (THEN (SKOSIMP) (REWRITE "pair_rectangle_inverse")
+     (LEMMA "inverse_event_measurable[T,U,ST,SU]" ("h" "f!1" "A" "A!1"))
+     (LEMMA "inverse_event_measurable[T,V,ST,SV]" ("h" "g!1" "A" "B!1"))
+     (ASSERT)
+     (LEMMA "sigma_algebra_intersection[T,ST]"
+      ("x" "ppg_general_measure_map[T,U,ST,SU].inverseEvent(f!1,A!1)" "y"
+       "ppg_general_measure_map[T,V,ST,SV].inverseEvent(g!1,B!1)"))
+     (ASSERT))
+    NIL)
+   ((|inverse_event_measurable| FORMULA-DECL NIL |ppg_general_measure_map| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|inverseEvent| CONST-DECL "set[X]" |ppg_general_measure_map| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra_intersection| FORMULA-DECL NIL |sigma_algebra|
+     |measure_integration|)
+    (|MeasurableMap| TYPE-EQ-DECL NIL |ppg_general_measure_map| NIL)
+    (|measurableMap?| CONST-DECL "bool" |ppg_general_measure_map| NIL)
+    (ST FORMAL-CONST-DECL "sigma_algebra[T]" |ppg_native_pair_maps| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (SV FORMAL-CONST-DECL "sigma_algebra[V]" |ppg_native_pair_maps| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (SU FORMAL-CONST-DECL "sigma_algebra[U]" |ppg_native_pair_maps| NIL)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (U FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (|pair_rectangle_inverse| FORMULA-DECL NIL |ppg_native_pair_maps| NIL))
+   SHOSTAK))
+ (|pair_generators_measurable| 0
+  (|pair_generators_measurable-1| NIL 4001441279
+   ("" (SKOSIMP)
+    (("" (LEMMA "target_generator_is_rectangle" ("D" "D!1"))
+      (("" (ASSERT)
+        (("" (EXPAND "measurable_rectangle?")
+          (("" (SKOSIMP)
+            (("" (REPLACE -1)
+              ((""
+                (LEMMA "pair_rectangle_measurable"
+                 ("A" "X!1" "B" "Y!1" "f" "f!1" "g" "g!1"))
+                (("1" (PROPAX) NIL NIL) ("2" (PROPAX) NIL NIL)
+                 ("3" (PROPAX) NIL NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|pair_rectangle_measurable| FORMULA-DECL NIL |ppg_native_pair_maps| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SU FORMAL-CONST-DECL "sigma_algebra[U]" |ppg_native_pair_maps| NIL)
+    (SV FORMAL-CONST-DECL "sigma_algebra[V]" |ppg_native_pair_maps| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (ST FORMAL-CONST-DECL "sigma_algebra[T]" |ppg_native_pair_maps| NIL)
+    (|measurableMap?| CONST-DECL "bool" |ppg_general_measure_map| NIL)
+    (|MeasurableMap| TYPE-EQ-DECL NIL |ppg_general_measure_map| NIL)
+    (|measurable_rectangle?| CONST-DECL "bool" |product_sigma_def|
+     |measure_integration|)
+    (|target_generator_is_rectangle| FORMULA-DECL NIL |ppg_native_pair_maps|
+     NIL)
+    (U FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL))
+   SHOSTAK))
+ (|pair_generated_preimages| 0
+  (|pair_generated_preimages-1| NIL 4001441279
+   (""
+    (THEN (SKOSIMP)
+     (LEMMA "generated_preimage_subset[T,[U,V],ST]"
+      ("j" "pairFunction(f!1,g!1)" "G" "targetGenerators"))
+     (LEMMA "pair_generators_measurable" ("f" "f!1" "g" "g!1"))
+     (GRIND :EXCLUDE
+      ("pairFunction" "targetGenerators" "sigma_times" "preimageSigma"
+       "inverseImage")))
+    NIL)
+   ((|pair_generators_measurable| FORMULA-DECL NIL |ppg_native_pair_maps| NIL)
+    (|generated_preimage_subset| FORMULA-DECL NIL
+     |ppg_native_measurable_generators| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|targetGenerators| CONST-DECL "set[set[[U, V]]]" |ppg_native_pair_maps|
+     NIL)
+    (SU FORMAL-CONST-DECL "sigma_algebra[U]" |ppg_native_pair_maps| NIL)
+    (|measurableMap?| CONST-DECL "bool" |ppg_general_measure_map| NIL)
+    (|MeasurableMap| TYPE-EQ-DECL NIL |ppg_general_measure_map| NIL)
+    (SV FORMAL-CONST-DECL "sigma_algebra[V]" |ppg_native_pair_maps| NIL)
+    (|pairFunction| CONST-DECL "[U, V]" |ppg_native_pair_maps| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (U FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (ST FORMAL-CONST-DECL "sigma_algebra[T]" |ppg_native_pair_maps| NIL))
+   SHOSTAK))
+ (|target_product_generated| 0
+  (|target_product_generated-1| NIL 4001441280
+   ("" (THEN (EXPAND "targetGenerators") (EXPAND "sigma_times") (ASSERT)) NIL)
+   ((|targetGenerators| CONST-DECL "set[set[[U, V]]]" |ppg_native_pair_maps|
+     NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|))
+   SHOSTAK))
+ (|pair_measurable| 0
+  (|pair_measurable-1| NIL 4001441280
+   (""
+    (THEN (SKOSIMP) (LEMMA "pair_generated_preimages" ("f" "f!1" "g" "g!1"))
+     (REWRITE "target_product_generated" -1 :DIR RL) (EXPAND "subset?" -1)
+     (EXPAND "measurableMap?") (SKOSIMP) (INST -1 "A!1") (ASSERT)
+     (LEMMA "preimage_sigma_at[T,[U,V],ST]"
+      ("j" "pairFunction(f!1,g!1)" "D" "A!1"))
+     (EXPAND "inverseEvent") (EXPAND "inverseImage") (ASSERT))
+    NIL)
+   ((|target_product_generated| FORMULA-DECL NIL |ppg_native_pair_maps| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (|pairFunction| CONST-DECL "[U, V]" |ppg_native_pair_maps| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|preimage_sigma_at| FORMULA-DECL NIL |ppg_native_measurable_generators|
+     NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|inverseEvent| CONST-DECL "set[X]" |ppg_general_measure_map| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|subset?| CONST-DECL "bool" |sets| NIL)
+    (|pair_generated_preimages| FORMULA-DECL NIL |ppg_native_pair_maps| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (U FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (ST FORMAL-CONST-DECL "sigma_algebra[T]" |ppg_native_pair_maps| NIL)
+    (SU FORMAL-CONST-DECL "sigma_algebra[U]" |ppg_native_pair_maps| NIL)
+    (|measurableMap?| CONST-DECL "bool" |ppg_general_measure_map| NIL)
+    (|MeasurableMap| TYPE-EQ-DECL NIL |ppg_general_measure_map| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (SV FORMAL-CONST-DECL "sigma_algebra[V]" |ppg_native_pair_maps| NIL))
+   SHOSTAK))
+ (|pairMap_TCC1| 0
+  (|pairMap_TCC1-1| NIL 4001441279
+   (""
+    (THEN (SKOSIMP) (LEMMA "pair_measurable" ("f" "f!1" "g" "g!1")) (ASSERT))
+    NIL)
+   ((|pair_measurable| FORMULA-DECL NIL |ppg_native_pair_maps| NIL)
+    (T FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (U FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (ST FORMAL-CONST-DECL "sigma_algebra[T]" |ppg_native_pair_maps| NIL)
+    (SU FORMAL-CONST-DECL "sigma_algebra[U]" |ppg_native_pair_maps| NIL)
+    (|measurableMap?| CONST-DECL "bool" |ppg_general_measure_map| NIL)
+    (|MeasurableMap| TYPE-EQ-DECL NIL |ppg_general_measure_map| NIL)
+    (V FORMAL-TYPE-DECL NIL |ppg_native_pair_maps| NIL)
+    (SV FORMAL-CONST-DECL "sigma_algebra[V]" |ppg_native_pair_maps| NIL))
+   NIL
+   (|pairMap| SUBTYPE "pairFunction(f, g)"
+    "MeasurableMap[T, [U, V], ST, sigma_times[U, V](SU, SV)]" (50 87 50 104)))))
+

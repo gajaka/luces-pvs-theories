@@ -1,0 +1,68 @@
+% The four test maps use coordinate projections and pairing.
+% Their pointwise formulas are exactly the joint and forward tests.
+% No measure, finite carrier or nonempty coordinate is needed.
+%
+% Mathlib, MeasureTheory/MeasurableSpace/Constructions.lean.
+ppg_native_intersection_coordinates[X,Y,Z:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],SZ:sigma_algebra[Z]]: THEORY
+BEGIN
+  IMPORTING ppg_native_product_projections[X,Z,SX,SZ],
+    ppg_native_product_projections[Y,Y,SY,SY],
+    ppg_native_product_projections[[X,Z],Y,sigma_times(SX,SZ),SY],
+    ppg_native_product_projections[[X,Z],[Y,Y],sigma_times(SX,SZ),sigma_times(SY,SY)],
+    ppg_general_map_composition[[[X,Z],Y],[X,Z],X,sigma_times(sigma_times(SX,SZ),SY),sigma_times(SX,SZ),SX],
+    ppg_general_map_composition[[[X,Z],Y],[X,Z],Z,sigma_times(sigma_times(SX,SZ),SY),sigma_times(SX,SZ),SZ],
+    ppg_general_map_composition[[[X,Z],[Y,Y]],[X,Z],X,sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),sigma_times(SX,SZ),SX],
+    ppg_general_map_composition[[[X,Z],[Y,Y]],[X,Z],Z,sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),sigma_times(SX,SZ),SZ],
+    ppg_general_map_composition[[[X,Z],[Y,Y]],[Y,Y],Y,sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),sigma_times(SY,SY),SY],
+    ppg_native_pair_maps[[[X,Z],Y],X,Y,sigma_times(sigma_times(SX,SZ),SY),SX,SY],
+    ppg_native_pair_maps[[[X,Z],Y],Y,Z,sigma_times(sigma_times(SX,SZ),SY),SY,SZ],
+    ppg_native_pair_maps[[[X,Z],[Y,Y]],X,Y,sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),SX,SY],
+    ppg_native_pair_maps[[[X,Z],[Y,Y]],Y,Z,sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),SY,SZ]
+
+  jointX: ppg_general_measure_map[[[X,Z],Y],X,sigma_times(sigma_times(SX,SZ),SY),SX].MeasurableMap =
+    ppg_general_map_composition[[[X,Z],Y],[X,Z],X,sigma_times(sigma_times(SX,SZ),SY),sigma_times(SX,SZ),SX].composeMap(ppg_native_product_projections[[X,Z],Y,sigma_times(SX,SZ),SY].firstMap,ppg_native_product_projections[X,Z,SX,SZ].firstMap)
+
+  jointY: ppg_general_measure_map[[[X,Z],Y],Y,sigma_times(sigma_times(SX,SZ),SY),SY].MeasurableMap =
+    ppg_native_product_projections[[X,Z],Y,sigma_times(SX,SZ),SY].secondMap
+
+  jointZ: ppg_general_measure_map[[[X,Z],Y],Z,sigma_times(sigma_times(SX,SZ),SY),SZ].MeasurableMap =
+    ppg_general_map_composition[[[X,Z],Y],[X,Z],Z,sigma_times(sigma_times(SX,SZ),SY),sigma_times(SX,SZ),SZ].composeMap(ppg_native_product_projections[[X,Z],Y,sigma_times(SX,SZ),SY].firstMap,ppg_native_product_projections[X,Z,SX,SZ].secondMap)
+
+  forwardX: ppg_general_measure_map[[[X,Z],[Y,Y]],X,sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),SX].MeasurableMap =
+    ppg_general_map_composition[[[X,Z],[Y,Y]],[X,Z],X,sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),sigma_times(SX,SZ),SX].composeMap(ppg_native_product_projections[[X,Z],[Y,Y],sigma_times(SX,SZ),sigma_times(SY,SY)].firstMap,ppg_native_product_projections[X,Z,SX,SZ].firstMap)
+
+  forwardZ: ppg_general_measure_map[[[X,Z],[Y,Y]],Z,sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),SZ].MeasurableMap =
+    ppg_general_map_composition[[[X,Z],[Y,Y]],[X,Z],Z,sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),sigma_times(SX,SZ),SZ].composeMap(ppg_native_product_projections[[X,Z],[Y,Y],sigma_times(SX,SZ),sigma_times(SY,SY)].firstMap,ppg_native_product_projections[X,Z,SX,SZ].secondMap)
+
+  forwardY1: ppg_general_measure_map[[[X,Z],[Y,Y]],Y,sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),SY].MeasurableMap =
+    ppg_general_map_composition[[[X,Z],[Y,Y]],[Y,Y],Y,sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),sigma_times(SY,SY),SY].composeMap(ppg_native_product_projections[[X,Z],[Y,Y],sigma_times(SX,SZ),sigma_times(SY,SY)].secondMap,ppg_native_product_projections[Y,Y,SY,SY].firstMap)
+
+  forwardY2: ppg_general_measure_map[[[X,Z],[Y,Y]],Y,sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),SY].MeasurableMap =
+    ppg_general_map_composition[[[X,Z],[Y,Y]],[Y,Y],Y,sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),sigma_times(SY,SY),SY].composeMap(ppg_native_product_projections[[X,Z],[Y,Y],sigma_times(SX,SZ),sigma_times(SY,SY)].secondMap,ppg_native_product_projections[Y,Y,SY,SY].secondMap)
+
+  jointLeft: ppg_general_measure_map[[[X,Z],Y],[X,Y],sigma_times(sigma_times(SX,SZ),SY),sigma_times(SX,SY)].MeasurableMap =
+    ppg_native_pair_maps[[[X,Z],Y],X,Y,sigma_times(sigma_times(SX,SZ),SY),SX,SY].pairMap(jointX,jointY)
+
+  jointRight: ppg_general_measure_map[[[X,Z],Y],[Y,Z],sigma_times(sigma_times(SX,SZ),SY),sigma_times(SY,SZ)].MeasurableMap =
+    ppg_native_pair_maps[[[X,Z],Y],Y,Z,sigma_times(sigma_times(SX,SZ),SY),SY,SZ].pairMap(jointY,jointZ)
+
+  forwardLeft: ppg_general_measure_map[[[X,Z],[Y,Y]],[X,Y],sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),sigma_times(SX,SY)].MeasurableMap =
+    ppg_native_pair_maps[[[X,Z],[Y,Y]],X,Y,sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),SX,SY].pairMap(forwardX,forwardY1)
+
+  forwardRight: ppg_general_measure_map[[[X,Z],[Y,Y]],[Y,Z],sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),sigma_times(SY,SZ)].MeasurableMap =
+    ppg_native_pair_maps[[[X,Z],[Y,Y]],Y,Z,sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),SY,SZ].pairMap(forwardY2,forwardZ)
+
+  w: VAR [[X,Z],Y]
+  q: VAR [[X,Z],[Y,Y]]
+
+  jointLeft_at: LEMMA jointLeft(w)=(w`1`1,w`2)
+
+  jointRight_at: LEMMA jointRight(w)=(w`2,w`1`2)
+
+  forwardLeft_at: LEMMA forwardLeft(q)=(q`1`1,q`2`1)
+
+  forwardRight_at: LEMMA forwardRight(q)=(q`2`2,q`1`2)
+
+END ppg_native_intersection_coordinates

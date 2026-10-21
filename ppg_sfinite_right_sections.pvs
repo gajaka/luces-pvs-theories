@@ -1,0 +1,37 @@
+% Reversing a measurable event gives its right sections as left
+% sections. All-event S-finite product symmetry then supplies
+% the right-section integral formula for the original product measure.
+%
+% Mathlib, MeasureTheory/Measure/Prod.lean, prod_apply_symm.
+ppg_sfinite_right_sections[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING ppg_sfinite_measure[X,SX]) mu:(ppg_sfinite_measure[X,SX].sfinite?),
+  (IMPORTING ppg_sfinite_measure[Y,SY]) nu:(ppg_sfinite_measure[Y,SY].sfinite?)]: THEORY
+BEGIN
+  IMPORTING ppg_general_sfinite_product_symmetry[X,Y,SX,SY,mu,nu],
+    ppg_product_measure_definition[Y,X,SY,SX,nu]
+
+  E: VAR (sigma_times(SX,SY))
+  x: VAR X
+  y: VAR Y
+
+  reversedEvent(E): (sigma_times(SY,SX)) =
+    ppg_general_measure_map[[Y,X],[X,Y],sigma_times(SY,SX),sigma_times(SX,SY)].inverseEvent(
+      ppg_native_product_swap[X,Y,SX,SY].swapMap,E)
+
+  rightSection(E,y): (SX) = x_section(reversedEvent(E))(y)
+
+  right_section_at: LEMMA rightSection(E,y)(x)=E((x,y))
+
+  rightMass(E): ppg_simple_comparison_regions[Y,SY,nu].LowerMeasurable =
+    ppg_sfinite_sections[Y,X,SY,SX,nu].measurableSection(mu,reversedEvent(E))
+
+  right_mass_at: LEMMA rightMass(E)(y)=
+    ppg_general_measure_values[Y,SY,nu].nativeValue(mu(rightSection(E,y)))
+
+  original_product_right_sections: THEOREM
+    ppg_general_measure_values[Y,SY,nu].nativeValue(originalForward(E))=
+      ppg_general_lintegral[Y,SY,nu].lintegral(rightMass(E))
+
+END ppg_sfinite_right_sections

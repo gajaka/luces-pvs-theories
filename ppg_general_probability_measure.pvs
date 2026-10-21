@@ -1,0 +1,33 @@
+% Full mass one bounds every event. Restricting to the whole carrier
+% constructs a finite measure equal to the original law;
+% its one-term decomposition proves S-finiteness.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, finite measures.
+% Mathlib, MeasureTheory/Measure/Typeclasses/Probability.lean.
+ppg_general_probability_measure[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING ppg_probability_law[X,S]) mu:ProbabilityLaw]: THEORY
+BEGIN
+  IMPORTING ppg_general_finite_restriction[X,S,mu],ppg_enn_to_real
+
+  A: VAR (S)
+
+  probability_full_value: LEMMA measureValue(fullset[X])=ennFinite(1)
+
+  probability_event_bounded: LEMMA ele(measureValue(A),ennFinite(1))
+
+  probability_event_finite: LEMMA mu(A)`1
+
+  probability_event_real_bound: LEMMA mu(A)`2<=1
+
+  fullRegion: FiniteRegion = fullset[X]
+
+  wholeFinite: finite_measure[X,S] = regionFinite(fullRegion)
+
+  whole_finite_original: THEOREM to_measure(wholeFinite)=mu
+
+  probability_is_sfinite: THEOREM sfinite?(mu)
+
+  sfiniteLaw: (sfinite?) = mu
+
+END ppg_general_probability_measure

@@ -1,0 +1,104 @@
+% The original pair-valued NASALib sum agrees with the supremum of
+% canonical ENN partial sums. Semantic equality retains every encoding
+% of infinity; no summability premise is imposed on the sequence.
+%
+% David Lester, NASALib extended_nnreal and series_lems.
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+ppg_native_sum_bridge[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_general_integral_series[X,S,mu]
+
+  U: VAR [nat->extended_nnreal]
+  n: VAR nat
+  b: VAR nonneg_real
+
+  prefix_flags_zero: LEMMA (FORALL(i:nat):i<=0 IMPLIES U(i)`1) IFF U(0)`1
+
+  prefix_flags_succ: LEMMA (FORALL(i:nat):i<=n+1 IMPLIES U(i)`1) IFF
+    (FORALL(i:nat):i<=n IMPLIES U(i)`1) AND U(n+1)`1
+
+  all_prefix_flags: LEMMA (FORALL(i:nat):U(i)`1) IMPLIES
+    FORALL(i:nat):i<=n IMPLIES U(i)`1
+
+  native_prefix_zero: LEMMA nativeValue(x_sigma(0,0,U))=nativeValue(U(0))
+
+  native_prefix_succ: LEMMA nativeValue(x_sigma(0,n+1,U))=
+    eadd(nativeValue(x_sigma(0,n,U)),nativeValue(U(n+1)))
+
+  native_prefix_partial: THEOREM FORALL(n:nat,U:[nat->extended_nnreal]):
+    nativeValue(x_sigma(0,n,U))=partialSum(LAMBDA(i:nat):nativeValue(U(i)),n+1)
+
+  native_prefix_finite_bound: LEMMA
+    ele(nativeValue(x_sigma(0,n,U)),ennFinite(b)) IFF
+      (FORALL(i:nat):i<=n IMPLIES U(i)`1) AND
+        sigma(0,n,LAMBDA(i:nat):U(i)`2)<=b
+
+  native_prefix_series: LEMMA (FORALL(i:nat):U(i)`1) IMPLIES
+    nativeValue(x_sigma(0,n,U))=ennFinite(series(LAMBDA(i:nat):U(i)`2)(n))
+
+  native_partial_bounded_flags: LEMMA
+    (FORALL(n:nat):ele(nativeValue(x_sigma(0,n,U)),ennFinite(b))) IMPLIES
+      FORALL(i:nat):U(i)`1
+
+  native_partial_bounded_series: LEMMA
+    (FORALL(n:nat):ele(nativeValue(x_sigma(0,n,U)),ennFinite(b))) IMPLIES
+      FORALL(n:nat):series(LAMBDA(i:nat):U(i)`2)(n)<=b
+
+  native_series_nonnegative: LEMMA series(LAMBDA(i:nat):U(i)`2)(n)>=0
+
+  native_partial_series_increasing: LEMMA (FORALL(i:nat):U(i)`1) IMPLIES
+    FORALL(i,j:nat):i<=j IMPLIES
+      series(LAMBDA(k:nat):U(k)`2)(i)<=series(LAMBDA(k:nat):U(k)`2)(j)
+
+  native_bounded_series_converges: LEMMA
+    (FORALL(n:nat):ele(nativeValue(x_sigma(0,n,U)),ennFinite(b))) IMPLIES
+      analysis@convergence_sequences.convergent?(series(LAMBDA(i:nat):U(i)`2))
+
+  native_sum_finite_data: LEMMA ele(nativeValue(x_sum(U)),ennFinite(b)) IMPLIES
+    (FORALL(i:nat):U(i)`1) AND
+      analysis@convergence_sequences.convergent?(series(LAMBDA(i:nat):U(i)`2))
+
+  native_sum_limit_bound: LEMMA ele(nativeValue(x_sum(U)),ennFinite(b)) IMPLIES
+    analysis@convergence_sequences.limit(series(LAMBDA(i:nat):U(i)`2))<=b
+
+  nonnegativeSeries(U)(n:nat): nnreal = series(LAMBDA(i:nat):U(i)`2)(n)
+
+  nonnegative_series_identity: LEMMA nonnegativeSeries(U)=series(LAMBDA(i:nat):U(i)`2)
+
+  native_series_limit_nonnegative: LEMMA
+    analysis@convergence_sequences.convergent?(series(LAMBDA(i:nat):U(i)`2)) IMPLIES
+      analysis@convergence_sequences.limit(series(LAMBDA(i:nat):U(i)`2))>=0
+
+  native_series_member_below_limit: LEMMA
+    analysis@convergence_sequences.convergent?(series(LAMBDA(i:nat):U(i)`2)) IMPLIES
+      FORALL(n:nat):series(LAMBDA(i:nat):U(i)`2)(n)<=
+        analysis@convergence_sequences.limit(series(LAMBDA(i:nat):U(i)`2))
+
+  native_convergent_sum_bound: LEMMA (FORALL(i:nat):U(i)`1) AND
+    analysis@convergence_sequences.convergent?(series(LAMBDA(i:nat):U(i)`2)) AND
+      (FORALL(n:nat):series(LAMBDA(i:nat):U(i)`2)(n)<=b) IMPLIES
+        ele(nativeValue(x_sum(U)),ennFinite(b))
+
+  native_bounded_sum_finite: LEMMA
+    (FORALL(n:nat):ele(nativeValue(x_sigma(0,n,U)),ennFinite(b))) IMPLIES
+      ele(nativeValue(x_sum(U)),ennFinite(b))
+
+  native_sum_series_bound: LEMMA ele(nativeValue(x_sum(U)),ennFinite(b)) IMPLIES
+    FORALL(n:nat):series(LAMBDA(i:nat):U(i)`2)(n)<=b
+
+  native_sum_partial_bound: LEMMA ele(nativeValue(x_sum(U)),ennFinite(b)) IMPLIES
+    FORALL(n:nat):ele(nativeValue(x_sigma(0,n,U)),ennFinite(b))
+
+  native_sum_finite_test: THEOREM ele(nativeValue(x_sum(U)),ennFinite(b)) IFF
+    FORALL(n:nat):ele(nativeValue(x_sigma(0,n,U)),ennFinite(b))
+
+  total_sum_native_prefix_bound: LEMMA
+    ele(totalSum(LAMBDA(i:nat):nativeValue(U(i))),ennFinite(b)) IFF
+      FORALL(n:nat):ele(nativeValue(x_sigma(0,n,U)),ennFinite(b))
+
+  native_sum_canonical_series: THEOREM nativeValue(x_sum(U))=
+    totalSum(LAMBDA(i:nat):nativeValue(U(i)))
+
+END ppg_native_sum_bridge

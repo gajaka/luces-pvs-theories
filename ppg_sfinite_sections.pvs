@@ -1,0 +1,61 @@
+% For a finite right measure, the original section-mass function is
+% measurable. Countable integral sums then give the same statement for
+% an S-finite right measure. Its value is independent of the chosen
+% finite decomposition because it equals the original measure of the section.
+%
+% David Lester, NASALib product_finite_measure, x_section_measurable.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1991,
+% section 7.2.
+ppg_sfinite_sections[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING measure_integration@measure_def[X,SX]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_native_sum_bridge[X,SX,mu],
+    measure_integration@product_finite_measure[X,Y,SX,SY],
+    ppg_sfinite_measure[Y,SY]
+
+  E: VAR (sigma_times(SX,SY))
+  m: VAR finite_measure[Y,SY]
+  nu: VAR measure_type[Y,SY]
+  F: VAR [nat->finite_measure[Y,SY]]
+  x: VAR X
+  a: VAR nonneg_real
+
+  section_in_right_sigma: LEMMA SY(x_section(E)(x))
+
+  finiteSection(E,m)(x:X): ENN = ennFinite(m(x_section(E)(x)))
+
+  finite_section_level: LEMMA
+    {x:X|ele(ennFinite(a),finiteSection(E,m)(x))}=
+      {x:X|m(x_section(E)(x))>=a}
+
+  finite_section_lower_measurable: THEOREM lowerMeasurable(finiteSection(E,m))
+
+  finiteMeasurableSection(E,m): LowerMeasurable = finiteSection(E,m)
+
+  sectionRows(E,F)(n:nat): LowerMeasurable = finiteMeasurableSection(E,F(n))
+
+  sectionSum(E,F): LowerMeasurable = sumFunction(sectionRows(E,F))
+
+  sectionMeasure(nu,E)(x:X): ENN = nativeValue(nu(x_section(E)(x)))
+
+  finite_section_rows_value: LEMMA
+    (LAMBDA(n:nat):sectionRows(E,F)(n)(x))=
+      (LAMBDA(n:nat):nativeValue((TRUE,F(n)(x_section(E)(x)))))
+
+  section_sum_at: LEMMA sectionSum(E,F)(x)=
+    totalSum(LAMBDA(n:nat):nativeValue((TRUE,F(n)(x_section(E)(x)))))
+
+  decomposed_section_at: THEOREM finiteDecomposition(nu,F) IMPLIES
+    sectionSum(E,F)(x)=sectionMeasure(nu,E)(x)
+
+  decomposed_section_function: THEOREM finiteDecomposition(nu,F) IMPLIES
+    sectionSum(E,F)=sectionMeasure(nu,E)
+
+  sfinite_section_lower_measurable: THEOREM sfinite?(nu) IMPLIES
+    lowerMeasurable(sectionMeasure(nu,E))
+
+  measurableSection(nu:(sfinite?[Y,SY]),E): LowerMeasurable = sectionMeasure(nu,E)
+
+END ppg_sfinite_sections

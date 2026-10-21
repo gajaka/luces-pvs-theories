@@ -1,0 +1,63 @@
+% Add increasing simple approximations term by term, then apply monotone
+% convergence. Infinite mass on an atom is retained throughout; the proof
+% imposes no sigma-finiteness or integrability condition.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+ppg_general_integral_add[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_lower_measurable_limits[X,S,mu]
+
+  f,g: VAR LowerMeasurable
+  H: VAR [nat->LowerMeasurable]
+  n: VAR nat
+  x: VAR X
+
+  addFunction(f,g)(x:X): ENN = eadd(f(x),g(x))
+
+  addPrefix(f,g)(n:nat): LowerMeasurable = simpleAsMeasurable(
+    concatSimple(simplePrefix(f,n),simplePrefix(g,n)))
+
+  add_prefix_values: LEMMA addPrefix(f,g)(n)(x)=
+    eadd(prefixValues(f)(n)(x),prefixValues(g)(n)(x))
+
+  prefix_values_increasing_at: LEMMA
+    increasingENN(LAMBDA(n:nat):prefixValues(f)(n)(x))
+
+  add_prefix_increasing: LEMMA increasingFunctions(addPrefix(f,g))
+
+  add_prefix_value_function: LEMMA
+    (LAMBDA(n:nat):addPrefix(f,g)(n)(x))=
+      (LAMBDA(n:nat):eadd(prefixValues(f)(n)(x),prefixValues(g)(n)(x)))
+
+  prefix_sup_value: LEMMA pointwiseSup(prefixValues(f))(x)=f(x)
+
+  prefix_nat_sup_value: LEMMA natSup(LAMBDA(n:nat):prefixValues(f)(n)(x))=f(x)
+
+  add_prefix_sup_at: LEMMA pointwiseSup(addPrefix(f,g))(x)=addFunction(f,g)(x)
+
+  add_prefix_sup: THEOREM pointwiseSup(addPrefix(f,g))=addFunction(f,g)
+
+  add_lower_measurable: THEOREM lowerMeasurable(addFunction(f,g))
+
+  measurableAdd(f,g): LowerMeasurable = addFunction(f,g)
+
+  increasing_integrals: LEMMA increasingFunctions(H) IMPLIES
+    increasingENN(LAMBDA(n:nat):lintegral(H(n)))
+
+  prefix_integrals_increasing: LEMMA
+    increasingENN(LAMBDA(n:nat):simpleIntegral(simplePrefix(f,n)))
+
+  add_prefix_integral: LEMMA lintegral(addPrefix(f,g)(n))=
+    eadd(simpleIntegral(simplePrefix(f,n)),simpleIntegral(simplePrefix(g,n)))
+
+  add_prefix_integral_function: LEMMA
+    (LAMBDA(n:nat):lintegral(addPrefix(f,g)(n)))=
+      (LAMBDA(n:nat):eadd(simpleIntegral(simplePrefix(f,n)),
+        simpleIntegral(simplePrefix(g,n))))
+
+  general_integral_add: THEOREM lintegral(addFunction(f,g))=
+    eadd(lintegral(f),lintegral(g))
+
+END ppg_general_integral_add

@@ -1,0 +1,64 @@
+% All-event product symmetry is transported along two measurable
+% maps. Product naturality and the proved swap square supply every step;
+% the conditional helper will be applied to the proved finite fiber lifts.
+%
+% Mathlib, MeasureTheory/Measure/Prod.lean, map_prod_map and prod_swap.
+ppg_sfinite_symmetry_transport[X,Y,U,V:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],SU:sigma_algebra[U],SV:sigma_algebra[V],
+  (IMPORTING ppg_sfinite_measure[X,SX]) mu:(ppg_sfinite_measure[X,SX].sfinite?),
+  (IMPORTING ppg_sfinite_measure[Y,SY]) nu:(ppg_sfinite_measure[Y,SY].sfinite?),
+  (IMPORTING ppg_general_measure_map[X,U,SX,SU]) f:ppg_general_measure_map[X,U,SX,SU].MeasurableMap,
+  (IMPORTING ppg_general_measure_map[Y,V,SY,SV]) g:ppg_general_measure_map[Y,V,SY,SV].MeasurableMap]: THEORY
+BEGIN
+  IMPORTING ppg_sfinite_product_map[X,Y,U,V,SX,SY,SU,SV,mu,nu,f,g],
+    ppg_sfinite_product_map[Y,X,V,U,SY,SX,SV,SU,nu,mu,g,f],
+    ppg_product_swap_naturality[X,Y,U,V,SX,SY,SU,SV,f,g],
+    ppg_general_map_composition[[X,Y],[U,V],[U,V],sigma_times(SX,SY),sigma_times(SU,SV),sigma_times(SU,SV)],
+    ppg_general_map_composition[[V,U],[U,V],[U,V],sigma_times(SV,SU),sigma_times(SU,SV),sigma_times(SU,SV)]
+
+  forwardSource: measure_type[[X,Y],sigma_times(SX,SY)] =
+    ppg_sfinite_product_map[X,Y,U,V,SX,SY,SU,SV,mu,nu,f,g].sourceProduct
+
+  reverseSource: measure_type[[Y,X],sigma_times(SY,SX)] =
+    ppg_sfinite_product_map[Y,X,V,U,SY,SX,SV,SU,nu,mu,g,f].sourceProduct
+
+  forwardTarget: measure_type[[U,V],sigma_times(SU,SV)] =
+    ppg_sfinite_product_map[X,Y,U,V,SX,SY,SU,SV,mu,nu,f,g].targetProduct
+
+  reverseTarget: measure_type[[V,U],sigma_times(SV,SU)] =
+    ppg_sfinite_product_map[Y,X,V,U,SY,SX,SV,SU,nu,mu,g,f].targetProduct
+
+  forwardMapped: measure_type[[U,V],sigma_times(SU,SV)] =
+    ppg_general_measure_map[[X,Y],[U,V],sigma_times(SX,SY),sigma_times(SU,SV)].mapMeasure(forwardSource,forwardPair)
+
+  reverseMapped: measure_type[[V,U],sigma_times(SV,SU)] =
+    ppg_general_measure_map[[Y,X],[V,U],sigma_times(SY,SX),sigma_times(SV,SU)].mapMeasure(reverseSource,reversePair)
+
+  swappedSource: measure_type[[X,Y],sigma_times(SX,SY)] =
+    ppg_general_measure_map[[Y,X],[X,Y],sigma_times(SY,SX),sigma_times(SX,SY)].mapMeasure(reverseSource,sourceSwap)
+
+  swapThenMapped: measure_type[[U,V],sigma_times(SU,SV)] =
+    ppg_general_measure_map[[X,Y],[U,V],sigma_times(SX,SY),sigma_times(SU,SV)].mapMeasure(swappedSource,forwardPair)
+
+  mappedThenSwap: measure_type[[U,V],sigma_times(SU,SV)] =
+    ppg_general_measure_map[[V,U],[U,V],sigma_times(SV,SU),sigma_times(SU,SV)].mapMeasure(reverseMapped,targetSwap)
+
+  swappedTarget: measure_type[[U,V],sigma_times(SU,SV)] =
+    ppg_general_measure_map[[V,U],[U,V],sigma_times(SV,SU),sigma_times(SU,SV)].mapMeasure(reverseTarget,targetSwap)
+
+  forward_naturality: THEOREM sameMeasure(forwardMapped,forwardTarget)
+
+  reverse_naturality: THEOREM sameMeasure(reverseMapped,reverseTarget)
+
+  swap_naturality: THEOREM swapThenMapped=mappedThenSwap
+
+  reverse_naturality_mapped: THEOREM sameMeasure(mappedThenSwap,swappedTarget)
+
+  source_symmetry_mapped: THEOREM sameMeasure(forwardSource,swappedSource) IMPLIES
+    sameMeasure(forwardMapped,swapThenMapped)
+
+  target_symmetry_transport: THEOREM sameMeasure(forwardSource,swappedSource) IMPLIES
+    sameMeasure(forwardTarget,swappedTarget)
+
+END ppg_sfinite_symmetry_transport

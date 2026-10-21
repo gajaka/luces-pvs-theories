@@ -1,0 +1,68 @@
+% Product measures agree after coordinate swap when
+% finite-mass covers of the two factors are provided. Rectangle agreement
+% supplies local equality; proved finite-cover uniqueness supplies the
+% all-event conclusion. The cover data is not a product-law assumption.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, sigma-finite products.
+% Mathlib, MeasureTheory/Measure/Prod.lean.
+ppg_product_symmetry_finite_covers[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING ppg_sfinite_measure[X,SX]) mu:(ppg_sfinite_measure[X,SX].sfinite?),
+  (IMPORTING ppg_sfinite_measure[Y,SY]) nu:(ppg_sfinite_measure[Y,SY].sfinite?)]: THEORY
+BEGIN
+  IMPORTING ppg_native_product_swap[X,Y,SX,SY],
+    ppg_sfinite_product_rectangles[X,Y,SX,SY,mu],
+    ppg_sfinite_product_rectangles[Y,X,SY,SX,nu],
+    ppg_product_finite_cover[X,Y,SX,SY,mu,nu]
+
+  sourceLaw: measure_type[[X,Y],sigma_times(SX,SY)] =
+    productMeasure[X,Y,SX,SY,mu](nu)
+
+  reverseLaw: measure_type[[Y,X],sigma_times(SY,SX)] =
+    productMeasure[Y,X,SY,SX,nu](mu)
+
+  swappedLaw: measure_type[[X,Y],sigma_times(SX,SY)] =
+    ppg_general_measure_map[[Y,X],[X,Y],sigma_times(SY,SX),sigma_times(SX,SY)].mapMeasure(reverseLaw,swapMap)
+
+  IMPORTING ppg_product_finite_cover_uniqueness[X,Y,SX,SY,sourceLaw,swappedLaw]
+
+  A: VAR (SX)
+  B: VAR (SY)
+  n: VAR nat
+
+  product_rectangles_agree: THEOREM rectangleAgreement
+
+  rectangle_flags_equal: LEMMA sourceLaw(cross_product(A,B))`1=swappedLaw(cross_product(A,B))`1
+
+  Covers: TYPE = {c:[[nat->(SX)],[nat->(SY)]]|
+    disjoint?(c`1) AND disjoint?(c`2) AND
+    IUnion(c`1)=fullset[X] AND IUnion(c`2)=fullset[Y] AND
+    (FORALL(n:nat):mu(c`1(n))`1 AND nu(c`2(n))`1)}
+
+  c: VAR Covers
+
+  coverRows(c)(n:nat): [(SX),(SY)] =
+    (c`1(double_index_i(n)),c`2(double_index_j(n)))
+
+  cover_event_rows: LEMMA
+    (LAMBDA(n:nat):rectEvent(coverRows(c)(n)))=rectCover(c`1,c`2)
+
+  cover_rows_disjoint: LEMMA disjoint?(LAMBDA(n:nat):rectEvent(coverRows(c)(n)))
+
+  cover_rows_full: LEMMA IUnion(LAMBDA(n:nat):rectEvent(coverRows(c)(n)))=fullset[[X,Y]]
+
+  cover_left_finite: LEMMA mu(c`1(n))`1
+
+  cover_right_finite: LEMMA nu(c`2(n))`1
+
+  cover_rows_left_finite: LEMMA sourceLaw(rectEvent(coverRows(c)(n)))`1
+
+  cover_rows_right_finite: LEMMA swappedLaw(rectEvent(coverRows(c)(n)))`1
+
+  coverCertificate(c): RectangleCover = coverRows(c)
+
+  product_symmetry_from_finite_covers: THEOREM FORALL(c:Covers):
+    sameMeasure(sourceLaw,swappedLaw)
+
+END ppg_product_symmetry_finite_covers

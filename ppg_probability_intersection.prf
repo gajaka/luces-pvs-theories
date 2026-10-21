@@ -1,0 +1,539 @@
+(|ppg_probability_intersection|
+ (|oneOrderAsEvent_TCC1| 0
+  (|oneOrderAsEvent_TCC1-1| NIL 4001466102
+   (""
+    (THEN (SKOSIMP) (LEMMA "measurableSet_oneOrderOnly" ("A" "A!1" "B" "B!1"))
+     (ASSERT))
+    NIL)
+   ((|measurableSet_oneOrderOnly| FORMULA-DECL NIL
+     |ppg_native_intersection_measurable| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_probability_intersection|
+     NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_probability_intersection|
+     NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]" |ppg_probability_intersection|
+     NIL))
+   NIL
+   (|oneOrderAsEvent| SUBTYPE "oneOrderOnly[X, Y, Z](A, B)"
+    "(product_sigma_def[[ppg_probability_intersection.X, ppg_probability_intersection.Z], [ppg_probability_intersection.Y, ppg_probability_intersection.Y]].sigma_times(product_sigma_def[ppg_probability_intersection.X, ppg_probability_intersection.Z].sigma_times(ppg_probability_intersection.SX, ppg_probability_intersection.SZ), product_sigma_def[ppg_probability_intersection.Y, ppg_probability_intersection.Y].sigma_times(ppg_probability_intersection.SY, ppg_probability_intersection.SY)))"
+    (54 79 54 96))))
+ (|private_probability_original| 0
+  (|private_probability_original-1| NIL 4001466103
+   (""
+    (THEN (EXPAND "privateProb") (EXPAND "probabilityProduct")
+     (EXPAND "probProduct") (ASSERT))
+    NIL)
+   ((|privateProb| CONST-DECL
+     "ppg_probability_law[[X, Z], sigma_times(SX, SZ)].ProbabilityLaw"
+     |ppg_probability_intersection| NIL)
+    (|probProduct| CONST-DECL "measure_type[[X, Y], sigma_times(SX, SY)]"
+     |ppg_probability_product| NIL)
+    (|probabilityProduct| CONST-DECL
+     "ppg_probability_law[[X, Y], sigma_times(SX, SY)].ProbabilityLaw"
+     |ppg_probability_product| NIL))
+   SHOSTAK))
+ (|shared_probability_original| 0
+  (|shared_probability_original-1| NIL 4001466103
+   (""
+    (THEN (EXPAND "sharedProb") (EXPAND "probabilityProduct")
+     (EXPAND "probProduct") (ASSERT))
+    NIL)
+   ((|sharedProb| CONST-DECL
+     "ppg_probability_law[[Y, Y], sigma_times(SY, SY)].ProbabilityLaw"
+     |ppg_probability_intersection| NIL)
+    (|probProduct| CONST-DECL "measure_type[[X, Y], sigma_times(SX, SY)]"
+     |ppg_probability_product| NIL)
+    (|probabilityProduct| CONST-DECL
+     "ppg_probability_law[[X, Y], sigma_times(SX, SY)].ProbabilityLaw"
+     |ppg_probability_product| NIL))
+   SHOSTAK))
+ (|double_four_law| 0
+  (|double_four_law-1| NIL 4001466103
+   (""
+    (THEN (EXPAND "originalDouble") (EXPAND "fourProb")
+     (EXPAND "probabilityProduct") (EXPAND "probProduct") (EXPAND "sharedProb")
+     (EXPAND "probabilityProduct") (EXPAND "probProduct") (ASSERT))
+    NIL)
+   ((|originalDouble| CONST-DECL
+     "measure_type[[U, [Y, Y]], sigma_times(SU, sigma_times(SY, SY))]"
+     |ppg_probability_double_sample| NIL)
+    (|probabilityProduct| CONST-DECL
+     "ppg_probability_law[[X, Y], sigma_times(SX, SY)].ProbabilityLaw"
+     |ppg_probability_product| NIL)
+    (|sharedProb| CONST-DECL
+     "ppg_probability_law[[Y, Y], sigma_times(SY, SY)].ProbabilityLaw"
+     |ppg_probability_intersection| NIL)
+    (|probProduct| CONST-DECL "measure_type[[X, Y], sigma_times(SX, SY)]"
+     |ppg_probability_product| NIL)
+    (|fourProb| CONST-DECL "ppg_probability_law
+    [[[X, Z], [Y, Y]],
+     sigma_times(sigma_times(SX, SZ), sigma_times(SY, SY))].ProbabilityLaw"
+     |ppg_probability_intersection| NIL))
+   SHOSTAK))
+ (|forward_four_law| 0
+  (|forward_four_law-1| NIL 4001466103
+   (""
+    (THEN (EXPAND "fourLaw") (EXPAND "lawXZ" :ACTUALS? T) (EXPAND "lawYY")
+     (EXPAND "productLaw" :ACTUALS? T) (EXPAND "fourProb")
+     (EXPAND "probabilityProduct") (EXPAND "probProduct")
+     (EXPAND "privateProb" :ACTUALS? T) (EXPAND "sharedProb" :ACTUALS? T)
+     (EXPAND "probabilityProduct" :ACTUALS? T)
+     (EXPAND "probProduct" :ACTUALS? T) (EXPAND "leftSfinite" :ACTUALS? T)
+     (EXPAND "middleSfinite" :ACTUALS? T) (EXPAND "rightSfinite" :ACTUALS? T)
+     (EXPAND "sfiniteLaw" :ACTUALS? T) (ASSERT))
+    NIL)
+   ((|fourLaw| CONST-DECL "measure_type
+    [[[X, Z], [Y, Y]],
+     sigma_times(sigma_times(SX, SZ), sigma_times(SY, SY))]"
+     |ppg_general_forward_event| NIL)
+    (|lawYY| CONST-DECL
+     "(ppg_sfinite_measure[[Y, Y], sigma_times(SY, SY)].sfinite?)"
+     |ppg_general_forward_event| NIL)
+    (|fourProb| CONST-DECL "ppg_probability_law
+    [[[X, Z], [Y, Y]],
+     sigma_times(sigma_times(SX, SZ), sigma_times(SY, SY))].ProbabilityLaw"
+     |ppg_probability_intersection| NIL)
+    (|probProduct| CONST-DECL "measure_type[[X, Y], sigma_times(SX, SY)]"
+     |ppg_probability_product| NIL)
+    (|sharedProb| CONST-DECL
+     "ppg_probability_law[[Y, Y], sigma_times(SY, SY)].ProbabilityLaw"
+     |ppg_probability_intersection| NIL)
+    (|middleSfinite| CONST-DECL "(ppg_sfinite_measure[Y, SY].sfinite?)"
+     |ppg_probability_intersection| NIL)
+    (|sfiniteLaw| CONST-DECL "(sfinite?)" |ppg_general_probability_measure| NIL)
+    (|rightSfinite| CONST-DECL "(ppg_sfinite_measure[Z, SZ].sfinite?)"
+     |ppg_probability_intersection| NIL)
+    (|leftSfinite| CONST-DECL "(ppg_sfinite_measure[X, SX].sfinite?)"
+     |ppg_probability_intersection| NIL)
+    (|privateProb| CONST-DECL
+     "ppg_probability_law[[X, Z], sigma_times(SX, SZ)].ProbabilityLaw"
+     |ppg_probability_intersection| NIL)
+    (|probabilityProduct| CONST-DECL
+     "ppg_probability_law[[X, Y], sigma_times(SX, SY)].ProbabilityLaw"
+     |ppg_probability_product| NIL)
+    (|productLaw| CONST-DECL "measure_type[[X, Y], sigma_times(SX, SY)]"
+     |ppg_sfinite_simple_sections| NIL)
+    (|lawXZ| CONST-DECL
+     "(ppg_sfinite_measure[[X, Z], sigma_times(SX, SZ)].sfinite?)"
+     |ppg_general_forward_event| NIL))
+   SHOSTAK))
+ (|excluded_subset_forward| 0
+  (|excluded_subset_forward-1| NIL 4001466103
+   (""
+    (THEN (SKOSIMP) (LEMMA "doubleJoint_subset_forward" ("A" "A!1" "B" "B!1"))
+     (EXPAND "measurableDoubleEvent") (EXPAND "jointAsEvent")
+     (EXPAND "forwardAsEvent") (ASSERT))
+    NIL)
+   ((|measurableDoubleEvent| CONST-DECL
+     "(sigma_times(SU, sigma_times(SY, SY)))" |ppg_general_double_sample| NIL)
+    (|forwardAsEvent| CONST-DECL
+     "(sigma_times(sigma_times(SX, SZ), sigma_times(SY, SY)))"
+     |ppg_native_intersection_measurable| NIL)
+    (|jointAsEvent| CONST-DECL "(sigma_times(sigma_times(SX, SZ), SY))"
+     |ppg_native_intersection_measurable| NIL)
+    (|doubleJoint_subset_forward| FORMULA-DECL NIL |ppg_intersection_events|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_probability_intersection|
+     NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_probability_intersection|
+     NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]" |ppg_probability_intersection|
+     NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL))
+   SHOSTAK))
+ (|one_order_difference| 0
+  (|one_order_difference-1| NIL 4001466103
+   (""
+    (THEN (SKOSIMP) (LEMMA "oneOrderOnly_eq_sdiff" ("A" "A!1" "B" "B!1"))
+     (EXPAND "oneOrderAsEvent") (EXPAND "measurableDoubleEvent")
+     (EXPAND "jointAsEvent") (EXPAND "forwardAsEvent") (ASSERT))
+    NIL)
+   ((|oneOrderAsEvent| CONST-DECL
+     "(sigma_times(sigma_times(SX, SZ), sigma_times(SY, SY)))"
+     |ppg_probability_intersection| NIL)
+    (|jointAsEvent| CONST-DECL "(sigma_times(sigma_times(SX, SZ), SY))"
+     |ppg_native_intersection_measurable| NIL)
+    (|forwardAsEvent| CONST-DECL
+     "(sigma_times(sigma_times(SX, SZ), sigma_times(SY, SY)))"
+     |ppg_native_intersection_measurable| NIL)
+    (|measurableDoubleEvent| CONST-DECL
+     "(sigma_times(SU, sigma_times(SY, SY)))" |ppg_general_double_sample| NIL)
+    (|oneOrderOnly_eq_sdiff| FORMULA-DECL NIL |ppg_intersection_events| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_probability_intersection|
+     NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_probability_intersection|
+     NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]" |ppg_probability_intersection|
+     NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL))
+   SHOSTAK))
+ (|loss_real_difference| 0
+  (|loss_real_difference-1| NIL 4001466103
+   (""
+    (THEN (SKOSIMP) (LEMMA "excluded_subset_forward" ("A" "A!1" "B" "B!1"))
+     (LEMMA "probability_real_sdiff"
+      ("A" "forwardAsEvent(A!1,B!1)" "B"
+       "measurableDoubleEvent(jointAsEvent(A!1,B!1))"))
+     (REWRITE "one_order_difference") (ASSERT))
+    NIL)
+   ((|probability_real_sdiff| FORMULA-DECL NIL
+     |ppg_probability_real_difference| NIL)
+    (|forwardAsEvent| CONST-DECL
+     "(sigma_times(sigma_times(SX, SZ), sigma_times(SY, SY)))"
+     |ppg_native_intersection_measurable| NIL)
+    (|privateProb| CONST-DECL
+     "ppg_probability_law[[X, Z], sigma_times(SX, SZ)].ProbabilityLaw"
+     |ppg_probability_intersection| NIL)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|muY| FORMAL-CONST-DECL "ppg_probability_law[Y, SY].ProbabilityLaw"
+     |ppg_probability_intersection| NIL)
+    (|sampleRight| CONST-DECL "(ppg_sfinite_measure[Y, SY].sfinite?)"
+     |ppg_probability_double_sample| NIL)
+    (|measurableDoubleEvent| CONST-DECL
+     "(sigma_times(SU, sigma_times(SY, SY)))" |ppg_general_double_sample| NIL)
+    (|jointAsEvent| CONST-DECL "(sigma_times(sigma_times(SX, SZ), SY))"
+     |ppg_native_intersection_measurable| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|probability?| CONST-DECL "bool" |ppg_probability_law| NIL)
+    (|ProbabilityLaw| TYPE-EQ-DECL NIL |ppg_probability_law| NIL)
+    (|fourProb| CONST-DECL "ppg_probability_law
+    [[[X, Z], [Y, Y]],
+     sigma_times(sigma_times(SX, SZ), sigma_times(SY, SY))].ProbabilityLaw"
+     |ppg_probability_intersection| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas_aux| |measure_integration|)
+    (|subset_is_partial_order| NAME-JUDGEMENT "(partial_order?[set[T]])"
+     |sets_lemmas| NIL)
+    (|subset_algebra_difference| APPLICATION-JUDGEMENT
+     "(sigma_times(sigma_times(SX, SZ), sigma_times(SY, SY)))"
+     |ppg_probability_intersection| NIL)
+    (|one_order_difference| FORMULA-DECL NIL |ppg_probability_intersection|
+     NIL)
+    (|excluded_subset_forward| FORMULA-DECL NIL |ppg_probability_intersection|
+     NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_probability_intersection|
+     NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_probability_intersection|
+     NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]" |ppg_probability_intersection|
+     NIL))
+   SHOSTAK))
+ (|forward_probability_real| 0
+  (|forward_probability_real-1| NIL 4001466104
+   (""
+    (THEN (SKOSIMP)
+     (LEMMA
+      "measureReal_forwardEvent[X,Y,Z,SX,SY,SZ,leftSfinite,middleSfinite,rightSfinite]"
+      ("A" "A!1" "B" "B!1"))
+     (REWRITE "forward_four_law" -1) (EXPAND "realMass")
+     (EXPAND "measureValue") (EXPAND "firstReal") (EXPAND "secondReal")
+     (EXPAND "leftSfinite" :ACTUALS? T) (EXPAND "middleSfinite" :ACTUALS? T)
+     (EXPAND "rightSfinite" :ACTUALS? T) (EXPAND "sfiniteLaw" :ACTUALS? T)
+     (EXPAND "nativeValue") (ASSERT))
+    NIL)
+   ((|forward_four_law| FORMULA-DECL NIL |ppg_probability_intersection| NIL)
+    (|measureValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL)
+    (|secondReal| CONST-DECL "nonneg_real" |ppg_probability_intersection| NIL)
+    (|sfiniteLaw| CONST-DECL "(sfinite?)" |ppg_general_probability_measure| NIL)
+    (|nativeValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL)
+    (|firstReal| CONST-DECL "nonneg_real" |ppg_probability_intersection| NIL)
+    (|realMass| CONST-DECL "nonneg_real" |ppg_probability_real_difference| NIL)
+    (|measureReal_forwardEvent| FORMULA-DECL NIL |ppg_general_forward_event|
+     NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_probability_intersection|
+     NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_probability_intersection|
+     NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]" |ppg_probability_intersection|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|sfinite?| CONST-DECL "bool" |ppg_sfinite_measure| NIL)
+    (|leftSfinite| CONST-DECL "(ppg_sfinite_measure[X, SX].sfinite?)"
+     |ppg_probability_intersection| NIL)
+    (|middleSfinite| CONST-DECL "(ppg_sfinite_measure[Y, SY].sfinite?)"
+     |ppg_probability_intersection| NIL)
+    (|rightSfinite| CONST-DECL "(ppg_sfinite_measure[Z, SZ].sfinite?)"
+     |ppg_probability_intersection| NIL))
+   SHOSTAK))
+ (|intersection_second_moment| 0
+  (|intersection_second_moment-1| NIL 4001466104
+   (""
+    (THEN (SKOSIMP)
+     (LEMMA "sq_measureReal_le_doubleEvent" ("C" "jointAsEvent(A!1,B!1)"))
+     (REWRITE "double_four_law" -1) (EXPAND "overlapReal") (EXPAND "realMass")
+     (EXPAND "measureValue") (EXPAND "nativeValue") (ASSERT))
+    NIL)
+   ((|double_four_law| FORMULA-DECL NIL |ppg_probability_intersection| NIL)
+    (|realMass| CONST-DECL "nonneg_real" |ppg_probability_real_difference| NIL)
+    (|nativeValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL)
+    (|measureValue| CONST-DECL "ENN" |ppg_general_measure_values| NIL)
+    (|overlapReal| CONST-DECL "nonneg_real" |ppg_probability_intersection| NIL)
+    (|sq_measureReal_le_doubleEvent| FORMULA-DECL NIL
+     |ppg_probability_double_sample| NIL)
+    (|jointAsEvent| CONST-DECL "(sigma_times(sigma_times(SX, SZ), SY))"
+     |ppg_native_intersection_measurable| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_probability_intersection|
+     NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]" |ppg_probability_intersection|
+     NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_probability_intersection|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|probability?| CONST-DECL "bool" |ppg_probability_law| NIL)
+    (|ProbabilityLaw| TYPE-EQ-DECL NIL |ppg_probability_law| NIL)
+    (|privateProb| CONST-DECL
+     "ppg_probability_law[[X, Z], sigma_times(SX, SZ)].ProbabilityLaw"
+     |ppg_probability_intersection| NIL)
+    (|muY| FORMAL-CONST-DECL "ppg_probability_law[Y, SY].ProbabilityLaw"
+     |ppg_probability_intersection| NIL))
+   SHOSTAK))
+ (|intersection_saving| 0
+  (|intersection_saving-1| NIL 4001466104
+   (""
+    (THEN (SKOSIMP) (LEMMA "loss_real_difference" ("A" "A!1" "B" "B!1"))
+     (LEMMA "forward_probability_real" ("A" "A!1" "B" "B!1"))
+     (LEMMA "intersection_second_moment" ("A" "A!1" "B" "B!1")) (ASSERT))
+    NIL)
+   ((|forward_probability_real| FORMULA-DECL NIL |ppg_probability_intersection|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|intersection_second_moment| FORMULA-DECL NIL
+     |ppg_probability_intersection| NIL)
+    (|loss_real_difference| FORMULA-DECL NIL |ppg_probability_intersection|
+     NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_probability_intersection|
+     NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_probability_intersection|
+     NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]" |ppg_probability_intersection|
+     NIL))
+   SHOSTAK))
+ (|intersection_saving_of_lower_bound| 0
+  (|intersection_saving_of_lower_bound-1| NIL 4001466104
+   ("" (SKOSIMP)
+    (("" (LEMMA "intersection_saving" ("A" "A!1" "B" "B!1"))
+      (("" (LEMMA "sq_le" ("nna" "delta!1" "nnb" "overlapReal(A!1,B!1)"))
+        (("1" (EXPAND "sq") (("1" (ASSERT) NIL NIL)) NIL)
+         ("2" (PROPAX) NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|sq_le| FORMULA-DECL NIL |sq| |reals|)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|overlapReal| CONST-DECL "nonneg_real" |ppg_probability_intersection| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|sq| CONST-DECL "nonneg_real" |sq| |reals|)
+    (|intersection_saving| FORMULA-DECL NIL |ppg_probability_intersection| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_probability_intersection|
+     NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_probability_intersection|
+     NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]" |ppg_probability_intersection|
+     NIL))
+   SHOSTAK))
+ (|intersection_saving_strict| 0
+  (|intersection_saving_strict-1| NIL 4001466104
+   (""
+    (THEN (SKOSIMP) (LEMMA "intersection_saving" ("A" "A!1" "B" "B!1"))
+     (LEMMA "sq_lt" ("nna" "0" "nnb" "overlapReal(A!1,B!1)")) (EXPAND "sq")
+     (ASSERT))
+    NIL)
+   ((|sq_lt| FORMULA-DECL NIL |sq| |reals|)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|overlapReal| CONST-DECL "nonneg_real" |ppg_probability_intersection| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|sq| CONST-DECL "nonneg_real" |sq| |reals|)
+    (|intersection_saving| FORMULA-DECL NIL |ppg_probability_intersection| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_probability_intersection|
+     NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_probability_intersection|
+     NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_probability_intersection| NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]" |ppg_probability_intersection|
+     NIL))
+   SHOSTAK)))
+

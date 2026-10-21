@@ -1,0 +1,54 @@
+% Finite scaling acts on the same simple approximations. Monotone
+% convergence then gives homogeneity for arbitrary measures, including
+% infinite masses on measurable atoms and the scalar zero.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+ppg_general_integral_scale[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_lower_measurable_limits[X,S,mu]
+
+  f: VAR LowerMeasurable
+  c: VAR nonneg_real
+  n: VAR nat
+  x: VAR X
+
+  scaledPrefix(c,f,n): Simple = scaleSimple(c,simplePrefix(f,n))
+
+  scaledValues(c,f)(n:nat): LowerMeasurable = simpleAsMeasurable(scaledPrefix(c,f,n))
+
+  finite_product_embedding: LEMMA FORALL(a,b:nonneg_real):
+    emul(ennFinite(a),ennFinite(b))=ennFinite(a*b)
+
+  scaled_values_at: LEMMA scaledValues(c,f)(n)(x)=
+    emul(ennFinite(c),prefixValues(f)(n)(x))
+
+  scaled_values_sequence: LEMMA
+    (LAMBDA(n:nat):scaledValues(c,f)(n)(x))=
+      (LAMBDA(n:nat):emul(ennFinite(c),prefixValues(f)(n)(x)))
+
+  scaled_values_increasing: LEMMA increasingFunctions(scaledValues(c,f))
+
+  prefix_pointwise_sup_at: LEMMA pointwiseSup(prefixValues(f))(x)=f(x)
+
+  prefix_sup_at_function: LEMMA
+    natSup(LAMBDA(n:nat):prefixValues(f)(n)(x))=f(x)
+
+  scaled_sup_at: LEMMA pointwiseSup(scaledValues(c,f))(x)=emul(ennFinite(c),f(x))
+
+  scaledFunction(c,f): LowerMeasurable = measurableSup(scaledValues(c,f))
+
+  scaled_function_at: LEMMA scaledFunction(c,f)(x)=emul(ennFinite(c),f(x))
+
+  scaled_integral_at: LEMMA lintegral(scaledValues(c,f)(n))=
+    emul(ennFinite(c),simpleIntegral(simplePrefix(f,n)))
+
+  scaled_integral_sequence: LEMMA
+    (LAMBDA(n:nat):lintegral(scaledValues(c,f)(n)))=
+      (LAMBDA(n:nat):emul(ennFinite(c),simpleIntegral(simplePrefix(f,n))))
+
+  general_integral_scale: THEOREM
+    lintegral(scaledFunction(c,f))=emul(ennFinite(c),lintegral(f))
+
+END ppg_general_integral_scale

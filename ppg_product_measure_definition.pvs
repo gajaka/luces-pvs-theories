@@ -1,0 +1,78 @@
+% The map along y |-> (x,y) is a measure on the product sigma
+% algebra. Integrating this measurable kernel gives the bind used by
+% Mathlib's product definition; the right non-S-finite branch is zero.
+% No uniqueness theorem based only on rectangles is used here.
+%
+% Mathlib, MeasureTheory/Measure/Prod.lean, Measure.prod and prod_apply;
+% MeasureTheory/Measure/GiryMonad.lean, bind_apply.
+ppg_product_measure_definition[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING measure_integration@measure_def[X,SX]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_sfinite_bind_product[X,Y,SX,SY,mu]
+
+  nu: VAR measure_type[Y,SY]
+  E: VAR (sigma_times(SX,SY))
+  Q: VAR [nat->(sigma_times(SX,SY))]
+  x: VAR X
+
+  pairPreimage(E,x): set[Y] = {y:Y|E((x,y))}
+
+  pair_preimage_section: LEMMA pairPreimage(E,x)=x_section(E)(x)
+
+  pair_preimage_measurable: LEMMA SY(pairPreimage(E,x))
+
+  mapPairFunction(nu,x)(E:(sigma_times(SX,SY))): extended_nnreal =
+    nu(pairPreimage(E,x))
+
+  map_pair_empty: LEMMA mapPairFunction(nu,x)(emptyset[[X,Y]])=(TRUE,0)
+
+  map_pair_section_value: LEMMA nativeValue(mapPairFunction(nu,x)(E))=
+    sectionMeasure(nu,E)(x)
+
+  map_pair_series_values: LEMMA
+    (LAMBDA(n:nat):nativeValue(mapPairFunction(nu,x)(Q(n))))=
+      (LAMBDA(n:nat):sectionMeasure(nu,Q(n))(x))
+
+  map_pair_countable: THEOREM disjoint?(Q) IMPLIES
+    x_eq(x_sum(LAMBDA(n:nat):mapPairFunction(nu,x)(Q(n))),
+      mapPairFunction(nu,x)(IUnion(Q)))
+
+  map_pair_is_measure: THEOREM
+    measure?[[X,Y],sigma_times(SX,SY)](mapPairFunction(nu,x))
+
+  mapPair(nu,x): measure_type[[X,Y],sigma_times(SX,SY)] = mapPairFunction(nu,x)
+
+  pairKernel(nu)(x:X): measure_type[[X,Y],sigma_times(SX,SY)] = mapPair(nu,x)
+
+  pair_kernel_at: LEMMA nativeValue(pairKernel(nu)(x)(E))=sectionMeasure(nu,E)(x)
+
+  pair_kernel_function: LEMMA
+    (LAMBDA(x:X):nativeValue(pairKernel(nu)(x)(E)))=sectionMeasure(nu,E)
+
+  pair_kernel_measurable: THEOREM sfinite?(nu) IMPLIES
+    lowerMeasurable(LAMBDA(x:X):nativeValue(pairKernel(nu)(x)(E)))
+
+  % Integrating the section measures defines the product measure.
+  bindPairKernel(nu:(sfinite?[Y,SY])): measure_type[[X,Y],sigma_times(SX,SY)] =
+    bindProduct(nu)
+
+  bind_pair_kernel_apply: THEOREM FORALL(nu:(sfinite?[Y,SY])):
+    nativeValue(bindPairKernel(nu)(E))=
+      lintegral(LAMBDA(x:X):nativeValue(pairKernel(nu)(x)(E)))
+
+  productMeasure(nu): measure_type[[X,Y],sigma_times(SX,SY)] =
+    IF sfinite?(nu) THEN bindPairKernel(nu) ELSE
+      zero_measure[[X,Y],sigma_times(SX,SY)] ENDIF
+
+  product_sfinite_branch: THEOREM FORALL(nu:(sfinite?[Y,SY])):
+    productMeasure(nu)=bindPairKernel(nu)
+
+  product_other_branch: THEOREM NOT sfinite?(nu) IMPLIES
+    productMeasure(nu)=zero_measure[[X,Y],sigma_times(SX,SY)]
+
+  product_measure_sections: THEOREM FORALL(nu:(sfinite?[Y,SY])):
+    nativeValue(productMeasure(nu)(E))=lintegral(measurableSection(nu,E))
+
+END ppg_product_measure_definition

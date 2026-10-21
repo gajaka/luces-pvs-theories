@@ -1,0 +1,55 @@
+% On a common finite-mass rectangle, two arbitrary product-space laws
+% reduce to finite measures. Rectangle agreement then determines
+% their restrictions on every measurable event.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, uniqueness of finite measures.
+ppg_finite_rectangle_restriction_unique[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING measure_integration@product_sigma[X,Y,SX,SY],
+    measure_integration@measure_def[[X,Y],sigma_times(SX,SY)]) lawOne,lawTwo:measure_type]: THEORY
+BEGIN
+  IMPORTING measure_integration@product_sigma[X,Y,SX,SY],
+    ppg_finite_product_uniqueness[X,Y,SX,SY],
+    ppg_general_finite_restriction[[X,Y],sigma_times(SX,SY),lawOne],
+    ppg_general_finite_restriction[[X,Y],sigma_times(SX,SY),lawTwo]
+
+  A,C: VAR (SX)
+  B,D: VAR (SY)
+  E: VAR (sigma_times(SX,SY))
+
+  rectangleAgreement: bool = FORALL(A:(SX),B:(SY)):
+    x_eq(lawOne(cross_product(A,B)),lawTwo(cross_product(A,B)))
+
+  CommonRectangle: TYPE = {r:[(SX),(SY)]|
+    lawOne(cross_product(r`1,r`2))`1 AND lawTwo(cross_product(r`1,r`2))`1}
+
+  r: VAR CommonRectangle
+
+  firstRegion(r): ppg_general_finite_restriction[[X,Y],sigma_times(SX,SY),lawOne].FiniteRegion =
+    cross_product(r`1,r`2)
+
+  secondRegion(r): ppg_general_finite_restriction[[X,Y],sigma_times(SX,SY),lawTwo].FiniteRegion =
+    cross_product(r`1,r`2)
+
+  firstRestriction(r): finite_measure[[X,Y],sigma_times(SX,SY)] =
+    ppg_general_finite_restriction[[X,Y],sigma_times(SX,SY),lawOne].regionFinite(firstRegion(r))
+
+  secondRestriction(r): finite_measure[[X,Y],sigma_times(SX,SY)] =
+    ppg_general_finite_restriction[[X,Y],sigma_times(SX,SY),lawTwo].regionFinite(secondRegion(r))
+
+  restricted_rectangle_identity: LEMMA
+    intersection(cross_product(r`1,r`2),cross_product(A,B))=
+      cross_product(intersection(r`1,A),intersection(r`2,B))
+
+  restrictions_agree_rectangles: THEOREM rectangleAgreement IMPLIES
+    firstRestriction(r)(cross_product(A,B))=secondRestriction(r)(cross_product(A,B))
+
+  restrictions_agree_events: THEOREM rectangleAgreement IMPLIES
+    firstRestriction(r)(E)=secondRestriction(r)(E)
+
+  finite_rectangle_restriction_equality: THEOREM rectangleAgreement IMPLIES
+    x_eq(lawOne(intersection(cross_product(r`1,r`2),E)),
+      lawTwo(intersection(cross_product(r`1,r`2),E)))
+
+END ppg_finite_rectangle_restriction_unique

@@ -1,0 +1,45 @@
+% Agreement on every measurable part of a disjoint countable cover
+% gives agreement on the whole sigma algebra by countable
+% additivity. No finiteness premise is needed for this gluing step.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, countable additivity.
+ppg_measure_cover_gluing[T:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[T]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[T,S]) lawOne,lawTwo:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_native_sum_bridge[T,S,lawOne],ppg_sfinite_measure[T,S],
+    measure_integration@sigma_algebra[T,S]
+
+  mu: VAR measure_type
+  Q: VAR [nat->(S)]
+  A: VAR (S)
+  x: VAR T
+
+  intersectRows(Q,A)(n:nat): (S) = intersection(Q(n),A)
+
+  intersect_rows_disjoint: LEMMA disjoint?(Q) IMPLIES disjoint?(intersectRows(Q,A))
+
+  cover_member: LEMMA IUnion(Q)=fullset[T] IMPLIES IUnion(Q)(x)
+
+  intersect_rows_cover: THEOREM IUnion(Q)=fullset[T] IMPLIES IUnion(intersectRows(Q,A))=A
+
+  original_countable_identity: THEOREM disjoint?(Q) IMPLIES
+    x_eq(x_sum(LAMBDA(n:nat):mu(Q(n))),mu(IUnion(Q)))
+
+  canonical_countable_identity: THEOREM disjoint?(Q) IMPLIES
+    nativeValue(mu(IUnion(Q)))=totalSum(LAMBDA(n:nat):nativeValue(mu(Q(n))))
+
+  cellAgreement(Q): bool = FORALL(n:nat,A:(S)):
+    x_eq(lawOne(intersection(Q(n),A)),lawTwo(intersection(Q(n),A)))
+
+  equal_cell_value_arrays: LEMMA cellAgreement(Q) IMPLIES
+    (LAMBDA(n:nat):nativeValue(lawOne(intersectRows(Q,A)(n))))=
+      (LAMBDA(n:nat):nativeValue(lawTwo(intersectRows(Q,A)(n))))
+
+  glued_event_value: THEOREM disjoint?(Q) AND IUnion(Q)=fullset[T] AND cellAgreement(Q) IMPLIES
+    nativeValue(lawOne(A))=nativeValue(lawTwo(A))
+
+  measures_glue_on_cover: THEOREM disjoint?(Q) AND IUnion(Q)=fullset[T] AND cellAgreement(Q) IMPLIES
+    sameMeasure(lawOne,lawTwo)
+
+END ppg_measure_cover_gluing

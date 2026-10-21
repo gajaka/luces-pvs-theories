@@ -1,0 +1,79 @@
+% Simple functions are represented by overlapping finite indicator sums.
+% Scaling and restriction act on the same list, so their identities do not
+% require disjoint supports or finite measure masses.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+ppg_simple_integral_scaling[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_general_measure_continuity[X,S,mu],ppg_enn_increasing_sup
+
+  L: VAR Simple
+  t: VAR SimpleTerm
+  c: VAR nonneg_real
+  A,B: VAR (S)
+  x: VAR X
+  E: VAR [nat->(S)]
+
+  scaleSimple(c,L): RECURSIVE Simple = IF null?(L) THEN null ELSE
+    cons((c*car(L)`1,car(L)`2),scaleSimple(c,cdr(L)))
+    ENDIF MEASURE length(L)
+
+  regionSequence(E,A)(n:nat): (S) = intersection(E(n),A)
+
+  scale_simple_nil: LEMMA scaleSimple(c,null)=null
+
+  scale_simple_cons: LEMMA scaleSimple(c,cons(t,L))=
+    cons((c*t`1,t`2),scaleSimple(c,L))
+
+  scale_simple_value: LEMMA simpleValue(scaleSimple(c,L))(x)=c*simpleValue(L)(x)
+
+  simple_integral_cons: LEMMA simpleIntegral(cons(t,L))=
+    eadd(emul(ennFinite(t`1),measureValue(t`2)),simpleIntegral(L))
+
+  scale_simple_integral: LEMMA simpleIntegral(scaleSimple(c,L))=
+    emul(ennFinite(c),simpleIntegral(L))
+
+  scale_simple_restrict: LEMMA scaleSimple(c,restrictSimple(L,A))=
+    restrictSimple(scaleSimple(c,L),A)
+
+  restricted_value_monotone: LEMMA subset?(A,B) IMPLIES
+    FORALL(x:X):simpleValue(restrictSimple(L,A))(x)<=simpleValue(restrictSimple(L,B))(x)
+
+  region_integral_monotone: LEMMA subset?(A,B) IMPLIES
+    ele(regionIntegral(L,A),regionIntegral(L,B))
+
+  region_integral_increasing: LEMMA increasingSets(E) IMPLIES
+    increasingENN(LAMBDA(n:nat):regionIntegral(L,E(n)))
+
+  region_sequence_increasing: LEMMA increasingSets(E) IMPLIES
+    increasingSets(regionSequence(E,A))
+
+  region_sequence_union: LEMMA IUnion(regionSequence(E,A))=intersection(IUnion(E),A)
+
+  sequence_sup_is_nat_sup: LEMMA FORALL(F:[nat->ENN]):sequenceSup(F)=natSup(F)
+
+  region_measure_continuity: LEMMA increasingSets(E) IMPLIES
+    measureValue(intersection(IUnion(E),A))=
+      natSup(LAMBDA(n:nat):measureValue(intersection(E(n),A)))
+
+  region_measure_increasing: LEMMA increasingSets(E) IMPLIES
+    increasingENN(LAMBDA(n:nat):measureValue(intersection(E(n),A)))
+
+  region_head_increasing: LEMMA increasingSets(E) IMPLIES
+    increasingENN(LAMBDA(n:nat):emul(ennFinite(t`1),measureValue(intersection(E(n),t`2))))
+
+  region_integral_nil_function: LEMMA
+    (LAMBDA(n:nat):regionIntegral(list_adt[SimpleTerm].null,E(n)))=
+      (LAMBDA(n:nat):ennFinite(0))
+
+  region_integral_cons_function: LEMMA
+    (LAMBDA(n:nat):regionIntegral(cons(t,L),E(n)))=
+      (LAMBDA(n:nat):eadd(emul(ennFinite(t`1),measureValue(intersection(E(n),t`2))),
+        regionIntegral(L,E(n))))
+
+  region_integral_continuity: THEOREM increasingSets(E) IMPLIES
+    regionIntegral(L,IUnion(E))=natSup(LAMBDA(n:nat):regionIntegral(L,E(n)))
+
+END ppg_simple_integral_scaling

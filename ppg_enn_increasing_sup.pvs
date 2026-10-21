@@ -1,0 +1,113 @@
+% Suprema of increasing sequences commute with finite sums and finite
+% nonnegative scaling. These order arguments retain zero and infinity.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+ppg_enn_increasing_sup: THEORY
+BEGIN
+  IMPORTING ppg_enn_complete_sup,ppg_enn_semiring
+
+  F,G: VAR [nat->ENN]
+  x,y,z: VAR ENN
+  b,c: VAR nonneg_real
+
+  natSup(F): ENN = extendedSup({z:ENN|EXISTS(n:nat):z=F(n)})
+
+  increasingENN(F): bool = FORALL(i,j:nat):i<=j IMPLIES ele(F(i),F(j))
+
+  nat_sup_finite_bound: LEMMA ele(natSup(F),ennFinite(b)) IFF
+    FORALL(n:nat):ele(F(n),ennFinite(b))
+
+  nat_sup_upper: LEMMA FORALL(n:nat):ele(F(n),natSup(F))
+
+  nat_sup_least: LEMMA
+    (FORALL(n:nat):ele(F(n),z)) IMPLIES ele(natSup(F),z)
+
+  nat_sup_constant: LEMMA natSup(LAMBDA(n:nat):x)=x
+
+  sum_left_below: LEMMA ele(x,eadd(x,y))
+
+  sum_right_below: LEMMA ele(y,eadd(x,y))
+
+  finite_add_bound_lower: LEMMA
+    ele(eadd(ennFinite(c),z),ennFinite(b)) IMPLIES c<=b
+
+  finite_add_bound_shift: LEMMA c<=b IMPLIES
+    (ele(eadd(ennFinite(c),z),ennFinite(b)) IFF ele(z,ennFinite(b-c)))
+
+  finite_add_sup_bound: LEMMA
+    (FORALL(n:nat):ele(eadd(ennFinite(c),F(n)),ennFinite(b))) IMPLIES
+    ele(eadd(ennFinite(c),natSup(F)),ennFinite(b))
+
+  constant_add_sup_bound: LEMMA
+    (FORALL(n:nat):ele(eadd(z,F(n)),ennFinite(b))) IMPLIES
+    ele(eadd(z,natSup(F)),ennFinite(b))
+
+  right_add_sup_bound: LEMMA
+    (FORALL(n:nat):ele(eadd(F(n),z),ennFinite(b))) IMPLIES
+    ele(eadd(natSup(F),z),ennFinite(b))
+
+  increasing_cross_sum_bound: LEMMA increasingENN(F) AND increasingENN(G) AND
+    (FORALL(n:nat):ele(eadd(F(n),G(n)),ennFinite(b))) IMPLIES
+    FORALL(i,j:nat):ele(eadd(F(i),G(j)),ennFinite(b))
+
+  increasing_sum_sup_bound: LEMMA increasingENN(F) AND increasingENN(G) AND
+    (FORALL(n:nat):ele(eadd(F(n),G(n)),ennFinite(b))) IMPLIES
+    ele(eadd(natSup(F),natSup(G)),ennFinite(b))
+
+  sum_sup_member: LEMMA FORALL(n:nat):
+    ele(eadd(F(n),G(n)),eadd(natSup(F),natSup(G)))
+
+  sum_sup_finite_bound: LEMMA increasingENN(F) AND increasingENN(G) IMPLIES
+    (ele(eadd(natSup(F),natSup(G)),ennFinite(b)) IFF
+      FORALL(n:nat):ele(eadd(F(n),G(n)),ennFinite(b)))
+
+  nat_sup_add: THEOREM increasingENN(F) AND increasingENN(G) IMPLIES
+    natSup(LAMBDA(n:nat):eadd(F(n),G(n)))=eadd(natSup(F),natSup(G))
+
+  positive_mul_bound_shift: LEMMA FORALL(c:posreal):
+    ele(emul(ennFinite(c),z),ennFinite(b)) IFF ele(z,ennFinite(b/c))
+
+  positive_mul_sup_bound: LEMMA FORALL(c:posreal):
+    (FORALL(n:nat):ele(emul(ennFinite(c),F(n)),ennFinite(b))) IMPLIES
+    ele(emul(ennFinite(c),natSup(F)),ennFinite(b))
+
+  constant_mul_sup_bound: LEMMA
+    (FORALL(n:nat):ele(emul(ennFinite(c),F(n)),ennFinite(b))) IMPLIES
+    ele(emul(ennFinite(c),natSup(F)),ennFinite(b))
+
+  finite_mul_monotone: LEMMA ele(x,y) IMPLIES
+    ele(emul(ennFinite(c),x),emul(ennFinite(c),y))
+
+  increasing_scaled_values: LEMMA increasingENN(F) IMPLIES
+    increasingENN(LAMBDA(n:nat):emul(ennFinite(c),F(n)))
+
+  mul_sup_member: LEMMA FORALL(n:nat):
+    ele(emul(ennFinite(c),F(n)),emul(ennFinite(c),natSup(F)))
+
+  mul_sup_finite_bound: LEMMA
+    ele(emul(ennFinite(c),natSup(F)),ennFinite(b)) IFF
+      FORALL(n:nat):ele(emul(ennFinite(c),F(n)),ennFinite(b))
+
+  nat_sup_scale: THEOREM natSup(LAMBDA(n:nat):emul(ennFinite(c),F(n)))=
+    emul(ennFinite(c),natSup(F))
+
+  finite_lower_total: LEMMA NOT ele(ennFinite(c),x) IMPLIES ele(x,ennFinite(c))
+
+  all_below_lower_test: LEMMA (FORALL(n:nat):NOT ele(ennFinite(c),F(n)))
+    IMPLIES ele(natSup(F),ennFinite(c))
+
+  sup_above_smaller: LEMMA c<b AND ele(ennFinite(b),natSup(F)) IMPLIES
+    EXISTS(n:nat):ele(ennFinite(c),F(n))
+
+  scaled_below_sup_exists: LEMMA FORALL(a:nonneg_real):
+    c<1 AND ele(ennFinite(a),natSup(F)) IMPLIES
+    EXISTS(n:nat):ele(ennFinite(c*a),F(n))
+
+  scale_test_witness: LEMMA FORALL(a:nonneg_real):a>b IMPLIES
+    EXISTS(c:nonneg_real):c<1 AND b<c*a
+
+  scale_to_one_finite_bound: LEMMA
+    (FORALL(c:nonneg_real):c<1 IMPLIES ele(emul(ennFinite(c),x),ennFinite(b)))
+    IMPLIES ele(x,ennFinite(b))
+
+END ppg_enn_increasing_sup

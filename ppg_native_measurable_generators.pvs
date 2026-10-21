@@ -1,0 +1,31 @@
+% The inverse-image sigma algebra is constructed through the existing
+% equivalence of sequential and NASALib sigma algebras. Inclusion of the
+% generators therefore suffices for measurability on the generated sigma.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, generated sigma algebras.
+ppg_native_measurable_generators[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) SX:sigma_algebra]: THEORY
+BEGIN
+  IMPORTING ppg_nasa_sigma[X],ppg_nasa_sigma[Y],ppg_measurable_map[X,Y]
+
+  j: VAR [X->Y]
+  G: VAR set[set[Y]]
+  D: VAR set[Y]
+
+  preimageSigma(j): measure_integration@subset_algebra_def[Y].sigma_algebra =
+    ppg_nasa_sigma[Y].asNasa(ppg_measurable_map[X,Y].imageSigma(
+      ppg_nasa_sigma[X].asProject(SX),j))
+
+  preimage_sigma_at: LEMMA preimageSigma(j)(D) IFF
+    SX(ppg_measurable_map[X,Y].inverseImage(j,D))
+
+  generators_belong: LEMMA
+    (FORALL(D:set[Y]):G(D) IMPLIES SX(ppg_measurable_map[X,Y].inverseImage(j,D)))
+      IMPLIES subset?(G,preimageSigma(j))
+
+  generated_preimage_subset: THEOREM
+    (FORALL(D:set[Y]):G(D) IMPLIES SX(ppg_measurable_map[X,Y].inverseImage(j,D)))
+      IMPLIES subset?(measure_integration@subset_algebra_def[Y].generated_sigma_algebra(G),
+        preimageSigma(j))
+
+END ppg_native_measurable_generators

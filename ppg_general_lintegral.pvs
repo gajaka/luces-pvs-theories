@@ -1,0 +1,73 @@
+% For a general measure, simple integrals may already be infinite.
+% Nonnegative simple functions are finite sums of measurable indicators.
+% Lower values include every finite number below such a simple integral;
+% their supremum therefore also retains infinite masses on measurable atoms.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974.
+% Mathlib, MeasureTheory/Integral/Lebesgue/Basic.lean, lintegral.
+ppg_general_lintegral[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_general_measure_values[X,S,mu]
+
+  SimpleTerm: TYPE = [nnreal,(S)]
+
+  Simple: TYPE = list[SimpleTerm]
+
+  L: VAR Simple
+  f,h: VAR [X->ENN]
+  r,b: VAR nonneg_real
+
+  simpleValue(L)(x:X): RECURSIVE nonneg_real =
+    IF null?(L) THEN 0 ELSE
+      (IF car(L)`2(x) THEN car(L)`1 ELSE 0 ENDIF)+simpleValue(cdr(L))(x)
+    ENDIF MEASURE length(L)
+
+  simpleIntegral(L): RECURSIVE ENN = IF null?(L) THEN ennFinite(0) ELSE
+    eadd(emul(ennFinite(car(L)`1),measureValue(car(L)`2)),simpleIntegral(cdr(L)))
+    ENDIF MEASURE length(L)
+
+  simpleMinorant(L,f): bool = FORALL(x:X):ele(ennFinite(simpleValue(L)(x)),f(x))
+
+  lowerValues(f): set[nonneg_real] = {r:nonneg_real |
+    EXISTS(L:Simple):simpleMinorant(L,f) AND ele(ennFinite(r),simpleIntegral(L))}
+
+  lintegral(f): ENN = sSup(lowerValues(f))
+
+  extended_order_transitive: LEMMA FORALL(a,b,c:ENN):
+    ele(a,b) AND ele(b,c) IMPLIES ele(a,c)
+
+  simple_value_nil: LEMMA FORALL(x:X):simpleValue(null)(x)=0
+
+  simple_integral_nil: LEMMA simpleIntegral(null)=ennFinite(0)
+
+  simple_value_term: LEMMA FORALL(t:SimpleTerm,x:X):
+    simpleValue(cons(t,null))(x)=IF t`2(x) THEN t`1 ELSE 0 ENDIF
+
+  simple_integral_term: LEMMA FORALL(t:SimpleTerm):
+    simpleIntegral(cons(t,null))=emul(ennFinite(t`1),measureValue(t`2))
+
+  simple_minorant_monotone: LEMMA (FORALL(x:X):ele(f(x),h(x))) AND simpleMinorant(L,f)
+    IMPLIES simpleMinorant(L,h)
+
+  lower_values_member: LEMMA simpleMinorant(L,f) AND ele(ennFinite(r),simpleIntegral(L))
+    IMPLIES lowerValues(f)(r)
+
+  finite_lower_separator: LEMMA FORALL(a:ENN,b:nonneg_real):
+    NOT ele(a,ennFinite(b)) IMPLIES
+      EXISTS(r:nonneg_real):ele(ennFinite(r),a) AND b<r
+
+  finite_lower_bounds_order: LEMMA FORALL(a:ENN,b:nonneg_real):
+    (FORALL(r:nonneg_real):ele(ennFinite(r),a) IMPLIES r<=b) IFF ele(a,ennFinite(b))
+
+  lintegral_finite_bound: LEMMA ele(lintegral(f),ennFinite(b)) IFF
+    FORALL(L:Simple):simpleMinorant(L,f) IMPLIES ele(simpleIntegral(L),ennFinite(b))
+
+  simple_integral_le_lintegral: LEMMA simpleMinorant(L,f) IMPLIES
+    ele(simpleIntegral(L),lintegral(f))
+
+  lintegral_monotone: LEMMA (FORALL(x:X):ele(f(x),h(x))) IMPLIES
+    ele(lintegral(f),lintegral(h))
+
+END ppg_general_lintegral

@@ -1,0 +1,42 @@
+% Semantic equality of the original extended measure values preserves
+% every simple integral and the supremum of all simple minorants.
+% Infinity encodings may differ, so equality of raw pairs is not required.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, nonnegative integration.
+ppg_general_integral_congruence[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING measure_integration@measure_def[X,S]) mu,nu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_sfinite_measure[X,S],ppg_general_lintegral[X,S,mu],
+    ppg_general_lintegral[X,S,nu]
+
+  L: VAR ppg_general_lintegral[X,S,mu].Simple
+  A: VAR (S)
+  f: VAR [X->ENN]
+  x: VAR X
+
+  equivalent_event_values: LEMMA sameMeasure(mu,nu) IMPLIES
+    ppg_general_measure_values[X,S,mu].measureValue(A)=
+      ppg_general_measure_values[X,S,nu].measureValue(A)
+
+  simple_value_measure_independent: THEOREM
+    ppg_general_lintegral[X,S,mu].simpleValue(L)(x)=
+      ppg_general_lintegral[X,S,nu].simpleValue(L)(x)
+
+  simple_integral_measure_congruence: THEOREM sameMeasure(mu,nu) IMPLIES
+    ppg_general_lintegral[X,S,mu].simpleIntegral(L)=
+      ppg_general_lintegral[X,S,nu].simpleIntegral(L)
+
+  minorant_measure_independent: THEOREM
+    ppg_general_lintegral[X,S,mu].simpleMinorant(L,f) IFF
+      ppg_general_lintegral[X,S,nu].simpleMinorant(L,f)
+
+  lower_values_measure_congruence: THEOREM sameMeasure(mu,nu) IMPLIES
+    ppg_general_lintegral[X,S,mu].lowerValues(f)=
+      ppg_general_lintegral[X,S,nu].lowerValues(f)
+
+  general_integral_measure_congruence: THEOREM sameMeasure(mu,nu) IMPLIES
+    ppg_general_lintegral[X,S,mu].lintegral(f)=
+      ppg_general_lintegral[X,S,nu].lintegral(f)
+
+END ppg_general_integral_congruence

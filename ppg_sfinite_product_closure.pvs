@@ -1,0 +1,77 @@
+% Each S-finite law is the image of its sigma-finite fiber lift.
+% Finite fiber rectangles make the lifted product S-finite. Product
+% naturality and semantic equality then return the original product.
+% No uniqueness statement based only on rectangles is used.
+%
+% Mathlib, MeasureTheory/Measure/Prod.lean, instSFiniteProd.
+% Paul R. Halmos, Measure Theory, Springer, 1974, induced measures.
+ppg_sfinite_product_closure[X,Y:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],
+  (IMPORTING ppg_sfinite_measure[X,SX]) mu:(ppg_sfinite_measure[X,SX].sfinite?),
+  (IMPORTING ppg_sfinite_measure[Y,SY]) nu:(ppg_sfinite_measure[Y,SY].sfinite?)]: THEORY
+BEGIN
+  IMPORTING ppg_sfinite_sigma_lift[X,SX],ppg_sfinite_sigma_lift[Y,SY]
+
+  leftDecomposition: [nat->finite_measure[X,SX]] =
+    ppg_sfinite_measure[X,SX].chooseDecomposition(mu)
+
+  rightDecomposition: [nat->finite_measure[Y,SY]] =
+    ppg_sfinite_measure[Y,SY].chooseDecomposition(nu)
+
+  liftLeft: measure_type[[nat,X],ppg_sfinite_sigma_lift[X,SX].LiftSigma] =
+    ppg_sfinite_sigma_lift[X,SX].liftMeasure(leftDecomposition)
+
+  right_lift_is_sfinite: LEMMA
+    ppg_sfinite_measure[[nat,Y],ppg_sfinite_sigma_lift[Y,SY].LiftSigma].sfinite?(
+      ppg_sfinite_sigma_lift[Y,SY].liftMeasure(rightDecomposition))
+
+  liftRight: (ppg_sfinite_measure[[nat,Y],ppg_sfinite_sigma_lift[Y,SY].LiftSigma].sfinite?) =
+    ppg_sfinite_sigma_lift[Y,SY].liftMeasure(rightDecomposition)
+
+  IMPORTING ppg_sfinite_product_map[[nat,X],[nat,Y],X,Y,
+    ppg_sfinite_sigma_lift[X,SX].LiftSigma,ppg_sfinite_sigma_lift[Y,SY].LiftSigma,
+    SX,SY,liftLeft,liftRight,ppg_sfinite_sigma_lift[X,SX].projectionMap,
+    ppg_sfinite_sigma_lift[Y,SY].projectionMap],
+    ppg_product_finite_cover[[nat,X],[nat,Y],
+    ppg_sfinite_sigma_lift[X,SX].LiftSigma,ppg_sfinite_sigma_lift[Y,SY].LiftSigma,
+    liftLeft,liftRight],ppg_product_measure_definition[X,Y,SX,SY,mu]
+
+  leftFibers(n:nat): (ppg_sfinite_sigma_lift[X,SX].LiftSigma) =
+    ppg_sfinite_sigma_lift[X,SX].fiberEvent(n)
+
+  rightFibers(n:nat): (ppg_sfinite_sigma_lift[Y,SY].LiftSigma) =
+    ppg_sfinite_sigma_lift[Y,SY].fiberEvent(n)
+
+  left_fibers_disjoint: LEMMA disjoint?(leftFibers)
+
+  right_fibers_disjoint: LEMMA disjoint?(rightFibers)
+
+  left_fibers_cover: LEMMA IUnion(leftFibers)=fullset[[nat,X]]
+
+  right_fibers_cover: LEMMA IUnion(rightFibers)=fullset[[nat,Y]]
+
+  left_fibers_finite: LEMMA FORALL(n:nat):liftLeft(leftFibers(n))`1
+
+  right_fibers_finite: LEMMA FORALL(n:nat):liftRight(rightFibers(n))`1
+
+  lifted_product_sfinite: THEOREM
+    ppg_sfinite_measure[[[nat,X],[nat,Y]],sigma_times(
+      ppg_sfinite_sigma_lift[X,SX].LiftSigma,ppg_sfinite_sigma_lift[Y,SY].LiftSigma)].sfinite?(sourceProduct)
+
+  projected_product_sfinite: THEOREM
+    ppg_sfinite_measure[[X,Y],sigma_times(SX,SY)].sfinite?(productMapped)
+
+  left_projection_original: THEOREM ppg_sfinite_measure[X,SX].sameMeasure(mappedLaw,mu)
+
+  right_projection_original: THEOREM ppg_sfinite_measure[Y,SY].sameMeasure(mappedRight,nu)
+
+  IMPORTING ppg_sfinite_product_congruence[X,Y,SX,SY,mappedLaw,mu,mappedRight,nu]
+
+  projected_target_original: THEOREM ppg_sfinite_measure[[X,Y],sigma_times(SX,SY)].sameMeasure(
+    targetProduct,ppg_product_measure_definition[X,Y,SX,SY,mu].productMeasure(nu))
+
+  original_product_sfinite: THEOREM ppg_sfinite_measure[[X,Y],sigma_times(SX,SY)].sfinite?(
+    ppg_product_measure_definition[X,Y,SX,SY,mu].productMeasure(nu))
+
+END ppg_sfinite_product_closure
