@@ -1,0 +1,35 @@
+% The augmented pair event uses the same four block samples as the
+% source pairCoinCheck. The equality below retains the actual relative
+% coin and original table; it does not assume independence or a bound.
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", proof of Lemma 3.4. Lean: PPGraphHLSUnitChecks.lean.
+ppg_hls_unit_pair_block_equivalence[C,V,Value:TYPE,domain:[V->set[Value]],
+  default:C,universe:{U:finite_set[C]|FORALL(c:C):U(c)},
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:ppg_mt_coordinate_laws[C,V,Value,domain].VariableSpaces,
+  laws:ppg_mt_coordinate_laws[C,V,Value,domain].VariableLaws(spaces),
+  (IMPORTING ppg_mt_native_process[C,V,Value,domain,spaces,laws])
+  process:ppg_mt_native_process[C,V,Value,domain,spaces,laws].MTProcess,
+  (IMPORTING ppg_hls_table_coordinates[C,V,process`footprint])
+  u,v:ppg_hls_witness_dag[C,
+    ppg_shearer_bdd[C,V,process`footprint].dependencyGraph].WNode]: THEORY
+BEGIN
+  IMPORTING ppg_hls_augmented_pair_events[C,V,Value,domain,default,universe,
+      spaces,laws,process] AS pairs,
+    ppg_hls_pair_probability[C,V,Value,domain,spaces,laws,process,u,v] AS blocks,
+    ppg_hls_augmented_space[C,V,Value,domain,spaces,laws] AS aug,
+    ppg_shearer_bdd[C,V,process`footprint] AS graph,
+    ppg_hls_pair_keys[C,graph.dependencyGraph] AS keys,
+    ppg_hls_fair_orientation AS fair
+
+  M: VAR keys.DependencyMatching
+
+  D: VAR WitnessDAG
+
+  eta: VAR aug.AugTable
+
+  augmented_pair_is_literal_block_check: THEOREM
+    pairs.augmentedPairCheck(M,D,(u,v))(eta) IFF
+      blocks.pairCoinCheck(D)((pairs.pairCoin(M,D,(u,v),eta),aug.originalTable(eta)))
+
+END ppg_hls_unit_pair_block_equivalence

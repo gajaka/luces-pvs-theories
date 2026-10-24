@@ -1,0 +1,71 @@
+% Coordinatewise measurable decoders transport a finite product law.
+% Agreement of the actual marginal image laws suffices; the empty block
+% is included because its rectangle product is one.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_probability_finite_transport[I,SourceValue,TargetValue:TYPE,F:finite_set[I],
+  sourceDomain:[I->set[SourceValue]],targetDomain:[I->set[TargetValue]],
+  (IMPORTING ppg_probability_coordinates[I,SourceValue,sourceDomain],
+    ppg_probability_coordinates[I,TargetValue,targetDomain],ppg_measurable_map)
+  sourceSpaces:ppg_probability_coordinates[I,SourceValue,sourceDomain].CoordinateSpaces,
+  targetSpaces:ppg_probability_coordinates[I,TargetValue,targetDomain].CoordinateSpaces,
+  sourceLaws:ppg_probability_coordinates[I,SourceValue,sourceDomain].ProbabilityFamily(sourceSpaces),
+  targetLaws:ppg_probability_coordinates[I,TargetValue,targetDomain].ProbabilityFamily(targetSpaces),
+  decoder:{f:[i:I->[(sourceDomain(i))->(targetDomain(i))]]|
+    FORALL(i:I):ppg_measurable_map[(sourceDomain(i)),(targetDomain(i))].measurable(
+      sourceSpaces(i),targetSpaces(i),f(i))}]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_block[I,SourceValue,sourceDomain,sourceSpaces] AS transportSourceBlocks,
+    ppg_measurable_block[I,TargetValue,targetDomain,targetSpaces] AS transportTargetBlocks,
+    ppg_measurable_block_box[I,SourceValue,sourceDomain,sourceSpaces] AS transportSourceBoxes,
+    ppg_measurable_block_box[I,TargetValue,targetDomain,targetSpaces] AS transportTargetBoxes,
+    ppg_probability_finite_product[I,SourceValue,sourceDomain,sourceSpaces,sourceLaws] AS transportSourceLaw,
+    ppg_probability_finite_product[I,TargetValue,targetDomain,targetSpaces,targetLaws] AS transportTargetLaw,
+    ppg_probability_finite_consistency[I,TargetValue,targetDomain,targetSpaces,targetLaws] AS transportTargetUnique,
+    ppg_finite_product[I] AS transportFold,
+    ppg_real_product[I] AS transportFactors,
+    ppg_measurable_compose
+
+  SourceBlock: TYPE = transportSourceBlocks.Block(F)
+
+  TargetBlock: TYPE = transportTargetBlocks.Block(F)
+
+  SourceSigma: MACRO ppg_measurable_space[SourceBlock].MeasurableSpace = transportSourceBlocks.blockSigma(F)
+
+  TargetSigma: MACRO ppg_measurable_space[TargetBlock].MeasurableSpace = transportTargetBlocks.blockSigma(F)
+
+  IMPORTING ppg_measurable_block_map[SourceBlock,I,TargetValue,targetDomain,targetSpaces] AS transportBlockMaps,
+    ppg_probability_map[SourceBlock,TargetBlock,SourceSigma,TargetSigma] AS transportPush
+
+  decodeBlock(x:SourceBlock):TargetBlock = LAMBDA(i:(F)):decoder(i)(x(i))
+
+  decoded_coordinate_measurable: LEMMA FORALL(i:(F)):
+    ppg_measurable_map[SourceBlock,(targetDomain(i))].measurable(SourceSigma,targetSpaces(i),
+      LAMBDA(x:SourceBlock):decodeBlock(x)(i))
+
+  decoded_block_measurable: LEMMA ppg_measurable_map[SourceBlock,TargetBlock].measurable(
+    SourceSigma,TargetSigma,decodeBlock)
+
+  coordinateLawsMatch: bool = FORALL(i:(F)):
+    ppg_probability_map[(sourceDomain(i)),(targetDomain(i)),sourceSpaces(i),targetSpaces(i)].pushforward(
+      sourceLaws(i),decoder(i))=targetLaws(i)
+
+  E: VAR transportTargetBoxes.CoordinateEvents
+
+  sourceEvents(E):transportSourceBoxes.CoordinateEvents = LAMBDA(i:I):
+    ppg_measurable_map[(sourceDomain(i)),(targetDomain(i))].inverseImage(decoder(i),E(i))
+
+  decode_box_preimage: LEMMA ppg_measurable_map[SourceBlock,TargetBlock].inverseImage(decodeBlock,transportTargetBoxes.blockBox(F,E))=
+    transportSourceBoxes.blockBox(F,sourceEvents(E))
+
+  coordinate_mass: LEMMA coordinateLawsMatch IMPLIES FORALL(i:(F)):
+    sourceLaws(i)(sourceEvents(E)(i))=targetLaws(i)(E(i))
+
+  decoded_box_mass: LEMMA coordinateLawsMatch IMPLIES
+    transportPush.pushforward(transportSourceLaw.finiteLaw(F),decodeBlock)(transportTargetBoxes.blockBox(F,E))=
+      transportFold.product(F,LAMBDA(i:I):targetLaws(i)(E(i)))
+
+  finite_product_transport: THEOREM coordinateLawsMatch IMPLIES
+    transportPush.pushforward(transportSourceLaw.finiteLaw(F),decodeBlock)=transportTargetLaw.finiteLaw(F)
+
+END ppg_probability_finite_transport

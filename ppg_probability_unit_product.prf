@@ -1,0 +1,585 @@
+(|ppg_probability_unit_product|
+ (|unit_universe_full| 0
+  (|unit_universe_full-1| NIL 4001438673
+   (""
+    (THEN (APPLY-EXTENSIONALITY)
+     (GRIND :DEFS ("unitUniverse" "singleton" "fullset")))
+    NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|Unit| TYPE-EQ-DECL NIL |ppg_probability_unit_product| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|fullset| CONST-DECL "set" |sets| NIL)
+    (|unitUniverse| CONST-DECL "finite_set[Unit]"
+     |ppg_probability_unit_product| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |countable_props| |sets_aux|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[nat]" |countability| |sets_aux|)
+    (|singleton_is_compact| APPLICATION-JUDGEMENT
+     "compact[real, (metric_induced_topology)]" |convergence_aux|
+     |metric_space|)
+    (|singleton_is_closed| APPLICATION-JUDGEMENT
+     "closed[real, (metric_induced_topology)]" |convergence_aux|
+     |metric_space|)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL))
+   SHOSTAK))
+ (|unitSpaces_TCC1| 0
+  (|unitSpaces_TCC1-1| NIL 4001438672
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "S")
+     (LEMMA
+      "ppg_subtype_measure_congruence[Value,D,unitDomain(u!1)].sigma_equal"
+      ("S" "S"))
+     (GRIND :DEFS ("unitDomain") :EXCLUDE ("sigma?")))
+    NIL)
+   ((|sigma_equal| FORMULA-DECL NIL |ppg_subtype_measure_congruence| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|Unit| TYPE-EQ-DECL NIL |ppg_probability_unit_product| NIL)
+    (|unitDomain| CONST-DECL "set[Value]" |ppg_probability_unit_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_unit_product| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (D FORMAL-CONST-DECL "set[Value]" |ppg_probability_unit_product| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_probability_unit_product| NIL))
+   NIL
+   (|unitSpaces| SUBTYPE "S" "MeasurableSpace[(unitDomain(u))]"
+    (23 19 23 20))))
+ (|unitLaws_TCC1| 0
+  (|unitLaws_TCC1-1| NIL 4001438672
+   ("" (SKOSIMP*)
+    (("" (TYPEPRED "S")
+      ((""
+        (LEMMA
+         "ppg_subtype_measure_congruence[Value,D,unitDomain(u!1)].sigma_equal"
+         ("S" "S"))
+        ((""
+          (LEMMA
+           "ppg_subtype_probability_congruence[Value,D,unitDomain(u!1),S,mu].probability_target")
+          ((""
+            (LEMMA
+             "ppg_probability_space_congruence[(unitDomain(u!1)),S,unitSpaces(u!1),mu].space_probability_target")
+            (("1"
+              (GRIND :DEFS ("unitDomain" "unitSpaces") :EXCLUDE
+               ("probability?" "finite_measure?" "sigma?"))
+              NIL NIL)
+             ("2"
+              (GRIND :DEFS ("unitDomain" "unitSpaces") :EXCLUDE
+               ("probability?" "finite_measure?" "sigma?"))
+              NIL NIL)
+             ("3"
+              (GRIND :DEFS ("unitDomain" "unitSpaces") :EXCLUDE
+               ("probability?" "finite_measure?" "sigma?"))
+              NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|sigma_equal| FORMULA-DECL NIL |ppg_subtype_measure_congruence| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|Unit| TYPE-EQ-DECL NIL |ppg_probability_unit_product| NIL)
+    (|unitDomain| CONST-DECL "set[Value]" |ppg_probability_unit_product| NIL)
+    (|unitSpaces| CONST-DECL "unitCoordinates.CoordinateSpaces"
+     |ppg_probability_unit_product| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|space_probability_target| FORMULA-DECL NIL
+     |ppg_probability_space_congruence| NIL)
+    (IFF CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|probability_target| FORMULA-DECL NIL |ppg_subtype_probability_congruence|
+     NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "Probability" |ppg_probability_unit_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_unit_product| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (D FORMAL-CONST-DECL "set[Value]" |ppg_probability_unit_product| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_probability_unit_product| NIL))
+   NIL
+   (|unitLaws| SUBTYPE "mu" "Probability[(unitDomain(u)), unitSpaces(u)]"
+    (26 19 26 21))))
+ (|unit_product_value| 0
+  (|unit_product_value-1| NIL 4001438673
+   ("" (SKOSIMP*)
+    ((""
+      (LEMMA "unitFactors.product_single_factor"
+       ("S" "unitUniverse" "i" "0" "a" "a!1"))
+      ((""
+        (CASE
+            "(LAMBDA(u:Unit):IF u=0 THEN a!1 ELSE 1 ENDIF)=(LAMBDA(u:Unit):a!1)")
+        (("1" (GRIND :DEFS ("unitUniverse")) NIL NIL)
+         ("2" (GRIND :DEFS ("unitUniverse")) NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |sigma_countable| |sigma_set|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[nat]" |countability| |sets_aux|)
+    (|singleton_is_compact| APPLICATION-JUDGEMENT
+     "compact[real, (metric_induced_topology)]" |convergence_aux|
+     |metric_space|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[real]" |integral_def| |analysis|)
+    (|singleton_is_closed| APPLICATION-JUDGEMENT
+     "closed[real, (metric_induced_topology)]" |convergence_aux|
+     |metric_space|)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[T]" |sigma_countable|
+     |sigma_set|)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[real]" |integral_def|
+     |analysis|)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[nat]" |countability|
+     |sets_aux|)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[T]" |sigma_countable|
+     |sigma_set|)
+    (|remove_preserves_bounded| APPLICATION-JUDGEMENT "(LAMBDA (S: set[nat]):
+   (bounded?)(S, restrict[[real, real], [nat, nat], bool](<=)))"
+     |countability| |sets_aux|)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[real]" |integral_def|
+     |analysis|)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[nat]" |countability|
+     |sets_aux|)
+    (|Unit| TYPE-EQ-DECL NIL |ppg_probability_unit_product| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|unitUniverse| CONST-DECL "finite_set[Unit]"
+     |ppg_probability_unit_product| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|product_single_factor| FORMULA-DECL NIL |ppg_finite_product_factors| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK))
+ (|unitEval_TCC1| 0
+  (|unitEval_TCC1-1| NIL 4001438672
+   ("" (THEN (SKOSIMP*) (TYPEPRED "x!1(0)") (GRIND :DEFS ("unitDomain"))) NIL)
+   ((|UnitValue| TYPE-EQ-DECL NIL |ppg_probability_unit_product| NIL)
+    (|unitUniverse| CONST-DECL "finite_set[Unit]"
+     |ppg_probability_unit_product| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|unitDomain| CONST-DECL "set[Value]" |ppg_probability_unit_product| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_unit_product| NIL)
+    (|Unit| TYPE-EQ-DECL NIL |ppg_probability_unit_product| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   NIL
+   (|unitEval| SUBTYPE "x(0)" "(ppg_probability_unit_product.D)"
+    (40 30 40 34))))
+ (|unitEvents_TCC1| 0
+  (|unitEvents_TCC1-1| NIL 4001438672
+   ("" (THEN (SKOSIMP*) (EXPAND "unitDomain") (EXPAND "unitSpaces") (ASSERT))
+    NIL)
+   ((|unitSpaces| CONST-DECL "unitCoordinates.CoordinateSpaces"
+     |ppg_probability_unit_product| NIL)
+    (|unitDomain| CONST-DECL "set[Value]" |ppg_probability_unit_product| NIL))
+   NIL
+   (|unitEvents| SUBTYPE "A"
+    "(ppg_probability_unit_product.unitSpaces(ppg_probability_unit_product.u))"
+    (42 64 42 65))))
+ (|unit_box_preimage| 0
+  (|unit_box_preimage-1| NIL 4001438673
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "inverseImage")
+     (EXPAND "unitEval") (EXPAND "blockBox") (EXPAND "unitEvents")
+     (EXPAND "unitUniverse") (GRIND :DEFS ("singleton")))
+    NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (D FORMAL-CONST-DECL "set[Value]" |ppg_probability_unit_product| NIL)
+    (|inverseImage| CONST-DECL "set[X]" |ppg_measurable_map| NIL)
+    (|unitEval| CONST-DECL "(D)" |ppg_probability_unit_product| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_probability_unit_product| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|unitSpaces| CONST-DECL "unitCoordinates.CoordinateSpaces"
+     |ppg_probability_unit_product| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|blockBox| CONST-DECL "set[Block[I, Value, domain, spaces](F)]"
+     |ppg_measurable_block_box| NIL)
+    (|unitEvents| CONST-DECL "unitBoxes.CoordinateEvents"
+     |ppg_probability_unit_product| NIL)
+    (|UnitValue| TYPE-EQ-DECL NIL |ppg_probability_unit_product| NIL)
+    (|unitDomain| CONST-DECL "set[Value]" |ppg_probability_unit_product| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_unit_product| NIL)
+    (|unitUniverse| CONST-DECL "finite_set[Unit]"
+     |ppg_probability_unit_product| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|Unit| TYPE-EQ-DECL NIL |ppg_probability_unit_product| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|unit_eval_measurable| 0
+  (|unit_eval_measurable-1| NIL 4001438673
+   ("" (EXPAND "measurable")
+    (("" (SKOSIMP*)
+      (("" (LEMMA "unit_box_preimage" ("A" "A!1"))
+        (("1"
+          (LEMMA "unitBoxes.block_box_measurable"
+           ("F" "unitUniverse" "E" "unitEvents(A!1)"))
+          (("1" (ASSERT) NIL NIL)) NIL)
+         ("2" (PROPAX) NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|unit_box_preimage| FORMULA-DECL NIL |ppg_probability_unit_product| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_unit_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (D FORMAL-CONST-DECL "set[Value]" |ppg_probability_unit_product| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_probability_unit_product| NIL)
+    (|unitSpaces| CONST-DECL "unitCoordinates.CoordinateSpaces"
+     |ppg_probability_unit_product| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|unitDomain| CONST-DECL "set[Value]" |ppg_probability_unit_product| NIL)
+    (|Unit| TYPE-EQ-DECL NIL |ppg_probability_unit_product| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|unitUniverse| CONST-DECL "finite_set[Unit]"
+     |ppg_probability_unit_product| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|unitEvents| CONST-DECL "unitBoxes.CoordinateEvents"
+     |ppg_probability_unit_product| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|block_box_measurable| FORMULA-DECL NIL |ppg_measurable_block_box| NIL))
+   SHOSTAK))
+ (|unit_eval_mass_TCC1| 0
+  (|unit_eval_mass_TCC1-1| NIL 4001438672
+   ("" (THEN (LEMMA "unit_eval_measurable") (ASSERT)) NIL)
+   ((|unit_eval_measurable| FORMULA-DECL NIL |ppg_probability_unit_product|
+     NIL))
+   NIL
+   (|unit_eval_mass| SUBTYPE "unitEval"
+    "MeasurableMap[UnitValue, (D), unitBlocks[Unit, Value, unitDomain, unitSpaces].blockSigma(unitUniverse), S]"
+    (52 61 52 69))))
+ (|unit_eval_mass| 0
+  (|unit_eval_mass-1| NIL 4001438673
+   (""
+    (THEN (SKOSIMP*) (LEMMA "unit_box_preimage" ("A" "A!1"))
+     (LEMMA "unitProduct.finite_law_box"
+      ("F" "unitUniverse" "E" "unitEvents(A!1)"))
+     (LEMMA "unit_product_value" ("a" "mu(A!1)"))
+     (GRIND :DEFS
+      ("unitPush.pushforward" "unitPush.imageMass" "unitEvents" "unitLaws")))
+    NIL)
+   ((|finite_law_box| FORMULA-DECL NIL |ppg_probability_finite_product| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|unitUniverse| CONST-DECL "finite_set[Unit]"
+     |ppg_probability_unit_product| NIL)
+    (|CoordinateEvents| TYPE-EQ-DECL NIL |ppg_measurable_block_box| NIL)
+    (|unitEvents| CONST-DECL "unitBoxes.CoordinateEvents"
+     |ppg_probability_unit_product| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|Unit| TYPE-EQ-DECL NIL |ppg_probability_unit_product| NIL)
+    (|unitDomain| CONST-DECL "set[Value]" |ppg_probability_unit_product| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|unitSpaces| CONST-DECL "unitCoordinates.CoordinateSpaces"
+     |ppg_probability_unit_product| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|ProbabilityFamily| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|unitLaws| CONST-DECL "unitCoordinates.ProbabilityFamily(unitSpaces)"
+     |ppg_probability_unit_product| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[nat]" |countability|
+     |sets_aux|)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[real]" |integral_def|
+     |analysis|)
+    (|remove_preserves_bounded| APPLICATION-JUDGEMENT "(LAMBDA (S: set[nat]):
+   (bounded?)(S, restrict[[real, real], [nat, nat], bool](<=)))"
+     |countability| |sets_aux|)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[T]" |sigma_countable|
+     |sigma_set|)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[nat]" |countability|
+     |sets_aux|)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[real]" |integral_def|
+     |analysis|)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[T]" |sigma_countable|
+     |sigma_set|)
+    (|singleton_is_closed| APPLICATION-JUDGEMENT
+     "closed[real, (metric_induced_topology)]" |convergence_aux|
+     |metric_space|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[real]" |integral_def| |analysis|)
+    (|singleton_is_compact| APPLICATION-JUDGEMENT
+     "compact[real, (metric_induced_topology)]" |convergence_aux|
+     |metric_space|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[nat]" |countability| |sets_aux|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |sigma_countable| |sigma_set|)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|emptyLaw| CONST-DECL "BlockLaw(emptyset[I])" |ppg_probability_block_base|
+     NIL)
+    (|dirac| CONST-DECL "Probability" |ppg_probability_dirac| NIL)
+    (|product| DEF-DECL "real" |ppg_finite_product| NIL)
+    (|imageMass| CONST-DECL "nnreal" |ppg_probability_map| NIL)
+    (|jointMass| CONST-DECL "nnreal" |ppg_probability_pair| NIL)
+    (|fm_times| CONST-DECL "finite_measure[[T1, T2], sigma_times(S1, S2)]"
+     |product_finite_measure| |measure_integration|)
+    (|integral| CONST-DECL "real" |integral| |measure_integration|)
+    (|finiteLaw| DEF-DECL "BlockLaw(F)" |ppg_probability_finite_product| NIL)
+    (|unionLaw| CONST-DECL "BlockLaw(U)" |ppg_probability_block_union| NIL)
+    (|productLaw| CONST-DECL "JointLaw" |ppg_probability_pair| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|singleLaw| CONST-DECL "BlockLaw(singleton(i))"
+     |ppg_probability_block_base| NIL)
+    (|pushforward| CONST-DECL "TargetLaw" |ppg_probability_map| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|unit_product_value| FORMULA-DECL NIL |ppg_probability_unit_product| NIL)
+    (|mu| FORMAL-CONST-DECL "Probability" |ppg_probability_unit_product| NIL)
+    (|unit_box_preimage| FORMULA-DECL NIL |ppg_probability_unit_product| NIL)
+    (|Value| FORMAL-TYPE-DECL NIL |ppg_probability_unit_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (D FORMAL-CONST-DECL "set[Value]" |ppg_probability_unit_product| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_probability_unit_product| NIL))
+   SHOSTAK))
+ (|unit_product_law| 0
+  (|unit_product_law-1| NIL 4001438673
+   ("" (THEN (APPLY-EXTENSIONALITY) (LEMMA "unit_eval_mass") (GRIND)) NIL)
+   ((|Value| FORMAL-TYPE-DECL NIL |ppg_probability_unit_product| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (D FORMAL-CONST-DECL "set[Value]" |ppg_probability_unit_product| NIL)
+    (|Event| TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (|sigma?| CONST-DECL "bool" |ppg_measurable_space| NIL)
+    (|MeasurableSpace| NONEMPTY-TYPE-EQ-DECL NIL |ppg_measurable_space| NIL)
+    (S FORMAL-CONST-DECL "MeasurableSpace" |ppg_probability_unit_product| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|Mass| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|mu| FORMAL-CONST-DECL "Probability" |ppg_probability_unit_product| NIL)
+    (|unitEval| CONST-DECL "(D)" |ppg_probability_unit_product| NIL)
+    (|finiteLaw| DEF-DECL "BlockLaw(F)" |ppg_probability_finite_product| NIL)
+    (|unitLaws| CONST-DECL "unitCoordinates.ProbabilityFamily(unitSpaces)"
+     |ppg_probability_unit_product| NIL)
+    (|ProbabilityFamily| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|Probability| TYPE-EQ-DECL NIL |ppg_probability_measure| NIL)
+    (|BlockLaw| TYPE-EQ-DECL NIL |ppg_probability_block_restriction| NIL)
+    (|pushforward| CONST-DECL "TargetLaw" |ppg_probability_map| NIL)
+    (|TargetLaw| TYPE-EQ-DECL NIL |ppg_probability_map| NIL)
+    (|MeasurableMap| TYPE-EQ-DECL NIL |ppg_probability_map| NIL)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|SourceLaw| TYPE-EQ-DECL NIL |ppg_probability_map| NIL)
+    (|probability?| CONST-DECL "bool" |ppg_probability_measure| NIL)
+    (|blockSigma| CONST-DECL "ppg_measurable_space[Block(F)].MeasurableSpace"
+     |ppg_measurable_block| NIL)
+    (|Block| TYPE-EQ-DECL NIL |ppg_measurable_block| NIL)
+    (|unitSpaces| CONST-DECL "unitCoordinates.CoordinateSpaces"
+     |ppg_probability_unit_product| NIL)
+    (|CoordinateSpaces| TYPE-EQ-DECL NIL |ppg_probability_coordinates| NIL)
+    (|UnitValue| TYPE-EQ-DECL NIL |ppg_probability_unit_product| NIL)
+    (|unitDomain| CONST-DECL "set[Value]" |ppg_probability_unit_product| NIL)
+    (|unitUniverse| CONST-DECL "finite_set[Unit]"
+     |ppg_probability_unit_product| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|Unit| TYPE-EQ-DECL NIL |ppg_probability_unit_product| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[nat]" |countability|
+     |sets_aux|)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[real]" |integral_def|
+     |analysis|)
+    (|remove_preserves_bounded| APPLICATION-JUDGEMENT "(LAMBDA (S: set[nat]):
+   (bounded?)(S, restrict[[real, real], [nat, nat], bool](<=)))"
+     |countability| |sets_aux|)
+    (|finite_remove| APPLICATION-JUDGEMENT "finite_set[T]" |sigma_countable|
+     |sigma_set|)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[nat]" |countability|
+     |sets_aux|)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[real]" |integral_def|
+     |analysis|)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[T]" |sigma_countable|
+     |sigma_set|)
+    (|singleton_is_closed| APPLICATION-JUDGEMENT
+     "closed[real, (metric_induced_topology)]" |convergence_aux|
+     |metric_space|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[real]" |integral_def| |analysis|)
+    (|singleton_is_compact| APPLICATION-JUDGEMENT
+     "compact[real, (metric_induced_topology)]" |convergence_aux|
+     |metric_space|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[nat]" |countability| |sets_aux|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT
+     "non_empty_finite_set[T]" |sigma_countable| |sigma_set|)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|jointMass| CONST-DECL "nnreal" |ppg_probability_pair| NIL)
+    (|fm_times| CONST-DECL "finite_measure[[T1, T2], sigma_times(S1, S2)]"
+     |product_finite_measure| |measure_integration|)
+    (|integral| CONST-DECL "real" |integral| |measure_integration|)
+    (|emptyLaw| CONST-DECL "BlockLaw(emptyset[I])" |ppg_probability_block_base|
+     NIL)
+    (|dirac| CONST-DECL "Probability" |ppg_probability_dirac| NIL)
+    (|unionLaw| CONST-DECL "BlockLaw(U)" |ppg_probability_block_union| NIL)
+    (|productLaw| CONST-DECL "JointLaw" |ppg_probability_pair| NIL)
+    (|remove| CONST-DECL "set" |sets| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL)
+    (|singleLaw| CONST-DECL "BlockLaw(singleton(i))"
+     |ppg_probability_block_base| NIL)
+    (|imageMass| CONST-DECL "nnreal" |ppg_probability_map| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|unit_eval_mass| FORMULA-DECL NIL |ppg_probability_unit_product| NIL))
+   SHOSTAK)))
+

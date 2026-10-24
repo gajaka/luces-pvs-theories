@@ -1,0 +1,64 @@
+% The finite real product and the extended product have the same rectangle
+% values. Their finite restrictions are therefore equal on the product
+% sigma algebra, identifying the constructed laws on every measurable event.
+%
+% David Lester, NASALib monotone_classes, monotone_finite_measures.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_probability_finite_native_product[X,Y:TYPE,
+  (IMPORTING ppg_measurable_space[X],ppg_measurable_space[Y])
+  SX:ppg_measurable_space[X].MeasurableSpace,
+  SY:ppg_measurable_space[Y].MeasurableSpace,
+  (IMPORTING ppg_probability_pair[X,Y,SX,SY])
+    mu:LeftLaw,nu:RightLaw]: THEORY
+BEGIN
+  IMPORTING ppg_probability_pair[X,Y,SX,SY] AS realPair,
+    ppg_probability_finite_view[X,SX] AS leftView,
+    ppg_probability_finite_view[Y,SY] AS rightView,
+    ppg_probability_law[X,ppg_nasa_sigma[X].asNasa(SX)] AS leftProbability,
+    ppg_probability_law[Y,ppg_nasa_sigma[Y].asNasa(SY)] AS rightProbability
+
+  leftNative:leftProbability.ProbabilityLaw = leftView.nativeLaw(mu)
+
+  rightNative:rightProbability.ProbabilityLaw = rightView.nativeLaw(nu)
+
+  IMPORTING ppg_probability_product[X,Y,
+      ppg_nasa_sigma[X].asNasa(SX),ppg_nasa_sigma[Y].asNasa(SY),
+      leftNative,rightNative] AS nativePair,
+    ppg_general_probability_measure[[X,Y],
+      sigma_times(ppg_nasa_sigma[X].asNasa(SX),ppg_nasa_sigma[Y].asNasa(SY)),
+      nativePair.probabilityProduct] AS nativeJoint,
+    ppg_finite_product_uniqueness[X,Y,
+      ppg_nasa_sigma[X].asNasa(SX),ppg_nasa_sigma[Y].asNasa(SY)] AS productUnique,
+    ppg_probability_finite_view[[X,Y],realPair.JointSpace] AS jointView
+
+  A: VAR (SX)
+
+  B: VAR (SY)
+
+  E: VAR (realPair.JointSpace)
+
+  product_sigma_eq: LEMMA realPair.JointSpace=
+    sigma_times(ppg_nasa_sigma[X].asNasa(SX),ppg_nasa_sigma[Y].asNasa(SY))
+
+  realJoint: finite_measure[[X,Y],
+      sigma_times(ppg_nasa_sigma[X].asNasa(SX),ppg_nasa_sigma[Y].asNasa(SY))] =
+    realPair.productLaw(mu,nu)
+
+  native_rectangle_finite: LEMMA
+    nativePair.probabilityProduct(cross_product(A,B))=(TRUE,mu(A)*nu(B))
+
+  native_finite_rectangle: LEMMA
+    nativeJoint.wholeFinite(cross_product(A,B))=mu(A)*nu(B)
+
+  finite_rectangle_agreement: LEMMA
+    realJoint(cross_product(A,B))=nativeJoint.wholeFinite(cross_product(A,B))
+
+  finite_products_equal: LEMMA realJoint(E)=nativeJoint.wholeFinite(E)
+
+  native_product_value: THEOREM
+    nativePair.probabilityProduct(E)=(TRUE,realPair.productLaw(mu,nu)(E))
+
+  native_product_canonical_embedding: THEOREM
+    nativePair.probabilityProduct=jointView.nativeLaw(realPair.productLaw(mu,nu))
+
+END ppg_probability_finite_native_product

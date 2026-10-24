@@ -2,16 +2,16 @@
 
 This PVS development studies graded certification, blocking and repair. It
 contains the original PPG and LUCES application theories, together with the
-ongoing translation of the generic [Lean 4 library](https://github.com/gajaka/ppg-lean).
+translation of the generic [Lean 4 library](https://github.com/gajaka/ppg-lean).
 The application theories describe transport, observability and secure-boot
 models; the generic theory keeps the data, specifications and repair actions
 abstract.
 
-As of **2026-10-22**, the translation has independently replayed counterparts
-for **1,727 of 1,824 Lean source theorems and lemmas**, with all recorded results
-checked in **175 of 191 modules**. Supporting PVS lemmas and type-correctness
-conditions are additional obligations and are excluded from those source-result counts.
-The translation is still in progress.
+As of **2026-10-24**, the translation has independently replayed
+counterparts for **1,824 of 1,824 Lean source theorems and lemmas**, with all recorded
+results checked in **191 of 191 modules**. Supporting PVS lemmas and
+type-correctness conditions are additional obligations and are excluded from
+those source-result counts.
 
 ## Typechecking and proof replay
 
@@ -78,7 +78,7 @@ This loop leaves `Sterbenz/` out of the batch. That older Frama-C/Jessie
 development has separate floating-point library dependencies; see its
 [README](Sterbenz/README.md).
 
-Recorded translation checks on 2026-10-18 through 2026-10-22 include:
+Recorded translation checks on 2026-10-18 through 2026-10-24 include:
 
 | Check | Result |
 |-------|--------|
@@ -109,9 +109,10 @@ Recorded translation checks on 2026-10-18 through 2026-10-22 include:
 | Constructed topological node order | 191/191 project obligations complete across 15 theories, including 8 new obligations and 7 source results. |
 | Computability limit for infinite repair models | 935/935 project obligations complete across 50 proof-bearing theories, including 144 new obligations and all 14 source results. The run includes 66 TCCs and uses no Native library proof bodies. |
 | General double-sampling and Moser–Tardos intersection | 897/897 project obligations complete across 77 theories, including all 13 source results; 683 Native library obligations freshly replayed in the same cold PVS process. Measurable double, joint and forward events, product-measure identities and intersection bounds. |
+| Final HLS probability, expectation and repair translation | **5,489/5,489 saved proof bodies complete (1,228 Native and 4,261 project)**. Proofs ran in one PVS process with a 24,000 MiB heap. The initial group replayed 4,656 bodies (1,228 Native and 3,428 project); later groups checked further supporting dependencies, each with its own records from before its proofs. The current comparison covers 593 theory headers. These checks include 869 new obligations across 74 theories and the remaining 97 source results. **Current proof chains, dependency closure, source declarations and physical origins checked**. |
 
-These runs check saved proofs in isolated workspaces. Project dependencies use
-the exact committed source and proof inputs. The separately checked native
+These runs check saved proofs in isolated workspaces. Project declarations and
+saved proof programs match the committed versions. The separately checked native
 library sources and proofs are hashed before and after reuse. A completed run
 requires `proved - complete`, including the relevant TCCs and dependencies.
 The Local Lemma run starts from a source-only private library copy and freshly
@@ -121,6 +122,12 @@ The augmented-space run replays 751 of those original library bodies and 453
 additional bodies from the unchanged library sources and saved proofs. Both
 product-law projections and transport of the existing extended expected work
 are checked in that run.
+
+The final HLS library replay used local NASAlib proof-script repairs for
+`series.convergent_abs`, `absconv_series_aux.nonneg_series_inj_conv` and
+`measure_space.simple_def3`. These repairs preserve the library declarations
+and remain in the local replay workspace.
+
 The table records those checks; it does not report a fresh successful replay of
 every legacy application file or of `Sterbenz/`.
 
@@ -245,6 +252,14 @@ integration arguments. Each entry's imports lead to that support.
 | [ppg_hls_canonical_encoding.pvs](ppg_hls_canonical_encoding.pvs) | Recovery of canonical node indices, nodes and arcs from the stable encoding. |
 | [ppg_finite_set_nat_code.pvs](ppg_finite_set_nat_code.pvs), [ppg_hls_dag_countable.pvs](ppg_hls_dag_countable.pvs) | Injective natural-number codes for finite sets and witness DAGs when the label type has such a code. |
 | [ppg_hls_proper_family.pvs](ppg_hls_proper_family.pvs), [ppg_hls_witness_budget.pvs](ppg_hls_witness_budget.pvs), [ppg_nonneg_injective_bound.pvs](ppg_nonneg_injective_bound.pvs) | Weight-preserving injection of canonical proper DAGs into stable sequences and unrestricted Shearer weight budgets. |
+| [ppg_hls_coin_query_law.pvs](ppg_hls_coin_query_law.pvs), [ppg_hls_coin_saving.pvs](ppg_hls_coin_saving.pvs), [ppg_hls_relative_coins.pvs](ppg_hls_relative_coins.pvs) | Exact queried coin laws, pair savings and relative orientations. |
+| [ppg_hls_process_footprint.pvs](ppg_hls_process_footprint.pvs), [ppg_hls_block_intersection_sets.pvs](ppg_hls_block_intersection_sets.pvs), [ppg_hls_block_intersection_results.pvs](ppg_hls_block_intersection_results.pvs) | Footprint decomposition, joined states, raw intersection-event identities and their probability bounds. |
+| [ppg_hls_pair_block_queries.pvs](ppg_hls_pair_block_queries.pvs), [ppg_hls_pair_probability.pvs](ppg_hls_pair_probability.pvs) | Disjoint table queries, four-block product laws and intersection savings. |
+| [ppg_hls_augmented_pair_saving.pvs](ppg_hls_augmented_pair_saving.pvs), [ppg_hls_augmented_dependence.pvs](ppg_hls_augmented_dependence.pvs), [ppg_hls_unit_probability.pvs](ppg_hls_unit_probability.pvs) | Augmented pair events, coordinate dependence, independent units and their exact probabilities. |
+| [ppg_hls_refined_probability.pvs](ppg_hls_refined_probability.pvs), [ppg_hls_root_union_measure.pvs](ppg_hls_root_union_measure.pvs), [ppg_hls_root_family_weight.pvs](ppg_hls_root_family_weight.pvs) | Selected-pair discounts, refined DAG weights, rooted-family occurrence bounds and unrestricted weight sums. |
+| [ppg_hls_policy_count_bound.pvs](ppg_hls_policy_count_bound.pvs), [ppg_hls_policy_expectation.pvs](ppg_hls_policy_expectation.pvs), [ppg_hls_expectation.pvs](ppg_hls_expectation.pvs) | Policy counts, extended expected work, finite-budget bounds and almost-sure termination. |
+| [ppg_hls_history_expectation.pvs](ppg_hls_history_expectation.pvs), [ppg_hls_randomized_expectation.pvs](ppg_hls_randomized_expectation.pvs) | History-dependent schedules and product-law integration for randomized policies. |
+| [ppg_hls_repair_bridge.pvs](ppg_hls_repair_bridge.pvs), [ppg_hls_decision_bridge.pvs](ppg_hls_decision_bridge.pvs), [ppg_hls_finite_decision_bridge.pvs](ppg_hls_finite_decision_bridge.pvs) | Good-state existence, repair reachability and the declared finite feasibility/refutation interfaces. |
 
 ### Integrals, finite stochastic models and stopping bounds
 
@@ -396,6 +411,26 @@ results specify the initial state separately.
     `1/epsilon` under the stated positive multiplicative slack. Countability,
     runtime and occurrence-probability assumptions are not needed.
 
+### HLS expectation and repair
+
+15. **Intersection-sensitive expected work.**
+    [randomInitETLog_le_sum_stableBudget](ppg_hls_expectation.pvs) bounds
+    random-start resampling work under the stated probability, matching,
+    overlap and stable-budget hypotheses. The
+    [policy](ppg_hls_policy_expectation.pvs),
+    [history](ppg_hls_history_expectation.pvs) and
+    [randomized-policy](ppg_hls_randomized_expectation.pvs) results retain
+    their own measurability and probability-law assumptions. Expectations
+    remain extended nonnegative values until a finite-budget bound is applied.
+
+16. **HLS certificates and repair reachability.**
+    [good_repair_reachable](ppg_hls_repair_bridge.pvs) derives a path to a
+    good state from the original HLS hypotheses. The
+    [decision bridge](ppg_hls_decision_bridge.pvs) combines this with
+    existential probability/overlap certificates and declared feasibility
+    and refutation conditions. The [finite bridge](ppg_hls_finite_decision_bridge.pvs)
+    retains its finite model and enumeration hypotheses.
+
 ## Theory Layers
 
 The organization follows the companion Lean development, with PVS-specific
@@ -440,7 +475,7 @@ event masses. Finite rational kernels add conditional transition laws, checked
 potentials, exact means and survival bounds. Lumping preserves these quantities
 under transition-mass and good-state compatibility conditions.
 
-### Feasibility, refutation and remaining translations
+### Feasibility and refutation
 
 Finite search and exact abstraction provide concrete repair witnesses or checked
 refutations. Minimal cores and correction sets describe infeasible obligation
@@ -450,7 +485,8 @@ infeasibility is not recursively enumerable. The reduction uses a constructed
 partial-recursive evaluator and bounded computations; computability and the
 halting obstruction are proved in PVS. This result concerns the encoded family
 and does not prevent decisions for the finite models above.
-Intersection-sensitive HLS probability and expectation bounds remain in progress.
+The HLS expectation and repair bridges add good-state witnesses and modeled
+repair paths under their stated overlap and probability hypotheses.
 
 ## Related
 
@@ -516,7 +552,9 @@ proofs.
   and proves their closed-neighborhood successor condition. The
   [canonical encoding](ppg_hls_canonical_encoding.pvs) recovers the DAG, and the
   [weight budget](ppg_hls_witness_budget.pvs) bounds its canonical proper family.
-  Later HLS occurrence and policy translations remain in progress.
+  The [occurrence bound](ppg_hls_policy_count_bound.pvs) and
+  [policy expectation](ppg_hls_policy_expectation.pvs) use these witness
+  families together with the actual resampling process.
 
 ### Order and certification
 
@@ -569,22 +607,12 @@ The LUCES experimental background is described in:
 
 ## Future work
 
-General conditional expectation is proved. The additive-drift,
-Moser–Tardos drift and execution-cost source modules are translated
-and replayed. Witness-DAG reversal, ancestor prefixes, longest-path layers,
-stable encodings, canonical reconstruction and the proper-family weight budget
-are also replayed. The augmented HLS sample space, its two product-law
-projections and preservation of random-start expected work are checked as well.
-The core translation now retains actual finite certificate
-lists, arbitrary carriers, generated quotient classes and the general repair
-model. All recorded results in the general Local Lemma module are translated
-and replayed. Ordered witness DAGs and their constructed topological node order
-are also checked. All 14 source results about the computability limit for the
-encoded infinite repair family are translated and replayed. General double-sample
-and intersection-event identities are also checked. The remaining 97 source
-results cover HLS coin and footprint constructions, intersection-sensitive
-probability and expectation bounds, and policy expectation. Source-by-source
-semantic review and replay accounting continue with each package.
+The recorded Lean-to-PVS translation covers the full 191-module inventory and
+all 1,824 source theorems and lemmas. The final HLS layer includes coin and
+footprint constructions, intersection-sensitive probability, refined DAG
+weights, policy and randomized expectations, and repair/decision bridges.
+Supporting PVS lemmas and TCCs are counted separately. The theorem statements
+retain their declared carrier, measurability, locality and model hypotheses.
 
 For the controller application, live measurements need a defined interpretation
 in the formal state, and the running checker must evaluate the corresponding

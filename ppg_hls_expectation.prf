@@ -1,0 +1,169 @@
+(|ppg_hls_expectation|
+ (|first_selected_events| 0
+  (|first_selected_events-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+   (LEMMA "hlsExpectationFirstPolicy.running_first_eq"
+    ("vars" "process`footprint" "bad" "badTest(process)" "fallback" "default"
+     "enumeration" "eventOrder!1"))
+   (EXPAND "firstSchedule") (EXPAND "hlsExpectationFirstPolicy.first")
+   (EXPAND "hlsExpectationFirstPolicy.firstSelection")
+   (EXPAND "hlsExpectationCounts.nativeSelectedEvents")
+   (EXPAND "selectedEvents" :ACTUALS? T) (EXPAND "resamplingEvent" :ACTUALS? T)
+   (EXPAND "hlsExpectationNativeTime.randomSelected")
+   (EXPAND "ppg_mt_stopped_events[C,V,Value,domain].randomInitResamplingEvent")
+   (EXPAND "ppg_mt_stopped_events[C,V,Value,domain].resamplingEvent")
+   (EXPAND "ppg_mt_stopped_events[C,V,Value,domain].runningEvent")
+   (EXPAND "ppg_mt_stopped_events[C,V,Value,domain].labelEvent")
+   (APPLY-EXTENSIONALITY 1) (SKOSIMP*) (EXPAND "intersection")
+   (EXPAND "member") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|first_expected_count| 0
+  (|first_expected_count-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "hlsExpectationCounts_TCC1")
+   (LEMMA "firstSchedule_TCC1" ("eventOrder" "eventOrder!1"))
+   (SPREAD
+    (CASE
+        "hlsExpectationCounts.nativeSelectedEvents(firstSchedule(eventOrder!1),a)=hlsExpectationNativeTime.randomSelected(process`footprint,badTest(process),default,eventOrder!1,a)")
+    ((THEN
+      (LEMMA "hlsExpectationNativeTime.random_selected_count_function"
+       ("vars" "process`footprint" "bad" "badTest(process)" "fallback"
+        "default" "enumeration" "eventOrder!1" "a" "a"))
+      (EXPAND "hlsExpectationCounts.expectedCount")
+      (EXPAND "hlsExpectationNativeTime.randomInitExpectedResamplingCount")
+      (EXPAND "count" :ACTUALS? T)
+      (EXPAND "hlsExpectationCounts.nativeSelectedEvents")
+      (GRIND :DEFS NIL :IF-MATCH ALL))
+     (THEN (APPLY-EXTENSIONALITY 1) (SKOSIMP*)
+      (LEMMA "first_selected_events" ("eventOrder" "eventOrder!1"))
+      (GRIND :DEFS NIL :IF-MATCH ALL)))))
+    NIL NIL)
+   NIL NIL))
+ (|first_expected_work| 0
+  (|first_expected_work-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "firstSchedule_TCC1" ("eventOrder" "eventOrder!1"))
+   (LEMMA "hlsExpectationPolicyLaw.expectedWork_first_eq"
+    ("vars" "process`footprint" "fallback" "default" "tests" "badTest(process)"
+     "labels" "eventOrder!1"))
+   (EXPAND "firstSchedule") (EXPAND "hlsExpectationPolicyBounds.expectedWork")
+   (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|randomInitExpectedResamplingCount_le_tsum_refinedWeight| 0
+  (|randomInitExpectedResamplingCount_le_tsum_refinedWeight-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "first_expected_count" ("eventOrder" "eventOrder!1")) (LEMMA "hlsExpectationLabelBound.expectedCount_le_tsum_refinedWeight" ("sig" "firstSchedule(eventOrder!1)")) (EXPAND "assumptions") (EXPAND "hprob") (EXPAND "hp") (EXPAND "hInt") (EXPAND "hlsExpectationPolicyBounds.hprob") (EXPAND "hlsExpectationPolicyBounds.hp") (EXPAND "hlsExpectationPolicyBounds.hInt") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|randomInitExpectedResamplingCount_le_stableBudget| 0
+  (|randomInitExpectedResamplingCount_le_stableBudget-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "first_expected_count" ("eventOrder" "eventOrder!1"))
+   (LEMMA "hlsExpectationPolicyBounds.each_count_le_budget"
+    ("sig" "firstSchedule(eventOrder!1)" "a" "a"))
+   (EXPAND "assumptions") (EXPAND "hprob") (EXPAND "hp") (EXPAND "hInt")
+   (EXPAND "criterion") (EXPAND "hlsExpectationPolicyBounds.assumptions")
+   (EXPAND "hlsExpectationPolicyBounds.hprob" :ACTUALS? T)
+   (EXPAND "hlsExpectationPolicyBounds.hp" :ACTUALS? T)
+   (EXPAND "hlsExpectationPolicyBounds.hInt" :ACTUALS? T)
+   (EXPAND "hlsExpectationPolicyBounds.criterion" :ACTUALS? T)
+   (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|randomInitETLog_le_sum_stableBudget| 0
+  (|randomInitETLog_le_sum_stableBudget-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "first_expected_work" ("eventOrder" "eventOrder!1"))
+   (LEMMA "hlsExpectationPolicyBounds.expectedWork_le_sum_stableBudget"
+    ("sig" "firstSchedule(eventOrder!1)"))
+   (EXPAND "assumptions") (EXPAND "hprob") (EXPAND "hp") (EXPAND "hInt")
+   (EXPAND "criterion") (EXPAND "hlsExpectationPolicyBounds.assumptions")
+   (EXPAND "hlsExpectationPolicyBounds.hprob" :ACTUALS? T)
+   (EXPAND "hlsExpectationPolicyBounds.hp" :ACTUALS? T)
+   (EXPAND "hlsExpectationPolicyBounds.hInt" :ACTUALS? T)
+   (EXPAND "hlsExpectationPolicyBounds.criterion" :ACTUALS? T)
+   (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|randomInitETLog_lt_top| 0
+  (|randomInitETLog_lt_top-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "first_expected_work" ("eventOrder" "eventOrder!1"))
+   (LEMMA "hlsExpectationPolicyBounds.expectedWork_lt_top"
+    ("sig" "firstSchedule(eventOrder!1)"))
+   (EXPAND "assumptions") (EXPAND "hprob") (EXPAND "hp") (EXPAND "hInt")
+   (EXPAND "criterion") (EXPAND "hlsExpectationPolicyBounds.assumptions")
+   (EXPAND "hlsExpectationPolicyBounds.hprob" :ACTUALS? T)
+   (EXPAND "hlsExpectationPolicyBounds.hp" :ACTUALS? T)
+   (EXPAND "hlsExpectationPolicyBounds.hInt" :ACTUALS? T)
+   (EXPAND "hlsExpectationPolicyBounds.criterion" :ACTUALS? T)
+   (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|randomInitETLog_le_card_div_slack| 0
+  (|randomInitETLog_le_card_div_slack-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "first_expected_work" ("eventOrder" "eventOrder!1"))
+   (LEMMA "hlsExpectationPolicyBounds.expectedWork_le_card_div_slack"
+    ("sig" "firstSchedule(eventOrder!1)" "epsilon" "epsilon!1"))
+   (EXPAND "assumptions") (EXPAND "hprob") (EXPAND "hp") (EXPAND "hInt")
+   (EXPAND "hlsExpectationPolicyBounds.assumptions")
+   (EXPAND "hlsExpectationPolicyBounds.hprob" :ACTUALS? T)
+   (EXPAND "hlsExpectationPolicyBounds.hp" :ACTUALS? T)
+   (EXPAND "hlsExpectationPolicyBounds.hInt" :ACTUALS? T)
+   (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|ae_randomInit_exists_good| 0
+  (|ae_randomInit_exists_good-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "randomInitETLog_lt_top" ("eventOrder" "eventOrder!1")) (LEMMA "hlsExpectationNativeTermination.ae_randomInit_exists_good" ("vars" "process`footprint" "bad" "badTest(process)" "fallback" "default" "enumeration" "eventOrder!1")) (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|logMeasure_randomInit_termination_eq_one| 0
+  (|logMeasure_randomInit_termination_eq_one-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "randomInitETLog_lt_top" ("eventOrder" "eventOrder!1")) (LEMMA "hlsExpectationNativeTermination.logMeasure_randomInit_termination_eq_one" ("vars" "process`footprint" "bad" "badTest(process)" "fallback" "default" "enumeration" "eventOrder!1")) (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+
+(|hlsExpectationCounts_TCC1| 0
+ (|hlsExpectationCounts_TCC1-candidate| NIL 0
+  (""
+   (THEN (SKOLEM 1 ("hlsEtaLabel")) (TYPEPRED "process")
+    (EXPAND "ppg_mt_native_process[C,V,Value,domain,spaces,laws].badTest")
+    (GRIND :DEFS NIL :IF-MATCH ALL)
+    (SPREAD
+     (CASE
+         "{s:ppg_mt_semantics[C,V,Value,domain].MTState|process`bad(hlsEtaLabel)(s)}=process`bad(hlsEtaLabel)")
+     ((ASSERT) (THEN (APPLY-EXTENSIONALITY 1) (SKOSIMP*) (ASSERT)))))
+   NIL NIL)
+  NIL NIL))
+
+(|firstSchedule_TCC1| 0
+ (|firstSchedule_TCC1-candidate| NIL 0
+  (""
+   (THEN (SKOLEM 1 ("hlsEnumeration"))
+    (EXPAND "hlsExpectationSchedules.BadMeasurable") (SKOLEM 1 ("hlsEtaLabel"))
+    (LEMMA "hlsExpectationCounts_TCC1")
+    (LEMMA "ppg_mt_native_spaces[C,V,Value,domain].state_sigma_native_eq"
+     ("spaces" "spaces"))
+    (GRIND :DEFS NIL :IF-MATCH ALL))
+   NIL NIL)
+  NIL NIL))
+
+(|logMeasure_randomInit_termination_eq_one_TCC1| 0
+ (|logMeasure_randomInit_termination_eq_one_TCC1-candidate| NIL 0
+  (""
+   (THEN (SKOLEM 1 ("hlsEnumeration")) (FLATTEN 1)
+    (LEMMA "hlsExpectationCounts_TCC1")
+    (LEMMA "hlsExpectationNativeTermination.termination_event_measurable"
+     ("vars" "process`footprint" "bad" "badTest(process)" "fallback" "default"
+      "enumeration" "hlsEnumeration"))
+    (GRIND :DEFS NIL :IF-MATCH ALL))
+   NIL NIL)
+  NIL NIL))
+)

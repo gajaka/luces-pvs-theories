@@ -1,0 +1,87 @@
+% A check consists of unselected single nodes and selected endpoint pairs.
+% Their actual table events use the corresponding disjoint coordinate blocks.
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Lemma 3.4. Patrick Billingsley, Probability and Measure,
+% third edition, Wiley, 1995. Lean: PPGraphHLSUnitChecks.lean.
+ppg_hls_unit_checks[C,V,Value:TYPE,domain:[V->set[Value]],
+  default:C,universe:{U:finite_set[C]|FORALL(c:C):U(c)},
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_mt_native_process[C,V,Value,domain,spaces,laws])
+  process:MTProcess]: THEORY
+BEGIN
+  IMPORTING ppg_hls_augmented_pair_events[C,V,Value,domain,default,universe,
+      spaces,laws,process] AS pairs,
+    ppg_hls_augmented_space[C,V,Value,domain,spaces,laws] AS aug,
+    ppg_shearer_bdd[C,V,process`footprint] AS graph,
+    ppg_hls_witness_dag[C,graph.dependencyGraph] AS dags,
+    ppg_hls_pair_keys[C,graph.dependencyGraph] AS keys,
+    ppg_hls_augmented_coordinates[C,V,process`footprint] AS coords,
+    ppg_hls_matching_selection[C,graph.dependencyGraph] AS selection,
+    ppg_hls_table_events[C,V,Value,domain,spaces,laws,process] AS tables,
+    ppg_hls_table_check_core[C,V,Value,domain,process`footprint,badTest(process)] AS raw,
+    ppg_hls_process_table_bridge[C,V,Value,domain,spaces,laws,process] AS bridge
+
+  CheckUnit: TYPE = union[dags.WNode,pairs.Arc]
+
+  M: VAR keys.DependencyMatching
+
+  D: VAR dags.WitnessDAG
+
+  Q: VAR (dags.Valid)
+
+  u,v: VAR dags.WNode
+
+  e,f: VAR pairs.Arc
+
+  U,W: VAR CheckUnit
+
+  eta: VAR aug.AugTable
+
+  r: VAR dags.WNode
+
+  singleUnit(u): CheckUnit = inl[dags.WNode,pairs.Arc](u)
+
+  pairUnit(e): CheckUnit = inr[dags.WNode,pairs.Arc](e)
+
+  checkUnits(M,D): finite_set[CheckUnit] = union(
+    image[dags.WNode,CheckUnit](singleUnit,
+      difference(D`nodes,selection.arcNodes(selection.selectedArcs(M,D)))),
+    image[pairs.Arc,CheckUnit](pairUnit,selection.selectedArcs(M,D)))
+
+  unitCoordinates(M,D)(U): finite_set[coords.AugmentedCoordinate] =
+    IF inl?(U) THEN coords.dataCoordinates(D,left(U))
+      ELSE coords.pairCoordinates(M,D,right(U)) ENDIF
+
+  unitEvent(M,D)(U): set[aug.AugTable] =
+    IF inl?(U) THEN {eta:aug.AugTable|
+      tables.tableEvent(D,left(U))(aug.originalTable(eta))}
+    ELSE pairs.augmentedPairCheck(M,D,right(U)) ENDIF
+
+  unitCheck(M,D): set[aug.AugTable] = {eta:aug.AugTable|
+    FORALL(U:CheckUnit):checkUnits(M,D)(U) IMPLIES unitEvent(M,D)(U)(eta)}
+
+  singleUnit_injective: LEMMA singleUnit(u)=singleUnit(v) IMPLIES u=v
+
+  pairUnit_injective: LEMMA pairUnit(e)=pairUnit(f) IMPLIES e=f
+
+  mem_checkUnits_single: THEOREM checkUnits(M,D)(singleUnit(u)) IFF
+    D`nodes(u) AND NOT selection.arcNodes(selection.selectedArcs(M,D))(u)
+
+  mem_checkUnits_pair: THEOREM checkUnits(M,D)(pairUnit(e)) IFF
+    selection.selectedArcs(M,D)(e)
+
+  unitCoordinates_pairwiseDisjoint: THEOREM checkUnits(M,Q)(U) AND
+    checkUnits(M,Q)(W) AND U/=W IMPLIES
+      disjoint?(unitCoordinates(M,Q)(U),unitCoordinates(M,Q)(W))
+
+  augmented_single_unit: LEMMA pairs.actualAugmentedCheck(M,r,Q,eta) AND Q`nodes(u)
+    IMPLIES tables.tableEvent(Q,u)(aug.originalTable(eta))
+
+  augmented_selected_pair_unit: LEMMA pairs.actualAugmentedCheck(M,r,Q,eta) AND
+    selection.selectedArcs(M,Q)(e) IMPLIES pairs.augmentedPairCheck(M,Q,e)(eta)
+
+  augmentedCheck_implies_unitCheck: THEOREM pairs.actualAugmentedCheck(M,r,Q,eta)
+    IMPLIES unitCheck(M,Q)(eta)
+
+END ppg_hls_unit_checks

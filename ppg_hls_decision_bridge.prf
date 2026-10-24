@@ -1,0 +1,95 @@
+(|ppg_hls_decision_bridge|
+ (|hlsCertified_good_exists| 0
+  (|hlsCertified_good_exists-1| NIL 0
+   (""
+    (THEN (LEMMA "hlsDecisionFeasibility_TCC1") (EXPAND "HLSCertified")
+ (EXPAND "badMeasurable") (SKOSIMP*) (GROUND) (SKOSIMP*)
+ (NAME-REPLACE "decisionWeights" "p!1" NIL)
+ (NAME-REPLACE "decisionOverlap" "oh!1" NIL)
+ (LEMMA
+  "ppg_hls_repair_bridge[C,V,Value,domain,variableUniverse,default,universe,eventOrder,spaces,laws,process,decisionWeights,decisionOverlap].good_state_exists")
+ (TYPEPRED "decisionOverlap") (EXPAND "hprob" :ACTUALS? T)
+ (EXPAND "hp" :ACTUALS? T) (EXPAND "hInt" :ACTUALS? T)
+ (EXPAND "criterion" :ACTUALS? T) (EXPAND "overlapBounds" :ACTUALS? T)
+ (EXPAND "reduced" :ACTUALS? T) (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|hlsCertified_satisfiable| 0
+  (|hlsCertified_satisfiable-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "hlsCertified_good_exists")
+     (LEMMA "hlsDecisionFeasibility.mt_satisfiable_iff_good_exists"
+      ("bad" "hlsDecisionNativeProcess.badTest(process)"))
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|hlsCertified_repair_reachable| 0
+  (|hlsCertified_repair_reachable-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "hlsCertified_good_exists")
+     (LEMMA "hlsDecisionNativeProcess.process_locality" ("P" "process"))
+     (TYPEPRED "eventOrder")
+     (LEMMA "hlsDecisionFeasibility.mt_reachable_good_iff_good_exists"
+      ("vars" "process`footprint" "bad"
+       "hlsDecisionNativeProcess.badTest(process)" "fallback" "default"
+       "enumeration" "eventOrder"))
+     (GRIND :DEFS ("hlsDecisionSelection.completeEnumeration") :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|infeasible_excludes_hlsCertified| 0
+  (|infeasible_excludes_hlsCertified-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "hlsCertified_satisfiable")
+     (GRIND :DEFS ("hlsDecisionInfeasibility.Infeasible") :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|hlsCertified_excludes_all_cores| 0
+  (|hlsCertified_excludes_all_cores-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "hlsCertified_good_exists")
+     (LEMMA "hlsDecisionFeasibility.mt_good_exists_excludes_all_cores"
+      ("bad" "hlsDecisionNativeProcess.badTest(process)"))
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|hlsCertified_excludes_noReachableGood| 0
+  (|hlsCertified_excludes_noReachableGood-1| NIL 0
+   (""
+    (THEN (LEMMA "hlsDecisionFeasibility_TCC1") (SKOSIMP*)
+ (LEMMA "hlsCertified_repair_reachable" ("s" "s!1"))
+ (EXPAND "hlsDecisionInfeasibility.NoReachableGood")
+ (EXPAND "hlsDecisionReach.mtRepairGraph") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|hls_extension_gap_iff| 0
+  (|hls_extension_gap_iff-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "hlsDecisionFeasibility_TCC1")
+ (LEMMA "hlsDecisionRegions.gap_after_extension_iff"
+  ("allowed" "fullset[hlsDecisionModel.MTState]" "sat"
+   "hlsDecisionFeasibility.mtSat(hlsDecisionNativeProcess.badTest(process))"
+   "B" "universe" "first" "earlier!1" "second" "HLSCertified"))
+ (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|hlsDecisionFeasibility_TCC1| 0
+  (|hlsDecisionFeasibility_TCC1-current-explicit-TCC-proposal| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "variableUniverse") (EXPAND "sets[V].fullset")
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|HLSCertified_TCC1| 0
+  (|HLSCertified_TCC1-current-explicit-TCC-proposal| NIL 0
+   ("" (THEN (EXPAND "badMeasurable") (GRIND :DEFS NIL :IF-MATCH ALL)) NIL NIL)
+   NIL NIL))
+ (|HLSCertified_TCC2| 0
+  (|HLSCertified_TCC2-current-explicit-TCC-proposal| NIL 0
+   (""
+    (THEN (EXPAND "badMeasurable")
+     (LEMMA
+      "ppg_measurable_space[ppg_mt_native_process[C,V,Value,domain,spaces,laws].State].measurable_intersection"
+      ("S" "ppg_mt_native_spaces[C,V,Value,domain].NativeStateSigma(spaces)"))
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL)))

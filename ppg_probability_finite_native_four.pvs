@@ -1,0 +1,69 @@
+% The private factors and the two shared factors form a nested product.
+% The finite product law agrees with its extended nonnegative measure.
+% Patrick Billingsley, Probability and Measure, third edition.
+ppg_probability_finite_native_four[X,Y,Z:TYPE,
+  (IMPORTING ppg_measurable_space[X],ppg_measurable_space[Y],
+    ppg_measurable_space[Z])
+  SX:ppg_measurable_space[X].MeasurableSpace,
+  SY:ppg_measurable_space[Y].MeasurableSpace,
+  SZ:ppg_measurable_space[Z].MeasurableSpace,
+  (IMPORTING ppg_probability_measure[X,SX],
+    ppg_probability_measure[Y,SY],ppg_probability_measure[Z,SZ])
+  muX:ppg_probability_measure[X,SX].Probability,
+  muY:ppg_probability_measure[Y,SY].Probability,
+  muZ:ppg_probability_measure[Z,SZ].Probability]: THEORY
+BEGIN
+
+  IMPORTING ppg_probability_pair[X,Z,SX,SZ] AS privateReal,
+    ppg_probability_pair[Y,Y,SY,SY] AS sharedReal,
+    ppg_probability_finite_native_product[X,Z,SX,SZ,muX,muZ] AS privateBridge,
+    ppg_probability_finite_native_product[Y,Y,SY,SY,muY,muY] AS sharedBridge,
+    ppg_probability_pair[[X,Z],[Y,Y],privateReal.JointSpace,
+      sharedReal.JointSpace] AS outerReal,
+    ppg_probability_finite_native_product[[X,Z],[Y,Y],
+      privateReal.JointSpace,sharedReal.JointSpace,
+      privateReal.productLaw(muX,muZ),sharedReal.productLaw(muY,muY)] AS outerBridge
+
+  IMPORTING ppg_probability_product[[X,Z],[Y,Y],
+    ppg_nasa_sigma[[X,Z]].asNasa(privateReal.JointSpace),
+    ppg_nasa_sigma[[Y,Y]].asNasa(sharedReal.JointSpace),
+    outerBridge.leftNative,outerBridge.rightNative] AS outerNative
+
+  IMPORTING ppg_probability_intersection[X,Y,Z,
+    ppg_nasa_sigma[X].asNasa(SX),ppg_nasa_sigma[Y].asNasa(SY),
+    ppg_nasa_sigma[Z].asNasa(SZ),privateBridge.leftNative,
+    sharedBridge.leftNative,privateBridge.rightNative] AS intersectionLaw,
+    ppg_probability_finite_view[[[X,Z],[Y,Y]],outerReal.JointSpace] AS fourView
+
+  FourValue: TYPE = [[X,Z],[Y,Y]]
+
+  FourSigma: MACRO ppg_measurable_space[FourValue].MeasurableSpace =
+    outerReal.JointSpace
+
+  nestedLaw: outerReal.JointLaw = outerReal.productLaw(
+    privateReal.productLaw(muX,muZ),sharedReal.productLaw(muY,muY))
+
+  E: VAR (FourSigma)
+
+  private_sigma_eq: LEMMA
+    ppg_nasa_sigma[[X,Z]].asNasa(privateReal.JointSpace)=
+      sigma_times(ppg_nasa_sigma[X].asNasa(SX),ppg_nasa_sigma[Z].asNasa(SZ))
+
+  shared_sigma_eq: LEMMA
+    ppg_nasa_sigma[[Y,Y]].asNasa(sharedReal.JointSpace)=
+      sigma_times(ppg_nasa_sigma[Y].asNasa(SY),ppg_nasa_sigma[Y].asNasa(SY))
+
+  outer_private_law_eq: LEMMA outerBridge.leftNative=intersectionLaw.privateProb
+
+  outer_shared_law_eq: LEMMA outerBridge.rightNative=intersectionLaw.sharedProb
+
+  native_four_product_eq: LEMMA
+    intersectionLaw.fourProb=outerNative.probabilityProduct
+
+  native_four_canonical_embedding: THEOREM
+    intersectionLaw.fourProb=fourView.nativeLaw(nestedLaw)
+
+  native_four_event_value: THEOREM
+    intersectionLaw.fourProb(E)=(TRUE,nestedLaw(E))
+
+END ppg_probability_finite_native_four

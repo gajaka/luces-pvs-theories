@@ -1,0 +1,53 @@
+(|ppg_general_probability_finiteness|
+ (|finite_mass_pair| 0
+  (|finite_mass_pair-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "probability.probability_event_finite" ("A" "A!1"))
+     (EXPAND "finiteMass") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|singleton_integral| 0
+  (|singleton_integral-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "finite_mass_pair" ("A" "A!1"))
+     (LEMMA "generalIntegral.simple_integral_term" ("t" "(c!1,A!1)"))
+     (EXPAND "single") (EXPAND "measureValue") (EXPAND "nativeValue")
+     (EXPAND "emul") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|infinite_simple_minorant| 0
+  (|infinite_simple_minorant-draft| NIL 0
+   ("" (THEN (SKOSIMP*) (EXPAND "generalIntegral.simpleMinorant" 1) (EXPAND "single" 1) (EXPAND "generalIntegral.simpleValue" 1) (EXPAND "generalIntegral.simpleValue" 1) (EXPAND "subset?" -1) (EXPAND "member" -1) (EXPAND "finiteness.infiniteEvent" -1) (EXPAND "complement" -1) (EXPAND "finiteness.finiteEvent" -1) (SKOSIMP*) (INST -1 "x!1") (EXPAND "ele") (GRIND :DEFS NIL :IF-MATCH NIL)) NIL NIL)
+   NIL NIL))
+ (|infinite_mass_bound| 0
+  (|infinite_mass_bound-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "infinite_simple_minorant" ("A" "A!1" "f" "f!1" "c" "c!1"))
+     (LEMMA "generalIntegral.simple_integral_le_lintegral"
+      ("L" "single(c!1,A!1)" "f" "f!1"))
+     (LEMMA "singleton_integral" ("c" "c!1" "A" "A!1"))
+     (LEMMA "ele_transitive") (EXPAND "ele") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|bounded_scaled_mass_zero| 0
+  (|bounded_scaled_mass_zero-draft| NIL 0
+   ("" (THEN (SKOSIMP*) (CASE "m!1=0") (ASSERT) (INST -1 "(b!1+1)/m!1") (GRIND :DEFS NIL) (REWRITE "pos_div_ge" 1) (GRIND :DEFS NIL :IF-MATCH NIL)) NIL NIL)
+   NIL NIL))
+ (|null_infinite_event| 0
+  (|null_infinite_event-draft| NIL 0
+   ("" (THEN (SKOSIMP*) (LEMMA "finiteness.measurable_infinite_event" ("S" "sigma.asProject(S)" "f" "f!1")) (EXPAND "sigma.asProject") (ASSERT) (SPREAD (CASE "FORALL(c:nonneg_real):c*finiteMass(finiteness.infiniteEvent(f!1))<=ennValue(generalIntegral.lintegral(f!1))") ((THEN (LEMMA "bounded_scaled_mass_zero" ("m" "finiteMass(finiteness.infiniteEvent(f!1))" "b" "ennValue(generalIntegral.lintegral(f!1))")) (ASSERT)) (THEN (SKOSIMP*) (LEMMA "infinite_mass_bound" ("f" "f!1" "A" "finiteness.infiniteEvent(f!1)" "b" "ennValue(generalIntegral.lintegral(f!1))" "c" "c!1")) (EXPAND "ele") (EXPAND "subset?") (EXPAND "member") (GRIND :DEFS NIL :IF-MATCH NIL))))) NIL NIL)
+   NIL NIL))
+ (|finite_integral_ae| 0
+  (|finite_integral_ae-draft| NIL 0
+   ("" (THEN (SKOSIMP*) (LEMMA "finiteness.measurable_infinite_event" ("S" "sigma.asProject(S)" "f" "f!1")) (EXPAND "sigma.asProject") (ASSERT) (LEMMA "null_infinite_event" ("f" "f!1")) (EXPAND "sigma.asProject") (ASSERT) (LEMMA "finite_mass_pair" ("A" "finiteness.infiniteEvent(f!1)")) (ASSERT) (EXPAND "ae?") (EXPAND "ae_in?") (INST 1 "finiteness.infiniteEvent(f!1)") (EXPAND "finiteness.infiniteEvent") (EXPAND "finiteness.finiteEvent") (EXPAND "complement") (GRIND :DEFS NIL :IF-MATCH NIL) (EXPAND "negligible_set?") (INST 1 "finiteness.infiniteEvent(f!1)") (EXPAND "null_set?") (EXPAND "mu_fin?") (EXPAND "mu") (EXPAND "measurable_set?") (EXPAND "finiteMass") (EXPAND "subset?") (EXPAND "member") (EXPAND "finiteness.infiniteEvent") (EXPAND "finiteness.finiteEvent") (EXPAND "complement") (EXPAND "member") (GRIND :DEFS NIL :IF-MATCH NIL)) NIL NIL)
+   NIL NIL))
+ (|null_infinite_event_TCC1| 0
+  (|null_infinite_event_TCC1-explicit-proposal| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "finiteness.measurable_infinite_event"
+      ("S" "sigma.asProject(S)" "f" "f!1"))
+     (EXPAND "sigma.asProject") (ASSERT))
+    NIL NIL)
+   NIL NIL)))

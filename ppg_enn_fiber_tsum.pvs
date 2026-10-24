@@ -1,0 +1,81 @@
+% Partition an unrestricted nonnegative sum by the fibers of any map.
+% Finite partial sums give both bounds; neither the fibers nor the index
+% type need be finite, countable, or nonempty. Values may be infinite.
+%
+% Patrick Billingsley, Probability and Measure, third edition,
+% Wiley, 1995: nonnegative sums and monotone convergence.
+ppg_enn_fiber_tsum[D,I:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_enn_unrestricted_sum[D] AS flatSums,
+    ppg_enn_unrestricted_sum[I] AS outerSums,
+    ppg_nonneg_tsum[D] AS flatFinite,
+    ppg_nonneg_tsum[I] AS outerFinite,
+    ppg_enn_finite_algebra[I] AS outerAlgebra,
+    ppg_enn_finite_order[D] AS flatOrder,
+    ppg_enn_finite_order[I] AS outerOrder,
+    ppg_enn_finite_tsum[I,D] AS interchange,
+    ppg_enn_finite_fubini[I,D] AS finiteFubini
+
+  f: VAR [D->ENN]
+
+  key: VAR [D->I]
+
+  d: VAR D
+
+  i: VAR I
+
+  F: VAR finite_set[D]
+
+  K: VAR finite_set[I]
+
+  fiberFunction(f,key)(i)(d): ENN =
+    IF i=key(d) THEN f(d) ELSE ennFinite(0) ENDIF
+
+  fiberMass(f,key)(i): ENN = flatSums.eTsum(fiberFunction(f,key)(i))
+
+  partialFiberSum(f,key,F)(i): ENN =
+    flatFinite.esum(F,fiberFunction(f,key)(i))
+
+  fiber_function_eta: LEMMA
+    (LAMBDA(d:D):fiberFunction(f,key)(i)(d))=fiberFunction(f,key)(i)
+
+  finite_outer_point: LEMMA
+    outerFinite.esum(K,LAMBDA(i:I):fiberFunction(f,key)(i)(d))=
+      IF K(key(d)) THEN f(d) ELSE ennFinite(0) ENDIF
+
+  finite_outer_function: LEMMA
+    (LAMBDA(d:D):outerFinite.esum(K,LAMBDA(i:I):fiberFunction(f,key)(i)(d)))=
+      (LAMBDA(d:D):IF K(key(d)) THEN f(d) ELSE ennFinite(0) ENDIF)
+
+  finite_fibers_sum: LEMMA
+    outerFinite.esum(K,fiberMass(f,key))=
+      flatSums.eTsum(LAMBDA(d:D):IF K(key(d)) THEN f(d) ELSE ennFinite(0) ENDIF)
+
+  finite_fibers_bound: LEMMA
+    ele(outerFinite.esum(K,fiberMass(f,key)),flatSums.eTsum(f))
+
+  outer_sum_bound: LEMMA
+    ele(outerSums.eTsum(fiberMass(f,key)),flatSums.eTsum(f))
+
+  finite_flat_as_rows: LEMMA
+    flatFinite.esum(F,f)=
+      flatFinite.esum(F,LAMBDA(d:D):outerFinite.esum(image(key,F),
+        LAMBDA(i:I):fiberFunction(f,key)(i)(d)))
+
+  finite_flat_partition: LEMMA
+    flatFinite.esum(F,f)=
+      outerFinite.esum(image(key,F),partialFiberSum(f,key,F))
+
+  partial_fiber_bound: LEMMA
+    ele(partialFiberSum(f,key,F)(i),fiberMass(f,key)(i))
+
+  finite_flat_bound: LEMMA
+    ele(flatFinite.esum(F,f),outerSums.eTsum(fiberMass(f,key)))
+
+  flat_sum_bound: LEMMA
+    ele(flatSums.eTsum(f),outerSums.eTsum(fiberMass(f,key)))
+
+  tsum_fibers: THEOREM
+    flatSums.eTsum(f)=outerSums.eTsum(fiberMass(f,key))
+
+END ppg_enn_fiber_tsum

@@ -1,0 +1,139 @@
+% A swapped state still reads one fixed table index per variable. Thus its
+% event is measurable under the same bad-event hypothesis as an ordinary
+% table check. Finite tagged units then use only sigma-algebra operations.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Lemma 3.4. Lean: PPGraphHLSUnitChecks.lean.
+ppg_hls_unit_event_measurable[C,V,Value:TYPE,domain:[V->set[Value]],
+  default:C,universe:{U:finite_set[C]|FORALL(c:C):U(c)},
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_mt_native_process[C,V,Value,domain,spaces,laws])
+  process:MTProcess]: THEORY
+BEGIN
+  IMPORTING ppg_hls_unit_checks[C,V,Value,domain,default,universe,
+      spaces,laws,process] AS units,
+    ppg_hls_augmented_pair_events[C,V,Value,domain,default,universe,
+      spaces,laws,process] AS pairs,
+    ppg_hls_process_table_bridge[C,V,Value,domain,spaces,laws,process] AS bridge,
+    ppg_hls_table_events[C,V,Value,domain,spaces,laws,process] AS tables,
+    ppg_mt_native_process[C,V,Value,domain,spaces,laws] AS native,
+    ppg_mt_native_spaces[C,V,Value,domain] AS originalSpaces,
+    ppg_mt_check_measurable[C,V,Value,domain] AS reads,
+    ppg_mt_read_probability[C,V,Value,domain,spaces,laws] AS readLaw,
+    ppg_hls_augmented_space[C,V,Value,domain,spaces,laws] AS aug,
+    ppg_shearer_bdd[C,V,process`footprint] AS graph,
+    ppg_hls_witness_dag[C,graph.dependencyGraph] AS dags,
+    ppg_hls_table_coordinates[C,V,process`footprint] AS coordinates,
+    ppg_hls_pair_keys[C,graph.dependencyGraph] AS keys,
+    ppg_hls_clique_ranks[C,graph.dependencyGraph] AS ranks,
+    ppg_hls_relative_coins[C,default,graph.dependencyGraph] AS coins,
+    ppg_hls_fair_orientation AS fair,
+    ppg_hls_table_check_core[C,V,Value,domain,process`footprint,native.badTest(process)] AS raw,
+    ppg_hls_swapped_tests[C,V,Value,domain,process`footprint,native.badTest(process)] AS swaps,
+    ppg_measurable_map[aug.OriginalTable,native.State] AS stateMaps,
+    ppg_measurable_map[aug.AugTable,aug.OriginalTable] AS originalMaps,
+    ppg_measurable_map[aug.AugTable,fair.OrientationCoin] AS coinMaps,
+    ppg_measurable_space[aug.AugTable] AS augSets,
+    ppg_measurable_compose[aug.AugTable,fair.OrientationCoin,fair.OrientationCoin] AS coinCompose,
+    ppg_finite_events[aug.AugTable,units.CheckUnit,aug.AugSigma] AS unitMeets
+
+  % This is the actual augmented sigma algebra, stored once so that
+  % closure lemmas do not repeat its tagged-domain coercion obligations.
+  unitSigma: augSets.MeasurableSpace = aug.AugSigma
+
+  M: VAR keys.DependencyMatching
+
+  D: VAR dags.WitnessDAG
+
+  u,v: VAR dags.WNode
+
+  e: VAR pairs.Arc
+
+  U: VAR units.CheckUnit
+
+  omega: VAR aug.OriginalTable
+
+  eta: VAR aug.AugTable
+
+  swappedCounter(D,u,v)(a:V): nat =
+    IF process`footprint(u`1)(a) AND process`footprint(v`1)(a)
+      THEN coordinates.localIndex(D,v)(a) ELSE coordinates.localIndex(D,u)(a) ENDIF
+
+  swappedState(D,u,v): [aug.OriginalTable->native.State] = reads.readAt(swappedCounter(D,u,v))
+
+  swappedEvent(D,u,v): set[aug.OriginalTable] = {omega:aug.OriginalTable|
+    process`bad(u`1)(swappedState(D,u,v)(omega))}
+
+  originalSingle(D,u): set[aug.AugTable] = {eta:aug.AugTable|
+    tables.tableEvent(D,u)(aug.originalTable(eta))}
+
+  originalSwapped(D,u,v): set[aug.AugTable] = {eta:aug.AugTable|
+    swappedEvent(D,u,v)(aug.originalTable(eta))}
+
+  keepCoin(M,D,e): set[aug.AugTable] = {eta:aug.AugTable|
+    pairs.pairCoin(M,D,e,eta)=fair.orientationKeep}
+
+  swapped_state_eq: LEMMA swappedState(D,u,v)(omega)=
+    swaps.swapShared(u,v)(raw.tableState(D,u)(omega),raw.tableState(D,v)(omega))
+
+  swapped_target_eq: LEMMA swappedState(D,v,u)(omega)=
+    swaps.swapShared(u,v)(raw.tableState(D,v)(omega),raw.tableState(D,u)(omega))
+
+  swapped_event_preimage: LEMMA swappedEvent(D,u,v)=
+    stateMaps.inverseImage(swappedState(D,u,v),process`bad(u`1))
+
+  measurable_swapped_state: LEMMA stateMaps.measurable(aug.OriginalSigma,
+    originalSpaces.NativeStateSigma(spaces),swappedState(D,u,v))
+
+  measurable_swapped_event: LEMMA tables.badMeasurable IMPLIES
+    aug.OriginalSigma(swappedEvent(D,u,v))
+
+  original_single_preimage: LEMMA originalSingle(D,u)=
+    originalMaps.inverseImage(aug.originalTable,tables.tableEvent(D,u))
+
+  original_swapped_preimage: LEMMA originalSwapped(D,u,v)=
+    originalMaps.inverseImage(aug.originalTable,swappedEvent(D,u,v))
+
+  measurable_original_single: LEMMA tables.badMeasurable IMPLIES
+    unitSigma(originalSingle(D,u))
+
+  measurable_original_swapped: LEMMA tables.badMeasurable IMPLIES
+    unitSigma(originalSwapped(D,u,v))
+
+  coin_coordinate_measurable: LEMMA coinMaps.measurable(unitSigma,fair.OrientationSigma,
+    LAMBDA(eta:aug.AugTable):aug.auxiliaryCoins(eta)((keys.matchPair(M,e`1`1),
+      ranks.cliqueRank(D,keys.matchPair(M,e`1`1),e`1))))
+
+  pair_coin_function: LEMMA
+    (LAMBDA(eta:aug.AugTable):pairs.pairCoin(M,D,e,eta))=
+    (LAMBDA(eta:aug.AugTable):coins.relativeCoin(M,e`1`1,
+      aug.auxiliaryCoins(eta)((keys.matchPair(M,e`1`1),
+        ranks.cliqueRank(D,keys.matchPair(M,e`1`1),e`1)))))
+
+  measurable_pair_coin: LEMMA coinMaps.measurable(unitSigma,fair.OrientationSigma,
+    LAMBDA(eta:aug.AugTable):pairs.pairCoin(M,D,e,eta))
+
+  keep_coin_preimage: LEMMA keepCoin(M,D,e)=coinMaps.inverseImage(
+    LAMBDA(eta:aug.AugTable):pairs.pairCoin(M,D,e,eta),singleton(fair.orientationKeep))
+
+  measurable_keep_coin: LEMMA unitSigma(keepCoin(M,D,e))
+
+  pair_event_set_expression: LEMMA pairs.augmentedPairCheck(M,D,e)=
+    intersection(intersection(originalSingle(D,e`1),originalSingle(D,e`2)),
+      union(keepCoin(M,D,e),complement(intersection(
+        originalSwapped(D,e`1,e`2),originalSwapped(D,e`2,e`1)))))
+
+  measurable_pair_event: LEMMA tables.badMeasurable IMPLIES
+    unitSigma(pairs.augmentedPairCheck(M,D,e))
+
+  measurableSet_unitEvent: THEOREM tables.badMeasurable IMPLIES
+    aug.AugSigma(units.unitEvent(M,D)(U))
+
+  unit_check_as_finite_meet: LEMMA units.unitCheck(M,D)=
+    unitMeets.finiteMeet(units.checkUnits(M,D),units.unitEvent(M,D))
+
+  measurableSet_unitCheck: THEOREM tables.badMeasurable IMPLIES
+    aug.AugSigma(units.unitCheck(M,D))
+
+END ppg_hls_unit_event_measurable

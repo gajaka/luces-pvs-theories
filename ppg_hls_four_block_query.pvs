@@ -1,0 +1,27 @@
+% Four reads carry their complete table address, including the slot.
+% Pairwise disjoint private/shared blocks separate all different variables;
+% the two shared reads are separated by their different slots.
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Proposition 3.3 and proof of Lemma 3.4.
+% Lean counterpart: PPGraphHLSBlockQueries.lean, four_block_query_injective.
+ppg_hls_four_block_query[V:TYPE,F,H,Z:finite_set[V]]: THEORY
+BEGIN
+  FourIndex: TYPE = union[union[(F),(Z)],union[(H),(H)]]
+
+  f,g: VAR [V->nat]
+
+  fourVariable(k:FourIndex):V = CASES k OF
+    inl(a):CASES a OF inl(x):x,inr(z):z ENDCASES,
+    inr(b):CASES b OF inl(y):y,inr(y):y ENDCASES ENDCASES
+
+  fourSlot(f,g)(k:FourIndex):nat = CASES k OF
+    inl(a):CASES a OF inl(x):f(x),inr(z):g(z) ENDCASES,
+    inr(b):CASES b OF inl(y):f(y),inr(y):g(y) ENDCASES ENDCASES
+
+  fourAddress(f,g)(k:FourIndex):[nat,V] = (fourSlot(f,g)(k),fourVariable(k))
+
+  four_block_query_injective: THEOREM disjoint?(F,H) AND disjoint?(H,Z) AND
+    disjoint?(F,Z) AND (FORALL(a:(H)):f(a)/=g(a)) IMPLIES
+      injective?(fourAddress(f,g))
+
+END ppg_hls_four_block_query

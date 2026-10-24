@@ -1,0 +1,185 @@
+(|ppg_hls_refined_probability|
+ (|selected_arc_data| 0
+  (|selected_arc_data-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "selection.selectedArcs_subset" ("M" "O`mate" "D" "dag"))
+     (LEMMA "overlap.overlap_symmetric" ("D" "O" "i" "e!1`1`1"))
+     (TYPEPRED "O`mate") (EXPAND "selection.matchingArcs")
+     (GRIND :DEFS ("subset?" "intersection" "member" "Edge") :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|selected_overlap_lower| 0
+  (|selected_overlap_lower-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "selected_arc_data" ("e" "e!1")) (EXPAND "hInt")
+     (INST -2 "e!1`1`1") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|pair_saving_bound| 0
+  (|pair_saving_bound-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "selected_arc_data" ("e" "e!1"))
+     (LEMMA "selected_overlap_lower" ("e" "e!1"))
+     (LEMMA "overlap.overlap_nonnegative" ("D" "O" "i" "e!1`1`1"))
+     (LEMMA
+      "ppg_hls_augmented_pair_public_saving[C,V,Value,domain,variableUniverse,default,universe,spaces,laws,process].measureReal_augmentedPairCheck_le"
+      ("u" "e!1`1" "v" "e!1`2" "matching" "O`mate" "dag" "dag" "delta"
+       "O`delta(e!1`1`1)"))
+     (EXPAND "hprob") (EXPAND "pairMass") (GRIND :DEFS NIL :IF-MATCH NIL)
+     (INST* -12 ("e!1`1`1") ("e!1`2`1")) (ASSERT) (CASE "(e!1`1,e!1`2)=e!1")
+     (ASSERT) (APPLY-EXTENSIONALITY 1 :HIDE? T) (EXPAND "aug.augmentedMeasure")
+     (EXPAND "stateLaw.stateMeasure") (EXPAND "pairs.augmentedPairCheck")
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|pair_discount_nonnegative| 0
+  (|pair_discount_nonnegative-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "overlap.discount_le" ("D" "O" "i" "e!1`1`1"))
+     (LEMMA "overlap.discount_le" ("D" "O" "i" "e!1`2`1")) (EXPAND "hp")
+     (EXPAND "pairDiscount")
+     (LEMMA "nonnegative_product" ("a" "p(e!1`1`1)" "b" "p(e!1`2`1)"))
+     (LEMMA "nonnegative_product"
+      ("a" "p(e!1`1`1)*p(e!1`2`1)" "b" "1-2*overlap.discount(O)(e!1`1`1)"))
+     (LEMMA "nonnegative_product"
+      ("a" "p(e!1`1`1)*p(e!1`2`1)*(1-2*overlap.discount(O)(e!1`1`1))" "b"
+       "1-2*overlap.discount(O)(e!1`2`1)"))
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|pair_probability_discount| 0
+  (|pair_probability_discount-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "pair_saving_bound" ("e" "e!1"))
+     (LEMMA "selected_arc_data" ("e" "e!1"))
+     (LEMMA "pair_saving_le_discounted"
+      ("a" "p(e!1`1`1)" "b" "p(e!1`2`1)" "d" "O`delta(e!1`1`1)"))
+     (EXPAND "hp") (EXPAND "pairDiscount") (EXPAND "overlap.discount")
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|measure_augmentedPairCheck_le_discount| 0
+  (|measure_augmentedPairCheck_le_discount-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "pair_probability_discount" ("e" "e!1"))
+     (LEMMA "ofReal_mono" ("x" "pairMass(e!1)" "y" "pairDiscount(e!1)"))
+     (ASSERT))
+    NIL NIL)
+   NIL NIL))
+ (|single_probability_value| 0
+  (|single_probability_value-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "marginal.original_single_mass" ("D" "dag" "u" "u!1"))
+     (EXPAND "singleMass") (EXPAND "hprob") (GRIND :DEFS NIL :IF-MATCH NIL)
+     (INST -3 "u!1`1") (ASSERT))
+    NIL NIL)
+   NIL NIL))
+ (|unit_probability_split| 0
+  (|unit_probability_split-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "unitProbability.real_unit_split_product" ("M" "O`mate" "Q" "dag"))
+     (EXPAND "singleMass") (EXPAND "pairMass")
+     (EXPAND "marginal.originalSingle")
+     (EXPAND "measurableUnits.originalSingle") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|unit_probability_real_bound| 0
+  (|unit_probability_real_bound-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "unit_probability_split")
+     (LEMMA "nodeAlgebra.product_congr"
+      ("F"
+       "difference(dag`nodes,selection.arcNodes(selection.selectedArcs(O`mate,dag)))"
+       "f" "singleMass" "g" "LAMBDA(u:WNode):p(u`1)"))
+     (LEMMA "arcProducts.product_mono"
+      ("S" "selection.selectedArcs(O`mate,dag)" "f" "pairMass" "g"
+       "pairDiscount"))
+     (LEMMA "nodeOrder.product_nonnegative"
+      ("F"
+       "difference(dag`nodes,selection.arcNodes(selection.selectedArcs(O`mate,dag)))"
+       "f" "LAMBDA(u:WNode):p(u`1)"))
+     (LEMMA "single_probability_value") (LEMMA "pair_probability_discount")
+     (LEMMA "discount.scalar_left_mono"
+      ("a"
+       "nodeProduct.product(difference(dag`nodes,selection.arcNodes(selection.selectedArcs(O`mate,dag))),LAMBDA(u:WNode):p(u`1))"
+       "b" "arcProduct.product(selection.selectedArcs(O`mate,dag),pairMass)"
+       "c"
+       "arcProduct.product(selection.selectedArcs(O`mate,dag),pairDiscount)"))
+     (EXPAND "nodeOrder.NonnegativeFactors") (EXPAND "hp") (EXPAND "pairMass")
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|logMeasure_unitCheck_le_refinedWeight| 0
+  (|logMeasure_unitCheck_le_refinedWeight-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "unit_probability_real_bound")
+     (LEMMA "ofReal_mono"
+      ("x" "aug.augmentedMeasure(units.unitCheck(O`mate,dag))" "y"
+       "nodeProduct.product(difference(dag`nodes,selection.arcNodes(selection.selectedArcs(O`mate,dag))),LAMBDA(u:WNode):p(u`1))*arcProduct.product(selection.selectedArcs(O`mate,dag),pairDiscount)"))
+     (LEMMA "discount.selected_pair_product_le_refined" ("O" "O" "D" "dag"))
+     (EXPAND "pairDiscount") (EXPAND "hp")
+     (LEMMA "ele_transitive"
+      ("x" "ofReal(aug.augmentedMeasure(units.unitCheck(O`mate,dag)))" "y"
+       "ofReal(nodeProduct.product(difference(dag`nodes,selection.arcNodes(selection.selectedArcs(O`mate,dag))),LAMBDA(u:WNode):p(u`1))*arcProduct.product(selection.selectedArcs(O`mate,dag),LAMBDA(e:pairs.Arc):p(e`1`1)*p(e`2`1)*(1-2*overlap.discount(O)(e`1`1))*(1-2*overlap.discount(O)(e`2`1))))"
+       "z" "refined.refinedWeight(O)(dag)"))
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|hprob_TCC1| 0
+  (|hprob_TCC1-v5-explicit-proposal| NIL 0
+   ("" (THEN (SKOSIMP*) (TYPEPRED "process") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|hInt_TCC1| 0
+  (|hInt_TCC1-v5-explicit-proposal| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "process")
+     (LEMMA
+      "ppg_measurable_space[ppg_mt_native_process[C,V,Value,domain,spaces,laws].State].measurable_intersection"
+      ("S" "ppg_mt_native_spaces[C,V,Value,domain].NativeStateSigma(spaces)"
+       "A" "process`bad(i!1)" "B" "process`bad(O`mate(i!1))"))
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|singleMass_TCC1| 0
+  (|singleMass_TCC1-v5-explicit-proposal| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "process")
+     (LEMMA "measurableUnits.measurable_original_single" ("D" "dag" "u" "u!1"))
+     (EXPAND "tables.badMeasurable") (EXPAND "measurableUnits.unitSigma")
+     (EXPAND "marginal.originalSingle")
+     (EXPAND "measurableUnits.originalSingle") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|pairMass_TCC1| 0
+  (|pairMass_TCC1-v5-explicit-proposal| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "process")
+     (LEMMA "measurableUnits.measurable_pair_event"
+      ("M" "O`mate" "D" "dag" "e" "e!1"))
+     (EXPAND "tables.badMeasurable") (EXPAND "measurableUnits.unitSigma")
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|selected_overlap_lower_TCC1| 0
+  (|selected_overlap_lower_TCC1-v5-explicit-proposal| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "process")
+     (LEMMA
+      "ppg_measurable_space[ppg_mt_native_process[C,V,Value,domain,spaces,laws].State].measurable_intersection"
+      ("S" "ppg_mt_native_spaces[C,V,Value,domain].NativeStateSigma(spaces)"
+       "A" "process`bad(e!1`1`1)" "B" "process`bad(e!1`2`1)"))
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|unit_probability_split_TCC1| 0
+  (|unit_probability_split_TCC1-v5-explicit-proposal| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "measurableUnits.measurableSet_unitCheck" ("M" "O`mate" "D" "dag"))
+     (ASSERT))
+    NIL NIL)
+   NIL NIL)))

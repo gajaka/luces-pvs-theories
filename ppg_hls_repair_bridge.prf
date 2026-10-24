@@ -1,0 +1,102 @@
+(|ppg_hls_repair_bridge|
+ (|process_well_formed| 0
+  (|process_well_formed-1| NIL 0
+   ("" (THEN (LEMMA "hlsRepairNativeProcess.process_locality" ("P" "process")) (ASSERT)) NIL NIL)
+   NIL NIL))
+ (|enumeration_complete| 0
+  (|enumeration_complete-1| NIL 0
+   ("" (THEN (TYPEPRED "eventOrder") (EXPAND "hlsRepairSelection.completeEnumeration") (ASSERT)) NIL NIL)
+   NIL NIL))
+ (|hls_finite_expectation| 0
+  (|hls_finite_expectation-1| NIL 0
+   ("" (THEN (SKOSIMP*)
+   (LEMMA "hlsRepairExpectation.randomInitETLog_lt_top"
+    ("eventOrder" "eventOrder"))
+   (EXPAND "hlsRepairExpectation.assumptions") (EXPAND "hprob") (EXPAND "hp")
+   (EXPAND "hInt") (EXPAND "criterion") (EXPAND "hlsRepairExpectation.hprob")
+   (EXPAND "hlsRepairExpectation.hp") (EXPAND "hlsRepairExpectation.hInt")
+   (EXPAND "hlsRepairExpectation.criterion")
+   (EXPAND
+    "ppg_hls_policy_expectation[C,V,Value,domain,variableUniverse,default,universe,spaces,laws,process,p,O].hprob")
+   (EXPAND
+    "ppg_hls_policy_expectation[C,V,Value,domain,variableUniverse,default,universe,spaces,laws,process,p,O].hp")
+   (EXPAND
+    "ppg_hls_policy_expectation[C,V,Value,domain,variableUniverse,default,universe,spaces,laws,process,p,O].hInt")
+   (EXPAND
+    "ppg_hls_policy_expectation[C,V,Value,domain,variableUniverse,default,universe,spaces,laws,process,p,O].criterion")
+   (EXPAND "nativeBad") (GRIND :DEFS NIL :IF-MATCH ALL)) NIL NIL)
+   NIL NIL))
+ (|good_state_exists| 0
+  (|good_state_exists-1| NIL 0
+   ("" (THEN (SKOSIMP*) (LEMMA "enumeration_complete")
+   (LEMMA "hls_finite_expectation")
+   (LEMMA "hlsRepairTermination.exists_MTGood_of_randomInitETLog_lt_top"
+    ("vars" "process`footprint" "bad" "nativeBad" "fallback" "default"
+     "enumeration" "eventOrder"))
+   (EXPAND "nativeBad") (GRIND :DEFS NIL :IF-MATCH ALL)) NIL NIL)
+   NIL NIL))
+ (|good_repair_reachable| 0
+  (|good_repair_reachable-1| NIL 0
+   ("" (THEN (SKOSIMP*) (LEMMA "process_well_formed") (LEMMA "enumeration_complete")
+   (SPREAD
+    (CASE
+        "EXISTS (z:hlsRepairModel.MTState):hlsRepairSelection.MTGood(hlsRepairNativeProcess.badTest(process),z)")
+    ((THEN (SKOLEM -1 ("repairGood"))
+      (LEMMA "hlsRepairTarget.exists_mtReach_good_of_good_target"
+       ("vars" "process`footprint" "bad"
+        "hlsRepairNativeProcess.badTest(process)" "fallback" "default"
+        "enumeration" "eventOrder" "s" "s!1" "z" "repairGood"))
+      (ASSERT))
+     (THEN (LEMMA "good_state_exists") (ASSERT))))) NIL NIL)
+   NIL NIL))
+ (|mtRepairGraph_globally_repairable| 0
+  (|mtRepairGraph_globally_repairable-1| NIL 0
+   ("" (THEN (SKOSIMP*) (LEMMA "good_state_exists") (LEMMA "process_well_formed") (LEMMA "enumeration_complete") (LEMMA "hlsRepairTarget.mtRepairGraph_globally_repairable_of_good_target" ("vars" "process`footprint" "bad" "hlsRepairNativeProcess.badTest(process)" "fallback" "default" "enumeration" "eventOrder")) (GRIND :DEFS NIL :IF-MATCH ALL)) NIL NIL)
+   NIL NIL))
+
+(|hlsRepairTarget_TCC1| 0
+ (|hlsRepairTarget_TCC1-candidate| NIL 0
+  (""
+   (THEN (SKOLEM 1 ("repairVariable")) (TYPEPRED "variableUniverse")
+    (EXPAND "fullset") (GRIND :DEFS NIL :IF-MATCH ALL))
+   NIL NIL)
+  NIL NIL))
+
+(|nativeBad_TCC1| 0
+ (|nativeBad_TCC1-candidate| NIL 0
+  (""
+   (THEN (SKOLEM 1 ("repairEtaLabel")) (TYPEPRED "process")
+    (EXPAND "hlsRepairNativeProcess.badTest") (GRIND :DEFS NIL :IF-MATCH ALL)
+    (SPREAD
+     (CASE
+         "{s:ppg_mt_semantics[C,V,Value,domain].MTState|process`bad(repairEtaLabel)(s)}=process`bad(repairEtaLabel)")
+     ((ASSERT) (THEN (APPLY-EXTENSIONALITY 1) (SKOSIMP*) (ASSERT)))))
+   NIL NIL)
+  NIL NIL))
+
+(|hprob_TCC1| 0
+ (|hprob_TCC1-candidate| NIL 0
+  (""
+   (THEN (SKOLEM 1 ("repairProbabilityLabel")) (TYPEPRED "process")
+    (GRIND :DEFS NIL :IF-MATCH ALL))
+   NIL NIL)
+  NIL NIL))
+
+(|hInt_TCC1| 0
+ (|hInt_TCC1-candidate| NIL 0
+  (""
+   (THEN (SKOLEM 1 ("repairIntersectionLabel")) (TYPEPRED "process")
+    (LEMMA
+     "ppg_measurable_space[ppg_mt_native_process[C,V,Value,domain,spaces,laws].State].measurable_intersection"
+     ("S" "ppg_mt_native_spaces[C,V,Value,domain].NativeStateSigma(spaces)" "A"
+      "process`bad(repairIntersectionLabel)" "B"
+      "process`bad(O`mate(repairIntersectionLabel))"))
+    (GRIND :DEFS NIL :IF-MATCH ALL))
+   NIL NIL)
+  NIL NIL))
+
+(|hls_finite_expectation_TCC1| 0
+ (|hls_finite_expectation_TCC1-candidate| NIL 0
+  ("" (THEN (SKOSIMP*) (LEMMA "enumeration_complete") (ASSERT)) NIL NIL) NIL
+  NIL))
+)

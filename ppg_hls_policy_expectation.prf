@@ -1,0 +1,190 @@
+
+(|ppg_hls_policy_expectation|
+ (|finite_ofReal_sum| 0
+  (|finite_ofReal_sum-draft| NIL 0
+   (""
+    (SPREAD (INDUCT "F" :NAME "finite_set_induction_rest[C]")
+     ((THEN (SKOSIMP*) (EXPAND "policyExpLabelSums.esum" 1 1) (EXPAND "policyExpRealSums.fsum" 1 1)
+       (EXPAND "ofReal") (GRIND :IF-MATCH NIL :EXCLUDE ("esum" "fsum" "card" "is_finite")))
+      (THEN (SKOSIMP*) (INST -1 "f!1") (EXPAND "policyExpLabelSums.esum" 1 1)
+       (EXPAND "policyExpRealSums.fsum" 1 1) (TYPEPRED "SS!1")
+       (LEMMA "sets_lemmas[C].rest_member" ("a" "SS!1"))
+       (LEMMA "sets_lemmas[C].choose_member" ("a" "SS!1"))
+       (LEMMA "policyExpRealSums.fsum_nonnegative" ("S" "rest(SS!1)" "f" "f!1"))
+       (LEMMA "ofReal_add_nonnegative"
+        ("a" "f!1(choose(SS!1))" "b" "policyExpRealSums.fsum(rest(SS!1),f!1)"))
+       (GRIND :DEFS NIL :IF-MATCH ALL) (LEMMA "sets_lemmas[C].rest_member" ("a" "SS!1"))
+       (EXPAND "member") (GRIND :DEFS NIL :IF-MATCH ALL))))
+    NIL NIL)
+   NIL NIL))
+ (|finite_below_ofReal| 0
+  (|finite_below_ofReal-draft| NIL 0
+   ("" (THEN (SKOSIMP*) (EXPAND "ofReal") (EXPAND "ele") (GRIND :DEFS NIL :IF-MATCH NIL)) NIL NIL)
+   NIL NIL))
+ (|event_probability_le_one| 0
+  (|event_probability_le_one-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "process") (LEMMA "policyExpEventLaw.measurable_event_probability")
+     (LEMMA "policyExpEventLaw.eventProbability_le_one" ("p" "p")) (EXPAND "hprob")
+     (EXPAND "ppg_mt_state_probability[C,V,Value,domain,variableUniverse,spaces,laws].stateMeasure"
+      :ACTUALS? T)
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|reduced_nonnegative| 0
+  (|reduced_nonnegative-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (EXPAND "policyExpStable.nonnegativeOn") (SKOSIMP*)
+     (LEMMA "event_probability_le_one") (LEMMA "policyExpOverlap.reduced_pos" ("D" "O" "i" "i!1"))
+     (EXPAND "hp") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|singleton_budget_nonnegative| 0
+  (|singleton_budget_nonnegative-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "reduced_nonnegative")
+     (LEMMA "policyExpStable.stableBudget_nonneg"
+      ("p" "policyExpOverlap.reduced(O)" "B" "universe" "J" "sets[C].singleton(a!1)"))
+     (EXPAND "assumptions") (EXPAND "criterion") (EXPAND "singletonBudget")
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|each_count_le_budget| 0
+  (|each_count_le_budget-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA
+      "ppg_hls_policy_count_bound[C,V,Value,domain,variableUniverse,default,universe,spaces,laws,process,p,O,a!1].expectedCount_le_stableBudget"
+      ("sig" "sig!1"))
+     (EXPAND "assumptions") (EXPAND "hprob") (EXPAND "hp") (EXPAND "hInt") (EXPAND "criterion")
+     (EXPAND "singletonBudget") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|expected_work_label_sum| 0
+  (|expected_work_label_sum-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "policyExpCounts.expectedWork_eq_sum_expectedCount" ("sig" "sig!1"))
+     (EXPAND "expectedWork") (GRIND :DEFS NIL :IF-MATCH NIL)
+     (EXPAND "policyExpWorkLaw.expectedWork") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|expectedWork_le_sum_stableBudget| 0
+  (|expectedWork_le_sum_stableBudget-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "policyExpCounts_TCC1")
+     (LEMMA "expected_work_label_sum" ("sig" "sig!1"))
+     (LEMMA "policyExpFiniteOrder.esum_monotone"
+      ("F" "universe" "f" "LAMBDA(a:C):policyExpCounts.expectedCount(sig!1,a)" "g"
+       "LAMBDA(a:C):ofReal(singletonBudget(a))"))
+     (LEMMA "each_count_le_budget")
+     (LEMMA "finite_ofReal_sum" ("F" "universe" "f" "singletonBudget"))
+     (LEMMA "singleton_budget_nonnegative") (EXPAND "totalBudget") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|expectedWork_lt_top| 0
+  (|expectedWork_lt_top-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "expectedWork_le_sum_stableBudget" ("sig" "sig!1"))
+     (LEMMA "finite_below_ofReal" ("z" "expectedWork(sig!1)" "b" "totalBudget"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|slack_implies_criterion| 0
+  (|slack_implies_criterion-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "reduced_nonnegative")
+     (LEMMA "policyExpSlack.slack_base_strict"
+      ("e" "epsilon!1" "p" "policyExpOverlap.reduced(O)" "B" "universe"))
+     (EXPAND "criterion") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|stable_budget_slack_bound| 0
+  (|stable_budget_slack_bound-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "reduced_nonnegative")
+     (LEMMA "policyExpSlack.sum_stableBudget_le_card_div_slack"
+      ("e" "epsilon!1" "p" "policyExpOverlap.reduced(O)" "B" "universe"))
+     (EXPAND "totalBudget") (EXPAND "singletonBudget") (EXPAND "policyExpSlack.singletonBudgets")
+     (EXPAND "div0") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|expectedWork_le_card_div_slack| 0
+  (|expectedWork_le_card_div_slack-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "slack_implies_criterion" ("epsilon" "epsilon!1"))
+     (LEMMA "expectedWork_le_sum_stableBudget" ("sig" "sig!1"))
+     (LEMMA "stable_budget_slack_bound" ("epsilon" "epsilon!1"))
+     (LEMMA "ppg_enn_ofreal.ofReal_mono"
+      ("x" "totalBudget" "y" "finite_sets[C].card(universe)/epsilon!1"))
+     (LEMMA "ppg_enn_add.ele_transitive"
+      ("x" "expectedWork(sig!1)" "y" "ofReal(totalBudget)" "z"
+       "ofReal(finite_sets[C].card(universe)/epsilon!1)"))
+     (EXPAND "assumptions") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|ae_exists_good| 0
+  (|ae_exists_good-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "expectedWork_lt_top" ("sig" "sig!1"))
+     (LEMMA "policyExpTermination.ae_exists_good_of_expectedWork_lt_top" ("sig" "sig!1"))
+     (EXPAND "expectedWork") (GRIND :DEFS NIL :IF-MATCH NIL)
+     (EXPAND "policyExpWorkLaw.expectedWork") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|measure_termination_eq_one| 0
+  (|measure_termination_eq_one-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "expectedWork_lt_top" ("sig" "sig!1"))
+     (LEMMA "policyExpTermination.measure_termination_eq_one_of_expectedWork_lt_top"
+      ("sig" "sig!1"))
+     (EXPAND "expectedWork") (GRIND :DEFS NIL :IF-MATCH NIL)
+     (EXPAND "policyExpWorkLaw.expectedWork") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|policyExpCounts_TCC1| 0
+  (|policyExpCounts_TCC1-normal-current-TCC-proposal| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "process")
+     (EXPAND "ppg_mt_native_process[C,V,Value,domain,spaces,laws].badTest")
+     (GRIND :DEFS NIL :IF-MATCH ALL)
+     (SPREAD
+      (CASE
+          #A((83) BASE-CHAR
+             . "{s:ppg_mt_semantics[C,V,Value,domain].MTState|process`bad(a!1)(s)}=process`bad(a!1)"))
+      ((ASSERT) (THEN (APPLY-EXTENSIONALITY 1) (SKOSIMP*) (ASSERT)))))
+    NIL NIL)
+   NIL NIL))
+ (|hprob_TCC1| 0
+  (|hprob_TCC1-normal-current-TCC-proposal| NIL 0
+   ("" (THEN (SKOSIMP*) (TYPEPRED "process") (GRIND :DEFS NIL :IF-MATCH ALL)) NIL NIL) NIL NIL))
+ (|hInt_TCC1| 0
+  (|hInt_TCC1-normal-current-TCC-proposal| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "process")
+     (LEMMA
+      "ppg_measurable_space[ppg_mt_semantics[C,V,Value,domain].MTState].measurable_intersection"
+      ("S" "ppg_mt_native_spaces[C,V,Value,domain].NativeStateSigma(spaces)" "A" "process`bad(i!1)"
+       "B" "process`bad(O`mate(i!1))"))
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|expected_work_label_sum_TCC1| 0
+  (|expected_work_label_sum_TCC1-normal-current-TCC-proposal| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "process")
+     (EXPAND "ppg_mt_native_process[C,V,Value,domain,spaces,laws].badTest")
+     (GRIND :DEFS NIL :IF-MATCH ALL)
+     (SPREAD
+      (CASE
+          #A((83) BASE-CHAR
+             . "{s:ppg_mt_semantics[C,V,Value,domain].MTState|process`bad(a!2)(s)}=process`bad(a!2)"))
+      ((ASSERT) (THEN (APPLY-EXTENSIONALITY 1) (SKOSIMP*) (ASSERT)))))
+    NIL NIL)
+   NIL NIL))
+ (|measure_termination_eq_one_TCC1| 0
+  (|measure_termination_eq_one_TCC1-normal-current-TCC-proposal| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "policyExpTermination.termination_event_measurable" ("sig" "sig!1"))
+     (ASSERT))
+    NIL NIL)
+   NIL NIL)))

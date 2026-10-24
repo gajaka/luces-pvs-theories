@@ -1,0 +1,145 @@
+
+(|ppg_hls_policy_count_bound|
+ (|ordinal_subset_root_union| 0
+  (|ordinal_subset_root_union-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "countBoundOccurrence.process_local_bad")
+     (LEMMA "ordinalOccurrence_subset_rootUnion" ("d" "sig!1" "a" "alpha" "r" "r!1"))
+     (LEMMA "countBoundOccurrence.root_union_raw_equal" ("a" "alpha" "r" "r!1"))
+     (EXPAND "countBoundCounts.nativeOrdinalEvents") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|ordinal_mass_le_root| 0
+  (|ordinal_mass_le_root-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "countBoundCounts_TCC1") (LEMMA "rootMasses_TCC1" ("r" "r!1"))
+     (LEMMA "ordinal_subset_root_union" ("sig" "sig!1" "r" "r!1"))
+     (LEMMA "countBoundNativeMass.fm_monotone"
+      ("A" "countBoundCounts.nativeOrdinalEvents(sig!1,alpha)(r!1)" "B"
+       "countBoundUnions.rootUnion(alpha,r!1)"))
+     (EXPAND "ordinalMasses") (EXPAND "rootMasses") (EXPAND "ele") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|expected_count_ordinal_sum| 0
+  (|expected_count_ordinal_sum-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "countBoundCounts_TCC1")
+     (LEMMA "countBoundCounts.expectedCount_eq_tsum_ordinalOccurrence" ("sig" "sig!1" "a" "alpha"))
+     (LEMMA "countBoundOrdinalSum.eTsum_embed"
+      ("h" "LAMBDA(r:nat):logMeasure(countBoundCounts.nativeOrdinalEvents(sig!1,alpha)(r))"))
+     (EXPAND "ordinalMasses") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|expected_count_le_root_sum| 0
+  (|expected_count_le_root_sum-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "expected_count_ordinal_sum" ("sig" "sig!1"))
+     (LEMMA "countBoundOrdinalOrder.eTsum_monotone" ("f" "ordinalMasses(sig!1)" "g" "rootMasses"))
+     (SPREAD (CASE "FORALL(r:nat):ele(ordinalMasses(sig!1)(r),rootMasses(r))")
+      ((ASSERT)
+       (THEN (SKOSIMP*) (LEMMA "ordinal_mass_le_root" ("sig" "sig!1" "r" "r!1")) (ASSERT)))))
+    NIL NIL)
+   NIL NIL))
+ (|each_root_refined| 0
+  (|each_root_refined-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA
+      "ppg_hls_root_refined_probability[C,V,Value,domain,variableUniverse,default,universe,spaces,laws,process,p,O,alpha,r!1].root_union_le_refined")
+     (EXPAND "hprob") (EXPAND "hp") (EXPAND "hInt") (EXPAND "rootMasses")
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|root_sum_le_refined| 0
+  (|root_sum_le_refined-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "countBoundOrdinalOrder.eTsum_monotone"
+      ("f" "rootMasses" "g"
+       "countBoundWeights.rootFamilyWeight(countBoundRefined.refinedWeight(O))"))
+     (LEMMA "each_root_refined")
+     (LEMMA "countBoundWeights.tsum_rootFamily_weight_eq"
+      ("w" "countBoundRefined.refinedWeight(O)"))
+     (EXPAND "properTotal") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|expectedCount_le_tsum_refinedWeight| 0
+  (|expectedCount_le_tsum_refinedWeight-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "countBoundCounts_TCC1")
+     (LEMMA "expected_count_le_root_sum" ("sig" "sig!1")) (LEMMA "root_sum_le_refined")
+     (LEMMA "ppg_enn_add.ele_transitive"
+      ("x" "countBoundCounts.expectedCount(sig!1,alpha)" "y"
+       "countBoundOrdinalSum.eTsum(rootMasses)" "z" "properTotal"))
+     (ASSERT))
+    NIL NIL)
+   NIL NIL))
+ (|event_probability_le_one| 0
+  (|event_probability_le_one-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "process") (LEMMA "countBoundEventLaw.measurable_event_probability")
+     (LEMMA "countBoundEventLaw.eventProbability_le_one" ("p" "p")) (EXPAND "hprob")
+     (EXPAND "ppg_mt_state_probability[C,V,Value,domain,variableUniverse,spaces,laws].stateMeasure"
+      :ACTUALS? T)
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|expectedCount_le_stableBudget| 0
+  (|expectedCount_le_stableBudget-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "countBoundCounts_TCC1")
+     (LEMMA "expectedCount_le_tsum_refinedWeight" ("sig" "sig!1"))
+     (LEMMA "event_probability_le_one")
+     (LEMMA "countBoundBudget.tsum_refinedWeight_le_stableBudget")
+     (LEMMA "ppg_enn_add.ele_transitive"
+      ("x" "countBoundCounts.expectedCount(sig!1,alpha)" "y" "properTotal" "z"
+       "ofReal(countBoundStable.stableBudget(countBoundOverlap.reduced(O),universe,sets[C].singleton(alpha)))"))
+     (EXPAND "hprob") (EXPAND "hp") (EXPAND "hInt") (EXPAND "properTotal") (EXPAND "restrict")
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|countBoundCounts_TCC1| 0
+  (|countBoundCounts_TCC1-candidate| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "process")
+     (EXPAND "ppg_mt_native_process[C,V,Value,domain,spaces,laws].badTest")
+     (GRIND :DEFS NIL :IF-MATCH ALL)
+     (SPREAD
+      (CASE
+          #A((83) BASE-CHAR
+             . "{s:ppg_mt_semantics[C,V,Value,domain].MTState|process`bad(a!1)(s)}=process`bad(a!1)"))
+      ((ASSERT) (THEN (APPLY-EXTENSIONALITY 1) (SKOSIMP*) (ASSERT)))))
+    NIL NIL)
+   NIL NIL))
+ (|countBoundNativeMass_TCC1| 0
+  (|countBoundNativeMass_TCC1-candidate| NIL 0
+   (""
+    (THEN (TYPEPRED "ppg_mt_native_spaces[C,V,Value,domain].NativeTableSigma(spaces)")
+     (LEMMA "ppg_nasa_sigma[ppg_mt_random_process[C,V,Value,domain].LogSpace].sequential_to_nasa"
+      ("S" "ppg_mt_native_spaces[C,V,Value,domain].NativeTableSigma(spaces)"))
+     (ASSERT))
+    NIL NIL)
+   NIL NIL))
+ (|hprob_TCC1| 0
+  (|hprob_TCC1-candidate| NIL 0
+   ("" (THEN (SKOSIMP*) (TYPEPRED "process") (GRIND :DEFS NIL :IF-MATCH ALL)) NIL NIL) NIL NIL))
+ (|hInt_TCC1| 0
+  (|hInt_TCC1-candidate| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "process")
+     (LEMMA
+      "ppg_measurable_space[ppg_mt_semantics[C,V,Value,domain].MTState].measurable_intersection"
+      ("S" "ppg_mt_native_spaces[C,V,Value,domain].NativeStateSigma(spaces)" "A" "process`bad(i!1)"
+       "B" "process`bad(O`mate(i!1))"))
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|rootMasses_TCC1| 0
+  (|rootMasses_TCC1-candidate| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "process")
+     (LEMMA "countBoundUnions.measurableSet_rootUnion" ("a" "alpha" "r" "r!1"))
+     (EXPAND "ppg_hls_table_events[C,V,Value,domain,spaces,laws,process].badMeasurable")
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL)))

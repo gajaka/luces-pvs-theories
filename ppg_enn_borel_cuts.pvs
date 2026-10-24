@@ -1,0 +1,45 @@
+% The existing ENN order sigma algebra uses finite upper bounds. Closed
+% lower cuts generate the same sigma algebra: rational cuts express each
+% family by countable unions and complements of the other family.
+% This identifies the two existing measurability interfaces exactly.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, Borel sigma algebras.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_enn_borel_cuts[X:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_enn_measurable[X],ppg_nonnegative_rational_grid,
+    ppg_measurable_space[ENN] AS ennEvents
+
+  lowerRay(a:nonneg_real): set[ENN] = {z:ENN|ele(ennFinite(a),z)}
+
+  belowCuts(a:nonneg_real)(n:nat): set[ENN] =
+    IF gridCoeff(n)<a THEN upperRay(gridCoeff(n)) ELSE emptyset[ENN] ENDIF
+
+  aboveCuts(a:nonneg_real)(n:nat): set[ENN] =
+    IF a<gridCoeff(n) THEN lowerRay(gridCoeff(n)) ELSE emptyset[ENN] ENDIF
+
+  a: VAR nonneg_real
+
+  SX: VAR ppg_measurable_space[X].MeasurableSpace
+
+  f: VAR [X->ENN]
+
+  lower_complement_countable: LEMMA complement(lowerRay(a))=
+    ennEvents.countableUnion(belowCuts(a))
+
+  upper_complement_countable: LEMMA upperRay(a)=
+    complement(ennEvents.countableUnion(aboveCuts(a)))
+
+  lower_ray_measurable: LEMMA ENNSigma(lowerRay(a))
+
+  lower_cuts_of_measurable: LEMMA measurable(SX,ENNSigma,f) IMPLIES
+    FORALL(a:nonneg_real):SX({x:X|ele(ennFinite(a),f(x))})
+
+  measurable_of_lower_cuts: LEMMA
+    (FORALL(a:nonneg_real):SX({x:X|ele(ennFinite(a),f(x))})) IMPLIES
+      measurable(SX,ENNSigma,f)
+
+  measurable_iff_lower_cuts: THEOREM measurable(SX,ENNSigma,f) IFF
+    FORALL(a:nonneg_real):SX({x:X|ele(ennFinite(a),f(x))})
+
+END ppg_enn_borel_cuts

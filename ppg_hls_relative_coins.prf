@@ -1,0 +1,185 @@
+(|ppg_hls_relative_coins|
+ (|pairLeader_mem| 0
+  (|pairLeader_mem-1| NIL 4001423775
+   (""
+    (THEN (SKOSIMP*) (EXPAND "pairLeader") (ASSERT) (TYPEPRED "choose(K!1)")
+     (ASSERT))
+    NIL)
+   ((|pairLeader| CONST-DECL "C" |ppg_hls_relative_coins| NIL)) SHOSTAK))
+ (|measurable_relativeCoin| 0
+  (|measurable_relativeCoin-1| NIL 4001423775
+   (""
+    (THEN (GRIND :DEFS ("coinMaps.measurable" "OrientationSigma" "fullset")))
+    NIL)
+   ((|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |countable_props| |sets_aux|)
+    (|measurable| CONST-DECL "bool" |ppg_measurable_map| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|OrientationCoin| TYPE-EQ-DECL NIL |ppg_hls_fair_orientation| NIL)
+    (|fullset| CONST-DECL "set" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_relative_coins| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_relative_coins| NIL)
+    (|OrientationSigma| CONST-DECL "fairSets.MeasurableSpace"
+     |ppg_hls_fair_orientation| NIL))
+   SHOSTAK))
+ (|map_relativeCoin_TCC1| 0
+  (|map_relativeCoin_TCC1-1| NIL 4001423775
+   ("" (THEN (LEMMA "measurable_relativeCoin") (ASSERT)) NIL)
+   ((|measurable_relativeCoin| FORMULA-DECL NIL |ppg_hls_relative_coins| NIL))
+   NIL
+   (|map_relativeCoin| SUBTYPE
+    "LAMBDA (c: OrientationCoin): relativeCoin(M, i, c)"
+    "MeasurableMap[OrientationCoin, OrientationCoin, OrientationSigma, OrientationSigma]"
+    (33 40 33 85))))
+ (|map_relativeCoin| 0
+  (|map_relativeCoin-1| NIL 4001423776
+   ("" (SKOSIMP*)
+    (("" (EXPAND "relativeCoin")
+      (("" (CASE "pairLeader(matchPair(M!1,i!1))=i!1")
+        (("1" (ASSERT) (("1" (REWRITE "coin_identity_law") NIL NIL)) NIL)
+         ("2" (ASSERT)
+          (("2" (REWRITE "swapCoin_eta")
+            (("2" (REWRITE "map_swapCoin") NIL NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_hls_relative_coins| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|pairLeader| CONST-DECL "C" |ppg_hls_relative_coins| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_relative_coins| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (|coin_identity_law| FORMULA-DECL NIL |ppg_hls_coin_symmetry| NIL)
+    (|swapCoin_eta| FORMULA-DECL NIL |ppg_hls_coin_symmetry| NIL)
+    (|map_swapCoin| FORMULA-DECL NIL |ppg_hls_coin_symmetry| NIL)
+    (|relativeCoin| CONST-DECL "OrientationCoin" |ppg_hls_relative_coins| NIL))
+   SHOSTAK))
+ (|matchPair_nonempty| 0
+  (|matchPair_nonempty-1| NIL 4001423858
+   (""
+    (THEN (SKOSIMP*) (LEMMA "mem_pair_self" ("M" "M!1" "i" "i!1"))
+     (GRIND :DEFS ("nonempty?" "empty?")))
+    NIL)
+   ((|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |countable_props| |sets_aux|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |countable_props| |sets_aux|)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (|mem_pair_self| FORMULA-DECL NIL |ppg_hls_pair_keys| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_relative_coins| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_relative_coins| NIL))
+   SHOSTAK))
+ (|pairLeader_endpoint| 0
+  (|pairLeader_endpoint-1| NIL 4001423776
+   (""
+    (THEN (SKOSIMP*) (LEMMA "pairLeader_mem" ("K" "matchPair(M!1,i!1)"))
+     (LEMMA "matchPair_nonempty" ("M" "M!1" "i" "i!1")) (ASSERT)
+     (EXPAND "matchPair") (GRIND :DEFS ("add" "singleton")))
+    NIL)
+   ((|matchPair_nonempty| FORMULA-DECL NIL |ppg_hls_relative_coins| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |countable_props| |sets_aux|)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |countable_props| |sets_aux|)
+    (|pairLeader_mem| FORMULA-DECL NIL |ppg_hls_relative_coins| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_relative_coins| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_relative_coins| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL))
+   SHOSTAK))
+ (|coinLabel_target_iff_relative_flip| 0
+  (|coinLabel_target_iff_relative_flip-1| NIL 4001423776
+   (""
+    (THEN (SKOSIMP*) (LEMMA "pairLeader_endpoint" ("M" "M!1" "i" "i!1"))
+     (LEMMA "matching_involutive" ("M" "M!1" "i" "i!1"))
+     (GRIND :DEFS
+      ("coinLabel" "relativeCoin" "swapCoin" "orientationKeep"
+       "orientationFlip")))
+    NIL)
+   ((|matching_involutive| FORMULA-DECL NIL |ppg_hls_pair_keys| NIL)
+    (|matchPair| CONST-DECL "finite_set[C]" |ppg_hls_pair_keys| NIL)
+    (|singleton| CONST-DECL "(singleton?)" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|add| CONST-DECL "(nonempty?)" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|orientationKeep| CONST-DECL "OrientationCoin" |ppg_hls_fair_orientation|
+     NIL)
+    (|relativeCoin| CONST-DECL "OrientationCoin" |ppg_hls_relative_coins| NIL)
+    (|orientationFlip| CONST-DECL "OrientationCoin" |ppg_hls_fair_orientation|
+     NIL)
+    (|nonempty_singleton_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |countable_props| |sets_aux|)
+    (|nonempty_add_finite| APPLICATION-JUDGEMENT "non_empty_finite_set"
+     |countable_props| |sets_aux|)
+    (|coinLabel| CONST-DECL "C" |ppg_hls_relative_coins| NIL)
+    (|swapCoin| CONST-DECL "OrientationCoin" |ppg_hls_coin_symmetry| NIL)
+    (|pairLeader_endpoint| FORMULA-DECL NIL |ppg_hls_relative_coins| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_hls_relative_coins| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (G FORMAL-CONST-DECL "{A: [C, C -> bool] |
+   (FORALL (i: C): NOT A(i, i)) AND (FORALL (i, j: C): A(i, j) = A(j, i))}"
+     |ppg_hls_relative_coins| NIL)
+    (|DependencyMatching| TYPE-EQ-DECL NIL |ppg_hls_pair_keys| NIL))
+   SHOSTAK)))
+

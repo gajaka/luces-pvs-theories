@@ -1,0 +1,104 @@
+% Ordinal occurrences of an admissible measurable schedule lie in the
+% rooted table unions. Integrating the count and summing the rooted
+% probability bounds gives the unrestricted proper-DAG bound. Both the
+% count and the DAG sum may be infinite.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Sections 3.1--3.3, arXiv:2111.06527.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Lean: HLS.Policy.expectedCount_le_tsum_refinedWeight and
+% HLS.Policy.expectedCount_le_stableBudget.
+ppg_hls_policy_count_bound[C,V,Value:TYPE,domain:[V->set[Value]],
+  variableUniverse:{U:finite_set[V]|U=fullset[V]},
+  default:C,universe:{U:finite_set[C]|FORALL(c:C):U(c)},
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_mt_native_process[C,V,Value,domain,spaces,laws])
+  process:{q:MTProcess|FORALL(i:C):NativeStateSigma(spaces)(q`bad(i))},
+  (IMPORTING ppg_shearer_bdd[C,V,process`footprint])
+  p:[C->real],
+  (IMPORTING ppg_hls_matching[C,dependencyGraph,p])
+  O:OverlapBounds,alpha:C]: THEORY
+BEGIN
+  IMPORTING ppg_hls_policy_count_integral[C,V,Value,domain,process`footprint,
+      universe,spaces,laws,badTest(process)] AS countBoundCounts,
+    ppg_hls_root_union_occurrence[C,V,Value,domain,universe,
+      spaces,laws,process] AS countBoundOccurrence,
+    ppg_hls_root_union_measurable[C,V,Value,domain,universe,
+      spaces,laws,process] AS countBoundUnions,
+    ppg_hls_root_family_weight[C,
+      ppg_shearer_bdd[C,V,process`footprint].dependencyGraph,universe,alpha] AS countBoundWeights,
+    ppg_hls_product_discount[C,
+      ppg_shearer_bdd[C,V,process`footprint].dependencyGraph,p,universe] AS countBoundDiscount,
+    ppg_hls_refined_weight[C,
+      ppg_shearer_bdd[C,V,process`footprint].dependencyGraph,p] AS countBoundRefined,
+    ppg_hls_proper_family[C,
+      ppg_shearer_bdd[C,V,process`footprint].dependencyGraph,universe,alpha] AS countBoundProper,
+    ppg_enn_unrestricted_sum[countBoundProper.ProperDAG] AS countBoundProperSum,
+    ppg_hls_matching[C,
+      ppg_shearer_bdd[C,V,process`footprint].dependencyGraph,p] AS countBoundOverlap,
+    ppg_shearer_budget[C,
+      ppg_shearer_bdd[C,V,process`footprint].dependencyGraph] AS countBoundStable,
+    ppg_hls_refined_budget[C,
+      ppg_shearer_bdd[C,V,process`footprint].dependencyGraph,p,universe,alpha,O] AS countBoundBudget,
+    ppg_mt_state_probability[C,V,Value,domain,variableUniverse,
+      spaces,laws] AS countBoundStateLaw,
+    ppg_hls_event_probability[C,V,Value,domain,variableUniverse,
+      spaces,laws,process] AS countBoundEventLaw,
+    ppg_mt_policy_schedule[C,V,Value,domain,universe,
+      variableAmbient(spaces)] AS countBoundSchedules,
+    ppg_enn_unrestricted_sum[nat] AS countBoundOrdinalSum,
+    ppg_enn_finite_order[nat] AS countBoundOrdinalOrder,
+    ppg_enn_ofreal,
+    measure_integration@finite_measure[LogSpace,NativeTableSigma(spaces),
+      logMeasure] AS countBoundNativeMass,
+    ppg_hls_root_refined_probability
+
+  hprob: bool = FORALL(i:C):countBoundStateLaw.stateMeasure(process`bad(i))=p(i)
+
+  hp: bool = FORALL(i:C):0<p(i)
+
+  hInt: bool = FORALL(i:C):O`delta(i)<=countBoundStateLaw.stateMeasure(
+    intersection(process`bad(i),process`bad(O`mate(i))))
+
+  sig: VAR countBoundSchedules.Schedule(process`footprint,badTest(process))
+
+  r: VAR nat
+
+  rootMasses(r): ENN = ennFinite(logMeasure(countBoundUnions.rootUnion(alpha,r)))
+
+  ordinalMasses(sig)(r): ENN =
+    ennFinite(logMeasure(countBoundCounts.nativeOrdinalEvents(sig,alpha)(r)))
+
+  properTotal: ENN = countBoundProperSum.eTsum(
+    LAMBDA(D:countBoundProper.ProperDAG):countBoundRefined.refinedWeight(O)(D))
+
+  ordinal_subset_root_union: LEMMA
+    subset?(countBoundCounts.nativeOrdinalEvents(sig,alpha)(r),countBoundUnions.rootUnion(alpha,r))
+
+  ordinal_mass_le_root: LEMMA ele(ordinalMasses(sig)(r),rootMasses(r))
+
+  expected_count_ordinal_sum: LEMMA
+    countBoundCounts.expectedCount(sig,alpha)=countBoundOrdinalSum.eTsum(ordinalMasses(sig))
+
+  expected_count_le_root_sum: LEMMA ele(countBoundCounts.expectedCount(sig,alpha),
+    countBoundOrdinalSum.eTsum(rootMasses))
+
+  each_root_refined: LEMMA hprob AND hp AND hInt IMPLIES
+    ele(rootMasses(r),countBoundWeights.rootFamilyWeight(countBoundRefined.refinedWeight(O))(r))
+
+  root_sum_le_refined: LEMMA hprob AND hp AND hInt IMPLIES
+    ele(countBoundOrdinalSum.eTsum(rootMasses),properTotal)
+
+  expectedCount_le_tsum_refinedWeight: THEOREM hprob AND hp AND hInt IMPLIES
+    ele(countBoundCounts.expectedCount(sig,alpha),properTotal)
+
+  event_probability_le_one: LEMMA hprob IMPLIES FORALL(i:C):p(i)<=1
+
+  expectedCount_le_stableBudget: THEOREM hprob AND hp AND hInt AND
+    StrictCriterion(countBoundOverlap.reduced(O),universe) IMPLIES
+    ele(countBoundCounts.expectedCount(sig,alpha),
+      ofReal(countBoundStable.stableBudget(countBoundOverlap.reduced(O),universe,
+        sets[C].singleton(alpha))))
+
+END ppg_hls_policy_count_bound

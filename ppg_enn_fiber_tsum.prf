@@ -1,0 +1,308 @@
+(|ppg_enn_fiber_tsum|
+ (|fiber_function_eta| 0
+  (|fiber_function_eta-1| NIL 0
+   ("" (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)) NIL NIL)
+   ((ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|fiberFunction| CONST-DECL "ENN" |ppg_enn_fiber_tsum| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL))
+   NIL))
+ (|finite_outer_point| 0
+  (|finite_outer_point-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "outerAlgebra.point_sum_value"
+      ("S" "K!1" "f" "LAMBDA(i:I):f!1(d!1)" "x" "key!1(d!1)"))
+     (EXPAND "outerAlgebra.pointSum") (EXPAND "fiberFunction") (ASSERT))
+    NIL NIL)
+   ((|pointSum| CONST-DECL "ENN" |ppg_enn_finite_algebra| NIL)
+    (|fiberFunction| CONST-DECL "ENN" |ppg_enn_fiber_tsum| NIL)
+    (|point_sum_value| FORMULA-DECL NIL |ppg_enn_finite_algebra| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL))
+   NIL))
+ (|finite_outer_function| 0
+  (|finite_outer_function-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (REWRITE "finite_outer_point"))
+    NIL NIL)
+   ((|finite_outer_point| FORMULA-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|esum| DEF-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (|fiberFunction| CONST-DECL "ENN" |ppg_enn_fiber_tsum| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL))
+   NIL))
+ (|finite_fibers_sum| 0
+  (|finite_fibers_sum-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "interchange.finite_rows_commute"
+      ("F" "K!1" "f" "LAMBDA(i:I,d:D):fiberFunction(f!1,key!1)(i)(d)"))
+     (EXPAND "fiberMass")
+     (LEMMA "finite_outer_function" ("K" "K!1" "f" "f!1" "key" "key!1"))
+     (AUTO-REWRITE "fiber_function_eta")
+     (GRIND :EXCLUDE
+      ("eTsum" "eSup" "esum" "fiberFunction" "ele" "is_finite")))
+    NIL NIL)
+   ((|fiberMass| CONST-DECL "ENN" |ppg_enn_fiber_tsum| NIL)
+    (|fiber_function_eta| FORMULA-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|finite_outer_function| FORMULA-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|finite_rows_commute| FORMULA-DECL NIL |ppg_enn_finite_tsum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|fiberFunction| CONST-DECL "ENN" |ppg_enn_fiber_tsum| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL))
+   NIL))
+ (|finite_fibers_bound| 0
+  (|finite_fibers_bound-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (REWRITE "finite_fibers_sum")
+     (LEMMA "flatOrder.eTsum_monotone"
+      ("f" "LAMBDA(d:D):IF K!1(key!1(d)) THEN f!1(d) ELSE ennFinite(0) ENDIF"
+       "g" "f!1"))
+     (AUTO-REWRITE "zero_le" "ele_refl")
+     (GRIND :EXCLUDE ("eTsum" "eSup" "esum" "ele")))
+    NIL NIL)
+   ((|eTsum_monotone| FORMULA-DECL NIL |ppg_enn_finite_order| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ele_refl| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (|zero_le| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|finite_fibers_sum| FORMULA-DECL NIL |ppg_enn_fiber_tsum| NIL))
+   NIL))
+ (|outer_sum_bound| 0
+  (|outer_sum_bound-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "outerSums.eTsum_least"
+      ("f" "fiberMass(f!1,key!1)" "y" "flatSums.eTsum(f!1)"))
+     (LEMMA "finite_fibers_bound" ("f" "f!1" "key" "key!1"))
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   ((|finite_fibers_bound| FORMULA-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|eTsum_least| FORMULA-DECL NIL |ppg_enn_unrestricted_sum| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|fiberMass| CONST-DECL "ENN" |ppg_enn_fiber_tsum| NIL)
+    (|eTsum| CONST-DECL "ENN" |ppg_enn_unrestricted_sum| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL))
+   NIL))
+ (|finite_flat_as_rows| 0
+  (|finite_flat_as_rows-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "ppg_enn_finite[D].esum_congr"
+      ("F" "F!1" "f" "f!1" "g"
+       "LAMBDA(d:D):outerFinite.esum(image(key!1,F!1),LAMBDA(i:I):fiberFunction(f!1,key!1)(i)(d))"))
+     (LEMMA "finite_outer_point"
+      ("K" "image(key!1,F!1)" "f" "f!1" "key" "key!1"))
+     (AUTO-REWRITE "finite_outer_point")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("esum" "eTsum" "eSup" "is_finite" "fiberFunction")))
+    NIL NIL)
+   ((|finite_outer_point| FORMULA-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|fiberFunction| CONST-DECL "ENN" |ppg_enn_fiber_tsum| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|esum| DEF-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|esum_congr| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL))
+   NIL))
+ (|finite_flat_partition| 0
+  (|finite_flat_partition-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "finiteFubini.esum_comm"
+      ("B" "image(key!1,F!1)" "U" "F!1" "f"
+       "LAMBDA(i:I,d:D):fiberFunction(f!1,key!1)(i)(d)"))
+     (LEMMA "finite_flat_as_rows" ("F" "F!1" "f" "f!1" "key" "key!1"))
+     (EXPAND "partialFiberSum") (AUTO-REWRITE "fiber_function_eta")
+     (GRIND :EXCLUDE
+      ("esum" "eTsum" "eSup" "fiberFunction" "ele" "is_finite")))
+    NIL NIL)
+   ((|finite_flat_as_rows| FORMULA-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|fiber_function_eta| FORMULA-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|partialFiberSum| CONST-DECL "ENN" |ppg_enn_fiber_tsum| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|fiberFunction| CONST-DECL "ENN" |ppg_enn_fiber_tsum| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|esum_comm| FORMULA-DECL NIL |ppg_enn_finite_fubini| NIL)
+    (|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL))
+   NIL))
+ (|partial_fiber_bound| 0
+  (|partial_fiber_bound-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (EXPAND "partialFiberSum") (EXPAND "fiberMass")
+     (LEMMA "flatSums.eTsum_partial"
+      ("F" "F!1" "f" "fiberFunction(f!1,key!1)(i!1)"))
+     (ASSERT))
+    NIL NIL)
+   ((|fiberMass| CONST-DECL "ENN" |ppg_enn_fiber_tsum| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|fiberFunction| CONST-DECL "ENN" |ppg_enn_fiber_tsum| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|eTsum_partial| FORMULA-DECL NIL |ppg_enn_unrestricted_sum| NIL)
+    (|partialFiberSum| CONST-DECL "ENN" |ppg_enn_fiber_tsum| NIL))
+   NIL))
+ (|finite_flat_bound| 0
+  (|finite_flat_bound-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "finite_flat_partition" ("F" "F!1" "f" "f!1" "key" "key!1"))
+     (LEMMA "outerOrder.esum_monotone"
+      ("F" "image(key!1,F!1)" "f" "partialFiberSum(f!1,key!1,F!1)" "g"
+       "fiberMass(f!1,key!1)"))
+     (LEMMA "partial_fiber_bound" ("F" "F!1" "f" "f!1" "key" "key!1"))
+     (LEMMA "outerSums.eTsum_partial"
+      ("F" "image(key!1,F!1)" "f" "fiberMass(f!1,key!1)"))
+     (LEMMA "ele_transitive"
+      ("x" "flatFinite.esum(F!1,f!1)" "y"
+       "outerFinite.esum(image(key!1,F!1),fiberMass(f!1,key!1))" "z"
+       "outerSums.eTsum(fiberMass(f!1,key!1))"))
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   ((|finite_image| APPLICATION-JUDGEMENT "finite_set[R]" |function_image_aux|
+     NIL)
+    (|esum_monotone| FORMULA-DECL NIL |ppg_enn_finite_order| NIL)
+    (|image| CONST-DECL "set[R]" |function_image| NIL)
+    (|partialFiberSum| CONST-DECL "ENN" |ppg_enn_fiber_tsum| NIL)
+    (|fiberMass| CONST-DECL "ENN" |ppg_enn_fiber_tsum| NIL)
+    (|eTsum_partial| FORMULA-DECL NIL |ppg_enn_unrestricted_sum| NIL)
+    (|ele_transitive| FORMULA-DECL NIL |ppg_enn_add| NIL)
+    (|esum| DEF-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (|eTsum| CONST-DECL "ENN" |ppg_enn_unrestricted_sum| NIL)
+    (|partial_fiber_bound| FORMULA-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|finite_flat_partition| FORMULA-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL))
+   NIL))
+ (|flat_sum_bound| 0
+  (|flat_sum_bound-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "flatSums.eTsum_least"
+      ("f" "f!1" "y" "outerSums.eTsum(fiberMass(f!1,key!1))"))
+     (LEMMA "finite_flat_bound" ("f" "f!1" "key" "key!1"))
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   ((|finite_flat_bound| FORMULA-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|eTsum_least| FORMULA-DECL NIL |ppg_enn_unrestricted_sum| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|eTsum| CONST-DECL "ENN" |ppg_enn_unrestricted_sum| NIL)
+    (|fiberMass| CONST-DECL "ENN" |ppg_enn_fiber_tsum| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL))
+   NIL))
+ (|tsum_fibers| 0
+  (|tsum_fibers-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "flat_sum_bound" ("f" "f!1" "key" "key!1"))
+     (LEMMA "outer_sum_bound" ("f" "f!1" "key" "key!1"))
+     (LEMMA "ele_antisym"
+      ("x" "flatSums.eTsum(f!1)" "y" "outerSums.eTsum(fiberMass(f!1,key!1))"))
+     (ASSERT))
+    NIL NIL)
+   ((|outer_sum_bound| FORMULA-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|fiberMass| CONST-DECL "ENN" |ppg_enn_fiber_tsum| NIL)
+    (|eTsum| CONST-DECL "ENN" |ppg_enn_unrestricted_sum| NIL)
+    (|ele_antisym| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (|flat_sum_bound| FORMULA-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (D FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_fiber_tsum| NIL))
+   NIL)))
+

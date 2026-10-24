@@ -1,0 +1,50 @@
+(|ppg_hls_refined_single_probability|
+ (|table_event_read_preimage| 0
+  (|table_event_read_preimage-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "tables.tableEvent_preimage" ("D" "D!1" "u" "u!1")) (LEMMA "tables.tableState_readAt" ("D" "D!1" "u" "u!1")) (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|table_event_mass| 0
+  (|table_event_mass-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "table_event_read_preimage" ("D" "D!1" "u" "u!1")) (LEMMA "stateLaw.logMeasure_map_readAt_eq_pi" ("n" "coords.localIndex(D!1,u!1)")) (EXPAND "stateLaw.readAtLaw") (LEMMA "statePush.pushforward_apply" ("mu" "originalLaw.logMeasure" "f" "reads.readAt(coords.localIndex(D!1,u!1))" "B" "process`bad(u!1`1)")) (EXPAND "tables.badMeasurable") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|original_single_mass| 0
+  (|original_single_mass-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "table_event_mass" ("D" "D!1" "u" "u!1")) (LEMMA "tables.measurableSet_tableEvent" ("D" "D!1" "u" "u!1")) (LEMMA "aug.original_table_mass" ("B" "tables.tableEvent(D!1,u!1)")) (EXPAND "originalSingle") (EXPAND "ppg_measurable_map.inverseImage") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|measure_originalTable_tableEvent_eq| 0
+  (|measure_originalTable_tableEvent_eq-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "original_single_mass" ("D" "D!1" "u" "u!1")) (ASSERT))
+    NIL NIL)
+   NIL NIL))
+ (|table_event_mass_TCC1| 0
+  (|table_event_mass_TCC1-proposal| NIL 0
+   ("" (THEN (SKOSIMP*)
+     (LEMMA "tables.measurableSet_tableEvent" ("D" "D!1" "u" "u!1"))
+     (ASSERT)) NIL NIL)
+   NIL NIL))
+ (|table_event_mass_TCC2| 0
+  (|table_event_mass_TCC2-proposal| NIL 0
+   ("" (THEN (SKOSIMP*)
+     (EXPAND "tables.badMeasurable")
+     (INST -1 "u!1`1")
+     (ASSERT)) NIL NIL)
+   NIL NIL))
+ (|original_single_mass_TCC1| 0
+  (|original_single_mass_TCC1-proposal| NIL 0
+   ("" (THEN (SKOSIMP*)
+     (LEMMA "tables.measurableSet_tableEvent" ("D" "D!1" "u" "u!1"))
+     (LEMMA "aug.measurable_originalTable")
+     (EXPAND "ppg_measurable_map.measurable" :ACTUALS? T)
+     (INST -1 "tables.tableEvent(D!1,u!1)")
+     (EXPAND "originalSingle")
+     (EXPAND "ppg_measurable_map.inverseImage" :ACTUALS? T)
+     (GRIND :DEFS NIL :IF-MATCH ALL)) NIL NIL)
+   NIL NIL))
+)

@@ -1,0 +1,149 @@
+% The four-block read preserves the forward and one-order event masses.
+% Averaging the two coin outcomes gives the endpoint intersection bound.
+% Patrick Billingsley, Probability and Measure, third edition.
+% Kun He, Qian Li and Xiaoming Sun, Moser-Tardos Algorithm: Beyond
+% Shearer's Bound, Lemma 3.4.
+ppg_hls_pair_probability_saving[I,V,Value:TYPE,domain:[V->set[Value]],
+  universe:{U:finite_set[V]|U=fullset[V]},
+  (IMPORTING ppg_mt_native_spaces[I,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_mt_native_process[I,V,Value,domain,spaces,laws])
+  process:MTProcess,
+  (IMPORTING ppg_hls_table_coordinates[I,V,process`footprint])
+  u,v:WNode]: THEORY
+BEGIN
+
+  IMPORTING ppg_hls_process_footprint[I,V,Value,domain,spaces,laws] AS savingFootprint,
+    ppg_hls_pair_probability[I,V,Value,domain,spaces,laws,process,u,v] AS core,
+    ppg_hls_pair_block_queries[I,V,Value,domain,spaces,laws,process,u,v] AS readLaw,
+    ppg_hls_pair_read_product_law[I,V,Value,domain,spaces,laws,process,u,v] AS coreReadLaw,
+    ppg_mt_native_spaces[I,V,Value,domain] AS stateSpaces,
+    ppg_mt_random_process[I,V,Value,domain] AS pairSavingSlots,
+    ppg_mt_log_probability[I,V,Value,domain,spaces,laws] AS originalLog,
+    ppg_mt_state_probability[I,V,Value,domain,universe,spaces,laws] AS originalState,
+    ppg_hls_fair_orientation AS pairSavingCoins,
+    ppg_hls_process_block_saving[I,V,Value,domain,universe,spaces,laws,process,u`1,v`1] AS processSaving
+
+  F: MACRO finite_set[V] = core.F
+
+  H: MACRO finite_set[V] = core.H
+
+  Z: MACRO finite_set[V] = core.Z
+
+  IMPORTING ppg_measurable_block[V,Value,domain,spaces] AS blocks,
+    ppg_probability_finite_product[V,Value,domain,spaces,laws] AS finiteBlocks,
+    ppg_probability_subtype_four_map[V,Value,domain,F,H,Z,core.universeF,core.universeH,core.universeZ,spaces,laws] AS subtypeBridge,
+    ppg_probability_subtype_four_inverse[V,Value,domain,F,H,Z,core.universeF,core.universeH,core.universeZ,spaces,laws] AS inverseBridge,
+    ppg_probability_four_product[(F),(H),(Z),Value,
+      LAMBDA(a:(F)):domain(a),LAMBDA(a:(H)):domain(a),LAMBDA(a:(Z)):domain(a),
+      core.universeF,core.universeH,core.universeZ,
+      LAMBDA(a:(F)):spaces(a),LAMBDA(a:(H)):spaces(a),LAMBDA(a:(Z)):spaces(a),
+      LAMBDA(a:(F)):laws(a),LAMBDA(a:(H)):laws(a),LAMBDA(a:(Z)):laws(a)] AS actualFour,
+    ppg_probability_finite_native_four[blocks.Block(F),blocks.Block(H),blocks.Block(Z),
+      blocks.blockSigma(F),blocks.blockSigma(H),blocks.blockSigma(Z),
+      finiteBlocks.finiteLaw(F),finiteBlocks.finiteLaw(H),finiteBlocks.finiteLaw(Z)] AS blockFour,
+    ppg_probability_finite_coin_saving[blocks.Block(F),blocks.Block(H),blocks.Block(Z),
+      blocks.blockSigma(F),blocks.blockSigma(H),blocks.blockSigma(Z),
+      finiteBlocks.finiteLaw(F),finiteBlocks.finiteLaw(H),finiteBlocks.finiteLaw(Z)] AS finiteSaving,
+    ppg_probability_pair[subtypeBridge.TargetPrivate,subtypeBridge.TargetShared,
+      ppg_probability_pair[ppg_probability_subtype_block_transport[V,Value,domain,F,core.universeF,spaces,laws].TargetValue,
+        ppg_probability_subtype_block_transport[V,Value,domain,Z,core.universeZ,spaces,laws].TargetValue,
+        ppg_probability_subtype_block_transport[V,Value,domain,F,core.universeF,spaces,laws].TargetSigma,
+        ppg_probability_subtype_block_transport[V,Value,domain,Z,core.universeZ,spaces,laws].TargetSigma].JointSpace,
+      ppg_probability_pair[ppg_probability_subtype_block_transport[V,Value,domain,H,core.universeH,spaces,laws].TargetValue,
+        ppg_probability_subtype_block_transport[V,Value,domain,H,core.universeH,spaces,laws].TargetValue,
+        ppg_probability_subtype_block_transport[V,Value,domain,H,core.universeH,spaces,laws].TargetSigma,
+        ppg_probability_subtype_block_transport[V,Value,domain,H,core.universeH,spaces,laws].TargetSigma].JointSpace] AS actualTargetOuter,
+    ppg_probability_map[subtypeBridge.SourceValue,core.FourValue,
+      blockFour.FourSigma,actualFour.ResultSigma] AS blockPush,
+    ppg_probability_map[pairSavingSlots.LogSpace,core.FourValue,
+      stateSpaces.NativeTableSigma(spaces),actualFour.ResultSigma] AS readPush,
+    ppg_hls_coin_choice[pairSavingSlots.LogSpace,stateSpaces.NativeTableSigma(spaces)] AS logChoice,
+    ppg_probability_pair[pairSavingCoins.OrientationCoin,pairSavingSlots.LogSpace,
+      pairSavingCoins.OrientationSigma,stateSpaces.NativeTableSigma(spaces)] AS coinLog
+
+  D: VAR WitnessDAG
+
+  Q: VAR (Valid)
+
+  delta: VAR real
+
+  hi: MACRO bool = stateSpaces.NativeStateSigma(spaces)(process`bad(u`1))
+
+  hj: MACRO bool = stateSpaces.NativeStateSigma(spaces)(process`bad(v`1))
+
+  forwardRead(D):set[pairSavingSlots.LogSpace] =
+    {omega:pairSavingSlots.LogSpace|core.forwardEvent(core.pairBlockRead(D)(omega))}
+
+  oneOrderRead(D):set[pairSavingSlots.LogSpace] =
+    {omega:pairSavingSlots.LogSpace|core.oneOrderOnly(core.pairBlockRead(D)(omega))}
+
+  source_set_eq: LEMMA savingFootprint.sourcePrivate(process,u`1,v`1)=F
+
+  shared_set_eq: LEMMA savingFootprint.sharedVariables(process,u`1,v`1)=H
+
+  target_set_eq: LEMMA savingFootprint.targetPrivate(process,u`1,v`1)=Z
+
+  read_eq: LEMMA core.pairBlockRead(D)=readLaw.pairBlockRead(D)
+
+  source_bad_eq: LEMMA core.sourceBlockBad=processSaving.sourceBlockBad
+
+  target_bad_eq: LEMMA core.targetBlockBad=processSaving.targetBlockBad
+
+  four_sigma_eq: LEMMA actualFour.ResultSigma=actualTargetOuter.JointSpace
+
+  four_image_law: LEMMA ppg_probability_map[subtypeBridge.SourceValue,core.FourValue,
+    blockFour.FourSigma,actualFour.ResultSigma].pushforward(blockFour.nestedLaw,subtypeBridge.toFour)=actualFour.nestedLaw
+
+  forward_event_eq: LEMMA hi AND hj IMPLIES core.forwardEvent=
+    (LAMBDA(x:core.FourValue):finiteSaving.forwardBlock(processSaving.sourceBlockBad,
+      processSaving.targetBlockBad)(inverseBridge.fromFour(x)))
+
+  one_order_event_eq: LEMMA hi AND hj IMPLIES core.oneOrderOnly=
+    (LAMBDA(x:core.FourValue):finiteSaving.oneOrderBlock(processSaving.sourceBlockBad,
+      processSaving.targetBlockBad)(inverseBridge.fromFour(x)))
+
+  forward_original_eq: LEMMA hi AND hj IMPLIES
+    (LAMBDA(p:subtypeBridge.SourceValue):core.forwardEvent(subtypeBridge.toFour(p)))=
+      finiteSaving.forwardBlock(processSaving.sourceBlockBad,processSaving.targetBlockBad)
+
+  one_order_original_eq: LEMMA hi AND hj IMPLIES
+    (LAMBDA(p:subtypeBridge.SourceValue):core.oneOrderOnly(subtypeBridge.toFour(p)))=
+      finiteSaving.oneOrderBlock(processSaving.sourceBlockBad,processSaving.targetBlockBad)
+
+  forward_measurable: LEMMA hi AND hj IMPLIES actualFour.ResultSigma(core.forwardEvent)
+
+  one_order_measurable: LEMMA hi AND hj IMPLIES actualFour.ResultSigma(core.oneOrderOnly)
+
+  forward_four_mass: LEMMA hi AND hj IMPLIES actualFour.nestedLaw(core.forwardEvent)=
+    blockFour.nestedLaw(finiteSaving.forwardBlock(processSaving.sourceBlockBad,processSaving.targetBlockBad))
+
+  one_order_four_mass: LEMMA hi AND hj IMPLIES actualFour.nestedLaw(core.oneOrderOnly)=
+    blockFour.nestedLaw(finiteSaving.oneOrderBlock(processSaving.sourceBlockBad,processSaving.targetBlockBad))
+
+  forward_read_measurable: LEMMA hi AND hj IMPLIES
+    stateSpaces.NativeTableSigma(spaces)(forwardRead(D))
+
+  one_order_read_measurable: LEMMA hi AND hj IMPLIES
+    stateSpaces.NativeTableSigma(spaces)(oneOrderRead(D))
+
+  forward_read_mass: LEMMA Edge(Q)(u,v) AND hi AND hj IMPLIES
+    originalLog.logMeasure(forwardRead(Q))=
+      blockFour.nestedLaw(finiteSaving.forwardBlock(processSaving.sourceBlockBad,processSaving.targetBlockBad))
+
+  one_order_read_mass: LEMMA Edge(Q)(u,v) AND hi AND hj IMPLIES
+    originalLog.logMeasure(oneOrderRead(Q))=
+      blockFour.nestedLaw(finiteSaving.oneOrderBlock(processSaving.sourceBlockBad,processSaving.targetBlockBad))
+
+  coin_choice_eq: LEMMA core.pairCoinCheck(D)=logChoice.coinChoice(forwardRead(D),oneOrderRead(D))
+
+  coin_mass_formula: LEMMA hi AND hj IMPLIES
+    coinLog.productLaw(pairSavingCoins.fairOrientation,originalLog.logMeasure)(core.pairCoinCheck(D))=
+      originalLog.logMeasure(forwardRead(D))/2+originalLog.logMeasure(oneOrderRead(D))/2
+
+  measureReal_pairCoinCheck_le: THEOREM Edge(Q)(u,v) AND hi AND hj AND delta>=0 AND
+    delta<=originalState.stateMeasure(intersection(process`bad(u`1),process`bad(v`1))) IMPLIES
+      coinLog.productLaw(pairSavingCoins.fairOrientation,originalLog.logMeasure)(core.pairCoinCheck(Q))<=
+        originalState.stateMeasure(process`bad(u`1))*originalState.stateMeasure(process`bad(v`1))-delta*delta/2
+
+END ppg_hls_pair_probability_saving

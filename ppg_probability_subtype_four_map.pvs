@@ -1,0 +1,103 @@
+% Coordinate maps on the private and shared factors transport
+% the nested product measure over the chosen full subtype universes.
+% Patrick Billingsley, Probability and Measure, third edition.
+ppg_probability_subtype_four_map[V,Value:TYPE,domain:[V->set[Value]],F,H,Z:finite_set[V],
+  UF:{E:finite_set[(F)]|E=fullset[(F)]},
+  UH:{E:finite_set[(H)]|E=fullset[(H)]},
+  UZ:{E:finite_set[(Z)]|E=fullset[(Z)]},
+  (IMPORTING ppg_mt_native_spaces[bool,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+
+  IMPORTING ppg_probability_subtype_block_transport[V,Value,domain,F,UF,spaces,laws] AS mapF,
+    ppg_probability_subtype_block_transport[V,Value,domain,H,UH,spaces,laws] AS mapH,
+    ppg_probability_subtype_block_transport[V,Value,domain,Z,UZ,spaces,laws] AS mapZ,
+    ppg_probability_finite_product[V,Value,domain,spaces,laws] AS finiteBlocks,
+    ppg_measurable_block[V,Value,domain,spaces] AS blocks
+
+  IMPORTING ppg_probability_finite_product[(F),Value,LAMBDA(a:(F)):domain(a),
+      LAMBDA(a:(F)):spaces(a),LAMBDA(a:(F)):laws(a)] AS finiteF,
+    ppg_probability_finite_product[(H),Value,LAMBDA(a:(H)):domain(a),
+      LAMBDA(a:(H)):spaces(a),LAMBDA(a:(H)):laws(a)] AS finiteH,
+    ppg_probability_finite_product[(Z),Value,LAMBDA(a:(Z)):domain(a),
+      LAMBDA(a:(Z)):spaces(a),LAMBDA(a:(Z)):laws(a)] AS finiteZ
+
+  SourcePrivate: TYPE = [mapF.SourceValue,mapZ.SourceValue]
+
+  SourceShared: TYPE = [mapH.SourceValue,mapH.SourceValue]
+
+  TargetPrivate: TYPE = [mapF.TargetValue,mapZ.TargetValue]
+
+  TargetShared: TYPE = [mapH.TargetValue,mapH.TargetValue]
+
+  SourceValue: TYPE = [SourcePrivate,SourceShared]
+
+  TargetValue: TYPE = [TargetPrivate,TargetShared]
+
+  IMPORTING ppg_probability_pair[mapF.SourceValue,mapZ.SourceValue,mapF.SourceSigma,mapZ.SourceSigma] AS sourcePrivateLaw,
+    ppg_probability_pair[mapH.SourceValue,mapH.SourceValue,mapH.SourceSigma,mapH.SourceSigma] AS sourceSharedLaw,
+    ppg_probability_pair[mapF.TargetValue,mapZ.TargetValue,mapF.TargetSigma,mapZ.TargetSigma] AS targetPrivateLaw,
+    ppg_probability_pair[mapH.TargetValue,mapH.TargetValue,mapH.TargetSigma,mapH.TargetSigma] AS targetSharedLaw,
+    ppg_probability_pair_map[mapF.SourceValue,mapZ.SourceValue,mapF.TargetValue,mapZ.TargetValue,
+      mapF.SourceSigma,mapZ.SourceSigma,mapF.TargetSigma,mapZ.TargetSigma] AS privateMap,
+    ppg_probability_pair_map[mapH.SourceValue,mapH.SourceValue,mapH.TargetValue,mapH.TargetValue,
+      mapH.SourceSigma,mapH.SourceSigma,mapH.TargetSigma,mapH.TargetSigma] AS sharedMap
+
+  IMPORTING ppg_probability_pair[SourcePrivate,SourceShared,
+      sourcePrivateLaw.JointSpace,sourceSharedLaw.JointSpace] AS sourceOuter,
+    ppg_probability_pair[TargetPrivate,TargetShared,
+      targetPrivateLaw.JointSpace,targetSharedLaw.JointSpace] AS targetOuter,
+    ppg_probability_pair_map[SourcePrivate,SourceShared,TargetPrivate,TargetShared,
+      sourcePrivateLaw.JointSpace,sourceSharedLaw.JointSpace,
+      targetPrivateLaw.JointSpace,targetSharedLaw.JointSpace] AS outerMap,
+    ppg_probability_map[SourcePrivate,TargetPrivate,sourcePrivateLaw.JointSpace,
+      targetPrivateLaw.JointSpace] AS privatePush,
+    ppg_probability_map[SourceShared,TargetShared,sourceSharedLaw.JointSpace,
+      targetSharedLaw.JointSpace] AS sharedPush,
+    ppg_probability_map[SourceValue,TargetValue,sourceOuter.JointSpace,targetOuter.JointSpace] AS fourPush
+
+  IMPORTING ppg_probability_finite_native_four[blocks.Block(F),blocks.Block(H),blocks.Block(Z),
+      blocks.blockSigma(F),blocks.blockSigma(H),blocks.blockSigma(Z),
+      finiteBlocks.finiteLaw(F),finiteBlocks.finiteLaw(H),finiteBlocks.finiteLaw(Z)] AS originalFour,
+    ppg_probability_four_product[(F),(H),(Z),Value,
+      LAMBDA(a:(F)):domain(a),LAMBDA(a:(H)):domain(a),LAMBDA(a:(Z)):domain(a),
+      UF,UH,UZ,
+      LAMBDA(a:(F)):spaces(a),LAMBDA(a:(H)):spaces(a),LAMBDA(a:(Z)):spaces(a),
+      LAMBDA(a:(F)):laws(a),LAMBDA(a:(H)):laws(a),LAMBDA(a:(Z)):laws(a)] AS subtypeFour
+
+  toPrivate(p:SourcePrivate):TargetPrivate = (mapF.toFull(p`1),mapZ.toFull(p`2))
+
+  toShared(p:SourceShared):TargetShared = (mapH.toFull(p`1),mapH.toFull(p`2))
+
+  toFour(p:SourceValue):TargetValue = (toPrivate(p`1),toShared(p`2))
+
+  private_measurable: LEMMA ppg_measurable_map[SourcePrivate,TargetPrivate].measurable(
+    sourcePrivateLaw.JointSpace,targetPrivateLaw.JointSpace,toPrivate)
+
+  shared_measurable: LEMMA ppg_measurable_map[SourceShared,TargetShared].measurable(
+    sourceSharedLaw.JointSpace,targetSharedLaw.JointSpace,toShared)
+
+  four_measurable: LEMMA ppg_measurable_map[SourceValue,TargetValue].measurable(
+    sourceOuter.JointSpace,targetOuter.JointSpace,toFour)
+
+  private_mapped_law: LEMMA privatePush.pushforward(sourcePrivateLaw.productLaw(
+      finiteBlocks.finiteLaw(F),finiteBlocks.finiteLaw(Z)),toPrivate)=
+    targetPrivateLaw.productLaw(finiteF.finiteLaw(UF),
+      finiteZ.finiteLaw(UZ))
+
+  shared_mapped_law: LEMMA sharedPush.pushforward(sourceSharedLaw.productLaw(
+      finiteBlocks.finiteLaw(H),finiteBlocks.finiteLaw(H)),toShared)=
+    targetSharedLaw.productLaw(finiteH.finiteLaw(UH),
+      finiteH.finiteLaw(UH))
+
+  original_nested_eq: LEMMA originalFour.nestedLaw=sourceOuter.productLaw(
+    sourcePrivateLaw.productLaw(finiteBlocks.finiteLaw(F),finiteBlocks.finiteLaw(Z)),
+    sourceSharedLaw.productLaw(finiteBlocks.finiteLaw(H),finiteBlocks.finiteLaw(H)))
+
+  subtype_nested_eq: LEMMA subtypeFour.nestedLaw=targetOuter.productLaw(
+    targetPrivateLaw.productLaw(finiteF.finiteLaw(UF),finiteZ.finiteLaw(UZ)),
+    targetSharedLaw.productLaw(finiteH.finiteLaw(UH),finiteH.finiteLaw(UH)))
+
+  mapped_nested_law: THEOREM fourPush.pushforward(originalFour.nestedLaw,toFour)=subtypeFour.nestedLaw
+
+END ppg_probability_subtype_four_map

@@ -1,0 +1,44 @@
+% A finite matching key chooses one leader. The other endpoint reads
+% the same fair coin with its orientation reversed. The label selected
+% at either endpoint therefore agrees with that endpoint's relative coin.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 3.1. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSRelativeCoins.lean.
+ppg_hls_relative_coins[C:TYPE,default:C,
+  G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+    (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_pair_keys[C,G], ppg_hls_coin_symmetry
+
+  pairLeader(K:finite_set[C]): C = IF nonempty?(K) THEN choose(K) ELSE default ENDIF
+
+  K: VAR finite_set[C]
+  M: VAR DependencyMatching
+  i: VAR C
+  c: VAR OrientationCoin
+
+  pairLeader_mem: THEOREM nonempty?(K) IMPLIES K(pairLeader(K))
+
+  relativeCoin(M,i,c): OrientationCoin =
+    IF pairLeader(matchPair(M,i))=i THEN c ELSE swapCoin(c) ENDIF
+
+  coinLabel(M,K,c): C = IF c=orientationKeep THEN pairLeader(K) ELSE M(pairLeader(K)) ENDIF
+
+  measurable_relativeCoin: THEOREM
+    coinMaps.measurable(OrientationSigma,OrientationSigma,
+      LAMBDA(c:OrientationCoin):relativeCoin(M,i,c))
+
+  map_relativeCoin: THEOREM
+    coinLaw.pushforward(fairOrientation,LAMBDA(c:OrientationCoin):relativeCoin(M,i,c))=
+      fairOrientation
+
+  matchPair_nonempty: LEMMA nonempty?(matchPair(M,i))
+
+  pairLeader_endpoint: LEMMA
+    pairLeader(matchPair(M,i))=i OR pairLeader(matchPair(M,i))=M(i)
+
+  coinLabel_target_iff_relative_flip: THEOREM M(i)/=i IMPLIES
+    (coinLabel(M,matchPair(M,i),c)=M(i) IFF relativeCoin(M,i,c)=orientationFlip)
+
+END ppg_hls_relative_coins

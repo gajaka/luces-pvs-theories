@@ -1,0 +1,57 @@
+% An infinite-value event of positive mass admits arbitrarily large
+% constant simple minorants. A finite integral makes that event null
+% under the general probability law. The carrier is arbitrary.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, nonnegative integrals.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_general_probability_finiteness[X:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[X]) S:sigma_algebra,
+  (IMPORTING ppg_probability_law[X,S]) mu:ProbabilityLaw]: THEORY
+BEGIN
+  IMPORTING ppg_general_lintegral[X,S,mu] AS generalIntegral,
+    ppg_general_probability_measure[X,S,mu] AS probability,
+    ppg_general_measure_values[X,S,mu] AS values,
+    ppg_enn_finiteness[X] AS finiteness,
+    ppg_enn_measurable[X] AS ennMaps,
+    ppg_measurable_map[X,ENN] AS meas,
+    ppg_nasa_sigma[X] AS sigma,
+    measure_integration@measure_props[X,S,mu],
+    measure_integration@measure_theory[X,S,mu]
+
+  f: VAR [X->ENN]
+
+  A: VAR (S)
+
+  c,b,m: VAR nonneg_real
+
+  finiteMass(A): nonneg_real = mu(A)`2
+
+  single(c,A): generalIntegral.Simple =
+    cons((c,A),null[generalIntegral.SimpleTerm])
+
+  finite_mass_pair: LEMMA mu(A)=(TRUE,finiteMass(A))
+
+  singleton_integral: LEMMA
+    generalIntegral.simpleIntegral(single(c,A))=ennFinite(c*finiteMass(A))
+
+  infinite_simple_minorant: LEMMA subset?(A,finiteness.infiniteEvent(f)) IMPLIES
+    generalIntegral.simpleMinorant(single(c,A),f)
+
+  infinite_mass_bound: LEMMA
+    ele(generalIntegral.lintegral(f),ennFinite(b)) AND
+    subset?(A,finiteness.infiniteEvent(f)) IMPLIES c*finiteMass(A)<=b
+
+  bounded_scaled_mass_zero: LEMMA
+    (FORALL(c:nonneg_real):c*m<=b) IMPLIES m=0
+
+  null_infinite_event: LEMMA
+    meas.measurable(sigma.asProject(S),ennMaps.ENNSigma,f) AND
+    ennFinite?(generalIntegral.lintegral(f)) IMPLIES
+      finiteMass(finiteness.infiniteEvent(f))=0
+
+  finite_integral_ae: THEOREM
+    meas.measurable(sigma.asProject(S),ennMaps.ENNSigma,f) AND
+    ennFinite?(generalIntegral.lintegral(f)) IMPLIES
+      ae?[X,S,mu](finiteness.finiteEvent(f))
+
+END ppg_general_probability_finiteness

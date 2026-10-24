@@ -1,0 +1,61 @@
+(|ppg_hls_block_intersection_results|
+ (|source_locality_eq| 0
+  (|source_locality_eq-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (EXPAND "rawSets.rawDepends")
+     (EXPAND "sourceProbability.stateDepends") (ASSERT))
+    NIL NIL)
+   NIL NIL))
+ (|target_locality_eq| 0
+  (|target_locality_eq-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (EXPAND "rawSets.rawDepends")
+     (EXPAND "targetProbability.stateDepends") (ASSERT))
+    NIL NIL)
+   NIL NIL))
+ (|source_event_eq| 0
+  (|source_event_eq-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (EXPAND "blockMass.sourceBlock")
+     (EXPAND "sourceProbability.pairEvent") (EXPAND "rawSets.rawSourceBlock")
+     (ASSERT))
+    NIL NIL)
+   NIL NIL))
+ (|target_event_eq| 0
+  (|target_event_eq-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (EXPAND "blockMass.targetBlock")
+     (EXPAND "targetProbability.pairEvent") (EXPAND "rawSets.rawTargetBlock")
+     (ASSERT))
+    NIL NIL)
+   NIL NIL))
+ (|joint_event_eq| 0
+  (|joint_event_eq-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "source_event_eq" ("A" "A!1"))
+     (LEMMA "target_event_eq" ("B" "B!1")) (EXPAND "rawSets.rawJointEvent")
+     (EXPAND "blockMass.jointAsBlockEvent")
+     (EXPAND "blockMass.jointBlockEvent") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|measure_jointEvent_blocks| 0
+  (|measure_jointEvent_blocks-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "blockMass.measure_jointEvent_blocks" ("A" "A!1" "B" "B!1"))
+     (LEMMA "source_locality_eq" ("U" "union(F,H)" "A" "A!1"))
+     (LEMMA "target_locality_eq" ("U" "union(H,Z)" "B" "B!1"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|coin_block_intersection_saving| 0
+  (|coin_block_intersection_saving-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "blockSaving.coin_block_intersection_saving"
+      ("A" "A!1" "B" "B!1" "delta" "delta!1"))
+     (LEMMA "source_locality_eq" ("U" "union(F,H)" "A" "A!1"))
+     (LEMMA "target_locality_eq" ("U" "union(H,Z)" "B" "B!1"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL)))

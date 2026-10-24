@@ -1,0 +1,67 @@
+% Summing over a subtype agrees with extending the summand by zero.
+% Finite preimages handle an empty subtype without choosing a default
+% element. Infinite summands remain part of the unrestricted sum.
+%
+% Patrick Billingsley, Probability and Measure, third edition,
+% Wiley, 1995: nonnegative sums and monotone convergence.
+ppg_enn_subtype_tsum[D:TYPE,S:set[D]]: THEORY
+BEGIN
+  Sub: TYPE = {d:D|S(d)}
+
+  IMPORTING ppg_enn_injective_bound[Sub,D] AS bounds,
+    ppg_indicator_reindex[Sub,D] AS reindex,
+    ppg_enn_unrestricted_sum[Sub] AS subSums,
+    ppg_enn_unrestricted_sum[D] AS fullSums,
+    ppg_nonneg_tsum[Sub] AS subFinite,
+    ppg_nonneg_tsum[D] AS fullFinite,
+    ppg_enn_finite_algebra[D] AS fullAlgebra
+
+  w: VAR [D->ENN]
+
+  F: VAR finite_set[D]
+
+  H: VAR finite_set[Sub]
+
+  x: VAR Sub
+
+  d: VAR D
+
+  incl(x): D = x
+
+  subweight(w)(x): ENN = w(x)
+
+  masked(w)(d): ENN = IF S(d) THEN w(d) ELSE ennFinite(0) ENDIF
+
+  incl_injective: LEMMA injective?(incl)
+
+  image_subtype: LEMMA reindex.supportImage(fullset[Sub],incl)=S
+
+  finite_preimage: LEMMA EXISTS(H:finite_set[Sub]):
+    image(incl,H)=intersection(F,S)
+
+  mask_on_filter: LEMMA
+    fullFinite.esum(intersection(F,S),masked(w))=
+      fullFinite.esum(intersection(F,S),w)
+
+  mask_off_filter: LEMMA
+    fullFinite.esum(difference(F,intersection(F,S)),masked(w))=ennFinite(0)
+
+  esum_filter: LEMMA
+    fullFinite.esum(F,masked(w))=fullFinite.esum(intersection(F,S),w)
+
+  lifted_finite_sum: LEMMA image(incl,H)=intersection(F,S) IMPLIES
+    fullFinite.esum(F,masked(w))=subFinite.esum(H,subweight(w))
+
+  masked_partial_bound: LEMMA
+    ele(fullFinite.esum(F,masked(w)),subSums.eTsum(subweight(w)))
+
+  masked_sum_bound: LEMMA
+    ele(fullSums.eTsum(masked(w)),subSums.eTsum(subweight(w)))
+
+  subtype_sum_bound: LEMMA
+    ele(subSums.eTsum(subweight(w)),fullSums.eTsum(masked(w)))
+
+  tsum_subtype: THEOREM
+    subSums.eTsum(subweight(w))=fullSums.eTsum(masked(w))
+
+END ppg_enn_subtype_tsum

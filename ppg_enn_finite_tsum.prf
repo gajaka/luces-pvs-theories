@@ -1,0 +1,158 @@
+(|ppg_enn_finite_tsum|
+ (|tsum_zero| 0
+  (|tsum_zero-1| NIL 0
+   (""
+    (THEN
+     (LEMMA "cols.eTsum_least"
+      ("f" "LAMBDA(j:J):ennFinite(0)" "y" "ennFinite(0)"))
+     (LEMMA "ele_antisym"
+      ("x" "cols.eTsum(LAMBDA(j:J):ennFinite(0))" "y" "ennFinite(0)"))
+     (AUTO-REWRITE "ppg_enn_finite_algebra[J].esum_zero" "ele_refl" "zero_le")
+     (GRIND :EXCLUDE ("eTsum" "eSup" "esum" "ele")))
+    NIL NIL)
+   ((J FORMAL-TYPE-DECL NIL |ppg_enn_finite_tsum| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|eTsum_least| FORMULA-DECL NIL |ppg_enn_unrestricted_sum| NIL)
+    (|esum_zero| FORMULA-DECL NIL |ppg_enn_finite_algebra| NIL)
+    (|zero_le| FORMULA-DECL NIL |ppg_enn_sup| NIL)
+    (|eTsum| CONST-DECL "ENN" |ppg_enn_unrestricted_sum| NIL)
+    (|ele_antisym| FORMULA-DECL NIL |ppg_enn_sup| NIL))
+   NIL))
+ (|empty_row_function| 0
+  (|empty_row_function-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (REWRITE "ppg_enn_finite[I].esum_empty"))
+    NIL NIL)
+   ((|esum_empty| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_finite_tsum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|esum| DEF-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|ennFinite?| ADT-RECOGNIZER-DECL "[ppg_ennreal -> boolean]"
+     |ppg_ennreal_adt| NIL)
+    (|ennFinite| ADT-CONSTRUCTOR-DECL "[nonneg_real -> (ennFinite?)]"
+     |ppg_ennreal_adt| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|finite_emptyset| NAME-JUDGEMENT "finite_set[I]" |ppg_enn_finite_tsum|
+     NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_enn_finite_tsum| NIL))
+   NIL))
+ (|finite_rows_empty| 0
+  (|finite_rows_empty-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (REWRITE "empty_row_function") (REWRITE "tsum_zero")
+     (REWRITE "ppg_enn_finite[I].esum_empty"))
+    NIL NIL)
+   ((|tsum_zero| FORMULA-DECL NIL |ppg_enn_finite_tsum| NIL)
+    (|eTsum| CONST-DECL "ENN" |ppg_enn_unrestricted_sum| NIL)
+    (|esum_empty| FORMULA-DECL NIL |ppg_enn_finite| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_enn_finite_tsum| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_finite_tsum| NIL)
+    (|empty_row_function| FORMULA-DECL NIL |ppg_enn_finite_tsum| NIL))
+   NIL))
+ (|row_step_function_TCC1| 0
+  (|row_step_function_TCC1-1| NIL 0 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|injective?| CONST-DECL "bool" |functions| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_finite_tsum| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|row_step_function| SUBTYPE "F" "(sets[ppg_enn_finite_tsum.I].nonempty?)"
+    (34 33 34 34))))
+ (|row_step_function| 0
+  (|row_step_function-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (AUTO-REWRITE "rowAlgebra.esum_step")
+     (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :EXCLUDE ("esum" "eadd" "rest" "is_finite")))
+    NIL NIL)
+   ((J FORMAL-TYPE-DECL NIL |ppg_enn_finite_tsum| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[I]" |ppg_enn_finite_tsum|
+     NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_finite_tsum| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|rest| CONST-DECL "set" |sets| NIL) (|choose| CONST-DECL "(p)" |sets| NIL)
+    (|eadd| CONST-DECL "ENN" |ppg_enn_sup| NIL)
+    (|esum| DEF-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|esum_step| FORMULA-DECL NIL |ppg_enn_finite_algebra| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL))
+   NIL))
+ (|finite_rows_commute| 0
+  (|finite_rows_commute-1| NIL 0
+   ("" (INDUCT "F" :NAME "ppg_finite_induction[I].finite_set_induction_rest")
+    (("1" (THEN (SKOSIMP*) (REWRITE "finite_rows_empty")) NIL NIL)
+     ("2"
+      (THEN (SKOSIMP*) (INST -1 "f!1")
+       (AUTO-REWRITE "row_step_function" "colAdd.eTsum_add"
+                     "rowAlgebra.esum_step")
+       (GRIND :EXCLUDE ("esum" "eTsum" "eSup" "is_finite" "rest" "eadd")))
+      NIL NIL))
+    NIL)
+   ((|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|esum_step| FORMULA-DECL NIL |ppg_enn_finite_algebra| NIL)
+    (|eTsum_add| FORMULA-DECL NIL |ppg_enn_add_tsum| NIL)
+    (|finite_rest| APPLICATION-JUDGEMENT "finite_set[I]" |ppg_enn_finite_tsum|
+     NIL)
+    (|finite_rows_empty| FORMULA-DECL NIL |ppg_enn_finite_tsum| NIL)
+    (|finite_set_induction_rest| FORMULA-DECL NIL |ppg_finite_induction| NIL)
+    (I FORMAL-TYPE-DECL NIL |ppg_enn_finite_tsum| NIL)
+    (|esum| DEF-DECL "ENN" |ppg_nonneg_tsum| NIL)
+    (|eTsum| CONST-DECL "ENN" |ppg_enn_unrestricted_sum| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (ENN TYPE-EQ-DECL NIL |ppg_enn_sup| NIL)
+    (|ppg_ennreal| TYPE-DECL NIL |ppg_ennreal_adt| NIL)
+    (J FORMAL-TYPE-DECL NIL |ppg_enn_finite_tsum| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL)))
+

@@ -1,0 +1,50 @@
+% A natural code turns an indexed union into a countable union. Each
+% code fiber contains at most one event, so its measurability follows
+% without choosing an element from an empty index type.
+%
+% Patrick Billingsley, Probability and Measure, third edition,
+% Wiley, 1995: sigma-algebras and countable unions of events.
+ppg_countable_indexed_union[X,I:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_measurable_space[X]
+
+  S: VAR MeasurableSpace
+
+  E: VAR [I->set[X]]
+
+  code: VAR [I->nat]
+
+  i: VAR I
+
+  n: VAR nat
+
+  x: VAR X
+
+  indexedUnion(E): set[X] = {x:X|EXISTS(i:I):E(i)(x)}
+
+  codedEvent(E,code,n): set[X] = {x:X|EXISTS(i:I):code(i)=n AND E(i)(x)}
+
+  indexed_union_member: LEMMA indexedUnion(E)(x) IFF EXISTS(i:I):E(i)(x)
+
+  coded_event_member: LEMMA codedEvent(E,code,n)(x) IFF
+    EXISTS(i:I):code(i)=n AND E(i)(x)
+
+  coded_event_at: LEMMA injective?(code) AND code(i)=n IMPLIES
+    codedEvent(E,code,n)=E(i)
+
+  coded_event_empty: LEMMA NOT(EXISTS(i:I):code(i)=n) IMPLIES
+    codedEvent(E,code,n)=emptyset[X]
+
+  indexed_coded_union: LEMMA indexedUnion(E)=
+    countableUnion(LAMBDA(n:nat):codedEvent(E,code,n))
+
+  measurable_coded_event: LEMMA injective?(code) AND
+    (FORALL(i:I):S(E(i))) IMPLIES S(codedEvent(E,code,n))
+
+  measurable_coded_family: LEMMA injective?(code) AND
+    (FORALL(i:I):S(E(i))) IMPLIES FORALL(n:nat):S(codedEvent(E,code,n))
+
+  measurable_indexed_union: THEOREM injective?(code) AND
+    (FORALL(i:I):S(E(i))) IMPLIES S(indexedUnion(E))
+
+END ppg_countable_indexed_union

@@ -1,0 +1,32 @@
+% The Boolean orientation law embeds in the extended measure.
+% Its masses are the same finite values, with total mass one.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Kun He, Qian Li and Xiaoming Sun, Moser-Tardos Algorithm: Beyond
+% Shearer's Bound, Lemma 3.4. arXiv:2111.06527.
+ppg_hls_native_fair_orientation: THEORY
+BEGIN
+  IMPORTING ppg_hls_fair_orientation,
+    ppg_nasa_sigma[OrientationCoin] AS orientationSpace,
+    ppg_probability_finite_view[OrientationCoin,OrientationSigma] AS orientationView
+
+  NativeOrientationSigma: sigma_algebra[OrientationCoin] =
+    orientationSpace.asNasa(OrientationSigma)
+
+  IMPORTING ppg_probability_law[OrientationCoin,orientationSpace.asNasa(OrientationSigma)] AS nativeProbability
+
+  nativeFairOrientation: nativeProbability.ProbabilityLaw =
+    orientationView.nativeLaw(fairOrientation)
+
+  A: VAR (NativeOrientationSigma)
+
+  native_orientation_sigma: LEMMA NativeOrientationSigma=OrientationSigma
+
+  native_fair_value: THEOREM nativeFairOrientation(A)=(TRUE,fairOrientation(A))
+
+  native_fair_keep: THEOREM
+    nativeFairOrientation(singleton[OrientationCoin](orientationKeep))=(TRUE,1/2)
+
+  native_fair_flip: THEOREM
+    nativeFairOrientation(singleton[OrientationCoin](orientationFlip))=(TRUE,1/2)
+
+END ppg_hls_native_fair_orientation

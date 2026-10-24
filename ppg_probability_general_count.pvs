@@ -1,0 +1,47 @@
+% The probability law stays fixed when comparing the native event-count
+% integral with the general simple-function integral. Its finite-law view
+% uses the same NASALib measure, integrable functions and expectations.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Paul R. Halmos, Measure Theory, Springer, 1974, monotone convergence.
+ppg_probability_general_count[X:TYPE,
+  (IMPORTING ppg_measurable_space[X]) S:MeasurableSpace,
+  (IMPORTING ppg_probability_measure[X,S]) mu:Probability]: THEORY
+BEGIN
+  IMPORTING ppg_probability_integral[X,S,mu] AS probabilityNative,
+    ppg_extended_integral[X,S,mu] AS probabilityIntegral,
+    ppg_finite_law_view[X,S] AS lawViews,
+    ppg_probability_law[X,asNasa(S)] AS generalLaws,
+    ppg_event_count[X] AS counts
+
+  sameFiniteLaw: lawViews.FiniteLaw = probabilityNative.nasaLaw
+
+  native_probability_full: LEMMA
+    generalLaws.probability?(probabilityNative.nasaLaw)
+
+  nativeProbability: generalLaws.ProbabilityLaw = probabilityNative.nasaLaw
+
+  IMPORTING ppg_finite_extended_integral[X,S,sameFiniteLaw] AS finiteIntegral,
+    ppg_finite_count_budget[X,S,sameFiniteLaw] AS finiteCounts,
+    ppg_general_finite_count[X,S,sameFiniteLaw] AS generalCounts,
+    ppg_general_simple_code_bridge[X,S,probabilityNative.nasaLaw] AS representation,
+    ppg_general_lintegral[X,asNasa(S),probabilityNative.nasaLaw] AS generalIntegral,
+    ppg_count_integral[X,S,mu] AS probabilityCounts
+
+  f: VAR [X->ENN]
+
+  E: VAR [nat->(S)]
+
+  same_native_law: LEMMA sameFiniteLaw=probabilityNative.nasaLaw
+
+  finite_probability_integral: LEMMA
+    finiteIntegral.lintegral(f)=probabilityIntegral.lintegral(f)
+
+  finite_count_probability_integral: LEMMA finiteCounts.expectedCount(E)=
+    probabilityIntegral.lintegral(LAMBDA(x:X):counts.eventCount(E,x))
+
+  general_count_eq_probability: THEOREM
+    generalIntegral.lintegral(LAMBDA(x:X):counts.eventCount(E,x))=
+      probabilityIntegral.lintegral(LAMBDA(x:X):counts.eventCount(E,x))
+
+END ppg_probability_general_count

@@ -1,0 +1,54 @@
+% A measurable online history rule constructs its schedule recursively.
+% State correspondence identifies the recorded run with that schedule.
+% The HLS bounds give its expected work and termination probability.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Algorithm 1 and Theorem 1.6, arXiv:2111.06527.
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2, arXiv:0903.0544.
+% Lean: the two history results in PPGraphHLSPolicyExpectation.lean.
+ppg_hls_history_expectation[C,V,Value:TYPE,domain:[V->set[Value]],
+  variableUniverse:{U:finite_set[V]|U=fullset[V]},
+  default:C,universe:{U:finite_set[C]|FORALL(c:C):U(c)},
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_mt_native_process[C,V,Value,domain,spaces,laws])
+  process:{q:MTProcess|FORALL(i:C):NativeStateSigma(spaces)(q`bad(i))},
+  (IMPORTING ppg_shearer_bdd[C,V,process`footprint])
+  p:[C->real],
+  (IMPORTING ppg_hls_matching[C,dependencyGraph,p])
+  O:OverlapBounds]: THEORY
+BEGIN
+  IMPORTING ppg_hls_policy_expectation[C,V,Value,domain,variableUniverse,
+      default,universe,spaces,laws,process,p,O] AS hlsHistoryBounds,
+    ppg_mt_history_measurable[C,V,Value,domain,universe,
+      ppg_mt_native_spaces[C,V,Value,domain].variableAmbient(spaces)] AS hlsHistoryHistories,
+    ppg_mt_history_state[C,V,Value,domain] AS hlsHistoryExecution,
+    ppg_hls_policy_count_termination[C,V,Value,domain,process`footprint,
+      universe,spaces,laws,badTest(process)] AS hlsHistoryTermination,
+    ppg_mt_log_probability[C,V,Value,domain,spaces,laws] AS hlsHistoryTableLaw,
+    ppg_shearer_bdd[C,V,process`footprint] AS hlsHistoryGraph,
+    ppg_hls_matching[C,hlsHistoryGraph.dependencyGraph,p] AS hlsHistoryOverlap,
+    ppg_shearer_slack[C,hlsHistoryGraph.dependencyGraph] AS hlsHistorySlack
+
+  rule: VAR hlsHistoryHistories.HistoryRule(badTest(process))
+
+  epsilon: VAR posreal
+
+  historyTermination(rule): set[ppg_mt_random_process[C,V,Value,domain].LogSpace] = {omega:ppg_mt_random_process[C,V,Value,domain].LogSpace|
+    EXISTS(N:nat):FORALL(a:C):NOT process`bad(a)(
+      hlsHistoryExecution.historyRun(process`footprint,rule,default,omega,N)`1)}
+
+  history_termination_event: LEMMA historyTermination(rule)=
+    hlsHistoryTermination.terminationEvent(hlsHistoryHistories.fromHistory(process`footprint,
+      badTest(process),rule,default))
+
+  history_expectedWork_le_card_div_slack: THEOREM hlsHistoryBounds.assumptions AND
+    StrictCriterion(hlsHistorySlack.dilated(epsilon,hlsHistoryOverlap.reduced(O)),universe) IMPLIES
+      ele(hlsHistoryBounds.expectedWork(hlsHistoryHistories.fromHistory(process`footprint,
+        badTest(process),rule,default)),ofReal(finite_sets[C].card(universe)/epsilon))
+
+  history_termination_eq_one: THEOREM hlsHistoryBounds.assumptions AND hlsHistoryBounds.criterion IMPLIES
+    hlsHistoryTableLaw.logMeasure(historyTermination(rule))=1
+
+END ppg_hls_history_expectation

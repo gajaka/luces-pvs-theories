@@ -1,0 +1,68 @@
+(|ppg_hls_block_intersection_sets|
+ (|source_join_agrees| 0
+  (|source_join_agrees-draft| NIL 0
+   ("" (SKOSIMP*)
+    (("" (EXPAND "union")
+      (("" (CASE "F(a!1)")
+        (("1"
+          (LEMMA "sourceJoin.joinBlocks_left"
+           ("xy" "(xyz!1`1`1,xyz!1`2)" "a" "a!1"))
+          (("1" (LEMMA "tripleJoin.joinThree_left" ("xyz" "xyz!1" "a" "a!1"))
+            (("1" (EXPAND "union") (("1" (ASSERT) NIL NIL)) NIL)) NIL)
+           ("2" (PROPAX) NIL NIL))
+          NIL)
+         ("2" (ASSERT)
+          (("2"
+            (LEMMA "sourceJoin.joinBlocks_right"
+             ("xy" "(xyz!1`1`1,xyz!1`2)" "a" "a!1"))
+            (("2"
+              (LEMMA "tripleJoin.joinThree_middle" ("xyz" "xyz!1" "a" "a!1"))
+              (("2" (EXPAND "union") (("2" (ASSERT) NIL NIL)) NIL)) NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL NIL))
+ (|target_join_agrees| 0
+  (|target_join_agrees-draft| NIL 0
+   ("" (SKOSIMP*)
+    (("" (EXPAND "union")
+      (("" (CASE "H(a!1)")
+        (("1"
+          (LEMMA "targetJoin.joinBlocks_left"
+           ("xy" "(xyz!1`2,xyz!1`1`2)" "a" "a!1"))
+          (("1" (LEMMA "tripleJoin.joinThree_middle" ("xyz" "xyz!1" "a" "a!1"))
+            (("1" (EXPAND "union") (("1" (ASSERT) NIL NIL)) NIL)) NIL)
+           ("2" (PROPAX) NIL NIL))
+          NIL)
+         ("2" (ASSERT)
+          (("2"
+            (LEMMA "targetJoin.joinBlocks_right"
+             ("xy" "(xyz!1`2,xyz!1`1`2)" "a" "a!1"))
+            (("2"
+              (LEMMA "tripleJoin.joinThree_right" ("xyz" "xyz!1" "a" "a!1"))
+              (("2" (EXPAND "union") (("2" (ASSERT) NIL NIL)) NIL)) NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL NIL))
+ (|jointEvent_blocks_eq_preimage| 0
+  (|jointEvent_blocks_eq_preimage-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY 1 :HIDE? T) (EXPAND "rawJointEvent")
+     (EXPAND "blockEvents.jointEvent") (EXPAND "rawSourceBlock")
+     (EXPAND "rawTargetBlock") (EXPAND "rawTripleEvent")
+     (EXPAND "intersection") (EXPAND "rawDepends" -5)
+     (INST -5 "sourceJoin.joinBlocks((x!1`1,x!2))"
+      "tripleJoin.joinThree((x!1,x!2))")
+     (EXPAND "rawDepends" -6)
+     (INST -6 "targetJoin.joinBlocks((x!2,x!1`2))"
+      "tripleJoin.joinThree((x!1,x!2))")
+     (LEMMA "source_join_agrees" ("xyz" "(x!1,x!2)"))
+     (LEMMA "target_join_agrees" ("xyz" "(x!1,x!2)"))
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL)))

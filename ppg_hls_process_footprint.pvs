@@ -1,0 +1,49 @@
+% Private and shared blocks are the actual footprint projections of a process.
+% The process subtype already contains coordinate locality, so no separate
+% locality assumption is added to the two bad-event equivalences.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2. Kun He, Qian Li and Xiaoming Sun,
+% "Moser-Tardos Algorithm: Beyond Shearer's Bound", Lemma 3.4.
+% Lean counterpart: PPGraphHLSFootprintBlocks.lean, first eight results.
+ppg_hls_process_footprint[I,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_mt_native_spaces[I,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_mt_native_process[I,V,Value,domain,spaces,laws] AS process,
+    ppg_hls_footprint_geometry[I,V,Value,domain] AS geometry
+
+  P: VAR process.MTProcess
+
+  i,j: VAR I
+
+  sigma,tau: VAR process.State
+
+  sourcePrivate(P,i,j): finite_set[V] = geometry.sourcePrivate(P`footprint,i,j)
+
+  sharedVariables(P,i,j): finite_set[V] = geometry.sharedVariables(P`footprint,i,j)
+
+  targetPrivate(P,i,j): finite_set[V] = geometry.targetPrivate(P`footprint,i,j)
+
+  source_shared_disjoint: THEOREM disjoint?(sourcePrivate(P,i,j),sharedVariables(P,i,j))
+
+  shared_target_disjoint: THEOREM disjoint?(sharedVariables(P,i,j),targetPrivate(P,i,j))
+
+  source_target_disjoint: THEOREM disjoint?(sourcePrivate(P,i,j),targetPrivate(P,i,j))
+
+  private_union_shared_disjoint: THEOREM disjoint?(union(sourcePrivate(P,i,j),
+    targetPrivate(P,i,j)),sharedVariables(P,i,j))
+
+  source_footprint_eq_blocks: THEOREM P`footprint(i)=union(sourcePrivate(P,i,j),sharedVariables(P,i,j))
+
+  target_footprint_eq_blocks: THEOREM P`footprint(j)=union(sharedVariables(P,i,j),targetPrivate(P,i,j))
+
+  source_bad_depends_blocks: THEOREM
+    (FORALL(a:V):union(sourcePrivate(P,i,j),sharedVariables(P,i,j))(a)
+      IMPLIES sigma(a)=tau(a)) IMPLIES (P`bad(i)(sigma) IFF P`bad(i)(tau))
+
+  target_bad_depends_blocks: THEOREM
+    (FORALL(a:V):union(sharedVariables(P,i,j),targetPrivate(P,i,j))(a)
+      IMPLIES sigma(a)=tau(a)) IMPLIES (P`bad(j)(sigma) IFF P`bad(j)(tau))
+
+END ppg_hls_process_footprint

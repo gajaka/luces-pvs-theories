@@ -1,0 +1,61 @@
+% The two existing nonnegative simple-integral constructions differ only
+% in their finite-list representation. A literal tuple/record translation
+% preserves every coefficient, event, pointwise value and integral.
+% Their lower finite cones, and hence their suprema, are identical.
+%
+% Paul R. Halmos, Measure Theory, Springer, 1974, simple functions.
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+ppg_general_simple_code_bridge[X:TYPE,
+  (IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING measure_integration@measure_def[X,asNasa(S)])
+  mu:measure_type]: THEORY
+BEGIN
+  IMPORTING ppg_general_lintegral[X,asNasa(S),mu] AS simple,
+    ppg_general_simple_integral[X,S,mu] AS codes,
+    ppg_enn_simple_sup
+
+  L: VAR simple.Simple
+
+  C: VAR codes.SimpleCode
+
+  f: VAR [X->ENN]
+
+  x: VAR X
+
+  toCode(L): RECURSIVE codes.SimpleCode =
+    IF null?(L) THEN null[codes.WeightedEvent] ELSE
+      cons((# coefficient:=car(L)`1,event:=car(L)`2 #),toCode(cdr(L)))
+    ENDIF MEASURE length(L)
+
+  toSimple(C): RECURSIVE simple.Simple =
+    IF null?(C) THEN null[simple.SimpleTerm] ELSE
+      cons((car(C)`coefficient,car(C)`event),toSimple(cdr(C)))
+    ENDIF MEASURE length(C)
+
+  simple_code_roundtrip: LEMMA toSimple(toCode(L))=L
+
+  code_simple_roundtrip: LEMMA toCode(toSimple(C))=C
+
+  simple_code_value: LEMMA codes.codeValue(toCode(L),x)=simple.simpleValue(L)(x)
+
+  finite_scale_is_multiply: LEMMA FORALL(c:nonneg_real,z:ENN):
+    scale(c,z)=emul(ennFinite(c),z)
+
+  simple_code_integral: LEMMA codes.codeIntegral(toCode(L))=simple.simpleIntegral(L)
+
+  simple_code_minorant: LEMMA codes.codeMinorant(toCode(L),f) IFF
+    simple.simpleMinorant(L,f)
+
+  code_simple_value: LEMMA simple.simpleValue(toSimple(C))(x)=codes.codeValue(C,x)
+
+  code_simple_integral: LEMMA simple.simpleIntegral(toSimple(C))=codes.codeIntegral(C)
+
+  code_simple_minorant: LEMMA simple.simpleMinorant(toSimple(C),f) IFF
+    codes.codeMinorant(C,f)
+
+  identical_lower_cones: LEMMA simple.lowerValues(f)=lowerCone(codes.simpleValues(f))
+
+  general_integral_code_equality: THEOREM
+    simple.lintegral(f)=codes.generalLintegral(f)
+
+END ppg_general_simple_code_bridge

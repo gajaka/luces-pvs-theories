@@ -1,0 +1,80 @@
+% The private factors and one shared factor represent the joint event.
+% Their projections recover the two endpoint product laws.
+% Patrick Billingsley, Probability and Measure, third edition.
+ppg_probability_finite_native_triple[X,Y,Z:TYPE,
+  (IMPORTING ppg_measurable_space[X],ppg_measurable_space[Y],
+    ppg_measurable_space[Z])
+  SX:ppg_measurable_space[X].MeasurableSpace,
+  SY:ppg_measurable_space[Y].MeasurableSpace,
+  SZ:ppg_measurable_space[Z].MeasurableSpace,
+  (IMPORTING ppg_probability_measure[X,SX],
+    ppg_probability_measure[Y,SY],ppg_probability_measure[Z,SZ])
+  muX:ppg_probability_measure[X,SX].Probability,
+  muY:ppg_probability_measure[Y,SY].Probability,
+  muZ:ppg_probability_measure[Z,SZ].Probability]: THEORY
+BEGIN
+
+  IMPORTING ppg_probability_pair[X,Y,SX,SY] AS leftReal,
+    ppg_probability_pair[Y,Z,SY,SZ] AS rightReal,
+    ppg_probability_pair[X,Z,SX,SZ] AS privateReal,
+    ppg_probability_finite_native_product[X,Y,SX,SY,muX,muY] AS leftBridge,
+    ppg_probability_finite_native_product[Y,Z,SY,SZ,muY,muZ] AS rightBridge,
+    ppg_probability_finite_native_product[X,Z,SX,SZ,muX,muZ] AS privateBridge,
+    ppg_probability_finite_native_product[Y,Y,SY,SY,muY,muY] AS sharedBridge,
+    ppg_probability_finite_native_four[X,Y,Z,SX,SY,SZ,muX,muY,muZ] AS fourBridge,
+    ppg_probability_pair[[X,Z],Y,privateReal.JointSpace,SY] AS singleReal,
+    ppg_probability_finite_native_product[[X,Z],Y,privateReal.JointSpace,SY,
+      privateReal.productLaw(muX,muZ),muY] AS singleBridge
+
+  IMPORTING ppg_probability_product[[X,Z],Y,
+    ppg_nasa_sigma[[X,Z]].asNasa(privateReal.JointSpace),
+    ppg_nasa_sigma[Y].asNasa(SY),
+    singleBridge.leftNative,singleBridge.rightNative] AS singleNative,
+    ppg_probability_intersection[X,Y,Z,
+      ppg_nasa_sigma[X].asNasa(SX),ppg_nasa_sigma[Y].asNasa(SY),
+      ppg_nasa_sigma[Z].asNasa(SZ),privateBridge.leftNative,
+      sharedBridge.leftNative,privateBridge.rightNative] AS estimate,
+    ppg_native_intersection_measurable[X,Y,Z,
+      ppg_nasa_sigma[X].asNasa(SX),ppg_nasa_sigma[Y].asNasa(SY),
+      ppg_nasa_sigma[Z].asNasa(SZ)] AS events
+
+  IMPORTING ppg_probability_double_sample[[X,Z],Y,
+    sigma_times(ppg_nasa_sigma[X].asNasa(SX),ppg_nasa_sigma[Z].asNasa(SZ)),
+    ppg_nasa_sigma[Y].asNasa(SY),estimate.privateProb,
+    sharedBridge.leftNative] AS singleEstimate
+
+  TripleValue: TYPE = [[X,Z],Y]
+
+  TripleSigma: MACRO ppg_measurable_space[TripleValue].MeasurableSpace =
+    singleReal.JointSpace
+
+  tripleLaw: singleReal.JointLaw =
+    singleReal.productLaw(privateReal.productLaw(muX,muZ),muY)
+
+  A: VAR (leftReal.JointSpace)
+
+  B: VAR (rightReal.JointSpace)
+
+  E: VAR (TripleSigma)
+
+  single_sigma_eq: LEMMA
+    singleReal.JointSpace=
+      sigma_times(sigma_times(ppg_nasa_sigma[X].asNasa(SX),
+        ppg_nasa_sigma[Z].asNasa(SZ)),ppg_nasa_sigma[Y].asNasa(SY))
+
+  single_private_law_eq: LEMMA singleBridge.leftNative=estimate.privateProb
+
+  native_single_product_eq: LEMMA singleEstimate.singleLaw=singleNative.probabilityProduct
+
+  native_single_event_value: LEMMA singleEstimate.singleLaw(E)=(TRUE,tripleLaw(E))
+
+  first_real_eq: THEOREM estimate.firstReal(A)=leftReal.productLaw(muX,muY)(A)
+
+  second_real_eq: THEOREM estimate.secondReal(B)=rightReal.productLaw(muY,muZ)(B)
+
+  measurable_joint_event: LEMMA TripleSigma(events.jointAsEvent(A,B))
+
+  overlap_real_eq: THEOREM
+    estimate.overlapReal(A,B)=tripleLaw(events.jointAsEvent(A,B))
+
+END ppg_probability_finite_native_triple

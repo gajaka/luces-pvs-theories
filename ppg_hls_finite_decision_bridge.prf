@@ -1,0 +1,44 @@
+(|ppg_hls_finite_decision_bridge|
+ (|finite_mt_classify_impossible_iff| 0
+  (|finite_mt_classify_impossible_iff-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "feasibility_TCC1")
+ (LEMMA "certified.hlsCertified_satisfiable")
+ (LEMMA "nativeProcess.process_locality" ("P" "process"))
+ (TYPEPRED "eventOrder")
+ (LEMMA "decision.classify_impossible_iff"
+  ("allowed" "fullset[model.MTState]" "sat"
+   "feasibility.mtSat(nativeProcess.badTest(process))" "B" "universe"
+   "criterion" "criterion!1"))
+ (LEMMA "feasibility.mt_noReachableGood_iff_infeasible"
+  ("vars" "process`footprint" "bad" "nativeProcess.badTest(process)" "fallback"
+   "default" "enumeration" "eventOrder" "edges" "edges!1" "s" "s!1"))
+ (EXPAND "selection.completeEnumeration") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|finite_mt_classify_gap_supplies_repair| 0
+  (|finite_mt_classify_gap_supplies_repair-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "feasibility_TCC1")
+ (LEMMA "decision.classify_gap_iff"
+  ("allowed" "fullset[model.MTState]" "sat"
+   "feasibility.mtSat(nativeProcess.badTest(process))" "B" "universe"
+   "criterion" "criterion!1"))
+ (LEMMA "feasibility.mt_satisfiable_iff_good_exists"
+  ("bad" "nativeProcess.badTest(process)"))
+ (LEMMA "nativeProcess.process_locality" ("P" "process"))
+ (TYPEPRED "eventOrder")
+ (LEMMA "feasibility.mt_reachable_good_iff_good_exists"
+  ("vars" "process`footprint" "bad" "nativeProcess.badTest(process)" "fallback"
+   "default" "enumeration" "eventOrder" "s" "s!1"))
+ (EXPAND "regions.Gap") (EXPAND "selection.completeEnumeration")
+ (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|feasibility_TCC1| 0
+  (|feasibility_TCC1-current-explicit-TCC-proposal| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "variableUniverse") (EXPAND "sets[V].fullset")
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL)))

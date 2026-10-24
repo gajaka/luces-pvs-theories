@@ -1,0 +1,182 @@
+(|ppg_hls_randomized_expectation|
+ (|joint_work_lower_measurable| 0
+  (|joint_work_lower_measurable-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "family!1")
+ (LEMMA "hlsRandomizedJointCuts.lower_cuts_of_measurable"
+  ("SX" "hlsRandomizedJointSigma.asProject(ProductSigma)" "f"
+   "work(family!1)"))
+ (EXPAND "jointlyMeasurable")
+ (EXPAND "hlsRandomizedJointRegions.lowerMeasurable" :ACTUALS? T)
+ (EXPAND "hlsRandomizedJointSigma.asProject" :ACTUALS? T)
+ (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|section_is_actual_count| 0
+  (|section_is_actual_count-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+ (SPREAD (APPLY-EXTENSIONALITY :HIDE? T)
+  ((THEN
+    (LEMMA "hlsRandomizedCountCore.tLog_policy_count"
+     ("d" "family!1(a!1)" "omega" "x!1"))
+    (EXPAND "hlsRandomizedTonelli.sectionFunction" :ACTUALS? T)
+    (EXPAND "measurableWork") (EXPAND "work")
+    (EXPAND "hlsRandomizedCounts.nativeActiveEvents" :ACTUALS? T)
+    (GRIND :DEFS NIL :IF-MATCH ALL))
+   (THEN (LEMMA "hlsRandomizedCounts_TCC1") (GRIND :DEFS NIL :IF-MATCH ALL)))))
+    NIL NIL)
+   NIL NIL))
+ (|actual_section_integral| 0
+  (|actual_section_integral-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "hlsRandomizedCounts_TCC1")
+ (LEMMA "section_is_actual_count" ("family" "family!1" "a" "a!1"))
+ (LEMMA "hlsRandomizedLogBridge.general_count_eq_probability"
+  ("E" "hlsRandomizedCounts.nativeActiveEvents(family!1(a!1))"))
+ (LEMMA "hlsRandomizedCounts.expected_work_integral" ("sig" "family!1(a!1)"))
+ (EXPAND "hlsRandomizedTonelli.sectionIntegral" :ACTUALS? T)
+ (EXPAND "hlsRandomizedTonelli.sectionMeasurable" :ACTUALS? T)
+ (EXPAND "hlsRandomizedBounds.expectedWork" :ACTUALS? T)
+ (GRIND :DEFS NIL :IF-MATCH ALL)
+ (EXPAND "hlsRandomizedLogGeneral.sfiniteLaw" :ACTUALS? T)
+ (EXPAND "hlsRandomizedLogBridge.nativeProbability" :ACTUALS? T)
+ (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|actual_tonelli_identity| 0
+  (|actual_tonelli_identity-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+ (LEMMA "hlsRandomizedTonelli.general_sfinite_tonelli"
+  ("f" "measurableWork(family!1)"))
+ (EXPAND "expectedRandomizedWork") (EXPAND "measurableWork")
+ (EXPAND "hlsRandomizedJointIntegral.lintegral")
+ (EXPAND "ProductSigma" :ACTUALS? T) (EXPAND "actualProduct" :ACTUALS? T)
+ (EXPAND "hlsRandomizedProduct.probabilityProduct" :ACTUALS? T)
+ (EXPAND "hlsRandomizedProduct.probProduct" :ACTUALS? T)
+ (EXPAND
+  "ppg_sfinite_simple_sections[A,ppg_mt_random_process[C,V,Value,domain].LogSpace,asNasa(SA),asNasa(ppg_mt_native_spaces[C,V,Value,domain].NativeTableSigma(spaces)),hlsRandomizedAuxBridge.nativeProbability,hlsRandomizedLogGeneral.sfiniteLaw].productLaw"
+  :ACTUALS? T)
+ (EXPAND "hlsRandomizedLogGeneral.sfiniteLaw" :ACTUALS? T)
+ (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|actual_constant_integral| 0
+  (|actual_constant_integral-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+ (LEMMA "hlsRandomizedAuxIndicators.extended_indicator_function"
+  ("z" "ennFinite(c!1)" "A" "fullset[A]"))
+ (LEMMA "hlsRandomizedAuxIndicators.extended_indicator_integral"
+  ("z" "ennFinite(c!1)" "A" "fullset[A]"))
+ (LEMMA "hlsRandomizedAuxGeneral.probability_full_value") (EXPAND "emul")
+ (EXPAND "sets[A].fullset") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|randomized_expectedWork_le_sum_stableBudget| 0
+  (|randomized_expectedWork_le_sum_stableBudget-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "actual_tonelli_identity" ("family" "family!1"))
+ (LEMMA "hlsRandomizedAuxIntegral.lintegral_monotone"
+  ("f"
+   "hlsRandomizedTonelli.measurableSectionIntegral(measurableWork(family!1))"
+   "h" "LAMBDA(a:A):ofReal(hlsRandomizedBounds.totalBudget)"))
+ (LEMMA "hlsRandomizedTonelli.measurable_section_integral_at")
+ (LEMMA "actual_section_integral")
+ (LEMMA "hlsRandomizedBounds.expectedWork_le_sum_stableBudget")
+ (LEMMA "actual_constant_integral"
+  ("c" "max(0,hlsRandomizedBounds.totalBudget)"))
+ (EXPAND "ofReal") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|randomized_expectedWork_le_card_div_slack| 0
+  (|randomized_expectedWork_le_card_div_slack-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "actual_tonelli_identity" ("family" "family!1"))
+ (LEMMA "hlsRandomizedAuxIntegral.lintegral_monotone"
+  ("f"
+   "hlsRandomizedTonelli.measurableSectionIntegral(measurableWork(family!1))"
+   "h" "LAMBDA(a:A):ofReal(card(universe)/epsilon!1)"))
+ (LEMMA "hlsRandomizedTonelli.measurable_section_integral_at")
+ (LEMMA "actual_section_integral")
+ (LEMMA "hlsRandomizedBounds.expectedWork_le_card_div_slack"
+  ("epsilon" "epsilon!1"))
+ (LEMMA "actual_constant_integral" ("c" "max(0,card(universe)/epsilon!1)"))
+ (EXPAND "ofReal") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|finite_work_implies_good| 0
+  (|finite_work_implies_good-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "hlsRandomizedCountCore.tLog_lt_top_iff_exists_good")
+ (EXPAND "hlsRandomizedJointFinite.finiteEvent")
+ (EXPAND "randomizedTermination") (EXPAND "work")
+ (EXPAND "hlsRandomizedCountCore.goodAt") (EXPAND "subset?")
+ (GRIND :DEFS NIL :IF-MATCH NIL) (TYPEPRED "family!1(x!1`1)")
+ (LEMMA "hlsRandomizedCountCore.tLog_lt_top_iff_exists_good"
+  ("labels" "family!1(x!1`1)`select(x!1`2)" "omega" "x!1`2"))
+ (EXPAND "hlsRandomizedCountCore.goodAt") (EXPAND "badTest")
+ (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|randomized_ae_exists_good| 0
+  (|randomized_ae_exists_good-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+ (LEMMA "randomized_expectedWork_le_sum_stableBudget" ("family" "family!1"))
+ (LEMMA "hlsRandomizedBounds.finite_below_ofReal"
+  ("z" "expectedRandomizedWork(family!1)" "b"
+   "hlsRandomizedBounds.totalBudget"))
+ (SPREAD
+  (CASE
+      "ae?[[A,ppg_mt_random_process[C,V,Value,domain].LogSpace],ProductSigma,actualProduct](hlsRandomizedJointFinite.finiteEvent(work(family!1)))")
+  ((THEN (EXPAND "ae?") (EXPAND "ae_in?") (SKOLEM -1 ("randomAEException"))
+    (INST 1 "randomAEException")
+    (LEMMA "finite_work_implies_good" ("family" "family!1")) (EXPAND "subset?")
+    (GRIND :DEFS NIL :IF-MATCH ALL))
+   (THEN (TYPEPRED "family!1") (EXPAND "jointlyMeasurable")
+    (LEMMA "hlsRandomizedJointFiniteness.finite_integral_ae"
+     ("f" "work(family!1)"))
+    (EXPAND "expectedRandomizedWork")
+    (EXPAND "hlsRandomizedJointSigma.asProject" :ACTUALS? T)
+    (GRIND :DEFS NIL :IF-MATCH ALL)))))
+    NIL NIL)
+   NIL NIL))
+
+(|hlsRandomizedCounts_TCC1| 0
+ (|hlsRandomizedCounts_TCC1-candidate| NIL 0
+  (""
+   (THEN (SKOLEM 1 ("randomizedEtaLabel")) (TYPEPRED "process")
+    (EXPAND "ppg_mt_native_process[C,V,Value,domain,spaces,laws].badTest")
+    (GRIND :DEFS NIL :IF-MATCH ALL)
+    (SPREAD
+     (CASE
+         "{s:ppg_mt_semantics[C,V,Value,domain].MTState|process`bad(randomizedEtaLabel)(s)}=process`bad(randomizedEtaLabel)")
+     ((ASSERT) (THEN (APPLY-EXTENSIONALITY 1) (SKOSIMP*) (ASSERT)))))
+   NIL NIL)
+  NIL NIL))
+
+(|actualProduct_TCC1| 0
+ (|actualProduct_TCC1-candidate| NIL 0
+  (""
+   (THEN (TYPEPRED "hlsRandomizedProduct.probabilityProduct")
+    (EXPAND "ProductSigma" :ACTUALS? T) (GRIND :DEFS NIL :IF-MATCH ALL))
+   NIL NIL)
+  NIL NIL))
+
+(|measurableWork_TCC1| 0
+ (|measurableWork_TCC1-candidate| NIL 0
+  (""
+   (THEN (SKOSIMP*) (TYPEPRED "family!1") (EXPAND "jointlyMeasurable")
+    (LEMMA "hlsRandomizedJointCuts.lower_cuts_of_measurable"
+     ("SX" "hlsRandomizedJointSigma.asProject(ProductSigma)" "f"
+      "work(family!1)"))
+    (EXPAND
+     "ppg_simple_comparison_regions[[A,ppg_mt_random_process[C,V,Value,domain].LogSpace],sigma_times(asNasa(SA),asNasa(ppg_mt_native_spaces[C,V,Value,domain].NativeTableSigma(spaces))),ppg_sfinite_simple_sections[A,ppg_mt_random_process[C,V,Value,domain].LogSpace,asNasa(SA),asNasa(ppg_mt_native_spaces[C,V,Value,domain].NativeTableSigma(spaces)),hlsRandomizedAuxBridge.nativeProbability,hlsRandomizedLogGeneral.sfiniteLaw].productLaw].lowerMeasurable"
+     :ACTUALS? T)
+    (EXPAND "hlsRandomizedJointSigma.asProject" :ACTUALS? T)
+    (EXPAND "ProductSigma" :ACTUALS? T) (GRIND :DEFS NIL :IF-MATCH ALL))
+   NIL NIL)
+  NIL NIL))
+)

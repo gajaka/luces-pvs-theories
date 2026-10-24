@@ -1,0 +1,20 @@
+% The fair Bernoulli parameter and its complement both equal one half.
+% The Boolean orientation law is an equal mixture of two point measures.
+% Kun He, Qian Li and Xiaoming Sun, Moser-Tardos Algorithm: Beyond
+% Shearer's Bound, Section 3.1, Lemma 3.4. arXiv:2111.06527.
+ppg_hls_coin_parameter: THEORY
+BEGIN
+  UnitParameter: TYPE = {p:real | 0<=p AND p<=1}
+
+  coinParameter: UnitParameter = 1/2
+
+  parameterNonnegative(p:UnitParameter): nonneg_real = p
+
+  parameterComplement(p:UnitParameter): UnitParameter = 1-p
+
+  coinParameter_toNNReal: THEOREM parameterNonnegative(coinParameter)=1/2
+
+  coinParameter_symm_toNNReal: THEOREM
+    parameterNonnegative(parameterComplement(coinParameter))=1/2
+
+END ppg_hls_coin_parameter

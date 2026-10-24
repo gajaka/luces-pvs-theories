@@ -1,0 +1,64 @@
+% Addition preserves the supremum of finite partial sums, including
+% infinite summands. This is needed when the fibers of a dependent
+% family are infinite; the finite-fiber theorem does not apply there.
+%
+% Patrick Billingsley, Probability and Measure, third edition,
+% Wiley, 1995: nonnegative sums and monotone convergence.
+ppg_enn_add_tsum[T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_enn_unrestricted_sum[T], ppg_enn_finite_order[T],
+    ppg_enn_finite_algebra[T]
+
+  x,y: VAR ENN
+
+  a,b: VAR nonneg_real
+
+  f,g: VAR [T->ENN]
+
+  F,H: VAR finite_set[T]
+
+  finite_left_add_bound: LEMMA a<=b IMPLIES
+    (ele(eadd(ennFinite(a),x),ennFinite(b)) IFF
+      ele(x,ennFinite(b-a)))
+
+  finite_add_tsum_bound: LEMMA a<=b AND
+    (FORALL(F:finite_set[T]):
+      ele(eadd(ennFinite(a),esum(F,f)),ennFinite(b))) IMPLIES
+    ele(eadd(ennFinite(a),eTsum(f)),ennFinite(b))
+
+  finite_bound_witness: LEMMA ele(x,ennFinite(b)) IMPLIES
+    EXISTS(a:nonneg_real):a<=b AND x=ennFinite(a)
+
+  partial_empty_left_bound: LEMMA
+    (FORALL(F:finite_set[T]):ele(eadd(x,esum(F,f)),y)) IMPLIES
+    ele(x,y)
+
+  add_partial_finite_bound: LEMMA
+    (FORALL(F:finite_set[T]):
+      ele(eadd(x,esum(F,f)),ennFinite(b))) IMPLIES
+    ele(eadd(x,eTsum(f)),ennFinite(b))
+
+  add_tsum_least: THEOREM
+    (FORALL(F:finite_set[T]):ele(eadd(x,esum(F,f)),y)) IMPLIES
+    ele(eadd(x,eTsum(f)),y)
+
+  partial_add_bound: LEMMA
+    ele(eadd(esum(F,f),esum(H,g)),
+      eTsum(LAMBDA(t:T):eadd(f(t),g(t))))
+
+  partial_add_tsum_bound: LEMMA
+    ele(eadd(esum(F,f),eTsum(g)),
+      eTsum(LAMBDA(t:T):eadd(f(t),g(t))))
+
+  tsum_add_lower: LEMMA
+    ele(eadd(eTsum(f),eTsum(g)),
+      eTsum(LAMBDA(t:T):eadd(f(t),g(t))))
+
+  tsum_add_upper: LEMMA
+    ele(eTsum(LAMBDA(t:T):eadd(f(t),g(t))),
+      eadd(eTsum(f),eTsum(g)))
+
+  eTsum_add: THEOREM
+    eTsum(LAMBDA(t:T):eadd(f(t),g(t)))=eadd(eTsum(f),eTsum(g))
+
+END ppg_enn_add_tsum

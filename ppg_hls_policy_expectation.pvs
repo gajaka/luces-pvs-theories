@@ -1,0 +1,124 @@
+% The active-time count of a measurable admissible policy is the finite
+% sum of its label counts. The HLS probability bounds give finite expected
+% work, from which almost-sure termination follows. The selection may
+% depend on the entire table and execution history.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Theorem 1.6 and Lemma 3.14, arXiv:2111.06527.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Lean: the deterministic schedule results in PPGraphHLSPolicyExpectation.
+ppg_hls_policy_expectation[C,V,Value:TYPE,domain:[V->set[Value]],
+  variableUniverse:{U:finite_set[V]|U=fullset[V]},
+  default:C,universe:{U:finite_set[C]|FORALL(c:C):U(c)},
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_mt_native_process[C,V,Value,domain,spaces,laws])
+  process:{q:MTProcess|FORALL(i:C):NativeStateSigma(spaces)(q`bad(i))},
+  (IMPORTING ppg_shearer_bdd[C,V,process`footprint])
+  p:[C->real],
+  (IMPORTING ppg_hls_matching[C,dependencyGraph,p])
+  O:OverlapBounds]: THEORY
+BEGIN
+  IMPORTING ppg_hls_policy_count_integral[C,V,Value,domain,process`footprint,
+      universe,spaces,laws,badTest(process)] AS policyExpCounts,
+    ppg_hls_policy_count_termination[C,V,Value,domain,process`footprint,
+      universe,spaces,laws,badTest(process)] AS policyExpTermination,
+    ppg_mt_policy_schedule[C,V,Value,domain,universe,
+      variableAmbient(spaces)] AS policyExpSchedules,
+    ppg_mt_policy_expectation[C,V,Value,domain,universe,spaces,laws] AS policyExpWorkLaw,
+    ppg_mt_state_probability[C,V,Value,domain,variableUniverse,
+      spaces,laws] AS policyExpStateLaw,
+    ppg_mt_log_probability[C,V,Value,domain,spaces,laws] AS policyExpTableLaw,
+    ppg_shearer_bdd[C,V,process`footprint] AS policyExpGraph,
+    ppg_hls_matching[C,policyExpGraph.dependencyGraph,p] AS policyExpOverlap,
+    ppg_shearer_budget[C,policyExpGraph.dependencyGraph] AS policyExpStable,
+    ppg_shearer_slack[C,policyExpGraph.dependencyGraph] AS policyExpSlack,
+    ppg_hls_event_probability[C,V,Value,domain,variableUniverse,
+      spaces,laws,process] AS policyExpEventLaw,
+    ppg_enn_finite[C] AS policyExpFiniteENN,
+    ppg_enn_finite_order[C] AS policyExpFiniteOrder,
+    ppg_nonneg_tsum[C] AS policyExpLabelSums,
+    ppg_finite_sum[C] AS policyExpRealSums,
+    ppg_finite_induction[C],ppg_enn_ofreal_algebra,
+    ppg_hls_policy_count_bound
+
+  hprob: bool = FORALL(i:C):policyExpStateLaw.stateMeasure(process`bad(i))=p(i)
+
+  hp: bool = FORALL(i:C):0<p(i)
+
+  hInt: bool = FORALL(i:C):O`delta(i)<=policyExpStateLaw.stateMeasure(
+    intersection(process`bad(i),process`bad(O`mate(i))))
+
+  assumptions: bool = hprob AND hp AND hInt
+
+  criterion: bool = StrictCriterion(policyExpOverlap.reduced(O),universe)
+
+  singletonBudget(a:C): real =
+    policyExpStable.stableBudget(policyExpOverlap.reduced(O),universe,sets[C].singleton(a))
+
+  totalBudget: real = policyExpRealSums.fsum(universe,singletonBudget)
+
+  expectedWork(sig:policyExpSchedules.Schedule(process`footprint,badTest(process))): ENN =
+    policyExpWorkLaw.expectedWork(process`footprint,badTest(process),sig)
+
+  sig: VAR policyExpSchedules.Schedule(process`footprint,badTest(process))
+
+  a: VAR C
+
+  epsilon: VAR posreal
+
+  F: VAR finite_set[C]
+
+  f: VAR [C->real]
+
+  z: VAR ENN
+
+  b: VAR real
+
+  finite_ofReal_sum: LEMMA
+    (FORALL(a:C):F(a) IMPLIES 0<=f(a)) IMPLIES
+    policyExpLabelSums.esum(F,LAMBDA(a:C):ofReal(f(a)))=
+      ofReal(policyExpRealSums.fsum(F,f))
+
+  finite_below_ofReal: LEMMA ele(z,ofReal(b)) IMPLIES ennFinite?(z)
+
+  event_probability_le_one: LEMMA hprob IMPLIES FORALL(i:C):p(i)<=1
+
+  reduced_nonnegative: LEMMA hprob AND hp IMPLIES
+    policyExpStable.nonnegativeOn(policyExpOverlap.reduced(O),universe)
+
+  singleton_budget_nonnegative: LEMMA assumptions AND criterion IMPLIES
+    0<=singletonBudget(a)
+
+  each_count_le_budget: LEMMA assumptions AND criterion IMPLIES
+    ele(policyExpCounts.expectedCount(sig,a),ofReal(singletonBudget(a)))
+
+  expected_work_label_sum: LEMMA expectedWork(sig)=
+    policyExpLabelSums.esum(universe,LAMBDA(a:C):policyExpCounts.expectedCount(sig,a))
+
+  expectedWork_le_sum_stableBudget: THEOREM assumptions AND criterion IMPLIES
+    ele(expectedWork(sig),ofReal(totalBudget))
+
+  expectedWork_lt_top: THEOREM assumptions AND criterion IMPLIES
+    ennFinite?(expectedWork(sig))
+
+  slack_implies_criterion: LEMMA hprob AND hp AND
+    StrictCriterion(policyExpSlack.dilated(epsilon,policyExpOverlap.reduced(O)),universe) IMPLIES
+      criterion
+
+  stable_budget_slack_bound: LEMMA hprob AND hp AND
+    StrictCriterion(policyExpSlack.dilated(epsilon,policyExpOverlap.reduced(O)),universe) IMPLIES
+      totalBudget<=finite_sets[C].card(universe)/epsilon
+
+  expectedWork_le_card_div_slack: THEOREM assumptions AND
+    StrictCriterion(policyExpSlack.dilated(epsilon,policyExpOverlap.reduced(O)),universe) IMPLIES
+      ele(expectedWork(sig),ofReal(finite_sets[C].card(universe)/epsilon))
+
+  ae_exists_good: THEOREM assumptions AND criterion IMPLIES
+    ae?[ppg_mt_random_process[C,V,Value,domain].LogSpace,asNasa(NativeTableSigma(spaces)),nasaLaw](
+      policyExpTermination.terminationEvent(sig))
+
+  measure_termination_eq_one: THEOREM assumptions AND criterion IMPLIES
+    policyExpTableLaw.logMeasure(policyExpTermination.terminationEvent(sig))=1
+
+END ppg_hls_policy_expectation

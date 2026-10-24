@@ -1,0 +1,267 @@
+(|ppg_hls_coin_saving|
+ (|forward_real| 0
+  (|forward_real-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "estimate.forward_probability_real" ("A" "A!1" "B" "B!1"))
+     (EXPAND "coinAverage.rightReal") (EXPAND "fourReal.realMass")
+     (EXPAND "measureValue") (EXPAND "nativeValue") (ASSERT))
+    NIL NIL)
+   ((|rightReal| CONST-DECL "nonneg_real" |ppg_hls_native_coin_probability|
+     NIL)
+    (|realMass| CONST-DECL "nonneg_real" |ppg_probability_real_difference| NIL)
+    (|forward_probability_real| FORMULA-DECL NIL |ppg_probability_intersection|
+     NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (X FORMAL-TYPE-DECL NIL |ppg_hls_coin_saving| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_hls_coin_saving| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_hls_coin_saving| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_hls_coin_saving| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_hls_coin_saving| NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]" |ppg_hls_coin_saving| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|probability?| CONST-DECL "bool" |ppg_probability_law| NIL)
+    (|ProbabilityLaw| TYPE-EQ-DECL NIL |ppg_probability_law| NIL)
+    (|muX| FORMAL-CONST-DECL "ppg_probability_law[X, SX].ProbabilityLaw"
+     |ppg_hls_coin_saving| NIL)
+    (|muY| FORMAL-CONST-DECL "ppg_probability_law[Y, SY].ProbabilityLaw"
+     |ppg_hls_coin_saving| NIL)
+    (|muZ| FORMAL-CONST-DECL "ppg_probability_law[Z, SZ].ProbabilityLaw"
+     |ppg_hls_coin_saving| NIL))
+   NIL))
+ (|one_order_real| 0
+  (|one_order_real-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (EXPAND "coinAverage.rightReal")
+     (EXPAND "fourReal.realMass") (EXPAND "measureValue")
+     (EXPAND "nativeValue") (ASSERT))
+    NIL NIL)
+   ((|realMass| CONST-DECL "nonneg_real" |ppg_probability_real_difference| NIL)
+    (|rightReal| CONST-DECL "nonneg_real" |ppg_hls_native_coin_probability|
+     NIL))
+   NIL))
+ (|coin_average_formula| 0
+  (|coin_average_formula-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "coinAverage.measureReal_coinChoice"
+      ("A" "savingEvents.forwardAsEvent(A!1,B!1)" "B"
+       "estimate.oneOrderAsEvent(A!1,B!1)"))
+     (LEMMA "forward_real" ("A" "A!1" "B" "B!1"))
+     (LEMMA "one_order_real" ("A" "A!1" "B" "B!1"))
+     (EXPAND "averagedEventMass") (ASSERT))
+    NIL NIL)
+   ((|forward_real| FORMULA-DECL NIL |ppg_hls_coin_saving| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|averagedEventMass| CONST-DECL "nonneg_real" |ppg_hls_coin_saving| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|nnreal_div_posreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|one_order_real| FORMULA-DECL NIL |ppg_hls_coin_saving| NIL)
+    (|measureReal_coinChoice| FORMULA-DECL NIL
+     |ppg_hls_native_coin_probability| NIL)
+    (|forwardAsEvent| CONST-DECL
+     "(sigma_times(sigma_times(SX, SZ), sigma_times(SY, SY)))"
+     |ppg_native_intersection_measurable| NIL)
+    (|oneOrderAsEvent| CONST-DECL
+     "(sigma_times(sigma_times(SX, SZ), sigma_times(SY, SY)))"
+     |ppg_probability_intersection| NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_hls_coin_saving| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_hls_coin_saving| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_hls_coin_saving| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_hls_coin_saving| NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]" |ppg_hls_coin_saving| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_hls_coin_saving| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|probability?| CONST-DECL "bool" |ppg_probability_law| NIL)
+    (|ProbabilityLaw| TYPE-EQ-DECL NIL |ppg_probability_law| NIL)
+    (|muX| FORMAL-CONST-DECL "ppg_probability_law[X, SX].ProbabilityLaw"
+     |ppg_hls_coin_saving| NIL)
+    (|muY| FORMAL-CONST-DECL "ppg_probability_law[Y, SY].ProbabilityLaw"
+     |ppg_hls_coin_saving| NIL)
+    (|muZ| FORMAL-CONST-DECL "ppg_probability_law[Z, SZ].ProbabilityLaw"
+     |ppg_hls_coin_saving| NIL)
+    (|fourProb| CONST-DECL "ppg_probability_law
+    [[[X, Z], [Y, Y]],
+     sigma_times(sigma_times(SX, SZ), sigma_times(SY, SY))].ProbabilityLaw"
+     |ppg_probability_intersection| NIL))
+   NIL))
+ (|coin_averaged_intersection_saving| 0
+  (|coin_averaged_intersection_saving-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "estimate.intersection_saving_of_lower_bound"
+      ("A" "A!1" "B" "B!1" "delta" "delta!1"))
+     (LEMMA "coin_average_formula" ("A" "A!1" "B" "B!1")) (ASSERT))
+    NIL NIL)
+   ((|coin_average_formula| FORMULA-DECL NIL |ppg_hls_coin_saving| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnreal_plus_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|nnreal_div_posreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal" |real_types|
+     NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_div_nzreal_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|intersection_saving_of_lower_bound| FORMULA-DECL NIL
+     |ppg_probability_intersection| NIL)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (X FORMAL-TYPE-DECL NIL |ppg_hls_coin_saving| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_hls_coin_saving| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_hls_coin_saving| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_hls_coin_saving| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_hls_coin_saving| NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]" |ppg_hls_coin_saving| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|probability?| CONST-DECL "bool" |ppg_probability_law| NIL)
+    (|ProbabilityLaw| TYPE-EQ-DECL NIL |ppg_probability_law| NIL)
+    (|muX| FORMAL-CONST-DECL "ppg_probability_law[X, SX].ProbabilityLaw"
+     |ppg_hls_coin_saving| NIL)
+    (|muY| FORMAL-CONST-DECL "ppg_probability_law[Y, SY].ProbabilityLaw"
+     |ppg_hls_coin_saving| NIL)
+    (|muZ| FORMAL-CONST-DECL "ppg_probability_law[Z, SZ].ProbabilityLaw"
+     |ppg_hls_coin_saving| NIL))
+   NIL))
+ (|coin_averaged_saving_le_discounts| 0
+  (|coin_averaged_saving_le_discounts-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "coin_averaged_intersection_saving"
+      ("A" "A!1" "B" "B!1" "delta" "delta!1"))
+     (LEMMA "pair_saving_le_discounted"
+      ("a" "estimate.firstReal(A!1)" "b" "estimate.secondReal(B!1)" "d"
+       "delta!1"))
+     (ASSERT))
+    NIL NIL)
+   ((|pair_saving_le_discounted| FORMULA-DECL NIL |ppg_hls_parameters| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|nnreal| TYPE-EQ-DECL NIL |real_types| NIL)
+    (|extended_nnreal| NONEMPTY-TYPE-EQ-DECL NIL |extended_nnreal|
+     |extended_nnreal|)
+    (|measure?| CONST-DECL "bool" |generalized_measure_def|
+     |measure_integration|)
+    (|measure_type| NONEMPTY-TYPE-EQ-DECL NIL |generalized_measure_def|
+     |measure_integration|)
+    (|probability?| CONST-DECL "bool" |ppg_probability_law| NIL)
+    (|ProbabilityLaw| TYPE-EQ-DECL NIL |ppg_probability_law| NIL)
+    (|muX| FORMAL-CONST-DECL "ppg_probability_law[X, SX].ProbabilityLaw"
+     |ppg_hls_coin_saving| NIL)
+    (|muY| FORMAL-CONST-DECL "ppg_probability_law[Y, SY].ProbabilityLaw"
+     |ppg_hls_coin_saving| NIL)
+    (|muZ| FORMAL-CONST-DECL "ppg_probability_law[Z, SZ].ProbabilityLaw"
+     |ppg_hls_coin_saving| NIL)
+    (|firstReal| CONST-DECL "nonneg_real" |ppg_probability_intersection| NIL)
+    (|secondReal| CONST-DECL "nonneg_real" |ppg_probability_intersection| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|nnreal_times_nnreal_is_nnreal| APPLICATION-JUDGEMENT "nnreal"
+     |real_types| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_div_nzreal_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|coin_averaged_intersection_saving| FORMULA-DECL NIL |ppg_hls_coin_saving|
+     NIL)
+    (X FORMAL-TYPE-DECL NIL |ppg_hls_coin_saving| NIL)
+    (Y FORMAL-TYPE-DECL NIL |ppg_hls_coin_saving| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|setof| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|setofsets| TYPE-EQ-DECL NIL |sets| NIL)
+    (|sigma_algebra?| CONST-DECL "bool" |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_algebra| NONEMPTY-TYPE-EQ-DECL NIL |subset_algebra_def|
+     |measure_integration|)
+    (|sigma_times| CONST-DECL "sigma_algebra[[T1, T2]]" |product_sigma_def|
+     |measure_integration|)
+    (SX FORMAL-CONST-DECL "sigma_algebra[X]" |ppg_hls_coin_saving| NIL)
+    (SY FORMAL-CONST-DECL "sigma_algebra[Y]" |ppg_hls_coin_saving| NIL)
+    (Z FORMAL-TYPE-DECL NIL |ppg_hls_coin_saving| NIL)
+    (SZ FORMAL-CONST-DECL "sigma_algebra[Z]" |ppg_hls_coin_saving| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL))
+   NIL)))
+

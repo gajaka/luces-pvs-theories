@@ -1,0 +1,60 @@
+% Events depending on two overlapping blocks have the same joint
+% membership after the three assignments are assembled. This identity
+% applies to arbitrary sets, including when the variable type is empty.
+%
+% Kun He, Qian Li and Xiaoming Sun, Moser-Tardos Algorithm: Beyond
+% Shearer's Bound, arXiv:2111.06527, Proposition 3.3.
+% Lean counterpart: PPGraphHLSBlockIntersection.jointEvent_blocks_eq_preimage.
+ppg_hls_block_intersection_sets[V,Value:TYPE,domain:[V->set[Value]],
+  F,H,Z:finite_set[V],
+  (IMPORTING ppg_mt_native_spaces[bool,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+
+  IMPORTING ppg_measurable_block[V,Value,domain,spaces] AS blocks,
+    ppg_hls_join_blocks[V,Value,domain,F,H,spaces,laws] AS sourceJoin,
+    ppg_hls_join_blocks[V,Value,domain,H,Z,spaces,laws] AS targetJoin,
+    ppg_hls_join_three[V,Value,domain,F,H,Z,spaces,laws] AS tripleJoin,
+    ppg_intersection_events[blocks.Block(F),blocks.Block(H),
+      blocks.Block(Z)] AS blockEvents
+
+  RawState: TYPE = sourceJoin.AssemblyState
+
+  A,B: VAR set[RawState]
+
+  U: VAR set[V]
+
+  xyz: VAR tripleJoin.AssemblyTriple
+
+  rawDepends(U,A):bool = FORALL(sigma,tau:RawState):
+    (FORALL(a:V):U(a) IMPLIES sigma(a)=tau(a)) IMPLIES A(sigma)=A(tau)
+
+  rawSourceBlock(A):set[sourceJoin.AssemblyPair] =
+    {xy:sourceJoin.AssemblyPair|A(sourceJoin.joinBlocks(xy))}
+
+  rawTargetBlock(B):set[targetJoin.AssemblyPair] =
+    {yz:targetJoin.AssemblyPair|B(targetJoin.joinBlocks(yz))}
+
+  rawJointEvent(A,B):set[tripleJoin.AssemblyTriple] =
+    blockEvents.jointEvent(rawSourceBlock(A),rawTargetBlock(B))
+
+  rawTripleEvent(A):set[tripleJoin.AssemblyTriple] =
+    {w:tripleJoin.AssemblyTriple|A(tripleJoin.joinThree(w))}
+
+  source_join_agrees: LEMMA
+    disjoint?(F,H) AND disjoint?(F,Z) AND disjoint?(union(F,Z),H) IMPLIES
+      FORALL(a:V):union(F,H)(a) IMPLIES
+        sourceJoin.joinBlocks((xyz`1`1,xyz`2))(a)=tripleJoin.joinThree(xyz)(a)
+
+  target_join_agrees: LEMMA
+    disjoint?(H,Z) AND disjoint?(F,Z) AND disjoint?(union(F,Z),H) IMPLIES
+      FORALL(a:V):union(H,Z)(a) IMPLIES
+        targetJoin.joinBlocks((xyz`2,xyz`1`2))(a)=tripleJoin.joinThree(xyz)(a)
+
+  jointEvent_blocks_eq_preimage: THEOREM
+    disjoint?(F,H) AND disjoint?(H,Z) AND disjoint?(F,Z) AND
+    disjoint?(union(F,Z),H) AND
+    rawDepends(union(F,H),A) AND rawDepends(union(H,Z),B) IMPLIES
+      rawJointEvent(A,B)=rawTripleEvent(intersection(A,B))
+
+END ppg_hls_block_intersection_sets

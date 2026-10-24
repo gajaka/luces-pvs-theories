@@ -1,0 +1,97 @@
+
+(|ppg_enn_borel_cuts|
+ (|lower_complement_countable| 0
+  (|lower_complement_countable-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "lowerRay")
+     (EXPAND "belowCuts") (EXPAND "upperRay")
+     (EXPAND "ennEvents.countableUnion") (EXPAND "complement")
+     (EXPAND "member") (EXPAND "emptyset") (EXPAND "ele")
+     (SPREAD (CASE "ennFinite?(x!1)")
+      ((SPREAD (CASE "ennValue(x!1)<a!1")
+        ((THEN (LEMMA "grid_dense" ("a" "ennValue(x!1)" "b" "a!1")) (ASSERT)
+          (SKOSIMP*) (INST + "n!1") (GRIND :DEFS NIL :IF-MATCH NIL))
+         (GRIND :DEFS NIL :IF-MATCH NIL)))
+       (GRIND :DEFS NIL :IF-MATCH NIL))))
+    NIL NIL)
+   NIL NIL))
+ (|upper_complement_countable| 0
+  (|upper_complement_countable-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T) (EXPAND "upperRay")
+     (EXPAND "aboveCuts") (EXPAND "lowerRay")
+     (EXPAND "ennEvents.countableUnion") (EXPAND "complement")
+     (EXPAND "member") (EXPAND "emptyset") (EXPAND "ele")
+     (SPREAD (CASE "ennFinite?(x!1)")
+      ((SPREAD (CASE "ennValue(x!1)<=a!1")
+        ((GRIND :DEFS NIL :IF-MATCH NIL)
+         (THEN (LEMMA "grid_dense" ("a" "a!1" "b" "ennValue(x!1)")) (ASSERT)
+          (SKOSIMP*) (INST + "n!1") (GRIND :DEFS NIL :IF-MATCH NIL))))
+       (THEN (LEMMA "grid_dense" ("a" "a!1" "b" "a!1+1")) (ASSERT) (SKOSIMP*)
+        (INST + "n!1") (GRIND :DEFS NIL :IF-MATCH NIL)))))
+    NIL NIL)
+   NIL NIL))
+ (|lower_ray_measurable| 0
+  (|lower_ray_measurable-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (SPREAD (CASE "FORALL(n:nat):ENNSigma(belowCuts(a!1)(n))")
+      ((THEN
+        (LEMMA "ennEvents.measurable_countable_union"
+         ("S" "ENNSigma" "E" "belowCuts(a!1)"))
+        (LEMMA "ennEvents.measurable_complement"
+         ("S" "ENNSigma" "A" "ennEvents.countableUnion(belowCuts(a!1))"))
+        (LEMMA "lower_complement_countable" ("a" "a!1"))
+        (LEMMA "complement_complement[ENN]" ("a" "lowerRay(a!1)")) (ASSERT))
+       (THEN (SKOSIMP*) (LEMMA "upper_ray_measurable" ("b" "gridCoeff(n!1)"))
+        (LEMMA "ennEvents.measurable_empty" ("S" "ENNSigma"))
+        (EXPAND "belowCuts") (GRIND :DEFS NIL :IF-MATCH NIL)))))
+    NIL NIL)
+   NIL NIL))
+ (|lower_cuts_of_measurable| 0
+  (|lower_cuts_of_measurable-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LABEL "MAP" -1) (EXPAND "measurable" "MAP")
+     (INST "MAP" "lowerRay(a!1)") (LEMMA "lower_ray_measurable" ("a" "a!1"))
+     (EXPAND "inverseImage") (EXPAND "lowerRay")
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|measurable_of_lower_cuts| 0
+  (|measurable_of_lower_cuts-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LABEL "LOWER" -1)
+     (LEMMA "measurable_enn_from_rays" ("SX" "SX!1" "f" "f!1"))
+     (SPREAD (CASE "FORALL(b:nonneg_real):SX!1(inverseImage(f!1,upperRay(b)))")
+      ((ASSERT)
+       (THEN (SKOSIMP*)
+        (SPREAD
+         (CASE "FORALL(n:nat):SX!1(inverseImage(f!1,aboveCuts(b!1)(n)))")
+         ((THEN (LEMMA "upper_complement_countable" ("a" "b!1"))
+           (LEMMA "ppg_measurable_map[X,ENN].inverseImage_complement"
+            ("f" "f!1" "A" "ennEvents.countableUnion(aboveCuts(b!1))"))
+           (LEMMA "ppg_measurable_map[X,ENN].inverseImage_countable_union"
+            ("f" "f!1" "D" "aboveCuts(b!1)"))
+           (LEMMA "ppg_measurable_space[X].measurable_countable_union"
+            ("S" "SX!1" "E"
+             "LAMBDA(n:nat):inverseImage(f!1,aboveCuts(b!1)(n))"))
+           (LEMMA "ppg_measurable_space[X].measurable_complement"
+            ("S" "SX!1" "A"
+             "ppg_measurable_space[X].countableUnion(LAMBDA(n:nat):inverseImage(f!1,aboveCuts(b!1)(n)))"))
+           (ASSERT))
+          (THEN (SKOSIMP*) (INST "LOWER" "gridCoeff(n!1)")
+           (LEMMA "ppg_measurable_space[X].measurable_empty" ("S" "SX!1"))
+           (EXPAND "aboveCuts") (EXPAND "inverseImage") (EXPAND "lowerRay")
+           (EXPAND "emptyset")
+           (SPREAD (CASE "b!1<gridCoeff(n!1)")
+            ((GRIND :DEFS NIL :IF-MATCH NIL)
+             (GRIND :DEFS NIL :IF-MATCH NIL))))))))))
+    NIL NIL)
+   NIL NIL))
+ (|measurable_iff_lower_cuts| 0
+  (|measurable_iff_lower_cuts-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "lower_cuts_of_measurable" ("SX" "SX!1" "f" "f!1"))
+     (LEMMA "measurable_of_lower_cuts" ("SX" "SX!1" "f" "f!1")) (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL)))

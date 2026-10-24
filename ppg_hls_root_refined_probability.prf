@@ -1,0 +1,92 @@
+(|ppg_hls_root_refined_probability|
+ (|hprob_TCC1| 0
+  (|hprob_TCC1-1| NIL 0 ("" (THEN (TYPEPRED "process") (ASSERT)) NIL NIL) NIL
+   NIL))
+ (|hInt_TCC1| 0
+  (|hInt_TCC1-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "process")
+     (LEMMA
+      "ppg_measurable_space[ppg_mt_native_process[C,V,Value,domain,spaces,laws].State].measurable_intersection"
+      ("S" "ppg_mt_native_spaces[C,V,Value,domain].NativeStateSigma(spaces)"
+       "A" "process`bad(i!1)" "B" "process`bad(O`mate(i!1))"))
+     (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|unitWeight_TCC1| 0
+  (|unitWeight_TCC1-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "rootMass.unit_event_measurable" ("M" "O`mate" "D" "D!1"))
+     (ASSERT))
+    NIL NIL)
+   NIL NIL))
+ (|process_bad_measurable| 0
+  (|process_bad_measurable-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (EXPAND "rootTables.badMeasurable")
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|rooted_unit_refined| 0
+  (|rooted_unit_refined-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA
+      "ppg_hls_refined_probability[C,V,Value,domain,variableUniverse,default,universe,spaces,laws,process,p,O,D!1].logMeasure_unitCheck_le_refinedWeight")
+     (LEMMA "process_bad_measurable") (EXPAND "unitWeight")
+     (EXPAND "refinedWeightAt") (EXPAND "hprob") (EXPAND "hp") (EXPAND "hInt")
+     (EXPAND "ofReal") (GRIND :DEFS NIL :IF-MATCH NIL) (TYPEPRED "D!1")
+     (EXPAND
+      "ppg_hls_finite_dag_core[C,ppg_shearer_bdd[C,V,process`footprint].dependencyGraph].RootedCanonical"
+      :ACTUALS? T)
+     (ASSERT) (LEMMA "rootMass.unit_event_measurable" ("M" "O`mate" "D" "D!1"))
+     (TYPEPRED "rootAug.augmentedMeasure(rootUnits.unitCheck(O`mate,D!1))")
+     (EXPAND
+      "ppg_hls_augmented_space[C,V,Value,domain,spaces,laws].augmentedMeasure"
+      :ACTUALS? T)
+     (EXPAND
+      "ppg_hls_unit_checks[C,V,Value,domain,default,universe,spaces,laws,process].unitCheck"
+      :ACTUALS? T)
+     (EXPAND
+      "ppg_hls_refined_weight[C,ppg_shearer_bdd[C,V,process`footprint].dependencyGraph,p].refinedWeight"
+      :ACTUALS? T)
+     (EXPAND "max") (GRIND :DEFS NIL :IF-MATCH ALL))
+    NIL NIL)
+   NIL NIL))
+ (|rooted_sum_refined| 0
+  (|rooted_sum_refined-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "rootedOrder.eTsum_monotone"
+      ("f" "unitWeight" "g" "refinedWeightAt"))
+     (LEMMA "rooted_unit_refined") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|exact_rooted_weight_sum| 0
+  (|exact_rooted_weight_sum-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "atRoot.root_subtype_sum" ("w" "rootRefined.refinedWeight(O)"))
+     (EXPAND "refinedWeightAt") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|root_union_le_refined_TCC1| 0
+  (|root_union_le_refined_TCC1-1| NIL 0
+   ("" (THEN (SKOSIMP*) (LEMMA "rootMass.original_root_measurable") (ASSERT))
+    NIL NIL)
+   NIL NIL))
+ (|root_union_le_refined| 0
+  (|root_union_le_refined-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "rootMass.measure_rootUnion_le_tsum_unitCheck" ("M" "O`mate"))
+     (LEMMA "rooted_sum_refined") (LEMMA "exact_rooted_weight_sum")
+     (LEMMA "ppg_enn_add.ele_transitive"
+      ("x"
+       "ennFinite(ppg_mt_log_probability[C,V,Value,domain,spaces,laws].logMeasure(ppg_hls_root_union_measurable[C,V,Value,domain,universe,spaces,laws,process].rootUnion(alpha,r)))"
+       "y" "ppg_enn_unrestricted_sum[rootMass.Family].eTsum(unitWeight)" "z"
+       "ppg_hls_root_family_weight[C,ppg_shearer_bdd[C,V,process`footprint].dependencyGraph,universe,alpha].rootFamilyWeight(ppg_hls_refined_weight[C,ppg_shearer_bdd[C,V,process`footprint].dependencyGraph,p].refinedWeight(O))(r)"))
+     (EXPAND "unitWeight") (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL)))

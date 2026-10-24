@@ -1,0 +1,49 @@
+% An injective natural code supplies finite stages without choosing from an
+% empty index type. Each code fiber is either empty or a singleton. These
+% stages will exhaust the index family in the countable measure argument.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995:
+% finite approximations to countable unions. This is supporting
+% mathematics for PPGraphHLSRootUnion.measure_rootUnion_le_tsum_unitCheck.
+ppg_injective_code_stages[I:TYPE,
+  code:{c:[I->nat]|injective?(c)}]: THEORY
+BEGIN
+  i,j: VAR I
+
+  m,n: VAR nat
+
+  codeFiber(n): finite_set[I] =
+    IF EXISTS(i:I):code(i)=n
+      THEN singleton[I](choose({i:I|code(i)=n})) ELSE emptyset[I] ENDIF
+
+  stages(n): RECURSIVE finite_set[I] =
+    IF n=0 THEN emptyset[I] ELSE union(stages(n-1),codeFiber(n-1)) ENDIF
+    MEASURE n
+
+  code_cancel: LEMMA code(i)=code(j) IMPLIES i=j
+
+  code_fiber_member: LEMMA codeFiber(n)(i) IFF code(i)=n
+
+  code_fiber_at: LEMMA code(i)=n IMPLIES codeFiber(n)=singleton(i)
+
+  code_fiber_empty: LEMMA NOT(EXISTS(i:I):code(i)=n) IMPLIES
+    codeFiber(n)=emptyset[I]
+
+  stages_zero: LEMMA stages(0)=emptyset[I]
+
+  stages_succ: LEMMA stages(n+1)=union(stages(n),codeFiber(n))
+
+  stages_member: LEMMA stages(n)(i) IFF code(i)<n
+
+  stages_monotone: LEMMA m<=n AND stages(m)(i) IMPLIES stages(n)(i)
+
+  stages_cover: LEMMA stages(code(i)+1)(i)
+
+  next_code_not_in_stage: LEMMA code(i)=n IMPLIES NOT stages(n)(i)
+
+  stages_add_at: LEMMA code(i)=n IMPLIES stages(n+1)=add(i,stages(n))
+
+  stages_no_next: LEMMA NOT(EXISTS(i:I):code(i)=n) IMPLIES
+    stages(n+1)=stages(n)
+
+END ppg_injective_code_stages

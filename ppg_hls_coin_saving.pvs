@@ -1,0 +1,56 @@
+% The fair orientation averages the forward event and the event that
+% passes in only one order. The second-moment intersection estimate
+% bounds the latter, giving the saving delta squared divided by two.
+% Kun He, Qian Li and Xiaoming Sun, Moser-Tardos Algorithm: Beyond
+% Shearer's Bound, Proposition 3.3 and Lemma 3.4. arXiv:2111.06527.
+% Lean counterpart: PPGraphHLSCoinSaving.lean.
+ppg_hls_coin_saving[X,Y,Z:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def)
+    SX:sigma_algebra[X],SY:sigma_algebra[Y],SZ:sigma_algebra[Z],
+  (IMPORTING ppg_probability_law[X,SX])
+    muX:ppg_probability_law[X,SX].ProbabilityLaw,
+  (IMPORTING ppg_probability_law[Y,SY])
+    muY:ppg_probability_law[Y,SY].ProbabilityLaw,
+  (IMPORTING ppg_probability_law[Z,SZ])
+    muZ:ppg_probability_law[Z,SZ].ProbabilityLaw]: THEORY
+BEGIN
+  IMPORTING ppg_probability_intersection[X,Y,Z,SX,SY,SZ,muX,muY,muZ] AS estimate,
+    ppg_native_intersection_measurable[X,Y,Z,SX,SY,SZ] AS savingEvents,
+    ppg_hls_parameters
+
+  IMPORTING ppg_hls_native_coin_probability[[[X,Z],[Y,Y]],
+      sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),estimate.fourProb] AS coinAverage,
+    ppg_probability_real_difference[[[X,Z],[Y,Y]],
+      sigma_times(sigma_times(SX,SZ),sigma_times(SY,SY)),estimate.fourProb] AS fourReal
+
+  A: VAR (sigma_times(SX,SY))
+  B: VAR (sigma_times(SY,SZ))
+  delta: VAR real
+
+  averagedEventMass(A,B): nonneg_real =
+    coinAverage.choiceReal(savingEvents.forwardAsEvent(A,B),estimate.oneOrderAsEvent(A,B))
+
+  forward_real: LEMMA
+    coinAverage.rightReal(savingEvents.forwardAsEvent(A,B))=
+      estimate.firstReal(A)*estimate.secondReal(B)
+
+  one_order_real: LEMMA
+    coinAverage.rightReal(estimate.oneOrderAsEvent(A,B))=
+      fourReal.realMass(estimate.oneOrderAsEvent(A,B))
+
+  coin_average_formula: LEMMA averagedEventMass(A,B)=
+    estimate.firstReal(A)*estimate.secondReal(B)/2+
+      fourReal.realMass(estimate.oneOrderAsEvent(A,B))/2
+
+  coin_averaged_intersection_saving: THEOREM
+    delta>=0 AND delta<=estimate.overlapReal(A,B) IMPLIES
+      averagedEventMass(A,B)<=estimate.firstReal(A)*estimate.secondReal(B)-delta*delta/2
+
+  coin_averaged_saving_le_discounts: THEOREM
+    delta>=0 AND delta<=estimate.overlapReal(A,B) AND
+      estimate.firstReal(A)>0 AND estimate.secondReal(B)>0 IMPLIES
+      averagedEventMass(A,B)<=estimate.firstReal(A)*estimate.secondReal(B)*
+        (1-2*savingFraction(estimate.firstReal(A),estimate.secondReal(B),delta))*
+        (1-2*savingFraction(estimate.secondReal(B),estimate.firstReal(A),delta))
+
+END ppg_hls_coin_saving

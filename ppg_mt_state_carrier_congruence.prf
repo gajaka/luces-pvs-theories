@@ -1,0 +1,71 @@
+
+(|ppg_mt_state_carrier_congruence|
+ (|state_sigma_eq| 0
+  (|state_sigma_eq-1| NIL 4001508561
+   ("" (EXPAND "firstSpaces.NativeStateSigma")
+    (("" (EXPAND "ppg_measurable_dependent_product.nativeProduct")
+      (("" (EXPAND "ppg_measurable_dependent_product.nativeCylinders")
+        (("" (EXPAND "ppg_measurable_dependent_product.nativeCylinder")
+          (("" (PROPAX) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|NativeStateSigma| CONST-DECL
+     "ppg_measurable_space[MTState[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|nativeCylinders| CONST-DECL "set[set[Pi[A, I, Value, domain]]]"
+     |ppg_measurable_dependent_product| NIL)
+    (|nativeCylinder| CONST-DECL "set[Pi[A, I, Value, domain]]"
+     |ppg_measurable_dependent_product| NIL)
+    (|nativeProduct| CONST-DECL
+     "ppg_measurable_space[Pi[A, I, Value, domain]].MeasurableSpace"
+     |ppg_measurable_dependent_product| NIL))
+   SHOSTAK))
+ (|block_sigma_eq| 0
+  (|block_sigma_eq-1| NIL 4001508561
+   (""
+    (THEN (EXPAND "firstReads.StateBlockSigma")
+     (EXPAND "secondReads.StateBlockSigma") (ASSERT))
+    NIL)
+   ((|StateBlockSigma| CONST-DECL
+     "ppg_measurable_space[StateBlock(F)].MeasurableSpace"
+     |ppg_mt_read_probability| NIL))
+   SHOSTAK))
+ (|state_decode_eq| 0
+  (|state_decode_eq-1| NIL 4001508561
+   (""
+    (THEN (EXPAND "firstLaw.stateDecode") (EXPAND "secondLaw.stateDecode")
+     (ASSERT))
+    NIL)
+   ((|stateDecode| CONST-DECL "MTState" |ppg_mt_state_probability| NIL))
+   SHOSTAK))
+ (|state_measures_eq_TCC1| 0
+  (|state_measures_eq_TCC1-1| NIL 4001508147
+   ("" (THEN (SKOSIMP*) (LEMMA "state_sigma_eq") (REPLACE -1) (ASSERT)) NIL)
+   ((|state_sigma_eq| FORMULA-DECL NIL |ppg_mt_state_carrier_congruence| NIL))
+   NIL
+   (|state_measures_eq| SUBTYPE
+    "secondLaw[C2, V, Value, domain, universe, spaces, laws].stateMeasure"
+    "Mass[MTState[C1, V, Value, domain], NativeStateSigma[C1, V, Value, domain](spaces)]"
+    (24 51 24 73))))
+ (|state_measures_eq| 0
+  (|state_measures_eq-1| NIL 4001508561
+   ("" (LEMMA "state_sigma_eq")
+    (("" (LEMMA "block_sigma_eq")
+      (("" (LEMMA "state_decode_eq")
+        (("" (EXPAND "firstLaw.stateMeasure")
+          (("" (REPLACE -1 :ACTUALS? T)
+            (("" (REPLACE -2 :ACTUALS? T)
+              (("" (REPLACE -3 :ACTUALS? T) (("" (PROPAX) NIL NIL)) NIL)) NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|state_sigma_eq| FORMULA-DECL NIL |ppg_mt_state_carrier_congruence| NIL)
+    (|state_decode_eq| FORMULA-DECL NIL |ppg_mt_state_carrier_congruence| NIL)
+    (|stateMeasure| CONST-DECL "ppg_probability_measure
+    [MTState[C, V, Value, domain], NativeStateSigma(spaces)].Probability"
+     |ppg_mt_state_probability| NIL)
+    (|block_sigma_eq| FORMULA-DECL NIL |ppg_mt_state_carrier_congruence| NIL))
+   SHOSTAK)))

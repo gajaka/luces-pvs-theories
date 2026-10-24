@@ -1,0 +1,87 @@
+% Restricting a state to its private and shared coordinates preserves
+% the endpoint events and identifies their intersection mass.
+% Patrick Billingsley, Probability and Measure, third edition.
+ppg_hls_block_intersection_mass[V,Value:TYPE,domain:[V->set[Value]],
+  universe:{U:finite_set[V]|U=fullset[V]},F,H,Z:finite_set[V],
+  (IMPORTING ppg_mt_native_spaces[bool,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+
+  IMPORTING ppg_measurable_block[V,Value,domain,spaces] AS blocks,
+    ppg_probability_finite_product[V,Value,domain,spaces,laws] AS finiteBlocks,
+    ppg_hls_join_blocks[V,Value,domain,F,H,spaces,laws] AS sourceJoin,
+    ppg_hls_join_blocks[V,Value,domain,H,Z,spaces,laws] AS targetJoin,
+    ppg_hls_join_three[V,Value,domain,F,H,Z,spaces,laws] AS tripleJoin,
+    ppg_hls_join_blocks_probability[V,Value,domain,universe,F,H,spaces,laws] AS sourceProbability,
+    ppg_hls_join_blocks_probability[V,Value,domain,universe,H,Z,spaces,laws] AS targetProbability,
+    ppg_hls_join_blocks_probability[V,Value,domain,universe,union(F,Z),H,spaces,laws] AS outerProbability,
+    ppg_hls_join_three_probability[V,Value,domain,universe,F,H,Z,spaces,laws] AS tripleProbability,
+    ppg_mt_state_probability[bool,V,Value,domain,universe,spaces,laws] AS stateProbability,
+    ppg_probability_pair[blocks.Block(F),blocks.Block(H),
+      blocks.blockSigma(F),blocks.blockSigma(H)] AS leftReal,
+    ppg_probability_pair[blocks.Block(H),blocks.Block(Z),
+      blocks.blockSigma(H),blocks.blockSigma(Z)] AS rightReal,
+    ppg_probability_finite_native_triple[blocks.Block(F),blocks.Block(H),blocks.Block(Z),
+      blocks.blockSigma(F),blocks.blockSigma(H),blocks.blockSigma(Z),
+      finiteBlocks.finiteLaw(F),finiteBlocks.finiteLaw(H),finiteBlocks.finiteLaw(Z)] AS nativeTriple,
+    ppg_intersection_events[blocks.Block(F),blocks.Block(H),blocks.Block(Z)] AS blockEvents
+
+  StateEvent: TYPE = sourceProbability.StateEvent
+
+  A,B: VAR StateEvent
+
+  xyz: VAR tripleJoin.AssemblyTriple
+
+  sourceBlock(A):(leftReal.JointSpace) = sourceProbability.pairEvent(A)
+
+  targetBlock(B):(rightReal.JointSpace) = targetProbability.pairEvent(B)
+
+  jointBlockEvent(A,B):set[tripleJoin.AssemblyTriple] =
+    blockEvents.jointEvent(sourceBlock(A),targetBlock(B))
+
+  source_join_agrees: LEMMA
+    disjoint?(F,H) AND disjoint?(F,Z) AND disjoint?(union(F,Z),H) IMPLIES
+      FORALL(a:V):union(F,H)(a) IMPLIES
+        sourceJoin.joinBlocks((xyz`1`1,xyz`2))(a)=tripleJoin.joinThree(xyz)(a)
+
+  target_join_agrees: LEMMA
+    disjoint?(H,Z) AND disjoint?(F,Z) AND disjoint?(union(F,Z),H) IMPLIES
+      FORALL(a:V):union(H,Z)(a) IMPLIES
+        targetJoin.joinBlocks((xyz`2,xyz`1`2))(a)=tripleJoin.joinThree(xyz)(a)
+
+  jointEvent_blocks_eq_preimage: THEOREM
+    disjoint?(F,H) AND disjoint?(H,Z) AND disjoint?(F,Z) AND
+    disjoint?(union(F,Z),H) AND
+    sourceProbability.stateDepends(union(F,H),A) AND
+    targetProbability.stateDepends(union(H,Z),B) IMPLIES
+      jointBlockEvent(A,B)=tripleProbability.tripleEvent(intersection(A,B))
+
+  intersection_depends: LEMMA
+    sourceProbability.stateDepends(union(F,H),A) AND
+    targetProbability.stateDepends(union(H,Z),B) IMPLIES
+      outerProbability.stateDepends(union(union(F,Z),H),intersection(A,B))
+
+  measurable_joint_blocks: LEMMA
+    tripleJoin.AssemblyTripleSigma(jointBlockEvent(A,B))
+
+  jointAsBlockEvent(A,B):(tripleJoin.AssemblyTripleSigma) = jointBlockEvent(A,B)
+
+  measure_jointEvent_blocks: THEOREM
+    disjoint?(F,H) AND disjoint?(H,Z) AND disjoint?(F,Z) AND
+    disjoint?(union(F,Z),H) AND
+    sourceProbability.stateDepends(union(F,H),A) AND
+    targetProbability.stateDepends(union(H,Z),B) IMPLIES
+      tripleProbability.tripleProductLaw(jointAsBlockEvent(A,B))=
+        stateProbability.stateMeasure(intersection(A,B))
+
+  source_block_mass: THEOREM
+    disjoint?(F,H) AND sourceProbability.stateDepends(union(F,H),A) IMPLIES
+      leftReal.productLaw(finiteBlocks.finiteLaw(F),finiteBlocks.finiteLaw(H))(sourceBlock(A))=
+        stateProbability.stateMeasure(A)
+
+  target_block_mass: THEOREM
+    disjoint?(H,Z) AND targetProbability.stateDepends(union(H,Z),B) IMPLIES
+      rightReal.productLaw(finiteBlocks.finiteLaw(H),finiteBlocks.finiteLaw(Z))(targetBlock(B))=
+        stateProbability.stateMeasure(B)
+
+END ppg_hls_block_intersection_mass

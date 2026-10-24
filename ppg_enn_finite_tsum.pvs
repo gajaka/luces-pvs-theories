@@ -1,0 +1,40 @@
+% A finite sum commutes with an unrestricted nonnegative sum. Infinite
+% summands are permitted, and either index type may be empty.
+%
+% Patrick Billingsley, Probability and Measure, third edition,
+% Wiley, 1995: nonnegative sums and monotone convergence.
+ppg_enn_finite_tsum[I,J:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_enn_unrestricted_sum[J] AS cols,
+    ppg_enn_add_tsum[J] AS colAdd,
+    ppg_nonneg_tsum[I] AS rows,
+    ppg_enn_finite_algebra[I] AS rowAlgebra
+
+  F: VAR finite_set[I]
+
+  H: VAR finite_set[J]
+
+  f: VAR [I,J->ENN]
+
+  j: VAR J
+
+  tsum_zero: LEMMA
+    cols.eTsum(LAMBDA(j:J):ennFinite(0))=ennFinite(0)
+
+  empty_row_function: LEMMA
+    (LAMBDA(j:J):rows.esum(emptyset[I],LAMBDA(i:I):f(i,j)))=
+      (LAMBDA(j:J):ennFinite(0))
+
+  finite_rows_empty: LEMMA
+    cols.eTsum(LAMBDA(j:J):rows.esum(emptyset[I],LAMBDA(i:I):f(i,j)))=
+      rows.esum(emptyset[I],LAMBDA(i:I):cols.eTsum(LAMBDA(j:J):f(i,j)))
+
+  row_step_function: LEMMA NOT empty?(F) IMPLIES
+    (LAMBDA(j:J):rows.esum(F,LAMBDA(i:I):f(i,j)))=
+      (LAMBDA(j:J):eadd(f(choose(F),j),rows.esum(rest(F),LAMBDA(i:I):f(i,j))))
+
+  finite_rows_commute: THEOREM
+    cols.eTsum(LAMBDA(j:J):rows.esum(F,LAMBDA(i:I):f(i,j)))=
+      rows.esum(F,LAMBDA(i:I):cols.eTsum(LAMBDA(j:J):f(i,j)))
+
+END ppg_enn_finite_tsum

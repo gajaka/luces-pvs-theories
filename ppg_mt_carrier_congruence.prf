@@ -1,0 +1,97 @@
+(|ppg_mt_carrier_congruence|
+ (|table_domains_eq| 0
+  (|table_domains_eq-1| NIL 4001475064
+   ("" (THEN (EXPAND "TableDomain") (ASSERT)) NIL)
+   ((|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL))
+   SHOSTAK))
+ (|table_spaces_eq| 0
+  (|table_spaces_eq-1| NIL 4001475064
+   ("" (THEN (EXPAND "TableSpaces") (ASSERT)) NIL)
+   ((|TableSpaces| CONST-DECL
+     "ppg_measurable_space[(domain(p`2))].MeasurableSpace"
+     |ppg_mt_coordinate_laws| NIL))
+   SHOSTAK))
+ (|table_laws_eq| 0
+  (|table_laws_eq-1| NIL 4001475064 ("" (THEN (EXPAND "coinLaw") (ASSERT)) NIL)
+   ((|coinLaw| CONST-DECL
+     "ppg_probability_measure[(domain(p`2)), spaces(p`2)].Probability"
+     |ppg_mt_coordinate_laws| NIL))
+   SHOSTAK))
+ (|table_sigma_eq_TCC1| 0
+  (|table_sigma_eq_TCC1-1| NIL 4001475015
+   ("" (THEN (EXPAND "TableDomain") (ASSERT)) NIL)
+   ((|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)) NIL
+   (|table_sigma_eq| SUBTYPE
+    "secondSpaces[C2, V, Value, domain].NativeTableSigma(spaces)"
+    "set[Event[LogSpace[C1, V, Value, domain]]]" (26 61 26 98))))
+ (|table_sigma_eq| 0
+  (|table_sigma_eq-1| NIL 4001475065
+   (""
+    (THEN (EXPAND "NativeTableSigma") (LEMMA "table_domains_eq")
+     (REPLACE -1 :ACTUALS? T) (EXPAND "TableSpaces" :ACTUALS? T)
+     (EXPAND "nativeProduct" :ACTUALS? T)
+     (EXPAND "nativeCylinders" :ACTUALS? T)
+     (EXPAND "nativeCylinder" :ACTUALS? T) (ASSERT))
+    NIL)
+   ((|NativeTableSigma| CONST-DECL
+     "ppg_measurable_space[LogSpace[C, V, Value, domain]].MeasurableSpace"
+     |ppg_mt_native_spaces| NIL)
+    (|TableSpaces| CONST-DECL
+     "ppg_measurable_space[(domain(p`2))].MeasurableSpace"
+     |ppg_mt_coordinate_laws| NIL)
+    (|table_domains_eq| FORMULA-DECL NIL |ppg_mt_carrier_congruence| NIL))
+   SHOSTAK))
+ (|log_maps_eq_TCC1| 0
+  (|log_maps_eq_TCC1-1| NIL 4001475015
+   ("" (THEN (EXPAND "TableDomain") (ASSERT)) NIL)
+   ((|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL)) NIL
+   (|log_maps_eq| SUBTYPE
+    "secondLaw[C2, V, Value, domain, spaces, laws].logMap"
+    "[FullBlock[[nat, V], Value, TableDomain[C1, V, Value, domain], TableSpaces[C1, V, Value, domain](spaces)] -> LogSpace[C1, V, Value, domain]]"
+    (28 37 28 53))))
+ (|log_maps_eq| 0
+  (|log_maps_eq-1| NIL 4001475065
+   (""
+    (THEN (LEMMA "table_domains_eq") (REPLACE -1 :ACTUALS? T)
+     (LEMMA "table_spaces_eq") (REPLACE -1 :ACTUALS? T)
+     (EXPAND "logMap" :ACTUALS? T) (REPLACE -2 :ACTUALS? T) (ASSERT))
+    NIL)
+   ((|table_domains_eq| FORMULA-DECL NIL |ppg_mt_carrier_congruence| NIL)
+    (|logMap| CONST-DECL "LogSpace" |ppg_mt_log_probability| NIL)
+    (|table_spaces_eq| FORMULA-DECL NIL |ppg_mt_carrier_congruence| NIL))
+   SHOSTAK))
+ (|log_measures_eq_TCC1| 0
+  (|log_measures_eq_TCC1-1| NIL 4001475015
+   (""
+    (THEN (LEMMA "table_sigma_eq") (REPLACE -1 :ACTUALS? T)
+     (EXPAND "TableDomain") (ASSERT))
+    NIL)
+   ((|table_sigma_eq| FORMULA-DECL NIL |ppg_mt_carrier_congruence| NIL)
+    (|TableDomain| CONST-DECL "set[Value]" |ppg_mt_random_process| NIL))
+   NIL
+   (|log_measures_eq| SUBTYPE
+    "secondLaw[C2, V, Value, domain, spaces, laws].logMeasure"
+    "Mass[LogSpace[C1, V, Value, domain], NativeTableSigma[C1, V, Value, domain](spaces)]"
+    (30 45 30 65))))
+ (|log_measures_eq| 0
+  (|log_measures_eq-1| NIL 4001475065
+   (""
+    (THEN (EXPAND "logMeasure") (LEMMA "table_domains_eq")
+     (REPLACE -1 :ACTUALS? T) (LEMMA "table_spaces_eq")
+     (REPLACE -1 :ACTUALS? T) (EXPAND "coinLaw" :ACTUALS? T)
+     (EXPAND "logMap" :ACTUALS? T) (LEMMA "table_sigma_eq")
+     (REPLACE -1 :ACTUALS? T) (REPLACE -3 :ACTUALS? T) (REPLACE -2 :ACTUALS? T)
+     (ASSERT))
+    NIL)
+   ((|logMeasure| CONST-DECL "ppg_probability_measure
+    [LogSpace[C, V, Value, domain], NativeTableSigma(spaces)].Probability"
+     |ppg_mt_log_probability| NIL)
+    (|logMap| CONST-DECL "LogSpace" |ppg_mt_log_probability| NIL)
+    (|table_sigma_eq| FORMULA-DECL NIL |ppg_mt_carrier_congruence| NIL)
+    (|coinLaw| CONST-DECL
+     "ppg_probability_measure[(domain(p`2)), spaces(p`2)].Probability"
+     |ppg_mt_coordinate_laws| NIL)
+    (|table_spaces_eq| FORMULA-DECL NIL |ppg_mt_carrier_congruence| NIL)
+    (|table_domains_eq| FORMULA-DECL NIL |ppg_mt_carrier_congruence| NIL))
+   SHOSTAK)))
+

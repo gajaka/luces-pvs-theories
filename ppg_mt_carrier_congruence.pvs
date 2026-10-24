@@ -1,0 +1,32 @@
+% The label type does not enter a resampling table or its coordinate law.
+% Changing that unused parameter preserves the actual table measure,
+% including when either label carrier is empty.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2. https://arxiv.org/abs/0903.0544
+ppg_mt_carrier_congruence[C1,C2,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_probability_coordinates[V,Value,domain])
+  spaces:CoordinateSpaces,laws:ProbabilityFamily(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_mt_random_process[C1,V,Value,domain] AS firstSlots,
+    ppg_mt_random_process[C2,V,Value,domain] AS secondSlots,
+    ppg_mt_coordinate_laws[C1,V,Value,domain] AS firstCoins,
+    ppg_mt_coordinate_laws[C2,V,Value,domain] AS secondCoins,
+    ppg_mt_native_spaces[C1,V,Value,domain] AS firstSpaces,
+    ppg_mt_native_spaces[C2,V,Value,domain] AS secondSpaces,
+    ppg_mt_log_probability[C1,V,Value,domain,spaces,laws] AS firstLaw,
+    ppg_mt_log_probability[C2,V,Value,domain,spaces,laws] AS secondLaw
+
+  table_domains_eq: LEMMA firstSlots.TableDomain=secondSlots.TableDomain
+
+  table_spaces_eq: LEMMA firstCoins.TableSpaces(spaces)=secondCoins.TableSpaces(spaces)
+
+  table_laws_eq: LEMMA firstCoins.coinLaw(spaces,laws)=secondCoins.coinLaw(spaces,laws)
+
+  table_sigma_eq: LEMMA firstSpaces.NativeTableSigma(spaces)=secondSpaces.NativeTableSigma(spaces)
+
+  log_maps_eq: LEMMA firstLaw.logMap=secondLaw.logMap
+
+  log_measures_eq: LEMMA firstLaw.logMeasure=secondLaw.logMeasure
+
+END ppg_mt_carrier_congruence

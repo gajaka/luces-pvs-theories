@@ -1,0 +1,50 @@
+% Exact finite search distinguishes infeasibility from an uncertified good
+% state. A sound passed HLS check therefore makes the impossible case
+% equivalent to absence of a reachable good state; a gap supplies a repair.
+%
+% Lean counterpart: PPGraphHLSDecisionBridge.lean, FiniteStates.
+ppg_hls_finite_decision_bridge[C,V,Value:TYPE,domain:[V->set[Value]],
+  variableUniverse:{U:finite_set[V]|U=fullset[V]},
+  default:C,universe:{U:finite_set[C]|FORALL(i:C):U(i)},
+  eventOrder:{e:list[C]|FORALL(i:C):member(i,e)},
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_mt_native_process[C,V,Value,domain,spaces,laws])
+  process:MTProcess,
+  states:{S:finite_set[[v:V->(domain(v))]]|
+    FORALL(z:[v:V->(domain(v))]):S(z)}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_decision_bridge[C,V,Value,domain,variableUniverse,
+      default,universe,eventOrder,spaces,laws,process] AS certified,
+    ppg_mt_native_process[C,V,Value,domain,spaces,laws] AS nativeProcess,
+    ppg_mt_semantics[C,V,Value,domain] AS model,
+    ppg_mt_selection[C,V,Value,domain] AS selection,
+    ppg_infeasibility[model.MTState,C] AS infeasibilityDefinitions,
+    ppg_repair_regions[model.MTState,C] AS regions,
+    ppg_mt_infeasibility[C,V,Value,domain,variableUniverse,universe] AS feasibility,
+    ppg_mt_reach[C,V,Value,domain] AS reach,
+    ppg_repair_decision[model.MTState,C,states] AS decision
+
+  criterion: VAR bool
+
+  s: VAR model.MTState
+
+  edges: VAR [model.MTState,model.MTState->bool]
+
+  finite_mt_classify_impossible_iff: THEOREM
+    (criterion IMPLIES certified.HLSCertified) IMPLIES
+    (decision.classify(fullset[model.MTState],
+      feasibility.mtSat(nativeProcess.badTest(process)),universe,criterion)=
+        regions.region_impossible IFF
+      infeasibilityDefinitions.NoReachableGood(reach.mtRepairGraph(process`footprint,
+        nativeProcess.badTest(process),default,eventOrder,edges),s))
+
+  finite_mt_classify_gap_supplies_repair: THEOREM
+    decision.classify(fullset[model.MTState],
+      feasibility.mtSat(nativeProcess.badTest(process)),universe,criterion)=
+        regions.region_gap IMPLIES
+    NOT criterion AND EXISTS(w:model.MTState):
+      reach.mtReach(process`footprint,nativeProcess.badTest(process),
+        default,eventOrder)(s,w) AND selection.MTGood(nativeProcess.badTest(process),w)
+
+END ppg_hls_finite_decision_bridge

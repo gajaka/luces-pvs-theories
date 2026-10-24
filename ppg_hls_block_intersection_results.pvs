@@ -1,0 +1,75 @@
+% The assembled joint event has the probability of the original state
+% intersection. Its mass gives the quadratic saving under a fair coin.
+%
+% Kun He, Qian Li and Xiaoming Sun, Moser-Tardos Algorithm: Beyond
+% Shearer's Bound, arXiv:2111.06527, Proposition 3.3.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Lean counterpart: PPGraphHLSBlockIntersection.lean.
+ppg_hls_block_intersection_results[V,Value:TYPE,domain:[V->set[Value]],
+  universe:{U:finite_set[V]|U=fullset[V]},F,H,Z:finite_set[V],
+  (IMPORTING ppg_mt_native_spaces[bool,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+
+  IMPORTING ppg_hls_block_intersection_sets[V,Value,domain,F,H,Z,
+      spaces,laws] AS rawSets,
+    ppg_hls_block_intersection_mass[V,Value,domain,universe,F,H,Z,
+      spaces,laws] AS blockMass,
+    ppg_hls_block_intersection_saving[V,Value,domain,universe,F,H,Z,
+      spaces,laws] AS blockSaving,
+    ppg_hls_join_blocks_probability[V,Value,domain,universe,F,H,
+      spaces,laws] AS sourceProbability,
+    ppg_hls_join_blocks_probability[V,Value,domain,universe,H,Z,
+      spaces,laws] AS targetProbability,
+    ppg_hls_join_three_probability[V,Value,domain,universe,F,H,Z,
+      spaces,laws] AS tripleProbability,
+    ppg_mt_state_probability[bool,V,Value,domain,universe,
+      spaces,laws] AS stateProbability,
+    ppg_measurable_block[V,Value,domain,spaces] AS blocks,
+    ppg_probability_finite_product[V,Value,domain,spaces,laws] AS finiteBlocks,
+    ppg_probability_finite_coin_saving[blocks.Block(F),blocks.Block(H),
+      blocks.Block(Z),blocks.blockSigma(F),blocks.blockSigma(H),
+      blocks.blockSigma(Z),finiteBlocks.finiteLaw(F),
+      finiteBlocks.finiteLaw(H),finiteBlocks.finiteLaw(Z)] AS finiteSaving
+
+  StateEvent: TYPE = blockMass.StateEvent
+
+  A,B: VAR StateEvent
+
+  U: VAR set[V]
+
+  delta: VAR real
+
+  source_locality_eq: LEMMA
+    rawSets.rawDepends(U,A)=sourceProbability.stateDepends(U,A)
+
+  target_locality_eq: LEMMA
+    rawSets.rawDepends(U,B)=targetProbability.stateDepends(U,B)
+
+  source_event_eq: LEMMA
+    rawSets.rawSourceBlock(A)=blockMass.sourceBlock(A)
+
+  target_event_eq: LEMMA
+    rawSets.rawTargetBlock(B)=blockMass.targetBlock(B)
+
+  joint_event_eq: LEMMA
+    rawSets.rawJointEvent(A,B)=blockMass.jointAsBlockEvent(A,B)
+
+  measure_jointEvent_blocks: THEOREM
+    disjoint?(F,H) AND disjoint?(H,Z) AND disjoint?(F,Z) AND
+    disjoint?(union(F,Z),H) AND
+    rawSets.rawDepends(union(F,H),A) AND
+    rawSets.rawDepends(union(H,Z),B) IMPLIES
+      tripleProbability.tripleProductLaw(blockMass.jointAsBlockEvent(A,B))=
+        stateProbability.stateMeasure(intersection(A,B))
+
+  coin_block_intersection_saving: THEOREM
+    disjoint?(F,H) AND disjoint?(H,Z) AND disjoint?(F,Z) AND
+    disjoint?(union(F,Z),H) AND
+    rawSets.rawDepends(union(F,H),A) AND
+    rawSets.rawDepends(union(H,Z),B) AND
+    delta>=0 AND delta<=stateProbability.stateMeasure(intersection(A,B)) IMPLIES
+      finiteSaving.finiteCoinMass(blockMass.sourceBlock(A),blockMass.targetBlock(B))<=
+        stateProbability.stateMeasure(A)*stateProbability.stateMeasure(B)-delta*delta/2
+
+END ppg_hls_block_intersection_results

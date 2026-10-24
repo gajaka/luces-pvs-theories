@@ -1,0 +1,69 @@
+
+(|ppg_hls_history_expectation|
+ (|history_termination_event| 0
+  (|history_termination_event-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (EXPAND "historyTermination")
+     (EXPAND "hlsHistoryTermination.terminationEvent") (EXPAND "goodAt")
+     (EXPAND "hlsHistoryHistories.fromHistory")
+     (EXPAND "ppg_mt_native_process[C,V,Value,domain,spaces,laws].badTest" 1)
+     (APPLY-EXTENSIONALITY 1) (HIDE 2) (IFF 1)
+     (SPREAD (SPLIT 1)
+      ((THEN (FLATTEN) (SKOLEM -1 ("historyN")) (INST 1 "historyN")
+        (SKOLEM 1 ("historyLabel")) (INST -1 "historyLabel")
+        (LEMMA "ppg_mt_history_state[C,V,Value,domain].historyState_eq_state"
+         ("vars" "process`footprint" "choose" "rule!1" "fallback" "default"
+          "omega" "x!1" "t" "historyN"))
+        (ASSERT) (GRIND :DEFS NIL :IF-MATCH NIL))
+       (THEN (FLATTEN) (SKOLEM -1 ("historyN")) (INST 1 "historyN")
+        (SKOLEM 1 ("historyLabel")) (INST -1 "historyLabel")
+        (LEMMA "ppg_mt_history_state[C,V,Value,domain].historyState_eq_state"
+         ("vars" "process`footprint" "choose" "rule!1" "fallback" "default"
+          "omega" "x!1" "t" "historyN"))
+        (ASSERT) (GRIND :DEFS NIL :IF-MATCH NIL)))))
+    NIL NIL)
+   NIL NIL))
+ (|history_expectedWork_le_card_div_slack| 0
+  (|history_expectedWork_le_card_div_slack-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "hlsHistoryBounds.expectedWork_le_card_div_slack"
+      ("sig"
+       "hlsHistoryHistories.fromHistory(process`footprint,badTest(process),rule!1,default)"
+       "epsilon" "epsilon!1"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|history_termination_eq_one| 0
+  (|history_termination_eq_one-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "history_termination_event" ("rule" "rule!1"))
+     (LEMMA "hlsHistoryBounds.measure_termination_eq_one"
+      ("sig"
+       "hlsHistoryHistories.fromHistory(process`footprint,badTest(process),rule!1,default)"))
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL NIL))
+ (|hlsHistoryTermination_TCC1| 0
+  (|hlsHistoryTermination_TCC1-current-draft| NIL 0
+   (""
+    (THEN (SKOLEM 1 ("historyEtaLabel")) (TYPEPRED "process")
+     (EXPAND "ppg_mt_native_process[C,V,Value,domain,spaces,laws].badTest")
+     (GRIND :DEFS NIL :IF-MATCH ALL)
+     (SPREAD
+      (CASE
+          "{s:ppg_mt_semantics[C,V,Value,domain].MTState|process`bad(historyEtaLabel)(s)}=process`bad(historyEtaLabel)")
+      ((ASSERT) (THEN (APPLY-EXTENSIONALITY 1) (SKOSIMP*) (ASSERT)))))
+    NIL NIL)
+   NIL NIL))
+ (|history_termination_eq_one_TCC1| 0
+  (|history_termination_eq_one_TCC1-current-draft| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "hlsHistoryTermination_TCC1")
+     (LEMMA "history_termination_event" ("rule" "rule!1"))
+     (LEMMA "hlsHistoryTermination.termination_event_measurable"
+      ("sig"
+       "hlsHistoryHistories.fromHistory(process`footprint,ppg_mt_native_process[C,V,Value,domain,spaces,laws].badTest(process),rule!1,default)"))
+     (ASSERT))
+    NIL NIL)
+   NIL NIL)))
