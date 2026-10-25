@@ -1,0 +1,39 @@
+% Summing the products over all finite choices factors into independent sums.
+ppg_forest_weight[I,T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_finite_forest[I,T], foundations@ppg_nonneg_folds[T] AS headAlgebra,
+    foundations@ppg_nonneg_folds[list[T]] AS listAlgebra,
+    foundations@ppg_monoid_sum[T,nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b] AS heads,
+    foundations@ppg_monoid_sum[list[T],nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b] AS forests,
+    foundations@ppg_monoid_sum[I,nonneg_real,1,LAMBDA(a,b:nonneg_real):a*b] AS indices,
+    foundations@ppg_list_fold[T,nonneg_real,1,LAMBDA(a,b:nonneg_real):a*b] AS lists,
+    foundations@ppg_monoid_image[list[T],list[T],nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b] AS consIndex,
+    foundations@ppg_bind_sum[T,list[T],nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b] AS headUnion
+  S: VAR finite_set[I]
+  F: VAR [I -> finite_set[T]]
+  H: VAR finite_set[list[T]]
+  c: VAR T
+  w: VAR [T -> nonneg_real]
+
+  fold_cons_function: LEMMA (LAMBDA(xs:list[T]):lists.fold(cons(c,xs),w)) =
+    (LAMBDA(xs:list[T]):w(c)*lists.fold(xs,w))
+
+  cons_product_sum: LEMMA forests.sum(consFamily(c,H),LAMBDA(xs:list[T]):lists.fold(xs,w)) =
+    w(c)*forests.sum(H,LAMBDA(xs:list[T]):lists.fold(xs,w))
+
+  cons_mass_function: LEMMA (LAMBDA(c:T):forests.sum(consFamily(c,H),LAMBDA(xs:list[T]):lists.fold(xs,w))) =
+    (LAMBDA(c:T):w(c)*forests.sum(H,LAMBDA(xs:list[T]):lists.fold(xs,w)))
+
+  components_disjoint: LEMMA FORALL(SS:non_empty_finite_set[I]):
+    disjointFamily(F(choose(SS)),LAMBDA(c:T):consFamily(c,forest(rest(SS),F)))
+
+  forest_mass(S,F,w): nonneg_real = forests.sum(forest(S,F),LAMBDA(xs:list[T]):lists.fold(xs,w))
+
+  forest_mass_empty: LEMMA forest_mass(emptyset[I],F,w)=1
+
+  forest_mass_step: LEMMA FORALL(SS:non_empty_finite_set[I]):
+    forest_mass(SS,F,w)=heads.sum(F(choose(SS)),w)*forest_mass(rest(SS),F,w)
+
+  forest_product_sum: THEOREM forest_mass(S,F,w)=indices.sum(S,LAMBDA(k:I):heads.sum(F(k),w))
+
+END ppg_forest_weight

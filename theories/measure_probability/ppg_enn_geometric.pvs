@@ -1,0 +1,70 @@
+% The geometric tail sum starts with the first failed trial. Its value
+% is b/(1-b) for b<1 and infinity for b=1. Finite prefixes leave the
+% residual b^(N+1)/(1-b), whose limit identifies the extended supremum.
+%
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Cambridge University Press, 2017, geometric distribution.
+% Walter Rudin, Principles of Mathematical Analysis, third edition,
+% McGraw-Hill, 1976, Chapter 3.
+ppg_enn_geometric: THEORY
+BEGIN
+  IMPORTING ppg_nat_tsum,ppg_exact_count_limit,foundations@ppg_real_geometric_limit,
+    ppg_enn_multiply,analysis@convergence_ops AS limits
+  b: VAR {r:nonneg_real|r<=1}
+  q: VAR {r:nonneg_real|r<1}
+  x: VAR nonneg_real
+  N: VAR nat
+
+  inverseFinite(x): ENN = IF x=0 THEN ennInfinity ELSE ennFinite(1/x) ENDIF
+
+  geometricMean(b): ENN = emul(ennFinite(b),inverseFinite(1-b))
+
+  terms(b)(N): nonneg_real = expt(b,N+1)
+
+  prefix(b,N): nonneg_real = sums.sum(natRange(N),terms(b))
+
+  prefix_function: LEMMA (LAMBDA(N:nat):sums.sum(natRange(N),terms(b)))=(LAMBDA(N:nat):prefix(b,N))
+
+  ratio(q): nonneg_real = q/(1-q)
+
+  ratio_balance: LEMMA ratio(q)*(1-q)=q
+
+  prefix_zero: LEMMA prefix(b,0)=0
+
+  prefix_succ: LEMMA prefix(b,N+1)=prefix(b,N)+expt(b,N+1)
+
+  prefix_residual: LEMMA prefix(q,N)+ratio(q)*expt(q,N)=ratio(q)
+
+  residual_zero_limit: LEMMA convergence?(LAMBDA(N:nat):ratio(q)*expt(q,N),0)
+
+  residual_nonnegative: LEMMA 0<=ratio(q)*expt(q,N)
+
+  geometric_tsum_finite: LEMMA tsum(terms(q))=ennFinite(ratio(q))
+
+  terms_one: LEMMA terms(1)=(LAMBDA(N:nat):1)
+
+  prefix_one: LEMMA prefix(1,N)=N
+
+  identity_unbounded: LEMMA FORALL(x:nonneg_real):EXISTS(N:nat):x<N
+
+  prefix_one_function: LEMMA (LAMBDA(N:nat):prefix(1,N))=(LAMBDA(N:nat):N)
+
+  geometric_tsum_infinite: LEMMA tsum(terms(1))=ennInfinity
+
+  geometric_mean_finite: LEMMA geometricMean(q)=ennFinite(ratio(q))
+
+  geometric_mean_infinite: LEMMA geometricMean(1)=ennInfinity
+
+  geometric_tsum: THEOREM tsum(terms(b))=geometricMean(b)
+
+  geometric_mean_is_finite: LEMMA 0<1-b IMPLIES ennFinite?(geometricMean(b))
+
+  inverse_zero: LEMMA inverseFinite(0)=ennInfinity
+
+  inverse_positive: LEMMA 0<x IMPLIES inverseFinite(x)=ennFinite(1/x)
+
+  geometric_mean_inverse_bound: LEMMA 1-b=x IMPLIES ele(geometricMean(b),inverseFinite(x))
+
+  inverse_antitone: LEMMA FORALL(a,c:nonneg_real):a<=c IMPLIES ele(inverseFinite(c),inverseFinite(a))
+
+END ppg_enn_geometric

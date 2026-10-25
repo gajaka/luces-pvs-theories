@@ -1,0 +1,40 @@
+% The only coordinate is uniform on the three values 0, 1 and 2.
+% Two convex combinations of point laws construct the normalized measure.
+% The bad events inspect that coordinate and exclude values zero and one;
+% their state probabilities are exactly one third by the coordinate marginal.
+%
+% False and true encode the source event labels 0 and 1. UnitIndex has
+% the single element true, and Ternary is the source three-element value set.
+% Lean counterpart: Pegden.TernaryExample.spaces and process in
+% PPGraphMoserTardosPegden.lean.
+ppg_pegden_ternary_model: THEORY
+BEGIN
+  IMPORTING ppg_pegden_ternary_frame,measure_probability@ppg_probability_convex
+
+  ternarySpaces(v:UnitIndex): ppg_measurable_space[(valueDomain(v))].MeasurableSpace =
+    fullset[set[(valueDomain(v))]]
+
+  ternaryLaws(v:UnitIndex): ppg_probability_measure[(valueDomain(v)),ternarySpaces(v)].Probability =
+    ppg_probability_convex[(valueDomain(v)),ternarySpaces(v)].mixture(1/3,
+      ppg_probability_dirac[(valueDomain(v)),ternarySpaces(v)].dirac(0),
+      ppg_probability_convex[(valueDomain(v)),ternarySpaces(v)].mixture(1/2,
+        ppg_probability_dirac[(valueDomain(v)),ternarySpaces(v)].dirac(1),
+        ppg_probability_dirac[(valueDomain(v)),ternarySpaces(v)].dirac(2)))
+
+  IMPORTING moser_tardos@ppg_mt_state_marginals[bool,UnitIndex,Ternary,valueDomain,unitUniverse,ternarySpaces,ternaryLaws],
+    ppg_pegden_expectation[bool,UnitIndex,Ternary,valueDomain,unitUniverse,ternarySpaces,ternaryLaws]
+  i: VAR bool
+
+  valueEvent(v:UnitIndex)(q:(valueDomain(v))): (ternarySpaces(v)) = {w:(valueDomain(v))|w=q}
+
+  bad_event_eq: LEMMA {s:MTState|ternaryBad(i,s)}=stateCylinder(TRUE,valueEvent(TRUE)(labelValue(i)))
+
+  bad_measurable: THEOREM NativeStateSigma(ternarySpaces)({s:MTState|ternaryBad(i,s)})
+
+  nativeBad: NativeBad = ternaryBad
+
+  uniform_value_mass: LEMMA FORALL(v:UnitIndex,q:(valueDomain(v))): ternaryLaws(v)(valueEvent(v)(q))=1/3
+
+  bad_probability: THEOREM baseProbability(nativeBad)(i)=thirds(i)
+
+END ppg_pegden_ternary_model

@@ -1,0 +1,46 @@
+% The running events decrease to the unsuccessful paths. Drift makes
+% that intersection null, so continuity from above makes their masses
+% tend to zero. A finite state potential bounds the stopped integral by
+% a constant times the same mass.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Exercise 10.22(a), American Mathematical Society, 2017.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_stopped_limit[State,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  (IMPORTING measure_probability@ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING measure_probability@ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw,
+  (IMPORTING measure_probability@ppg_filtration[Omega,State,S]) history:Filtration]: THEORY
+BEGIN
+  IMPORTING ppg_finite_stopped_residual[State,Omega,universe,S,measureLaw,history],
+    measure_probability@ppg_finite_measure_continuity[Omega,S,measureLaw]
+  M: VAR Model
+  X: VAR AdaptedProcess
+  s: VAR State
+  n: VAR nat
+  omega: VAR Omega
+
+  running_decreasing: LEMMA DecreasingEvents(runningSchedule(M,X))
+
+  running_intersection_zero: LEMMA FORALL(M:Model,f:CheckedVector(M),X:Realization(M)):
+    mass(finiteIntersection(runningSchedule(M,X)))=0
+
+  running_mass_tendsto_zero: LEMMA FORALL(M:Model,f:CheckedVector(M),X:Realization(M)):
+    convergence?((LAMBDA(n:nat):mass(runningAmbient(M,X,n))),0)
+
+  checked_nonnegative: LEMMA FORALL(M:Model,f:CheckedVector(M),s:State):0<=f(s)
+
+  cap(M:Model,f:CheckedVector(M)): nonneg_real = fsum(universe,LAMBDA(s:State):f(s))
+
+  stopped_pointwise_bound: LEMMA FORALL(M:Model,f:CheckedVector(M),X:AdaptedProcess,n:nat,omega:Omega):
+    0<=stoppedNativeValue(M,f,X,n)(omega) AND
+    stoppedNativeValue(M,f,X,n)(omega)<=cap(M,f)*indicator(runningAmbient(M,X,n))(omega)
+
+  stopped_mean_bound: LEMMA FORALL(M:Model,f:CheckedVector(M),X:AdaptedProcess,n:nat):
+    0<=stoppedMean(M,f,X,n) AND
+    stoppedMean(M,f,X,n)<=cap(M,f)*mass(runningAmbient(M,X,n))
+
+  stoppedValue_integral_tendsto_zero: THEOREM FORALL(M:Model,f:CheckedVector(M),X:Realization(M)):
+    convergence?((LAMBDA(n:nat):stoppedMean(M,f,X,n)),0)
+
+END ppg_finite_stopped_limit

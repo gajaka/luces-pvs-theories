@@ -1,0 +1,11 @@
+% Empty variable and value types need no additional inhabitant assumption.
+ppg_mt_independence_empty: THEORY
+BEGIN
+  IMPORTING measure_probability@ppg_probability_finite_empty,
+            ppg_mt_fresh_independence[Empty, Empty, Empty, domain, spaces, coins]
+
+  empty_fresh_past: THEOREM FORALL (B: (NativeStateSigma(spaces)), D: (blockSigma(past(0)))):
+    logMeasure(intersection(freshEvent(1, B), logBlockEvent(past(0), D))) =
+      logMeasure(freshEvent(1, B)) * logMeasure(logBlockEvent(past(0), D))
+
+END ppg_mt_independence_empty

@@ -1,0 +1,35 @@
+% A root union contains the table checks of all canonical DAGs with
+% the prescribed root. An active policy prefix supplies an actual
+% member of this family; no measure or counting bound is needed.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 2.1. https://arxiv.org/abs/2111.06527
+% Definition support for PPGraphHLSRootUnion.lean and policy counting.
+ppg_hls_root_union_events[C,V,Value:TYPE,domain:[V->set[Value]],
+  footprint:[C->finite_set[V]],
+  (IMPORTING moser_tardos@ppg_mt_semantics[C,V,Value,domain])bad:[C,MTState->bool]]: THEORY
+BEGIN
+  IMPORTING ppg_hls_policy_dag[C,V,Value,domain,footprint,bad],
+    local_lemmas@ppg_shearer_bdd[C,V,footprint] AS unionGraph,
+    ppg_hls_finite_dag_core[C,unionGraph.dependencyGraph] AS unionDAGs
+  a: VAR C
+  r,t: VAR nat
+  labels: VAR [nat->C]
+  omega: VAR LogSpace
+
+  RootFamily(a,r): TYPE = {D:WitnessDAG|unionDAGs.RootedCanonical(D,(a,r))}
+
+  rootUnion(a,r): set[LogSpace] = {omega:LogSpace|
+    EXISTS(D:RootFamily(a,r)):tableCheck(D)(omega)}
+
+  root_union_member: LEMMA rootUnion(a,r)(omega) IFF
+    EXISTS(D:WitnessDAG):unionDAGs.RootedCanonical(D,(a,r)) AND tableCheck(D)(omega)
+
+  rooted_policy_witness: LEMMA
+    unionDAGs.RootedCanonical(realDAG(labels,t),realRoot(labels,t))
+
+  policy_root_union_member: LEMMA localBad AND
+    policy.Running(footprint,bad,labels,omega,t+1) AND realRoot(labels,t)=(a,r) IMPLIES
+      rootUnion(a,r)(omega)
+
+END ppg_hls_root_union_events

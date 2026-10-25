@@ -1,0 +1,89 @@
+% Finite supported assignments obey the product-of-sums identity.
+% Updating one coordinate partitions the universe into disjoint rows;
+% finite distributivity applies to arbitrary ENN factors, including
+% zero and infinity. Empty supports and empty local domains are allowed.
+%
+% Nicolas Bourbaki, Algebra I, Chapters 1--3, Springer, 1989.
+ppg_supported_assignment_sum[V,A:TYPE,default:A]: THEORY
+BEGIN
+  IMPORTING foundations@ppg_supported_finite_assignments[V,A,default],
+    ppg_enn_products[V] AS products,
+    foundations@ppg_monoid_sum[V,ENN,ennFinite(1),emul] AS productFold,
+    ppg_nonneg_tsum[A] AS valueSums,
+    ppg_nonneg_tsum[Assignment] AS stateSums,
+    ppg_enn_finite[A] AS valueFinite,
+    ppg_enn_finite[Assignment] AS stateFinite,
+    ppg_enn_sum_scale[A] AS valueScale,
+    ppg_enn_sum_scale[Assignment] AS stateScale,
+    foundations@ppg_monoid_image[Assignment,Assignment,ENN,ennFinite(0),eadd] AS stateImage,
+    foundations@ppg_bind_sum[A,Assignment,ENN,ennFinite(0),eadd] AS rowSums
+
+  S: VAR finite_set[V]
+  Q: VAR non_empty_finite_set[V]
+  domains: VAR [V->finite_set[A]]
+  f: VAR [V->[A->ENN]]
+  s,t: VAR Assignment
+  v: VAR V
+  a: VAR A
+
+  weights(S,f)(s): ENN = products.eprod(S,LAMBDA(v:V):f(v)(s(v)))
+
+  domainSums(domains,f)(v): ENN = valueSums.esum(domains(v),f(v))
+
+  assignmentSum(S,domains,f): ENN = stateSums.esum(universe(S,domains),weights(S,f))
+
+  State: TYPE = Assignment
+
+  assignmentUniverse(S,domains): finite_set[State] = universe(S,domains)
+
+  assignmentAdmissible(S,domains,s): bool = admissible(S,domains,s)
+
+  assignmentUniverse_member: LEMMA assignmentUniverse(S,domains)(s) IFF assignmentAdmissible(S,domains,s)
+
+  row(S,domains,v,a): finite_set[Assignment] =
+    image[Assignment,Assignment](LAMBDA(t:Assignment):update(t,v,a),universe(remove(v,S),domains))
+
+  weights_remove: LEMMA S(v) IMPLIES
+    weights(S,f)(s)=emul(f(v)(s(v)),weights(remove(v,S),f)(s))
+
+  updated_rest_weights: LEMMA
+    weights(remove(v,S),f)(update(t,v,a))=weights(remove(v,S),f)(t)
+
+  updated_weights: LEMMA S(v) IMPLIES
+    weights(S,f)(update(t,v,a))=emul(f(v)(a),weights(remove(v,S),f)(t))
+
+  universe_removed_value: LEMMA universe(remove(v,S),domains)(s) IMPLIES s(v)=default
+
+  row_injective: LEMMA universe(remove(v,S),domains)(s) AND
+    universe(remove(v,S),domains)(t) AND update(s,v,a)=update(t,v,a) IMPLIES s=t
+
+  rows_disjoint: LEMMA rows.disjointFamily(domains(v),LAMBDA(a:A):row(S,domains,v,a))
+
+  row_product_function: LEMMA S(v) IMPLIES
+    (LAMBDA(t:Assignment):weights(S,f)(update(t,v,a)))=
+      (LAMBDA(t:Assignment):emul(f(v)(a),weights(remove(v,S),f)(t)))
+
+  universe_empty: LEMMA universe(emptyset[V],domains)=singleton[Assignment](defaultState)
+
+  weights_empty: LEMMA weights(emptyset[V],f)=(LAMBDA(s:Assignment):ennFinite(1))
+
+  row_sum: LEMMA S(v) IMPLIES
+    stateSums.esum(row(S,domains,v,a),weights(S,f))=
+      emul(f(v)(a),assignmentSum(remove(v,S),domains,f))
+
+  universe_step: LEMMA universe(Q,domains)=rows.biUnion(domains(choose(Q)),
+    LAMBDA(a:A):row(Q,domains,choose(Q),a))
+
+  row_sum_function: LEMMA
+    (LAMBDA(a:A):stateSums.esum(row(Q,domains,choose(Q),a),weights(Q,f)))=
+      (LAMBDA(a:A):emul(f(choose(Q))(a),assignmentSum(rest(Q),domains,f)))
+
+  assignment_sum_empty: LEMMA assignmentSum(emptyset[V],domains,f)=ennFinite(1)
+
+  assignment_sum_step: LEMMA assignmentSum(Q,domains,f)=
+    emul(domainSums(domains,f)(choose(Q)),assignmentSum(rest(Q),domains,f))
+
+  supported_product_of_sums: THEOREM
+    assignmentSum(S,domains,f)=products.eprod(S,domainSums(domains,f))
+
+END ppg_supported_assignment_sum

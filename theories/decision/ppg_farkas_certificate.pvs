@@ -1,0 +1,56 @@
+% Nonnegative multipliers combine valid linear inequalities into a
+% contradiction when the combined left side vanishes and the right side
+% is negative. The rational checker verifies these equalities exactly.
+% Only certificate soundness is proved; existence of a multiplier for
+% every infeasible system is not asserted.
+%
+% Dlask and Werner, "Bounding Linear Programs by Constraint Propagation",
+% CP 2020, Section 2.1, Theorem 1.
+% https://cmp.felk.cvut.cz/~dlaskto2/papers/Dlask-Werner-CP2020a.pdf
+% Lean counterpart: PPGraphFarkasCertificate.lean.
+
+ppg_farkas_certificate[C, V: TYPE,
+  rowUniverse: {B: finite_set[C] | FORALL (c: C): B(c)},
+  colUniverse: {U: finite_set[V] | FORALL (v: V): U(v)}]: THEORY
+BEGIN
+  IMPORTING foundations@ppg_finite_fubini[C, V]
+  A: VAR [C, V -> real]
+  b, y: VAR [C -> real]
+  x: VAR [V -> real]
+  Q: VAR [C, V -> rat]
+  d, w: VAR [C -> rat]
+
+  LinearFeasible(A, b, x): bool =
+    FORALL (i: C): cols.fsum(colUniverse, LAMBDA (j: V): A(i, j) * x(j)) <= b(i)
+
+  FarkasCertificate(A, b, y): bool =
+    (FORALL (i: C): 0 <= y(i)) AND
+    (FORALL (j: V): rows.fsum(rowUniverse, LAMBDA (i: C): y(i) * A(i, j)) = 0) AND
+    rows.fsum(rowUniverse, LAMBDA (i: C): y(i) * b(i)) < 0
+
+  % PVS rationals are a subtype of reals, so coercion preserves exact arithmetic.
+  farkasCheck(Q, d, w): bool = FarkasCertificate(Q, d, w)
+
+  multiply_associative: LEMMA FORALL (a, b, c: real): a * (b * c) = (a * b) * c
+
+  weighted_linear_sum: THEOREM
+    rows.fsum(rowUniverse, LAMBDA (i: C):
+      y(i) * cols.fsum(colUniverse, LAMBDA (j: V): A(i, j) * x(j))) =
+    cols.fsum(colUniverse, LAMBDA (j: V):
+      rows.fsum(rowUniverse, LAMBDA (i: C): y(i) * A(i, j)) * x(j))
+
+  linear_combination_valid: THEOREM
+    (FORALL (i: C): 0 <= y(i)) AND LinearFeasible(A, b, x) IMPLIES
+    cols.fsum(colUniverse, LAMBDA (j: V):
+      rows.fsum(rowUniverse, LAMBDA (i: C): y(i) * A(i, j)) * x(j)) <=
+    rows.fsum(rowUniverse, LAMBDA (i: C): y(i) * b(i))
+
+  farkasCertificate_no_solution: THEOREM
+    FarkasCertificate(A, b, y) IMPLIES NOT EXISTS x: LinearFeasible(A, b, x)
+
+  farkasCheck_sound: THEOREM farkasCheck(Q, d, w) IMPLIES FarkasCertificate(Q, d, w)
+
+  farkasCheck_no_real_solution: THEOREM
+    farkasCheck(Q, d, w) IMPLIES NOT EXISTS x: LinearFeasible(Q, d, x)
+
+END ppg_farkas_certificate

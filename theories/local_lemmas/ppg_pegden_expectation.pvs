@@ -1,0 +1,50 @@
+% The existing fixed-representative check bounds each occurrence by its
+% node-product weight. Impossible shapes contribute zero, so the sum
+% ranges over Pegden's smaller family. Its unrestricted weight bound
+% controls the actual slot-zero expected resampling counts and log length.
+%
+% Wesley Pegden, "An extension of the Moser-Tardos algorithmic local
+% lemma", Theorem 1.4. https://arxiv.org/abs/1102.2853
+% The occurrence check is Moser and Tardos, Section 2, Lemma 2.1:
+% https://arxiv.org/abs/0903.0544v3
+% Lean counterpart: the probability and expectation results in
+% PPGraphMoserTardosPegden.lean.
+ppg_pegden_expectation[C,V,Value:TYPE,domain:[V->set[Value]],
+  universe:{F:finite_set[V]|F=fullset[V]},
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[C,V,Value,domain]) spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_pegden_occurrence_support[C,V,Value,domain],
+    moser_tardos@ppg_mt_witness_expectation[C,V,Value,domain,spaces,laws],
+    moser_tardos@ppg_mt_occurrence_probability[C,V,Value,domain,universe,spaces,laws],
+    moser_tardos@ppg_mt_expected_decomposition[C,V,Value,domain,spaces,laws],
+    measure_probability@ppg_nonneg_tsum_order[WTree],measure_probability@ppg_enn_finite[C]
+  vars: VAR CertVars
+  bad: VAR NativeBad
+  fallback,a: VAR C
+  enumeration: VAR {xs:list[C]|completeEnumeration(xs)}
+  W: VAR WTree
+  p,x: VAR [C->nonneg_real]
+
+  pegdenUpper(bad,p): bool = FORALL(c:C):baseProbability(bad)(c)<=p(c)
+
+  logMeasure_witnessOccurrence_le_familyWeight: THEOREM mt_wf(vars,bad) AND pegdenUpper(bad,p) IMPLIES
+    logMeasure(occurrenceEvents(vars,bad,fallback,enumeration,a)(W))<=
+      pegdenFamilyWeightNN(vars,labelUniverse(enumeration),p,a)(W)
+
+  pegden_expected_count_le_family: LEMMA mt_wf(vars,bad) AND pegdenUpper(bad,p) IMPLIES
+    ele(randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a),
+      pegdenFamilyTotal(vars,labelUniverse(enumeration),p,a))
+
+  randomInitExpectedResamplingCount_le: THEOREM mt_wf(vars,bad) AND pegdenUpper(bad,p) AND
+    pegdenBudget(vars,labelUniverse(enumeration),p,x) IMPLIES
+      ele(randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a),ennFinite(x(a)))
+
+  randomInitETLog_le_sum: THEOREM mt_wf(vars,bad) AND pegdenUpper(bad,p) AND
+    pegdenBudget(vars,labelUniverse(enumeration),p,x) IMPLIES
+      ele(randomInitETLog(vars,bad,fallback,enumeration),ennFinite(sums.sum(labelUniverse(enumeration),x)))
+
+  randomInitETLog_lt_top: THEOREM mt_wf(vars,bad) AND pegdenUpper(bad,p) AND
+    pegdenBudget(vars,labelUniverse(enumeration),p,x) IMPLIES
+      ennFinite?(randomInitETLog(vars,bad,fallback,enumeration))
+
+END ppg_pegden_expectation

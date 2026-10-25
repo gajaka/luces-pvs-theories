@@ -1,0 +1,172 @@
+% A reversible edge exchanges the shared samples and keeps both private
+% blocks fixed. Process locality identifies the resulting endpoint tests
+% on an arbitrary resampling table.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", proof of Lemma 3.4. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSPairProbability.lean.
+ppg_hls_pair_probability[I,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[I,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING moser_tardos@ppg_mt_native_process[I,V,Value,domain,spaces,laws])
+  process:MTProcess,
+  (IMPORTING ppg_hls_table_coordinates[I,V,process`footprint])
+  u,v:WNode]: THEORY
+BEGIN
+  IMPORTING moser_tardos@ppg_mt_random_process[I,V,Value,domain] AS ppairSlots,
+    ppg_hls_table_events[I,V,Value,domain,spaces,laws,process] AS ppairEvents,
+    ppg_hls_table_check_core[I,V,Value,domain,process`footprint,badTest(process)] AS ppairRaw,
+    ppg_hls_swapped_tests[I,V,Value,domain,process`footprint,badTest(process)] AS ppairSwaps,
+    moser_tardos@ppg_mt_carrier_congruence[I,bool,V,Value,domain,spaces,laws] AS ppairCarriers,
+    ppg_hls_fair_orientation AS ppairCoins
+
+  F: MACRO finite_set[V] = difference(process`footprint(u`1),process`footprint(v`1))
+
+  H: MACRO finite_set[V] = intersection(process`footprint(u`1),process`footprint(v`1))
+
+  Z: MACRO finite_set[V] = difference(process`footprint(v`1),process`footprint(u`1))
+
+  IMPORTING foundations@ppg_finite_domain[V,F] AS ppairFiniteF,
+    foundations@ppg_finite_domain[V,H] AS ppairFiniteH,
+    foundations@ppg_finite_domain[V,Z] AS ppairFiniteZ
+
+  universeF:{S:finite_set[(F)]|S=fullset[(F)]} = fullset[(F)]
+
+  universeH:{S:finite_set[(H)]|S=fullset[(H)]} = fullset[(H)]
+
+  universeZ:{S:finite_set[(Z)]|S=fullset[(Z)]} = fullset[(Z)]
+
+  IMPORTING ppg_hls_query_four[V,Value,(F),(H),(Z),domain,
+      universeF,universeH,universeZ,spaces,laws,
+      LAMBDA(a:(F)):a,LAMBDA(a:(H)):a,LAMBDA(a:(Z)):a] AS ppairQueries,
+    ppg_hls_join_blocks[V,Value,domain,F,H,spaces,laws] AS ppairSourceJoin,
+    ppg_hls_join_blocks[V,Value,domain,H,Z,spaces,laws] AS ppairTargetJoin,
+    measure_probability@ppg_probability_four_product[(F),(H),(Z),Value,
+      LAMBDA(a:(F)):domain(a),LAMBDA(a:(H)):domain(a),LAMBDA(a:(Z)):domain(a),
+      universeF,universeH,universeZ,
+      LAMBDA(a:(F)):spaces(a),LAMBDA(a:(H)):spaces(a),LAMBDA(a:(Z)):spaces(a),
+      LAMBDA(a:(F)):laws(a),LAMBDA(a:(H)):laws(a),LAMBDA(a:(Z)):laws(a)] AS ppairFour
+
+  FourValue: TYPE = ppairFour.ResultValue
+
+  D: VAR WitnessDAG
+
+  Q: VAR (Valid)
+
+  omega: VAR ppairSlots.LogSpace
+
+  a: VAR V
+
+  c: VAR ppairCoins.OrientationCoin
+
+  sourceIndex(D):[V->nat] = localIndex(D,u)
+
+  targetIndex(D):[V->nat] = localIndex(D,v)
+
+  pairBlockRead(D)(omega):FourValue = ppairQueries.readFour(
+    LAMBDA(a:(F)):sourceIndex(D)(a),LAMBDA(a:(H)):sourceIndex(D)(a),
+    LAMBDA(a:(H)):targetIndex(D)(a),LAMBDA(a:(Z)):targetIndex(D)(a))(omega)
+
+  sourceBlockBad: set[ppairSourceJoin.AssemblyPair] =
+    {p:ppairSourceJoin.AssemblyPair|process`bad(u`1)(ppairSourceJoin.joinBlocks(p))}
+
+  targetBlockBad: set[ppairTargetJoin.AssemblyPair] =
+    {p:ppairTargetJoin.AssemblyPair|process`bad(v`1)(ppairTargetJoin.joinBlocks(p))}
+
+  forwardEvent(x:FourValue):bool = sourceBlockBad((x`1`1,x`2`1)) AND
+    targetBlockBad((x`2`2,x`1`2))
+
+  oppositeEvent(x:FourValue):bool = sourceBlockBad((x`1`1,x`2`2)) AND
+    targetBlockBad((x`2`1,x`1`2))
+
+  oneOrderOnly(x:FourValue):bool = forwardEvent(x) AND NOT oppositeEvent(x)
+
+  coinChoice(A,B:set[ppairSlots.LogSpace]):set[[ppairCoins.OrientationCoin,ppairSlots.LogSpace]] =
+    {p:[ppairCoins.OrientationCoin,ppairSlots.LogSpace]|
+      (p`1=ppairCoins.orientationKeep AND A(p`2)) OR
+      (p`1=ppairCoins.orientationFlip AND B(p`2))}
+
+  pairCoinCheck(D):set[[ppairCoins.OrientationCoin,ppairSlots.LogSpace]] =
+    coinChoice({omega:ppairSlots.LogSpace|forwardEvent(pairBlockRead(D)(omega))},
+      {omega:ppairSlots.LogSpace|oneOrderOnly(pairBlockRead(D)(omega))})
+
+  private_shared_disjoint: LEMMA disjoint?(F,H) AND disjoint?(H,Z)
+
+  source_footprint_partition: LEMMA process`footprint(u`1)=union(F,H)
+
+  target_footprint_partition: LEMMA process`footprint(v`1)=union(H,Z)
+
+  source_state_eq: LEMMA ppairEvents.tableState(D,u)=ppairRaw.tableState(D,u)
+
+  target_state_eq: LEMMA ppairEvents.tableState(D,v)=ppairRaw.tableState(D,v)
+
+  source_event_eq: LEMMA ppairEvents.tableEvent(D,u)=ppairRaw.tableEvent(D,u)
+
+  target_event_eq: LEMMA ppairEvents.tableEvent(D,v)=ppairRaw.tableEvent(D,v)
+
+  read_private_source: LEMMA FORALL(a:(F)):
+    pairBlockRead(D)(omega)`1`1(a)=omega(sourceIndex(D)(a),a)
+
+  read_private_target: LEMMA FORALL(a:(Z)):
+    pairBlockRead(D)(omega)`1`2(a)=omega(targetIndex(D)(a),a)
+
+  read_shared_source: LEMMA FORALL(a:(H)):
+    pairBlockRead(D)(omega)`2`1(a)=omega(sourceIndex(D)(a),a)
+
+  read_shared_target: LEMMA FORALL(a:(H)):
+    pairBlockRead(D)(omega)`2`2(a)=omega(targetIndex(D)(a),a)
+
+  source_forward_agrees: LEMMA process`footprint(u`1)(a) IMPLIES
+    ppairRaw.tableState(D,u)(omega)(a)=
+      ppairSourceJoin.joinBlocks((pairBlockRead(D)(omega)`1`1,pairBlockRead(D)(omega)`2`1))(a)
+
+  target_forward_agrees: LEMMA process`footprint(v`1)(a) IMPLIES
+    ppairRaw.tableState(D,v)(omega)(a)=
+      ppairTargetJoin.joinBlocks((pairBlockRead(D)(omega)`2`2,pairBlockRead(D)(omega)`1`2))(a)
+
+  source_swapped_agrees: LEMMA process`footprint(u`1)(a) IMPLIES
+    ppairSwaps.swapShared(u,v)(ppairRaw.tableState(D,u)(omega),ppairRaw.tableState(D,v)(omega))(a)=
+      ppairSourceJoin.joinBlocks((pairBlockRead(D)(omega)`1`1,pairBlockRead(D)(omega)`2`2))(a)
+
+  target_swapped_agrees: LEMMA process`footprint(v`1)(a) IMPLIES
+    ppairSwaps.swapShared(u,v)(ppairRaw.tableState(D,v)(omega),ppairRaw.tableState(D,u)(omega))(a)=
+      ppairTargetJoin.joinBlocks((pairBlockRead(D)(omega)`2`1,pairBlockRead(D)(omega)`1`2))(a)
+
+  source_forward_iff_block: LEMMA ppairEvents.tableEvent(D,u)(omega) IFF
+    sourceBlockBad((pairBlockRead(D)(omega)`1`1,pairBlockRead(D)(omega)`2`1))
+
+  target_forward_iff_block: LEMMA ppairEvents.tableEvent(D,v)(omega) IFF
+    targetBlockBad((pairBlockRead(D)(omega)`2`2,pairBlockRead(D)(omega)`1`2))
+
+  source_swapped_iff_block: LEMMA badTest(process)(u`1,ppairSwaps.swapShared(u,v)(
+    ppairRaw.tableState(D,u)(omega),ppairRaw.tableState(D,v)(omega))) IFF
+      sourceBlockBad((pairBlockRead(D)(omega)`1`1,pairBlockRead(D)(omega)`2`2))
+
+  target_swapped_iff_block: LEMMA badTest(process)(v`1,ppairSwaps.swapShared(u,v)(
+    ppairRaw.tableState(D,v)(omega),ppairRaw.tableState(D,u)(omega))) IFF
+      targetBlockBad((pairBlockRead(D)(omega)`2`1,pairBlockRead(D)(omega)`1`2))
+
+  measurable_pairBlockRead: THEOREM
+    ppg_measurable_map[ppairSlots.LogSpace,FourValue].measurable(
+      NativeTableSigma(spaces),ppairFour.ResultSigma,pairBlockRead(D))
+
+  tableEvent_reverse_source_iff_block: THEOREM Edge(Q)(u,v) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,v)) IMPLIES
+      (ppairEvents.tableEvent(reverse(Q,u,v),u)(omega) IFF
+        sourceBlockBad((pairBlockRead(Q)(omega)`1`1,pairBlockRead(Q)(omega)`2`2)))
+
+  tableEvent_reverse_target_iff_block: THEOREM Edge(Q)(u,v) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,v)) IMPLIES
+      (ppairEvents.tableEvent(reverse(Q,u,v),v)(omega) IFF
+        targetBlockBad((pairBlockRead(Q)(omega)`2`1,pairBlockRead(Q)(omega)`1`2)))
+
+  pairCoinCheck_of_tests: THEOREM Edge(Q)(u,v) AND
+    dagPaths.Acyclic(dagPaths.reverseArc(Edge(Q),u,v)) AND
+    ppairEvents.tableEvent(Q,u)(omega) AND ppairEvents.tableEvent(Q,v)(omega) AND
+    (c=ppairCoins.orientationFlip IMPLIES
+      NOT ppairEvents.tableEvent(reverse(Q,u,v),u)(omega) OR
+      NOT ppairEvents.tableEvent(reverse(Q,u,v),v)(omega)) IMPLIES
+        pairCoinCheck(Q)((c,omega))
+
+END ppg_hls_pair_probability
+

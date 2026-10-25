@@ -1,0 +1,107 @@
+% The finite choice universe uses total functions fixed to up outside
+% the original support. Restricting and extending them gives exactly
+% the genuine dependent LegalChoices, without outside-support freedom.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Appendix C. https://arxiv.org/abs/2111.06527
+ppg_hls_legal_assignment_fibers[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},
+  universe:{S:finite_set[C]|FORALL(i:C):S(i)},alpha:C,
+  (IMPORTING ppg_hls_expansion_family[C,G,universe,alpha]) M:DependencyMatching]: THEORY
+BEGIN
+  Choice: TYPE = ppg_hls_expansion_vertices[C,G].ExpansionChoice
+
+  IMPORTING measure_probability@ppg_supported_assignment_sum[WNode,Choice,0] AS assignments,
+    ppg_hls_matching_support[C,G],ppg_hls_expansion_weight[C,G,universe],
+    measure_probability@ppg_nonneg_tsum[ExpansionFamily(M)] AS expansionFinite,
+    measure_probability@ppg_nonneg_tsum[Choice] AS choiceSums,measure_probability@ppg_enn_finite[Choice] AS finiteChoices,
+    measure_probability@ppg_enn_finite[ExpansionFamily(M)] AS expansionFolds,
+    measure_probability@ppg_enn_finite[assignments.State] AS assignmentFolds,
+    foundations@ppg_finite_image_constructor[assignments.State,ExpansionFamily(M)] AS familyImages,
+    foundations@ppg_monoid_sum[assignments.State,ENN,ennFinite(0),eadd] AS assignmentTotals,
+    foundations@ppg_monoid_image[assignments.State,ExpansionFamily(M),ENN,ennFinite(0),eadd] AS familyReindex
+
+  P: VAR ProperDAG
+  F,H: VAR ExpansionFamily(M)
+  s,t: VAR assignments.State
+  u: VAR WNode
+  ch: VAR Choice
+  q: VAR [Choice->ENN]
+  up,down: VAR [C->ENN]
+
+  choices: finite_set[Choice] = add[Choice](3,add[Choice](2,add[Choice](1,singleton[Choice](0))))
+
+  forcedUp(P,u): bool = arcNodes(matchingArcs(M,P))(u) OR M(u`1)=u`1
+
+  localDomains(P)(u): finite_set[Choice] = IF forcedUp(P,u) THEN singleton[Choice](0) ELSE choices ENDIF
+
+  factor(up,down)(u)(ch): ENN = choiceWeight(M,up,down,u`1,ch)
+
+  admissible(P,s): bool = assignments.assignmentAdmissible(P`nodes,localDomains(P),s)
+
+  assignmentUniverse(P): finite_set[assignments.State] = assignments.assignmentUniverse(P`nodes,localDomains(P))
+
+  choices_full: LEMMA choices(ch)
+
+  proper_valid: LEMMA Valid(P)
+
+  localDomain_member: LEMMA localDomains(P)(u)(ch) IFF (forcedUp(P,u) IMPLIES ch=0)
+
+  admissible_universe: LEMMA assignmentUniverse(P)(s) IFF admissible(P,s)
+
+  admissible_forced: LEMMA admissible(P,s) AND P`nodes(u) AND forcedUp(P,u) IMPLIES s(u)=0
+
+  admissible_outside: LEMMA admissible(P,s) AND NOT P`nodes(u) IMPLIES s(u)=0
+
+  toLegal(P,s): LegalChoices(M,P) = LAMBDA(u:(P`nodes)):IF admissible(P,s) THEN s(u) ELSE 0 ENDIF
+
+  toFamily(P)(s): ExpansionFamily(M) = (P,toLegal(P,s))
+
+  finiteFamilyImage(g:[assignments.State->ExpansionFamily(M)],S:finite_set[assignments.State]):
+    finite_set[ExpansionFamily(M)] = familyImages.finiteImage(g,S)
+
+  fullFiber(P): finite_set[ExpansionFamily(M)] =
+    finiteFamilyImage(toFamily(P),assignmentUniverse(P))
+
+  fromLegal(P)(k:LegalChoices(M,P)): assignments.State = extendChoice(P)(k)
+
+  familyWeight(up,down)(F): ENN = decorationWeight(up,down)
+    (expansionFamilyMap(M)(F)`1)(expansionFamilyMap(M)(F)`2)
+
+  localChoiceTotal(up,down)(P): ENN = assignments.assignmentSum(P`nodes,localDomains(P),factor(up,down))
+
+  toLegal_at: LEMMA admissible(P,s) AND P`nodes(u) IMPLIES toLegal(P,s)(u)=s(u)
+
+  toLegal_extension: LEMMA admissible(P,s) IMPLIES extendChoice(P)(toLegal(P,s))=s
+
+  fromLegal_admissible: LEMMA FORALL(k:LegalChoices(M,P)):admissible(P,fromLegal(P)(k))
+
+  toLegal_inverse: LEMMA FORALL(k:LegalChoices(M,P)):toLegal(P,fromLegal(P)(k))=k
+
+  toFamily_injective: LEMMA assignmentUniverse(P)(s) AND assignmentUniverse(P)(t) AND
+    toFamily(P)(s)=toFamily(P)(t) IMPLIES s=t
+
+  fullFiber_member: LEMMA fullFiber(P)(F) IFF F`1=P
+
+  familyWeight_at: LEMMA assignmentUniverse(P)(s) IMPLIES
+    familyWeight(up,down)(toFamily(P)(s))=assignments.weights(P`nodes,factor(up,down))(s)
+
+  assignment_weighted_sum: LEMMA assignmentTotals.sum(assignmentUniverse(P),
+    LAMBDA(s:assignments.State):familyWeight(up,down)(toFamily(P)(s)))=
+      assignmentTotals.sum(assignmentUniverse(P),assignments.weights(P`nodes,factor(up,down)))
+
+  fullFiber_sum: LEMMA expansionFinite.esum(fullFiber(P),familyWeight(up,down))=localChoiceTotal(up,down)(P)
+
+  singleton_choice_sum: LEMMA choiceSums.esum(singleton(ch),q)=q(ch)
+
+  four_choice_sum: LEMMA choiceSums.esum(choices,q)=eadd(eadd(eadd(q(0),q(1)),q(2)),q(3))
+
+  local_esum: LEMMA assignments.domainSums(localDomains(P),factor(up,down))(u)=
+    IF forcedUp(P,u) THEN up(u`1) ELSE
+      eadd(eadd(eadd(up(u`1),down(u`1)),emul(down(u`1),up(M(u`1)))),
+        emul(down(u`1),down(M(u`1)))) ENDIF
+
+  local_choice_product: LEMMA localChoiceTotal(up,down)(P)=
+    wnProducts.eprod(P`nodes,assignments.domainSums(localDomains(P),factor(up,down)))
+
+END ppg_hls_legal_assignment_fibers

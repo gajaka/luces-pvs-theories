@@ -1,0 +1,80 @@
+% Original data and auxiliary coins occupy distinct summands of the
+% augmented coordinate type. Selected reversible arcs use disjoint
+% data blocks and distinct pair-rank coin coordinates.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Lemma 3.4. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSAugmentedCoordinates.lean.
+% Labels and variables remain arbitrary; only footprints and DAGs are finite.
+ppg_hls_augmented_coordinates[C,V:TYPE,footprint:[C->finite_set[V]]]: THEORY
+BEGIN
+  IMPORTING local_lemmas@ppg_shearer_bdd[C,V,footprint] AS coordinateGraph,
+    ppg_hls_table_coordinates[C,V,footprint] AS originalBlocks,
+    ppg_hls_matching_selection[C,coordinateGraph.dependencyGraph]
+
+  TaggedVariable: TYPE = union[V,finite_set[C]]
+
+  AugmentedCoordinate: TYPE = [nat,TaggedVariable]
+
+  M: VAR DependencyMatching
+  D: VAR WitnessDAG
+  Q: VAR (Valid)
+  e,f: VAR Arc
+  u,v: VAR WNode
+  p,q: VAR [nat,V]
+  x: VAR AugmentedCoordinate
+  A,B: VAR set[AugmentedCoordinate]
+
+  dataEmbedding(p): AugmentedCoordinate = (p`1,inl[V,finite_set[C]](p`2))
+
+  dataCoordinates(D,u): finite_set[AugmentedCoordinate] =
+    image[[nat,V],AugmentedCoordinate](dataEmbedding,originalBlocks.tableCoordinates(D,u))
+
+  coinCoordinate(M,D,e): AugmentedCoordinate =
+    (cliqueRank(D,matchPair(M,e`1`1),e`1),inr[V,finite_set[C]](matchPair(M,e`1`1)))
+
+  pairCoordinates(M,D,e): finite_set[AugmentedCoordinate] =
+    union(union(dataCoordinates(D,e`1),dataCoordinates(D,e`2)),singleton(coinCoordinate(M,D,e)))
+
+  dataEmbedding_injective: LEMMA dataEmbedding(p)=dataEmbedding(q) IMPLIES p=q
+
+  mem_dataCoordinates: LEMMA dataCoordinates(D,u)(x) IFF
+    EXISTS(p:[nat,V]):originalBlocks.tableCoordinates(D,u)(p) AND dataEmbedding(p)=x
+
+  mem_pairCoordinates: LEMMA pairCoordinates(M,D,e)(x) IFF
+    dataCoordinates(D,e`1)(x) OR dataCoordinates(D,e`2)(x) OR x=coinCoordinate(M,D,e)
+
+  coinCoordinate_not_dataCoordinates: THEOREM NOT dataCoordinates(D,u)(coinCoordinate(M,D,e))
+
+  dataCoordinates_disjoint: THEOREM Q`nodes(u) AND Q`nodes(v) AND u/=v IMPLIES
+    disjoint?(dataCoordinates(Q,u),dataCoordinates(Q,v))
+
+  selected_arc_supported: LEMMA selectedArcs(M,Q)(e) IMPLIES
+    Q`nodes(e`1) AND Q`nodes(e`2)
+
+  coinCoordinate_eq_key_rank: LEMMA coinCoordinate(M,D,e)=coinCoordinate(M,D,f) IMPLIES
+    matchPair(M,e`1`1)=matchPair(M,f`1`1) AND
+      cliqueRank(D,matchPair(M,e`1`1),e`1)=cliqueRank(D,matchPair(M,f`1`1),f`1)
+
+  selected_coin_same_source: LEMMA selectedArcs(M,Q)(e) AND selectedArcs(M,Q)(f) AND
+    coinCoordinate(M,Q,e)=coinCoordinate(M,Q,f) IMPLIES e`1=f`1
+
+  selected_coinCoordinate_injective: THEOREM selectedArcs(M,Q)(e) AND selectedArcs(M,Q)(f) AND
+    coinCoordinate(M,Q,e)=coinCoordinate(M,Q,f) IMPLIES e=f
+
+  selected_endpoint_ne: LEMMA selectedArcs(M,Q)(e) AND selectedArcs(M,Q)(f) AND e/=f IMPLIES
+    e`1/=f`1 AND e`1/=f`2 AND e`2/=f`1 AND e`2/=f`2
+
+  disjoint_at: LEMMA disjoint?(A,B) AND A(x) IMPLIES NOT B(x)
+
+  selected_pairCoordinates_disjoint: THEOREM selectedArcs(M,Q)(e) AND selectedArcs(M,Q)(f) AND
+    e/=f IMPLIES disjoint?(pairCoordinates(M,Q,e),pairCoordinates(M,Q,f))
+
+  unselected_endpoint_ne: LEMMA NOT arcNodes(selectedArcs(M,D))(u) AND selectedArcs(M,D)(e)
+    IMPLIES u/=e`1 AND u/=e`2
+
+  unselected_dataCoordinates_disjoint_pair: THEOREM Q`nodes(u) AND
+    NOT arcNodes(selectedArcs(M,Q))(u) AND selectedArcs(M,Q)(e) IMPLIES
+      disjoint?(dataCoordinates(Q,u),pairCoordinates(M,Q,e))
+
+END ppg_hls_augmented_coordinates

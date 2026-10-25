@@ -1,0 +1,50 @@
+% Each active time s with label a has a canonical witness rooted at a.
+% The shifted schedule uses root time s+1, so the first real step s=0
+% is counted. Preserved label multiplicities make this map injective.
+%
+% Lean counterpart: PPGraphMoserTardosResamplingCount.lean.
+% Counting argument: Alon and Spencer, The Probabilistic Method,
+% 4th ed., Section 5.7, pp. 82--85.
+
+ppg_mt_resampling_prefix[C, V, Value: TYPE, domain: [V -> set[Value]]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_stopped_events[C, V, Value, domain], ppg_mt_injectivity_bridge[C, V],
+    foundations@ppg_finite_bijection[nat, WTree] AS witnessImage, foundations@ppg_nat_range
+  vars: VAR CertVars
+  bad: VAR [C, MTState -> bool]
+  fallback, a: VAR C
+  enumeration: VAR list[C]
+  initial: VAR MTState
+  omega: VAR LogSpace
+  n, s, t: VAR nat
+
+  resamplingTimesUpTo(vars, bad, fallback, enumeration, initial, omega, a, n): finite_set[nat] =
+    filteredRange(LAMBDA (s: nat):
+      resamplingEvent(vars, bad, fallback, enumeration, LAMBDA (omega: LogSpace): initial, a, s)(omega), n)
+
+  mem_resamplingTimesUpTo: THEOREM resamplingTimesUpTo(vars, bad, fallback, enumeration, initial, omega, a, n)(s) IFF
+    s < n AND RunningUntil(vars, bad, fallback, enumeration, initial, omega, s + 1) AND
+      realC(vars, bad, fallback, enumeration, initial, omega, s) = a
+
+  resamplingWitness(vars, bad, fallback, enumeration, initial, omega, s): WTree =
+    realWitness(vars, shiftedC(vars, bad, fallback, enumeration, initial, omega), s + 1)
+
+  resamplingWitness_label: THEOREM roseLabel(resamplingWitness(vars, bad, fallback, enumeration, initial, omega, s)) =
+    realC(vars, bad, fallback, enumeration, initial, omega, s)
+
+  resamplingWitness_ne_of_lt: THEOREM s < t AND
+    realC(vars, bad, fallback, enumeration, initial, omega, s) =
+      realC(vars, bad, fallback, enumeration, initial, omega, t) IMPLIES
+    resamplingWitness(vars, bad, fallback, enumeration, initial, omega, s) /=
+      resamplingWitness(vars, bad, fallback, enumeration, initial, omega, t)
+
+  prefix_witnesses_injective: LEMMA
+    witnessImage.injOn(LAMBDA (s: nat): resamplingWitness(vars, bad, fallback, enumeration, initial, omega, s),
+      resamplingTimesUpTo(vars, bad, fallback, enumeration, initial, omega, a, n))
+
+  card_resamplingTimesUpTo_eq_card_witnesses: THEOREM
+    card(resamplingTimesUpTo(vars, bad, fallback, enumeration, initial, omega, a, n)) =
+    card(image(LAMBDA (s: nat): resamplingWitness(vars, bad, fallback, enumeration, initial, omega, s),
+      resamplingTimesUpTo(vars, bad, fallback, enumeration, initial, omega, a, n)))
+
+END ppg_mt_resampling_prefix

@@ -1,0 +1,67 @@
+% Fixed table entries are native product coordinates. A measurable
+% natural-number index selects one of these measurable maps, giving the
+% adaptive read at any measurable counter value.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_table_reads[V,Value: TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING moser_tardos@ppg_mt_coordinate_laws[bool,V,Value,LAMBDA(v:V):domains(v)])
+  spaces:{S:VariableSpaces|FORALL(v:V,x:(domains(v))):S(v)(singleton[(domains(v))](x))}]: THEORY
+BEGIN
+  plainDomain: MACRO [V->set[Value]] = LAMBDA(v:V):domains(v)
+
+  IMPORTING ppg_finite_table_core[V,Value,variables,domains] AS readTable,
+    ppg_finite_table_spaces[V,Value,variables,domains,spaces] AS readSpaces
+
+  State: TYPE = readTable.State
+
+  ResamplingLog: TYPE = readTable.ResamplingLog
+
+  IMPORTING moser_tardos@ppg_mt_random_process[bool,V,Value,plainDomain] AS readSlots,
+    moser_tardos@ppg_mt_coordinate_laws[bool,V,Value,plainDomain] AS readCoordinates,
+    measure_probability@ppg_measurable_dependent_product[ResamplingLog,[nat,V],Value,readSlots.TableDomain] AS readTableProduct,
+    measure_probability@ppg_measurable_dependent_product[ResamplingLog,V,Value,plainDomain] AS readStateProduct,
+    measure_probability@ppg_measurable_map[ResamplingLog,nat] AS readIndexMap,
+    measure_probability@ppg_measurable_map[ResamplingLog,State] AS readStateMap,
+    measure_probability@ppg_measurable_select,
+    measure_probability@ppg_measurable_discrete,
+    measure_probability@ppg_measurable_compose
+
+  v: VAR V
+  j: VAR nat
+  idx: VAR [ResamplingLog->nat]
+  X: VAR [ResamplingLog->State]
+
+  fixedSlot(v,j)(omega:ResamplingLog): (domains(v)) = omega(j,v)
+
+  evalSlot(v,idx)(omega:ResamplingLog): (domains(v)) = omega(idx(omega),v)
+
+  fixed_slot_measurable: LEMMA
+    ppg_measurable_map[ResamplingLog,(domains(v))].measurable(
+      readSpaces.tableSigma,spaces(v),fixedSlot(v,j))
+
+  eval_select: LEMMA evalSlot(v,idx)=
+    ppg_measurable_select[ResamplingLog,(domains(v))].select(
+      idx,LAMBDA(j:nat):fixedSlot(v,j))
+
+  eval_slot_measurable: LEMMA
+    readIndexMap.measurable(readSpaces.tableSigma,fullset[set[nat]],idx) IMPLIES
+      ppg_measurable_map[ResamplingLog,(domains(v))].measurable(
+        readSpaces.tableSigma,spaces(v),evalSlot(v,idx))
+
+  state_coordinate_measurable: LEMMA
+    readStateMap.measurable(readSpaces.tableSigma,readSpaces.fullStateSigma,X) IMPLIES
+      ppg_measurable_map[ResamplingLog,(domains(v))].measurable(
+        readSpaces.tableSigma,spaces(v),LAMBDA(omega:ResamplingLog):X(omega)(v))
+
+  state_event_measurable: LEMMA FORALL(B:set[State]):
+    readStateMap.measurable(readSpaces.tableSigma,readSpaces.fullStateSigma,X) IMPLIES
+      readSpaces.tableSigma({omega:ResamplingLog|B(X(omega))})
+
+  from_coordinates: LEMMA
+    (FORALL(v:V):ppg_measurable_map[ResamplingLog,(domains(v))].measurable(
+      readSpaces.tableSigma,spaces(v),LAMBDA(omega:ResamplingLog):X(omega)(v))) IMPLIES
+      readStateMap.measurable(readSpaces.tableSigma,readSpaces.fullStateSigma,X)
+
+END ppg_finite_table_reads

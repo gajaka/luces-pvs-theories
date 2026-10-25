@@ -1,0 +1,94 @@
+% The avoidance polynomial is affine in each coordinate. Decreasing one
+% coordinate preserves positivity on every induced subgraph; finite
+% coordinate updates then prove downward closure of the strict region.
+% Increasing one coordinate by the available multiplicative slack bounds
+% its singleton budget. Summing these bounds gives the total work budget.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound" (2021), Lemma 3.14, attributed
+% there to Kashyap Kolipaka and Mario Szegedy.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphShearerSlack.lean.
+ppg_shearer_slack[C:TYPE,G:{H:[C,C->bool]|(FORALL(a:C):NOT H(a,a)) AND
+  (FORALL(a,b:C):H(a,b)=H(b,a))}]: THEORY
+BEGIN
+  IMPORTING ppg_shearer_budget[C,G], foundations@ppg_real_division_sum[C]
+  p,q: VAR [C->real]
+  B,T,I,U: VAR finite_set[C]
+  a: VAR C
+  x,e: VAR real
+
+  agreeOn(p,q,B): bool = FORALL(i:C):B(i) IMPLIES p(i)=q(i)
+
+  belowOn(p,q,B): bool = FORALL(i:C):B(i) IMPLIES p(i)<=q(i)
+
+  merged(p,q,U)(i:C): real = IF U(i) THEN p(i) ELSE q(i) ENDIF
+
+  dilated(e,p)(i:C): real = (1+e)*p(i)
+
+  singletonBudgets(p,B)(i:C): real = stableBudget(p,B,sets[C].singleton(i))
+
+  agreement_subset: LEMMA agreeOn(p,q,B) AND subset?(T,B) IMPLIES agreeOn(p,q,T)
+
+  term_congr: LEMMA agreeOn(p,q,I) IMPLIES term(p)(I)=term(q)(I)
+
+  polynomial_congr: THEOREM agreeOn(p,q,B) IMPLIES polynomial(p,B)=polynomial(q,B)
+
+  strictCriterion_congr: THEOREM agreeOn(p,q,B) IMPLIES
+    (StrictCriterion(p,B) IFF StrictCriterion(q,B))
+
+  polynomial_update_of_notMem: THEOREM NOT B(a) IMPLIES
+    polynomial(p WITH [a:=x],B)=polynomial(p,B)
+
+  polynomial_update_of_mem: THEOREM B(a) IMPLIES
+    polynomial(p WITH [a:=x],B)=polynomial(p,B)+(p(a)-x)*polynomial(p,remote(B,a))
+
+  positive_perturbation: LEMMA FORALL(u,v,w:real):0<u AND 0<=v AND 0<=w IMPLIES 0<u+v*w
+
+  strictCriterion_update_le: THEOREM StrictCriterion(p,B) AND (B(a) IMPLIES x<=p(a)) IMPLIES
+    StrictCriterion(p WITH [a:=x],B)
+
+  merged_empty: LEMMA merged(p,q,emptyset[C])=q
+
+  merged_insert: LEMMA NOT U(a) IMPLIES
+    merged(p,q,add(a,U))=merged(p,q,U) WITH [a:=p(a)]
+
+  strict_merged: LEMMA belowOn(p,q,B) AND StrictCriterion(q,B) IMPLIES
+    StrictCriterion(merged(p,q,U),B)
+
+  strictCriterion_mono_weights: THEOREM belowOn(p,q,B) AND StrictCriterion(q,B) IMPLIES
+    StrictCriterion(p,B)
+
+  independent_singleton: LEMMA Independent(sets[C].singleton(a))
+
+  outside_singleton: LEMMA outside(B,sets[C].singleton(a))=remote(B,a)
+
+  product_singleton_real: LEMMA product(sets[C].singleton(a),p)=p(a)
+
+  coefficient_singleton: THEOREM B(a) IMPLIES
+    coefficient(p,B,sets[C].singleton(a))=p(a)*polynomial(p,remote(B,a))
+
+  slack_dominates: LEMMA 0<e AND nonnegativeOn(p,B) IMPLIES belowOn(p,dilated(e,p),B)
+
+  slack_update_below: LEMMA 0<e AND nonnegativeOn(p,B) IMPLIES
+    belowOn(p WITH [a:=dilated(e,p)(a)],dilated(e,p),B)
+
+  slack_base_strict: LEMMA 0<e AND nonnegativeOn(p,B) AND StrictCriterion(dilated(e,p),B) IMPLIES
+    StrictCriterion(p,B)
+
+  slack_updated_strict: LEMMA 0<e AND nonnegativeOn(p,B) AND StrictCriterion(dilated(e,p),B) IMPLIES
+    StrictCriterion(p WITH [a:=dilated(e,p)(a)],B)
+
+  slack_ratio: LEMMA FORALL(r,t:real):0<e AND 0<r AND 0<r-e*t IMPLIES div0(t,r)<div0(1,e)
+
+  stableBudget_singleton_lt_inv_slack: THEOREM B(a) AND 0<e AND nonnegativeOn(p,B) AND
+    StrictCriterion(dilated(e,p),B) IMPLIES singletonBudgets(p,B)(a)<div0(1,e)
+
+  stableBudget_singleton_le_inv_slack: THEOREM B(a) AND 0<e AND nonnegativeOn(p,B) AND
+    StrictCriterion(dilated(e,p),B) IMPLIES singletonBudgets(p,B)(a)<=div0(1,e)
+
+  sum_stableBudget_le_card_div_slack: THEOREM 0<e AND nonnegativeOn(p,B) AND
+    StrictCriterion(dilated(e,p),B) IMPLIES
+      ppg_finite_sum[C].fsum(B,singletonBudgets(p,B))<=div0(card(B),e)
+
+END ppg_shearer_slack

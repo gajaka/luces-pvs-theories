@@ -1,0 +1,60 @@
+% Work in a full BDD component is bounded using positivity only on that
+% component. Summing all local budgets gives a global bound once every
+% component is certified. The measured work is the number of resamplings;
+% no service or fairness property of the global selector is required.
+%
+% Kolipaka--Szegedy bound and Dragan Stosic's BDD decomposition.
+% Jan Vondrak, MATH233A (2018), Lecture 8, Lemma 8.1.
+% https://theory.stanford.edu/~jvondrak/MATH233A-2018/Math233-lec08.pdf
+% Lean counterpart: PPGraphShearerBDDExpectation.lean.
+ppg_shearer_bdd_expectation[C,V,Value:TYPE,domain:[V->set[Value]],
+  universe:{F:finite_set[V]|F=fullset[V]},
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[C,V,Value,domain]) spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_core@ppg_bdd[C,V]) vars:CertVars]: THEORY
+BEGIN
+  IMPORTING ppg_shearer_component_integral[C,V,Value,domain,spaces,laws,vars],
+    ppg_shearer_component_expectation[C,V,Value,domain,universe,spaces,laws,vars],
+    ppg_shearer_termination[C,V,Value,domain,universe,spaces,laws,vars],
+    ppg_shearer_component_budgets[C,V,vars]
+  bad: VAR NativeBad
+  fallback,c: VAR C
+  enumeration: VAR SeqProbabilityEnumeration
+  B: VAR UniversalLabels
+  p: VAR [C->real]
+
+  component_budget_nonnegative: LEMMA (FORALL(i:C):baseProbability(bad)(i)<=p(i)) AND
+    StrictCriterion(p,compOf(vars,B,c)) IMPLIES
+    FORALL(a:C):0<=bddSingletonBudgets(p,compOf(vars,B,c))(a)
+
+  component_clipped_budget_sum: LEMMA (FORALL(i:C):baseProbability(bad)(i)<=p(i)) AND
+    StrictCriterion(p,compOf(vars,B,c)) IMPLIES
+    sums.sum(compOf(vars,B,c),LAMBDA(a:C):max(0,bddSingletonBudgets(p,compOf(vars,B,c))(a)))=
+      max(0,componentBudget(p)(compOf(vars,B,c)))
+
+  randomInitExpectedComponentCount_le_budget: THEOREM mt_wf(vars,bad) AND
+    (FORALL(i:C):baseProbability(bad)(i)<=p(i)) AND StrictCriterion(p,compOf(vars,B,c)) IMPLIES
+    ele(randomInitExpectedSetResamplingCount(bad,fallback,enumeration,compOf(vars,B,c)),
+      ennFinite(max(0,componentBudget(p)(compOf(vars,B,c)))))
+
+  randomInitExpectedComponentCount_lt_top: THEOREM mt_wf(vars,bad) AND
+    (FORALL(i:C):baseProbability(bad)(i)<=p(i)) AND StrictCriterion(p,compOf(vars,B,c)) IMPLIES
+    ennFinite?(randomInitExpectedSetResamplingCount(bad,fallback,enumeration,compOf(vars,B,c)))
+
+  component_criteria_global: LEMMA (FORALL(c:C):StrictCriterion(p,compOf(vars,B,c))) IMPLIES StrictCriterion(p,B)
+
+  singleton_budget_functions: LEMMA singletonBudget(p,B)=bddSingletonBudgets(p,B)
+
+  randomInitETLog_le_sum_componentBudgets: THEOREM mt_wf(vars,bad) AND
+    (FORALL(i:C):baseProbability(bad)(i)<=p(i)) AND (FORALL(c:C):StrictCriterion(p,compOf(vars,B,c))) IMPLIES
+    ele(randomInitETLog(vars,bad,fallback,enumeration),
+      ennFinite(max(0,ppg_finite_sum[finite_set[C]].fsum(groups(vars,B),componentBudget(p)))))
+
+  randomInitETLog_lt_top_of_components: THEOREM mt_wf(vars,bad) AND
+    (FORALL(i:C):baseProbability(bad)(i)<=p(i)) AND (FORALL(c:C):StrictCriterion(p,compOf(vars,B,c))) IMPLIES
+    ennFinite?(randomInitETLog(vars,bad,fallback,enumeration))
+
+  ae_randomInit_exists_good_of_components: THEOREM mt_wf(vars,bad) AND
+    (FORALL(i:C):baseProbability(bad)(i)<=p(i)) AND (FORALL(c:C):StrictCriterion(p,compOf(vars,B,c))) IMPLIES
+    ae?[LogSpace,asNasa(NativeTableSigma(spaces)),nasaLaw](terminationEvent(vars,bad,fallback,enumeration))
+
+END ppg_shearer_bdd_expectation

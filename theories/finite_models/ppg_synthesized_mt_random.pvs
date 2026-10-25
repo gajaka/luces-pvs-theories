@@ -1,0 +1,81 @@
+% A returned rational potential supplies the checker hypothesis of the
+% existing MT work bound. Accessibility supplies the computed candidate
+% with unit decrement, and hence the same bound without a supplied witness.
+% The stopped count measures resamplings through the first good state.
+%
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Section 7.1.1 and Exercise 7.25.
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Exercise 10.22.
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Section 2.
+ppg_synthesized_mt_random[I,V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  events:{U:finite_set[I]|FORALL(i:I):U(i)},
+  fallback:I,eventOrder:{e:list[I]|FORALL(i:I):member(i,e)},
+  (IMPORTING ppg_finite_resampling_core[V,Value,variables,domains],
+    ppg_resampling_selection[I,V,Value,variables,domains,events])
+  Q:{Q:Marginals|Valid(Q)},B:ppg_resampling_selection[I,V,Value,variables,domains,events].Problem]: THEORY
+BEGIN
+  IMPORTING ppg_finite_table_core[V,Value,variables,domains]
+
+  State: TYPE = ppg_finite_resampling_core[V,Value,variables,domains].State
+
+  plainDomain: MACRO [V->set[Value]] = LAMBDA(v:V):domains(v)
+
+  IMPORTING ppg_resampling_potential[V,Value,variables,domains] AS synthesis,
+    ppg_finite_mt_legacy[I,V,Value,variables,domains,events,fallback,eventOrder] AS first,
+    ppg_finite_mt_checked_random[I,V,Value,variables,domains,events,fallback,eventOrder,Q,B] AS base,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS states,
+    ppg_resampling_update[V,Value,variables,domains] AS checker,
+    ppg_resampling_product_law[V,Value,variables,domains,Q] AS product,
+    ppg_resampling_table_product[V,Value,variables,domains,Q] AS tableLaws,
+    ppg_finite_drift[State,states.allStates] AS drift,
+    ppg_finite_potential_reach[State,states.allStates] AS reach,
+    ppg_finite_potential_synthesis[State,states.allStates] AS potential,
+    moser_tardos@ppg_mt_table_label[bool,I,V,Value,plainDomain,product.spaces,product.coins] AS labels,
+    moser_tardos@ppg_mt_random_process[I,V,Value,plainDomain] AS oldSlots,
+    moser_tardos@ppg_mt_native_spaces[I,V,Value,plainDomain] AS oldSpaces,
+    moser_tardos@ppg_mt_log_probability[I,V,Value,plainDomain,product.spaces,product.coins] AS oldLaw,
+    moser_tardos@ppg_mt_check_probability[I,V,Value,plainDomain,product.spaces,product.coins] AS oldBad,
+    moser_tardos@ppg_mt_time_expectation[I,V,Value,plainDomain,product.spaces,product.coins] AS oldTime,
+    measure_probability@ppg_probability_integral[oldSlots.LogSpace,oldSpaces.NativeTableSigma(product.spaces),
+      oldLaw.logMeasure] AS oldIntegral,
+    measure_probability@ppg_extended_integral[oldSlots.LogSpace,oldSpaces.NativeTableSigma(product.spaces),
+      oldLaw.logMeasure] AS oldExtended,
+    measure_integration@measure_theory[oldSlots.LogSpace,
+      ppg_nasa_sigma[oldSlots.LogSpace].asNasa(oldSpaces.NativeTableSigma(product.spaces)),
+      oldIntegral.nasaLaw] AS oldAE
+
+  W: VAR drift.Witness
+
+  bad_measurable: LEMMA FORALL(i:I):oldSpaces.NativeStateSigma(product.spaces)({s:State|B`bad(i,s)})
+
+  nativeBad: oldBad.NativeBad = B`bad
+
+  candidate: MACRO drift.Witness = potential.candidate(synthesis.model(Q,first.firstPolicy(B)))
+
+  Accessible: MACRO bool = reach.Accessible(synthesis.model(Q,first.firstPolicy(B)))
+
+  candidate_checked: LEMMA Accessible IMPLIES checker.resamplingCheck(Q,first.firstPolicy(B),candidate)
+
+  initialMean(CW:base.CheckedWitness): nonneg_real = oldIntegral.expectation(base.legacyPotential(CW))
+
+  synthesized_randomInitETLog_le: THEOREM synthesis.synthesizePotential(Q,first.firstPolicy(B))=up[drift.Witness](W) IMPLIES
+    ele(oldTime.randomInitETLog(B`footprint,nativeBad,fallback,eventOrder),
+      ennFinite(initialMean(W)/base.checkedRate(W)))
+
+  synthesized_randomInitETLog_lt_top: THEOREM synthesis.synthesizePotential(Q,first.firstPolicy(B))=up[drift.Witness](W) IMPLIES
+    ennFinite?(oldTime.randomInitETLog(B`footprint,nativeBad,fallback,eventOrder))
+
+  accessible_randomInitETLog_lt_top: THEOREM Accessible IMPLIES
+    ennFinite?(oldTime.randomInitETLog(B`footprint,nativeBad,fallback,eventOrder))
+
+  accessible_randomInitETLog_le_potential: THEOREM Accessible IMPLIES
+    ele(oldTime.randomInitETLog(B`footprint,nativeBad,fallback,eventOrder),
+      ennFinite(initialMean(candidate)))
+
+  accessible_randomInit_randTraj_ae_exists_good: THEOREM Accessible IMPLIES oldAE.ae?(base.oldSuccess)
+
+END ppg_synthesized_mt_random

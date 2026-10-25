@@ -1,0 +1,111 @@
+% Finite units factor under the actual augmented product law. Native
+% probabilities are nonnegative real numbers; ofReal transports them to
+% extended nonnegative values without changing any factor.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Lemma 3.4. Lean: PPGraphHLSUnitChecks.lean.
+ppg_hls_unit_probability[C,V,Value:TYPE,domain:[V->set[Value]],
+  default:C,universe:{U:finite_set[C]|FORALL(c:C):U(c)},
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING moser_tardos@ppg_mt_native_process[C,V,Value,domain,spaces,laws])
+  process:MTProcess]: THEORY
+BEGIN
+  IMPORTING ppg_hls_unit_checks[C,V,Value,domain,default,universe,
+      spaces,laws,process] AS units,
+    ppg_hls_unit_event_measurable[C,V,Value,domain,default,universe,
+      spaces,laws,process] AS measurableUnits,
+    ppg_hls_unit_event_dependence[C,V,Value,domain,default,universe,
+      spaces,laws,process] AS dependentUnits,
+    ppg_hls_augmented_pair_events[C,V,Value,domain,default,universe,
+      spaces,laws,process] AS pairs,
+    ppg_hls_augmented_space[C,V,Value,domain,spaces,laws] AS aug,
+    ppg_hls_table_events[C,V,Value,domain,spaces,laws,process] AS tables,
+    local_lemmas@ppg_shearer_bdd[C,V,process`footprint] AS graph,
+    ppg_hls_witness_dag[C,graph.dependencyGraph] AS dags,
+    ppg_hls_pair_keys[C,graph.dependencyGraph] AS keys,
+    ppg_hls_matching_selection[C,graph.dependencyGraph] AS selection,
+    moser_tardos@ppg_mt_coordinate_laws[C,aug.AugVariable,aug.AugValue,
+      aug.augmentedDomain] AS productCoordinates,
+    moser_tardos@ppg_mt_random_process[C,aug.AugVariable,aug.AugValue,
+      aug.augmentedDomain] AS productSlots
+
+  % Named coordinate spaces keep their actual dependent probability types
+  % intact when the finite-family theorem is instantiated.
+  productSpaces: productCoordinates.VariableSpaces = aug.augmentedSpaces
+
+  productLaws: productCoordinates.VariableLaws(productSpaces) = aug.augmentedLaws
+
+  IMPORTING moser_tardos@ppg_mt_log_family[C,aug.AugVariable,aug.AugValue,units.CheckUnit,
+      aug.augmentedDomain,productSpaces,productLaws] AS unitLaw,
+    moser_tardos@ppg_mt_log_probability[C,aug.AugVariable,aug.AugValue,
+      aug.augmentedDomain,productSpaces,productLaws] AS productLog,
+    foundations@ppg_finite_product[units.CheckUnit] AS unitProduct,
+    foundations@ppg_finite_product[dags.WNode] AS nodeProduct,
+    foundations@ppg_finite_product[pairs.Arc] AS arcProduct,
+    foundations@ppg_real_product[units.CheckUnit] AS unitAlgebra,
+    foundations@ppg_real_product_order[dags.WNode] AS nodeOrder,
+    foundations@ppg_real_product_order[pairs.Arc] AS arcOrder,
+    foundations@ppg_finite_product_image[dags.WNode,units.CheckUnit] AS singleImage,
+    foundations@ppg_finite_product_image[pairs.Arc,units.CheckUnit] AS pairImage,
+    measure_probability@ppg_enn_products[units.CheckUnit] AS ennUnits,
+    measure_probability@ppg_enn_products[dags.WNode] AS ennNodes,
+    measure_probability@ppg_enn_products[pairs.Arc] AS ennArcs,
+    measure_probability@ppg_enn_ofreal,measure_probability@ppg_enn_semiring
+
+  M: VAR keys.DependencyMatching
+
+  Q: VAR (dags.Valid)
+
+  U: VAR units.CheckUnit
+
+  product_spaces_eq: LEMMA productSpaces=aug.augmentedSpaces
+
+  product_laws_eq: LEMMA productLaws=aug.augmentedLaws
+
+  unit_blocks_disjoint: LEMMA pairwiseDisjoint(
+    units.checkUnits(M,Q),units.unitCoordinates(M,Q))
+
+  unit_events_depend: LEMMA FORALL(U:units.CheckUnit):
+    unitLaw.logDepends(units.unitCoordinates(M,Q)(U),units.unitEvent(M,Q)(U))
+
+  real_unit_product: LEMMA tables.badMeasurable IMPLIES
+    aug.augmentedMeasure(units.unitCheck(M,Q))=
+      unitProduct.product(units.checkUnits(M,Q),
+        LAMBDA(U:units.CheckUnit):aug.augmentedMeasure(units.unitEvent(M,Q)(U)))
+
+  unit_tagged_images_disjoint: LEMMA disjoint?(
+    image[dags.WNode,units.CheckUnit](units.singleUnit,
+      difference(Q`nodes,selection.arcNodes(selection.selectedArcs(M,Q)))),
+    image[pairs.Arc,units.CheckUnit](units.pairUnit,selection.selectedArcs(M,Q)))
+
+  % This algebraic identity is independent of the probability law.
+  f: VAR [units.CheckUnit->real]
+
+  finite_unit_product_split: LEMMA
+    unitProduct.product(units.checkUnits(M,Q),f)=
+      nodeProduct.product(difference(Q`nodes,selection.arcNodes(selection.selectedArcs(M,Q))),
+        LAMBDA(u:dags.WNode):f(units.singleUnit(u)))*
+      arcProduct.product(selection.selectedArcs(M,Q),
+        LAMBDA(e:pairs.Arc):f(units.pairUnit(e)))
+
+  real_unit_split_product: LEMMA tables.badMeasurable IMPLIES
+    aug.augmentedMeasure(units.unitCheck(M,Q))=
+      nodeProduct.product(difference(Q`nodes,selection.arcNodes(selection.selectedArcs(M,Q))),
+        LAMBDA(u:dags.WNode):aug.augmentedMeasure(measurableUnits.originalSingle(Q,u)))*
+      arcProduct.product(selection.selectedArcs(M,Q),
+        LAMBDA(e:pairs.Arc):aug.augmentedMeasure(pairs.augmentedPairCheck(M,Q,e)))
+
+  logMeasure_unitCheck_eq_prod: THEOREM tables.badMeasurable IMPLIES
+    ofReal(aug.augmentedMeasure(units.unitCheck(M,Q)))=
+      ennUnits.eprod(units.checkUnits(M,Q),
+        LAMBDA(U:units.CheckUnit):ofReal(aug.augmentedMeasure(units.unitEvent(M,Q)(U))))
+
+  logMeasure_unitCheck_eq_split_prod: THEOREM tables.badMeasurable IMPLIES
+    ofReal(aug.augmentedMeasure(units.unitCheck(M,Q)))=
+      emul(ennNodes.eprod(difference(Q`nodes,selection.arcNodes(selection.selectedArcs(M,Q))),
+        LAMBDA(u:dags.WNode):ofReal(aug.augmentedMeasure(measurableUnits.originalSingle(Q,u)))),
+      ennArcs.eprod(selection.selectedArcs(M,Q),
+        LAMBDA(e:pairs.Arc):ofReal(aug.augmentedMeasure(pairs.augmentedPairCheck(M,Q,e)))))
+
+END ppg_hls_unit_probability

@@ -1,0 +1,45 @@
+% The stopped potential is an actual native integrable function: restrict
+% the finite state value by the measurable running event. The history
+% event is obtained from adaptation, independently of the transition law.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Exercise 10.22(a), American Mathematical Society, 2017.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_stopped_integral[State,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  (IMPORTING measure_probability@ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING measure_probability@ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw,
+  (IMPORTING measure_probability@ppg_filtration[Omega,State,S]) history:Filtration]: THEORY
+BEGIN
+  IMPORTING ppg_finite_stopped_value[State,Omega,universe,S],
+    ppg_finite_process_realization[State,Omega,universe,S,measureLaw,history],
+    measure_probability@ppg_conditional_indicator AS restrictions
+  M: VAR Model
+  f: VAR Vector
+  X: VAR AdaptedProcess
+  n: VAR nat
+  omega: VAR Omega
+
+  full_state_singletons: LEMMA singletonMeasurable(fullStateSigma)
+
+  adapted_process_measurable: LEMMA processMeasurable(fullStateSigma,X)
+
+  runningAmbient(M,X,n): (S) = runningEvent(M,X,n)
+
+  runningHistory(M,X,n): (history(n)) = runningAmbient(M,X,n)
+
+  stoppedNativeValue(M,f,X,n): NativeFunction =
+    restricted(runningAmbient(M,X,n),integrableValue(f,ambientState(X,n)))
+
+  stopped_native_function: LEMMA stoppedNativeValue(M,f,X,n)=stoppedValue(M,f,X,n)
+
+  stoppedValue_integrable: THEOREM EXISTS(g:NativeFunction):g=stoppedValue(M,f,X,n)
+
+  stopped_native_initial: LEMMA Equations(M,f) IMPLIES
+    stoppedNativeValue(M,f,X,0)=integrableValue(f,ambientState(X,0))
+
+  stopped_native_shift: LEMMA Equations(M,f) IMPLIES
+    stoppedNativeValue(M,f,X,n+1)=
+      restricted(runningAmbient(M,X,n),integrableValue(f,ambientState(X,n+1)))
+
+END ppg_finite_stopped_integral

@@ -1,0 +1,62 @@
+% An ordered rose tree determines a finite address tree: the kth child
+% receives prefix k, and the empty address names the root. Distinct child
+% prefixes give disjoint domains. The resulting domain is prefix closed
+% and carries exactly the original node labels.
+%
+% Lean counterpart: PPGraphMoserTardosWTreeToGrowingTree.lean.
+
+ppg_rose_to_growing[C, V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_rose_size[C], ppg_address_forest, moser_tardos@ppg_mt_tree[C, V],
+            ppg_mt_rose_adt_reduce[C, finite_set[list[nat]]]
+  t: VAR WTree
+  cs: VAR list[WTree]
+  idx, k: VAR nat
+  v, w: VAR Addr
+  a: VAR C
+
+  toGT_dom: [WTree -> finite_set[Addr]] =
+    ppg_mt_rose_adt_reduce[C, finite_set[list[nat]]].reduce(
+      LAMBDA (a: C, parts: list[finite_set[Addr]]): add(null[ nat ], forestDom(parts, 0)))
+
+  toGT_domChildren(cs, idx): finite_set[Addr] = forestDom(map(toGT_dom)(cs), idx)
+
+  toGT_dom_node: LEMMA toGT_dom(roseNode(a, cs)) = add(null[ nat ], toGT_domChildren(cs, 0))
+
+  toGT_domChildren_nil: LEMMA toGT_domChildren(null, idx) = emptyset[Addr]
+
+  toGT_domChildren_cons: LEMMA FORALL (c: WTree, rest: list[WTree]):
+    toGT_domChildren(cons(c, rest), idx) =
+      union(prepend(idx, toGT_dom(c)), toGT_domChildren(rest, idx + 1))
+
+  toGT_dom_root_mem: THEOREM toGT_dom(t)(null)
+
+  domains_closed: LEMMA every(LAMBDA (c: WTree): prefixClosed(toGT_dom(c)))(cs)
+    IMPLIES every(prefixClosed)(map(toGT_dom)(cs))
+
+  toGT_dom_prefix_closed: LEMMA prefixClosed(toGT_dom(t))
+
+  toGT_dom_prefix_mem: THEOREM toGT_dom(t)(snoc(v, k)) IMPLIES toGT_dom(t)(v)
+
+  toGT_domChildren_prefix_mem: THEOREM
+    toGT_domChildren(cs, idx)(snoc(v, k)) IMPLIES v = null OR toGT_domChildren(cs, idx)(v)
+
+  toGT_domChildren_head_ge: THEOREM toGT_domChildren(cs, idx)(w) IMPLIES
+    EXISTS (k: nat, a: Addr): w = cons(k, a) AND idx <= k
+
+  toGT_domChildren_length_pos: THEOREM toGT_domChildren(cs, idx)(w) IMPLIES 0 < length(w)
+
+  toGT_domChildren_head_disjoint: THEOREM FORALL (c: WTree):
+    disjoint?(prepend(idx, toGT_dom(c)), toGT_domChildren(cs, idx + 1))
+
+  toGT_lab(t, w): RECURSIVE C =
+    IF null?(w) THEN roseLabel(t)
+    ELSIF car(w) < length(roseChildren(t))
+      THEN toGT_lab(nth(roseChildren(t), car(w)), cdr(w))
+      ELSE roseLabel(t) ENDIF MEASURE length(w)
+
+  toGrowingTree(t): GTree = (# dom := toGT_dom(t), lab := LAMBDA (w: Addr): toGT_lab(t, w) #)
+
+  toGrowingTree_valid: THEOREM gt_valid?(toGrowingTree(t))
+
+END ppg_rose_to_growing

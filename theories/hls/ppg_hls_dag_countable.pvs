@@ -1,0 +1,44 @@
+% Natural codes retain both finite supports of a raw witness DAG. A node
+% code pairs the label code with its occurrence index; an arc code pairs
+% its endpoint codes. The final pair records the node and arc subsets.
+% Thus countable labels give countably many raw DAGs, independently of
+% validity, properness and canonical occurrence indices.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Definition 2.1. https://arxiv.org/abs/2111.06527
+% Auxiliary Countable instance in PPGraphHLSWitnessDAG.lean.
+ppg_hls_dag_countable[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_witness_dag[C,G], foundations@ppg_nat_list_code,
+    foundations@ppg_finite_set_nat_code[[C,nat]] AS nodeSets,
+    foundations@ppg_finite_set_nat_code[[[C,nat],[C,nat]]] AS arcSets
+  e: VAR [C->nat]
+  D,E: VAR WitnessDAG
+  u,v: VAR WNode
+  a,b: VAR [WNode,WNode]
+
+  nodeCode(e)(u): nat = pairCode(e(u`1),u`2)
+
+  node_code_injective: LEMMA injective?(e) IMPLIES injective?(nodeCode(e))
+
+  arcCode(e)(a): nat = pairCode(nodeCode(e)(a`1),nodeCode(e)(a`2))
+
+  arc_code_injective: LEMMA injective?(e) IMPLIES injective?(arcCode(e))
+
+  dagCode(e)(D): nat = pairCode(nodeSets.setCode(nodeCode(e))(D`nodes),
+    arcSets.setCode(arcCode(e))(D`arcs))
+
+  dag_code_parts: LEMMA dagCode(e)(D)=dagCode(e)(E) IMPLIES
+    nodeSets.setCode(nodeCode(e))(D`nodes)=nodeSets.setCode(nodeCode(e))(E`nodes) AND
+    arcSets.setCode(arcCode(e))(D`arcs)=arcSets.setCode(arcCode(e))(E`arcs)
+
+  dag_code_cancel: LEMMA injective?(e) AND dagCode(e)(D)=dagCode(e)(E) IMPLIES D=E
+
+  dag_code_injective: THEOREM injective?(e) IMPLIES injective?(dagCode(e))
+
+  countableLabels: bool = EXISTS(e:[C->nat]):injective?(e)
+
+  witness_dags_countable: THEOREM countableLabels IMPLIES
+    EXISTS(code:[WitnessDAG->nat]):injective?(code)
+END ppg_hls_dag_countable

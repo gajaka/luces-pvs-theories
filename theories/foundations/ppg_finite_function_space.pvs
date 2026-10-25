@@ -1,0 +1,30 @@
+% The functions between finite carriers form a finite set. Embed each
+% function into the dependent state construction with full value domains,
+% then forget those vacuous subtype predicates.
+%
+% Paul R. Halmos, Naive Set Theory, Van Nostrand, 1960.
+ppg_finite_function_space[I,T:TYPE,
+  indexUniverse:{U:finite_set[I]|FORALL(i:I):U(i)},
+  valueUniverse:{U:finite_set[T]|FORALL(t:T):U(t)}]: THEORY
+BEGIN
+  domainFamily: MACRO [I->finite_set[T]] = LAMBDA(i:I):valueUniverse
+
+  IMPORTING finite_models@ppg_resampling_state_finite[I,T,indexUniverse,domainFamily] AS boundedFunctions
+
+  Assignment: TYPE = [I->T]
+
+  f: VAR Assignment
+
+  bounded(f): boundedFunctions.State = f
+
+  forget(g:boundedFunctions.State): Assignment = LAMBDA(i:I):g(i)
+
+  forget_bounded: LEMMA forget(bounded(f))=f
+
+  assignments: finite_set[Assignment] = image[boundedFunctions.State,Assignment](forget,boundedFunctions.allStates)
+
+  assignments_full: LEMMA assignments(f)
+
+  universe: {U:finite_set[Assignment]|FORALL(f:Assignment):U(f)} = assignments
+
+END ppg_finite_function_space

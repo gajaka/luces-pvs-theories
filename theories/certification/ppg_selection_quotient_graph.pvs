@@ -1,0 +1,62 @@
+% A quotient edge has distinct endpoint classes and an original edge
+% between some representatives. The validity results keep the precise
+% conclusions of the source: endpoint invariants, or a representative
+% pp_edge. Projection preserves edges when edges separate classes.
+%
+% Lean counterpart: PPGraphSelection.lean, Sections 6--7. For quotients by
+% equivalence relations, see Davey and Priestley, Introduction to Lattices
+% and Order, second edition, Cambridge University Press, 2002.
+%
+% Author: Dragan Stosic, 2026.
+
+ppg_selection_quotient_graph[T: TYPE, U: TYPE,
+  (IMPORTING ppg_generic_selection[T, U]) F: MorphFamily]: THEORY
+BEGIN
+
+  IMPORTING ppg_core@directed_pp_graph[U], ppg_core@directed_pp_graph[FinestQuotient(F)] AS quotientGraphs
+
+  G: VAR directed_pp_graph[U].Graph
+  rr_rel, edge_rel: VAR [U, U -> bool]
+  inv: VAR [U -> bool]
+  u1, u2, u1p, u2p, u_can, x, y: VAR U
+  Q1, Q2: VAR FinestQuotient(F)
+
+  finest_graph(edge_rel): quotientGraphs.Graph =
+    (# vertices := (LAMBDA (Q: FinestQuotient(F)): TRUE),
+       edges := (LAMBDA (Q1, Q2: FinestQuotient(F)): Q1 /= Q2 AND
+         EXISTS (u1, u2: U): finest_mk(F)(u1) = Q1 AND finest_mk(F)(u2) = Q2 AND edge_rel(u1, u2)) #)
+
+  respects_finest(inv): bool = FORALL (u1, u2: U): finest_equiv(F)(u1, u2) IMPLIES (inv(u1) IFF inv(u2))
+
+  quotient_invariant(inv: (respects_finest))(Q: FinestQuotient(F)): bool = FORALL (u: U): Q(u) IMPLIES inv(u)
+
+  quotient_invariant_char: LEMMA FORALL (inv: (respects_finest), u: U):
+    quotient_invariant(inv)(finest_mk(F)(u)) IFF inv(u)
+
+  finest_quotient_pp_valid: THEOREM pp_valid(G, rr_rel, inv) AND respects_finest(inv) AND G`edges(u1, u2) IMPLIES
+    inv(u1) AND inv(u2)
+
+  finest_quotient_inherits_pp_valid: THEOREM pp_valid(G, rr_rel, inv) AND respects_finest(inv) AND
+    (FORALL (u1, u1p, u2, u2p: U): finest_equiv(F)(u1, u1p) AND finest_equiv(F)(u2, u2p) AND
+      rr_rel(u1, u2) IMPLIES rr_rel(u1p, u2p)) AND finest_graph(G`edges)`edges(Q1, Q2) IMPLIES
+    EXISTS (u1, u2: U): finest_mk(F)(u1) = Q1 AND finest_mk(F)(u2) = Q2 AND pp_edge(rr_rel, inv, u1, u2)
+
+  canonical_preserves_invariant: THEOREM respects_finest(inv) AND finest_equiv(F)(u_can, u2) AND inv(u_can) IMPLIES inv(u2)
+
+  proj_mk_surjective: THEOREM FORALL (Q: FinestQuotient(F)): EXISTS (u: U): finest_mk(F)(u) = Q
+
+  edges_separate_classes(G): bool = FORALL (x, y: U): G`edges(x, y) IMPLIES NOT finest_equiv(F)(x, y)
+
+  proj_preserves_edges_sep: THEOREM edges_separate_classes(G) AND G`edges(x, y) IMPLIES
+    finest_graph(G`edges)`edges(finest_mk(F)(x), finest_mk(F)(y))
+
+  proj_is_pp_morphism: THEOREM pp_valid(G, rr_rel, inv) AND edges_separate_classes(G) AND respects_finest(inv) IMPLIES
+    (FORALL (x: U): G`vertices(x) IMPLIES finest_graph(G`edges)`vertices(finest_mk(F)(x))) AND
+    (FORALL (x, y: U): G`edges(x, y) AND pp_edge(rr_rel, inv, x, y) IMPLIES
+      finest_graph(G`edges)`edges(finest_mk(F)(x), finest_mk(F)(y)))
+
+  proj_is_pp_quotient: THEOREM pp_valid(G, rr_rel, inv) AND edges_separate_classes(G) IMPLIES
+    (FORALL (Q: FinestQuotient(F)): EXISTS (u: U): finest_mk(F)(u) = Q) AND
+    (FORALL (x, y: U): G`edges(x, y) IMPLIES finest_graph(G`edges)`edges(finest_mk(F)(x), finest_mk(F)(y)))
+
+END ppg_selection_quotient_graph

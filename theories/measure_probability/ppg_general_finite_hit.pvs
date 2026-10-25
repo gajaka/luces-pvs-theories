@@ -1,0 +1,25 @@
+% The extended integral of a first-hit count agrees with the existing
+% finite-measure expectation. The comparison uses the same paths and
+% measure, without a stochastic transition or termination assumption.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_general_finite_hit[State,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw,
+  (IMPORTING ppg_filtration[Omega,State,S]) history:Filtration]: THEORY
+BEGIN
+  IMPORTING ppg_general_hit_markov[State,Omega,universe,S,measureLaw],
+    ppg_general_finite_count[Omega,S,measureLaw],
+    finite_models@ppg_finite_potential_expectation[State,Omega,universe,S,measureLaw,history]
+  M: VAR Model
+  X: VAR AdaptedProcess
+
+  hit_count_running_count: LEMMA
+    (LAMBDA(omega:Omega):hitCount(M,X,omega))=
+    (LAMBDA(omega:Omega):eventCount(runningSchedule(M,X),omega))
+
+  finite_expected_hit_compatibility: THEOREM
+    generalExpectedHitCount(M,X)=expectedHitCount(M,X)
+
+END ppg_general_finite_hit

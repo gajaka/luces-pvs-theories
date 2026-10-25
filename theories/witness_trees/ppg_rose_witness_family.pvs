@@ -1,0 +1,67 @@
+% The unbounded canonical witness family is the increasing union of
+% its finite-depth stages. Every finite selection fits in one stage,
+% so its unrestricted nonnegative weight sum equals the supremum of
+% the finite-depth mtWeight values. Weights are zero off this family.
+%
+% Canonical representatives prevent counting sibling permutations again.
+% The uniform MT budget bounds the sum without assuming it finite first.
+% Lean counterpart: PPGraphMoserTardosWitnessFamily.lean.
+% See Alon and Spencer, The Probabilistic Method, 4th ed., Section 5.7,
+% Theorems 5.7.1 and 5.7.3.
+
+ppg_rose_witness_family[C,V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_rose_convergence[C,V], measure_probability@ppg_nonneg_tsum[WTree] AS treeTotals
+  vars: VAR CertVars
+  U: VAR finite_set[C]
+  p,x: VAR [C -> nonneg_real]
+  a: VAR C
+  t: VAR WTree
+  D: VAR nat
+  F: VAR finite_set[WTree]
+
+  witnessFamily(vars,U,a)(t:WTree): bool = EXISTS(D:nat):wtreesUpTo(vars,U,D,a)(t)
+
+  familyWeightNN(vars,U,p,a)(t:WTree): nonneg_real =
+    IF witnessFamily(vars,U,a)(t) THEN weight(p)(t) ELSE 0 ENDIF
+
+  witnessFamilyWeight(vars,U,p,a): [WTree -> ENN] = LAMBDA(t:WTree):ennFinite(familyWeightNN(vars,U,p,a)(t))
+
+  witnessFamilyWeight_of_mem: THEOREM witnessFamily(vars,U,a)(t) IMPLIES
+    witnessFamilyWeight(vars,U,p,a)(t)=ennFinite(weight(p)(t))
+
+  witnessFamilyWeight_of_not_mem: THEOREM NOT witnessFamily(vars,U,a)(t) IMPLIES
+    witnessFamilyWeight(vars,U,p,a)(t)=ennFinite(0)
+
+  witnessFamily_root: LEMMA witnessFamily(vars,U,a)(t) IMPLIES roseLabel(t)=a
+
+  stage_in_witnessFamily: LEMMA wtreesUpTo(vars,U,D,a)(t) IMPLIES witnessFamily(vars,U,a)(t)
+
+  stages(vars,U,a): [nat -> finite_set[WTree]] = LAMBDA(D:nat):wtreesUpTo(vars,U,D,a)
+
+  stages_increasing: LEMMA increasing(stages(vars,U,a))
+
+  stages_family: LEMMA family(stages(vars,U,a))=witnessFamily(vars,U,a)
+
+  stages_support: LEMMA supportIn(familyWeightNN(vars,U,p,a),stages(vars,U,a))
+
+  exists_wtreesUpTo_superset: THEOREM (FORALL(t:WTree):F(t) IMPLIES witnessFamily(vars,U,a)(t))
+    IMPLIES EXISTS(D:nat):subset?(F,wtreesUpTo(vars,U,D,a))
+
+  finite_family_mass: LEMMA treeSums.sum(wtreesUpTo(vars,U,D,a),familyWeightNN(vars,U,p,a))=mtWeight(vars,U,p,D,a)
+
+  sum_wtreesUpTo_witnessFamilyWeight: THEOREM
+    esum(wtreesUpTo(vars,U,D,a),witnessFamilyWeight(vars,U,p,a))=ennFinite(mtWeight(vars,U,p,D,a))
+
+  mass_function: LEMMA (LAMBDA(D:nat):treeSums.sum(wtreesUpTo(vars,U,D,a),familyWeightNN(vars,U,p,a)))=
+    (LAMBDA(D:nat):mtWeight(vars,U,p,D,a))
+
+  familyTotal(vars,U,p,a): ENN = tsum(familyWeightNN(vars,U,p,a))
+
+  tsum_witnessFamilyWeight_eq_iSup_mtWeight: THEOREM familyTotal(vars,U,p,a)=
+    iSupNN(LAMBDA(D:nat):mtWeight(vars,U,p,D,a))
+
+  tsum_witnessFamilyWeight_le: THEOREM budget(vars,U,p,x) IMPLIES
+    ele(familyTotal(vars,U,p,a),ennFinite(x(a)))
+
+END ppg_rose_witness_family

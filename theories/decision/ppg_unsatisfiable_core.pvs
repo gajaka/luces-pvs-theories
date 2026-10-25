@@ -1,0 +1,69 @@
+% A minimal unsatisfiable core is infeasible but every one-obligation
+% deletion is feasible. A correction set removes obligations and leaves
+% a satisfiable family; it does not repair a state while keeping the
+% original specification fixed.
+%
+% Mark H. Liffiton and Karem A. Sakallah, "Algorithms for Computing Minimal
+% Unsatisfiable Subsets of Constraints", Journal of Automated Reasoning
+% 40 (2008), Definitions 2--3 and Theorem 1(i).
+% https://sun.iwu.edu/~mliffito/publications/jar_liffiton_CAMUS.pdf
+% Lean counterpart: PPGraphUnsatisfiableCore.lean.
+
+ppg_unsatisfiable_core[State: TYPE, C: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_infeasibility[State, C], foundations@ppg_finite_minimum[C]
+  allowed: VAR set[State]
+  sat: VAR [C, State -> bool]
+  A, B, K, R: VAR finite_set[C]
+  c: VAR C
+
+  MinimalCore(allowed, sat, K): bool =
+    Infeasible(allowed, sat, K) AND
+      FORALL c: K(c) IMPLIES Satisfiable(allowed, sat, remove(c, K))
+
+  CorrectionSet(allowed, sat, B, R): bool =
+    subset?(R, B) AND Satisfiable(allowed, sat, difference(B, R))
+
+  HitsAllMinimalCores(allowed, sat, B, R): bool =
+    subset?(R, B) AND FORALL K: subset?(K, B) AND MinimalCore(allowed, sat, K)
+      IMPLIES nonempty?(intersection(K, R))
+
+  MinimalCorrectionSet(allowed, sat, B, R): bool =
+    CorrectionSet(allowed, sat, B, R) AND
+      FORALL c: R(c) IMPLIES NOT CorrectionSet(allowed, sat, B, remove(c, R))
+
+  MinimalCoreHittingSet(allowed, sat, B, R): bool =
+    HitsAllMinimalCores(allowed, sat, B, R) AND
+      FORALL c: R(c) IMPLIES NOT HitsAllMinimalCores(allowed, sat, B, remove(c, R))
+
+  minimalCore_infeasible: THEOREM MinimalCore(allowed, sat, K) IMPLIES Infeasible(allowed, sat, K)
+
+  minimalCore_blocks_superset: THEOREM
+    subset?(K, B) AND MinimalCore(allowed, sat, K) IMPLIES Infeasible(allowed, sat, B)
+
+  minimalCore_nonempty: THEOREM
+    nonempty?(allowed) AND MinimalCore(allowed, sat, K) IMPLIES nonempty?(K)
+
+  minimalCore_exists: THEOREM
+    Infeasible(allowed, sat, B) IMPLIES EXISTS K: subset?(K, B) AND MinimalCore(allowed, sat, K)
+
+  minimalCore_proper_subset_satisfiable: THEOREM
+    strict_subset?(A, K) AND MinimalCore(allowed, sat, K) IMPLIES Satisfiable(allowed, sat, A)
+
+  correctionSet_hits_core: THEOREM
+    CorrectionSet(allowed, sat, B, R) AND subset?(K, B) AND MinimalCore(allowed, sat, K)
+    IMPLIES nonempty?(intersection(K, R))
+
+  correctionSet_iff_hitsAllMinimalCores: THEOREM
+    CorrectionSet(allowed, sat, B, R) IFF HitsAllMinimalCores(allowed, sat, B, R)
+
+  minimalCorrectionSet_iff_minimalCoreHittingSet: THEOREM
+    MinimalCorrectionSet(allowed, sat, B, R) IFF MinimalCoreHittingSet(allowed, sat, B, R)
+
+  correctionSet_empty_iff: THEOREM
+    CorrectionSet(allowed, sat, B, emptyset[C]) IFF Satisfiable(allowed, sat, B)
+
+  infeasible_requires_nonempty_correction: THEOREM
+    Infeasible(allowed, sat, B) AND CorrectionSet(allowed, sat, B, R) IMPLIES nonempty?(R)
+
+END ppg_unsatisfiable_core

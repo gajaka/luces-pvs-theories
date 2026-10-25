@@ -1,0 +1,123 @@
+% Measurability follows the same recursion as the execution. A selected
+% coordinate is a measurable table read; its selection event is a state
+% event. The counter update is the corresponding measurable branch.
+% Only measurability of the initializer is required here.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Section 2.
+ppg_finite_table_measurable[V,Value: TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING moser_tardos@ppg_mt_coordinate_laws[bool,V,Value,LAMBDA(v:V):domains(v)])
+  spaces:{S:VariableSpaces|FORALL(v:V,x:(domains(v))):S(v)(singleton[(domains(v))](x))}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_table_core[V,Value,variables,domains] AS measuredTable,
+    ppg_finite_table_spaces[V,Value,variables,domains,spaces] AS measuredSpaces,
+    ppg_finite_table_reads[V,Value,variables,domains,spaces] AS measuredReads
+
+  State: TYPE = measuredTable.State
+
+  ResamplingLog: TYPE = measuredTable.ResamplingLog
+
+  Footprint: TYPE = measuredTable.Footprint
+
+  Initializer: TYPE = measuredTable.Initializer
+
+  IMPORTING measure_probability@ppg_measurable_map[ResamplingLog,State] AS measuredStateMap,
+    measure_probability@ppg_measurable_map[ResamplingLog,nat] AS measuredNatMap,
+    measure_probability@ppg_measurable_nat_successor[ResamplingLog] AS measuredSuccessor,
+    measure_probability@ppg_measurable_map
+
+  fullNatSigma: MACRO ppg_measurable_space[nat].MeasurableSpace = fullset[set[nat]]
+
+  F: VAR Footprint
+  init: VAR Initializer
+  n: VAR nat
+  v: VAR V
+
+  trajectoryMap(F,init,n): [ResamplingLog->State] =
+    LAMBDA(omega:ResamplingLog):measuredTable.trajectory(F,init,n,omega)
+
+  countMap(F,init,n,v): [ResamplingLog->nat] =
+    LAMBDA(omega:ResamplingLog):measuredTable.count(F,init,n,omega)(v)
+
+  nextMap(F,init,n): [ResamplingLog->State] =
+    LAMBDA(omega:ResamplingLog):measuredTable.nextDraw(F,init,n,omega)
+
+  successorMap(F,init,n,v): [ResamplingLog->nat] =
+    LAMBDA(omega:ResamplingLog):countMap(F,init,n,v)(omega)+1
+
+  selectionEvent(F,init,n,v): set[ResamplingLog] =
+    {omega:ResamplingLog|F(trajectoryMap(F,init,n)(omega))(v)}
+
+  InitialMeasurable(init): bool =
+    measuredStateMap.measurable(measuredSpaces.tableSigma,measuredSpaces.stateSigma,init)
+
+  RunMeasurable(F,init,n): bool =
+    measuredStateMap.measurable(measuredSpaces.tableSigma,measuredSpaces.fullStateSigma,trajectoryMap(F,init,n)) AND
+    (FORALL(v:V):measuredNatMap.measurable(measuredSpaces.tableSigma,fullNatSigma,countMap(F,init,n,v)))
+
+  trajectory_zero_function: LEMMA trajectoryMap(F,init,0)=init
+
+  count_zero_function: LEMMA countMap(F,init,0,v)=(LAMBDA(omega:ResamplingLog):0)
+
+  next_coordinate_function: LEMMA
+    (LAMBDA(omega:ResamplingLog):nextMap(F,init,n)(omega)(v))=
+      measuredReads.evalSlot(v,successorMap(F,init,n,v))
+
+  trajectory_coordinate_step: LEMMA
+    (LAMBDA(omega:ResamplingLog):trajectoryMap(F,init,n+1)(omega)(v))=
+      ppg_measurable_map[ResamplingLog,(domains(v))].branch(selectionEvent(F,init,n,v),
+        LAMBDA(omega:ResamplingLog):nextMap(F,init,n)(omega)(v),
+        LAMBDA(omega:ResamplingLog):trajectoryMap(F,init,n)(omega)(v))
+
+  count_step_function: LEMMA countMap(F,init,n+1,v)=
+    measuredNatMap.branch(selectionEvent(F,init,n,v),successorMap(F,init,n,v),countMap(F,init,n,v))
+
+  selection_event_measurable: LEMMA RunMeasurable(F,init,n) IMPLIES
+    measuredSpaces.tableSigma(selectionEvent(F,init,n,v))
+
+  current_coordinate_measurable: LEMMA RunMeasurable(F,init,n) IMPLIES
+    ppg_measurable_map[ResamplingLog,(domains(v))].measurable(
+      measuredSpaces.tableSigma,spaces(v),LAMBDA(omega:ResamplingLog):trajectoryMap(F,init,n)(omega)(v))
+
+  current_counter_measurable: LEMMA RunMeasurable(F,init,n) IMPLIES
+    measuredNatMap.measurable(measuredSpaces.tableSigma,fullNatSigma,countMap(F,init,n,v))
+
+  successor_map_measurable: LEMMA RunMeasurable(F,init,n) IMPLIES
+    measuredNatMap.measurable(measuredSpaces.tableSigma,fullNatSigma,successorMap(F,init,n,v))
+
+  next_coordinate_measurable: LEMMA RunMeasurable(F,init,n) IMPLIES
+    ppg_measurable_map[ResamplingLog,(domains(v))].measurable(
+      measuredSpaces.tableSigma,spaces(v),LAMBDA(omega:ResamplingLog):nextMap(F,init,n)(omega)(v))
+
+  next_map_measurable: LEMMA RunMeasurable(F,init,n) IMPLIES
+    measuredStateMap.measurable(measuredSpaces.tableSigma,measuredSpaces.fullStateSigma,nextMap(F,init,n))
+
+  trajectory_coordinate_measurable_step: LEMMA RunMeasurable(F,init,n) IMPLIES
+    ppg_measurable_map[ResamplingLog,(domains(v))].measurable(
+      measuredSpaces.tableSigma,spaces(v),LAMBDA(omega:ResamplingLog):trajectoryMap(F,init,n+1)(omega)(v))
+
+  trajectory_measurable_step: LEMMA RunMeasurable(F,init,n) IMPLIES
+    measuredStateMap.measurable(measuredSpaces.tableSigma,measuredSpaces.fullStateSigma,trajectoryMap(F,init,n+1))
+
+  count_measurable_step: LEMMA RunMeasurable(F,init,n) IMPLIES
+    measuredNatMap.measurable(measuredSpaces.tableSigma,fullNatSigma,countMap(F,init,n+1,v))
+
+  run_measurable_step: LEMMA RunMeasurable(F,init,n) IMPLIES RunMeasurable(F,init,n+1)
+
+  run_measurable_induction: LEMMA InitialMeasurable(init) IMPLIES RunMeasurable(F,init,n)
+
+  measurable_run: THEOREM
+    measuredStateMap.measurable(measuredSpaces.tableSigma,measuredSpaces.stateSigma,init) IMPLIES RunMeasurable(F,init,n)
+
+  measurable_trajectory: THEOREM
+    measuredStateMap.measurable(measuredSpaces.tableSigma,measuredSpaces.stateSigma,init) IMPLIES
+      measuredStateMap.measurable(measuredSpaces.tableSigma,measuredSpaces.stateSigma,trajectoryMap(F,init,n))
+
+  measurable_nextDraw: THEOREM
+    measuredStateMap.measurable(measuredSpaces.tableSigma,measuredSpaces.stateSigma,init) IMPLIES
+      measuredStateMap.measurable(measuredSpaces.tableSigma,measuredSpaces.stateSigma,nextMap(F,init,n))
+
+END ppg_finite_table_measurable

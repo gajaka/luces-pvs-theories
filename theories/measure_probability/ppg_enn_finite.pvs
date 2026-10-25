@@ -1,0 +1,32 @@
+% Finite extended sums use the commutative addition monoid, including infinity.
+ppg_enn_finite[T: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_enn_add, ppg_nonneg_tsum[T], foundations@ppg_finite_induction[T]
+
+  addition_monoid: LEMMA identity?[ENN](eadd)(ennFinite(0)) AND
+    associative?[ENN](eadd) AND commutative?[ENN](eadd)
+
+  IMPORTING foundations@ppg_monoid_sum[T,ENN,ennFinite(0),eadd] AS totals
+  F: VAR finite_set[T]
+  f,g: VAR [T->ENN]
+  x: VAR T
+  h: VAR [T->nonneg_real]
+
+  finite_value_equal: LEMMA FORALL(a,b:nonneg_real):
+    ennFinite(a)=ennFinite(b) IFF a=b
+
+  eadd_embed: LEMMA FORALL(a,b:nonneg_real):
+    eadd(ennFinite(a),ennFinite(b))=ennFinite(a+b)
+
+  esum_as_fold: LEMMA esum(F,g)=totals.sum(F,g)
+
+  esum_empty: LEMMA esum(emptyset[T],g)=ennFinite(0)
+
+  esum_add: LEMMA NOT F(x) IMPLIES esum(add(x,F),g)=eadd(esum(F,g),g(x))
+
+  esum_congr: LEMMA (FORALL(x:T):F(x) IMPLIES f(x)=g(x)) IMPLIES esum(F,f)=esum(F,g)
+
+  esum_majorant: THEOREM (FORALL(t:T):F(t) IMPLIES ele(g(t),ennFinite(h(t)))) IMPLIES
+    ele(esum(F,g),ennFinite(sums.sum(F,h)))
+
+END ppg_enn_finite

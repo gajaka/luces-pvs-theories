@@ -1,0 +1,63 @@
+% A state is the zeroth row of the independent resampling table.
+% Pulling state events back along this row proves independence from
+% disjoint variable footprints under the actual finite product state law.
+% Lean counterpart: PPGraphShearerMT.lean, mt_lll_independence.
+% Noga Alon and Joel H. Spencer, The Probabilistic Method, 4th ed.,
+% Wiley, 2016, Section 5.7. Product independence is proved in
+% ppg_probability_supported_events.
+ppg_mt_state_independence[C,V,Value:TYPE,domain:[V->set[Value]],
+  universe:{F:finite_set[V]|F=fullset[V]},
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain]) spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_core@ppg_bdd[C,V]) vars:CertVars]: THEORY
+BEGIN
+  IMPORTING ppg_mt_state_probability[C,V,Value,domain,universe,spaces,laws],
+    ppg_mt_log_pair_independence[C,V,Value,domain,spaces,laws],
+    ppg_mt_state_footprints[C,V,Value,domain,vars],
+    ppg_mt_check_probability[C,V,Value,domain,spaces,laws],
+    measure_probability@ppg_finite_events[MTState,C,NativeStateSigma(spaces)],
+    local_lemmas@ppg_shearer_ppg[MTState,C,V,NativeStateSigma(spaces),stateMeasure,vars]
+  F,G: VAR set[V]
+  A,D: VAR (NativeStateSigma(spaces))
+  bad: VAR NativeBad
+  B,J: VAR finite_set[C]
+  a: VAR C
+
+  zeroCounter: Counter = LAMBDA(v:V):0
+
+  rowCoordinates(F): set[[nat,V]] = {q:[nat,V]|q`1=0 AND F(q`2)}
+
+  rowEvent(A): (NativeTableSigma(spaces)) =
+    ppg_measurable_map[LogSpace,MTState].inverseImage(readAt(zeroCounter),A)
+
+  row_disjoint: LEMMA disjoint?(F,G) IMPLIES disjoint?(rowCoordinates(F),rowCoordinates(G))
+
+  row_agreement: LEMMA FORALL(omega1,omega2:LogSpace):
+    (FORALL(q:[nat,V]):rowCoordinates(F)(q) IMPLIES omega1(q)=omega2(q)) IMPLIES
+      (FORALL(v:V):F(v) IMPLIES readAt(zeroCounter)(omega1)(v)=readAt(zeroCounter)(omega2)(v))
+
+  row_depends: LEMMA stateDepends(F,A) IMPLIES ppg_mt_log_family[C,V,Value,C,domain,spaces,laws].logDepends(rowCoordinates(F),rowEvent(A))
+
+  row_mass: LEMMA logMeasure(rowEvent(A))=stateMeasure(A)
+
+  row_intersection: LEMMA rowEvent(intersection(A,D))=intersection(rowEvent(A),rowEvent(D))
+
+  state_inter_independent: THEOREM disjoint?(F,G) AND stateDepends(F,A) AND stateDepends(G,D) IMPLIES
+    stateMeasure(intersection(A,D))=stateMeasure(A)*stateMeasure(D)
+
+  avoidanceFamily(bad): [C->(NativeStateSigma(spaces))] = LAMBDA(a:C):complement(stateEvents(bad)(a))
+
+  all_pass_finite_meet: LEMMA all_pass(stateEvents(bad),J)=ppg_finite_events[MTState,C,NativeStateSigma(spaces)].finiteMeet(J,avoidanceFamily(bad))
+
+  native_all_pass_measurable: LEMMA NativeStateSigma(spaces)(all_pass(stateEvents(bad),J))
+
+  native_all_bad_measurable: LEMMA all_measurable(stateEvents(bad))
+
+  native_joint_measurable: LEMMA NativeStateSigma(spaces)(intersection(stateEvents(bad)(a),all_pass(stateEvents(bad),J)))
+
+  native_joint_independent: LEMMA mt_wf(vars,bad) AND independent_side(B,a,J) IMPLIES
+    stateMeasure(intersection(stateEvents(bad)(a),all_pass(stateEvents(bad),J)))=
+      stateMeasure(stateEvents(bad)(a))*stateMeasure(all_pass(stateEvents(bad),J))
+
+  mt_lll_independence: THEOREM mt_wf(vars,bad) IMPLIES lll_independence(mass,stateEvents(bad),B)
+
+END ppg_mt_state_independence

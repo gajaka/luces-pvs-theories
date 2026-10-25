@@ -1,0 +1,109 @@
+% A proper canonical graph has exactly one root with label alpha.
+% Extending each rooted summand by zero partitions the whole proper
+% family into its natural-number fibers, including infinite weights.
+%
+% Lean counterpart: PPGraphHLSRootUnion.lean, tsum_rootFamily_weight_le.
+ppg_hls_root_family_weight[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},
+  universe:{B:finite_set[C]|FORALL(i:C):B(i)},alpha:C]: THEORY
+BEGIN
+  IMPORTING ppg_hls_root_family[C,G,universe,alpha] AS roots,
+    ppg_hls_proper_family[C,G,universe,alpha] AS proper,
+    measure_probability@ppg_enn_fiber_tsum[WitnessDAG,nat] AS fibers,
+    measure_probability@ppg_enn_unrestricted_sum[WitnessDAG] AS flatSums,
+    measure_probability@ppg_enn_unrestricted_sum[nat] AS outerSums,
+    measure_probability@ppg_enn_subtype_tsum[WitnessDAG,proper.IsProperCanonical] AS properSubtype,
+    measure_probability@ppg_enn_unrestricted_sum[proper.ProperDAG] AS properSums,
+    measure_probability@ppg_enn_unrestricted_sum[properSubtype.Sub] AS exactProperSums,
+    measure_probability@ppg_enn_injective_bound[properSubtype.Sub,proper.ProperDAG] AS properForward,
+    measure_probability@ppg_enn_injective_bound[proper.ProperDAG,properSubtype.Sub] AS properBackward
+
+  D: VAR WitnessDAG
+
+  r: VAR nat
+
+  w: VAR [WitnessDAG->ENN]
+
+  root_node_tuple: LEMMA FORALL(u:WNode):u`1=alpha IMPLIES u=(alpha,u`2)
+
+  proper_root_exists: LEMMA proper.IsProperCanonical(D) IMPLIES
+    EXISTS(r:nat):RootedCanonical(D,(alpha,r))
+
+  rootIndexD(D): nat = IF proper.IsProperCanonical(D) THEN
+    choose({r:nat|RootedCanonical(D,(alpha,r))}) ELSE 0 ENDIF
+
+  proper_root_index: LEMMA proper.IsProperCanonical(D) IMPLIES
+    RootedCanonical(D,(alpha,rootIndexD(D)))
+
+  rooted_iff: LEMMA RootedCanonical(D,(alpha,r)) IFF
+    proper.IsProperCanonical(D) AND rootIndexD(D)=r
+
+  properMasked(w)(D): ENN =
+    IF proper.IsProperCanonical(D) THEN w(D) ELSE ennFinite(0) ENDIF
+
+  rootMasked(w,r)(D): ENN =
+    IF RootedCanonical(D,(alpha,r)) THEN w(D) ELSE ennFinite(0) ENDIF
+
+  rootFamilyWeight(w)(r): ENN =
+    flatSums.eTsum(rootMasked(w,r))
+
+  masked_fiber_point: LEMMA
+    fibers.fiberFunction(properMasked(w),rootIndexD)(r)(D)=rootMasked(w,r)(D)
+
+  masked_fiber_function: LEMMA
+    fibers.fiberFunction(properMasked(w),rootIndexD)(r)=rootMasked(w,r)
+
+  rootFamilyWeight_as_mask: LEMMA
+    rootFamilyWeight(w)(r)=flatSums.eTsum(rootMasked(w,r))
+
+  fiber_mass_root: LEMMA
+    fibers.fiberMass(properMasked(w),rootIndexD)(r)=rootFamilyWeight(w)(r)
+
+  fiber_mass_function: LEMMA
+    fibers.fiberMass(properMasked(w),rootIndexD)=rootFamilyWeight(w)
+
+  proper_subtype_transport: LEMMA
+    exactProperSums.eTsum(properSubtype.subweight(w))=
+      properSums.eTsum(LAMBDA(D:proper.ProperDAG):w(D))
+
+  proper_subtype_sum: LEMMA
+    flatSums.eTsum(properMasked(w))=
+      properSums.eTsum(LAMBDA(D:proper.ProperDAG):w(D))
+
+  tsum_rootFamily_weight_eq: THEOREM
+    outerSums.eTsum(rootFamilyWeight(w))=
+      properSums.eTsum(LAMBDA(D:proper.ProperDAG):w(D))
+
+  tsum_rootFamily_weight_le: THEOREM
+    ele(outerSums.eTsum(rootFamilyWeight(w)),
+      properSums.eTsum(LAMBDA(D:proper.ProperDAG):w(D)))
+
+END ppg_hls_root_family_weight
+
+% The formal occurrence index gives the literal rooted-subtype sum. Its
+% zero-extension equality identifies each inner summand used above; the
+% main theorem then partitions the proper family by its unique root.
+ppg_hls_root_family_weight_at[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},
+  universe:{B:finite_set[C]|FORALL(i:C):B(i)},alpha:C,r:nat]: THEORY
+BEGIN
+  IMPORTING ppg_hls_root_family_weight[C,G,universe,alpha] AS familyWeights,
+    ppg_hls_root_family[C,G,universe,alpha] AS rooted,
+    measure_probability@ppg_enn_subtype_tsum[WitnessDAG,
+      LAMBDA(D:WitnessDAG):RootedCanonical(D,(alpha,r))] AS rootSubtype,
+    measure_probability@ppg_enn_unrestricted_sum[rooted.RootFamily(r)] AS actualRootSums,
+    measure_probability@ppg_enn_unrestricted_sum[rootSubtype.Sub] AS exactRootSums,
+    measure_probability@ppg_enn_injective_bound[rootSubtype.Sub,rooted.RootFamily(r)] AS rootForward,
+    measure_probability@ppg_enn_injective_bound[rooted.RootFamily(r),rootSubtype.Sub] AS rootBackward
+
+  w: VAR [WitnessDAG->ENN]
+
+  root_subtype_transport: LEMMA
+    exactRootSums.eTsum(rootSubtype.subweight(w))=
+      actualRootSums.eTsum(LAMBDA(D:rooted.RootFamily(r)):w(D))
+
+  root_subtype_sum: THEOREM
+    familyWeights.rootFamilyWeight(w)(r)=
+      actualRootSums.eTsum(LAMBDA(D:rooted.RootFamily(r)):w(D))
+
+END ppg_hls_root_family_weight_at

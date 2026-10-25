@@ -1,0 +1,20 @@
+% Empty carriers and empty supports have zero unordered sum.
+ppg_witness_family_empty: THEORY
+BEGIN
+
+  Empty: TYPE = {b:bool | FALSE}
+
+  IMPORTING ppg_rose_witness_family[Empty,Empty], measure_probability@ppg_nonneg_tsum[Empty]
+
+  no_tree: THEOREM NOT EXISTS(t:WTree):TRUE
+
+  empty_finite_set: LEMMA FORALL(F:finite_set[Empty]):F=emptyset[Empty]
+
+  empty_finite_sum: THEOREM FORALL(F:finite_set[Empty],g:[Empty -> ENN]):
+    ppg_nonneg_tsum[Empty].esum(F,g)=ennFinite(0)
+
+  empty_total: THEOREM FORALL(f:[Empty -> nonneg_real]):ppg_nonneg_tsum[Empty].tsum(f)=ennFinite(0)
+
+  empty_supremum: THEOREM sSup(emptyset[nonneg_real])=ennFinite(0)
+
+END ppg_witness_family_empty

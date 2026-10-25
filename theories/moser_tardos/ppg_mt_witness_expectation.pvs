@@ -1,0 +1,49 @@
+% An injective natural code for witness trees permits countable
+% interchange of occurrence indicators and the nonnegative integral.
+% The expected resampling count equals the sum of occurrence probabilities,
+% even when either side is infinite. Slot zero and later reads belong
+% to the same sampled table.
+%
+% Lean counterpart: PPGraphMoserTardosOccurrenceCounting.lean.
+% For the occurrence-counting argument, see Alon and Spencer,
+% The Probabilistic Method, 4th ed., Section 5.7.
+
+ppg_mt_witness_expectation[C,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_mt_time_expectation[C,V,Value,domain,spaces,laws],
+    ppg_mt_occurrence_counting[C,V,Value,domain], witness_trees@ppg_rose_countable[C],
+    measure_probability@ppg_coded_event_integral[LogSpace,WTree,NativeTableSigma(spaces),logMeasure]
+  vars: VAR CertVars
+  bad: VAR NativeBad
+  fallback,a: VAR C
+  enumeration: VAR FullEnumeration
+  W: VAR WTree
+  omega: VAR LogSpace
+
+  native_occurrence_measurable: LEMMA
+    NativeTableSigma(spaces)(witnessOccurrence(vars,bad,fallback,enumeration,a,W))
+
+  occurrenceEvents(vars,bad,fallback,enumeration,a): [WTree->(NativeTableSigma(spaces))] =
+    LAMBDA(W:WTree):witnessOccurrence(vars,bad,fallback,enumeration,a,W)
+
+  eventLabelCode(enumeration)(c:C): nat = firstIndex(c,enumeration)
+
+  witnessCode(enumeration): Code = treeCode(eventLabelCode(enumeration))
+
+  occurrence_indicator_function: LEMMA
+    nnEvent(occurrenceEvents(vars,bad,fallback,enumeration,a),omega)=
+    occurrenceWeightNN(vars,bad,fallback,enumeration,omega,a)
+
+  witness_count_function: LEMMA
+    (LAMBDA(omega:LogSpace):randomInitResamplingCount(vars,bad,fallback,enumeration,omega,a))=
+    (LAMBDA(omega:LogSpace):ppg_nonneg_tsum[WTree].tsum(
+      nnEvent(occurrenceEvents(vars,bad,fallback,enumeration,a),omega)))
+
+  randomInitExpectedResamplingCount_eq_tsum_witnessOccurrence: THEOREM
+    randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a)=
+      ppg_nonneg_tsum[WTree].tsum(LAMBDA(W:WTree):
+        logMeasure(occurrenceEvents(vars,bad,fallback,enumeration,a)(W)))
+
+END ppg_mt_witness_expectation

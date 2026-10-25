@@ -1,0 +1,61 @@
+% The root records the number of earlier selections of its label.
+% Different occurrences of one label therefore give different canonical
+% witness DAGs, including along a process which never terminates.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2; Kun He, Qian Li and Xiaoming Sun,
+% "Moser-Tardos Algorithm: Beyond Shearer's Bound", Section 2.1.
+% Lean counterpart: PPGraphHLSRealDAGCounts.lean.
+ppg_hls_real_dag_counts[C,V,Value:TYPE,domain:[V->set[Value]],
+  footprint:[C->finite_set[V]],
+  (IMPORTING moser_tardos@ppg_mt_semantics[C,V,Value,domain])bad:[C,MTState->bool]]: THEORY
+BEGIN
+  IMPORTING ppg_hls_real_dag[C,V,Value,domain,footprint,bad]
+  fallback: VAR C
+  enumeration: VAR list[C]
+  omega: VAR rawSlots.LogSpace
+  labels,otherLabels: VAR [nat->C]
+  s,t,k: VAR nat
+  u: VAR WNode
+
+  countedRoot(fallback,enumeration,omega,t): WNode =
+    realRoot(realSchedule(fallback,enumeration,omega),t)
+
+  label_prior: THEOREM
+    labelPrior(realExecutionDAG(fallback,enumeration,omega,t),
+      timeNode(realSchedule(fallback,enumeration,omega))(t))=
+    image[nat,WNode](timeNode(realSchedule(fallback,enumeration,omega)),
+      earlierLabelTimes(realSchedule(fallback,enumeration,omega),t))
+
+  label_rank: THEOREM
+    labelRank(realExecutionDAG(fallback,enumeration,omega,t),
+      timeNode(realSchedule(fallback,enumeration,omega))(t))=
+    earlierLabelCount(realSchedule(fallback,enumeration,omega),t)
+
+  root_name: THEOREM countedRoot(fallback,enumeration,omega,t)=
+    canonicalName(realExecutionDAG(fallback,enumeration,omega,t),
+      timeNode(realSchedule(fallback,enumeration,omega))(t))
+
+  root_mem: THEOREM
+    realWitnessDAG(fallback,enumeration,omega,t)`nodes(countedRoot(fallback,enumeration,omega,t))
+
+  reach_root: THEOREM realWitnessDAG(fallback,enumeration,omega,t)`nodes(u) IMPLIES
+    Reach(realWitnessDAG(fallback,enumeration,omega,t))(u,countedRoot(fallback,enumeration,omega,t))
+
+  root_sink: THEOREM
+    Sink(realWitnessDAG(fallback,enumeration,omega,t))(countedRoot(fallback,enumeration,omega,t))
+
+  earlier_times_member: LEMMA earlierLabelTimes(labels,t)(s) IFF
+    s<t AND labels(s)=labels(t)
+
+  earlier_times_proper: LEMMA s<t AND labels(s)=labels(t) IMPLIES
+    strict_subset?(earlierLabelTimes(labels,s),earlierLabelTimes(labels,t))
+
+  count_strict: THEOREM s<t AND labels(s)=labels(t) IMPLIES
+    earlierLabelCount(labels,s)<earlierLabelCount(labels,t)
+
+  real_dag_distinct: THEOREM s<t AND
+    realSchedule(fallback,enumeration,omega)(s)=realSchedule(fallback,enumeration,omega)(t) IMPLIES
+    realWitnessDAG(fallback,enumeration,omega,s)/=realWitnessDAG(fallback,enumeration,omega,t)
+
+END ppg_hls_real_dag_counts

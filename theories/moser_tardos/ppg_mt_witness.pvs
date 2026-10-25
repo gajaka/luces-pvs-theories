@@ -1,0 +1,95 @@
+% Witness trees are finite rooted trees whose children have labels in
+% the inclusive neighborhood of their parent's label. A child may thus
+% repeat its parent's label. Properness requires distinct sibling labels;
+% it does not require all labels in the tree to be distinct.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2, Lemma 2.1.
+% https://arxiv.org/abs/0903.0544v3
+% Lean counterpart: PPGraphMoserTardosWitness.lean.
+%
+% The generated datatype folds supply recursive child values to wf? and
+% proper?. The dependent-domain construction uses ppg_rose_structure.
+%
+% Author: Dragan Stosic, 2026.
+
+ppg_mt_witness[C: TYPE+, V: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING ppg_probabilistic[C, V]
+  IMPORTING witness_trees@ppg_wtree[C]
+  IMPORTING witness_trees@ppg_wtree_adt_reduce[C, bool]
+  IMPORTING witness_trees@ppg_wtree_adt_reduce[C, nat]
+
+  WTree: TYPE = ppg_wtree[C]
+
+  t, u: VAR WTree
+  cs: VAR list[WTree]
+  i: VAR C
+  vars: VAR CertVars
+
+  %% Section 1: Size
+
+  sum_list(l: list[nat]): RECURSIVE nat =
+    CASES l OF
+      null: 0,
+      cons(h, r): h + sum_list(r)
+    ENDCASES
+  MEASURE length(l)
+
+  size: [WTree -> nat] =
+    reduce_nat(LAMBDA (i: C, l: list[nat]): 1 + sum_list(l))
+
+  size_node: LEMMA
+    FORALL (i: C, cs: list[WTree]):
+      size(node(i, cs)) = 1 + sum_list(map(size)(cs))
+
+  size_pos: LEMMA FORALL (t: WTree): size(t) > 0
+
+  %% Section 2: Well-formedness with respect to the dependency graph
+  %
+  % Every child's label lies in Gamma+ of its parent's label: the child
+  % either repeats the parent's own label or depends on it. Only siblings
+  % are constrained further, by proper? below.
+
+  wf_node(vars)(i: C, l: list[bool], u: WTree): bool =
+    every(LAMBDA (b: bool): b)(l) AND
+    every(LAMBDA (c: WTree): lab(c) = i OR dependent?(vars)(i, lab(c)))
+         (children(u))
+
+  wf?(vars): [WTree -> bool] = REDUCE(wf_node(vars))
+
+  wf_node_eq: LEMMA
+    FORALL (vars: CertVars, i: C, cs: list[WTree]):
+      wf?(vars)(node(i, cs)) =
+        (every(LAMBDA (b: bool): b)(map(wf?(vars))(cs)) AND
+         every(LAMBDA (c: WTree): lab(c) = i OR dependent?(vars)(i, lab(c)))
+              (cs))
+
+  % A single node with no children is well formed.
+  wf_singleton: LEMMA
+    FORALL (vars: CertVars, i: C): wf?(vars)(node(i, null))
+
+  %% Section 3: Properness
+  %
+  % At every vertex the children carry pairwise distinct labels.
+
+  distinct_labels?(cs): bool =
+    FORALL (m, n: below(length(cs))):
+      m /= n IMPLIES lab(nth(cs, m)) /= lab(nth(cs, n))
+
+  proper_node(i: C, l: list[bool], u: WTree): bool =
+    every(LAMBDA (b: bool): b)(l) AND distinct_labels?(children(u))
+
+  proper?: [WTree -> bool] = REDUCE(proper_node)
+
+  proper_node_eq: LEMMA
+    FORALL (i: C, cs: list[WTree]):
+      proper?(node(i, cs)) =
+        (every(LAMBDA (b: bool): b)(map(proper?)(cs)) AND distinct_labels?(cs))
+
+  % A single node with no children is proper.
+  proper_singleton: LEMMA
+    FORALL (i: C): proper?(node(i, null))
+
+END ppg_mt_witness

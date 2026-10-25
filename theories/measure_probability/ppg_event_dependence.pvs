@@ -1,0 +1,35 @@
+% Shared variable footprints specify the non-neighbors of a certificate.
+% Independence gives equality of the joint mass; lopsidependence keeps
+% only the upper bound. These predicates use masses of arbitrary events.
+% The normalized outer law is supplied by the probability applications.
+%
+% Noga Alon and Joel H. Spencer, The Probabilistic Method, 4th ed.,
+% Wiley, 2016, Lemma 5.1.1. For the lopsided condition, see David G.
+% Harris, "Lopsidependency in the Moser-Tardos framework: Beyond the
+% Lopsided Lovasz Local Lemma", Section 1.2. https://arxiv.org/abs/1610.02420
+ppg_event_dependence[X,C,V:TYPE,
+  (IMPORTING ppg_core@ppg_bdd[C,V]) vars:CertVars]: THEORY
+BEGIN
+  IMPORTING ppg_event_avoidance[X,C]
+  m: VAR RawMass
+  A: VAR BadEvents
+  B,J: VAR finite_set[C]
+  a: VAR C
+
+  independent(a,b:C): bool = NOT dependent(vars,a,b)
+
+  independent_side(B,a,J): bool = FORALL(j:C):J(j) IMPLIES
+    B(j) AND j/=a AND independent(a,j)
+
+  lll_independence(m,A,B): bool = FORALL(a:C):B(a) IMPLIES
+    FORALL(J:finite_set[C]):independent_side(B,a,J) IMPLIES
+      m(intersection(A(a),all_pass(A,J)))=m(A(a))*passProbability(m,A,J)
+
+  lll_lopsidependence(m,A,B): bool = FORALL(a:C):B(a) IMPLIES
+    FORALL(J:finite_set[C]):independent_side(B,a,J) IMPLIES
+      m(intersection(A(a),all_pass(A,J)))<=m(A(a))*passProbability(m,A,J)
+
+  independence_implies_lopsidependence: LEMMA
+    lll_independence(m,A,B) IMPLIES lll_lopsidependence(m,A,B)
+
+END ppg_event_dependence

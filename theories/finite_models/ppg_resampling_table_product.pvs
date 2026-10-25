@@ -1,0 +1,54 @@
+% The native product law for fixed table reads is the finite product of
+% the same rational marginal laws. Both constructions decode the full
+% variable block by the same function.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_resampling_table_product[V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING ppg_finite_resampling_core[V,Value,variables,domains])
+  Q:{Q:Marginals|Valid(Q)}]: THEORY
+BEGIN
+  State: TYPE = ppg_finite_resampling_core[V,Value,variables,domains].State
+
+  plainDomain: MACRO [V->set[Value]] = LAMBDA(v:V):domains(v)
+
+  IMPORTING ppg_resampling_product_law[V,Value,variables,domains,Q] AS qProduct,
+    ppg_finite_table_fixed_law[V,Value,variables,domains,qProduct.spaces,qProduct.coins] AS qFixed,
+    moser_tardos@ppg_mt_native_spaces[bool,V,Value,plainDomain] AS qNative,
+    ppg_finite_table_core[V,Value,variables,domains] AS qTable,
+    moser_tardos@ppg_mt_read_probability[bool,V,Value,plainDomain,qProduct.spaces,qProduct.coins] AS qReads,
+    moser_tardos@ppg_mt_state_probability[bool,V,Value,plainDomain,variables,qProduct.spaces,qProduct.coins] AS qState
+
+  ResamplingLog: TYPE = qFixed.ResamplingLog
+
+  tableAmbient: MACRO ppg_measurable_space[ResamplingLog].MeasurableSpace =
+    qNative.NativeTableSigma(qProduct.spaces)
+
+  tableStateSigma: MACRO ppg_measurable_space[State].MeasurableSpace =
+    qNative.NativeStateSigma(qProduct.spaces)
+
+  TableInitializer: TYPE = {f:[ResamplingLog->State]|
+    ppg_measurable_map[ResamplingLog,State].measurable(tableAmbient,tableStateSigma,f) AND qTable.InitialLocal(f)}
+
+  tableProbability: ppg_probability_measure[ResamplingLog,tableAmbient].Probability = qFixed.tableLaw
+
+  coordinate_singletons: LEMMA FORALL(v:V,x:(domains(v))):qProduct.spaces(v)(singleton[(domains(v))](x))
+
+  IMPORTING ppg_finite_table_spaces[V,Value,variables,domains,qProduct.spaces] AS qSpaces
+
+  s: VAR State
+
+  native_state_sigma_full: LEMMA qNative.NativeStateSigma(qProduct.spaces)=qProduct.stateSigma
+
+  block_sigma_eq: LEMMA qReads.StateBlockSigma(variables)=qProduct.nativeSigma
+
+  decode_eq: LEMMA qState.stateDecode=qProduct.forget
+
+  product_eq: LEMMA qFixed.productLaw=qProduct.productLaw
+
+  product_point_measurable: LEMMA qNative.NativeStateSigma(qProduct.spaces)(singleton[State](s))
+
+  product_point_mass: LEMMA qFixed.productLaw(singleton[State](s))=productMass(Q,s)
+
+END ppg_resampling_table_product

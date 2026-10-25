@@ -1,0 +1,33 @@
+% Canonicalizing a reconstructed execution tree puts it in the finite
+% witness enumeration for the full label universe. Its node-product weight
+% equals that of the original address tree, including repeated labels.
+%
+% Lean counterparts: PPGraphMoserTardosCanonical.lean and
+% PPGraphMoserTardosInjectivityBridge.lean.
+
+ppg_mt_real_witness[C, V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_mt_real_tree[C, V], witness_trees@ppg_rose_canonical_enum[C, V], witness_trees@ppg_rose_witness_family[C, V]
+  vars: VAR CertVars
+  U: VAR finite_set[C]
+  Clog: VAR [nat -> C]
+  t: VAR nat
+  p: VAR [C -> nonneg_real]
+
+  realWitness(vars, Clog, t): WTree = canonicalize(toWTree(tau_C(vars, Clog, t), null))
+
+  realWitness_props: THEOREM roseLabel(realWitness(vars, Clog, t)) = Clog(t) AND
+    wellFormed(vars)(realWitness(vars, Clog, t)) AND proper(realWitness(vars, Clog, t)) AND
+    weight(p)(realWitness(vars, Clog, t)) = weight(p)(toWTree(tau_C(vars, Clog, t), null))
+
+  realWitness_enumerated: THEOREM fullUniverse(U) IMPLIES
+    wtreesUpTo(vars, U, depth(toWTree(tau_C(vars, Clog, t), null)), Clog(t))(realWitness(vars, Clog, t))
+
+  realWitness_in_family: THEOREM fullUniverse(U) IMPLIES
+    witnessFamily(vars, U, Clog(t))(realWitness(vars, Clog, t))
+
+  realWitness_family_weight: THEOREM fullUniverse(U) IMPLIES
+    witnessFamilyWeight(vars, U, p, Clog(t))(realWitness(vars, Clog, t)) =
+      ennFinite(weight(p)(toWTree(tau_C(vars, Clog, t), null)))
+
+END ppg_mt_real_witness

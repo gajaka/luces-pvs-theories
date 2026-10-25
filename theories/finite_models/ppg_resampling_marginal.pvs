@@ -1,0 +1,47 @@
+% A coordinate law assigns the declared rational weight to each
+% value in its own finite domain. Inclusion of the domain subtype
+% preserves the marginal sum, so validity gives an atomic probability.
+% Measurable singletons force every coordinate sigma algebra to be full.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_resampling_marginal[V,Value: TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING ppg_finite_resampling_core[V,Value,variables,domains])
+  Q:{Q:Marginals|Valid(Q)},v:V]: THEORY
+BEGIN
+  Coordinate: TYPE = (domains(v))
+
+  IMPORTING foundations@ppg_finite_domain[Value,domains(v)] AS marginalDomain,
+    ppg_resampling_normalization[V,Value,variables,domains] AS marginalNormalization,
+    measure_probability@ppg_finite_atomic_probability[Coordinate,marginalDomain.universe] AS marginalAtoms,
+    foundations@ppg_finite_sum[Coordinate] AS marginalTypedSum,
+    measure_probability@ppg_finite_sigma[Coordinate,marginalDomain.universe] AS marginalFiniteSigma,
+    measure_probability@ppg_enn_ofreal
+
+  x: VAR Coordinate
+
+  marginal_nonnegative: LEMMA 0<=Q`mass(v)(x)
+
+  marginal_value_function: LEMMA
+    (LAMBDA(x:Coordinate):Q`mass(v)(x))=
+      (LAMBDA(x:Coordinate):extendMass(Q,v)(x))
+
+  marginal_sum_one: LEMMA
+    marginalTypedSum.fsum(marginalDomain.universe,LAMBDA(x:Coordinate):Q`mass(v)(x))=1
+
+  weights: marginalAtoms.NormalizedWeights = LAMBDA(x:Coordinate):Q`mass(v)(x)
+
+  marginalPMF: ppg_probability_measure[Coordinate,marginalAtoms.fullSigma].Probability =
+    marginalAtoms.atomicLaw(weights)
+
+  marginal_point_mass: LEMMA marginalPMF(singleton[Coordinate](x))=Q`mass(v)(x)
+
+  marginalPMF_apply: THEOREM
+    ennFinite(marginalPMF(singleton[Coordinate](x)))=ofReal(Q`mass(v)(x))
+
+  coordinate_sigma_unique: LEMMA
+    FORALL(S:ppg_measurable_space[Coordinate].MeasurableSpace):
+      (FORALL(x:Coordinate):S(singleton[Coordinate](x))) IMPLIES S=marginalAtoms.fullSigma
+
+END ppg_resampling_marginal

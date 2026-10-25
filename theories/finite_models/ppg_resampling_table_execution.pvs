@@ -1,0 +1,134 @@
+% The actual per-variable-counter table trajectory is adapted to its
+% state-prefix history. Its next-read indicators have the rational
+% product masses as conditional versions, so the finite update theorem
+% constructs the transition-kernel realization.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964.
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Section 2.
+ppg_resampling_table_execution[V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING ppg_finite_resampling_core[V,Value,variables,domains])
+  Q:{Q:Marginals|Valid(Q)},P:Policy,
+  (IMPORTING ppg_resampling_table_product[V,Value,variables,domains,Q])
+  init:ppg_resampling_table_product[V,Value,variables,domains,Q].TableInitializer]: THEORY
+BEGIN
+  IMPORTING ppg_resampling_table_product[V,Value,variables,domains,Q] AS tableLaws,
+    ppg_finite_table_core[V,Value,variables,domains] AS tableCore,
+    ppg_finite_resampling_core[V,Value,variables,domains] AS execCore
+
+  State: TYPE = tableCore.State
+
+  ResamplingLog: TYPE = tableCore.ResamplingLog
+
+  ambient: MACRO ppg_measurable_space[ResamplingLog].MeasurableSpace = tableLaws.tableAmbient
+
+  stateSigma: MACRO ppg_measurable_space[State].MeasurableSpace = tableLaws.tableStateSigma
+
+  active: MACRO tableCore.Footprint = LAMBDA(s:State):execCore.activeFootprint(P,s)
+
+  IMPORTING ppg_resampling_product_law[V,Value,variables,domains,Q] AS execProduct,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS execStates,
+    ppg_finite_table_history[V,Value,variables,domains,execProduct.spaces,active,init] AS tablePast,
+    ppg_finite_table_measurable[V,Value,variables,domains,execProduct.spaces] AS tableMeasurable,
+    ppg_finite_table_spaces[V,Value,variables,domains,execProduct.spaces] AS tableSpaces,
+    measure_probability@ppg_probability_finite_view[ResamplingLog,ambient] AS tableMeasureView,
+    measure_probability@ppg_finite_law_view[ResamplingLog,ambient] AS tableMeasureTypes,
+    measure_probability@ppg_filtration[ResamplingLog,State,ambient] AS tableFiltration,
+    ppg_finite_table_fresh
+
+  tableMeasure: tableMeasureTypes.FiniteLaw = tableMeasureView.nativeLaw(tableLaws.tableProbability)
+
+  tableH: MACRO tableFiltration.Filtration = tablePast.tableHistory
+
+  IMPORTING ppg_finite_process_realization[State,ResamplingLog,execStates.allStates,
+      ambient,tableMeasure,tableH] AS tableProcessTypes,
+    ppg_finite_update_execution[State,State,ResamplingLog,execStates.allStates,execStates.allStates,
+      ambient,tableMeasure,tableH] AS tableUpdate,
+    ppg_finite_update[State,State,execStates.allStates,execStates.allStates] AS tableRule,
+    measure_probability@ppg_finite_measure_integral[ResamplingLog,ambient,tableMeasure] AS tableFunctions,
+    ppg_finite_process_hitting[State,ResamplingLog,execStates.allStates,ambient,tableMeasure,tableH] AS tableHit,
+    ppg_finite_process_expectation[State,ResamplingLog,execStates.allStates,ambient,tableMeasure,tableH] AS tableExpected,
+    measure_integration@integral[ResamplingLog,ppg_nasa_sigma[ResamplingLog].asNasa(ambient),tableMeasure] AS tableIntegral,
+    measure_integration@measure_theory[ResamplingLog,ppg_nasa_sigma[ResamplingLog].asNasa(ambient),tableMeasure] AS tableAE,
+    measure_probability@ppg_conditional_versions
+
+  W: VAR tableExpected.AcceptedWitness(tableRule.model(execCore.rule(Q,P)))
+  n: VAR nat
+  a: VAR State
+  omega: VAR ResamplingLog
+
+  filtration_value: LEMMA tableH=tablePast.history
+
+  history_ambient: LEMMA subset?(tableH(n),ambient)
+
+  initial_measurable: LEMMA ppg_measurable_map[ResamplingLog,State].measurable(
+    tableSpaces.tableSigma,tableSpaces.stateSigma,init)
+
+  trajectoryMap(n): [ResamplingLog->State] = LAMBDA(omega:ResamplingLog):tableCore.trajectory(active,init,n,omega)
+
+  drawMap(n): [ResamplingLog->State] = LAMBDA(omega:ResamplingLog):tableCore.nextDraw(active,init,n,omega)
+
+  trajectory_adapted_full: LEMMA ppg_measurable_map[ResamplingLog,State].measurable(
+    tableH(n),execProduct.stateSigma,trajectoryMap(n))
+
+  draw_map_eq: LEMMA drawMap(n)=tableMeasurable.nextMap(active,init,n)
+
+  draw_measurable_full: LEMMA ppg_measurable_map[ResamplingLog,State].measurable(
+    ambient,execProduct.stateSigma,drawMap(n))
+
+  tableProcess: tableProcessTypes.AdaptedProcess = LAMBDA(n:nat):trajectoryMap(n)
+
+  tableDraws: tableUpdate.DrawProcess = LAMBDA(n:nat):drawMap(n)
+
+  fresh_measure_eq: LEMMA
+    ppg_finite_table_fresh[V,Value,variables,domains,execProduct.spaces,execProduct.coins,active,init,n].tableMeasure=tableMeasure
+
+  draw_event_value: LEMMA tableUpdate.drawEvent(tableUpdate.drawState(tableDraws,n),a)=
+    ppg_finite_table_fresh[V,Value,variables,domains,execProduct.spaces,execProduct.coins,active,init,n].inputEvent(a)
+
+  history_mass_function: LEMMA
+    ppg_finite_history_value[State,ResamplingLog,execStates.allStates,ambient,tableMeasure,tableH(n)].historyValue(
+      LAMBDA(s:State):execCore.rule(Q,P)`mass(a),tableProcessTypes.historyCurrent(tableProcess,n))=
+        tableFunctions.constant(execCore.rule(Q,P)`mass(a))
+
+  table_fresh_version: LEMMA tableUpdate.freshVersion(execCore.rule(Q,P),tableProcess,tableDraws,n)
+
+  step_equation: LEMMA tableProcess(n+1)(omega)=execCore.rule(Q,P)`update(tableProcess(n)(omega),tableDraws(n)(omega))
+
+  tableExecution: THEOREM tableUpdate.Execution(execCore.rule(Q,P),tableProcess,tableDraws)
+
+  executionProcess: tableUpdate.ExecutionProcess(execCore.rule(Q,P),tableDraws) = tableProcess
+
+  tableRealized: tableProcessTypes.Realization(tableRule.model(execCore.rule(Q,P))) =
+    tableUpdate.executionRealization(execCore.rule(Q,P),tableDraws,executionProcess)
+
+  tableRealization: THEOREM tableProcessTypes.TransitionProcess(tableRule.model(execCore.rule(Q,P)),tableRealized)
+
+  realization_at: LEMMA tableRealized(n)(omega)=tableCore.trajectory(active,init,n,omega)
+
+  initialPotential(W): tableFunctions.NativeFunction = tableProcessTypes.potentialValue(W,tableRealized,0)
+
+  initial_potential_at: LEMMA initialPotential(W)(omega)=W`potential(init(omega))
+
+  initial_mean: LEMMA tableIntegral.integral(initialPotential(W))=
+    tableExpected.potentialMean(tableRule.model(execCore.rule(Q,P)),W,tableRealized,0)
+
+  table_expectedHitCount_le: THEOREM
+    ele(tableHit.expectedHitCount(tableRule.model(execCore.rule(Q,P)),tableRealized),
+      ennFinite(tableIntegral.integral(initialPotential(W))/
+        tableExpected.positiveRate(tableRule.model(execCore.rule(Q,P)),W)))
+
+  table_expectedHitCount_lt_top: THEOREM
+    FORALL(W:tableExpected.AcceptedWitness(tableRule.model(execCore.rule(Q,P)))):
+      ennFinite?(tableHit.expectedHitCount(tableRule.model(execCore.rule(Q,P)),tableRealized))
+
+  success_event_value: LEMMA tableHit.successEvent(tableRule.model(execCore.rule(Q,P)),tableRealized)=
+    {omega:ResamplingLog|EXISTS(T:nat):P`good(tableCore.trajectory(active,init,T,omega))}
+
+  table_ae_exists_good: THEOREM FORALL(W:tableExpected.AcceptedWitness(tableRule.model(execCore.rule(Q,P)))):
+    tableAE.ae?({omega:ResamplingLog|EXISTS(T:nat):P`good(tableCore.trajectory(active,init,T,omega))})
+
+END ppg_resampling_table_execution

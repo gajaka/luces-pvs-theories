@@ -1,0 +1,107 @@
+% The mass is the canonical outer extension of the given original law.
+% A measurable bad-event cut splits the mass of every conditioning set,
+% including a nonmeasurable one. The telescope uses exactly the supplied
+% strict-subset induction hypothesis; independence enters the numerator
+% and the final Lovasz Local Lemma bounds.
+%
+% Noga Alon and Joel H. Spencer, The Probabilistic Method, fourth edition,
+% Wiley, 2016, Lemma 5.1.1, equations (5.1)--(5.4).
+% Lean counterpart: the probability steps in PPGraphLLL.lean.
+ppg_lll_source_probability[X,C,V:TYPE,
+  (IMPORTING measure_probability@ppg_measurable_space[X]) S:MeasurableSpace,
+  (IMPORTING measure_probability@ppg_probability_measure[X,S]) mu:Probability,
+  (IMPORTING ppg_core@ppg_bdd[C,V]) vars:CertVars]: THEORY
+BEGIN
+  IMPORTING ppg_lll_event_splits[X,C,V,vars] AS splits,
+    ppg_lll_pass_measurable[X,C,S] AS events,
+    ppg_lopsided_probability[X,C,V,S,mu,vars] AS genuine,
+    measure_probability@ppg_probability_outer[X,S,mu] AS originalLaw,
+    ppg_lopsided_numerator[X,C,V,S,mu,vars] AS numerator,
+    ppg_shearer_bdd[C,V,vars] AS dependency,
+    ppg_lll_shearer[C,dependency.dependencyGraph] AS criterion,
+    ppg_shearer_probability[X,C,S,mu,dependency.dependencyGraph] AS shearer
+  A: VAR BadEvents
+  B,T,U,W: VAR finite_set[C]
+  i,j,k: VAR C
+  x: VAR [C->real]
+  Y,Z: VAR set[X]
+
+  originalMass: RawMass = originalLaw.mass
+
+  source_weights_match: LEMMA splits.event_prob(A,originalMass)=genuine.eventWeights(A)
+
+  source_factors_match: LEMMA splits.factors(x)=criterion.factors(x)
+
+  source_conditions: LEMMA events.AllMeasurable(A) AND lll_independence(originalMass,A,B) AND
+    lll_feasible(splits.event_prob(A,originalMass),x,vars,B) IMPLIES genuine.LopsidedConditions(A,x,B)
+
+  numerator_bound: THEOREM lll_independence(originalMass,A,B) AND subset?(T,B) AND B(i) AND NOT T(i)
+    IMPLIES originalMass(intersection(A(i),all_pass(A,T)))<=
+      originalMass(A(i))*originalMass(all_pass(A,splits.S2_of(B,T,i)))
+
+  pass_event_difference: LEMMA intersection(splits.pass_event(A,j),Y)=difference(Y,A(j))
+
+  pass_event_measure_bound: THEOREM S(A(j)) AND
+    originalMass(intersection(A(j),Y))<=x(j)*originalMass(Y) IMPLIES
+      (1-x(j))*originalMass(Y)<=originalMass(intersection(splits.pass_event(A,j),Y))
+
+  TelescopeIH(A,x,B,T): bool = FORALL(W:finite_set[C]):
+    subset?(W,T) AND W/=T AND subset?(W,B) IMPLIES
+      FORALL(k:C):B(k) AND NOT W(k) IMPLIES
+        originalMass(intersection(A(k),all_pass(A,W)))<=x(k)*originalMass(all_pass(A,W))
+
+  TelescopeInner(A,x,B,T,i,U): bool =
+    product(U,splits.factors(x))*originalMass(all_pass(A,splits.S2_of(B,T,i)))<=
+      originalMass(intersection(all_pass(A,U),all_pass(A,splits.S2_of(B,T,i))))
+
+  insert_subset_parts: LEMMA subset?(add(j,U),W) IMPLIES subset?(U,W) AND W(j)
+
+  telescope_bookkeeping: LEMMA subset?(T,B) AND NOT U(j) AND
+    subset?(add(j,U),splits.S1_of(B,T,i)) IMPLIES
+      subset?(union(U,splits.S2_of(B,T,i)),T) AND union(U,splits.S2_of(B,T,i))/=T AND
+      subset?(union(U,splits.S2_of(B,T,i)),B) AND NOT union(U,splits.S2_of(B,T,i))(j) AND B(j)
+
+  feasible_factor_nonnegative: LEMMA lll_feasible(splits.event_prob(A,originalMass),x,vars,B) AND
+    B(j) IMPLIES 0<=1-x(j)
+
+  telescope_ih_at_insert: LEMMA subset?(T,B) AND NOT U(j) AND
+    subset?(add(j,U),splits.S1_of(B,T,i)) AND TelescopeIH(A,x,B,T) IMPLIES
+      originalMass(intersection(A(j),all_pass(A,union(U,splits.S2_of(B,T,i)))))<=
+        x(j)*originalMass(all_pass(A,union(U,splits.S2_of(B,T,i))))
+
+  inserted_product: LEMMA NOT U(j) IMPLIES
+    product(add(j,U),splits.factors(x))=(1-x(j))*product(U,splits.factors(x))
+
+  telescope_event_identity: LEMMA NOT U(j) IMPLIES
+    intersection(all_pass(A,add(j,U)),all_pass(A,splits.S2_of(B,T,i)))=
+      intersection(splits.pass_event(A,j),all_pass(A,union(U,splits.S2_of(B,T,i))))
+
+  telescope_step: THEOREM events.AllMeasurable(A) AND
+    lll_feasible(splits.event_prob(A,originalMass),x,vars,B) AND subset?(T,B) AND B(i) AND NOT T(i) AND
+    NOT U(j) AND subset?(add(j,U),splits.S1_of(B,T,i)) AND TelescopeIH(A,x,B,T) AND
+    TelescopeInner(A,x,B,T,i,U) IMPLIES TelescopeInner(A,x,B,T,i,add(j,U))
+
+  telescope_empty: LEMMA TelescopeInner(A,x,B,T,i,emptyset[C])
+
+  denominator_prefix_bound: LEMMA events.AllMeasurable(A) AND
+    lll_feasible(splits.event_prob(A,originalMass),x,vars,B) AND subset?(T,B) AND B(i) AND NOT T(i) AND
+    TelescopeIH(A,x,B,T) AND subset?(U,splits.S1_of(B,T,i)) IMPLIES TelescopeInner(A,x,B,T,i,U)
+
+  denominator_bound: THEOREM events.AllMeasurable(A) AND
+    lll_feasible(splits.event_prob(A,originalMass),x,vars,B) AND subset?(T,B) AND B(i) AND NOT T(i) AND
+    TelescopeIH(A,x,B,T) IMPLIES TelescopeInner(A,x,B,T,i,splits.S1_of(B,T,i))
+
+  lll_key_bound: THEOREM events.AllMeasurable(A) AND lll_independence(originalMass,A,B) AND
+    lll_feasible(splits.event_prob(A,originalMass),x,vars,B) AND subset?(T,B) AND B(i) AND NOT T(i)
+    IMPLIES originalMass(intersection(A(i),all_pass(A,T)))<=x(i)*originalMass(all_pass(A,T))
+
+  lll_good_event_lower_bound: THEOREM events.AllMeasurable(A) AND lll_independence(originalMass,A,B) AND
+    lll_feasible(splits.event_prob(A,originalMass),x,vars,B) IMPLIES
+      product(B,splits.factors(x))<=originalMass(splits.good_event(A,B))
+
+  lll_positive_probability: THEOREM events.AllMeasurable(A) AND lll_independence(originalMass,A,B) AND
+    lll_feasible(splits.event_prob(A,originalMass),x,vars,B) IMPLIES 0<originalMass(splits.good_event(A,B))
+
+  lll_good_state_exists: THEOREM events.AllMeasurable(A) AND lll_independence(originalMass,A,B) AND
+    lll_feasible(splits.event_prob(A,originalMass),x,vars,B) IMPLIES EXISTS(w:X):splits.good_event(A,B)(w)
+END ppg_lll_source_probability

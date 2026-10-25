@@ -1,0 +1,74 @@
+% Measurable bad tests and a measurable initializer give a measurable
+% state at every time. Composing with the nonnegative state cost gives
+% measurable charges. The running events are measurable, so their
+% unrestricted weighted sum is a measurable extended-real function.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Edward A. Lee and Sanjit A. Seshia, Introduction to Embedded Systems,
+% second edition, MIT Press, 2017, Chapter 16.
+% Lean counterpart: RepairDrift.measurable_mtTotalCost in
+% PPGraphMoserTardosDriftCost.lean.
+ppg_mt_cost_measurable[C,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_mt_coordinate_laws[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),fallback:C,
+  eventOrder:{e:list[C]|FORALL(c:C):member(c,e)}]: THEORY
+BEGIN
+  IMPORTING ppg_mt_random_process[C,V,Value,domain] AS slots,
+    ppg_mt_semantics[C,V,Value,domain] AS semantics,
+    ppg_mt_native_spaces[C,V,Value,domain] AS nativeSpaces,
+    ppg_mt_trajectory_measurable[C,V,Value,domain] AS trajectories,
+    ppg_mt_stopped_events[C,V,Value,domain] AS stopped,
+    ppg_mt_check_probability[C,V,Value,domain,spaces,laws] AS checks,
+    ppg_mt_cost_pointwise[C,V,Value,domain,fallback,eventOrder] AS charges,
+    measure_probability@ppg_enn_simple_sup
+
+  State: TYPE = semantics.MTState
+
+  ResamplingLog: TYPE = slots.LogSpace
+
+  tableSigma: MACRO ppg_measurable_space[ResamplingLog].MeasurableSpace = nativeSpaces.NativeTableSigma(spaces)
+
+  stateSigma: MACRO ppg_measurable_space[State].MeasurableSpace = nativeSpaces.NativeStateSigma(spaces)
+
+  IMPORTING measure_probability@ppg_weighted_cost_measurable[ResamplingLog,tableSigma] AS weightedMeasurable,
+    measure_probability@ppg_weighted_active_cost[ResamplingLog] AS weighted,
+    measure_probability@ppg_measurable_map[ResamplingLog,State] AS stateMaps,
+    measure_probability@ppg_measurable_map[State,real] AS costMaps,
+    measure_probability@ppg_measurable_map[ResamplingLog,real] AS valueMaps,
+    measure_probability@ppg_measurable_map[ResamplingLog,ENN] AS ennMaps,
+    measure_probability@ppg_measurable_compose[ResamplingLog,State,real] AS composition,
+    measure_probability@ppg_enn_measurable[ResamplingLog] AS extended
+
+  Initializer: TYPE = {f:[ResamplingLog->State]|stateMaps.measurable(tableSigma,stateSigma,f)}
+
+  MeasurableCost: TYPE = {f:[State->nonneg_real]|costMaps.measurable(stateSigma,weightedMeasurable.borelSigma,f)}
+
+  vars: VAR [C->finite_set[V]]
+  B: VAR checks.NativeBad
+  init: VAR Initializer
+  cost: VAR MeasurableCost
+  n: VAR nat
+
+  trajectory_measurable: LEMMA stateMaps.measurable(tableSigma,stateSigma,
+    LAMBDA(omega:ResamplingLog):slots.randTraj(vars,B,fallback,eventOrder,init(omega),omega,n))
+
+  running_event_measurable: LEMMA tableSigma(stopped.runningEvent(vars,B,fallback,eventOrder,init,n))
+
+  running_schedule_measurable: LEMMA tableSigma(charges.runningSchedule(vars,B,init)(n))
+
+  charge_measurable: LEMMA valueMaps.measurable(tableSigma,weightedMeasurable.borelSigma,
+    LAMBDA(omega:ResamplingLog):cost(slots.randTraj(vars,B,fallback,eventOrder,init(omega),omega,n)))
+
+  cost_schedule_measurable: LEMMA weightedMeasurable.weightMeasurable(charges.costSchedule(vars,B,init,cost))
+
+  runningEvents(vars,B,init): [nat->(tableSigma)] = charges.runningSchedule(vars,B,init)
+
+  costWeights(vars,B,init,cost): weightedMeasurable.MeasurableWeights = charges.costSchedule(vars,B,init,cost)
+
+  total_function_eq: LEMMA (LAMBDA(omega:ResamplingLog):charges.mtTotalCost(vars,B,init,cost,omega))=
+    (LAMBDA(omega:ResamplingLog):weighted.weightedTotal(runningEvents(vars,B,init),costWeights(vars,B,init,cost),omega))
+
+  measurable_mtTotalCost: THEOREM ennMaps.measurable(tableSigma,extended.ENNSigma,
+    LAMBDA(omega:ResamplingLog):charges.mtTotalCost(vars,B,init,cost,omega))
+
+END ppg_mt_cost_measurable

@@ -1,0 +1,68 @@
+% Every finite selection from the unbounded Pegden family fits in one
+% depth stage. The stage mass is the recursive Pegden weight, so its
+% uniform budget bounds the unrestricted nonnegative sum. No summability
+% or termination premise is used to obtain this bound.
+%
+% Wesley Pegden, "An extension of the Moser-Tardos algorithmic local
+% lemma", Theorem 1.4. https://arxiv.org/abs/1102.2853
+% Lean counterpart: exists_treesUpTo_superset and tsum_familyWeight_le
+% in PPGraphMoserTardosPegden.lean.
+ppg_pegden_family[C,V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_pegden_weight_sum[C,V], measure_probability@ppg_nonneg_tsum[WTree] AS treeTotals
+  vars: VAR CertVars
+  U: VAR finite_set[C]
+  p,x: VAR [C -> nonneg_real]
+  a: VAR C
+  t: VAR WTree
+  D: VAR nat
+  F: VAR finite_set[WTree]
+
+  pegdenFamily(vars,U,a)(t:WTree): bool = EXISTS(D:nat):pegdenTreesUpTo(vars,U,D,a)(t)
+
+  pegdenFamilyWeightNN(vars,U,p,a)(t:WTree): nonneg_real =
+    IF pegdenFamily(vars,U,a)(t) THEN weight(p)(t) ELSE 0 ENDIF
+
+  pegdenFamilyWeight(vars,U,p,a): [WTree -> ENN] = LAMBDA(t:WTree):ennFinite(pegdenFamilyWeightNN(vars,U,p,a)(t))
+
+  pegdenFamilyWeight_of_mem: THEOREM pegdenFamily(vars,U,a)(t) IMPLIES
+    pegdenFamilyWeight(vars,U,p,a)(t)=ennFinite(weight(p)(t))
+
+  pegdenFamilyWeight_of_not_mem: THEOREM NOT pegdenFamily(vars,U,a)(t) IMPLIES
+    pegdenFamilyWeight(vars,U,p,a)(t)=ennFinite(0)
+
+  pegdenFamily_root: LEMMA pegdenFamily(vars,U,a)(t) IMPLIES roseLabel(t)=a
+
+  stage_in_pegdenFamily: LEMMA pegdenTreesUpTo(vars,U,D,a)(t) IMPLIES pegdenFamily(vars,U,a)(t)
+
+  pegdenStages(vars,U,a): [nat -> finite_set[WTree]] = LAMBDA(D:nat):pegdenTreesUpTo(vars,U,D,a)
+
+  pegdenStages_increasing: LEMMA increasing(pegdenStages(vars,U,a))
+
+  pegdenStages_family: LEMMA family(pegdenStages(vars,U,a))=pegdenFamily(vars,U,a)
+
+  pegdenStages_support: LEMMA supportIn(pegdenFamilyWeightNN(vars,U,p,a),pegdenStages(vars,U,a))
+
+  exists_treesUpTo_superset: THEOREM (FORALL(t:WTree):F(t) IMPLIES pegdenFamily(vars,U,a)(t))
+    IMPLIES EXISTS(D:nat):subset?(F,pegdenTreesUpTo(vars,U,D,a))
+
+  stage_weight_agrees: LEMMA pegdenTreesUpTo(vars,U,D,a)(t) IMPLIES
+    pegdenFamilyWeightNN(vars,U,p,a)(t)=weight(p)(t)
+
+  pegden_finite_family_mass: LEMMA treeSums.sum(pegdenTreesUpTo(vars,U,D,a),pegdenFamilyWeightNN(vars,U,p,a))=pegdenWeight(vars,U,p,D,a)
+
+  pegden_stage_weight_sum: THEOREM
+    esum(pegdenTreesUpTo(vars,U,D,a),pegdenFamilyWeight(vars,U,p,a))=ennFinite(pegdenWeight(vars,U,p,D,a))
+
+  pegden_mass_function: LEMMA (LAMBDA(D:nat):treeSums.sum(pegdenTreesUpTo(vars,U,D,a),pegdenFamilyWeightNN(vars,U,p,a)))=
+    (LAMBDA(D:nat):pegdenWeight(vars,U,p,D,a))
+
+  pegdenFamilyTotal(vars,U,p,a): ENN = tsum(pegdenFamilyWeightNN(vars,U,p,a))
+
+  pegden_total_eq_iSup: THEOREM pegdenFamilyTotal(vars,U,p,a)=
+    iSupNN(LAMBDA(D:nat):pegdenWeight(vars,U,p,D,a))
+
+  tsum_familyWeight_le: THEOREM pegdenBudget(vars,U,p,x) IMPLIES
+    ele(pegdenFamilyTotal(vars,U,p,a),ennFinite(x(a)))
+
+END ppg_pegden_family

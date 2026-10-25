@@ -1,0 +1,180 @@
+% Splitting a tagged coordinate family gives the binary product of its
+% two coordinate laws. The split and its inverse are the actual maps on
+% dependent functions, so the empty coordinate families need no exception.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% This is the sum-coordinate product identity used in PPGraphHLSQueryLaw.lean.
+ppg_probability_sum_product[A,B,Value:TYPE,leftDomain:[A->set[Value]],rightDomain:[B->set[Value]],
+  leftUniverse:{F:finite_set[A]|F=fullset[A]},rightUniverse:{F:finite_set[B]|F=fullset[B]},
+  (IMPORTING ppg_probability_coordinates[A,Value,leftDomain],
+    ppg_probability_coordinates[B,Value,rightDomain])
+  leftSpaces:ppg_probability_coordinates[A,Value,leftDomain].CoordinateSpaces,
+  rightSpaces:ppg_probability_coordinates[B,Value,rightDomain].CoordinateSpaces,
+  leftLaws:ppg_probability_coordinates[A,Value,leftDomain].ProbabilityFamily(leftSpaces),
+  rightLaws:ppg_probability_coordinates[B,Value,rightDomain].ProbabilityFamily(rightSpaces)]: THEORY
+BEGIN
+  SumIndex: TYPE = union[A,B]
+
+  sumDomain(k:SumIndex): set[Value] =
+    IF inl?(k) THEN leftDomain(left(k)) ELSE rightDomain(right(k)) ENDIF
+
+  sum_domain_left: LEMMA FORALL(k:SumIndex):inl?(k) IMPLIES sumDomain(k)=leftDomain(left(k))
+
+  sum_domain_right: LEMMA FORALL(k:SumIndex):NOT inl?(k) IMPLIES sumDomain(k)=rightDomain(right(k))
+
+  sumSpaces: [k:SumIndex->ppg_measurable_space[(sumDomain(k))].MeasurableSpace] =
+    LAMBDA(k:SumIndex):IF inl?(k)
+      THEN (leftSpaces(left(k))::ppg_measurable_space[(sumDomain(k))].MeasurableSpace)
+      ELSE (rightSpaces(right(k))::ppg_measurable_space[(sumDomain(k))].MeasurableSpace) ENDIF
+
+  sum_space_left: LEMMA FORALL(k:SumIndex):inl?(k) IMPLIES sumSpaces(k)=
+    (leftSpaces(left(k))::ppg_measurable_space[(sumDomain(k))].MeasurableSpace)
+
+  sum_space_right: LEMMA FORALL(k:SumIndex):NOT inl?(k) IMPLIES sumSpaces(k)=
+    (rightSpaces(right(k))::ppg_measurable_space[(sumDomain(k))].MeasurableSpace)
+
+  sumLaws: [k:SumIndex->ppg_probability_measure[(sumDomain(k)),sumSpaces(k)].Probability] =
+    LAMBDA(k:SumIndex):IF inl?(k)
+      THEN (leftLaws(left(k))::ppg_probability_measure[(sumDomain(k)),sumSpaces(k)].Probability)
+      ELSE (rightLaws(right(k))::ppg_probability_measure[(sumDomain(k)),sumSpaces(k)].Probability) ENDIF
+
+  leftTag(a:A): SumIndex = inl(a)
+
+  rightTag(b:B): SumIndex = inr(b)
+
+  leftIndices: finite_set[SumIndex] = image(leftTag,leftUniverse)
+
+  rightIndices: finite_set[SumIndex] = image(rightTag,rightUniverse)
+
+  sumUniverse: finite_set[SumIndex] = union(leftIndices,rightIndices)
+
+  left_index_member: LEMMA FORALL(a:A):leftIndices(inl(a))
+
+  right_index_member: LEMMA FORALL(b:B):rightIndices(inr(b))
+
+  sum_universe_full: LEMMA sumUniverse=fullset[SumIndex]
+
+  tagged_indices_disjoint: LEMMA disjoint?(leftIndices,rightIndices)
+
+  IMPORTING ppg_measurable_block[A,Value,leftDomain,leftSpaces] AS sumLeftBlocks,
+    ppg_measurable_block[B,Value,rightDomain,rightSpaces] AS sumRightBlocks,
+    ppg_measurable_block[SumIndex,Value,sumDomain,sumSpaces] AS sumBlocks,
+    ppg_measurable_block_box[A,Value,leftDomain,leftSpaces] AS sumLeftBoxes,
+    ppg_measurable_block_box[B,Value,rightDomain,rightSpaces] AS sumRightBoxes,
+    ppg_measurable_block_box[SumIndex,Value,sumDomain,sumSpaces] AS sumBoxes,
+    ppg_probability_finite_product[A,Value,leftDomain,leftSpaces,leftLaws] AS sumLeftProduct,
+    ppg_probability_finite_product[B,Value,rightDomain,rightSpaces,rightLaws] AS sumRightProduct,
+    ppg_probability_finite_product[SumIndex,Value,sumDomain,sumSpaces,sumLaws] AS sumProduct,
+    ppg_probability_finite_consistency[SumIndex,Value,sumDomain,sumSpaces,sumLaws] AS sumUnique,
+    foundations@ppg_finite_product[A] AS sumLeftFold,foundations@ppg_finite_product[B] AS sumRightFold,
+    foundations@ppg_finite_product[SumIndex] AS sumFold,foundations@ppg_real_product[SumIndex] AS sumFoldLaws,
+    foundations@ppg_finite_product_image[A,SumIndex] AS sumLeftImage,
+    foundations@ppg_finite_product_image[B,SumIndex] AS sumRightImage
+
+  LeftValue: TYPE = sumLeftBlocks.Block(leftUniverse)
+
+  RightValue: TYPE = sumRightBlocks.Block(rightUniverse)
+
+  SumValue: TYPE = sumBlocks.Block(sumUniverse)
+
+  PairValue: TYPE = [LeftValue,RightValue]
+
+  LeftSigma: MACRO ppg_measurable_space[LeftValue].MeasurableSpace = sumLeftBlocks.blockSigma(leftUniverse)
+
+  RightSigma: MACRO ppg_measurable_space[RightValue].MeasurableSpace = sumRightBlocks.blockSigma(rightUniverse)
+
+  SumSigma: MACRO ppg_measurable_space[SumValue].MeasurableSpace = sumBlocks.blockSigma(sumUniverse)
+
+  IMPORTING ppg_probability_pair[LeftValue,RightValue,LeftSigma,RightSigma] AS sumPairLaw,
+    ppg_measurable_pair[SumValue,LeftValue,RightValue] AS sumPairMaps,
+    ppg_measurable_pair[PairValue,LeftValue,RightValue] AS sumPairCoordinates,
+    ppg_measurable_block_map[PairValue,SumIndex,Value,sumDomain,sumSpaces] AS sumJoinMaps,
+    ppg_measurable_block_map[SumValue,A,Value,leftDomain,leftSpaces] AS sumLeftMaps,
+    ppg_measurable_block_map[SumValue,B,Value,rightDomain,rightSpaces] AS sumRightMaps,
+    ppg_measurable_compose
+
+  PairSigma: MACRO ppg_measurable_space[PairValue].MeasurableSpace = sumPairLaw.JointSpace
+
+  splitSum(x:SumValue): PairValue =
+    (LAMBDA(a:(leftUniverse)):x(inl(a)),LAMBDA(b:(rightUniverse)):x(inr(b)))
+
+  joinSum(p:PairValue): SumValue = LAMBDA(k:(sumUniverse)):
+    CASES k OF inl(a):p`1(a),inr(b):p`2(b) ENDCASES
+
+  split_join: LEMMA FORALL(p:PairValue):splitSum(joinSum(p))=p
+
+  join_split: LEMMA FORALL(x:SumValue):joinSum(splitSum(x))=x
+
+  pair_space_source: LEMMA PairSigma=sumPairMaps.pairSigma(LeftSigma,RightSigma)
+
+  split_left_coordinate: LEMMA FORALL(a:(leftUniverse)):
+    ppg_measurable_map[SumValue,(leftDomain(a))].measurable(SumSigma,leftSpaces(a),
+      LAMBDA(x:SumValue):x(inl(a)))
+
+  split_right_coordinate: LEMMA FORALL(b:(rightUniverse)):
+    ppg_measurable_map[SumValue,(rightDomain(b))].measurable(SumSigma,rightSpaces(b),
+      LAMBDA(x:SumValue):x(inr(b)))
+
+  split_left_measurable: LEMMA ppg_measurable_map[SumValue,LeftValue].measurable(
+    SumSigma,LeftSigma,LAMBDA(x:SumValue):splitSum(x)`1)
+
+  split_right_measurable: LEMMA ppg_measurable_map[SumValue,RightValue].measurable(
+    SumSigma,RightSigma,LAMBDA(x:SumValue):splitSum(x)`2)
+
+  split_sum_measurable: LEMMA ppg_measurable_map[SumValue,PairValue].measurable(SumSigma,PairSigma,splitSum)
+
+  join_left_coordinate: LEMMA FORALL(a:(leftUniverse)):
+    ppg_measurable_map[PairValue,(leftDomain(a))].measurable(PairSigma,leftSpaces(a),
+      LAMBDA(p:PairValue):p`1(a))
+
+  join_right_coordinate: LEMMA FORALL(b:(rightUniverse)):
+    ppg_measurable_map[PairValue,(rightDomain(b))].measurable(PairSigma,rightSpaces(b),
+      LAMBDA(p:PairValue):p`2(b))
+
+  join_sum_measurable: LEMMA ppg_measurable_map[PairValue,SumValue].measurable(PairSigma,SumSigma,joinSum)
+
+  E: VAR sumBoxes.CoordinateEvents
+  f: VAR [SumIndex->real]
+
+  left_tag_injective: LEMMA FORALL(a,b:A):leftTag(a)=leftTag(b) IMPLIES a=b
+
+  right_tag_injective: LEMMA FORALL(a,b:B):rightTag(a)=rightTag(b) IMPLIES a=b
+
+  left_product_reindex: LEMMA sumFold.product(leftIndices,f)=
+    sumLeftFold.product(leftUniverse,LAMBDA(a:A):f(inl(a)))
+
+  right_product_reindex: LEMMA sumFold.product(rightIndices,f)=
+    sumRightFold.product(rightUniverse,LAMBDA(b:B):f(inr(b)))
+
+  leftEvents(E): sumLeftBoxes.CoordinateEvents = LAMBDA(a:A):E(inl(a))
+
+  rightEvents(E): sumRightBoxes.CoordinateEvents = LAMBDA(b:B):E(inr(b))
+
+  sum_product: LEMMA sumFold.product(sumUniverse,f)=
+    sumLeftFold.product(leftUniverse,LAMBDA(a:A):f(inl(a)))*
+      sumRightFold.product(rightUniverse,LAMBDA(b:B):f(inr(b)))
+
+  join_box_preimage: LEMMA ppg_measurable_map[PairValue,SumValue].inverseImage(
+    joinSum,sumBoxes.blockBox(sumUniverse,E))=
+      cross_product(sumLeftBoxes.blockBox(leftUniverse,leftEvents(E)),
+        sumRightBoxes.blockBox(rightUniverse,rightEvents(E)))
+
+  split_join_preimage: LEMMA FORALL(D:set[PairValue]):
+    ppg_measurable_map[PairValue,SumValue].inverseImage(joinSum,
+      ppg_measurable_map[SumValue,PairValue].inverseImage(splitSum,D))=D
+
+  IMPORTING ppg_probability_map[PairValue,SumValue,PairSigma,SumSigma] AS sumJoinPush,
+    ppg_probability_map[SumValue,PairValue,SumSigma,PairSigma] AS sumSplitPush
+
+  pairLaw: sumJoinPush.SourceLaw =
+    sumPairLaw.productLaw(sumLeftProduct.finiteLaw(leftUniverse),sumRightProduct.finiteLaw(rightUniverse))
+
+  joinedLaw: sumJoinPush.TargetLaw = sumJoinPush.pushforward(pairLaw,joinSum)
+
+  joined_law_box: LEMMA joinedLaw(sumBoxes.blockBox(sumUniverse,E))=
+    sumFold.product(sumUniverse,LAMBDA(k:SumIndex):sumLaws(k)(E(k)))
+
+  joined_law_eq: LEMMA joinedLaw=sumProduct.finiteLaw(sumUniverse)
+
+  split_sum_law: THEOREM sumSplitPush.pushforward(sumProduct.finiteLaw(sumUniverse),splitSum)=pairLaw
+END ppg_probability_sum_product

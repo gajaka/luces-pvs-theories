@@ -13,17 +13,48 @@ results checked in **191 of 191 modules**. Supporting PVS lemmas and
 type-correctness conditions are additional obligations and are excluded from
 those source-result counts.
 
+## Directory layout
+
+The generic theories are grouped by subject. A theory keeps its original name,
+and its saved `.prf` file stays beside its `.pvs` source. Imports between groups
+name the corresponding PVS library explicitly.
+
+| Directory | Contents |
+|-----------|----------|
+| [theories/foundations/](theories/foundations/) | Finite sets, lists, sums, products, order, encodings and rational linear algebra. |
+| [theories/ppg_core/](theories/ppg_core/) | Proof-preserving graphs, morphisms, dependency components, refinement and repair relations. |
+| [theories/certification/](theories/certification/) | Certificate families, ordered levels, quotients, selection, blocking and self-assessment. |
+| [theories/measure_probability/](theories/measure_probability/) | Measurable spaces, extended nonnegative values, probability laws, products, integrals and conditional expectations. |
+| [theories/witness_trees/](theories/witness_trees/) | Ordered witness trees, addresses, canonical encodings and weights. |
+| [theories/moser_tardos/](theories/moser_tardos/) | Resampling processes, trajectories, witness probabilities, expected work and termination. |
+| [theories/local_lemmas/](theories/local_lemmas/) | General, lopsided and variable Local Lemmas; Pegden and Shearer bounds. |
+| [theories/hls/](theories/hls/) | HLS witness DAGs, stable encodings, coin laws, scheduling policies and repair bounds. |
+| [theories/finite_models/](theories/finite_models/) | Exact stochastic updates, finite-state kernels, drift certificates, stopping, lumping and model reduction. |
+| [theories/decision/](theories/decision/) | Feasibility checks, finite abstractions, unsatisfiable cores, Farkas certificates and refutations. |
+| [theories/computability/](theories/computability/) | Primitive and partial recursion, program encodings, enumeration and undecidability. |
+| [applications/luces/](applications/luces/) | Transport, Fisher geometry, observability and Lie-generator models. |
+| [applications/boot/](applications/boot/) | The lowRISC and OpenTitan boot models. |
+
+[Sterbenz/](Sterbenz/) retains its own floating-point development and library
+requirements. Standalone SMT-LIB examples are in [smt/](smt/), supporting reports
+in [docs/](docs/), and verification commands in [scripts/](scripts/).
+
 ## Typechecking and proof replay
 
 The recorded translation checks use **PVS 8.1.2**,
 [NASA's PVS libraries](https://github.com/nasa/pvslib) and the `proveit` batch
 driver, version `8.1-20260706`. The libraries must be available through
 `PVS_LIBRARY_PATH`; its entries are directories containing libraries such as
-`measure_integration`, `sets_aux` and `graphs`.
+`measure_integration`, `sets_aux` and `graphs`. From the repository root, include
+the project library directories as well when using interactive PVS or `proveit`:
 
 ```sh
-export PVS_LIBRARY_PATH="/path/to/pvslib"
+export PVS_LIBRARY_PATH="$PWD/theories:$PWD/applications:/path/to/pvslib"
 ```
+
+PVS loads the project startup file [theories/.pvs.lisp](theories/.pvs.lisp)
+from that library path. It uses the standard setting that prevents recursive
+binary-cache serialization across the project libraries.
 
 Each `.pvs` file contains specifications and theorem statements. Its `.prf`
 companion contains saved proofs. Typechecking checks expressions and generates
@@ -31,54 +62,75 @@ type-correctness conditions (TCCs); replaying the proofs checks those conditions
 and the theorem bodies. A successful typecheck alone does not establish the
 theorems.
 
-From the repository root, typecheck one file without running its proofs:
+From the repository root, typecheck one file without replaying its proofs:
 
 ```sh
-proveit --typecheck-only ppg_general_active_count.pvs
+python3 scripts/check.py --typecheck \
+  --file theories/measure_probability/ppg_general_active_count.pvs
 ```
 
-For a clean replay, use a separate checkout: PVS writes proof metadata and
-compiled context files. The following command forces the saved proofs of one
-file and its imported project theories, with oracles disabled and no ProofLite
-script installation:
+Replay the saved proofs of that file and its imported project theories:
 
 ```sh
-REPORT_DIR="../pvs-proof-reports"
-mkdir -p "$REPORT_DIR"
-
-proveit --clean --import-chain --no-scripts --no-purge \
-  --disable-oracles --force --timeout 60 --log \
-  --dir "$REPORT_DIR" --out active-count \
-  ppg_general_active_count.pvs
+python3 scripts/check.py \
+  --file theories/measure_probability/ppg_general_active_count.pvs
 ```
 
-To replay just one theorem from its saved proof:
+Select one subject group or the whole generic and application development:
 
 ```sh
+python3 scripts/check.py --group hls
+python3 scripts/check.py --all --timeout 180
+```
+
+The runner uses Python 3.9 or later and the installed PVS executable. It sets
+up the project library paths, copies sources and saved proofs into a separate
+workspace, and writes logs and a machine-readable report outside the repository.
+`--report-dir` selects a new report directory. Proof replay runs the project
+proofs and the library obligations they use, with oracles disabled and without
+installing ProofLite scripts. Project and library calls have separate counts.
+A successful run requires complete proof chains, including imported obligations
+and relevant TCCs.
+
+The default is one PVS worker. `--jobs 2` uses two independent workspaces;
+`--timeout` sets the time limit for each proof; the full-run example allows
+180 seconds. `--heap-mib` sets each worker's Lisp heap. To inspect the selected
+files without starting PVS, use `--all --list` or `--group hls --list`.
+
+`--all` selects `theories/` and `applications/`. It leaves [Sterbenz/](Sterbenz/)
+out because that development has separate floating-point library requirements.
+Select it explicitly with `--group Sterbenz` after configuring those libraries;
+see its [README](Sterbenz/README.md). The SMT-LIB examples in [smt/](smt/) use
+separate tools.
+
+To replay just one named theorem with `proveit`, use a separate checkout and
+run from its theory's directory. Configure `PVS_LIBRARY_PATH` from that
+checkout's root as above, then run:
+
+```sh
+REPORT_DIR="$(mktemp -d)"
+cd theories/measure_probability
 proveit --no-scripts --no-purge --disable-oracles --force --log \
   --dir "$REPORT_DIR" --out active-count-equality \
   @ppg_general_active_count.expectedActiveCount_eq_tsum
 ```
 
-The single-theorem command does not replay the import chain. Use the file-level
-command when checking its dependencies as well.
+The single-theorem command does not replay its imported proof bodies.
 
-For a batch over the root-level PVS files:
+The directory reorganization was verified on **2026-10-25**. All **1,116 selected
+source files typecheck**, and **12,853 distinct proof bodies reached QED**:
+**11,159 project bodies and 1,694 Native library bodies**, including TCCs.
+The proofs ran in one PVS process with a 24,000 MiB Lisp heap. A full project
+pass was followed by targeted replay of 37 repaired proof programs across
+29 `.prf` files and additional rounds of required original Native bodies.
+Final checks passed for ordinary proof status, mapped originals, proof chains
+and dependency closure, with oracles disabled. Part of the final dependency
+audit used a separately tested hash-based traversal; proof programs and stored
+results were unchanged. The public runner was checked separately on isolated
+fixtures. The separate `Sterbenz/` development is outside
+this run.
 
-```sh
-for file in ./*.pvs; do
-  name="${file##*/}"
-  proveit --no-scripts --no-purge --disable-oracles --force \
-    --timeout 60 --log --dir "$REPORT_DIR" \
-    --out "${name%.pvs}" "$file" || exit "$?"
-done
-```
-
-This loop leaves `Sterbenz/` out of the batch. That older Frama-C/Jessie
-development has separate floating-point library dependencies; see its
-[README](Sterbenz/README.md).
-
-Recorded translation checks on 2026-10-18 through 2026-10-24 include:
+Historical translation checks on 2026-10-18 through 2026-10-24 include:
 
 | Check | Result |
 |-------|--------|
@@ -111,9 +163,10 @@ Recorded translation checks on 2026-10-18 through 2026-10-24 include:
 | General double-sampling and Moser–Tardos intersection | 897/897 project obligations complete across 77 theories, including all 13 source results; 683 Native library obligations freshly replayed in the same cold PVS process. Measurable double, joint and forward events, product-measure identities and intersection bounds. |
 | Final HLS probability, expectation and repair translation | **5,489/5,489 saved proof bodies complete (1,228 Native and 4,261 project)**. Proofs ran in one PVS process with a 24,000 MiB heap. The initial group replayed 4,656 bodies (1,228 Native and 3,428 project); later groups checked further supporting dependencies, each with its own records from before its proofs. The current comparison covers 593 theory headers. These checks include 869 new obligations across 74 theories and the remaining 97 source results. **Current proof chains, dependency closure, source declarations and physical origins checked**. |
 
-These runs check saved proofs in isolated workspaces. Project declarations and
-saved proof programs match the committed versions. The separately checked native
-library sources and proofs are hashed before and after reuse. A completed run
+These recorded runs precede the directory reorganization. They checked saved
+proofs in isolated workspaces, with project declarations and saved proof programs
+matching the versions committed at the time. The separately checked native
+library sources and proofs were hashed before and after reuse. A completed run
 requires `proved - complete`, including the relevant TCCs and dependencies.
 The Local Lemma run starts from a source-only private library copy and freshly
 checks 412 selected Native obligations. The larger 1,109-obligation support
@@ -123,19 +176,28 @@ additional bodies from the unchanged library sources and saved proofs. Both
 product-law projections and transport of the existing extended expected work
 are checked in that run.
 
-The final HLS library replay used local NASAlib proof-script repairs for
-`series.convergent_abs`, `absconv_series_aux.nonneg_series_inj_conv` and
-`measure_space.simple_def3`. These repairs preserve the library declarations
-and remain in the local replay workspace.
+The HLS and directory-reorganization checks use a local NASAlib copy with
+proof-script repairs for `series.convergent_abs`,
+`absconv_series_aux.nonneg_series_inj_conv` and `measure_space.simple_def3`.
+The directory check also uses focused proof programs for five obligations in
+`real_lebesgue_scaf`: `lebesgue_outer_measure_singleton`,
+`lebesgue_outer_measure_le_length`, `lebesgue_outer_measure_TCC1`,
+`outer_measurable_open_semi_infinite` and `lebesgue_measure_TCC1`, together
+with `lebesgue_def.lambda_closed_ball`. Library statements and source files
+are unchanged. These proof programs remain in the checked local library copy
+and are not published in this repository. The runner records the hashes of the
+external sources and proofs it actually copies in `inputs.json`; a check of
+another library copy uses that copy's proof programs.
 
-The table records those checks; it does not report a fresh successful replay of
-every legacy application file or of `Sterbenz/`.
+The table reports the earlier translation checks. The reorganization check
+above separately covers the selected legacy applications as well as the generic
+theories; it excludes `Sterbenz/`.
 
 Some original application theories declare empirical or mathematical axioms.
 Their results are conditional on those assumptions. For example,
-[kantorovich_duality.pvs](kantorovich_duality.pvs) declares feasibility and
+[kantorovich_duality.pvs](applications/luces/kantorovich_duality.pvs) declares feasibility and
 complementary-slackness assumptions, while
-[lie_generator_structure.pvs](lie_generator_structure.pvs) states the
+[lie_generator_structure.pvs](applications/luces/lie_generator_structure.pvs) states the
 observability/coherence assumptions it uses. Their proof scope should be read
 from the declarations in those files.
 
@@ -190,7 +252,7 @@ a hardware execution-time claim needs an additional timing model.
 
 The LUCES theories describe transport structure, spectral observability and
 certification of recorded measurements. The
-[certificate-runner report](CERT_RUNNER_RESULTS.md) contains the concrete
+[certificate-runner report](docs/CERT_RUNNER_RESULTS.md) contains the concrete
 results for the embedded lighting system. A log can satisfy structural checks
 while failing a dynamical one: the `boot334` example records a spectral-direction
 reversal while several transport checks still pass.
@@ -210,94 +272,94 @@ integration arguments. Each entry's imports lead to that support.
 
 | Files | Scope |
 |-------|-------|
-| [proof_preserving_graphs.pvs](proof_preserving_graphs.pvs), [pp_graphs_extended.pvs](pp_graphs_extended.pvs) | Validity, paths, evolution, invariants and graph extensions. |
-| [categorical_pp_graphs.pvs](categorical_pp_graphs.pvs), [directed_pp_graph.pvs](directed_pp_graph.pvs) | Morphisms, embeddings, quotients and directed graph structure. |
-| [ppg_parametric_core.pvs](ppg_parametric_core.pvs), [ppg_certificate_lattice.pvs](ppg_certificate_lattice.pvs), [ppg_certificate_complete.pvs](ppg_certificate_complete.pvs), [ppg_threshold_certificates.pvs](ppg_threshold_certificates.pvs) | Actual finite lists of monotone certificates over arbitrary data and level types; canonical levels, lattices and real thresholds. |
-| [ppg_list_quotient.pvs](ppg_list_quotient.pvs), [ppg_list_quotient_lattice.pvs](ppg_list_quotient_lattice.pvs), [ppg_list_quotient_linear.pvs](ppg_list_quotient_linear.pvs), [ppg_list_quotient_bridge.pvs](ppg_list_quotient_bridge.pvs) | Full generated certification classes, quotient order, meet under certificate closure, separation and edge-or-collapse projection. |
-| [ppg_generic_selection.pvs](ppg_generic_selection.pvs), [ppg_selection_lenses.pvs](ppg_selection_lenses.pvs), [ppg_selection_quotient_graph.pvs](ppg_selection_quotient_graph.pvs) | Arbitrary morphism-pair families, singleton certificate lists over finite lens sets, and the precise representative and projection results. |
-| [ppg_list_blocking.pvs](ppg_list_blocking.pvs), [ppg_generic_self_assessment.pvs](ppg_generic_self_assessment.pvs), [ppg_list_assessment_bridge.pvs](ppg_list_assessment_bridge.pvs) | Failed certificates, general repair obligations and the complete assess, repair and recertify cycle. |
-| [parametric_certification.pvs](parametric_certification.pvs) | Earlier predicate-family certification presentation and its lattice and threshold instances. |
-| [cert_quotient.pvs](cert_quotient.pvs), [cert_selection.pvs](cert_selection.pvs), [cert_quotient_bridge.pvs](cert_quotient_bridge.pvs) | Certification equivalence, quotient order and hierarchical selection. |
-| [cert_blocking.pvs](cert_blocking.pvs), [ppg_self_assessment.pvs](ppg_self_assessment.pvs), [ppg_assessment_bridge.pvs](ppg_assessment_bridge.pvs) | Blocking diagnostics, failure containment and certification after repair. |
-| [pp_graph_repair.pvs](pp_graph_repair.pvs), [ppg_repair_semantics.pvs](ppg_repair_semantics.pvs) | Repair relations, restoration and preservation obligations. |
-| [ppg_refinement_meta.pvs](ppg_refinement_meta.pvs) | Configuration compatibility, upgrade chains and refinement preservation. |
-| [ppg_complementary_slackness.pvs](ppg_complementary_slackness.pvs) | Pointwise pair inequalities and Monge-map certificates over arbitrary index types, under their explicit hypotheses. |
+| [proof_preserving_graphs.pvs](theories/ppg_core/proof_preserving_graphs.pvs), [pp_graphs_extended.pvs](theories/ppg_core/pp_graphs_extended.pvs) | Validity, paths, evolution, invariants and graph extensions. |
+| [categorical_pp_graphs.pvs](theories/ppg_core/categorical_pp_graphs.pvs), [directed_pp_graph.pvs](theories/ppg_core/directed_pp_graph.pvs) | Morphisms, embeddings, quotients and directed graph structure. |
+| [ppg_parametric_core.pvs](theories/certification/ppg_parametric_core.pvs), [ppg_certificate_lattice.pvs](theories/certification/ppg_certificate_lattice.pvs), [ppg_certificate_complete.pvs](theories/certification/ppg_certificate_complete.pvs), [ppg_threshold_certificates.pvs](theories/certification/ppg_threshold_certificates.pvs) | Actual finite lists of monotone certificates over arbitrary data and level types; canonical levels, lattices and real thresholds. |
+| [ppg_list_quotient.pvs](theories/certification/ppg_list_quotient.pvs), [ppg_list_quotient_lattice.pvs](theories/certification/ppg_list_quotient_lattice.pvs), [ppg_list_quotient_linear.pvs](theories/certification/ppg_list_quotient_linear.pvs), [ppg_list_quotient_bridge.pvs](theories/certification/ppg_list_quotient_bridge.pvs) | Full generated certification classes, quotient order, meet under certificate closure, separation and edge-or-collapse projection. |
+| [ppg_generic_selection.pvs](theories/certification/ppg_generic_selection.pvs), [ppg_selection_lenses.pvs](theories/certification/ppg_selection_lenses.pvs), [ppg_selection_quotient_graph.pvs](theories/certification/ppg_selection_quotient_graph.pvs) | Arbitrary morphism-pair families, singleton certificate lists over finite lens sets, and the precise representative and projection results. |
+| [ppg_list_blocking.pvs](theories/certification/ppg_list_blocking.pvs), [ppg_generic_self_assessment.pvs](theories/certification/ppg_generic_self_assessment.pvs), [ppg_list_assessment_bridge.pvs](theories/certification/ppg_list_assessment_bridge.pvs) | Failed certificates, general repair obligations and the complete assess, repair and recertify cycle. |
+| [parametric_certification.pvs](theories/certification/parametric_certification.pvs) | Earlier predicate-family certification presentation and its lattice and threshold instances. |
+| [cert_quotient.pvs](theories/certification/cert_quotient.pvs), [cert_selection.pvs](theories/certification/cert_selection.pvs), [cert_quotient_bridge.pvs](theories/certification/cert_quotient_bridge.pvs) | Certification equivalence, quotient order and hierarchical selection. |
+| [cert_blocking.pvs](theories/certification/cert_blocking.pvs), [ppg_self_assessment.pvs](theories/certification/ppg_self_assessment.pvs), [ppg_assessment_bridge.pvs](theories/certification/ppg_assessment_bridge.pvs) | Blocking diagnostics, failure containment and certification after repair. |
+| [pp_graph_repair.pvs](theories/ppg_core/pp_graph_repair.pvs), [ppg_repair_semantics.pvs](theories/ppg_core/ppg_repair_semantics.pvs) | Repair relations, restoration and preservation obligations. |
+| [ppg_refinement_meta.pvs](theories/ppg_core/ppg_refinement_meta.pvs) | Configuration compatibility, upgrade chains and refinement preservation. |
+| [ppg_complementary_slackness.pvs](theories/certification/ppg_complementary_slackness.pvs) | Pointwise pair inequalities and Monge-map certificates over arbitrary index types, under their explicit hypotheses. |
 
 ### Dependency and probabilistic repair
 
 | Files | Scope |
 |-------|-------|
-| [ppg_bdd.pvs](ppg_bdd.pvs), [ppg_bdd_locality.pvs](ppg_bdd_locality.pvs), [ppg_bdd_cost.pvs](ppg_bdd_cost.pvs) | Shared-variable components, repair non-interference and component costs. |
-| [ppg_generic_probabilistic.pvs](ppg_generic_probabilistic.pvs), [ppg_dependent_resampling.pvs](ppg_dependent_resampling.pvs) | Exact finite-footprint feasibility, pair discriminant obstruction and resampling identities for arbitrary per-variable domains. |
-| [ppg_lll_event_splits.pvs](ppg_lll_event_splits.pvs), [ppg_lll_pass_measurable.pvs](ppg_lll_pass_measurable.pvs), [ppg_lll_source_probability.pvs](ppg_lll_source_probability.pvs), [ppg_lopsided_probability.pvs](ppg_lopsided_probability.pvs) | Current general and lopsided Local Lemma criteria, event splits, measurable avoidance and the denominator telescope under its strict-subset induction hypothesis. |
-| [ppg_mt_random_process.pvs](ppg_mt_random_process.pvs), [ppg_mt_trajectory_measurable.pvs](ppg_mt_trajectory_measurable.pvs) | Product-table trajectories, local counters and measurability. |
-| [ppg_mt_growing.pvs](ppg_mt_growing.pvs), [ppg_mt_injectivity.pvs](ppg_mt_injectivity.pvs), [ppg_rose_canonical_enum.pvs](ppg_rose_canonical_enum.pvs) | Witness construction, injective occurrence encodings and canonical trees. |
-| [ppg_mt_check_probability.pvs](ppg_mt_check_probability.pvs), [ppg_mt_total_budget.pvs](ppg_mt_total_budget.pvs) | Witness probabilities, occurrence counts and the expected-work bound. |
-| [ppg_mt_termination.pvs](ppg_mt_termination.pvs), [ppg_mt_budget_repair.pvs](ppg_mt_budget_repair.pvs) | Almost-sure termination and the repair reachability bridge. |
-| [ppg_pegden_expectation.pvs](ppg_pegden_expectation.pvs), [ppg_pegden_termination.pvs](ppg_pegden_termination.pvs) | Independent-subset budgets, expected resamplings and termination. |
-| [ppg_shearer_total_expectation.pvs](ppg_shearer_total_expectation.pvs), [ppg_shearer_component_integral.pvs](ppg_shearer_component_integral.pvs) | Strict Shearer expected-work bounds and component integrals. |
-| [ppg_general_double_sample.pvs](ppg_general_double_sample.pvs), [ppg_general_forward_event.pvs](ppg_general_forward_event.pvs), [ppg_intersection_events.pvs](ppg_intersection_events.pvs), [ppg_native_double_measurable.pvs](ppg_native_double_measurable.pvs), [ppg_native_intersection_measurable.pvs](ppg_native_intersection_measurable.pvs), [ppg_probability_double_sample.pvs](ppg_probability_double_sample.pvs), [ppg_probability_intersection.pvs](ppg_probability_intersection.pvs) | General double-sample and intersection events, their measurability and measure identities, and probability bounds. |
+| [ppg_bdd.pvs](theories/ppg_core/ppg_bdd.pvs), [ppg_bdd_locality.pvs](theories/ppg_core/ppg_bdd_locality.pvs), [ppg_bdd_cost.pvs](theories/ppg_core/ppg_bdd_cost.pvs) | Shared-variable components, repair non-interference and component costs. |
+| [ppg_generic_probabilistic.pvs](theories/local_lemmas/ppg_generic_probabilistic.pvs), [ppg_dependent_resampling.pvs](theories/moser_tardos/ppg_dependent_resampling.pvs) | Exact finite-footprint feasibility, pair discriminant obstruction and resampling identities for arbitrary per-variable domains. |
+| [ppg_lll_event_splits.pvs](theories/local_lemmas/ppg_lll_event_splits.pvs), [ppg_lll_pass_measurable.pvs](theories/local_lemmas/ppg_lll_pass_measurable.pvs), [ppg_lll_source_probability.pvs](theories/local_lemmas/ppg_lll_source_probability.pvs), [ppg_lopsided_probability.pvs](theories/local_lemmas/ppg_lopsided_probability.pvs) | Current general and lopsided Local Lemma criteria, event splits, measurable avoidance and the denominator telescope under its strict-subset induction hypothesis. |
+| [ppg_mt_random_process.pvs](theories/moser_tardos/ppg_mt_random_process.pvs), [ppg_mt_trajectory_measurable.pvs](theories/moser_tardos/ppg_mt_trajectory_measurable.pvs) | Product-table trajectories, local counters and measurability. |
+| [ppg_mt_growing.pvs](theories/moser_tardos/ppg_mt_growing.pvs), [ppg_mt_injectivity.pvs](theories/moser_tardos/ppg_mt_injectivity.pvs), [ppg_rose_canonical_enum.pvs](theories/witness_trees/ppg_rose_canonical_enum.pvs) | Witness construction, injective occurrence encodings and canonical trees. |
+| [ppg_mt_check_probability.pvs](theories/moser_tardos/ppg_mt_check_probability.pvs), [ppg_mt_total_budget.pvs](theories/moser_tardos/ppg_mt_total_budget.pvs) | Witness probabilities, occurrence counts and the expected-work bound. |
+| [ppg_mt_termination.pvs](theories/moser_tardos/ppg_mt_termination.pvs), [ppg_mt_budget_repair.pvs](theories/moser_tardos/ppg_mt_budget_repair.pvs) | Almost-sure termination and the repair reachability bridge. |
+| [ppg_pegden_expectation.pvs](theories/local_lemmas/ppg_pegden_expectation.pvs), [ppg_pegden_termination.pvs](theories/local_lemmas/ppg_pegden_termination.pvs) | Independent-subset budgets, expected resamplings and termination. |
+| [ppg_shearer_total_expectation.pvs](theories/local_lemmas/ppg_shearer_total_expectation.pvs), [ppg_shearer_component_integral.pvs](theories/local_lemmas/ppg_shearer_component_integral.pvs) | Strict Shearer expected-work bounds and component integrals. |
+| [ppg_general_double_sample.pvs](theories/measure_probability/ppg_general_double_sample.pvs), [ppg_general_forward_event.pvs](theories/measure_probability/ppg_general_forward_event.pvs), [ppg_intersection_events.pvs](theories/measure_probability/ppg_intersection_events.pvs), [ppg_native_double_measurable.pvs](theories/measure_probability/ppg_native_double_measurable.pvs), [ppg_native_intersection_measurable.pvs](theories/measure_probability/ppg_native_intersection_measurable.pvs), [ppg_probability_double_sample.pvs](theories/measure_probability/ppg_probability_double_sample.pvs), [ppg_probability_intersection.pvs](theories/measure_probability/ppg_probability_intersection.pvs) | General double-sample and intersection events, their measurability and measure identities, and probability bounds. |
 
 ### HLS witness DAGs
 
 | Files | Scope |
 |-------|-------|
-| [ppg_hls_fair_orientation.pvs](ppg_hls_fair_orientation.pvs), [ppg_hls_augmented_space.pvs](ppg_hls_augmented_space.pvs), [ppg_hls_augmented_expectation.pvs](ppg_hls_augmented_expectation.pvs) | Tagged data and fair orientation coordinates, measurable projections, both full product-law pushforwards, and preservation of the existing random-start expected work, including infinity. |
-| [ppg_hls_reversal.pvs](ppg_hls_reversal.pvs) | Reversible arcs of arbitrary acyclic relations. |
-| [ppg_hls_ordered_dag.pvs](ppg_hls_ordered_dag.pvs), [ppg_hls_ordered_reversal.pvs](ppg_hls_ordered_reversal.pvs) | Witness orders, orientation and reversal under their local order hypotheses. |
-| [ppg_hls_topological_order.pvs](ppg_hls_topological_order.pvs) | A constructed strict total node order for finite label universes, with longest-path height and an intrinsic label numbering. |
-| [ppg_hls_witness_dag.pvs](ppg_hls_witness_dag.pvs) | Finite witness DAGs, unique sinks, reversal and ancestor prefixes. |
-| [ppg_hls_witness_layers.pvs](ppg_hls_witness_layers.pvs), [ppg_finite_nat_sup.pvs](ppg_finite_nat_sup.pvs), [ppg_nat_rank_well_founded.pvs](ppg_nat_rank_well_founded.pvs) | Constructed longest-path heights, independent layers and their successor relation. |
-| [ppg_hls_stable_encoding.pvs](ppg_hls_stable_encoding.pvs), [ppg_hls_encoding_product.pvs](ppg_hls_encoding_product.pvs), [ppg_hls_encoding_weight.pvs](ppg_hls_encoding_weight.pvs) | Stable layer sequences, finite products in arbitrary commutative monoids, and equality of real node and sequence weights. |
-| [ppg_hls_canonical_encoding.pvs](ppg_hls_canonical_encoding.pvs) | Recovery of canonical node indices, nodes and arcs from the stable encoding. |
-| [ppg_finite_set_nat_code.pvs](ppg_finite_set_nat_code.pvs), [ppg_hls_dag_countable.pvs](ppg_hls_dag_countable.pvs) | Injective natural-number codes for finite sets and witness DAGs when the label type has such a code. |
-| [ppg_hls_proper_family.pvs](ppg_hls_proper_family.pvs), [ppg_hls_witness_budget.pvs](ppg_hls_witness_budget.pvs), [ppg_nonneg_injective_bound.pvs](ppg_nonneg_injective_bound.pvs) | Weight-preserving injection of canonical proper DAGs into stable sequences and unrestricted Shearer weight budgets. |
-| [ppg_hls_coin_query_law.pvs](ppg_hls_coin_query_law.pvs), [ppg_hls_coin_saving.pvs](ppg_hls_coin_saving.pvs), [ppg_hls_relative_coins.pvs](ppg_hls_relative_coins.pvs) | Exact queried coin laws, pair savings and relative orientations. |
-| [ppg_hls_process_footprint.pvs](ppg_hls_process_footprint.pvs), [ppg_hls_block_intersection_sets.pvs](ppg_hls_block_intersection_sets.pvs), [ppg_hls_block_intersection_results.pvs](ppg_hls_block_intersection_results.pvs) | Footprint decomposition, joined states, raw intersection-event identities and their probability bounds. |
-| [ppg_hls_pair_block_queries.pvs](ppg_hls_pair_block_queries.pvs), [ppg_hls_pair_probability.pvs](ppg_hls_pair_probability.pvs) | Disjoint table queries, four-block product laws and intersection savings. |
-| [ppg_hls_augmented_pair_saving.pvs](ppg_hls_augmented_pair_saving.pvs), [ppg_hls_augmented_dependence.pvs](ppg_hls_augmented_dependence.pvs), [ppg_hls_unit_probability.pvs](ppg_hls_unit_probability.pvs) | Augmented pair events, coordinate dependence, independent units and their exact probabilities. |
-| [ppg_hls_refined_probability.pvs](ppg_hls_refined_probability.pvs), [ppg_hls_root_union_measure.pvs](ppg_hls_root_union_measure.pvs), [ppg_hls_root_family_weight.pvs](ppg_hls_root_family_weight.pvs) | Selected-pair discounts, refined DAG weights, rooted-family occurrence bounds and unrestricted weight sums. |
-| [ppg_hls_policy_count_bound.pvs](ppg_hls_policy_count_bound.pvs), [ppg_hls_policy_expectation.pvs](ppg_hls_policy_expectation.pvs), [ppg_hls_expectation.pvs](ppg_hls_expectation.pvs) | Policy counts, extended expected work, finite-budget bounds and almost-sure termination. |
-| [ppg_hls_history_expectation.pvs](ppg_hls_history_expectation.pvs), [ppg_hls_randomized_expectation.pvs](ppg_hls_randomized_expectation.pvs) | History-dependent schedules and product-law integration for randomized policies. |
-| [ppg_hls_repair_bridge.pvs](ppg_hls_repair_bridge.pvs), [ppg_hls_decision_bridge.pvs](ppg_hls_decision_bridge.pvs), [ppg_hls_finite_decision_bridge.pvs](ppg_hls_finite_decision_bridge.pvs) | Good-state existence, repair reachability and the declared finite feasibility/refutation interfaces. |
+| [ppg_hls_fair_orientation.pvs](theories/hls/ppg_hls_fair_orientation.pvs), [ppg_hls_augmented_space.pvs](theories/hls/ppg_hls_augmented_space.pvs), [ppg_hls_augmented_expectation.pvs](theories/hls/ppg_hls_augmented_expectation.pvs) | Tagged data and fair orientation coordinates, measurable projections, both full product-law pushforwards, and preservation of the existing random-start expected work, including infinity. |
+| [ppg_hls_reversal.pvs](theories/hls/ppg_hls_reversal.pvs) | Reversible arcs of arbitrary acyclic relations. |
+| [ppg_hls_ordered_dag.pvs](theories/hls/ppg_hls_ordered_dag.pvs), [ppg_hls_ordered_reversal.pvs](theories/hls/ppg_hls_ordered_reversal.pvs) | Witness orders, orientation and reversal under their local order hypotheses. |
+| [ppg_hls_topological_order.pvs](theories/hls/ppg_hls_topological_order.pvs) | A constructed strict total node order for finite label universes, with longest-path height and an intrinsic label numbering. |
+| [ppg_hls_witness_dag.pvs](theories/hls/ppg_hls_witness_dag.pvs) | Finite witness DAGs, unique sinks, reversal and ancestor prefixes. |
+| [ppg_hls_witness_layers.pvs](theories/hls/ppg_hls_witness_layers.pvs), [ppg_finite_nat_sup.pvs](theories/foundations/ppg_finite_nat_sup.pvs), [ppg_nat_rank_well_founded.pvs](theories/foundations/ppg_nat_rank_well_founded.pvs) | Constructed longest-path heights, independent layers and their successor relation. |
+| [ppg_hls_stable_encoding.pvs](theories/hls/ppg_hls_stable_encoding.pvs), [ppg_hls_encoding_product.pvs](theories/hls/ppg_hls_encoding_product.pvs), [ppg_hls_encoding_weight.pvs](theories/hls/ppg_hls_encoding_weight.pvs) | Stable layer sequences, finite products in arbitrary commutative monoids, and equality of real node and sequence weights. |
+| [ppg_hls_canonical_encoding.pvs](theories/hls/ppg_hls_canonical_encoding.pvs) | Recovery of canonical node indices, nodes and arcs from the stable encoding. |
+| [ppg_finite_set_nat_code.pvs](theories/foundations/ppg_finite_set_nat_code.pvs), [ppg_hls_dag_countable.pvs](theories/hls/ppg_hls_dag_countable.pvs) | Injective natural-number codes for finite sets and witness DAGs when the label type has such a code. |
+| [ppg_hls_proper_family.pvs](theories/hls/ppg_hls_proper_family.pvs), [ppg_hls_witness_budget.pvs](theories/hls/ppg_hls_witness_budget.pvs), [ppg_nonneg_injective_bound.pvs](theories/measure_probability/ppg_nonneg_injective_bound.pvs) | Weight-preserving injection of canonical proper DAGs into stable sequences and unrestricted Shearer weight budgets. |
+| [ppg_hls_coin_query_law.pvs](theories/hls/ppg_hls_coin_query_law.pvs), [ppg_hls_coin_saving.pvs](theories/hls/ppg_hls_coin_saving.pvs), [ppg_hls_relative_coins.pvs](theories/hls/ppg_hls_relative_coins.pvs) | Exact queried coin laws, pair savings and relative orientations. |
+| [ppg_hls_process_footprint.pvs](theories/hls/ppg_hls_process_footprint.pvs), [ppg_hls_block_intersection_sets.pvs](theories/hls/ppg_hls_block_intersection_sets.pvs), [ppg_hls_block_intersection_results.pvs](theories/hls/ppg_hls_block_intersection_results.pvs) | Footprint decomposition, joined states, raw intersection-event identities and their probability bounds. |
+| [ppg_hls_pair_block_queries.pvs](theories/hls/ppg_hls_pair_block_queries.pvs), [ppg_hls_pair_probability.pvs](theories/hls/ppg_hls_pair_probability.pvs) | Disjoint table queries, four-block product laws and intersection savings. |
+| [ppg_hls_augmented_pair_saving.pvs](theories/hls/ppg_hls_augmented_pair_saving.pvs), [ppg_hls_augmented_dependence.pvs](theories/hls/ppg_hls_augmented_dependence.pvs), [ppg_hls_unit_probability.pvs](theories/hls/ppg_hls_unit_probability.pvs) | Augmented pair events, coordinate dependence, independent units and their exact probabilities. |
+| [ppg_hls_refined_probability.pvs](theories/hls/ppg_hls_refined_probability.pvs), [ppg_hls_root_union_measure.pvs](theories/hls/ppg_hls_root_union_measure.pvs), [ppg_hls_root_family_weight.pvs](theories/hls/ppg_hls_root_family_weight.pvs) | Selected-pair discounts, refined DAG weights, rooted-family occurrence bounds and unrestricted weight sums. |
+| [ppg_hls_policy_count_bound.pvs](theories/hls/ppg_hls_policy_count_bound.pvs), [ppg_hls_policy_expectation.pvs](theories/hls/ppg_hls_policy_expectation.pvs), [ppg_hls_expectation.pvs](theories/hls/ppg_hls_expectation.pvs) | Policy counts, extended expected work, finite-budget bounds and almost-sure termination. |
+| [ppg_hls_history_expectation.pvs](theories/hls/ppg_hls_history_expectation.pvs), [ppg_hls_randomized_expectation.pvs](theories/hls/ppg_hls_randomized_expectation.pvs) | History-dependent schedules and product-law integration for randomized policies. |
+| [ppg_hls_repair_bridge.pvs](theories/hls/ppg_hls_repair_bridge.pvs), [ppg_hls_decision_bridge.pvs](theories/hls/ppg_hls_decision_bridge.pvs), [ppg_hls_finite_decision_bridge.pvs](theories/hls/ppg_hls_finite_decision_bridge.pvs) | Good-state existence, repair reachability and the declared finite feasibility/refutation interfaces. |
 
 ### Integrals, finite stochastic models and stopping bounds
 
 | Files | Scope |
 |-------|-------|
-| [ppg_probability_measure.pvs](ppg_probability_measure.pvs), [ppg_probability_integral.pvs](ppg_probability_integral.pvs) | Probability laws and their native NASAlib real integrals. |
-| [ppg_general_simple_integral.pvs](ppg_general_simple_integral.pvs), [ppg_general_code_order.pvs](ppg_general_code_order.pvs) | Nonnegative integrals from weighted measurable indicators, including infinite event masses. |
-| [ppg_general_active_count.pvs](ppg_general_active_count.pvs), [ppg_additive_drift_budget.pvs](ppg_additive_drift_budget.pvs) | Arbitrary-measure count integrals and extended nonnegative budget bounds. |
-| [ppg_conditional_existence.pvs](ppg_conditional_existence.pvs), [ppg_subsigma_restricted_integral.pvs](ppg_subsigma_restricted_integral.pvs) | Conditional expectation for integrable real functions under arbitrary finite native measures and sub-sigma algebras. |
-| [ppg_additive_conditional_certificate.pvs](ppg_additive_conditional_certificate.pvs), [ppg_additive_certificate_expectation.pvs](ppg_additive_certificate_expectation.pvs) | Conditional potential certificates, integrated decrease, expected active count and almost-sure finiteness. |
-| [ppg_mt_fixed_drift.pvs](ppg_mt_fixed_drift.pvs), [ppg_mt_random_init_drift.pvs](ppg_mt_random_init_drift.pvs), [ppg_mt_drift_expected_cost.pvs](ppg_mt_drift_expected_cost.pvs) | Drift bounds for the actual fixed-start and slot-zero MT processes, with bounded per-step costs. |
-| [ppg_finite_conditional_value.pvs](ppg_finite_conditional_value.pvs), [ppg_finite_conditional_drift.pvs](ppg_finite_conditional_drift.pvs) | Finite-state conditional values and integrated drift. |
-| [ppg_finite_potential_synthesis.pvs](ppg_finite_potential_synthesis.pvs), [ppg_finite_potential_accessible.pvs](ppg_finite_potential_accessible.pvs) | Rational first-step equations, checked potentials and positive-mass accessibility. |
-| [ppg_exact_mt_fixed.pvs](ppg_exact_mt_fixed.pvs), [ppg_exact_mt_random.pvs](ppg_exact_mt_random.pvs) | Exact fixed-start and random-start MT expected work. |
-| [ppg_resampling_table_tail.pvs](ppg_resampling_table_tail.pvs), [ppg_tail_mt_fixed.pvs](ppg_tail_mt_fixed.pvs), [ppg_tail_mt_random.pvs](ppg_tail_mt_random.pvs) | Exact stopping probabilities, checked geometric bounds and closed bad classes. |
-| [ppg_finite_lumping_paths.pvs](ppg_finite_lumping_paths.pvs), [ppg_update_projection_stopping.pvs](ppg_update_projection_stopping.pvs) | Exact stopped-count reduction through lumping and commuting updates. |
-| [ppg_full_resampling_probability.pvs](ppg_full_resampling_probability.pvs), [ppg_full_resampling_mean.pvs](ppg_full_resampling_mean.pvs) | Full-resampling geometric laws, expected work and positive good-state mass. |
+| [ppg_probability_measure.pvs](theories/measure_probability/ppg_probability_measure.pvs), [ppg_probability_integral.pvs](theories/measure_probability/ppg_probability_integral.pvs) | Probability laws and their native NASAlib real integrals. |
+| [ppg_general_simple_integral.pvs](theories/measure_probability/ppg_general_simple_integral.pvs), [ppg_general_code_order.pvs](theories/measure_probability/ppg_general_code_order.pvs) | Nonnegative integrals from weighted measurable indicators, including infinite event masses. |
+| [ppg_general_active_count.pvs](theories/measure_probability/ppg_general_active_count.pvs), [ppg_additive_drift_budget.pvs](theories/measure_probability/ppg_additive_drift_budget.pvs) | Arbitrary-measure count integrals and extended nonnegative budget bounds. |
+| [ppg_conditional_existence.pvs](theories/measure_probability/ppg_conditional_existence.pvs), [ppg_subsigma_restricted_integral.pvs](theories/measure_probability/ppg_subsigma_restricted_integral.pvs) | Conditional expectation for integrable real functions under arbitrary finite native measures and sub-sigma algebras. |
+| [ppg_additive_conditional_certificate.pvs](theories/measure_probability/ppg_additive_conditional_certificate.pvs), [ppg_additive_certificate_expectation.pvs](theories/measure_probability/ppg_additive_certificate_expectation.pvs) | Conditional potential certificates, integrated decrease, expected active count and almost-sure finiteness. |
+| [ppg_mt_fixed_drift.pvs](theories/moser_tardos/ppg_mt_fixed_drift.pvs), [ppg_mt_random_init_drift.pvs](theories/moser_tardos/ppg_mt_random_init_drift.pvs), [ppg_mt_drift_expected_cost.pvs](theories/moser_tardos/ppg_mt_drift_expected_cost.pvs) | Drift bounds for the actual fixed-start and slot-zero MT processes, with bounded per-step costs. |
+| [ppg_finite_conditional_value.pvs](theories/finite_models/ppg_finite_conditional_value.pvs), [ppg_finite_conditional_drift.pvs](theories/finite_models/ppg_finite_conditional_drift.pvs) | Finite-state conditional values and integrated drift. |
+| [ppg_finite_potential_synthesis.pvs](theories/finite_models/ppg_finite_potential_synthesis.pvs), [ppg_finite_potential_accessible.pvs](theories/finite_models/ppg_finite_potential_accessible.pvs) | Rational first-step equations, checked potentials and positive-mass accessibility. |
+| [ppg_exact_mt_fixed.pvs](theories/finite_models/ppg_exact_mt_fixed.pvs), [ppg_exact_mt_random.pvs](theories/finite_models/ppg_exact_mt_random.pvs) | Exact fixed-start and random-start MT expected work. |
+| [ppg_resampling_table_tail.pvs](theories/finite_models/ppg_resampling_table_tail.pvs), [ppg_tail_mt_fixed.pvs](theories/finite_models/ppg_tail_mt_fixed.pvs), [ppg_tail_mt_random.pvs](theories/finite_models/ppg_tail_mt_random.pvs) | Exact stopping probabilities, checked geometric bounds and closed bad classes. |
+| [ppg_finite_lumping_paths.pvs](theories/finite_models/ppg_finite_lumping_paths.pvs), [ppg_update_projection_stopping.pvs](theories/finite_models/ppg_update_projection_stopping.pvs) | Exact stopped-count reduction through lumping and commuting updates. |
+| [ppg_full_resampling_probability.pvs](theories/finite_models/ppg_full_resampling_probability.pvs), [ppg_full_resampling_mean.pvs](theories/finite_models/ppg_full_resampling_mean.pvs) | Full-resampling geometric laws, expected work and positive good-state mass. |
 
 ### Feasibility and checked refutations
 
 | Files | Scope |
 |-------|-------|
-| [ppg_certified_decision.pvs](ppg_certified_decision.pvs), [ppg_unsatisfiable_core.pvs](ppg_unsatisfiable_core.pvs) | Finite feasibility decisions and minimal infeasible cores. |
-| [ppg_correction_duality.pvs](ppg_correction_duality.pvs) | Minimal-core and correction-set duality. |
-| [ppg_farkas_certificate.pvs](ppg_farkas_certificate.pvs), [ppg_farkas_refutation.pvs](ppg_farkas_refutation.pvs) | Soundness of rational Farkas certificates and model-based reachability refutations. |
-| [ppg_finite_abstraction_repair.pvs](ppg_finite_abstraction_repair.pvs), [ppg_find_good_path.pvs](ppg_find_good_path.pvs) | Repair traces and refutations through supplied executable exact finite abstractions. |
-| [ppg_repair_budget_counterfamily.pvs](ppg_repair_budget_counterfamily.pvs), [ppg_repair_certificate_enumeration.pvs](ppg_repair_certificate_enumeration.pvs), [ppg_repair_undecidability.pvs](ppg_repair_undecidability.pvs) | An encoded infinite repair family: repairability is recursively enumerable and undecidable; infeasibility is not recursively enumerable. No total repairability or impossibility decider, or complete computable refutation checker, exists for this family. |
+| [ppg_certified_decision.pvs](theories/decision/ppg_certified_decision.pvs), [ppg_unsatisfiable_core.pvs](theories/decision/ppg_unsatisfiable_core.pvs) | Finite feasibility decisions and minimal infeasible cores. |
+| [ppg_correction_duality.pvs](theories/decision/ppg_correction_duality.pvs) | Minimal-core and correction-set duality. |
+| [ppg_farkas_certificate.pvs](theories/decision/ppg_farkas_certificate.pvs), [ppg_farkas_refutation.pvs](theories/decision/ppg_farkas_refutation.pvs) | Soundness of rational Farkas certificates and model-based reachability refutations. |
+| [ppg_finite_abstraction_repair.pvs](theories/decision/ppg_finite_abstraction_repair.pvs), [ppg_find_good_path.pvs](theories/decision/ppg_find_good_path.pvs) | Repair traces and refutations through supplied executable exact finite abstractions. |
+| [ppg_repair_budget_counterfamily.pvs](theories/computability/ppg_repair_budget_counterfamily.pvs), [ppg_repair_certificate_enumeration.pvs](theories/computability/ppg_repair_certificate_enumeration.pvs), [ppg_repair_undecidability.pvs](theories/computability/ppg_repair_undecidability.pvs) | An encoded infinite repair family: repairability is recursively enumerable and undecidable; infeasibility is not recursively enumerable. No total repairability or impossibility decider, or complete computable refutation checker, exists for this family. |
 
 ### Transport, observability and boot applications
 
 | Files | Scope |
 |-------|-------|
-| [kantorovich_duality.pvs](kantorovich_duality.pvs), [brenier_uniqueness.pvs](brenier_uniqueness.pvs), [cyclical_monotonicity.pvs](cyclical_monotonicity.pvs) | Discrete transport optimality certificates and monotonicity under the stated assumptions. |
-| [displacement_interpolation.pvs](displacement_interpolation.pvs), [wasserstein_metric.pvs](wasserstein_metric.pvs), [transport_stability.pvs](transport_stability.pvs) | Interpolation, metric properties and map stability. |
-| [global_optimality.pvs](global_optimality.pvs), [unbalanced_regime.pvs](unbalanced_regime.pvs), [transport_ppg.pvs](transport_ppg.pvs) | Segmentation, source/sink regimes and the transport-to-PPG connection. |
-| [fisher_atlas.pvs](fisher_atlas.pvs), [observability_geometry.pvs](observability_geometry.pvs), [observability_refinement.pvs](observability_refinement.pvs) | Charts, excitation-dependent observability and quantitative certificate refinements. |
-| [lie_generator_structure.pvs](lie_generator_structure.pvs), [dual_observability.pvs](dual_observability.pvs), [tangent_bundle.pvs](tangent_bundle.pvs) | Generator coherence, dual observability and transport tangent structure. |
-| [lowrisc_boot_verification.pvs](lowrisc_boot_verification.pvs), [opentitan_boot_instance.pvs](opentitan_boot_instance.pvs) | Layered boot graphs, failure blocking and the declared OpenTitan stage model. |
+| [kantorovich_duality.pvs](applications/luces/kantorovich_duality.pvs), [brenier_uniqueness.pvs](applications/luces/brenier_uniqueness.pvs), [cyclical_monotonicity.pvs](applications/luces/cyclical_monotonicity.pvs) | Discrete transport optimality certificates and monotonicity under the stated assumptions. |
+| [displacement_interpolation.pvs](applications/luces/displacement_interpolation.pvs), [wasserstein_metric.pvs](applications/luces/wasserstein_metric.pvs), [transport_stability.pvs](applications/luces/transport_stability.pvs) | Interpolation, metric properties and map stability. |
+| [global_optimality.pvs](applications/luces/global_optimality.pvs), [unbalanced_regime.pvs](applications/luces/unbalanced_regime.pvs), [transport_ppg.pvs](applications/luces/transport_ppg.pvs) | Segmentation, source/sink regimes and the transport-to-PPG connection. |
+| [fisher_atlas.pvs](applications/luces/fisher_atlas.pvs), [observability_geometry.pvs](applications/luces/observability_geometry.pvs), [observability_refinement.pvs](applications/luces/observability_refinement.pvs) | Charts, excitation-dependent observability and quantitative certificate refinements. |
+| [lie_generator_structure.pvs](applications/luces/lie_generator_structure.pvs), [dual_observability.pvs](applications/luces/dual_observability.pvs), [tangent_bundle.pvs](applications/luces/tangent_bundle.pvs) | Generator coherence, dual observability and transport tangent structure. |
+| [lowrisc_boot_verification.pvs](applications/boot/lowrisc_boot_verification.pvs), [opentitan_boot_instance.pvs](applications/boot/opentitan_boot_instance.pvs) | Layered boot graphs, failure blocking and the declared OpenTitan stage model. |
 
 The standalone [SMT-LIB files](#related) and the
 [Sterbenz development](Sterbenz/README.md) have separate proof scopes and tool
@@ -313,75 +375,75 @@ results specify the initial state separately.
 ### Certification, blocking and probabilistic repair
 
 1. **Canonical certification.**
-   [certified_iff_above_canonical](ppg_parametric_core.pvs) characterizes
+   [certified_iff_above_canonical](theories/certification/ppg_parametric_core.pvs) characterizes
    certification by `theta_c <= theta` when `theta_c` is canonical. The
    complete-lattice theory proves existence under nonemptiness and infimum closure.
 
 2. **Blocking at the frontier.**
-   [canonical_blocking_empty](ppg_list_blocking.pvs) gives an empty blocking set at
+   [canonical_blocking_empty](theories/certification/ppg_list_blocking.pvs) gives an empty blocking set at
    a canonical level; `stricter_has_blocking` gives a failed certificate at a
    target outside that certified upper set.
 
 3. **Component repair non-interference.**
-   [repair_noninterference](ppg_bdd_locality.pvs) preserves an obligation in
+   [repair_noninterference](theories/ppg_core/ppg_bdd_locality.pvs) preserves an obligation in
    another dependency component when the predicates are local and the state
    change stays inside the selected component's footprint.
 
 4. **Moser–Tardos expected work.**
-   [randomInitETLog_le_sum](ppg_mt_total_budget.pvs) proves
+   [randomInitETLog_le_sum](theories/moser_tardos/ppg_mt_total_budget.pvs) proves
    **E[T_LOG] <= sum x(a)** under the stated locality, event-probability and
    resampling-budget hypotheses. Finite expected work follows without a
    termination premise.
 
 5. **Pegden and Shearer budgets.**
-   [Pegden's expected-work theorem](ppg_pegden_expectation.pvs) replaces the
+   [Pegden's expected-work theorem](theories/local_lemmas/ppg_pegden_expectation.pvs) replaces the
    product budget by independent-subset sums. The
-   [Shearer expected-work theorem](ppg_shearer_total_expectation.pvs) bounds
+   [Shearer expected-work theorem](theories/local_lemmas/ppg_shearer_total_expectation.pvs) bounds
    **E[T_LOG] by sum q_a/q_empty** under strict Shearer positivity and the
    stated event-probability upper bounds.
 
 ### General integrals and exact stochastic models
 
 6. **Integral of the active count.**
-   [expectedActiveCount_eq_tsum](ppg_general_active_count.pvs) proves
+   [expectedActiveCount_eq_tsum](theories/measure_probability/ppg_general_active_count.pvs) proves
    **integral count = sum measure(active_n)** for any native measure and a
    countable family of measurable events. Both sides may be infinite; no
    finite-measure, sigma-finiteness or semifiniteness hypothesis is imposed.
 
 7. **Local budget to expected work.**
-   [expectedActiveCount_le_of_budget](ppg_general_active_count.pvs) gives
+   [expectedActiveCount_le_of_budget](theories/measure_probability/ppg_general_active_count.pvs) gives
    **expected active count <= budget(0)/delta**, for positive finite `delta`,
    from `delta * measure(active_n) + budget(n+1) <= budget(n)`.
    Budgets may take the value infinity. Under a finite measure,
-   [integrated_decrease](ppg_additive_conditional_certificate.pvs) derives
+   [integrated_decrease](theories/measure_probability/ppg_additive_conditional_certificate.pvs) derives
    this inequality from an integrable, adapted, almost-everywhere nonnegative
    potential and its local conditional decrease. The resulting bound is
    **ofReal(integral initial potential)/delta**. For the fixed-start MT
-   process, [ETLog_le_of_drift](ppg_mt_fixed_drift.pvs) gives
+   process, [ETLog_le_of_drift](theories/moser_tardos/ppg_mt_fixed_drift.pvs) gives
    **E[T_LOG] <= potential(initial)/delta**. The
-   [cost bound](ppg_mt_drift_expected_cost.pvs) multiplies this by a finite
+   [cost bound](theories/moser_tardos/ppg_mt_drift_expected_cost.pvs) multiplies this by a finite
    cap on each active step; the cost function need not be measurable.
 
 8. **Full resampling.**
-   [fullResampling_expected_work_eq](ppg_full_resampling_mean.pvs) identifies
+   [fullResampling_expected_work_eq](theories/finite_models/ppg_full_resampling_mean.pvs) identifies
    the random-start mean with the extended geometric mean **b/(1-b)**, where
    `b` is the original bad-state probability. At `b = 1` the mean is infinity.
    Positive good-state mass gives finite expected work and almost-sure success.
 
 9. **Exact potential synthesis and expectation.**
-   [synthesize_iff_accessible](ppg_finite_potential_accessible.pvs) characterizes
+   [synthesize_iff_accessible](theories/finite_models/ppg_finite_potential_accessible.pvs) characterizes
    successful checked synthesis by positive-mass accessibility of good states.
-   [ETLog_eq_potential](ppg_exact_mt_fixed.pvs) then identifies the fixed-start
+   [ETLog_eq_potential](theories/finite_models/ppg_exact_mt_fixed.pvs) then identifies the fixed-start
    expectation with the exact rational potential under its accessibility hypothesis.
 
 10. **Exact tails and checked closed bad classes.**
-    [TLog_timeout_eq_survival](ppg_tail_mt_fixed.pvs) gives
+    [TLog_timeout_eq_survival](theories/finite_models/ppg_tail_mt_fixed.pvs) gives
     **Pr[T_LOG > N] = survival(N,s0)**. Accepted survival rows yield the
     block estimate **Pr[T_LOG > kH] <= b^k**. An accepted closed bad class
     containing the start instead gives an infinite expectation for that kernel.
 
 11. **Exact stopped-count reduction.**
-    [hitCount_projection](ppg_update_projection_stopping.pvs) equates concrete
+    [hitCount_projection](theories/finite_models/ppg_update_projection_stopping.pvs) equates concrete
     and reduced stopped counts on the same input stream when updates commute
     with projection and the good-state tests agree. The concrete state space
     need not be finite.
@@ -389,46 +451,46 @@ results specify the initial state separately.
 ### Feasibility and refutation
 
 12. **Checked finite decisions.**
-    [ppg_certified_decision.pvs](ppg_certified_decision.pvs) gives witnesses or
+    [ppg_certified_decision.pvs](theories/decision/ppg_certified_decision.pvs) gives witnesses or
     refutations from exhaustive finite enumeration. The
-    [exact-abstraction repair theory](ppg_finite_abstraction_repair.pvs) realizes
+    [exact-abstraction repair theory](theories/decision/ppg_finite_abstraction_repair.pvs) realizes
     the abstract steps as a concrete repair trace under its realization obligations.
-    [Farkas refutations](ppg_farkas_refutation.pvs) check a supplied rational
+    [Farkas refutations](theories/decision/ppg_farkas_refutation.pvs) check a supplied rational
     certificate under a sound linear model; completeness of certificate search
     is a separate question.
 
 ### Canonical witness DAGs
 
 13. **Encoding determines a canonical DAG.**
-    [eq_of_stableEncoding_eq](ppg_hls_canonical_encoding.pvs) proves equality
+    [eq_of_stableEncoding_eq](theories/hls/ppg_hls_canonical_encoding.pvs) proves equality
     of valid canonical witness DAGs with the same stable encoding. Node indices,
     node sets and arc sets are recovered from the layers.
 
 14. **Weighted proper DAG budget.**
-    [tsum_weight_le_stableBudget](ppg_hls_witness_budget.pvs) bounds the
+    [tsum_weight_le_stableBudget](theories/hls/ppg_hls_witness_budget.pvs) bounds the
     unrestricted sum of canonical proper witness-DAG weights by the singleton
-    Shearer budget. The [inverse-slack bound](ppg_hls_witness_budget.pvs) gives
+    Shearer budget. The [inverse-slack bound](theories/hls/ppg_hls_witness_budget.pvs) gives
     `1/epsilon` under the stated positive multiplicative slack. Countability,
     runtime and occurrence-probability assumptions are not needed.
 
 ### HLS expectation and repair
 
 15. **Intersection-sensitive expected work.**
-    [randomInitETLog_le_sum_stableBudget](ppg_hls_expectation.pvs) bounds
+    [randomInitETLog_le_sum_stableBudget](theories/hls/ppg_hls_expectation.pvs) bounds
     random-start resampling work under the stated probability, matching,
     overlap and stable-budget hypotheses. The
-    [policy](ppg_hls_policy_expectation.pvs),
-    [history](ppg_hls_history_expectation.pvs) and
-    [randomized-policy](ppg_hls_randomized_expectation.pvs) results retain
+    [policy](theories/hls/ppg_hls_policy_expectation.pvs),
+    [history](theories/hls/ppg_hls_history_expectation.pvs) and
+    [randomized-policy](theories/hls/ppg_hls_randomized_expectation.pvs) results retain
     their own measurability and probability-law assumptions. Expectations
     remain extended nonnegative values until a finite-budget bound is applied.
 
 16. **HLS certificates and repair reachability.**
-    [good_repair_reachable](ppg_hls_repair_bridge.pvs) derives a path to a
+    [good_repair_reachable](theories/hls/ppg_hls_repair_bridge.pvs) derives a path to a
     good state from the original HLS hypotheses. The
-    [decision bridge](ppg_hls_decision_bridge.pvs) combines this with
+    [decision bridge](theories/hls/ppg_hls_decision_bridge.pvs) combines this with
     existential probability/overlap certificates and declared feasibility
-    and refutation conditions. The [finite bridge](ppg_hls_finite_decision_bridge.pvs)
+    and refutation conditions. The [finite bridge](theories/hls/ppg_hls_finite_decision_bridge.pvs)
     retains its finite model and enumeration hypotheses.
 
 ## Theory Layers
@@ -492,13 +554,14 @@ repair paths under their stated overlap and probability hypotheses.
 
 - [ppg-lean](https://github.com/gajaka/ppg-lean): the generic Lean 4 development,
   its full module inventory, central theorems and kernel-verification record.
-- [CERTIFICATION_README.md](CERTIFICATION_README.md): the earlier certification
-  exposition and example workflow. Its historical counts and port-status notes
-  predate the current translation.
-- [CERT_RUNNER_RESULTS.md](CERT_RUNNER_RESULTS.md): recorded LUCES certificate
+- [CERTIFICATION_README.md](docs/CERTIFICATION_README.md): the certification
+  exposition, example workflow and earlier theorem entry points.
+- [CERT_RUNNER_RESULTS.md](docs/CERT_RUNNER_RESULTS.md): recorded LUCES certificate
   results and the five-level certification example.
-- [fisher_boundary_strong.smt2](fisher_boundary_strong.smt2) and
-  [brenier_t3_surjective.smt2](brenier_t3_surjective.smt2): standalone Z3 encodings.
+- [LIE_GENERATOR_README.md](docs/LIE_GENERATOR_README.md): Lie-generator analysis,
+  coherence certificates and the recorded transport examples.
+- [fisher_boundary_strong.smt2](smt/fisher_boundary_strong.smt2) and
+  [brenier_t3_surjective.smt2](smt/brenier_t3_surjective.smt2): standalone Z3 encodings.
   Their unsatisfiability claims concern those encodings, including the finite
   domain used in the Brenier example.
 - [Sterbenz/README.md](Sterbenz/README.md): floating-point subtraction through
@@ -514,8 +577,8 @@ proofs.
 
 - Noga Alon and Joel H. Spencer, *The Probabilistic Method*, fourth edition,
   Wiley, 2016, Lemma 5.1.1 and Section 5.7. The
-  [General Local Lemma](ppg_lll_source_probability.pvs) and
-  [expected resampling bound](ppg_mt_total_budget.pvs) use the declared event
+  [General Local Lemma](theories/local_lemmas/ppg_lll_source_probability.pvs) and
+  [expected resampling bound](theories/moser_tardos/ppg_mt_total_budget.pvs) use the declared event
   probabilities, dependencies and resampling budgets.
 - Robin A. Moser and Gabor Tardos,
   [*A constructive proof of the general Lovász Local Lemma*](https://arxiv.org/abs/0903.0544v3),
@@ -525,44 +588,44 @@ proofs.
 - David G. Harris,
   [*Lopsidependency in the Moser-Tardos framework: Beyond the Lopsided Lovász Local Lemma*](https://arxiv.org/abs/1610.02420v4),
   Section 1.2, recalls the Erdős–Spencer criterion used by the
-  [lopsided theory](ppg_lopsided_probability.pvs).
+  [lopsided theory](theories/local_lemmas/ppg_lopsided_probability.pvs).
 
 ### Stronger probabilistic bounds
 
 - Wesley Pegden,
   [*An extension of the Moser-Tardos algorithmic local lemma*](https://arxiv.org/abs/1102.2853v2),
-  Theorem 1.4. The [PVS expectation theory](ppg_pegden_expectation.pvs) uses the
+  Theorem 1.4. The [PVS expectation theory](theories/local_lemmas/ppg_pegden_expectation.pvs) uses the
   independent-subset budget over each closed neighborhood.
 - Nicholas J. A. Harvey and Jan Vondrák,
   [*Short proofs for generalizations of the Lovász Local Lemma: Shearer's condition and cluster expansion*](https://arxiv.org/abs/1711.06797v1),
   Section 2, provides the strict Shearer presentation. The expected-work bound
   follows the Kolipaka–Szegedy argument presented in
   [Vondrák's 2018 Lecture 8](https://theory.stanford.edu/~jvondrak/MATH233A-2018/Math233-lec08.pdf).
-  See [ppg_shearer_total_expectation.pvs](ppg_shearer_total_expectation.pvs).
+  See [ppg_shearer_total_expectation.pvs](theories/local_lemmas/ppg_shearer_total_expectation.pvs).
 
 - Kun He, Qian Li and Xiaoming Sun,
   [*Moser–Tardos Algorithm: Beyond Shearer’s Bound*](https://arxiv.org/abs/2111.06527v1),
   Definitions 2.1–2.4 and Facts 2.5–2.6. The
-  [witness-DAG theory](ppg_hls_witness_dag.pvs) covers reversal and ancestor
+  [witness-DAG theory](theories/hls/ppg_hls_witness_dag.pvs) covers reversal and ancestor
   prefixes. The stable-set connection is discussed in Section 1.2.1, footnote 3.
 - Nicholas J. A. Harvey and Jan Vondrák,
   [*An Algorithmic Proof of the Lovász Local Lemma via Resampling Oracles*](https://arxiv.org/abs/1504.02044v3),
   Definition 5.2 and Section 5.3.2. The
-  [layer theory](ppg_hls_witness_layers.pvs) constructs independent layers
+  [layer theory](theories/hls/ppg_hls_witness_layers.pvs) constructs independent layers
   and proves their closed-neighborhood successor condition. The
-  [canonical encoding](ppg_hls_canonical_encoding.pvs) recovers the DAG, and the
-  [weight budget](ppg_hls_witness_budget.pvs) bounds its canonical proper family.
-  The [occurrence bound](ppg_hls_policy_count_bound.pvs) and
-  [policy expectation](ppg_hls_policy_expectation.pvs) use these witness
+  [canonical encoding](theories/hls/ppg_hls_canonical_encoding.pvs) recovers the DAG, and the
+  [weight budget](theories/hls/ppg_hls_witness_budget.pvs) bounds its canonical proper family.
+  The [occurrence bound](theories/hls/ppg_hls_policy_count_bound.pvs) and
+  [policy expectation](theories/hls/ppg_hls_policy_expectation.pvs) use these witness
   families together with the actual resampling process.
 
 ### Order and certification
 
 - B. A. Davey and H. A. Priestley, *Introduction to Lattices and Order*, second
   edition, Cambridge University Press, 2002. The
-  [certificate lattice](ppg_certificate_lattice.pvs),
-  [quotient order](ppg_list_quotient.pvs) and
-  [selection lenses](ppg_selection_lenses.pvs) use the corresponding order,
+  [certificate lattice](theories/certification/ppg_certificate_lattice.pvs),
+  [quotient order](theories/certification/ppg_list_quotient.pvs) and
+  [selection lenses](theories/certification/ppg_selection_lenses.pvs) use the corresponding order,
   equivalence-class and dual-order constructions. Meet on certification
   classes requires the stated certificate closure condition.
 
@@ -570,27 +633,27 @@ proofs.
 
 - Patrick Billingsley, *Probability and Measure*, third edition, Wiley, 1995;
   Sterling K. Berberian, *Fundamentals of Real Analysis*, Springer, 1999.
-  The [general integral](ppg_general_simple_integral.pvs) uses weighted measurable
-  indicators, and the [count theorem](ppg_general_active_count.pvs) uses monotone
+  The [general integral](theories/measure_probability/ppg_general_simple_integral.pvs) uses weighted measurable
+  indicators, and the [count theorem](theories/measure_probability/ppg_general_active_count.pvs) uses monotone
   convergence under a finite bound inside an arbitrary-measure argument.
 - Johannes Lengler, [*Drift Analysis*](https://arxiv.org/abs/1712.00964v2),
   Theorem 1, gives the additive-drift background. The
-  [conditional certificate](ppg_additive_conditional_certificate.pvs)
+  [conditional certificate](theories/measure_probability/ppg_additive_conditional_certificate.pvs)
   integrates the local decrease; the
-  [MT certificate](ppg_mt_conditional_certificate.pvs) applies it to the
+  [MT certificate](theories/moser_tardos/ppg_mt_conditional_certificate.pvs) applies it to the
   actual stopped potential under the original product-log law. The
-  [execution-cost bound](ppg_mt_drift_expected_cost.pvs) combines the
+  [execution-cost bound](theories/moser_tardos/ppg_mt_drift_expected_cost.pvs) combines the
   resulting expected count with a cap on each active-step charge.
 - Michael Mitzenmacher and Eli Upfal,
   [*Probability and Computing*, second edition](https://doi.org/10.1017/9781316651124),
   Section 7.1.1 and Exercise 7.25; David A. Levin and Yuval Peres,
   [*Markov Chains and Mixing Times*, second edition](https://pages.uoregon.edu/dlevin/MARKOV/mcmt2e.pdf),
   Exercise 10.22 and the uniform-block argument in Lemma 1.13. These support
-  the [exact MT expectations](ppg_exact_mt_fixed.pvs) and
-  [stopping bounds](ppg_tail_mt_fixed.pvs).
+  the [exact MT expectations](theories/finite_models/ppg_exact_mt_fixed.pvs) and
+  [stopping bounds](theories/finite_models/ppg_tail_mt_fixed.pvs).
 - Levin and Peres, Section 2.3.1, Lemma 2.5 and equation (2.10), is the background
-  for [finite lumping](ppg_finite_lumping_paths.pvs). The
-  [commuting-update reduction](ppg_update_projection_stopping.pvs) also permits
+  for [finite lumping](theories/finite_models/ppg_finite_lumping_paths.pvs). The
+  [commuting-update reduction](theories/finite_models/ppg_update_projection_stopping.pvs) also permits
   an infinite concrete state space.
 
 ### Application models and publications

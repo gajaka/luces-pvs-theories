@@ -1,0 +1,72 @@
+% Graph extension preserves the certified region under one fixed
+% invariant. A valid repair restores a broken target and preserves every
+% other certified vertex under one fixed specification. These are
+% obligations on the repair operator; growth follows from them.
+%
+% Lean counterpart: PPGraphSelfAssessment.lean. The vertex and system
+% state types remain arbitrary, including empty and infinite carriers.
+ppg_generic_self_assessment[V,S:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_core@directed_pp_graph[V], ppg_core@ppg_repair_semantics[V]
+  G,G1,G2: VAR Graph
+  H: VAR RepairGraph
+  rr: VAR [V,V->bool]
+  inv: VAR [V->bool]
+  v,w,y: VAR V
+
+  contamination_impossible: THEOREM pp_transform(G1,G2,rr,inv) AND
+    invariant_set(G1,inv)(v) IMPLIES invariant_set(G2,inv)(v)
+
+  violations_propagate: THEOREM pp_transform(G1,G2,rr,inv) AND
+    violation_set(G1,inv)(v) IMPLIES violation_set(G2,inv)(v)
+
+  no_silent_redefinition: THEOREM pp_transform(G1,G2,rr,inv) AND G1`vertices(v)
+    IMPLIES (invariant_set(G1,inv)(v) IFF invariant_set(G2,inv)(v))
+
+  assessment_trichotomy: THEOREM H`invariant_holds(v) OR
+    (isolated(H,v) AND EXISTS(w:V):repair_candidates(H,v,w)) OR
+    (isolated(H,v) AND NOT EXISTS(w:V):repair_candidates(H,v,w))
+
+  certified_excludes_isolated: THEOREM H`invariant_holds(v) IMPLIES NOT isolated(H,v)
+
+  RepairOp: TYPE = [S,V->S]
+
+  Spec: TYPE = [S,V->bool]
+
+  R: VAR RepairOp
+  spec: VAR Spec
+  s: VAR S
+
+  broken(spec,s,v): bool = NOT spec(s,v)
+
+  target_restored(R,spec,s,v): bool = broken(spec,s,v) IMPLIES spec(R(s,v),v)
+
+  core_preserved(R,spec,s,v): bool =
+    FORALL(w:V):w/=v AND spec(s,w) IMPLIES spec(R(s,v),w)
+
+  valid_repair(R,spec,s,v): bool =
+    target_restored(R,spec,s,v) AND core_preserved(R,spec,s,v)
+
+  repair_monotone_recovery: THEOREM broken(spec,s,v) AND valid_repair(R,spec,s,v)
+    IMPLIES spec(R(s,v),v) AND
+      (FORALL(w:V):w/=v AND spec(s,w) IMPLIES spec(R(s,v),w))
+
+  repair_preserves_certified: THEOREM broken(spec,s,v) AND valid_repair(R,spec,s,v)
+    AND spec(s,w) IMPLIES spec(R(s,v),w)
+
+  repair_strict_growth: THEOREM broken(spec,s,v) AND valid_repair(R,spec,s,v)
+    IMPLIES (FORALL(w:V):spec(s,w) IMPLIES spec(R(s,v),w)) AND
+      spec(R(s,v),v) AND NOT spec(s,v)
+
+  repair_restores_broken_target: THEOREM broken(spec,s,v) AND valid_repair(R,spec,s,v)
+    IMPLIES spec(R(s,v),v) AND NOT spec(s,v)
+
+  failure_contained: THEOREM pp_valid(G,rr,inv) AND violating(G,inv,v) IMPLIES
+    FORALL(y:V):NOT G`edges(v,y)
+
+  failure_fully_isolated: THEOREM pp_valid(G,rr,inv) AND violating(G,inv,v) IMPLIES
+    FORALL(y:V):NOT G`edges(y,v)
+
+  failure_total_isolation: THEOREM pp_valid(G,rr,inv) AND violating(G,inv,v) IMPLIES
+    (FORALL(y:V):NOT G`edges(v,y)) AND (FORALL(y:V):NOT G`edges(y,v))
+END ppg_generic_self_assessment

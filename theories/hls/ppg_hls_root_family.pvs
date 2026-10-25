@@ -1,0 +1,47 @@
+% A proper canonical DAG has a unique root. Forgetting the occurrence
+% index therefore embeds all rooted families into the existing proper
+% family. The sum bound includes zero and infinite weights.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 2.1. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSRootUnion.lean, rootedFamilyMap.
+ppg_hls_root_family[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},
+  universe:{B:finite_set[C]|FORALL(i:C):B(i)},alpha:C]: THEORY
+BEGIN
+  IMPORTING ppg_hls_finite_dag_core[C,G],
+    ppg_hls_proper_family[C,G,universe,alpha] AS proper
+
+  D,E: VAR WitnessDAG
+
+  r,s: VAR nat
+
+  RootFamily(r): TYPE = {D:WitnessDAG|RootedCanonical(D,(alpha,r))}
+
+  RootedFamily: TYPE = [r:nat,D:RootFamily(r)]
+
+  F,H: VAR RootedFamily
+
+  rooted_root_unique: LEMMA RootedCanonical(D,(alpha,r)) AND
+    RootedCanonical(D,(alpha,s)) IMPLIES r=s
+
+  rooted_is_proper: LEMMA RootedCanonical(D,(alpha,r)) IMPLIES
+    proper.IsProperCanonical(D)
+
+  rootedFamilyMap(F): proper.ProperDAG = F`2
+
+  rootedFamilyMap_value: LEMMA rootedFamilyMap(F)=F`2
+
+  rootedFamilyMap_injective: THEOREM injective?(rootedFamilyMap)
+
+  IMPORTING measure_probability@ppg_enn_injective_bound[RootedFamily,proper.ProperDAG] AS rootedSums,
+    measure_probability@ppg_enn_unrestricted_sum[RootedFamily] AS rootedSourceSums,
+    measure_probability@ppg_enn_unrestricted_sum[proper.ProperDAG] AS properSums
+
+  w: VAR [WitnessDAG->ENN]
+
+  tsum_rootedFamily_weight_le: THEOREM
+    ele(rootedSourceSums.eTsum(LAMBDA(F:RootedFamily):w(F`2)),
+      properSums.eTsum(LAMBDA(D:proper.ProperDAG):w(D)))
+
+END ppg_hls_root_family

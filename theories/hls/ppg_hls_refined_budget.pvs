@@ -1,0 +1,70 @@
+% Supported total assignments form the actual finite legal-choice fibers.
+% The proper DAG family itself is unrestricted. Its ENN sum is compared
+% through those fibers and the injective colored expansion, then the
+% existing decorated-family budget supplies the strict Shearer bound.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Theorem 3.13. https://arxiv.org/abs/2111.06527
+% Lean counterpart: the last two results of PPGraphHLSRefinedBudget.lean.
+ppg_hls_refined_budget[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},p:[C->real],
+  universe:{S:finite_set[C]|FORALL(i:C):S(i)},alpha:C,
+  (IMPORTING ppg_hls_matching[C,G,p]) O:OverlapBounds]: THEORY
+BEGIN
+  IMPORTING ppg_hls_refined_weight[C,G,p],
+    ppg_hls_legal_assignment_fibers[C,G,universe,alpha,O`mate] AS choices,
+    ppg_hls_decorated_budget[C,G,p,universe,alpha],
+    measure_probability@ppg_supported_assignment_sum[[C,nat],choices.Choice,0] AS assignmentAlgebra,
+    measure_probability@ppg_enn_product_comparison[[C,nat]] AS productOrder,
+    measure_probability@ppg_enn_finite_order[ProperDAG] AS properOrder,
+    measure_probability@ppg_enn_unrestricted_sum[ExpansionFamily(O`mate)] AS expansionSums,
+    measure_probability@ppg_enn_finite[ExpansionFamily(O`mate)] AS expansionFolds,
+    measure_probability@ppg_enn_injective_bound[ExpansionFamily(O`mate),DecoratedFamily] AS expansionBound,
+    measure_probability@ppg_enn_finite_partition[ProperDAG,ExpansionFamily(O`mate),
+      LAMBDA(F:ExpansionFamily(O`mate)):F`1,choices.fullFiber] AS fibers,
+    measure_probability@ppg_enn_ofreal_algebra
+
+  P: VAR ProperDAG
+  u: VAR WNode
+
+  upWeights: [C->ENN] = LAMBDA(i:C):ofReal(splitUp(O)(i))
+
+  downWeights: [C->ENN] = LAMBDA(i:C):ofReal(splitDown(O)(i))
+
+  localFactors(P): [WNode->ENN] = assignmentAlgebra.domainSums(choices.localDomains(P),
+    choices.factor(upWeights,downWeights))
+
+  exact_legal_fibers: LEMMA fibers.exactFibers
+
+  fiber_weight_function: LEMMA fibers.fiberWeight(choices.familyWeight(upWeights,downWeights))=
+    choices.localChoiceTotal(upWeights,downWeights)
+
+  local_factor_bound: LEMMA (FORALL(i:C):0<p(i)) AND (FORALL(i:C):p(i)<=1) IMPLIES
+    ele(refinedFactor(O,P)(u),localFactors(P)(u))
+
+  source_choice_bound: LEMMA (FORALL(i:C):0<p(i)) AND (FORALL(i:C):p(i)<=1) IMPLIES
+    ele(refinedWeight(O)(P),choices.localChoiceTotal(upWeights,downWeights)(P))
+
+  refined_total_bound: LEMMA (FORALL(i:C):0<p(i)) AND (FORALL(i:C):p(i)<=1) IMPLIES
+    ele(properSums.eTsum(refinedWeight(O)),properSums.eTsum(choices.localChoiceTotal(upWeights,downWeights)))
+
+  expansion_sum_identity: LEMMA
+    expansionSums.eTsum(choices.familyWeight(upWeights,downWeights))=
+      properSums.eTsum(choices.localChoiceTotal(upWeights,downWeights))
+
+  expansion_map_injective: LEMMA injective?(expansionFamilyMap(O`mate))
+
+  expansion_decorated_bound: LEMMA
+    ele(expansionSums.eTsum(choices.familyWeight(upWeights,downWeights)),decoratedTotal(upWeights,downWeights))
+
+  tsum_refinedWeight_le_decorated: THEOREM
+    (FORALL(i:C):0<p(i)) AND (FORALL(i:C):p(i)<=1) IMPLIES
+      ele(properSums.eTsum(refinedWeight(O)),decoratedTotal(upWeights,downWeights))
+
+  tsum_refinedWeight_le_stableBudget: THEOREM
+    (FORALL(i:C):0<p(i)) AND (FORALL(i:C):p(i)<=1) AND
+    StrictCriterion(reduced(O),universe) IMPLIES
+      ele(properSums.eTsum(refinedWeight(O)),
+        ofReal(stableBudget(reduced(O),universe,sets[C].singleton(alpha))))
+
+END ppg_hls_refined_budget

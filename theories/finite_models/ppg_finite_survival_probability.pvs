@@ -1,0 +1,46 @@
+% The exact survival integral turns uniform rational block bounds into
+% probability bounds. A checked closed bad class has survival value one
+% at every horizon. Unit total mass is retained explicitly throughout.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Lemma 1.13, American Mathematical Society, 2017.
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Section 7.1.1, Cambridge University Press, 2017.
+ppg_finite_survival_probability[State,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  (IMPORTING measure_probability@ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING measure_probability@ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw,
+  (IMPORTING measure_probability@ppg_filtration[Omega,State,S]) history:Filtration]: THEORY
+BEGIN
+  IMPORTING ppg_finite_survival_integral[State,Omega,universe,S,measureLaw,history],
+    measure_probability@ppg_enn_positive_divide
+  f: VAR Vector
+  X: VAR AdaptedProcess
+  c: VAR real
+
+  StochasticModel: TYPE = {M:Model|Stochastic(M)}
+
+  CheckedClass(M:Model): TYPE = {U:set[State]|checkClosedBad(M,U)}
+
+  bounded_initial_integral: LEMMA mass(fullset[Omega])=1 AND
+    (FORALL(s:State):f(s)<=c) IMPLIES integral(integrableValue(f,ambientState(X,0)))<=c
+
+  uniform_block_vector_bound: LEMMA FORALL(M:StochasticModel,L,k:nat,b:rat):
+    0<=b AND (FORALL(s:State):survival(M,L,s)<=b) IMPLIES
+      (FORALL(s:State):survivalVector(M,k*L)(s)<=expt(b,k))
+
+  running_measure_fixed_blocks_le: THEOREM FORALL(M:StochasticModel,L,k:nat,b:rat,
+    X:Realization(M),s0:State):0<=b AND (FORALL(s:State):survival(M,L,s)<=b) AND
+    mass(fullset[Omega])=1 AND (FORALL(omega:Omega):X(0)(omega)=s0) IMPLIES
+      ele(ennFinite(mass(runningAmbient(M,X,k*L))),ofReal(expt(b,k)))
+
+  running_measure_blocks_le: THEOREM FORALL(M:StochasticModel,L,k:nat,b:rat,
+    X:Realization(M)):0<=b AND (FORALL(s:State):survival(M,L,s)<=b) AND
+    mass(fullset[Omega])=1 IMPLIES
+      ele(ennFinite(mass(runningAmbient(M,X,k*L))),ofReal(expt(b,k)))
+
+  running_measure_closedBad_eq_one: THEOREM FORALL(M:StochasticModel,U:CheckedClass(M),
+    X:Realization(M),s0:State,N:nat):U(s0) AND mass(fullset[Omega])=1 AND
+    (FORALL(omega:Omega):X(0)(omega)=s0) IMPLIES mass(runningAmbient(M,X,N))=1
+
+END ppg_finite_survival_probability

@@ -1,0 +1,75 @@
+% A resampling is indexed by the number of earlier selections of its
+% label. This rank counts all earlier selections; the stopped event
+% determines which times contribute to the resampling count.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2; Kun He, Qian Li and Xiaoming Sun,
+% "Moser-Tardos Algorithm: Beyond Shearer's Bound", Section 2.1.
+% Lean counterpart: PPGraphHLSOrdinalOccurrence.lean.
+ppg_hls_ordinal_occurrence[C,V,Value:TYPE,domain:[V->set[Value]],
+  footprint:[C->finite_set[V]],
+  (IMPORTING moser_tardos@ppg_mt_semantics[C,V,Value,domain])bad:[C,MTState->bool]]: THEORY
+BEGIN
+  IMPORTING ppg_hls_real_dag_counts[C,V,Value,domain,footprint,bad],
+    moser_tardos@ppg_mt_extended_count[C,V,Value,domain], measure_probability@ppg_indicator_reindex[nat,nat] AS ordinalReindex
+  fallback,a: VAR C
+  enumeration: VAR list[C]
+  omega: VAR LogSpace
+  labels,otherLabels: VAR [nat->C]
+  s,t,r: VAR nat
+
+  earlier_times_congr: LEMMA
+    (FORALL(s:nat):s<=t IMPLIES labels(s)=otherLabels(s)) IMPLIES
+      earlierLabelTimes(labels,t)=earlierLabelTimes(otherLabels,t)
+
+  earlierLabelCount_congr: THEOREM
+    (FORALL(s:nat):s<=t IMPLIES labels(s)=otherLabels(s)) IMPLIES
+      earlierLabelCount(labels,t)=earlierLabelCount(otherLabels,t)
+
+  ordinalOccurrence(fallback,enumeration,a,r): set[LogSpace] = {omega:LogSpace|
+    EXISTS(t:nat):randomInitResamplingEvent(footprint,bad,fallback,enumeration,a,t)(omega)
+      AND earlierLabelCount(realSchedule(fallback,enumeration,omega),t)=r}
+
+  ordinalRankFiber(fallback,enumeration,t,r): set[LogSpace] = {omega:LogSpace|
+    earlierLabelCount(realSchedule(fallback,enumeration,omega),t)=r}
+
+  ordinalOccurrence_eq_iUnion: THEOREM ordinalOccurrence(fallback,enumeration,a,r)=
+    countableUnion(LAMBDA(t:nat):intersection(
+      randomInitResamplingEvent(footprint,bad,fallback,enumeration,a,t),
+      ordinalRankFiber(fallback,enumeration,t,r)))
+
+  ordinalActiveTimes(fallback,enumeration,omega,a): set[nat] = {t:nat|
+    randomInitResamplingEvent(footprint,bad,fallback,enumeration,a,t)(omega)}
+
+  ordinal_active_label: LEMMA ordinalActiveTimes(fallback,enumeration,omega,a)(t) IMPLIES
+    realSchedule(fallback,enumeration,omega)(t)=a
+
+  ordinal_rank_injective: LEMMA FORALL(s,t:nat):
+    ordinalActiveTimes(fallback,enumeration,omega,a)(s) AND
+    ordinalActiveTimes(fallback,enumeration,omega,a)(t) AND
+    earlierLabelCount(realSchedule(fallback,enumeration,omega),s)=
+      earlierLabelCount(realSchedule(fallback,enumeration,omega),t) IMPLIES s=t
+
+  ordinal_active_image: LEMMA ordinalReindex.supportImage(
+    ordinalActiveTimes(fallback,enumeration,omega,a),
+    LAMBDA(t:nat):earlierLabelCount(realSchedule(fallback,enumeration,omega),t))=
+      {r:nat|ordinalOccurrence(fallback,enumeration,a,r)(omega)}
+
+  ordinal_indicator_function: LEMMA
+    (LAMBDA(r:nat):IF ordinalReindex.supportImage(
+      ordinalActiveTimes(fallback,enumeration,omega,a),
+      LAMBDA(t:nat):earlierLabelCount(realSchedule(fallback,enumeration,omega),t))(r)
+      THEN 1 ELSE 0 ENDIF)=
+    (LAMBDA(r:nat):IF ordinalOccurrence(fallback,enumeration,a,r)(omega) THEN 1 ELSE 0 ENDIF)
+
+  randomInitResamplingCount_eq_tsum_ordinalOccurrence: THEOREM
+    randomInitResamplingCount(footprint,bad,fallback,enumeration,omega,a)=
+      ppg_nonneg_tsum[nat].tsum(LAMBDA(r:nat):
+        IF ordinalOccurrence(fallback,enumeration,a,r)(omega) THEN 1 ELSE 0 ENDIF)
+
+  ordinal_count_function: LEMMA
+    (LAMBDA(omega:LogSpace):randomInitResamplingCount(footprint,bad,fallback,enumeration,omega,a))=
+    (LAMBDA(omega:LogSpace):eventCount(
+      LAMBDA(r:nat):ordinalOccurrence(fallback,enumeration,a,r),omega))
+
+END ppg_hls_ordinal_occurrence

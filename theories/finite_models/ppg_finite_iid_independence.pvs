@@ -1,0 +1,60 @@
+% Finite intersections of coordinate events have the product of the
+% specified input masses. This is the finite-family formulation of
+% independence, including the empty family.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_iid_independence[State,Input: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)},
+  (IMPORTING ppg_finite_update[State,Input,universe,inputs])
+  R:{R:Rule|Valid(R)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_iid_law[State,Input,universe,inputs,R] AS iidIndepLaw,
+    ppg_finite_input_history[Input] AS iidIndepHistory,
+    measure_probability@ppg_finite_events[iidIndepHistory.Sample,nat,iidIndepHistory.ambientSigma] AS iidIndepEvents,
+    foundations@ppg_finite_product[nat] AS iidIndepProduct,
+    measure_probability@ppg_measurable_block_box[nat,Input,iidIndepLaw.iidDomain,iidIndepLaw.iidSpaces] AS iidIndepBoxes,
+    measure_probability@ppg_measurable_cylinder[nat,Input,iidIndepLaw.iidDomain,iidIndepLaw.iidSpaces] AS iidIndepCylinders,
+    measure_probability@ppg_probability_infinite_product[nat,Input,iidIndepLaw.iidDomain,iidIndepLaw.iidSpaces,
+      iidIndepLaw.iidCoins] AS iidIndepNativeProduct,
+    measure_probability@ppg_probability_finite_product[nat,Input,iidIndepLaw.iidDomain,iidIndepLaw.iidSpaces,
+      iidIndepLaw.iidCoins] AS iidIndepFiniteProduct,
+    measure_probability@ppg_measurable_map[iidIndepLaw.NativeTable,iidIndepHistory.Sample] AS iidIndepForgetMap,
+    ppg_finite_update_law[State,Input,universe,inputs] AS iidIndepInputLaw,
+    measure_probability@ppg_measurable_block_restriction[nat,Input,iidIndepLaw.iidDomain,
+      iidIndepLaw.iidSpaces] AS iidIndepRestriction
+
+  InputEvents: TYPE = [nat->set[Input]]
+
+  F: VAR finite_set[nat]
+  B: VAR InputEvents
+  i: VAR nat
+
+  coordinateEvents(B): iidIndepEvents.MeasurableFamily =
+    LAMBDA(i:nat):iidIndepLaw.sequenceCoordinate(i,B(i))
+
+  nativeEvents(B): iidIndepBoxes.CoordinateEvents =
+    LAMBDA(i:nat):iidIndepLaw.coordinate_native_event(i,B(i))
+
+  inputIntersection(F,B): (iidIndepHistory.ambientSigma) =
+    iidIndepEvents.finiteMeet(F,coordinateEvents(B))
+
+  nativeBox(F,B): (ppg_measurable_block[nat,Input,iidIndepLaw.iidDomain,
+      iidIndepLaw.iidSpaces].blockSigma(F)) = iidIndepBoxes.blockBox(F,nativeEvents(B))
+
+  intersection_preimage: LEMMA
+    iidIndepForgetMap.inverseImage(iidIndepLaw.forget,inputIntersection(F,B))=
+      iidIndepCylinders.tableCylinder(F,nativeBox(F,B))
+
+  coordinate_factor: LEMMA iidIndepLaw.iidCoins(i)(nativeEvents(B)(i))=
+    iidIndepInputLaw.inputPMF(R)(B(i))
+
+  factor_function: LEMMA
+    (LAMBDA(i:nat):iidIndepLaw.iidCoins(i)(nativeEvents(B)(i)))=
+    (LAMBDA(i:nat):iidIndepInputLaw.inputPMF(R)(B(i)))
+
+  iid_inputs_independent: THEOREM
+    iidIndepLaw.iidProbability(inputIntersection(F,B))=
+      iidIndepProduct.product(F,LAMBDA(i:nat):iidIndepInputLaw.inputPMF(R)(B(i)))
+
+END ppg_finite_iid_independence

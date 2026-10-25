@@ -1,0 +1,42 @@
+% Integrate the label-set count under the original product-table law.
+% Common increasing time prefixes give finite-sum linearity before any
+% finiteness bound is known. Grouping the event expectations by distinct
+% BDD components then preserves the total expected stopped log length.
+%
+% The partition is Dragan Stosic's blocking dependency decomposition.
+% Lean counterpart: PPGraphShearerBDDExpectation.lean.
+ppg_shearer_component_integral[C,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[C,V,Value,domain]) spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_core@ppg_bdd[C,V]) vars:CertVars]: THEORY
+BEGIN
+  IMPORTING ppg_shearer_component_counts[C,V,Value,domain,vars],
+    moser_tardos@ppg_mt_expected_decomposition[C,V,Value,domain,spaces,laws],
+    measure_probability@ppg_finite_count_integral[LogSpace,C,NativeTableSigma(spaces),logMeasure]
+  bad: VAR NativeBad
+  fallback: VAR C
+  enumeration: VAR ComponentEnumeration
+  K: VAR finite_set[C]
+  B: VAR UniversalLabels
+
+  randomInitExpectedSetResamplingCount(bad,fallback,enumeration,K): ENN =
+    lintegral(LAMBDA(omega:LogSpace):randomInitSetResamplingCount(bad,fallback,enumeration,K,omega))
+
+  native_count_sum_function: LEMMA
+    (LAMBDA(omega:LogSpace):randomInitSetResamplingCount(bad,fallback,enumeration,K,omega))=
+    (LAMBDA(omega:LogSpace):ppg_nonneg_tsum[C].esum(K,
+      LAMBDA(a:C):eventCount(randomLabelEvents(vars,bad,fallback,enumeration)(a),omega)))
+
+  randomInitExpectedSetResamplingCount_eq_sum: THEOREM
+    randomInitExpectedSetResamplingCount(bad,fallback,enumeration,K)=
+    ppg_nonneg_tsum[C].esum(K,LAMBDA(a:C):randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a))
+
+  component_expectation_sum: LEMMA
+    (LAMBDA(K:finite_set[C]):randomInitExpectedSetResamplingCount(bad,fallback,enumeration,K))=
+    (LAMBDA(K:finite_set[C]):ppg_nonneg_tsum[C].esum(K,
+      LAMBDA(a:C):randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a)))
+
+  randomInitETLog_eq_sum_componentExpectations: THEOREM randomInitETLog(vars,bad,fallback,enumeration)=
+    ppg_nonneg_tsum[finite_set[C]].esum(groups(vars,B),
+      LAMBDA(K:finite_set[C]):randomInitExpectedSetResamplingCount(bad,fallback,enumeration,K))
+
+END ppg_shearer_component_integral

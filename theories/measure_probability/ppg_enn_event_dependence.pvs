@@ -1,0 +1,41 @@
+% Ordinary independence implies lopsidependence for extended masses.
+% The mass function may take the value infinity. No probability,
+% measurability, or finite-mass hypothesis enters this order implication.
+% On finite masses the predicates agree with ppg_event_dependence.
+%
+% David G. Harris, "Lopsidependency in the Moser-Tardos framework:
+% Beyond the Lopsided Lovasz Local Lemma", Section 1.2.
+% https://arxiv.org/abs/1610.02420
+% Lean counterpart: PPGraphLopsidedLLL.lean.
+ppg_enn_event_dependence[X,C,V:TYPE,
+  (IMPORTING ppg_core@ppg_bdd[C,V]) vars:CertVars]: THEORY
+BEGIN
+  IMPORTING ppg_event_dependence[X,C,V,vars],ppg_enn_multiply
+
+  ExtendedRawMass: TYPE = [set[X]->ENN]
+
+  m: VAR ExtendedRawMass
+  r: VAR RawMass
+  A: VAR BadEvents
+  B: VAR finite_set[C]
+
+  extended_independence(m,A,B): bool = FORALL(a:C):B(a) IMPLIES
+    FORALL(J:finite_set[C]):independent_side(B,a,J) IMPLIES
+      m(intersection(A(a),all_pass(A,J)))=emul(m(A(a)),m(all_pass(A,J)))
+
+  extended_lopsidependence(m,A,B): bool = FORALL(a:C):B(a) IMPLIES
+    FORALL(J:finite_set[C]):independent_side(B,a,J) IMPLIES
+      ele(m(intersection(A(a),all_pass(A,J))),emul(m(A(a)),m(all_pass(A,J))))
+
+  independence_implies_lopsidependence: THEOREM extended_independence(m,A,B) IMPLIES
+    extended_lopsidependence(m,A,B)
+
+  liftFiniteMass(r): ExtendedRawMass = LAMBDA(E:set[X]):ennFinite(r(E))
+
+  finite_independence_bridge: LEMMA lll_independence(r,A,B) IFF
+    extended_independence(liftFiniteMass(r),A,B)
+
+  finite_lopsidependence_bridge: LEMMA lll_lopsidependence(r,A,B) IFF
+    extended_lopsidependence(liftFiniteMass(r),A,B)
+
+END ppg_enn_event_dependence

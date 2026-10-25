@@ -1,0 +1,40 @@
+% A finite state function is its singleton-indicator expansion. This
+% identity is pointwise and needs no measure or transition law.
+% The accepted rational decrement also has a positive nonnegative-real
+% representation, used when the drift inequality is integrated.
+%
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Lean counterparts: finite_value_expansion, rate_coe and rate_positive
+% in PPGraphFiniteDriftProcess.lean.
+ppg_finite_process_values[State,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_drift[State,universe],foundations@ppg_finite_point_sum[State]
+  X: VAR [Omega->State]
+  f: VAR [State->real]
+  omega: VAR Omega
+  t: VAR State
+  M: VAR Model
+  W: VAR Witness
+
+  stateIndicator(X,t)(omega:Omega): real = IF X(omega)=t THEN 1 ELSE 0 ENDIF
+
+  stateExpansion(f,X): [Omega->real] = LAMBDA(omega:Omega):
+    fsum(universe,LAMBDA(t:State):f(t)*stateIndicator(X,t)(omega))
+
+  full_contains: LEMMA universe(t)
+
+  indicator_coefficients: LEMMA
+    (LAMBDA(t:State):f(t)*stateIndicator(X,t)(omega))=
+    (LAMBDA(t:State):IF t=X(omega) THEN f(t) ELSE 0 ENDIF)
+
+  finite_value_expansion: THEOREM (LAMBDA(omega:Omega):f(X(omega)))=stateExpansion(f,X)
+
+  rate(W): nonneg_real = IF 0<=W`delta THEN W`delta ELSE 0 ENDIF
+
+  rate_coe: THEOREM check(M,W) IMPLIES rate(W)=W`delta
+
+  rate_positive: THEOREM check(M,W) IMPLIES 0<rate(W)
+
+END ppg_finite_process_values

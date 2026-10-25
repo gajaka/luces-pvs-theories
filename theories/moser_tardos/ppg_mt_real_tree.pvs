@@ -1,0 +1,83 @@
+% An address subtree is reconstructed as an ordered rose tree by listing
+% its direct child addresses. A depth bound supplies sufficient recursion
+% fuel. Reconstruction preserves the root label, well-formedness and
+% properness of a valid execution tree.
+%
+% The child order comes from addresses, so it need not match the order
+% used by the canonical label-based enumeration.
+% Lean counterpart: PPGraphMoserTardosRealTree.lean.
+
+ppg_mt_real_tree[C, V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_mt_prefix[C, V], witness_trees@ppg_rose_structure[C, V], witness_trees@ppg_rose_depth[C],
+    foundations@ppg_list_sets[Addr], foundations@ppg_list_maps[Addr, WTree], foundations@ppg_list_maps[Addr, C],
+    foundations@ppg_list_maps[WTree, C]
+  vars: VAR CertVars
+  T: VAR GTree
+  Clog: VAR [nat -> C]
+  u, v, w: VAR Addr
+  n, t, k: VAR nat
+  cs: VAR list[WTree]
+
+  childSet(T, v): finite_set[Addr] = intersection(T`dom, {w: Addr | EXISTS (k: nat): w = snoc(v, k)})
+
+  childList(T, v): list[Addr] = ppg_list_sets[Addr].setList(childSet(T, v))
+
+  childSet_member: LEMMA childSet(T, v)(w) IFF T`dom(w) AND EXISTS (k: nat): w = snoc(v, k)
+
+  childList_member: LEMMA member(w, childList(T, v)) IFF childSet(T, v)(w)
+
+  childList_nodup: LEMMA ppg_list_sets[Addr].nodup(childList(T, v))
+
+  childSet_length: LEMMA childSet(T, v)(w) IMPLIES length(w) = length(v) + 1
+
+  childSet_labels_injective: LEMMA SameDepthIndependent(vars, T) AND
+    childSet(T, v)(u) AND childSet(T, v)(w) AND T`lab(u) = T`lab(w) IMPLIES u = w
+
+  childSet_compatible: LEMMA edgeCompatible(vars, T) AND T`dom(v) AND childSet(T, v)(w) IMPLIES
+    T`lab(v) = T`lab(w) OR dependent?(vars)(T`lab(v), T`lab(w))
+
+  % Zero fuel retains the current label; positive fuel unfolds its children.
+  toWTreeFuel(T, n, v): RECURSIVE WTree = IF n = 0 THEN roseNode(T`lab(v), null) ELSE
+    roseNode(T`lab(v), map(LAMBDA (w: Addr): toWTreeFuel(T, n - 1, w))(childList(T, v)))
+    ENDIF MEASURE n
+
+  toWTree(T, v): WTree = toWTreeFuel(T, card(T`dom), v)
+
+  toWTreeFuel_zero: LEMMA toWTreeFuel(T, 0, v) = roseNode(T`lab(v), null)
+
+  toWTreeFuel_step: LEMMA toWTreeFuel(T, n + 1, v) =
+    roseNode(T`lab(v), map(LAMBDA (w: Addr): toWTreeFuel(T, n, w))(childList(T, v)))
+
+  toWTreeFuel_label: LEMMA roseLabel(toWTreeFuel(T, n, v)) = T`lab(v)
+
+  child_labels_map: LEMMA map(roseLabel)(map(LAMBDA (w: Addr): toWTreeFuel(T, n, w))(childList(T, v))) =
+    map(T`lab)(childList(T, v))
+
+  toWTreeFuel_distinct: LEMMA SameDepthIndependent(vars, T) IMPLIES
+    distinctLabels(map(LAMBDA (w: Addr): toWTreeFuel(T, n, w))(childList(T, v)))
+
+  depthList_le: THEOREM (FORALL (c: WTree): member(c, cs) IMPLIES depth(c) <= n)
+    IMPLIES depthList(cs) <= n + 1
+
+  toWTreeFuel_depth: LEMMA depth(toWTreeFuel(T, n, v)) <= n
+
+  toWTreeFuel_proper: LEMMA SameDepthIndependent(vars, T) IMPLIES proper(toWTreeFuel(T, n, v))
+
+  toWTreeFuel_wellFormed: LEMMA gt_valid?(T) AND edgeCompatible(vars, T) AND T`dom(v) IMPLIES
+    wellFormed(vars)(toWTreeFuel(T, n, v))
+
+  tauC_toWTreeFuel_props: THEOREM tau_C(vars, Clog, t)`dom(v) AND
+    (FORALL (w: Addr): tau_C(vars, Clog, t)`dom(w) IMPLIES length(w) <= length(v) + n)
+    IMPLIES roseLabel(toWTreeFuel(tau_C(vars, Clog, t), n, v)) = tau_C(vars, Clog, t)`lab(v) AND
+      wellFormed(vars)(toWTreeFuel(tau_C(vars, Clog, t), n, v)) AND
+      proper(toWTreeFuel(tau_C(vars, Clog, t), n, v)) AND
+      depth(toWTreeFuel(tau_C(vars, Clog, t), n, v)) <= n
+
+  tauC_toWTree_wellFormed_proper: THEOREM
+    roseLabel(toWTree(tau_C(vars, Clog, t), null)) = Clog(t) AND
+      wellFormed(vars)(toWTree(tau_C(vars, Clog, t), null)) AND
+      proper(toWTree(tau_C(vars, Clog, t), null)) AND
+      depth(toWTree(tau_C(vars, Clog, t), null)) <= card(tau_C(vars, Clog, t)`dom)
+
+END ppg_mt_real_tree

@@ -1,0 +1,32 @@
+% The running event contains paths that remain bad through time n.
+% Summing its indicators counts the steps before the first good state,
+% with infinity permitted. No measure or state enumeration is used.
+%
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964.
+ppg_input_update_stopping[State,Input: TYPE,
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_input_update[State,Input,inputs] AS rawStopUpdate,
+    ppg_finite_input_history[Input] AS rawStopHistory,
+    measure_probability@ppg_event_prefix[rawStopHistory.Sample] AS rawStopPrefix,
+    measure_probability@ppg_event_count_order[rawStopHistory.Sample] AS rawStopCount,
+    measure_probability@ppg_enn_sup
+
+  R: VAR rawStopUpdate.Rule
+  s0: VAR State
+  n: VAR nat
+  omega: VAR rawStopHistory.Sample
+
+  activeEvents(R,s0): [nat->set[rawStopHistory.Sample]] =
+    LAMBDA(n:nat):{omega:rawStopHistory.Sample|NOT R`good(rawStopUpdate.iidTrajectory(R,s0,n)(omega))}
+
+  runningEvent(R,s0,n): set[rawStopHistory.Sample] = rawStopPrefix.prefixEvents(activeEvents(R,s0),n+1)
+
+  runningEvents(R,s0): [nat->set[rawStopHistory.Sample]] = LAMBDA(n:nat):runningEvent(R,s0,n)
+
+  hitCount(R,s0,omega): ENN = rawStopCount.activeCount(runningEvents(R,s0),omega)
+
+  running_membership: LEMMA runningEvent(R,s0,n)(omega) IFF
+    (FORALL(k:nat):k<=n IMPLIES NOT R`good(rawStopUpdate.iidTrajectory(R,s0,k)(omega)))
+
+END ppg_input_update_stopping

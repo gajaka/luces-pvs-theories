@@ -1,0 +1,66 @@
+% A rooted table event is a union over countably many finite DAGs.
+% Natural codes record both finite supports of a DAG. Restricting the
+% family to a prescribed root replaces the other events by the empty set.
+%
+% Patrick Billingsley, Probability and Measure, third edition,
+% Wiley, 1995: measurable sets and countable unions.
+% Lean counterpart: PPGraphHLSRootUnion.lean, measurableSet_rootUnion.
+ppg_hls_root_union_measurable[C,V,Value:TYPE,domain:[V->set[Value]],
+  universe:{B:finite_set[C]|FORALL(a:C):B(a)},
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING moser_tardos@ppg_mt_native_process[C,V,Value,domain,spaces,laws])
+  process:MTProcess]: THEORY
+BEGIN
+  IMPORTING moser_tardos@ppg_mt_native_spaces[C,V,Value,domain] AS nativeSpaces,
+    moser_tardos@ppg_mt_random_process[C,V,Value,domain] AS slots,
+    ppg_hls_table_events[C,V,Value,domain,spaces,laws,process] AS tables,
+    local_lemmas@ppg_shearer_bdd[C,V,process`footprint] AS graph,
+    ppg_hls_witness_dag[C,graph.dependencyGraph] AS dags,
+    ppg_hls_finite_dag_core[C,graph.dependencyGraph] AS roots,
+    ppg_hls_dag_countable[C,graph.dependencyGraph] AS dagCodes,
+    measure_probability@ppg_label_history[C] AS labelCodes,
+    foundations@ppg_list_sets[C] AS labelLists,
+    measure_probability@ppg_countable_indexed_union[slots.LogSpace,dags.WitnessDAG] AS unions
+
+  a: VAR C
+
+  r: VAR nat
+
+  D: VAR dags.WitnessDAG
+
+  omega: VAR slots.LogSpace
+
+  labelCode(a): nat = labelCodes.firstIndex(a,labelLists.setList(universe))
+
+  RootFamily(a,r): TYPE = {D:dags.WitnessDAG|roots.RootedCanonical(D,(a,r))}
+
+  rootedTable(a,r)(D): set[slots.LogSpace] =
+    IF roots.RootedCanonical(D,(a,r)) THEN tables.tableCheck(D)
+    ELSE emptyset[slots.LogSpace] ENDIF
+
+  rootUnion(a,r): set[slots.LogSpace] = unions.indexedUnion(rootedTable(a,r))
+
+  labels_listed: LEMMA FORALL(a:C):member(a,labelLists.setList(universe))
+
+  label_code_injective: LEMMA injective?(labelCode)
+
+  dag_code_injective: LEMMA injective?(dagCodes.dagCode(labelCode))
+
+  root_union_member: LEMMA rootUnion(a,r)(omega) IFF
+    EXISTS(D:dags.WitnessDAG):roots.RootedCanonical(D,(a,r)) AND
+      tables.tableCheck(D)(omega)
+
+  root_union_subtype: LEMMA rootUnion(a,r)(omega) IFF
+    EXISTS(D:RootFamily(a,r)):tables.tableCheck(D)(omega)
+
+  measurable_rooted_table: LEMMA tables.badMeasurable IMPLIES
+    nativeSpaces.NativeTableSigma(spaces)(rootedTable(a,r)(D))
+
+  measurable_rooted_family: LEMMA tables.badMeasurable IMPLIES
+    FORALL(D:dags.WitnessDAG):nativeSpaces.NativeTableSigma(spaces)(rootedTable(a,r)(D))
+
+  measurableSet_rootUnion: THEOREM tables.badMeasurable IMPLIES
+    nativeSpaces.NativeTableSigma(spaces)(rootUnion(a,r))
+
+END ppg_hls_root_union_measurable

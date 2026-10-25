@@ -1,0 +1,34 @@
+% Vanishing at good states is enough for the stopped-value shift. The
+% killed survival vectors satisfy that condition at every horizon.
+% These identities concern arbitrary paths and do not require a measure.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Lemma 1.13, American Mathematical Society, 2017.
+ppg_finite_stopped_survival[State,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  (IMPORTING measure_probability@ppg_measurable_space[Omega])
+  ambient:ppg_measurable_space[Omega].MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_finite_stopped_value[State,Omega,universe,ambient],
+    ppg_finite_survival[State,universe]
+  M: VAR Model
+  f: VAR Vector
+  X: VAR Process
+  n,N: VAR nat
+  omega: VAR Omega
+
+  GoodZero(M,f): bool = FORALL(s:State):M`good(s) IMPLIES f(s)=0
+
+  stoppedValue_shift_of_good_zero: THEOREM GoodZero(M,f) IMPLIES
+    stoppedValue(M,f,X,n+1)=(LAMBDA(omega:Omega):
+      IF runningEvent(M,X,n)(omega) THEN f(X(n+1)(omega)) ELSE 0 ENDIF)
+
+  stopped_survival_zero: THEOREM
+    stoppedValue(M,LAMBDA(s:State):survival(M,0,s),X,n)=
+      (LAMBDA(omega:Omega):IF runningEvent(M,X,n)(omega) THEN 1 ELSE 0 ENDIF)
+
+  stopped_survival_initial: THEOREM
+    stoppedValue(M,LAMBDA(s:State):survival(M,N,s),X,0)=
+      (LAMBDA(omega:Omega):survival(M,N,X(0)(omega)))
+
+END ppg_finite_stopped_survival

@@ -1,0 +1,33 @@
+% Canonical proper DAGs inject into the proper stable sequences without
+% changing their weights. The Shearer coefficient budget therefore bounds
+% their unordered sum. Multiplicative slack gives the singleton bound 1/e.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Lemma 3.14, attributed there to Kashyap Kolipaka
+% and Mario Szegedy. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSWitnessBudget.lean.
+ppg_hls_witness_budget[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},B:finite_set[C],alpha:C]: THEORY
+BEGIN
+  IMPORTING ppg_hls_proper_family[C,G,B,alpha], local_lemmas@ppg_shearer_slack[C,G],
+    measure_probability@ppg_nonneg_injective_bound[ProperDAG,LayerSeq] AS encodingSums,
+    measure_probability@ppg_nonneg_tsum[ProperDAG] AS dagSums
+  p: VAR [C->real]
+  e: VAR real
+
+  totalWeight(p): ENN = dagSums.tsum(LAMBDA(Q:ProperDAG):weightNN(p)(Q))
+
+  tsum_weight_le_tsum_properFamilyWeight: THEOREM
+    ele(totalWeight(p),properFamilyTotal(p,B,sets[C].singleton(alpha)))
+
+  tsum_weight_le_stableBudget: THEOREM B(alpha) AND nonnegativeOn(p,B) AND
+    StrictCriterion(p,B) IMPLIES
+    ele(totalWeight(p),ofReal(stableBudget(p,B,sets[C].singleton(alpha))))
+
+  tsum_weight_lt_top: THEOREM B(alpha) AND nonnegativeOn(p,B) AND
+    StrictCriterion(p,B) IMPLIES
+    ele(totalWeight(p),ennInfinity) AND totalWeight(p)/=ennInfinity
+
+  tsum_weight_le_inv_slack: THEOREM B(alpha) AND nonnegativeOn(p,B) AND 0<e AND
+    StrictCriterion(dilated(e,p),B) IMPLIES ele(totalWeight(p),ofReal(div0(1,e)))
+END ppg_hls_witness_budget

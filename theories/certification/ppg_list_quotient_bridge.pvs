@@ -1,0 +1,40 @@
+% Projection preserves every vertex and sends an ordered specification
+% edge to a strict quotient edge or to one collapsed class. Certification
+% descends to classes and propagates along their strict quotient edges.
+%
+% Lean counterpart: PPGraphQuotientBridge.lean. Quotients use full class sets,
+% as in B. A. Davey and H. A. Priestley, Introduction to Lattices and Order,
+% second edition, Cambridge University Press, 2002.
+%
+% Author: Dragan Stosic, 2026.
+
+ppg_list_quotient_bridge[D: TYPE, Th: TYPE, le: (partial_order?[Th]),
+  (IMPORTING ppg_parametric_core[D, Th, le]) F: CertFamily]: THEORY
+BEGIN
+
+  IMPORTING ppg_list_quotient[D, Th, le], ppg_core@directed_pp_graph[SpecQuotient(F)] AS quotientGraphs
+
+  d: VAR D
+  t, t1, t2: VAR Th
+  Q, Q1, Q2: VAR SpecQuotient(F)
+
+  quotient_graph: quotientGraphs.Graph =
+    (# vertices := (LAMBDA (Q: SpecQuotient(F)): TRUE),
+       edges := (LAMBDA (Q1, Q2: SpecQuotient(F)): quotient_le(F)(Q1, Q2) AND Q1 /= Q2) #)
+
+  proj_preserves_vertices: THEOREM spec_graph`vertices(t) IMPLIES
+    quotient_graph`vertices(quotient_mk(F)(t))
+
+  proj_preserves_edges: THEOREM spec_edge(t1, t2) IMPLIES
+    quotient_graph`edges(quotient_mk(F)(t1), quotient_mk(F)(t2)) OR quotient_mk(F)(t1) = quotient_mk(F)(t2)
+
+  proj_surjective: THEOREM FORALL (Q: SpecQuotient(F)): EXISTS (t: Th): quotient_mk(F)(t) = Q
+
+  quotient_certified(d)(Q): bool = FORALL (t: Th): Q(t) IMPLIES fully_certified(F)(d, t)
+
+  quotient_certified_iff: THEOREM quotient_certified(d)(quotient_mk(F)(t)) IFF fully_certified(F)(d, t)
+
+  quotient_cert_propagates: THEOREM quotient_graph`edges(Q1, Q2) AND quotient_certified(d)(Q1) IMPLIES
+    quotient_certified(d)(Q2)
+
+END ppg_list_quotient_bridge

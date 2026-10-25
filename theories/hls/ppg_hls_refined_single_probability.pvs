@@ -1,0 +1,53 @@
+% The original-table projection and a fixed per-variable read both have
+% their constructed product laws. Their composition gives the actual
+% mass of one table event, without a validity or overlap assumption.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Lemma 3.4, arXiv:2111.06527.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Lean: measure_originalTable_tableEvent_eq in PPGraphHLSRefinedProbability.
+ppg_hls_refined_single_probability[C,V,Value:TYPE,domain:[V->set[Value]],
+  variableUniverse:{U:finite_set[V]|U=fullset[V]},
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING moser_tardos@ppg_mt_native_process[C,V,Value,domain,spaces,laws])
+  process:MTProcess]: THEORY
+BEGIN
+  IMPORTING ppg_hls_augmented_space[C,V,Value,domain,spaces,laws] AS aug,
+    ppg_hls_table_events[C,V,Value,domain,spaces,laws,process] AS tables,
+    moser_tardos@ppg_mt_state_probability[C,V,Value,domain,variableUniverse,
+      spaces,laws] AS stateLaw,
+    moser_tardos@ppg_mt_log_probability[C,V,Value,domain,spaces,laws] AS originalLaw,
+    moser_tardos@ppg_mt_native_process[C,V,Value,domain,spaces,laws] AS native,
+    ppg_hls_table_coordinates[C,V,process`footprint] AS coords,
+    local_lemmas@ppg_shearer_bdd[C,V,process`footprint] AS graph,
+    ppg_hls_witness_dag[C,graph.dependencyGraph],
+    moser_tardos@ppg_mt_check_measurable[C,V,Value,domain] AS reads,
+    measure_probability@ppg_measurable_map[aug.OriginalTable,native.State] AS stateMaps,
+    measure_probability@ppg_probability_map[aug.OriginalTable,native.State,
+      aug.OriginalSigma,NativeStateSigma(spaces)] AS statePush,
+    measure_probability@ppg_enn_ofreal
+
+  D: VAR WitnessDAG
+
+  u: VAR WNode
+
+  originalSingle(D,u): set[aug.AugTable] = {eta:aug.AugTable|
+    tables.tableEvent(D,u)(aug.originalTable(eta))}
+
+  table_event_read_preimage: LEMMA tables.tableEvent(D,u)=
+    stateMaps.inverseImage(reads.readAt(coords.localIndex(D,u)),process`bad(u`1))
+
+  table_event_mass: LEMMA tables.badMeasurable IMPLIES
+    originalLaw.logMeasure(tables.tableEvent(D,u))=
+      stateLaw.stateMeasure(process`bad(u`1))
+
+  original_single_mass: LEMMA tables.badMeasurable IMPLIES
+    aug.augmentedMeasure(originalSingle(D,u))=
+      stateLaw.stateMeasure(process`bad(u`1))
+
+  measure_originalTable_tableEvent_eq: THEOREM tables.badMeasurable IMPLIES
+    ofReal(aug.augmentedMeasure(originalSingle(D,u)))=
+      ofReal(stateLaw.stateMeasure(process`bad(u`1)))
+
+END ppg_hls_refined_single_probability

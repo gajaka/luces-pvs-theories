@@ -1,0 +1,14 @@
+% A commutative fold over a subtree splits into its root and child domains.
+ppg_mt_desc_fold[C, V, R: TYPE, unit: R,
+  op: {f: [R, R -> R] | identity?(f)(unit) AND associative?(f) AND commutative?(f)}]: THEORY
+BEGIN
+  IMPORTING ppg_mt_descendants[C, V], foundations@ppg_bind_sum[Addr, Addr, R, unit, op] , foundations@ppg_monoid_sum[Addr, R, unit, op] AS foldSums
+  T: VAR GTree
+  v: VAR Addr
+  f: VAR [Addr -> R]
+
+  descendants_fold_step: THEOREM gt_valid?(T) AND T`dom(v) IMPLIES
+    foldSums.sum(descendants(T, v), f) =
+      op(f(v), foldSums.sum(childSet(T, v), LAMBDA (u: Addr): foldSums.sum(descendants(T, u), f)))
+
+END ppg_mt_desc_fold

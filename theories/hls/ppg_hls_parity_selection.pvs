@@ -1,0 +1,77 @@
+% Splitting a finite edge set by the parity of its source rank gives two
+% disjoint parts. The larger part contains at least half the edges.
+% For consecutive ranks that are injective on the actual endpoints,
+% distinct edges in one part cannot share a vertex.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Proposition 3.2. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSParitySelection.lean.
+ppg_hls_parity_selection[A:TYPE]: THEORY
+BEGIN
+  IMPORTING foundations@ppg_finite_bind[[A,A],A] AS edgeEndpoints
+
+  Edge: TYPE = [A,A]
+
+  E: VAR finite_set[Edge]
+  rank: VAR [A->nat]
+  b,n: VAR nat
+  e,f: VAR Edge
+  u,v: VAR A
+
+  edgeVertices(e): finite_set[A] = add(e`1,singleton(e`2))
+
+  endpoints(E): finite_set[A] = edgeEndpoints.biUnion(E,edgeVertices)
+
+  rankInjective(E,rank): bool = FORALL(u,v:A):
+    endpoints(E)(u) AND endpoints(E)(v) AND rank(u)=rank(v) IMPLIES u=v
+
+  consecutive(E,rank): bool = FORALL(e:Edge):E(e) IMPLIES rank(e`2)=rank(e`1)+1
+
+  parityEdges(E,rank,b): finite_set[Edge] = intersection(E,
+    LAMBDA(e:Edge):mod(rank(e`1),2)=b)
+
+  largerParity(E,rank): finite_set[Edge] =
+    IF card(parityEdges(E,rank,0))<=card(parityEdges(E,rank,1))
+      THEN parityEdges(E,rank,1) ELSE parityEdges(E,rank,0) ENDIF
+
+  edge_eta: LEMMA (e`1,e`2)=e
+
+  mod2_cases: LEMMA mod(n,2)=0 OR mod(n,2)=1
+
+  mod2_successor: LEMMA mod(n+1,2)/=mod(n,2)
+
+  parityEdges_partition: THEOREM union(parityEdges(E,rank,0),parityEdges(E,rank,1))=E
+
+  parityEdges_disjoint: THEOREM disjoint?(parityEdges(E,rank,0),parityEdges(E,rank,1))
+
+  largerParity_subset: THEOREM subset?(largerParity(E,rank),E)
+
+  parity_intersection_empty: LEMMA intersection(parityEdges(E,rank,0),parityEdges(E,rank,1))=emptyset[Edge]
+
+  largerParity_half: THEOREM card(E)<=2*card(largerParity(E,rank))
+
+  edge_endpoints: LEMMA E(e) IMPLIES endpoints(E)(e`1) AND endpoints(E)(e`2)
+
+  consecutive_edge: LEMMA consecutive(E,rank) AND E(e) IMPLIES rank(e`2)=rank(e`1)+1
+
+  rank_injective_elim: LEMMA rankInjective(E,rank) AND endpoints(E)(u) AND
+    endpoints(E)(v) AND rank(u)=rank(v) IMPLIES u=v
+
+  same_source_edge: LEMMA rankInjective(E,rank) AND consecutive(E,rank) AND
+    E(e) AND E(f) AND e`1=f`1 IMPLIES e=f
+
+  same_target_edge: LEMMA rankInjective(E,rank) AND consecutive(E,rank) AND
+    E(e) AND E(f) AND e`2=f`2 IMPLIES e=f
+
+  consecutive_parity: LEMMA consecutive(E,rank) AND E(e) IMPLIES
+    mod(rank(e`2),2)/=mod(rank(e`1),2)
+
+  parityEdges_endpoints_disjoint: THEOREM rankInjective(E,rank) AND consecutive(E,rank) AND
+    parityEdges(E,rank,b)(e) AND parityEdges(E,rank,b)(f) AND e/=f IMPLIES
+      disjoint?(edgeVertices(e),edgeVertices(f))
+
+  largerParity_endpoints_disjoint: THEOREM rankInjective(E,rank) AND consecutive(E,rank) AND
+    largerParity(E,rank)(e) AND largerParity(E,rank)(f) AND e/=f IMPLIES
+      disjoint?(edgeVertices(e),edgeVertices(f))
+
+END ppg_hls_parity_selection

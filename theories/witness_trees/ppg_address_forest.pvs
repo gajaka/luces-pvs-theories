@@ -1,0 +1,55 @@
+% Child domains occupy distinct, ordered first-address components.
+ppg_address_forest: THEORY
+BEGIN
+  IMPORTING foundations@ppg_tree_lists[list[nat]], foundations@ppg_tree_lists[nat]
+
+  Address: TYPE = list[nat]
+
+  Domain: TYPE = finite_set[Address]
+
+  parts: VAR list[Domain]
+  D: VAR Domain
+  v, w: VAR Address
+  idx, k: VAR nat
+
+  prefixClosed(D): bool = FORALL (v: Address, k: nat):
+    D(append(v, cons(k, null))) IMPLIES D(v)
+
+  prepend(idx, D): Domain = image[Address, Address](LAMBDA (w: Address): cons(idx, w), D)
+
+  prepend_member: LEMMA prepend(idx, D)(w) IFF
+    EXISTS (a: Address): D(a) AND w = cons(idx, a)
+
+  prepend_null: LEMMA NOT prepend(idx, D)(null)
+
+  prepend_cons: LEMMA FORALL (a: Address): prepend(idx, D)(cons(k, a)) IFF idx = k AND D(a)
+
+  prepend_prefix: LEMMA prefixClosed(D) AND prepend(idx, D)(append(v, cons(k, null)))
+    IMPLIES v = null OR prepend(idx, D)(v)
+
+  forestDom(parts, idx): RECURSIVE Domain =
+    CASES parts OF null: emptyset[Address],
+      cons(D, rest): union(prepend(idx, D), forestDom(rest, idx + 1)) ENDCASES
+    MEASURE length(parts)
+
+  forest_dom_nil: LEMMA forestDom(null, idx) = emptyset[Address]
+
+  forest_dom_cons: LEMMA FORALL (rest: list[Domain]):
+    forestDom(cons(D, rest), idx) = union(prepend(idx, D), forestDom(rest, idx + 1))
+
+  forest_no_nil: LEMMA NOT forestDom(parts, idx)(null)
+
+  forest_cons_bound: LEMMA FORALL (a: Address): forestDom(parts, idx)(cons(k, a)) IMPLIES idx <= k
+
+  forest_head_ge: THEOREM forestDom(parts, idx)(w) IMPLIES
+    EXISTS (k: nat, a: Address): w = cons(k, a) AND idx <= k
+
+  forest_length_pos: LEMMA forestDom(parts, idx)(w) IMPLIES 0 < length(w)
+
+  forest_head_disjoint: THEOREM disjoint?(prepend(idx, D), forestDom(parts, idx + 1))
+
+  forest_prefix: THEOREM every(prefixClosed)(parts) AND
+    forestDom(parts, idx)(append(v, cons(k, null))) IMPLIES
+      v = null OR forestDom(parts, idx)(v)
+
+END ppg_address_forest

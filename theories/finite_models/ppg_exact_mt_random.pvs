@@ -1,0 +1,101 @@
+% First-step equations determine the exact expected number of MT
+% resamplings. The original table law and full hitting count are retained.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Exercise 10.22(a), American Mathematical Society, 2017.
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Section 7.1.1, Cambridge University Press, 2017.
+ppg_exact_mt_random[I,V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  events:{U:finite_set[I]|FORALL(i:I):U(i)},
+  fallback:I,eventOrder:{e:list[I]|FORALL(i:I):member(i,e)},
+  (IMPORTING ppg_finite_resampling_core[V,Value,variables,domains],
+    ppg_resampling_selection[I,V,Value,variables,domains,events])
+  Q:{Q:Marginals|Valid(Q)},B:ppg_resampling_selection[I,V,Value,variables,domains,events].Problem]: THEORY
+BEGIN
+  IMPORTING ppg_finite_table_core[V,Value,variables,domains]
+
+  State: TYPE = ppg_finite_resampling_core[V,Value,variables,domains].State
+
+  ResamplingLog: TYPE = ppg_finite_table_core[V,Value,variables,domains].ResamplingLog
+
+  plainDomain: MACRO [V->set[Value]] = LAMBDA(v:V):domains(v)
+
+  IMPORTING ppg_resampling_table_init[V,Value,variables,domains,Q] AS initializer,
+    ppg_finite_mt_legacy[I,V,Value,variables,domains,events,fallback,eventOrder] AS first,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS states,
+    ppg_resampling_table_product[V,Value,variables,domains,Q] AS tableLaws,
+    ppg_resampling_product_law[V,Value,variables,domains,Q] AS product,
+    ppg_finite_resampling_core[V,Value,variables,domains] AS core,
+    ppg_resampling_potential[V,Value,variables,domains] AS kernelProof,
+    ppg_finite_potential_reach[State,states.allStates] AS reach,
+    ppg_finite_potential_accessible[State,states.allStates] AS accessibleProof,
+    ppg_finite_potential_synthesis[State,states.allStates] AS potential,
+    ppg_finite_cramer_system[State,states.allStates] AS cramer,
+    ppg_finite_potential_system[State,states.allStates] AS equations,
+    moser_tardos@ppg_mt_table_label[bool,I,V,Value,plainDomain,product.spaces,product.coins] AS labels,
+    moser_tardos@ppg_mt_random_process[I,V,Value,plainDomain] AS oldSlots,
+    moser_tardos@ppg_mt_native_spaces[I,V,Value,plainDomain] AS oldSpaces,
+    moser_tardos@ppg_mt_log_probability[I,V,Value,plainDomain,product.spaces,product.coins] AS oldLaw,
+    moser_tardos@ppg_mt_check_probability[I,V,Value,plainDomain,product.spaces,product.coins] AS oldBad,
+    moser_tardos@ppg_mt_time_expectation[I,V,Value,plainDomain,product.spaces,product.coins] AS oldTime,
+    measure_probability@ppg_probability_integral[oldSlots.LogSpace,oldSpaces.NativeTableSigma(product.spaces),
+      oldLaw.logMeasure] AS oldIntegral,
+    ppg_finite_mt_checked_random[I,V,Value,variables,domains,events,fallback,eventOrder,Q,B] AS base
+
+  IMPORTING ppg_resampling_exact_table[V,Value,variables,domains,Q,first.firstPolicy(B),initializer.randomInit] AS tableExact,
+    ppg_finite_mt_table_expectation[I,V,Value,variables,domains,events,fallback,eventOrder,Q,B,initializer.randomInit] AS bridge
+
+  ambient: MACRO ppg_measurable_space[ResamplingLog].MeasurableSpace = tableLaws.tableAmbient
+
+  IMPORTING ppg_finite_process_hitting[State,ResamplingLog,states.allStates,ambient,
+      tableExact.tableMeasure,tableExact.history] AS hitting,
+    measure_probability@ppg_finite_measure_integral[ResamplingLog,ambient,tableExact.tableMeasure] AS functions,
+    measure_probability@ppg_finite_expectation[ResamplingLog,ambient,tableExact.tableMeasure] AS mean,
+    measure_integration@integral[ResamplingLog,ppg_nasa_sigma[ResamplingLog].asNasa(ambient),
+      tableExact.tableMeasure] AS native
+
+  f: VAR tableExact.Solution
+
+  bad_measurable: LEMMA FORALL(i:I):oldSpaces.NativeStateSigma(product.spaces)({s:State|B`bad(i,s)})
+
+  nativeBad: oldBad.NativeBad = B`bad
+
+  Accessible: MACRO bool = reach.Accessible(tableExact.tableModel)
+
+  exactPotential: MACRO [State->rat] = potential.potential(tableExact.tableModel)
+
+  potential_equations: LEMMA Accessible IMPLIES equations.Equations(tableExact.tableModel,exactPotential)
+
+  legacyExpected: ENN = oldTime.randomInitETLog(B`footprint,nativeBad,fallback,eventOrder)
+
+  legacy_expected_eq: LEMMA legacyExpected=hitting.expectedHitCount(tableExact.tableModel,tableExact.tableProcess)
+
+  IMPORTING ppg_resampling_initial_mean[V,Value,variables,domains,Q] AS initialLaw,
+    foundations@ppg_monoid_sum[State,rat,0,LAMBDA(a,b:rat):a+b] AS rationalSum
+
+  oldValue(f)(omega:oldSlots.LogSpace): rat = f(oldSlots.initialStateFromLog(omega))
+
+  initial_function_eq: LEMMA tableExact.initialValue(f)=oldValue(f)
+
+  oldNative(f): oldIntegral.NativeFunction = oldValue(f)
+
+  initial_integral_eq: LEMMA native.integral(tableExact.initialValue(f))=oldIntegral.expectation(oldNative(f))
+
+  initial_law_function: LEMMA tableExact.initialValue(f)=initialLaw.initialValue(f)
+
+  initial_law_measure: LEMMA tableExact.tableMeasure=initialLaw.tableMeasure
+
+  initial_integral_sum: LEMMA native.integral(tableExact.initialValue(f))=
+    rationalSum.sum(states.allStates,LAMBDA(s:State):core.productMass(Q,s)*f(s))
+
+  randomInitETLog_eq_of_equations: THEOREM legacyExpected=ofReal(oldIntegral.expectation(oldNative(f)))
+
+  randomInitETLog_eq_rational_sum_of_equations: THEOREM legacyExpected=
+    ofReal(rationalSum.sum(states.allStates,LAMBDA(s:State):core.productMass(Q,s)*f(s)))
+
+  randomInitETLog_eq_potential_sum: THEOREM Accessible IMPLIES legacyExpected=
+    ofReal(rationalSum.sum(states.allStates,LAMBDA(s:State):core.productMass(Q,s)*exactPotential(s)))
+
+END ppg_exact_mt_random

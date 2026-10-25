@@ -1,0 +1,26 @@
+% Repeated two-event factorization gives the finite product formula.
+ppg_probability_event_product[X, K: TYPE,
+  (IMPORTING ppg_measurable_space[X]) S: MeasurableSpace]: THEORY
+BEGIN
+  IMPORTING ppg_finite_events[X, K, S], ppg_probability_independence[X, S],
+            foundations@ppg_real_product[K]
+  mu: VAR Probability
+  E: VAR MeasurableFamily
+  F: VAR finite_set[K]
+
+  eventFactors(mu, E): [K -> real] = LAMBDA (i: K): mu(E(i))
+
+  factorizing?(mu, F, E): bool = FORALL (H: finite_set[K], i: K):
+    subset?(H, F) AND F(i) AND NOT H(i) IMPLIES
+      independent(mu, E(i), finiteMeet(H, E))
+
+  factorizing_subset: LEMMA FORALL (H: finite_set[K]): subset?(H, F) AND
+    factorizing?(mu, F, E) IMPLIES factorizing?(mu, H, E)
+
+  factorizing_step: LEMMA FORALL (i: K): NOT F(i) AND factorizing?(mu, add(i, F), E)
+    IMPLIES mu(finiteMeet(add(i, F), E)) = mu(E(i)) * mu(finiteMeet(F, E))
+
+  finite_intersection_product: THEOREM factorizing?(mu, F, E) IMPLIES
+    mu(finiteMeet(F, E)) = product(F, eventFactors(mu, E))
+
+END ppg_probability_event_product

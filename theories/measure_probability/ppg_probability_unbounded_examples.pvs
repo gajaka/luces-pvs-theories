@@ -1,0 +1,36 @@
+% An increasing collection of coordinate supports cannot in general be
+% replaced by one finite support. This example uses growing supports in
+% a decreasing cylinder sequence with empty intersection.
+
+ppg_probability_unbounded_examples: THEORY
+BEGIN
+  IMPORTING ppg_measurable_space, ppg_probability_dirac, foundations@ppg_nat_range
+
+  allDomain(i: nat): set[nat] = fullset[nat]
+
+  allSpaces(i: nat): ppg_measurable_space[(allDomain(i))].MeasurableSpace =
+    fullset[set[(allDomain(i))]]
+
+  allCoins(i: nat): ppg_probability_measure[(allDomain(i)), allSpaces(i)].Probability =
+    ppg_probability_dirac[(allDomain(i)), allSpaces(i)].dirac(7)
+
+  IMPORTING ppg_probability_cylinder_continuity[nat, nat, allDomain, allSpaces, allCoins]
+
+  constraints(n: nat): CoordinateEvents = LAMBDA (i: nat): {v: (allDomain(i)) | n <= v}
+
+  events(n: nat): (Cylinders) = tableCylinder(natRange(n + 1), blockBox(natRange(n + 1), constraints(n)))
+
+  supports_unbounded: LEMMA FORALL (k: nat): EXISTS (n: nat):
+    NOT subset?(natRange(n + 1), natRange(k))
+
+  events_decreasing: LEMMA decreasingEvents[FullBlock](events)
+
+  zero_coordinate_bound: LEMMA FORALL (n: nat, x: FullBlock): events(n)(x) IMPLIES n <= x(0)
+
+  events_empty_intersection: LEMMA countableIntersection[FullBlock](events) = emptyset[FullBlock]
+
+  unbounded_masses_zero: THEOREM convergence_sequences.convergence(content o events, 0)
+
+  unbounded_native_premeasure: THEOREM generalized_measure_def[FullBlock, Cylinders].finite_measure?(content)
+
+END ppg_probability_unbounded_examples

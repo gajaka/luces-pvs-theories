@@ -1,0 +1,159 @@
+% The point law for a prefix and its next read determines their complete
+% joint law, since both value spaces are finite. Equality is proved in the
+% original native binary product sigma algebra.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Section 2.
+ppg_finite_table_joint[V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[bool,V,Value,LAMBDA(v:V):domains(v)],
+    ppg_finite_table_core[V,Value,variables,domains])
+  spaces:{S:VariableSpaces|FORALL(v:V,x:(domains(v))):S(v)(singleton[(domains(v))](x))},
+  laws:VariableLaws(spaces),
+  F:ppg_finite_table_core[V,Value,variables,domains].Footprint,
+  init:{f:ppg_finite_table_core[V,Value,variables,domains].Initializer|
+    ppg_measurable_map[LogSpace,MTState].measurable(NativeTableSigma(spaces),NativeStateSigma(spaces),f)},
+  n:nat]: THEORY
+BEGIN
+  IMPORTING ppg_finite_table_paths[V,Value,variables,domains] AS jointPaths
+
+  State: TYPE = ppg_finite_table_core[V,Value,variables,domains].State
+
+  ResamplingLog: TYPE = ppg_finite_table_core[V,Value,variables,domains].ResamplingLog
+
+  Path: TYPE = jointPaths.Path(n)
+
+  Pair: TYPE = [Path,State]
+
+  plainDomain: MACRO [V->set[Value]] = LAMBDA(v:V):domains(v)
+
+  IMPORTING ppg_finite_table_spaces[V,Value,variables,domains,spaces] AS jointSpaces,
+    ppg_finite_table_measurable[V,Value,variables,domains,spaces] AS jointMeasurable,
+    ppg_finite_table_measurable_prefix[V,Value,variables,domains,spaces] AS jointPrefix,
+    ppg_finite_path_space[V,Value,variables,domains,spaces,n] AS jointPathSpace,
+    ppg_finite_table_atom[V,Value,variables,domains,spaces,laws,F,init,n] AS jointAtom,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS jointFiniteState,
+    ppg_finite_table_fixed_law[V,Value,variables,domains,spaces,laws] AS jointFixed,
+    moser_tardos@ppg_mt_log_probability[bool,V,Value,plainDomain,spaces,laws],
+    measure_probability@ppg_measurable_pair[ResamplingLog,Path,State] AS jointPairMaps
+
+  pathSigma: MACRO ppg_measurable_space[Path].MeasurableSpace = jointPrefix.pathSigma(n)
+
+  IMPORTING measure_probability@ppg_probability_pair[Path,State,pathSigma,NativeStateSigma(spaces)],
+    measure_probability@ppg_finite_pair_space[Pair,Path,State,jointPathSpace.pathUniverse,jointFiniteState.allStates,
+      pathSigma,NativeStateSigma(spaces)] AS finiteJointSpace,
+    measure_probability@ppg_finite_pair_space[ResamplingLog,Path,State,jointPathSpace.pathUniverse,jointFiniteState.allStates,
+      pathSigma,NativeStateSigma(spaces)] AS finiteJointInputSpace,
+    measure_probability@ppg_finite_probability_points[Pair,finiteJointSpace.universe] AS jointPointEquality,
+    measure_probability@ppg_probability_map
+
+  IMPORTING measure_probability@ppg_probability_pair_marginals[Path,State,pathSigma,NativeStateSigma(spaces)] AS jointMarginals,
+    measure_probability@ppg_probability_push_compose[ResamplingLog,Pair,State,NativeTableSigma(spaces),JointSpace,
+      NativeStateSigma(spaces)] AS jointComposition
+
+  B: VAR (pathSigma)
+  D: VAR (NativeStateSigma(spaces))
+  p: VAR Path
+  a: VAR State
+  z: VAR Pair
+  mu,nu: VAR ppg_probability_measure[Pair,JointSpace].Probability
+
+  prefixMap: [ResamplingLog->Path] = jointPrefix.prefixMap(F,init,n)
+
+  nextMap: [ResamplingLog->State] = LAMBDA(omega:ResamplingLog):nextDraw(F,init,n,omega)
+
+  jointMap: [ResamplingLog->Pair] = LAMBDA(omega:ResamplingLog):(prefixMap(omega),nextMap(omega))
+
+  prefix_measurable: LEMMA ppg_measurable_map[ResamplingLog,Path].measurable(
+    NativeTableSigma(spaces),pathSigma,prefixMap)
+
+  next_map_eq: LEMMA nextMap=jointMeasurable.nextMap(F,init,n)
+
+  next_measurable: LEMMA ppg_measurable_map[ResamplingLog,State].measurable(
+    NativeTableSigma(spaces),NativeStateSigma(spaces),nextMap)
+
+  joint_sigma_full: LEMMA JointSpace=fullset[set[Pair]]
+
+  joint_input_sigma_full: LEMMA
+    jointPairMaps.pairSigma(pathSigma,NativeStateSigma(spaces))=fullset[set[Pair]]
+
+  joint_sigma_input_eq: LEMMA JointSpace=jointPairMaps.pairSigma(pathSigma,NativeStateSigma(spaces))
+
+  joint_measurable: LEMMA ppg_measurable_map[ResamplingLog,Pair].measurable(
+    NativeTableSigma(spaces),JointSpace,jointMap)
+
+  prefixLaw: ppg_probability_measure[Path,pathSigma].Probability =
+    ppg_probability_map[ResamplingLog,Path,NativeTableSigma(spaces),pathSigma].pushforward(logMeasure,prefixMap)
+
+  nextLaw: ppg_probability_measure[State,NativeStateSigma(spaces)].Probability =
+    ppg_probability_map[ResamplingLog,State,NativeTableSigma(spaces),NativeStateSigma(spaces)].pushforward(logMeasure,nextMap)
+
+  jointLaw: ppg_probability_measure[Pair,JointSpace].Probability =
+    ppg_probability_map[ResamplingLog,Pair,NativeTableSigma(spaces),JointSpace].pushforward(logMeasure,jointMap)
+
+  joint_singleton_measurable: LEMMA JointSpace(singleton[Pair](z))
+
+  path_singleton_measurable: LEMMA pathSigma(singleton[Path](p))
+
+  state_singleton_measurable: LEMMA NativeStateSigma(spaces)(singleton[State](a))
+
+  joint_point_preimage: LEMMA ppg_measurable_map[ResamplingLog,Pair].inverseImage(jointMap,singleton[Pair]((p,a)))=
+    jointAtom.nextDrawEvent(p,a)
+
+  prefix_point_mass: LEMMA prefixLaw(singleton[Path](p))=logMeasure(jointAtom.prefixEvent(p))
+
+  joint_point_mass: LEMMA InitialLocal(init) IMPLIES
+    jointLaw(singleton[Pair]((p,a)))=logMeasure(jointAtom.prefixEvent(p))*jointFixed.productLaw(singleton[State](a))
+
+  singleton_cross: LEMMA cross_product(singleton[Path](p),singleton[State](a))=singleton[Pair]((p,a))
+
+  product_point_mass: LEMMA productLaw(prefixLaw,jointFixed.productLaw)(singleton[Pair]((p,a)))=
+    prefixLaw(singleton[Path](p))*jointFixed.productLaw(singleton[State](a))
+
+  joint_singleton_extensionality: LEMMA
+    (FORALL(z:Pair):mu(singleton[Pair](z))=nu(singleton[Pair](z))) IMPLIES mu=nu
+
+  pointwise_joint_product: LEMMA InitialLocal(init) IMPLIES
+    jointLaw(singleton[Pair](z))=productLaw(prefixLaw,jointFixed.productLaw)(singleton[Pair](z))
+
+  prefix_nextDraw_joint_law: THEOREM InitialLocal(init) IMPLIES
+    jointLaw=productLaw(prefixLaw,jointFixed.productLaw)
+
+  second_measurable: LEMMA ppg_measurable_map[Pair,State].measurable(
+    JointSpace,NativeStateSigma(spaces),jointMarginals.secondProjection)
+
+  second_joint_map: LEMMA
+    (LAMBDA(omega:ResamplingLog):jointMarginals.secondProjection(jointMap(omega)))=nextMap
+
+  nextLaw_composed: LEMMA nextLaw=
+    ppg_probability_map[Pair,State,JointSpace,NativeStateSigma(spaces)].pushforward(
+      jointLaw,jointMarginals.secondProjection)
+
+  nextDraw_map: THEOREM InitialLocal(init) IMPLIES nextLaw=jointFixed.productLaw
+
+  prefixPreimage(B): (NativeTableSigma(spaces)) =
+    ppg_measurable_map[ResamplingLog,Path].inverseImage(prefixMap,B)
+
+  nextPreimage(D): (NativeTableSigma(spaces)) =
+    ppg_measurable_map[ResamplingLog,State].inverseImage(nextMap,D)
+
+  jointPreimage(B,D): (NativeTableSigma(spaces)) = intersection(nextPreimage(D),prefixPreimage(B))
+
+  rectangle_measurable: LEMMA JointSpace(cross_product(B,D))
+
+  joint_rectangle_preimage: LEMMA
+    ppg_measurable_map[ResamplingLog,Pair].inverseImage(jointMap,cross_product(B,D))=jointPreimage(B,D)
+
+  prefix_event_mass: LEMMA prefixLaw(B)=logMeasure(prefixPreimage(B))
+
+  next_event_mass: LEMMA nextLaw(D)=logMeasure(nextPreimage(D))
+
+  joint_rectangle_mass: LEMMA InitialLocal(init) IMPLIES
+    logMeasure(jointPreimage(B,D))=prefixLaw(B)*jointFixed.productLaw(D)
+
+  nextDraw_independent_prefix: THEOREM InitialLocal(init) IMPLIES
+    logMeasure(jointPreimage(B,D))=logMeasure(nextPreimage(D))*logMeasure(prefixPreimage(B))
+
+END ppg_finite_table_joint

@@ -1,0 +1,44 @@
+% The atomic input law and the native independent coordinate product
+% agree on every singleton. Finite additivity identifies their complete
+% probability laws and hence their native extended measures.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_resampling_product_identification[V,Value: TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING ppg_finite_resampling_core[V,Value,variables,domains])
+  Q:{Q:Marginals|Valid(Q)}]: THEORY
+BEGIN
+  State: TYPE = ppg_finite_resampling_core[V,Value,variables,domains].State
+
+  IMPORTING ppg_finite_resampling_core[V,Value,variables,domains] AS identifiedCore,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS identifiedFinite,
+    ppg_resampling_update[V,Value,variables,domains] AS identifiedValidity,
+    ppg_resampling_product_law[V,Value,variables,domains,Q] AS identifiedProduct,
+    ppg_finite_update_law[State,State,identifiedFinite.allStates,identifiedFinite.allStates] AS identifiedUpdateLaw,
+    measure_probability@ppg_finite_probability_points[State,identifiedFinite.allStates] AS identifiedPoints
+
+  stateSigma: MACRO ppg_measurable_space[State].MeasurableSpace = fullset[set[State]]
+
+  IMPORTING measure_probability@ppg_probability_measure[State,stateSigma] AS identifiedProbability,
+    measure_probability@ppg_probability_finite_view[State,stateSigma] AS identifiedNativeView,
+    measure_probability@ppg_finite_law_view[State,stateSigma] AS identifiedNativeLaw
+
+  P: VAR identifiedCore.Policy
+  s: VAR State
+
+  inputProbability(P): identifiedProbability.Probability =
+    identifiedUpdateLaw.inputPMF(identifiedCore.rule(Q,P))
+
+  input_point_mass: LEMMA inputProbability(P)(singleton[State](s))=identifiedCore.productMass(Q,s)
+
+  input_probability_eq_product: LEMMA inputProbability(P)=identifiedProduct.productLaw
+
+  inputMeasure(P): identifiedNativeLaw.FiniteLaw = identifiedNativeView.nativeLaw(inputProbability(P))
+
+  coordinateProductMeasure: identifiedNativeLaw.FiniteLaw =
+    identifiedNativeView.nativeLaw(identifiedProduct.productLaw)
+
+  inputMeasure_eq_product: THEOREM inputMeasure(P)=coordinateProductMeasure
+
+END ppg_resampling_product_identification

@@ -1,0 +1,89 @@
+% Each coordinate retains its own finite value domain and rational
+% marginal. The policy chooses a footprint from the current state.
+% Good states have an empty active footprint and are therefore stopped.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Algorithm 1.1, arXiv:0903.0544v3.
+ppg_finite_resampling_core[V,Value: TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]]]: THEORY
+BEGIN
+  plainDomain: MACRO [V->set[Value]] = LAMBDA(v:V):domains(v)
+
+  IMPORTING moser_tardos@ppg_mt_semantics[bool,V,Value,plainDomain] AS resampleSemantics,
+    foundations@ppg_rational_product[V] AS resampleProducts,
+    foundations@ppg_monoid_sum[Value,rat,0,LAMBDA(a,b:rat):a+b] AS resampleRational,
+    foundations@ppg_finite_all[V] AS resampleAllVariables,
+    foundations@ppg_finite_all[Value] AS resampleAllValues
+
+  State: TYPE = resampleSemantics.MTState
+
+  Marginals: TYPE = [# mass:[v:V->[(domains(v))->rat]] #]
+
+  Policy: TYPE = [# good:pred[State],footprint:[State->finite_set[V]] #]
+
+  Rule: TYPE = [# mass:[State->rat],update:[State,State->State],good:pred[State] #]
+
+  Q: VAR Marginals
+  P: VAR Policy
+  s,t,fresh: VAR State
+  F: VAR finite_set[V]
+  v: VAR V
+  x: VAR Value
+
+  extendMass(Q,v)(x): rat = IF domains(v)(x) THEN Q`mass(v)(x) ELSE 0 ENDIF
+
+  Valid(Q): bool = (FORALL(v:V,x:(domains(v))):0<=Q`mass(v)(x)) AND
+    (FORALL(v:V):resampleRational.sum(domains(v),extendMass(Q,v))=1)
+
+  checkMarginals(Q): bool = resampleAllVariables.finiteAll(variables,LAMBDA(v:V):
+    resampleAllValues.finiteAll(domains(v),LAMBDA(x:Value):0<=extendMass(Q,v)(x)) AND
+      resampleRational.sum(domains(v),extendMass(Q,v))=1)
+
+  productMass(Q,fresh): rat = resampleProducts.ratProduct(variables,
+    LAMBDA(v:V):Q`mass(v)(fresh(v)))
+
+  coordinateUpdate(F,s,fresh): State = LAMBDA(v:V):IF F(v) THEN fresh(v) ELSE s(v) ENDIF
+
+  activeFootprint(P,s): finite_set[V] = IF P`good(s) THEN emptyset[V] ELSE P`footprint(s) ENDIF
+
+  rule(Q,P): Rule = (# mass:=LAMBDA(fresh:State):productMass(Q,fresh),
+    update:=LAMBDA(s,fresh:State):coordinateUpdate(activeFootprint(P,s),s,fresh),good:=P`good #)
+
+  variables_member: LEMMA variables(v)
+
+  marginal_nonnegative_check: LEMMA
+    resampleAllValues.finiteAll(domains(v),LAMBDA(x:Value):0<=extendMass(Q,v)(x)) IFF
+      (FORALL(x:(domains(v))):0<=Q`mass(v)(x))
+
+  check_marginals_iff: LEMMA checkMarginals(Q) IFF Valid(Q)
+
+  valid_mass_at_state: LEMMA Valid(Q) IMPLIES 0<=Q`mass(v)(s(v))
+
+  valid_product_factors: LEMMA Valid(Q) IMPLIES
+    (FORALL(v:V):variables(v) IMPLIES 0<=Q`mass(v)(fresh(v)))
+
+  productMass_nonnegative: THEOREM Valid(Q) IMPLIES 0<=productMass(Q,fresh)
+
+  coordinateUpdate_selected: THEOREM F(v) IMPLIES coordinateUpdate(F,s,fresh)(v)=fresh(v)
+
+  coordinateUpdate_unselected: THEOREM NOT F(v) IMPLIES coordinateUpdate(F,s,fresh)(v)=s(v)
+
+  coordinateUpdate_eq_resample: THEOREM coordinateUpdate(F,s,fresh)=resampleSemantics.resample(F,s,fresh)
+
+  updated_coordinate_equality: LEMMA
+    coordinateUpdate(F,s,fresh)=t IFF
+      (FORALL(v:V):(IF F(v) THEN fresh(v) ELSE s(v) ENDIF)=t(v))
+
+  coordinate_fiber_product: THEOREM
+    (IF coordinateUpdate(F,s,fresh)=t THEN productMass(Q,fresh) ELSE 0 ENDIF)=
+      resampleProducts.ratProduct(variables,LAMBDA(v:V):
+        IF (IF F(v) THEN fresh(v) ELSE s(v) ENDIF)=t(v)
+          THEN Q`mass(v)(fresh(v)) ELSE 0 ENDIF)
+
+  rule_update_good: THEOREM P`good(s) IMPLIES rule(Q,P)`update(s,fresh)=s
+
+  rule_update_bad: THEOREM NOT P`good(s) IMPLIES
+    rule(Q,P)`update(s,fresh)=coordinateUpdate(P`footprint(s),s,fresh)
+
+END ppg_finite_resampling_core

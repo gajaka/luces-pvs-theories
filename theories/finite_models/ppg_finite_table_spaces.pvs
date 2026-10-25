@@ -1,0 +1,62 @@
+% On a finite dependent state space, measurable coordinate singletons
+% give measurable state singletons, hence every state event is measurable.
+% The table retains the genuine countable product sigma algebra.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_table_spaces[V,Value: TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING moser_tardos@ppg_mt_coordinate_laws[bool,V,Value,LAMBDA(v:V):domains(v)])
+  spaces:{S:VariableSpaces|FORALL(v:V,x:(domains(v))):S(v)(singleton[(domains(v))](x))}]: THEORY
+BEGIN
+  plainDomain: MACRO [V->set[Value]] = LAMBDA(v:V):domains(v)
+
+  IMPORTING ppg_finite_table_core[V,Value,variables,domains] AS spaceTable
+
+  State: TYPE = spaceTable.State
+
+  ResamplingLog: TYPE = spaceTable.ResamplingLog
+
+  IMPORTING moser_tardos@ppg_mt_native_spaces[bool,V,Value,plainDomain] AS nativeTableSpaces,
+    moser_tardos@ppg_mt_coordinate_laws[bool,V,Value,plainDomain] AS nativeCoordinates,
+    moser_tardos@ppg_mt_random_process[bool,V,Value,plainDomain] AS nativeSlots,
+    measure_probability@ppg_measurable_dependent_product[ResamplingLog,V,Value,plainDomain] AS stateProduct,
+    measure_probability@ppg_measurable_dependent_product[ResamplingLog,[nat,V],Value,nativeSlots.TableDomain] AS tableProduct,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS spaceFinite,
+    ppg_finite_resampling_core[V,Value,variables,domains] AS spaceCore
+
+  stateSigma: ppg_measurable_space[State].MeasurableSpace = nativeTableSpaces.NativeStateSigma(spaces)
+
+  tableSigma: ppg_measurable_space[ResamplingLog].MeasurableSpace = nativeTableSpaces.NativeTableSigma(spaces)
+
+  fullStateSigma: MACRO ppg_measurable_space[State].MeasurableSpace = fullset[set[State]]
+
+  IMPORTING measure_probability@ppg_finite_events[State,V,stateSigma] AS stateMeets,
+    measure_probability@ppg_finite_sigma[State,spaceFinite.allStates] AS stateFiniteSigma
+
+  s: VAR State
+  v: VAR V
+
+  coordinatePoint(s,v): set[State] = {t:State|t(v)=s(v)}
+
+  pointMeet(s): set[State] = stateMeets.finiteMeet(variables,LAMBDA(v:V):coordinatePoint(s,v))
+
+  state_sigma_native: LEMMA stateSigma=stateProduct.nativeProduct(spaces)
+
+  table_domain_eq: LEMMA FORALL(p:[nat,V]):nativeSlots.TableDomain(p)=domains(p`2)
+
+  table_sigma_native: LEMMA tableSigma=tableProduct.nativeProduct(nativeCoordinates.TableSpaces(spaces))
+
+  coordinate_point_native: LEMMA coordinatePoint(s,v)=stateProduct.nativeCylinder(v,singleton[(plainDomain(v))](s(v)))
+
+  coordinate_point_measurable: LEMMA stateSigma(coordinatePoint(s,v))
+
+  point_meet_singleton: LEMMA pointMeet(s)=singleton[State](s)
+
+  point_meet_measurable: LEMMA stateSigma(pointMeet(s))
+
+  state_singleton_measurable: LEMMA stateSigma(singleton[State](s))
+
+  state_sigma_full: THEOREM stateSigma=fullStateSigma
+
+END ppg_finite_table_spaces

@@ -1,0 +1,22 @@
+% Distinct full dependency components partition the finite label set.
+% The extended nonnegative sum over labels therefore equals the sum
+% of component sums, even when some summands are infinite.
+% Lean counterpart: PPGraphShearerBDDExpectation.lean.
+ppg_enn_bdd_partition[C,V:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_enn_finite[C], ppg_enn_finite[finite_set[C]],
+    local_lemmas@ppg_bdd_partition_sum[C,V,ENN,ennFinite(0),eadd]
+  vars: VAR CertVars
+  B: VAR finite_set[C]
+  f: VAR [C->ENN]
+
+  label_esum_fold: LEMMA ppg_nonneg_tsum[C].esum=ppg_monoid_sum[C,ENN,ennFinite(0),eadd].sum
+
+  group_esum_fold: LEMMA ppg_nonneg_tsum[finite_set[C]].esum=
+    ppg_monoid_sum[finite_set[C],ENN,ennFinite(0),eadd].sum
+
+  esum_compOf_groups: THEOREM
+    ppg_nonneg_tsum[finite_set[C]].esum(groups(vars,B),LAMBDA(K:finite_set[C]):ppg_nonneg_tsum[C].esum(K,f))=
+    ppg_nonneg_tsum[C].esum(B,f)
+
+END ppg_enn_bdd_partition

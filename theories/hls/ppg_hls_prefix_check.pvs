@@ -1,0 +1,47 @@
+% Ancestor prefixes retain every table index of their remaining nodes.
+% Away from the two reversed endpoints, tests are unchanged. If all
+% original tests pass, failure of the flipped prefix must occur at one
+% of the two swapped endpoint tests. These are pointwise assertions;
+% no probability law or measurability premise is used.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", proof of Lemma 3.4. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSPrefixCheck.lean.
+ppg_hls_prefix_check[C,V,Value:TYPE,domain:[V->set[Value]],
+  footprint:[C->finite_set[V]],
+  (IMPORTING moser_tardos@ppg_mt_semantics[C,V,Value,domain])bad:[C,MTState->bool]]: THEORY
+BEGIN
+  IMPORTING ppg_hls_reversal_slots[C,V,footprint],
+    ppg_hls_table_check_core[C,V,Value,domain,footprint,bad]
+  D: VAR WitnessDAG
+  r,u,v,w: VAR WNode
+  a: VAR V
+  omega: VAR rawSlots.LogSpace
+
+  priorReaders_prefix_eq: THEOREM Reach(D)(u,r) IMPLIES
+    priorReaders(ancestorPrefix(D,r),u,a)=priorReaders(D,u,a)
+
+  localIndex_prefix_eq: THEOREM Reach(D)(u,r) IMPLIES
+    localIndex(ancestorPrefix(D,r),u)(a)=localIndex(D,u)(a)
+
+  tableState_prefix_eq: THEOREM Reach(D)(u,r) IMPLIES
+    tableState(ancestorPrefix(D,r),u)(omega)=tableState(D,u)(omega)
+
+  tableCheck_subset_prefix: THEOREM subset?(tableCheck(D),tableCheck(ancestorPrefix(D,r)))
+
+  tableState_reverse_other: THEOREM w/=u AND w/=v IMPLIES
+    tableState(reverse(D,u,v),w)(omega)=tableState(D,w)(omega)
+
+  reverse_tableCheck_of_endpoint_tests: THEOREM tableCheck(D)(omega) AND
+    tableEvent(reverse(D,u,v),u)(omega) AND tableEvent(reverse(D,u,v),v)(omega) IMPLIES
+      tableCheck(reverse(D,u,v))(omega)
+
+  flipped_prefix_passes_of_endpoint_tests: THEOREM tableCheck(D)(omega) AND
+    tableEvent(reverse(D,u,v),u)(omega) AND tableEvent(reverse(D,u,v),v)(omega) IMPLIES
+      tableCheck(ancestorPrefix(reverse(D,u,v),r))(omega)
+
+  flipped_prefix_failure_localizes: THEOREM tableCheck(D)(omega) AND
+    NOT tableCheck(ancestorPrefix(reverse(D,u,v),r))(omega) IMPLIES
+      NOT tableEvent(reverse(D,u,v),u)(omega) OR NOT tableEvent(reverse(D,u,v),v)(omega)
+
+END ppg_hls_prefix_check

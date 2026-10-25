@@ -1,0 +1,66 @@
+% Depth slices and label counts commute with a child-address prefix.
+ppg_depth_fibers[C, V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_rose_to_growing[C, V], foundations@ppg_finite_multiset[list[nat], C]
+  D, E: VAR finite_set[Addr]
+  f, g: VAR [Addr -> C]
+  d, idx: VAR nat
+  b: VAR C
+  t, c: VAR WTree
+  rest: VAR list[WTree]
+  v, w: VAR Addr
+
+  slice(D, d): finite_set[Addr] = intersection(D, LAMBDA (w: Addr): length(w) = d)
+
+  domainBag(D, f, d): Multiset = mapBag(slice(D, d), f)
+
+  slice_empty: LEMMA slice(emptyset[Addr], d) = emptyset[Addr]
+
+  slice_union: LEMMA slice(union(D, E), d) = union(slice(D, d), slice(E, d))
+
+  slice_disjoint: LEMMA disjoint?(D, E) IMPLIES disjoint?(slice(D, d), slice(E, d))
+
+  domain_empty: LEMMA domainBag(emptyset[Addr], f, d)(b) = 0
+
+  domain_union: LEMMA disjoint?(D, E) IMPLIES
+    domainBag(union(D, E), f, d)(b) = domainBag(D, f, d)(b) + domainBag(E, f, d)(b)
+
+  slice_root: LEMMA (FORALL (w: Addr): D(w) IMPLIES length(w) > 0) IMPLIES
+    slice(add(null[nat], D), 0) = singleton(null[nat])
+
+  slice_succ: LEMMA slice(add(null[nat], D), d + 1) = slice(D, d + 1)
+
+  prepend_card: LEMMA card(prepend(idx, D)) = card(D)
+
+  toGT_lab_suffix: LEMMA dropList(roseChildren(t), idx) = cons(c, rest) IMPLIES
+    toGT_lab(t, cons(idx, w)) = toGT_lab(c, w)
+
+  prefix_fiber: LEMMA (FORALL (w: Addr): f(cons(idx, w)) = g(w)) IMPLIES
+    fiber(slice(prepend(idx, D), d + 1), f, b) = prepend(idx, fiber(slice(D, d), g, b))
+
+  prefix_count: LEMMA (FORALL (w: Addr): f(cons(idx, w)) = g(w)) IMPLIES
+    domainBag(prepend(idx, D), f, d + 1)(b) = domainBag(D, g, d)(b)
+
+  domain_unfold: LEMMA toGT_dom(t) = add(null[nat], toGT_domChildren(roseChildren(t), 0))
+
+  tree_slice_zero: LEMMA slice(toGT_dom(t), 0) = singleton(null[nat])
+
+  tree_slice_succ: LEMMA slice(toGT_dom(t), d + 1) = slice(toGT_domChildren(roseChildren(t), 0), d + 1)
+
+  tree_count_zero: LEMMA domainBag(toGT_dom(t), LAMBDA (w: Addr): toGT_lab(t, w), 0)(b) =
+    IF roseLabel(t) = b THEN 1 ELSE 0 ENDIF
+
+  tree_count_succ: LEMMA domainBag(toGT_dom(t), LAMBDA (w: Addr): toGT_lab(t, w), d + 1)(b) =
+    domainBag(toGT_domChildren(roseChildren(t), 0), LAMBDA (w: Addr): toGT_lab(t, w), d + 1)(b)
+
+  forest_count_cons: LEMMA dropList(roseChildren(t), idx) = cons(c, rest) IMPLIES
+    domainBag(toGT_domChildren(cons(c, rest), idx), LAMBDA (w: Addr): toGT_lab(t, w), d + 1)(b) =
+      domainBag(toGT_dom(c), LAMBDA (w: Addr): toGT_lab(c, w), d)(b) +
+      domainBag(toGT_domChildren(rest, idx + 1), LAMBDA (w: Addr): toGT_lab(t, w), d + 1)(b)
+
+  domain_member: LEMMA D(w) IMPLIES domainBag(D, f, length(w))(f(w)) > 0
+
+  domain_nodup_injective: LEMMA Nodup(domainBag(D, f, d)) AND D(w) AND
+    D(v) AND length(w) = d AND length(v) = d AND w /= v IMPLIES f(w) /= f(v)
+
+END ppg_depth_fibers

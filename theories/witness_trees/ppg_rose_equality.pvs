@@ -1,0 +1,34 @@
+% Structural Boolean comparison follows labels and ordered children.
+ppg_rose_equality[C: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_rose_size[C], foundations@ppg_list_maps[WTree,bool],
+    ppg_mt_rose_adt_reduce[C,[WTree -> bool]]
+  t,u: VAR WTree
+  a,b: VAR C
+  cs,ds: VAR list[WTree]
+  fs: VAR list[[WTree -> bool]]
+
+  compareList(fs,ds): RECURSIVE bool = CASES fs OF
+    null: null?(ds),
+    cons(f,rest): IF null?(ds) THEN FALSE ELSE f(car(ds)) AND compareList(rest,cdr(ds)) ENDIF
+    ENDCASES MEASURE length(fs)
+
+  beq: [WTree -> [WTree -> bool]] = ppg_mt_rose_adt_reduce[C,[WTree -> bool]].reduce(
+    LAMBDA(a:C,fs:list[[WTree -> bool]]): LAMBDA(t:WTree):a=roseLabel(t) AND compareList(fs,roseChildren(t)))
+
+  beqList(cs,ds): bool = compareList(map(beq)(cs),ds)
+
+  list_nonnull_eta: LEMMA NOT null?(ds) IMPLIES cons(car(ds),cdr(ds))=ds
+
+  node_equal: LEMMA (roseNode(a,cs)=roseNode(b,ds)) IFF (a=b AND cs=ds)
+
+  beq_node: LEMMA beq(roseNode(a,cs))(roseNode(b,ds)) = (a=b AND beqList(cs,ds))
+
+  compareList_exact: LEMMA (FORALL(t:WTree):member(t,cs) IMPLIES FORALL(u:WTree):beq(t)(u) IFF t=u)
+    IMPLIES (beqList(cs,ds) IFF cs=ds)
+
+  beq_iff: THEOREM beq(t)(u) IFF t=u
+
+  beqList_iff: THEOREM beqList(cs,ds) IFF cs=ds
+
+END ppg_rose_equality

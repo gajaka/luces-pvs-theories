@@ -1,0 +1,40 @@
+% A finite state map measurable for a history sigma-algebra is also
+% ambient-measurable. Every real function on its finite state carrier
+% therefore gives an ambient integrable, history-measurable function.
+% No transition or drift property is used in this construction.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_history_value[State,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  (IMPORTING ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw,
+  H:{H:MeasurableSpace|subset?(H,S)}]: THEORY
+BEGIN
+  IMPORTING ppg_conditional_unique[Omega,S,measureLaw,H],
+    finite_models@ppg_finite_process_integral[State,Omega,universe,S,measureLaw]
+  rawX: VAR [Omega->State]
+  f: VAR [State->real]
+  B: VAR set[real]
+  omega: VAR Omega
+
+  history_state_ambient: LEMMA stateMap.measurable(H,fullStateSigma,rawX) IMPLIES
+    stateMap.measurable(S,fullStateSigma,rawX)
+
+  HistoryStateMap: TYPE = {X:StateMap|stateMap.measurable(H,fullStateSigma,X)}
+
+  X: VAR HistoryStateMap
+
+  historyStateMap(rawX:{X:[Omega->State]|stateMap.measurable(H,fullStateSigma,X)}):
+    HistoryStateMap = rawX
+
+  state_value_preimage: LEMMA
+    inverse_image((LAMBDA(omega:Omega):f(rawX(omega))),B)=
+    stateMap.inverseImage(rawX,{s:State|B(f(s))})
+
+  historyValue(f,X): HistoryFunction = integrableValue(f,X)
+
+  history_value_at: LEMMA historyValue(f,X)(omega)=f(X(omega))
+
+  history_zero_function: LEMMA historyValue(LAMBDA(s:State):0,X)=constant(0)
+
+END ppg_finite_history_value

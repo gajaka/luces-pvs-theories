@@ -1,0 +1,46 @@
+% Rebuild lists children in label-set order and applies the supplied
+% subtree map. Properness makes the label-to-child correspondence bijective,
+% so rebuilding preserves weight and each label count when the subtree
+% map preserves them.
+%
+% Lean counterpart: PPGraphMoserTardosCanonical.lean.
+
+ppg_rose_rebuild[C,V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_rose_child_choice[C,V], ppg_rose_count_fold[C],
+    foundations@ppg_list_maps[WTree,WTree],
+    foundations@ppg_list_fold[WTree,nonneg_real,1,LAMBDA(a,b:nonneg_real):a*b] AS products,
+    foundations@ppg_list_fold[WTree,nat,0,LAMBDA(a,b:nat):a+b] AS totals,
+    foundations@ppg_list_fold_map[WTree,WTree,nonneg_real,1,LAMBDA(a,b:nonneg_real):a*b] AS productMap,
+    foundations@ppg_list_fold_map[WTree,WTree,nat,0,LAMBDA(a,b:nat):a+b] AS countMap
+  t,c: VAR WTree
+  h: VAR [WTree -> WTree]
+  vars: VAR CertVars
+  p: VAR [C -> nonneg_real]
+  a: VAR C
+
+  rebuild(t,h): WTree = roseNode(roseLabel(t),map(h)(orderedChildren(t)))
+
+  mapped_ordered_member: LEMMA proper(t) AND member(c,map(h)(orderedChildren(t))) IMPLIES
+    EXISTS (u:WTree): member(u,roseChildren(t)) AND h(u)=c
+
+  mapped_labels: LEMMA proper(t) AND (FORALL(c:WTree): member(c,roseChildren(t)) IMPLIES roseLabel(h(c))=roseLabel(c))
+    IMPLIES map(roseLabel)(map(h)(orderedChildren(t))) = ppg_list_sets[C].setList(labelSet(t))
+
+  rebuild_wellFormed: LEMMA proper(t) AND wellFormed(vars)(t) AND
+    (FORALL(c:WTree): member(c,roseChildren(t)) IMPLIES
+      roseLabel(h(c))=roseLabel(c) AND wellFormed(vars)(h(c))) IMPLIES wellFormed(vars)(rebuild(t,h))
+
+  rebuild_proper: LEMMA proper(t) AND
+    (FORALL(c:WTree): member(c,roseChildren(t)) IMPLIES
+      roseLabel(h(c))=roseLabel(c) AND proper(h(c))) IMPLIES proper(rebuild(t,h))
+
+  rebuild_weight: LEMMA proper(t) AND
+    (FORALL(c:WTree): member(c,roseChildren(t)) IMPLIES weight(p)(h(c))=weight(p)(c))
+    IMPLIES weight(p)(rebuild(t,h))=weight(p)(t)
+
+  rebuild_count: LEMMA proper(t) AND
+    (FORALL(c:WTree): member(c,roseChildren(t)) IMPLIES countLabel(a)(h(c))=countLabel(a)(c))
+    IMPLIES countLabel(a)(rebuild(t,h))=countLabel(a)(t)
+
+END ppg_rose_rebuild

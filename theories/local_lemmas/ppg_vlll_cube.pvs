@@ -1,0 +1,49 @@
+% The finite real cube carries the product of the actual Borel coordinate
+% laws obtained by restricting Lebesgue measure to [0,1]. Its canonical
+% outer mass also evaluates sets that are not Borel measurable.
+%
+% Kun He, Liang Li, Xingwu Liu, Yuyi Wang and Mingji Xia,
+% "Variable Version Lovasz Local Lemma: Beyond Shearer's Bound",
+% FOCS 2017, Section 3. https://arxiv.org/abs/1709.05143
+% Lean counterpart: cubeMeasure and measurePreserving_eval_cube in
+% PPGraphVariableLLL.lean.
+ppg_vlll_cube[m:nat]: THEORY
+BEGIN
+
+  Coordinate: TYPE = below(m)
+
+  realDomain(v:Coordinate): MACRO set[real] = fullset[real]
+
+  IMPORTING measure_probability@ppg_probability_full_real,
+    moser_tardos@ppg_mt_native_spaces[bool,Coordinate,real,realDomain]
+
+  cubeSpaces: VariableSpaces = LAMBDA(v:Coordinate):fullSpace
+
+  cube_spaces_value: LEMMA FORALL(v:Coordinate):cubeSpaces(v)=fullSpace
+
+  cubeLaws: VariableLaws(cubeSpaces) = LAMBDA(v:Coordinate):fullLaw
+
+  cubeUniverse: {F:finite_set[Coordinate]|F=fullset[Coordinate]} = fullset[Coordinate]
+
+  IMPORTING moser_tardos@ppg_mt_state_marginals[bool,Coordinate,real,realDomain,cubeUniverse,cubeSpaces,cubeLaws],
+    measure_probability@ppg_probability_outer_step[MTState,NativeStateSigma(cubeSpaces),stateMeasure]
+
+  cubeMass(A:set[MTState]): nonneg_real = mass(A)
+
+  coordinateEvent(j:Coordinate,E:(borelSigma)): set[MTState] = {x:MTState|E(x(j))}
+
+  coordinate_in_universe: LEMMA FORALL(j:Coordinate):cubeUniverse(j)
+
+  coordinate_event_eq: LEMMA FORALL(j:Coordinate,E:(borelSigma)):coordinateEvent(j,E)=stateCylinder(j,realTrace(E))
+
+  measurePreserving_eval_cube: THEOREM FORALL(j:Coordinate,E:(borelSigma)):
+    NativeStateSigma(cubeSpaces)(coordinateEvent(j,E)) AND cubeMass(coordinateEvent(j,E))=borelUniform(E)
+
+  cubeMeasure_slice_eq: THEOREM FORALL(j:Coordinate,s,t:real):
+    0<=s AND s<=t AND t<=1 IMPLIES cubeMass(coordinateEvent(j,intervalSlice(s,t)))=t-s
+
+  cubeMeasure_eval_Iic_zero: THEOREM FORALL(j:Coordinate):cubeMass(coordinateEvent(j,halfLine(0)))=0
+
+  cubeMeasure_eval_Iic_one: THEOREM FORALL(j:Coordinate):cubeMass(coordinateEvent(j,halfLine(1)))=1
+
+END ppg_vlll_cube

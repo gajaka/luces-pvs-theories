@@ -1,0 +1,35 @@
+% A finite Pegden budget gives finite expected stopped length under the
+% original slot-zero law. The existing count/termination equivalence
+% yields almost-sure success and a good target. Constant-log descent then
+% gives existential repair paths from arbitrary initial states.
+%
+% The last conclusion does not assert almost-sure termination from every
+% fixed start. The random-initialization law and the algorithm are unchanged.
+% The fallback label supplies the source nonempty-label hypothesis.
+% Wesley Pegden, "An extension of the Moser-Tardos algorithmic local
+% lemma", Theorem 1.4. https://arxiv.org/abs/1102.2853
+% Lean counterpart: the final general results in PPGraphMoserTardosPegden.lean.
+ppg_pegden_termination[C,V,Value:TYPE,domain:[V->set[Value]],
+  universe:{F:finite_set[V]|F=fullset[V]},
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[C,V,Value,domain]) spaces:VariableSpaces,laws:VariableLaws(spaces),fallback:C]: THEORY
+BEGIN
+  IMPORTING ppg_pegden_expectation[C,V,Value,domain,universe,spaces,laws],
+    moser_tardos@ppg_mt_termination[C,V,Value,domain,spaces,laws],moser_tardos@ppg_mt_repair_target[C,V,Value,domain,universe]
+  vars: VAR CertVars
+  bad: VAR NativeBad
+  enumeration: VAR {xs:list[C]|completeEnumeration(xs)}
+  p,x: VAR [C->nonneg_real]
+  edges: VAR [MTState,MTState->bool]
+
+  ae_randomInit_exists_good: THEOREM mt_wf(vars,bad) AND pegdenUpper(bad,p) AND
+    pegdenBudget(vars,labelUniverse(enumeration),p,x) IMPLIES
+      ae?[LogSpace,asNasa(NativeTableSigma(spaces)),nasaLaw](terminationEvent(vars,bad,fallback,enumeration))
+
+  exists_MTGood: THEOREM mt_wf(vars,bad) AND pegdenUpper(bad,p) AND
+    pegdenBudget(vars,labelUniverse(enumeration),p,x) IMPLIES EXISTS(z:MTState):MTGood(bad,z)
+
+  mtRepairGraph_globally_repairable: THEOREM mt_wf(vars,bad) AND pegdenUpper(bad,p) AND
+    pegdenBudget(vars,labelUniverse(enumeration),p,x) IMPLIES
+      globally_repairable(mtRepairGraph(vars,bad,fallback,enumeration,edges))
+
+END ppg_pegden_termination

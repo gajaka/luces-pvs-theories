@@ -1,0 +1,63 @@
+% A cylinder grows by adjoining a coordinate half-line. Between two
+% cutoffs in [0,1], all gained points lie in the corresponding slice.
+% Splitting the outer mass at that measurable slice proves a unit
+% Lipschitz bound even when the initial set is not measurable.
+%
+% At cutoffs zero and one the masses are the original mass and one.
+% The intermediate value theorem therefore gives a measurable cylinder
+% superset of every prescribed intermediate mass.
+%
+% Kun He, Liang Li, Xingwu Liu, Yuyi Wang and Mingji Xia,
+% "Variable Version Lovasz Local Lemma: Beyond Shearer's Bound",
+% FOCS 2017, Section 3, Lemma 10. https://arxiv.org/abs/1709.05143
+% Sterling K. Berberian, Fundamentals of Real Analysis, Springer, 1999.
+% Lean counterpart: cylinder-growth lemmas in PPGraphVariableLLL.lean.
+ppg_vlll_growth[m:nat]: THEORY
+BEGIN
+  IMPORTING ppg_vlll_real_cube[m],measure_probability@ppg_enn_order,
+    analysis@continuity_interval[0,1] AS arc
+  A: VAR set[PlainCube]
+  S: VAR finite_set[CubeCoordinate]
+  j: VAR CubeCoordinate
+  s,t: VAR real
+
+  cubeMeasure(A): ENN = ennFinite(plainMass(A))
+
+  growAlongToReal(A,j,t): real = plainMass(geometric.growAlong(A,j,t))
+
+  cutCurve(A,j): [arc.J->real] = LAMBDA(t:arc.J):growAlongToReal(A,j,t)
+
+  growth_event_eq: LEMMA geometric.growAlong(A,j,t)=
+    sets[PlainCube].union(A,plainEvent(j,halfLine(t)))
+
+  gained_outside_slice: LEMMA s<=t IMPLIES sets[PlainCube].subset?(
+    sets[PlainCube].difference(geometric.growAlong(A,j,t),plainEvent(j,intervalSlice(s,t))),
+    geometric.growAlong(A,j,s))
+
+  halfline_in_growth: LEMMA sets[PlainCube].subset?(plainEvent(j,halfLine(t)),geometric.growAlong(A,j,t))
+
+  growAlong_measurable: THEOREM FORALL(A:(plainSigma),j:CubeCoordinate,t:real):
+    plainSigma(geometric.growAlong(A,j,t))
+
+  growAlong_ne_top: THEOREM cubeMeasure(geometric.growAlong(A,j,t))/=ennInfinity
+
+  growAlong_measure_step_le: THEOREM 0<=s AND s<=t AND t<=1 IMPLIES
+    growAlongToReal(A,j,t)<=growAlongToReal(A,j,s)+(t-s)
+
+  growAlongToReal_mono: THEOREM s<=t IMPLIES growAlongToReal(A,j,s)<=growAlongToReal(A,j,t)
+
+  unit_lipschitz: LEMMA FORALL(s,t:arc.J):abs(growAlongToReal(A,j,s)-growAlongToReal(A,j,t))<=abs(s-t)
+
+  growAlongToReal_continuousOn: THEOREM analysis@continuous_functions[arc.J].continuous?(cutCurve(A,j))
+
+  growAlongToReal_zero: THEOREM FORALL(A:(plainSigma),j:CubeCoordinate):growAlongToReal(A,j,0)=plainMass(A)
+
+  growAlongToReal_one: THEOREM growAlongToReal(A,j,1)=1
+
+  exists_cylinder_superset_measure_eq: THEOREM
+    FORALL(S:finite_set[CubeCoordinate],A:(plainSigma),j:(S),q,qprime:real):
+      geometric.IsCylinderOver(S,A) AND plainMass(A)=q AND 0<=q AND q<=qprime AND qprime<=1 IMPLIES
+        EXISTS(B:(plainSigma)):sets[PlainCube].subset?(A,B) AND
+          geometric.IsCylinderOver(S,B) AND plainMass(B)=qprime
+
+END ppg_vlll_growth

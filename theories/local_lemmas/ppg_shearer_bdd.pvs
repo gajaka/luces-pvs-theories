@@ -1,0 +1,60 @@
+% Shearer's signed polynomial factors over the existing blocking dependency
+% components. The simple graph removes self-loops from shared-variable
+% dependence; it is defined on all labels, independently of the chosen B.
+% A component has no edge to its complement in B.
+%
+% Lean counterpart: PPGraphShearerBDD.lean. The component decomposition
+% is Dragan Stosic's BDD construction; the polynomial identity is the
+% disjoint-union identity proved in ppg_shearer_polynomial.
+% For the signed polynomial, see Nicholas J. A. Harvey and Jan Vondrak,
+% "Short proofs for generalizations of the Lovasz Local Lemma: Shearer's
+% condition and cluster expansion", Section 2.
+% https://arxiv.org/abs/1711.06797
+
+ppg_shearer_bdd[C,V:TYPE,(IMPORTING ppg_core@ppg_bdd[C,V]) vars:CertVars]: THEORY
+BEGIN
+
+  SimpleDependencyGraph: TYPE = {G:[C,C->bool]|
+    (FORALL(i:C):NOT G(i,i)) AND (FORALL(i,j:C):G(i,j)=G(j,i))}
+
+  dependencyGraph: SimpleDependencyGraph = LAMBDA(a,b:C):a/=b AND dependent(vars,a,b)
+
+  IMPORTING ppg_shearer_polynomial[C,dependencyGraph]
+  B,T: VAR finite_set[C]
+  a,b,c: VAR C
+  p: VAR [C->real]
+
+  dependencyGraph_adj_iff: THEOREM
+    dependencyGraph(a,b) IFF a/=b AND dependent(vars,a,b)
+
+  not_adj_compOf_sdiff: THEOREM
+    FORALL(a,b:C):compOf(vars,B,c)(a) AND difference(B,compOf(vars,B,c))(b)
+      IMPLIES NOT dependencyGraph(a,b)
+
+  component_full_partition: LEMMA
+    union(compOf(vars,B,c),difference(B,compOf(vars,B,c)))=B
+
+  component_separated: LEMMA
+    disjoint?(compOf(vars,B,c),difference(B,compOf(vars,B,c))) AND
+    noCrossEdges(compOf(vars,B,c),difference(B,compOf(vars,B,c)))
+
+  polynomial_BDD_split: THEOREM
+    polynomial(p,B)=polynomial(p,compOf(vars,B,c))*polynomial(p,difference(B,compOf(vars,B,c)))
+
+  component_slice_partition: LEMMA
+    union(intersection(T,compOf(vars,B,c)),difference(T,compOf(vars,B,c)))=T
+
+  component_slice_separated: LEMMA subset?(T,B) IMPLIES
+    disjoint?(intersection(T,compOf(vars,B,c)),difference(T,compOf(vars,B,c))) AND
+    noCrossEdges(intersection(T,compOf(vars,B,c)),difference(T,compOf(vars,B,c)))
+
+  component_remainder_smaller: LEMMA subset?(T,B) AND T(c) IMPLIES
+    card(difference(T,compOf(vars,B,c)))<card(T)
+
+  strict_components_intro: LEMMA
+    (FORALL(c:C):B(c) IMPLIES StrictCriterion(p,compOf(vars,B,c))) IMPLIES StrictCriterion(p,B)
+
+  strictCriterion_iff_components: THEOREM StrictCriterion(p,B) IFF
+    (FORALL(c:C):B(c) IMPLIES StrictCriterion(p,compOf(vars,B,c)))
+
+END ppg_shearer_bdd

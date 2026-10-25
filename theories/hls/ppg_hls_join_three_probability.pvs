@@ -1,0 +1,95 @@
+% The map (join(F,Z),id) carries the nested product law to the product
+% on (F union Z,H). Applying the two-block result then gives the state
+% probability of every measurable event determined by those coordinates.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Lean counterpart: measure_joinThree_preimage in PPGraphHLSBlockAssembly.lean.
+ppg_hls_join_three_probability[V,Value:TYPE,domain:[V->set[Value]],
+  universe:{U:finite_set[V]|U=fullset[V]},F,H,Z:finite_set[V],
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[bool,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_hls_join_three[V,Value,domain,F,H,Z,spaces,laws] AS tripleAssembly,
+    ppg_hls_join_blocks[V,Value,domain,union(F,Z),H,spaces,laws] AS tripleOuterCore,
+    ppg_hls_join_blocks_probability[V,Value,domain,universe,union(F,Z),H,spaces,laws] AS tripleOuterProbability,
+    measure_probability@ppg_measurable_block[V,Value,domain,spaces] AS tripleBlocks,
+    measure_probability@ppg_measurable_block_union[V,Value,domain,F,Z,spaces] AS tripleLeftJoin,
+    measure_probability@ppg_probability_block_union[V,Value,domain,F,Z,spaces] AS tripleLeftUnion,
+    measure_probability@ppg_probability_finite_union[V,Value,domain,F,Z,spaces,laws] AS tripleLeftFinite,
+    measure_probability@ppg_probability_finite_product[V,Value,domain,spaces,laws] AS tripleFinite,
+    moser_tardos@ppg_mt_state_probability[bool,V,Value,domain,universe,spaces,laws] AS tripleState,
+    measure_probability@ppg_probability_pair[tripleBlocks.Block(F),tripleBlocks.Block(Z),
+      tripleBlocks.blockSigma(F),tripleBlocks.blockSigma(Z)] AS tripleInnerPair
+
+  InnerProductSigma: MACRO ppg_measurable_space[tripleLeftJoin.BlockPair].MeasurableSpace =
+    tripleInnerPair.JointSpace
+
+  IMPORTING measure_probability@ppg_probability_pair[tripleLeftJoin.BlockPair,tripleBlocks.Block(H),
+      InnerProductSigma,tripleBlocks.blockSigma(H)] AS tripleSourcePair,
+    measure_probability@ppg_probability_pair_map[tripleLeftJoin.BlockPair,tripleBlocks.Block(H),
+      tripleBlocks.Block(union(F,Z)),tripleBlocks.Block(H),InnerProductSigma,
+      tripleBlocks.blockSigma(H),tripleBlocks.blockSigma(union(F,Z)),
+      tripleBlocks.blockSigma(H)] AS tripleProductMap,
+    measure_probability@ppg_probability_map[tripleLeftJoin.BlockPair,tripleBlocks.Block(union(F,Z)),
+      InnerProductSigma,tripleBlocks.blockSigma(union(F,Z))] AS tripleJoinPush,
+    measure_probability@ppg_probability_map[tripleBlocks.Block(H),tripleBlocks.Block(H),
+      tripleBlocks.blockSigma(H),tripleBlocks.blockSigma(H)] AS tripleIdentityPush
+
+  A: VAR tripleOuterProbability.StateEvent
+
+  identityH(x:tripleBlocks.Block(H)):tripleBlocks.Block(H) = x
+
+  identity_event: LEMMA FORALL(E:set[tripleBlocks.Block(H)]):
+    {x:tripleBlocks.Block(H)|E(identityH(x))}=E
+
+  identity_measurable: LEMMA
+    ppg_measurable_map[tripleBlocks.Block(H),tripleBlocks.Block(H)].measurable(
+      tripleBlocks.blockSigma(H),tripleBlocks.blockSigma(H),identityH)
+
+  identity_preserves_law: LEMMA
+    tripleIdentityPush.pushforward(tripleFinite.finiteLaw(H),identityH)=tripleFinite.finiteLaw(H)
+
+  inner_sigma_eq: LEMMA InnerProductSigma=tripleLeftJoin.pairSpace
+
+  source_sigma_eq: LEMMA tripleProductMap.SourceSigma=tripleAssembly.AssemblyTripleSigma
+
+  target_sigma_eq: LEMMA tripleProductMap.TargetSigma=tripleOuterCore.AssemblyPairSigma
+
+  tripleProductLaw:ppg_probability_measure[tripleAssembly.AssemblyTriple,
+    tripleAssembly.AssemblyTripleSigma].Probability =
+      tripleSourcePair.productLaw(tripleInnerPair.productLaw(
+        tripleFinite.finiteLaw(F),tripleFinite.finiteLaw(Z)),tripleFinite.finiteLaw(H))
+
+  inner_join_measurable: LEMMA
+    ppg_measurable_map[tripleLeftJoin.BlockPair,tripleBlocks.Block(union(F,Z))].measurable(
+      InnerProductSigma,tripleBlocks.blockSigma(union(F,Z)),tripleLeftJoin.join)
+
+  inner_join_preserves_law: LEMMA disjoint?(F,Z) IMPLIES
+    tripleJoinPush.pushforward(tripleInnerPair.productLaw(
+      tripleFinite.finiteLaw(F),tripleFinite.finiteLaw(Z)),tripleLeftJoin.join)=
+        tripleFinite.finiteLaw(union(F,Z))
+
+  outer_input_eq_pair_map: LEMMA tripleAssembly.outerInput=
+    tripleProductMap.pairMap(tripleLeftJoin.join,identityH)
+
+  outer_input_preserves_law: LEMMA disjoint?(F,Z) IMPLIES
+    ppg_probability_map[tripleAssembly.AssemblyTriple,tripleOuterCore.AssemblyPair,
+      tripleAssembly.AssemblyTripleSigma,tripleOuterCore.AssemblyPairSigma].pushforward(
+        tripleProductLaw,tripleAssembly.outerInput)=tripleOuterProbability.blockProductLaw
+
+  tripleEvent(A):(tripleAssembly.AssemblyTripleSigma) =
+    {xyz:tripleAssembly.AssemblyTriple|A(tripleAssembly.joinThree(xyz))}
+
+  triple_event_preimage: LEMMA tripleEvent(A)=
+    {xyz:tripleAssembly.AssemblyTriple|
+      tripleOuterProbability.pairEvent(A)(tripleAssembly.outerInput(xyz))}
+
+  mapped_outer_mass: LEMMA disjoint?(F,Z) IMPLIES
+    tripleProductLaw(tripleEvent(A))=
+      tripleOuterProbability.blockProductLaw(tripleOuterProbability.pairEvent(A))
+
+  measure_joinThree_preimage: THEOREM disjoint?(F,Z) AND disjoint?(union(F,Z),H) AND
+    tripleOuterProbability.stateDepends(union(union(F,Z),H),A) IMPLIES
+      tripleProductLaw(tripleEvent(A))=tripleState.stateMeasure(A)
+
+END ppg_hls_join_three_probability

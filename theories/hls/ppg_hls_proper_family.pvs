@@ -1,0 +1,45 @@
+% A canonical proper witness DAG has a unique stable-sequence encoding.
+% Its node factors are retained exactly. Real factors may have either
+% sign; the final clipping is the usual ENNReal.ofReal operation.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 1.2.1. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSWitnessBudget.lean.
+ppg_hls_proper_family[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},B:finite_set[C],alpha:C]: THEORY
+BEGIN
+  IMPORTING ppg_hls_canonical_encoding[C,G], ppg_hls_encoding_weight[C,G],
+    local_lemmas@ppg_shearer_family[C,G], measure_probability@ppg_enn_ofreal
+  D,E: VAR WitnessDAG
+  p: VAR [C->real]
+
+  IsProperCanonical(D): bool = Valid(D) AND Canonical(D) AND
+    (FORALL(u:WNode):D`nodes(u) IMPLIES B(u`1)) AND
+    (EXISTS(r:WNode):D`nodes(r) AND r`1=alpha AND
+      (FORALL(u:WNode):D`nodes(u) IMPLIES Reach(D)(u,r)))
+
+  ProperDAG: TYPE = (IsProperCanonical)
+
+  family_valid: LEMMA IsProperCanonical(D) IMPLIES Valid(D)
+
+  family_canonical: LEMMA IsProperCanonical(D) IMPLIES Canonical(D)
+
+  familyEncoding(Q:ProperDAG): LayerSeq = stableEncoding(Q)
+
+  weightNN(p)(D): nonneg_real =
+    max(0,ppg_finite_product[WNode].product(D`nodes,LAMBDA(u:WNode):p(u`1)))
+
+  weight(p)(D): ENN =
+    ofReal(ppg_finite_product[WNode].product(D`nodes,LAMBDA(u:WNode):p(u`1)))
+
+  familyEncoding_mem: THEOREM FORALL(Q:ProperDAG):
+    properFamily(B,sets[C].singleton(alpha))(familyEncoding(Q))
+
+  familyEncoding_injective: THEOREM injective?(familyEncoding)
+
+  weight_eq_properFamilyWeight: THEOREM FORALL(Q:ProperDAG):
+    weight(p)(Q)=properFamilyWeight(p,B,sets[C].singleton(alpha))(familyEncoding(Q))
+
+  weightNN_eq_properWeights: LEMMA FORALL(Q:ProperDAG):
+    weightNN(p)(Q)=properWeights(p,B,sets[C].singleton(alpha))(familyEncoding(Q))
+END ppg_hls_proper_family

@@ -1,0 +1,24 @@
+% The finite product state law has the prescribed law at each coordinate.
+% The state decoder only changes the representation of the full block;
+% a coordinate cylinder pulls back to the identical block cylinder.
+%
+% This is the coordinate marginal calculation used for the ternary example
+% in PPGraphMoserTardosPegden.lean, following the product-law construction.
+ppg_mt_state_marginals[C,V,Value:TYPE,domain:[V->set[Value]],
+  universe:{F:finite_set[V]|F=fullset[V]},
+  (IMPORTING ppg_mt_native_spaces[C,V,Value,domain]) spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+  IMPORTING ppg_mt_state_probability[C,V,Value,domain,universe,spaces,laws],
+    measure_probability@ppg_probability_finite_marginals[V,Value,domain,spaces,laws]
+
+  stateCylinder(v:(universe),E:(spaces(v))): set[MTState] = {s:MTState|E(s(v))}
+
+  state_cylinder_measurable: LEMMA FORALL(v:(universe),E:(spaces(v))): NativeStateSigma(spaces)(stateCylinder(v,E))
+
+  state_cylinder_preimage: LEMMA FORALL(v:(universe),E:(spaces(v))):
+    ppg_measurable_map[StateBlock(universe),MTState].inverseImage(stateDecode,stateCylinder(v,E))=
+    ppg_measurable_block[V,Value,domain,spaces].blockCylinder(universe,v,E)
+
+  state_coordinate_mass: THEOREM FORALL(v:(universe),E:(spaces(v))): stateMeasure(stateCylinder(v,E))=laws(v)(E)
+
+END ppg_mt_state_marginals

@@ -1,0 +1,59 @@
+% The right law is any S-finite measure, including one with infinite mass.
+% Its product with the fair orientation coin
+% gives half the mass of each of the two disjoint orientation rectangles.
+% Paul R. Halmos, Measure Theory, Springer, 1974, product measures.
+% Kun He, Qian Li and Xiaoming Sun, Moser-Tardos Algorithm: Beyond
+% Shearer's Bound, Lemma 3.4. arXiv:2111.06527.
+ppg_hls_native_coin_choice[U:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[U]) SU:sigma_algebra,
+  (IMPORTING measure_probability@ppg_sfinite_measure[U,SU]) nu:(sfinite?)]: THEORY
+BEGIN
+  IMPORTING ppg_hls_native_fair_orientation,
+    measure_probability@ppg_nasa_sigma[U] AS sourceSpace,
+    ppg_hls_coin_choice[U,sourceSpace.asProject(SU)] AS rawChoice,
+    measure_probability@ppg_sfinite_product_rectangles[OrientationCoin,U,ppg_nasa_sigma[OrientationCoin].asNasa(OrientationSigma),SU,nativeFairOrientation] AS choiceProduct,
+    measure_probability@ppg_product_measure_definition[OrientationCoin,U,ppg_nasa_sigma[OrientationCoin].asNasa(OrientationSigma),SU,nativeFairOrientation] AS nativeProduct,
+    measure_probability@ppg_general_measure_values[U,SU,nu] AS rightValues
+
+  NativeChoiceSigma: sigma_algebra[[OrientationCoin,U]] =
+    sigma_times(ppg_nasa_sigma[OrientationCoin].asNasa(OrientationSigma),SU)
+
+  nativeChoiceLaw: measure_type[[OrientationCoin,U],sigma_times(ppg_nasa_sigma[OrientationCoin].asNasa(OrientationSigma),SU)] =
+    nativeProduct.productMeasure(nu)
+
+  IMPORTING measure_probability@ppg_general_measure_values[[OrientationCoin,U],sigma_times(ppg_nasa_sigma[OrientationCoin].asNasa(OrientationSigma),SU),nativeChoiceLaw] AS choiceValues
+
+  A,B: VAR (SU)
+  x: VAR ENN
+  r: VAR nonneg_real
+
+  halfMass(x): ENN = emul(ennFinite(1/2),x)
+
+  half_mass_finite: LEMMA halfMass(ennFinite(r))=ennFinite(r/2)
+
+  half_mass_infinity: LEMMA halfMass(ennInfinity)=ennInfinity
+
+  choice_sigma_original: LEMMA
+    ppg_probability_pair[OrientationCoin,U,OrientationSigma,sourceSpace.asProject(SU)].JointSpace=
+      NativeChoiceSigma
+
+  keepEvent(A): (NativeChoiceSigma) = rawChoice.keepBlock(A)
+
+  flipEvent(B): (NativeChoiceSigma) = rawChoice.flipBlock(B)
+
+  choiceEvent(A,B): (NativeChoiceSigma) = rawChoice.coinChoice(A,B)
+
+  native_choice_disjoint: LEMMA disjoint?(keepEvent(A),flipEvent(B))
+
+  native_choice_union: LEMMA choiceEvent(A,B)=union(keepEvent(A),flipEvent(B))
+
+  native_keep_mass: LEMMA
+    choiceValues.measureValue(keepEvent(A))=halfMass(rightValues.measureValue(A))
+
+  native_flip_mass: LEMMA
+    choiceValues.measureValue(flipEvent(B))=halfMass(rightValues.measureValue(B))
+
+  measure_coinChoice: THEOREM choiceValues.measureValue(choiceEvent(A,B))=
+    eadd(halfMass(rightValues.measureValue(A)),halfMass(rightValues.measureValue(B)))
+
+END ppg_hls_native_coin_choice

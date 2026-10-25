@@ -1,0 +1,41 @@
+% Multiplicative slack first gives strict positivity at the original
+% probabilities. The singleton budget is at most 1/e, and its finite
+% sum is at most card(B)/e. Applying the existing expected-work bounds
+% gives these explicit estimates for the original random-initialized run.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound" (2021), Lemma 3.14, attributed there to Kashyap
+% Kolipaka and Mario Szegedy. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphShearerSlackExpectation.lean.
+ppg_shearer_slack_expectation[C,V,Value:TYPE,domain:[V->set[Value]],
+  universe:{F:finite_set[V]|F=fullset[V]},
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[C,V,Value,domain]) spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_core@ppg_bdd[C,V]) vars:CertVars]: THEORY
+BEGIN
+  IMPORTING ppg_shearer_termination[C,V,Value,domain,universe,spaces,laws,vars],
+    ppg_shearer_slack[C,dependencyGraph], measure_probability@ppg_enn_ofreal
+  bad: VAR NativeBad
+  fallback,a: VAR C
+  enumeration: VAR SeqProbabilityEnumeration
+  B: VAR UniversalLabels
+  p: VAR [C->real]
+  e: VAR real
+
+  full_label_member: LEMMA B(a)
+
+  slack_native_nonnegative: LEMMA (FORALL(i:C):baseProbability(bad)(i)<=p(i)) IMPLIES nonnegativeOn(p,B)
+
+  slack_native_strict: LEMMA (FORALL(i:C):baseProbability(bad)(i)<=p(i)) AND 0<e AND
+    StrictCriterion(dilated(e,p),B) IMPLIES StrictCriterion(p,B)
+
+  slack_budget_functions: LEMMA singletonBudget(p,B)=singletonBudgets(p,B)
+
+  randomInitExpectedResamplingCount_le_inv_slack: THEOREM mt_wf(vars,bad) AND
+    (FORALL(i:C):baseProbability(bad)(i)<=p(i)) AND 0<e AND StrictCriterion(dilated(e,p),B) IMPLIES
+    ele(randomInitExpectedResamplingCount(vars,bad,fallback,enumeration,a),ofReal(div0(1,e)))
+
+  randomInitETLog_le_card_div_slack: THEOREM mt_wf(vars,bad) AND
+    (FORALL(i:C):baseProbability(bad)(i)<=p(i)) AND 0<e AND StrictCriterion(dilated(e,p),B) IMPLIES
+    ele(randomInitETLog(vars,bad,fallback,enumeration),ofReal(div0(card(B),e)))
+
+END ppg_shearer_slack_expectation

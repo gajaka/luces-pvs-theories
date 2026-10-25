@@ -1,0 +1,43 @@
+% The stopped log length is the sum of the event counts. Linearity of
+% the nonnegative integral preserves this identity even at infinity.
+% The singleton Shearer bounds then give a finite real bound for its
+% expectation under the original slot-zero initialization law.
+%
+% Kolipaka--Szegedy bound, presented by Jan Vondrak, MATH233A (2018),
+% Lecture 8. https://theory.stanford.edu/~jvondrak/MATH233A-2018/Math233-lec08.pdf
+% Lean counterpart: PPGraphShearerExpectation.lean.
+ppg_shearer_total_expectation[C,V,Value:TYPE,domain:[V->set[Value]],
+  universe:{F:finite_set[V]|F=fullset[V]},
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[C,V,Value,domain]) spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_core@ppg_bdd[C,V]) vars:CertVars]: THEORY
+BEGIN
+  IMPORTING ppg_shearer_event_expectation[C,V,Value,domain,universe,spaces,laws,vars],
+    moser_tardos@ppg_mt_expected_decomposition[C,V,Value,domain,spaces,laws],
+    measure_probability@ppg_enn_finite[C], foundations@ppg_nonneg_real_sum[C]
+  bad: VAR NativeBad
+  fallback: VAR C
+  enumeration: VAR SeqProbabilityEnumeration
+  B: VAR UniversalLabels
+  p: VAR [C->real]
+
+  singletonBudget(p,B)(a:C): real = stableBudget(p,B,sets[C].singleton(a))
+
+  full_label_universe: LEMMA labelUniverse(enumeration)=B
+
+  singleton_budgets_nonnegative: LEMMA (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND
+    StrictCriterion(p,B) IMPLIES FORALL(a:C):0<=singletonBudget(p,B)(a)
+
+  total_clipped_budgets: LEMMA (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND
+    StrictCriterion(p,B) IMPLIES
+    sums.sum(B,LAMBDA(a:C):max(0,singletonBudget(p,B)(a)))=max(0,fsum(B,singletonBudget(p,B)))
+
+  randomInitETLog_le_sum_stableBudget: THEOREM mt_wf(vars,bad) AND
+    (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND StrictCriterion(p,B) IMPLIES
+    ele(randomInitETLog(vars,bad,fallback,enumeration),
+      ennFinite(max(0,fsum(B,singletonBudget(p,B)))))
+
+  randomInitETLog_lt_top: THEOREM mt_wf(vars,bad) AND
+    (FORALL(c:C):baseProbability(bad)(c)<=p(c)) AND StrictCriterion(p,B) IMPLIES
+    ennFinite?(randomInitETLog(vars,bad,fallback,enumeration))
+
+END ppg_shearer_total_expectation

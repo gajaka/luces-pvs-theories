@@ -1,0 +1,79 @@
+% Slot zero has the declared finite product law. Integrating an arbitrary
+% rational state function along that initializer gives the exact finite
+% rational weighted sum. No positivity condition is placed on the function.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Section 7.1.1.
+ppg_resampling_initial_mean[V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING ppg_finite_resampling_core[V,Value,variables,domains])
+  Q:{Q:Marginals|Valid(Q)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_table_core[V,Value,variables,domains] AS meanTable,
+    ppg_resampling_table_product[V,Value,variables,domains,Q] AS laws,
+    ppg_resampling_table_init[V,Value,variables,domains,Q] AS init,
+    ppg_resampling_product_law[V,Value,variables,domains,Q] AS product,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS states,
+    ppg_finite_resampling_core[V,Value,variables,domains] AS core
+
+  State: TYPE = meanTable.State
+
+  ResamplingLog: TYPE = meanTable.ResamplingLog
+
+  ambient: MACRO ppg_measurable_space[ResamplingLog].MeasurableSpace = laws.tableAmbient
+
+  stateSigma: MACRO ppg_measurable_space[State].MeasurableSpace = laws.tableStateSigma
+
+  IMPORTING measure_probability@ppg_probability_finite_view[ResamplingLog,ambient] AS view,
+    measure_probability@ppg_finite_law_view[ResamplingLog,ambient] AS measureTypes,
+    ppg_finite_table_fixed_law[V,Value,variables,domains,product.spaces,product.coins] AS fixed
+
+  tableMeasure: measureTypes.FiniteLaw = view.nativeLaw(laws.tableProbability)
+
+  IMPORTING ppg_finite_process_integral[State,ResamplingLog,states.allStates,ambient,tableMeasure] AS image,
+    measure_probability@ppg_finite_image_integral[State,ResamplingLog,states.allStates,ambient,tableMeasure] AS imageMean,
+    measure_probability@ppg_finite_expectation[ResamplingLog,ambient,tableMeasure] AS mean,
+    measure_probability@ppg_finite_measure_integral[ResamplingLog,ambient,tableMeasure] AS functions,
+    measure_probability@ppg_measurable_map[ResamplingLog,State] AS maps,
+    measure_probability@ppg_probability_map[ResamplingLog,State,ambient,stateSigma] AS push,
+    foundations@ppg_finite_sum[State] AS sums,
+    foundations@ppg_rational_sum[State] AS rationalBridge,
+    foundations@ppg_monoid_sum[State,rat,0,LAMBDA(x,y:rat):x+y] AS rationalSum,
+    measure_integration@integral[ResamplingLog,ppg_nasa_sigma[ResamplingLog].asNasa(ambient),tableMeasure] AS native
+
+  f: VAR [State->rat]
+  s: VAR State
+  omega: VAR ResamplingLog
+  A: VAR (ambient)
+
+  initialMap: image.StateMap = init.randomInit
+
+  initial_map_zero_read: LEMMA initialMap=fixed.fixedDraw(LAMBDA(v:V):0)
+
+  initial_event: LEMMA image.stateEvent(initialMap,s)=
+    maps.inverseImage(fixed.fixedDraw(LAMBDA(v:V):0),singleton[State](s))
+
+  table_probability_eq: LEMMA laws.tableProbability=fixed.tableLaw
+
+  measure_value: LEMMA mean.mass(A)=laws.tableProbability(A)
+
+  state_point_measurable: LEMMA stateSigma(singleton[State](s))
+
+  initial_probability_mass: LEMMA laws.tableProbability(image.stateEvent(initialMap,s))=core.productMass(Q,s)
+
+  initial_state_mass: LEMMA mean.mass(image.stateEvent(initialMap,s))=core.productMass(Q,s)
+
+  initialValue(f): functions.NativeFunction = image.integrableValue(f,initialMap)
+
+  initial_value_at: LEMMA initialValue(f)(omega)=f(init.randomInit(omega))
+
+  weighted_function: LEMMA
+    (LAMBDA(s:State):f(s)*mean.mass(image.stateEvent(initialMap,s)))=
+      (LAMBDA(s:State):core.productMass(Q,s)*f(s))
+
+  initialStateFromLog_integral_eq_sum: THEOREM native.integral(initialValue(f))=
+    rationalSum.sum(states.allStates,LAMBDA(s:State):core.productMass(Q,s)*f(s))
+
+END ppg_resampling_initial_mean

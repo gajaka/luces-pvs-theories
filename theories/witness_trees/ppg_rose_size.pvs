@@ -1,0 +1,30 @@
+% Rose-tree folds and node counts do not require an inhabited label type.
+ppg_rose_size[C: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_mt_rose[C]
+
+  WTree: TYPE = ppg_mt_rose[C]
+
+  IMPORTING foundations@ppg_tree_lists[WTree]
+  t, c: VAR WTree
+  cs: VAR list[WTree]
+  a: VAR C
+
+  treeSize: [WTree -> nat] = reduce_nat(LAMBDA (a: C, ns: list[nat]): 1 + natSum(ns))
+
+  size_node: LEMMA treeSize(roseNode(a, cs)) = 1 + natSum(map(treeSize)(cs))
+
+  size_pos: LEMMA 0 < treeSize(t)
+
+  size_le_sum_children: THEOREM member(c, cs) IMPLIES
+    treeSize(c) <= natSum(map(treeSize)(cs))
+
+  child_size_lt: LEMMA member(c, cs) IMPLIES treeSize(c) < treeSize(roseNode(a, cs))
+
+  tree_eta: LEMMA roseNode(roseLabel(t), roseChildren(t)) = t
+
+  rose_induction: LEMMA FORALL (P: pred[WTree]):
+    (FORALL (a: C, cs: list[WTree]): every(P)(cs) IMPLIES P(roseNode(a, cs)))
+      IMPLIES FORALL (t: WTree): P(t)
+
+END ppg_rose_size

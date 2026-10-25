@@ -1,0 +1,68 @@
+% A table in a rooted union has a rooted augmented witness with the same root.
+% Its actual augmented check entails the finite unit check. Both unions keep
+% the literal rooted-canonical subtype; no measurable-set premise is needed.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Lemma 3.1 and Section 3.1. Patrick Billingsley,
+% Probability and Measure, third edition, Wiley, 1995: inverse images and unions.
+% Lean counterpart: PPGraphHLSRootUnion.rootUnion_preimage_subset_unitCheck_union.
+ppg_hls_root_union_unit_bridge[C,V,Value:TYPE,domain:[V->set[Value]],
+  default:C,universe:{U:finite_set[C]|FORALL(c:C):U(c)},
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING moser_tardos@ppg_mt_native_process[C,V,Value,domain,spaces,laws])
+  process:MTProcess]: THEORY
+BEGIN
+  IMPORTING ppg_hls_root_union_measurable[C,V,Value,domain,universe,
+      spaces,laws,process] AS unions,
+    ppg_hls_unit_checks[C,V,Value,domain,default,universe,
+      spaces,laws,process] AS units,
+    ppg_hls_augmented_pair_events[C,V,Value,domain,default,universe,
+      spaces,laws,process] AS pairs,
+    ppg_hls_augmented_space[C,V,Value,domain,spaces,laws] AS aug,
+    moser_tardos@ppg_mt_native_process[C,V,Value,domain,spaces,laws] AS native,
+    ppg_hls_table_events[C,V,Value,domain,spaces,laws,process] AS tables,
+    ppg_hls_process_table_bridge[C,V,Value,domain,spaces,laws,process] AS bridge,
+    local_lemmas@ppg_shearer_bdd[C,V,process`footprint] AS graph,
+    ppg_hls_witness_dag[C,graph.dependencyGraph] AS dags,
+    ppg_hls_finite_dag_core[C,graph.dependencyGraph] AS roots,
+    ppg_hls_pair_keys[C,graph.dependencyGraph] AS keys,
+    ppg_hls_augmented_existence[C,V,Value,domain,process`footprint,
+      native.badTest(process),universe] AS choices
+
+  a: VAR C
+
+  r: VAR nat
+
+  w: VAR dags.WNode
+
+  D: VAR dags.WitnessDAG
+
+  M: VAR keys.DependencyMatching
+
+  eta: VAR aug.AugTable
+
+  unitCheckUnion(M,a,r): set[aug.AugTable] = {eta:aug.AugTable|
+    EXISTS(D:unions.RootFamily(a,r)):units.unitCheck(M,D)(eta)}
+
+  rooted_is_valid: LEMMA roots.RootedCanonical(D,w) IMPLIES dags.Valid(D)
+
+  exists_augmented_native_same_root: LEMMA roots.RootedCanonical(D,w) AND
+    tables.tableCheck(D)(aug.originalTable(eta)) IMPLIES
+      EXISTS(E:dags.WitnessDAG):roots.RootedCanonical(E,w) AND
+        pairs.actualAugmentedCheck(M,w,E,eta)
+
+  exists_unit_same_root: LEMMA roots.RootedCanonical(D,w) AND
+    tables.tableCheck(D)(aug.originalTable(eta)) IMPLIES
+      EXISTS(E:dags.WitnessDAG):roots.RootedCanonical(E,w) AND
+        units.unitCheck(M,E)(eta)
+
+  unit_check_union_member: LEMMA unitCheckUnion(M,a,r)(eta) IFF
+    EXISTS(D:dags.WitnessDAG):roots.RootedCanonical(D,(a,r)) AND
+      units.unitCheck(M,D)(eta)
+
+  rootUnion_preimage_subset_unitCheck_union: THEOREM subset?(
+    {eta:aug.AugTable|unions.rootUnion(a,r)(aug.originalTable(eta))},
+    unitCheckUnion(M,a,r))
+
+END ppg_hls_root_union_unit_bridge

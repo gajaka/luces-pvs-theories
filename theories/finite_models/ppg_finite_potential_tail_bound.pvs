@@ -1,0 +1,33 @@
+% On the running event through N, the first-hit count is at least N+1.
+% Its scaled indicator is therefore an integrable minorant of that count.
+% Under a fixed initial probability law, the exact expectation identifies
+% the resulting Markov bound with the rational first-step potential.
+%
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Theorem 3.1 and Section 7.1.1,
+% Cambridge University Press, 2017.
+ppg_finite_potential_tail_bound[State,Omega: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  (IMPORTING measure_probability@ppg_nasa_sigma[Omega]) S:MeasurableSpace,
+  (IMPORTING measure_probability@ppg_finite_law_view[Omega,S]) measureLaw:FiniteLaw,
+  (IMPORTING measure_probability@ppg_filtration[Omega,State,S]) history:Filtration]: THEORY
+BEGIN
+  IMPORTING ppg_finite_potential_expectation[State,Omega,universe,S,measureLaw,history],
+    ppg_finite_hit_tail[State,Omega,universe,S],measure_probability@ppg_enn_positive_divide
+  M: VAR Model
+  X: VAR AdaptedProcess
+  N: VAR nat
+
+  scaled_running_minorant: LEMMA
+    minorant(scaledIndicator(N+1,runningAmbient(M,X,N)),
+      LAMBDA(omega:Omega):hitCount(M,X,omega))
+
+  finite_running_charge: LEMMA
+    ele(ennFinite((N+1)*mass(runningAmbient(M,X,N))),expectedHitCount(M,X))
+
+  running_measure_fixed_le_potential: THEOREM FORALL(M:StochasticAbsorbingModel,
+    f:SolvingVector(M),X:Realization(M),s0:State,N:nat):mass(fullset[Omega])=1 AND
+    (FORALL(omega:Omega):X(0)(omega)=s0) IMPLIES
+      ele(ennFinite(mass(runningAmbient(M,X,N))),dividePositive(ofReal(f(s0)),N+1))
+
+END ppg_finite_potential_tail_bound

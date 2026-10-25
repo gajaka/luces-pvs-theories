@@ -1,0 +1,63 @@
+% The private and shared addresses of an edge are distinct. Their read
+% transports the table law to the nested four-block product law.
+% Patrick Billingsley, Probability and Measure, third edition.
+% Kun He, Qian Li and Xiaoming Sun, Moser-Tardos Algorithm: Beyond
+% Shearer's Bound, Proposition 3.3.
+ppg_hls_pair_read_product_law[I,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[I,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING moser_tardos@ppg_mt_native_process[I,V,Value,domain,spaces,laws])
+  process:MTProcess,
+  (IMPORTING ppg_hls_table_coordinates[I,V,process`footprint])
+  u,v:WNode]: THEORY
+BEGIN
+
+  IMPORTING ppg_hls_pair_probability[I,V,Value,domain,spaces,laws,process,u,v] AS core,
+    moser_tardos@ppg_mt_carrier_congruence[I,bool,V,Value,domain,spaces,laws] AS carriers,
+    moser_tardos@ppg_mt_log_probability[I,V,Value,domain,spaces,laws] AS originalLog,
+    moser_tardos@ppg_mt_random_process[I,V,Value,domain] AS slots,
+    ppg_hls_table_coordinates[I,V,process`footprint] AS coordinates
+
+  F: MACRO finite_set[V] = core.F
+
+  H: MACRO finite_set[V] = core.H
+
+  Z: MACRO finite_set[V] = core.Z
+
+  IMPORTING ppg_hls_four_block_query[V,F,H,Z] AS addresses,
+    ppg_hls_query_four[V,Value,(F),(H),(Z),domain,
+      core.universeF,core.universeH,core.universeZ,spaces,laws,
+      LAMBDA(a:(F)):a,LAMBDA(a:(H)):a,LAMBDA(a:(Z)):a] AS queries,
+    measure_probability@ppg_probability_four_product[(F),(H),(Z),Value,
+      LAMBDA(a:(F)):domain(a),LAMBDA(a:(H)):domain(a),LAMBDA(a:(Z)):domain(a),
+      core.universeF,core.universeH,core.universeZ,
+      LAMBDA(a:(F)):spaces(a),LAMBDA(a:(H)):spaces(a),LAMBDA(a:(Z)):spaces(a),
+      LAMBDA(a:(F)):laws(a),LAMBDA(a:(H)):laws(a),LAMBDA(a:(Z)):laws(a)] AS four,
+    measure_probability@ppg_probability_map[slots.LogSpace,core.FourValue,NativeTableSigma(spaces),four.ResultSigma] AS image
+
+  D: VAR WitnessDAG
+
+  Q: VAR (Valid)
+
+  sourceIndex(D):[V->nat] = core.sourceIndex(D)
+
+  targetIndex(D):[V->nat] = core.targetIndex(D)
+
+  four_variable_eq: LEMMA queries.fourVariable=addresses.fourVariable
+
+  four_slot_eq: LEMMA queries.fourSlot(
+    LAMBDA(a:(F)):sourceIndex(D)(a),LAMBDA(a:(H)):sourceIndex(D)(a),
+    LAMBDA(a:(H)):targetIndex(D)(a),LAMBDA(a:(Z)):targetIndex(D)(a))=
+    addresses.fourSlot(sourceIndex(D),targetIndex(D))
+
+  shared_index_ne: LEMMA Edge(Q)(u,v) IMPLIES FORALL(a:(H)):
+    sourceIndex(Q)(a)/=targetIndex(Q)(a)
+
+  pair_query_injective: LEMMA Edge(Q)(u,v) IMPLIES injectiveQuery(queries.fourSlot(
+    LAMBDA(a:(F)):sourceIndex(Q)(a),LAMBDA(a:(H)):sourceIndex(Q)(a),
+    LAMBDA(a:(H)):targetIndex(Q)(a),LAMBDA(a:(Z)):targetIndex(Q)(a)))
+
+  read_map: THEOREM Edge(Q)(u,v) IMPLIES
+    image.pushforward(originalLog.logMeasure,core.pairBlockRead(Q))=four.nestedLaw
+
+END ppg_hls_pair_read_product_law

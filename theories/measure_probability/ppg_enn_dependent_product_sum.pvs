@@ -1,0 +1,111 @@
+% Finite dependent assignments turn a product of local ENN sums into
+% the sum of their products. Values may be zero or infinite; only finite
+% distributivity is used. Empty index types retain their one empty map.
+%
+% Nicolas Bourbaki, Algebra I, Chapters 1-3, Springer, 1989.
+% https://link.springer.com/book/9783540642435
+% Multiplicative ENN counterpart of ppg_dependent_product_sum.
+ppg_enn_dependent_product_sum[V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]]]: THEORY
+BEGIN
+  IMPORTING finite_models@ppg_resampling_state_finite[V,Value,variables,domains] AS depFinite
+
+  State: TYPE = ppg_finite_resampling_core[V,Value,variables,domains].State
+
+  IMPORTING ppg_nonneg_tsum[State] AS depStates,ppg_nonneg_tsum[Value] AS depValues,
+    ppg_enn_finite[State] AS depStateFinite,ppg_enn_finite[Value] AS depValueFinite,
+    ppg_enn_finite_algebra[State] AS depStatePoint,ppg_enn_finite_algebra[Value] AS depValuePoint,
+    ppg_enn_products[V] AS depProducts,
+    foundations@ppg_monoid_sum[V,ENN,ennFinite(1),emul] AS productsFold,
+    ppg_enn_sum_scale[State] AS depStateScale,ppg_enn_sum_scale[Value] AS depValueScale,
+    ppg_enn_finite_fubini[State,Value] AS depFubini
+
+  Factors: TYPE = [V->[Value->ENN]]
+
+  f: VAR Factors
+  F: VAR finite_set[V]
+  base,t: VAR State
+  v: VAR V
+  x: VAR Value
+
+  setValue(base,v,x): State = IF domains(v)(x) THEN base WITH [v:=x] ELSE base ENDIF
+
+  agreeOutside(F,base,t): bool = FORALL(v:V):NOT F(v) IMPLIES t(v)=base(v)
+
+  partialProduct(f,F,t): ENN = depProducts.eprod(F,LAMBDA(v:V):f(v)(t(v)))
+
+  slice(f,F,base)(t): ENN = IF agreeOutside(F,base,t) THEN partialProduct(f,F,t) ELSE ennFinite(0) ENDIF
+
+  sliceSum(f,F,base): ENN = depStates.esum(depFinite.allStates,slice(f,F,base))
+
+  domainSums(f)(v): ENN = depValues.esum(domains(v),f(v))
+
+  agree_empty: LEMMA agreeOutside(emptyset[V],base,t) IFF t=base
+
+  agree_remove_outside: LEMMA F(v) AND domains(v)(x) AND
+    agreeOutside(remove(v,F),setValue(base,v,x),t) IMPLIES agreeOutside(F,base,t)
+
+  agree_remove_value: LEMMA F(v) AND domains(v)(x) AND
+    agreeOutside(remove(v,F),setValue(base,v,x),t) IMPLIES t(v)=x
+
+  agree_remove_back: LEMMA F(v) AND domains(v)(x) AND
+    agreeOutside(F,base,t) AND t(v)=x IMPLIES
+      agreeOutside(remove(v,F),setValue(base,v,x),t)
+
+  agree_remove: LEMMA F(v) AND domains(v)(x) IMPLIES
+    (agreeOutside(remove(v,F),setValue(base,v,x),t) IFF
+      agreeOutside(F,base,t) AND t(v)=x)
+
+  partial_product_remove: LEMMA F(v) IMPLIES
+    partialProduct(f,F,t)=emul(f(v)(t(v)),partialProduct(f,remove(v,F),t))
+
+  slice_value: LEMMA slice(f,F,base)(t)=
+    (IF agreeOutside(F,base,t) THEN partialProduct(f,F,t) ELSE ennFinite(0) ENDIF)
+
+  slice_empty: LEMMA slice(f,emptyset[V],base)=
+    (LAMBDA(t:State):IF t=base THEN ennFinite(1) ELSE ennFinite(0) ENDIF)
+
+  slice_sum_empty: LEMMA sliceSum(f,emptyset[V],base)=ennFinite(1)
+
+  slice_row_term: LEMMA F(v) AND domains(v)(x) IMPLIES
+    emul(f(v)(x),slice(f,remove(v,F),setValue(base,v,x))(t))=
+      (IF x=t(v) THEN emul(f(v)(x),
+        IF agreeOutside(F,base,t) THEN partialProduct(f,remove(v,F),t) ELSE ennFinite(0) ENDIF)
+       ELSE ennFinite(0) ENDIF)
+
+  slice_row_sum: LEMMA F(v) IMPLIES
+    depValues.esum(domains(v),LAMBDA(x:Value):
+      emul(f(v)(x),slice(f,remove(v,F),setValue(base,v,x))(t)))=slice(f,F,base)(t)
+
+  slice_row_function: LEMMA F(v) IMPLIES
+    (LAMBDA(t:State):depValues.esum(domains(v),LAMBDA(x:Value):
+      emul(f(v)(x),slice(f,remove(v,F),setValue(base,v,x))(t))))=slice(f,F,base)
+
+  scaled_slice_sum_function: LEMMA
+    (LAMBDA(x:Value):depStates.esum(depFinite.allStates,LAMBDA(t:State):
+      emul(f(v)(x),slice(f,remove(v,F),setValue(base,v,x))(t))))=
+    (LAMBDA(x:Value):emul(f(v)(x),sliceSum(f,remove(v,F),setValue(base,v,x))))
+
+  slice_sum_step: LEMMA F(v) IMPLIES
+    sliceSum(f,F,base)=depValues.esum(domains(v),LAMBDA(x:Value):
+      emul(f(v)(x),sliceSum(f,remove(v,F),setValue(base,v,x))))
+
+  constant_slice_rows: LEMMA FORALL(r:ENN):
+    (FORALL(b:State):sliceSum(f,remove(v,F),b)=r) IMPLIES
+    (LAMBDA(x:Value):emul(f(v)(x),sliceSum(f,remove(v,F),setValue(base,v,x))))=
+      (LAMBDA(x:Value):emul(f(v)(x),r))
+
+  slice_sum_product: THEOREM sliceSum(f,F,base)=depProducts.eprod(F,domainSums(f))
+
+  agree_full: LEMMA agreeOutside(variables,base,t)
+
+  full_slice: LEMMA slice(f,variables,base)=
+    (LAMBDA(t:State):depProducts.eprod(variables,LAMBDA(v:V):f(v)(t(v))))
+
+  dependent_product_sum: THEOREM FORALL(base:State):
+    depStates.esum(depFinite.allStates,
+      LAMBDA(t:State):depProducts.eprod(variables,LAMBDA(v:V):f(v)(t(v))))=
+        depProducts.eprod(variables,domainSums(f))
+
+END ppg_enn_dependent_product_sum

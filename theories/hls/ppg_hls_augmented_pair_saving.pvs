@@ -1,0 +1,102 @@
+% The image law evaluates a measurable event by the mass of its read
+% preimage. Averaging the two coin orientations gives the process
+% intersection bound.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995:
+% image measures and product events. Kun He, Qian Li and Xiaoming Sun,
+% "Moser-Tardos Algorithm: Beyond Shearer's Bound", proof of Lemma 3.4.
+% Lean counterpart: measureReal_augmentedPairCheck_le in
+% PPGraphHLSAugmentedPair.lean.
+ppg_hls_augmented_pair_saving[C,V,Value:TYPE,domain:[V->set[Value]],
+  variableUniverse:{U:finite_set[V]|U=fullset[V]},
+  default:C,universe:{U:finite_set[C]|FORALL(c:C):U(c)},
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:ppg_mt_coordinate_laws[C,V,Value,domain].VariableSpaces,
+  laws:ppg_mt_coordinate_laws[C,V,Value,domain].VariableLaws(spaces),
+  (IMPORTING moser_tardos@ppg_mt_native_process[C,V,Value,domain,spaces,laws])
+  process:ppg_mt_native_process[C,V,Value,domain,spaces,laws].MTProcess,
+  (IMPORTING ppg_hls_table_coordinates[C,V,process`footprint])
+  u,v:ppg_hls_witness_dag[C,
+    ppg_shearer_bdd[C,V,process`footprint].dependencyGraph].WNode,
+  (IMPORTING ppg_hls_pair_keys[C,
+    ppg_shearer_bdd[C,V,process`footprint].dependencyGraph])
+  matching:ppg_hls_pair_keys[C,
+    ppg_shearer_bdd[C,V,process`footprint].dependencyGraph].DependencyMatching,
+  dag:ppg_hls_witness_dag[C,
+    ppg_shearer_bdd[C,V,process`footprint].dependencyGraph].WitnessDAG]: THEORY
+  EXPORTING ALL WITH CLOSURE
+
+BEGIN
+  IMPORTING ppg_hls_augmented_pair_mass[C,V,Value,domain,default,universe,
+      spaces,laws,process,u,v,matching,dag] AS mass,
+    ppg_hls_augmented_pair_law[C,V,Value,domain,default,universe,
+      spaces,laws,process,u,v,matching,dag] AS massLaw,
+    ppg_hls_augmented_dependence[C,V,Value,domain,default,universe,
+      spaces,laws,process,u,v] AS reads,
+    ppg_hls_augmented_pair_measurable[C,V,Value,domain,default,universe,
+      spaces,laws,process,u,v] AS measurableRead,
+    ppg_hls_pair_probability[C,V,Value,domain,spaces,laws,process,u,v] AS blocks,
+    ppg_hls_pair_probability_saving[C,V,Value,domain,variableUniverse,
+      spaces,laws,process,u,v] AS blockSaving,
+    ppg_hls_process_block_saving[C,V,Value,domain,variableUniverse,
+      spaces,laws,process,u`1,v`1] AS processSaving,
+    ppg_hls_augmented_space[C,V,Value,domain,spaces,laws] AS aug,
+    ppg_hls_table_events[C,V,Value,domain,spaces,laws,process] AS tables,
+    moser_tardos@ppg_mt_state_probability[C,V,Value,domain,variableUniverse,
+      spaces,laws] AS originalState,
+    ppg_hls_fair_orientation AS fair
+
+  F: MACRO finite_set[V] = blocks.F
+
+  H: MACRO finite_set[V] = blocks.H
+
+  Z: MACRO finite_set[V] = blocks.Z
+
+  IMPORTING measure_probability@ppg_probability_four_product[(F),(H),(Z),Value,
+      LAMBDA(a:(F)):domain(a),LAMBDA(a:(H)):domain(a),LAMBDA(a:(Z)):domain(a),
+      blocks.universeF,blocks.universeH,blocks.universeZ,
+      LAMBDA(a:(F)):spaces(a),LAMBDA(a:(H)):spaces(a),LAMBDA(a:(Z)):spaces(a),
+      LAMBDA(a:(F)):laws(a),LAMBDA(a:(H)):laws(a),LAMBDA(a:(Z)):laws(a)] AS four,
+    measure_probability@ppg_probability_pair[fair.OrientationCoin,blocks.FourValue,
+      fair.OrientationSigma,four.ResultSigma] AS resultLaw,
+    ppg_hls_coin_choice[blocks.FourValue,four.ResultSigma] AS choice,
+    measure_probability@ppg_measurable_block[V,Value,domain,spaces] AS blockTypes,
+    measure_probability@ppg_probability_finite_product[V,Value,domain,spaces,laws] AS finiteBlocks,
+    measure_probability@ppg_probability_finite_coin_saving[blockTypes.Block(F),blockTypes.Block(H),
+      blockTypes.Block(Z),blockTypes.blockSigma(F),blockTypes.blockSigma(H),
+      blockTypes.blockSigma(Z),finiteBlocks.finiteLaw(F),finiteBlocks.finiteLaw(H),
+      finiteBlocks.finiteLaw(Z)] AS finiteSaving
+
+  CoinFourSigma: MACRO ppg_measurable_space[reads.CoinFourValue].MeasurableSpace =
+    resultLaw.JointSpace
+
+  IMPORTING measure_probability@ppg_measurable_map[aug.AugTable,reads.CoinFourValue] AS readMaps,
+    measure_probability@ppg_probability_map[aug.AugTable,reads.CoinFourValue,
+      aug.AugSigma,CoinFourSigma] AS readPush
+
+  delta: VAR real
+
+  coin_choice_measurable: LEMMA tables.badMeasurable IMPLIES
+    CoinFourSigma(reads.coinChoice)
+
+  augmented_mass_as_coin_four: LEMMA Valid(dag) AND Edge(dag)(u,v) AND
+    tables.badMeasurable IMPLIES
+      aug.augmentedMeasure(reads.augmentedPairCheck(matching,dag))=
+        resultLaw.productLaw(fair.fairOrientation,four.nestedLaw)(reads.coinChoice)
+
+  coin_four_average_formula: LEMMA tables.badMeasurable IMPLIES
+    resultLaw.productLaw(fair.fairOrientation,four.nestedLaw)(reads.coinChoice)=
+      four.nestedLaw(blocks.forwardEvent)/2+four.nestedLaw(blocks.oneOrderOnly)/2
+
+  coin_four_mass_eq_process: LEMMA tables.badMeasurable IMPLIES
+    resultLaw.productLaw(fair.fairOrientation,four.nestedLaw)(reads.coinChoice)=
+      finiteSaving.finiteCoinMass(processSaving.sourceBlockBad,processSaving.targetBlockBad)
+
+  measureReal_augmentedPairCheck_le: THEOREM Valid(dag) AND Edge(dag)(u,v) AND
+    tables.badMeasurable AND delta>=0 AND
+    delta<=originalState.stateMeasure(intersection(process`bad(u`1),process`bad(v`1))) IMPLIES
+      aug.augmentedMeasure(reads.augmentedPairCheck(matching,dag))<=
+        originalState.stateMeasure(process`bad(u`1))*
+          originalState.stateMeasure(process`bad(v`1))-delta*delta/2
+
+END ppg_hls_augmented_pair_saving

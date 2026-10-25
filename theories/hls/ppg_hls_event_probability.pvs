@@ -1,0 +1,34 @@
+% Every event has mass at most one under the product state law. Outer
+% mass gives this statement for arbitrary subsets of the state space.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Theorem 1.6, arXiv:2111.06527.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Lean: eventProbability_le_one in HLS and HLS.Policy.
+ppg_hls_event_probability[C,V,Value:TYPE,domain:[V->set[Value]],
+  variableUniverse:{U:finite_set[V]|U=fullset[V]},
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING moser_tardos@ppg_mt_native_process[C,V,Value,domain,spaces,laws])
+  process:MTProcess]: THEORY
+BEGIN
+  IMPORTING moser_tardos@ppg_mt_state_probability[C,V,Value,domain,variableUniverse,
+      spaces,laws] AS stateLaw,
+    moser_tardos@ppg_mt_semantics[C,V,Value,domain] AS stateTypes,
+    measure_probability@ppg_probability_outer[stateTypes.MTState,NativeStateSigma(spaces),
+      stateLaw.stateMeasure] AS stateOuter
+
+  p: VAR [C->real]
+
+  i: VAR C
+
+  eventProbability_le_one: THEOREM
+    (FORALL(i:C):stateOuter.mass(process`bad(i))=p(i)) IMPLIES
+      (FORALL(i:C):p(i)<=1)
+
+  measurable_event_probability: LEMMA
+    (FORALL(i:C):NativeStateSigma(spaces)(process`bad(i))) IMPLIES
+    (FORALL(i:C):stateOuter.mass(process`bad(i))=
+      stateLaw.stateMeasure(process`bad(i)))
+
+END ppg_hls_event_probability

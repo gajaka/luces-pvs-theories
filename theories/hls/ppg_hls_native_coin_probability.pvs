@@ -1,0 +1,44 @@
+% A probability law has finite mass on every measurable event. Applying
+% the real projection to the constructed extended-valued coin product
+% therefore gives the average of the two original real event masses.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Kun He, Qian Li and Xiaoming Sun, Moser-Tardos Algorithm: Beyond
+% Shearer's Bound, Lemma 3.4. arXiv:2111.06527.
+ppg_hls_native_coin_probability[U:TYPE,
+  (IMPORTING measure_integration@subset_algebra_def[U]) SU:sigma_algebra,
+  (IMPORTING measure_probability@ppg_probability_law[U,SU]) nu:ProbabilityLaw]: THEORY
+BEGIN
+  IMPORTING measure_probability@ppg_general_probability_measure[U,SU,nu] AS rightProbability,
+    measure_probability@ppg_general_measure_values[U,SU,nu] AS probabilityRightValues,
+    measure_probability@ppg_enn_to_real
+
+  rightSfinite: (ppg_sfinite_measure[U,SU].sfinite?) =
+    rightProbability.sfiniteLaw
+
+  IMPORTING ppg_hls_native_coin_choice[U,SU,rightSfinite] AS nativeChoice,
+    measure_probability@ppg_general_measure_values[[OrientationCoin,U],
+      sigma_times(ppg_nasa_sigma[OrientationCoin].asNasa(OrientationSigma),SU),
+      nativeChoice.nativeChoiceLaw] AS probabilityChoiceValues
+
+  A,B: VAR (SU)
+
+  rightReal(A): nonneg_real = ennToReal(probabilityRightValues.measureValue(A))
+
+  choiceReal(A,B): nonneg_real =
+    ennToReal(probabilityChoiceValues.measureValue(nativeChoice.choiceEvent(A,B)))
+
+  right_sfinite_original: LEMMA rightSfinite=nu
+
+  probability_right_value: LEMMA
+    probabilityRightValues.measureValue(A)=ennFinite(nu(A)`2)
+
+  probability_right_real: LEMMA rightReal(A)=nu(A)`2
+
+  finite_choice_value: LEMMA
+    probabilityChoiceValues.measureValue(nativeChoice.choiceEvent(A,B))=
+      ennFinite(nu(A)`2/2+nu(B)`2/2)
+
+  measureReal_coinChoice: THEOREM
+    choiceReal(A,B)=rightReal(A)/2+rightReal(B)/2
+
+END ppg_hls_native_coin_probability

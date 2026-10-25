@@ -1,0 +1,42 @@
+% A finite counter vector determines the finite table block already
+% consumed, including slot zero of every variable. Membership in that
+% block is the corresponding coordinate bound.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Section 2.
+ppg_finite_table_consumed[V: TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)}]: THEORY
+BEGIN
+  IMPORTING foundations@ppg_nat_range AS consumedRange
+
+  Counter: TYPE = [V->nat]
+
+  Slot: TYPE = [nat,V]
+
+  c: VAR Counter
+  v,u: VAR V
+  j: VAR nat
+
+  slotRow(c,v): finite_set[Slot] =
+    image[nat,Slot](LAMBDA(j:nat):(j,v),consumedRange.natRange(c(v)+1))
+
+  rowsFamily(c): finite_set[set[Slot]] =
+    image[V,set[Slot]](LAMBDA(v:V):slotRow(c,v),variables)
+
+  row_finite: LEMMA is_finite(slotRow(c,v))
+
+  consumedBlock(c): finite_set[Slot] = Union[Slot](rowsFamily(c))
+
+  variables_member: LEMMA variables(v)
+
+  row_in_family: LEMMA rowsFamily(c)(slotRow(c,v))
+
+  mem_slot_row: LEMMA slotRow(c,v)((j,u)) IFF u=v AND j<=c(v)
+
+  consumed_intro: LEMMA j<=c(v) IMPLIES consumedBlock(c)((j,v))
+
+  consumed_bound: LEMMA consumedBlock(c)((j,v)) IMPLIES j<=c(v)
+
+  mem_consumedBlock: THEOREM consumedBlock(c)((j,v)) IFF j<=c(v)
+
+END ppg_finite_table_consumed

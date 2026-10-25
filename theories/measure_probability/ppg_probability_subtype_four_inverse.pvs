@@ -1,0 +1,50 @@
+% Componentwise restriction gives measurable inverses between
+% the four-block products over the chosen full subtype universes.
+% Patrick Billingsley, Probability and Measure, third edition.
+ppg_probability_subtype_four_inverse[V,Value:TYPE,domain:[V->set[Value]],F,H,Z:finite_set[V],
+  UF:{E:finite_set[(F)]|E=fullset[(F)]},
+  UH:{E:finite_set[(H)]|E=fullset[(H)]},
+  UZ:{E:finite_set[(Z)]|E=fullset[(Z)]},
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[bool,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces)]: THEORY
+BEGIN
+
+  IMPORTING ppg_probability_subtype_four_map[V,Value,domain,F,H,Z,UF,UH,UZ,spaces,laws] AS fourTransport,
+    ppg_probability_subtype_block_transport[V,Value,domain,F,UF,spaces,laws] AS mapF,
+    ppg_probability_subtype_block_transport[V,Value,domain,H,UH,spaces,laws] AS mapH,
+    ppg_probability_subtype_block_transport[V,Value,domain,Z,UZ,spaces,laws] AS mapZ
+
+  IMPORTING ppg_probability_pair[mapF.SourceValue,mapZ.SourceValue,mapF.SourceSigma,mapZ.SourceSigma] AS sourcePrivateLaw,
+    ppg_probability_pair[mapH.SourceValue,mapH.SourceValue,mapH.SourceSigma,mapH.SourceSigma] AS sourceSharedLaw,
+    ppg_probability_pair[mapF.TargetValue,mapZ.TargetValue,mapF.TargetSigma,mapZ.TargetSigma] AS targetPrivateLaw,
+    ppg_probability_pair[mapH.TargetValue,mapH.TargetValue,mapH.TargetSigma,mapH.TargetSigma] AS targetSharedLaw,
+    ppg_probability_pair[fourTransport.SourcePrivate,fourTransport.SourceShared,sourcePrivateLaw.JointSpace,sourceSharedLaw.JointSpace] AS sourceOuter,
+    ppg_probability_pair[fourTransport.TargetPrivate,fourTransport.TargetShared,targetPrivateLaw.JointSpace,targetSharedLaw.JointSpace] AS targetOuter,
+    ppg_probability_pair_map[mapF.TargetValue,mapZ.TargetValue,mapF.SourceValue,mapZ.SourceValue,
+      mapF.TargetSigma,mapZ.TargetSigma,mapF.SourceSigma,mapZ.SourceSigma] AS privateMap,
+    ppg_probability_pair_map[mapH.TargetValue,mapH.TargetValue,mapH.SourceValue,mapH.SourceValue,
+      mapH.TargetSigma,mapH.TargetSigma,mapH.SourceSigma,mapH.SourceSigma] AS sharedMap,
+    ppg_probability_pair_map[fourTransport.TargetPrivate,fourTransport.TargetShared,fourTransport.SourcePrivate,fourTransport.SourceShared,
+      targetPrivateLaw.JointSpace,targetSharedLaw.JointSpace,
+      sourcePrivateLaw.JointSpace,sourceSharedLaw.JointSpace] AS outerMap
+
+  fromPrivate(q:fourTransport.TargetPrivate):fourTransport.SourcePrivate = (mapF.fromFull(q`1),mapZ.fromFull(q`2))
+
+  fromShared(q:fourTransport.TargetShared):fourTransport.SourceShared = (mapH.fromFull(q`1),mapH.fromFull(q`2))
+
+  fromFour(q:fourTransport.TargetValue):fourTransport.SourceValue = (fromPrivate(q`1),fromShared(q`2))
+
+  private_measurable: LEMMA ppg_measurable_map[fourTransport.TargetPrivate,fourTransport.SourcePrivate].measurable(
+    targetPrivateLaw.JointSpace,sourcePrivateLaw.JointSpace,fromPrivate)
+
+  shared_measurable: LEMMA ppg_measurable_map[fourTransport.TargetShared,fourTransport.SourceShared].measurable(
+    targetSharedLaw.JointSpace,sourceSharedLaw.JointSpace,fromShared)
+
+  four_measurable: THEOREM ppg_measurable_map[fourTransport.TargetValue,fourTransport.SourceValue].measurable(
+    targetOuter.JointSpace,sourceOuter.JointSpace,fromFour)
+
+  original_inverse: LEMMA FORALL(p:fourTransport.SourceValue):fromFour(fourTransport.toFour(p))=p
+
+  subtype_inverse: LEMMA FORALL(q:fourTransport.TargetValue):fourTransport.toFour(fromFour(q))=q
+
+END ppg_probability_subtype_four_inverse

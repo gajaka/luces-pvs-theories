@@ -1,0 +1,191 @@
+% A history rule is a measurable chooser satisfying the violated-event
+% rule at every configuration. The run itself is constructed recursively;
+% its measurability is a conclusion, rather than a field of the rule.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley,
+% 1995, product sigma algebras; Kun He, Qian Li and Xiaoming Sun,
+% "Moser-Tardos Algorithm: Beyond Shearer's Bound", Algorithm 1.
+% Lean counterpart: PPGraphMoserTardosHistoryPolicy.lean, MTPolicy.
+
+ppg_mt_history_measurable[C, V, Value: TYPE, domain: [V -> set[Value]],
+  universe: {U: finite_set[C] | FORALL (c: C): U(c)},
+  (IMPORTING ppg_mt_log_measurable[C, V, Value, domain])
+  coordinates: [V -> ppg_measurable_space[Value].MeasurableSpace]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_history_state[C, V, Value, domain],
+    ppg_mt_policy_schedule[C, V, Value, domain, universe, coordinates],
+    ppg_mt_measurable_state[LogSpace, C, V, Value, domain]
+
+  Histories: TYPE = [StateHistory, LabelHistory]
+
+  ConfigTail: TYPE = [Counter, Histories]
+
+  IMPORTING measure_probability@ppg_measurable_function[LogSpace, V, nat] AS counterMaps,
+    measure_probability@ppg_measurable_function[LogSpace, nat, MTState] AS stateHistoryMaps,
+    measure_probability@ppg_measurable_function[LogSpace, nat, C] AS labelHistoryMaps,
+    measure_probability@ppg_measurable_pair[LogSpace, StateHistory, LabelHistory] AS historiesMaps,
+    measure_probability@ppg_measurable_pair[LogSpace, Counter, Histories] AS tailMaps,
+    measure_probability@ppg_measurable_pair[LogSpace, MTState, ConfigTail] AS configMaps,
+    measure_probability@ppg_measurable_compose[LogSpace, HistoryConfig, C],
+    measure_probability@ppg_measurable_compose[LogSpace, HistoryConfig, MTState],
+    measure_probability@ppg_measurable_compose[LogSpace, HistoryConfig, ConfigTail],
+    measure_probability@ppg_measurable_compose[LogSpace, ConfigTail, Counter],
+    measure_probability@ppg_measurable_compose[LogSpace, ConfigTail, Histories],
+    measure_probability@ppg_measurable_compose[LogSpace, Histories, StateHistory],
+    measure_probability@ppg_measurable_compose[LogSpace, Histories, LabelHistory],
+    measure_probability@ppg_measurable_compose[LogSpace, Counter, nat],
+    measure_probability@ppg_measurable_compose[LogSpace, StateHistory, MTState],
+    measure_probability@ppg_measurable_compose[LogSpace, LabelHistory, C]
+
+  CounterSigma: ppg_measurable_space[Counter].MeasurableSpace =
+    counterMaps.productSigma(LAMBDA (v: V): fullset[set[nat]])
+
+  StateHistorySigma: ppg_measurable_space[StateHistory].MeasurableSpace =
+    stateHistoryMaps.productSigma(LAMBDA (s: nat): StateSigma(coordinates))
+
+  LabelHistorySigma: ppg_measurable_space[LabelHistory].MeasurableSpace =
+    labelHistoryMaps.productSigma(LAMBDA (s: nat): fullset[set[C]])
+
+  HistoriesSigma: ppg_measurable_space[Histories].MeasurableSpace =
+    historiesMaps.pairSigma(StateHistorySigma, LabelHistorySigma)
+
+  TailSigma: ppg_measurable_space[ConfigTail].MeasurableSpace =
+    tailMaps.pairSigma(CounterSigma, HistoriesSigma)
+
+  HistorySigma: ppg_measurable_space[HistoryConfig].MeasurableSpace =
+    configMaps.pairSigma(StateSigma(coordinates), TailSigma)
+
+  vars: VAR CertVars
+  bad: VAR [C, MTState -> bool]
+  choose: VAR HistoryChoice
+  fallback: VAR C
+  t, s, N: VAR nat
+  v: VAR V
+  z: VAR [LogSpace -> HistoryConfig]
+
+  chooserMeasurable(choose): bool = FORALL (t: nat):
+    measurable(HistorySigma, fullset[set[C]], LAMBDA (q: HistoryConfig): choose(t, q))
+
+  HistoryRule(bad): TYPE = {choose: HistoryChoice |
+    chooserMeasurable(choose) AND historyValid(bad, choose)}
+
+  configuration_eta: LEMMA z = LAMBDA (omega: LogSpace):
+    (z(omega)`1, (z(omega)`2`1, (z(omega)`2`2`1, z(omega)`2`2`2)))
+
+  configuration_measurable: LEMMA
+    measurable(TableSigma(coordinates), StateSigma(coordinates), LAMBDA (omega: LogSpace): z(omega)`1) AND
+    measurable(TableSigma(coordinates), CounterSigma, LAMBDA (omega: LogSpace): z(omega)`2`1) AND
+    measurable(TableSigma(coordinates), StateHistorySigma, LAMBDA (omega: LogSpace): z(omega)`2`2`1) AND
+    measurable(TableSigma(coordinates), LabelHistorySigma, LAMBDA (omega: LogSpace): z(omega)`2`2`2)
+    IMPLIES measurable(TableSigma(coordinates), HistorySigma, z)
+
+  measurable_current: LEMMA measurable(TableSigma(coordinates), HistorySigma, z) IMPLIES
+    measurable(TableSigma(coordinates), StateSigma(coordinates), LAMBDA (omega: LogSpace): z(omega)`1)
+
+  measurable_tail: LEMMA measurable(TableSigma(coordinates), HistorySigma, z) IMPLIES
+    measurable(TableSigma(coordinates), TailSigma, LAMBDA (omega: LogSpace): z(omega)`2)
+
+  measurable_counter: LEMMA measurable(TableSigma(coordinates), HistorySigma, z) IMPLIES
+    measurable(TableSigma(coordinates), CounterSigma, LAMBDA (omega: LogSpace): z(omega)`2`1)
+
+  measurable_histories: LEMMA measurable(TableSigma(coordinates), HistorySigma, z) IMPLIES
+    measurable(TableSigma(coordinates), HistoriesSigma, LAMBDA (omega: LogSpace): z(omega)`2`2)
+
+  measurable_recorded_states: LEMMA measurable(TableSigma(coordinates), HistorySigma, z) IMPLIES
+    measurable(TableSigma(coordinates), StateHistorySigma, LAMBDA (omega: LogSpace): z(omega)`2`2`1)
+
+  measurable_recorded_labels: LEMMA measurable(TableSigma(coordinates), HistorySigma, z) IMPLIES
+    measurable(TableSigma(coordinates), LabelHistorySigma, LAMBDA (omega: LogSpace): z(omega)`2`2`2)
+
+  measurable_chosen: LEMMA chooserMeasurable(choose) AND
+    measurable(TableSigma(coordinates), HistorySigma, z) IMPLIES
+      measurable(TableSigma(coordinates), fullset[set[C]], LAMBDA (omega: LogSpace): choose(t, z(omega)))
+
+  measurable_counter_coordinate: LEMMA measurable(TableSigma(coordinates), HistorySigma, z) IMPLIES
+    measurable(TableSigma(coordinates), fullset[set[nat]], LAMBDA (omega: LogSpace): z(omega)`2`1(v))
+
+  measurable_state_history_coordinate: LEMMA measurable(TableSigma(coordinates), HistorySigma, z) IMPLIES
+    measurable(TableSigma(coordinates), StateSigma(coordinates), LAMBDA (omega: LogSpace): z(omega)`2`2`1(s))
+
+  measurable_label_history_coordinate: LEMMA measurable(TableSigma(coordinates), HistorySigma, z) IMPLIES
+    measurable(TableSigma(coordinates), fullset[set[C]], LAMBDA (omega: LogSpace): z(omega)`2`2`2(s))
+
+  nextDraw(z)(omega: LogSpace): MTState =
+    drawFrom(omega, LAMBDA (v: V): z(omega)`2`1(v) + 1)
+
+  nextState(vars, choose, t, z)(omega: LogSpace): MTState =
+    resample(vars(choose(t, z(omega))), z(omega)`1, nextDraw(z)(omega))
+
+  nextCounter(vars, choose, t, z)(omega: LogSpace): Counter =
+    LAMBDA (v: V): IF vars(choose(t, z(omega)))(v)
+      THEN z(omega)`2`1(v) + 1 ELSE z(omega)`2`1(v) ENDIF
+
+  nextStates(vars, choose, t, z)(omega: LogSpace): StateHistory =
+    LAMBDA (s: nat): IF s = t + 1 THEN nextState(vars, choose, t, z)(omega)
+      ELSE z(omega)`2`2`1(s) ENDIF
+
+  nextLabels(choose, t, z)(omega: LogSpace): LabelHistory =
+    LAMBDA (s: nat): IF s = t THEN choose(t, z(omega)) ELSE z(omega)`2`2`2(s) ENDIF
+
+  historyTransition(vars, choose, t, z)(omega: LogSpace): HistoryConfig =
+    (nextState(vars, choose, t, z)(omega),
+      (nextCounter(vars, choose, t, z)(omega),
+        (nextStates(vars, choose, t, z)(omega), nextLabels(choose, t, z)(omega))))
+
+  measurable_next_draw: LEMMA measurable(TableSigma(coordinates), HistorySigma, z) AND
+    (FORALL (omega: LogSpace, v: V): z(omega)`2`1(v) <= N) IMPLIES
+      measurable(TableSigma(coordinates), StateSigma(coordinates), nextDraw(z))
+
+  measurable_next_state: LEMMA chooserMeasurable(choose) AND
+    measurable(TableSigma(coordinates), HistorySigma, z) AND
+    (FORALL (omega: LogSpace, v: V): z(omega)`2`1(v) <= N) IMPLIES
+      measurable(TableSigma(coordinates), StateSigma(coordinates), nextState(vars, choose, t, z))
+
+  measurable_next_counter_coordinate: LEMMA chooserMeasurable(choose) AND
+    measurable(TableSigma(coordinates), HistorySigma, z) IMPLIES
+      measurable(TableSigma(coordinates), fullset[set[nat]],
+        LAMBDA (omega: LogSpace): nextCounter(vars, choose, t, z)(omega)(v))
+
+  measurable_next_counter: LEMMA chooserMeasurable(choose) AND
+    measurable(TableSigma(coordinates), HistorySigma, z) IMPLIES
+      measurable(TableSigma(coordinates), CounterSigma, nextCounter(vars, choose, t, z))
+
+  measurable_next_states: LEMMA chooserMeasurable(choose) AND
+    measurable(TableSigma(coordinates), HistorySigma, z) AND
+    (FORALL (omega: LogSpace, v: V): z(omega)`2`1(v) <= N) IMPLIES
+      measurable(TableSigma(coordinates), StateHistorySigma, nextStates(vars, choose, t, z))
+
+  measurable_next_labels: LEMMA chooserMeasurable(choose) AND
+    measurable(TableSigma(coordinates), HistorySigma, z) IMPLIES
+      measurable(TableSigma(coordinates), LabelHistorySigma, nextLabels(choose, t, z))
+
+  measurable_history_transition: LEMMA chooserMeasurable(choose) AND
+    measurable(TableSigma(coordinates), HistorySigma, z) AND
+    (FORALL (omega: LogSpace, v: V): z(omega)`2`1(v) <= N) IMPLIES
+      measurable(TableSigma(coordinates), HistorySigma, historyTransition(vars, choose, t, z))
+
+  historyRun_transition: LEMMA
+    (LAMBDA (omega: LogSpace): historyRun(vars, choose, fallback, omega, t + 1)) =
+      historyTransition(vars, choose, t,
+        LAMBDA (omega: LogSpace): historyRun(vars, choose, fallback, omega, t))
+
+  measurable_initial_states: LEMMA
+    measurable(TableSigma(coordinates), StateHistorySigma,
+      LAMBDA (omega: LogSpace): LAMBDA (s: nat): initialStateFromLog(omega))
+
+  measurable_history_initial: LEMMA
+    measurable(TableSigma(coordinates), HistorySigma,
+      LAMBDA (omega: LogSpace): historyRun(vars, choose, fallback, omega, 0))
+
+  measurable_historyRun: THEOREM chooserMeasurable(choose) IMPLIES
+    measurable(TableSigma(coordinates), HistorySigma,
+      LAMBDA (omega: LogSpace): historyRun(vars, choose, fallback, omega, t))
+
+  measurable_historySelect: LEMMA chooserMeasurable(choose) IMPLIES
+    selectionMeasurable((# select := LAMBDA (omega: LogSpace): historySelect(vars, choose, fallback, omega) #))
+
+  fromHistory(vars: CertVars, bad: [C, MTState -> bool], rule: HistoryRule(bad),
+      fallback: C): Schedule(vars, bad) =
+    (# select := LAMBDA (omega: LogSpace): historySelect(vars, rule, fallback, omega) #)
+
+END ppg_mt_history_measurable

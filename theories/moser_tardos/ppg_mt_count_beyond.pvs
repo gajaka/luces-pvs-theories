@@ -1,0 +1,25 @@
+% Reconstruction preserves the number of nodes below any depth threshold
+% whose labels use a given variable. These counts determine the local
+% indices read by the tree check.
+%
+% Lean counterpart: PPGraphMoserTardosCheckInvariance.lean.
+
+ppg_mt_count_beyond[C, V: TYPE]: THEORY
+BEGIN
+  IMPORTING witness_trees@ppg_rose_level_count[C, V], foundations@ppg_nat_indicator[Addr]
+  T: VAR GTree
+  vars: VAR CertVars
+  x: VAR V
+  threshold, n: VAR nat
+  v: VAR Addr
+
+  toWTreeFuel_footprintCountBeyondAt: THEOREM gt_valid?(T) AND T`dom(v) AND
+    (FORALL (w: Addr): T`dom(w) IMPLIES length(w) <= length(v) + n) IMPLIES
+    footprintCountBeyondAt(vars, x, threshold, length(v), toWTreeFuel(T, n, v)) =
+      card(intersection(descendants(T, v), {w: Addr | threshold < length(w) AND vars(T`lab(w))(x)}))
+
+  toWTree_footprintCountBeyondAt: THEOREM gt_valid?(T) IMPLIES
+    footprintCountBeyondAt(vars, x, threshold, 0, toWTree(T, null)) =
+      card(intersection(T`dom, {w: Addr | threshold < length(w) AND vars(T`lab(w))(x)}))
+
+END ppg_mt_count_beyond

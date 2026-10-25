@@ -1,0 +1,82 @@
+% At a fixed table, counting the active times gives the original
+% stopped trajectory count, including infinity. Pointwise equality
+% identifies the two native integrals for fixed and slot-zero starts.
+% The initializer and bad tests range over arbitrary functions.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Cambridge University Press, 2017.
+ppg_mt_raw_active_expectation[C,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_mt_coordinate_laws[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),fallback:C,
+  eventOrder:{e:list[C]|FORALL(c:C):member(c,e)}]: THEORY
+BEGIN
+  IMPORTING ppg_mt_random_process[C,V,Value,domain] AS slots,
+    ppg_mt_semantics[C,V,Value,domain] AS semantics,
+    ppg_mt_selection[C,V,Value,domain] AS selection,
+    ppg_mt_stopped_events[C,V,Value,domain] AS stopped,
+    ppg_mt_extended_count[C,V,Value,domain] AS originalCounts,
+    ppg_mt_native_spaces[C,V,Value,domain] AS nativeSpaces,
+    ppg_mt_log_probability[C,V,Value,domain,spaces,laws] AS originalLaw,
+    measure_probability@ppg_event_count[slots.LogSpace] AS counts,
+    measure_probability@ppg_extended_integral[slots.LogSpace,nativeSpaces.NativeTableSigma(spaces),originalLaw.logMeasure] AS nativeIntegral,
+    ppg_mt_time_expectation[C,V,Value,domain,spaces,laws] AS oldExpectation,
+    ppg_mt_check_probability[C,V,Value,domain,spaces,laws] AS checks,
+    measure_probability@ppg_enn_sup AS enn
+
+  State: TYPE = semantics.MTState
+
+  ResamplingLog: TYPE = slots.LogSpace
+
+  RawSchedule: TYPE = [nat->set[ResamplingLog]]
+
+  vars: VAR [C->finite_set[V]]
+  bad: VAR [C,State->bool]
+  init: VAR [ResamplingLog->State]
+  initial: VAR State
+  omega: VAR ResamplingLog
+  E: VAR RawSchedule
+  n: VAR nat
+  B: VAR checks.NativeBad
+
+  event_order_complete: LEMMA selection.completeEnumeration(eventOrder)
+
+  nativeEnumeration: oldExpectation.FullEnumeration = eventOrder
+
+  mtRunningEvent(vars,bad,init,n): set[ResamplingLog] =
+    stopped.runningEvent(vars,bad,fallback,eventOrder,init,n)
+
+  runningSchedule(vars,bad,init): RawSchedule = LAMBDA(n:nat):mtRunningEvent(vars,bad,init,n+1)
+
+  activeCount(E,omega): enn.ENN = counts.eventCount(E,omega)
+
+  expectedActiveCount(E): enn.ENN = nativeIntegral.lintegral(LAMBDA(omega:ResamplingLog):activeCount(E,omega))
+
+  rawETLog(vars,bad,initial): enn.ENN = nativeIntegral.lintegral(LAMBDA(omega:ResamplingLog):
+    originalCounts.TLog(vars,bad,fallback,eventOrder,initial,omega))
+
+  rawRandomInitETLog(vars,bad): enn.ENN = nativeIntegral.lintegral(LAMBDA(omega:ResamplingLog):
+    originalCounts.randomInitTLog(vars,bad,fallback,eventOrder,omega))
+
+  activeCount_mt_eq_TLog: THEOREM activeCount(runningSchedule(vars,bad,init),omega)=
+    originalCounts.TLog(vars,bad,fallback,eventOrder,init(omega),omega)
+
+  fixed_count_function: LEMMA
+    (LAMBDA(omega:ResamplingLog):activeCount(runningSchedule(vars,bad,LAMBDA(omega:ResamplingLog):initial),omega))=
+      (LAMBDA(omega:ResamplingLog):originalCounts.TLog(vars,bad,fallback,eventOrder,initial,omega))
+
+  random_count_function: LEMMA
+    (LAMBDA(omega:ResamplingLog):activeCount(runningSchedule(vars,bad,slots.initialStateFromLog),omega))=
+      (LAMBDA(omega:ResamplingLog):originalCounts.randomInitTLog(vars,bad,fallback,eventOrder,omega))
+
+  expectedActiveCount_fixed_eq: THEOREM expectedActiveCount(runningSchedule(vars,bad,LAMBDA(omega:ResamplingLog):initial))=
+    rawETLog(vars,bad,initial)
+
+  expectedActiveCount_randomInit_eq: THEOREM expectedActiveCount(runningSchedule(vars,bad,slots.initialStateFromLog))=
+    rawRandomInitETLog(vars,bad)
+
+  native_fixed_agreement: LEMMA rawETLog(vars,B,initial)=oldExpectation.ETLog(vars,B,fallback,nativeEnumeration,initial)
+
+  native_random_agreement: LEMMA rawRandomInitETLog(vars,B)=oldExpectation.randomInitETLog(vars,B,fallback,nativeEnumeration)
+
+END ppg_mt_raw_active_expectation

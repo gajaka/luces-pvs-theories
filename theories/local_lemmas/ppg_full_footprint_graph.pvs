@@ -1,0 +1,20 @@
+% Nonempty full footprints share the chosen variable, so every pair
+% of distinct labels is adjacent in the existing dependency graph.
+% The label type may be empty; no event is selected in this argument.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", arXiv:0903.0544v3, Section 2.
+ppg_full_footprint_graph[C,V:TYPE,
+  universe:{U:finite_set[V]|FORALL(v:V):U(v)},variables:[C->finite_set[V]],v0:V]: THEORY
+BEGIN
+  IMPORTING ppg_core@ppg_bdd[C,V] AS footprints,
+    ppg_shearer_bdd[C,V,variables] AS graph
+  a,b: VAR C
+
+  Full: bool = FORALL(c:C):variables(c)=universe
+
+  shared_variable: LEMMA Full IMPLIES footprints.dependent(variables,a,b)
+
+  fullResampling_dependencyGraph_complete: THEOREM Full AND a/=b IMPLIES graph.dependencyGraph(a,b)
+
+END ppg_full_footprint_graph

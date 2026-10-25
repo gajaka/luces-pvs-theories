@@ -1,0 +1,36 @@
+% A forced up choice has the prime factor. At an unmatched node this
+% is the original factor; at every other unforced node the four local
+% choices dominate it. The genuine node-subtype product preserves this
+% comparison, and the proved finite choice sum gives the stated bound.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Theorem 3.13. https://arxiv.org/abs/2111.06527
+% Lean counterpart: refinedWeight_le_choiceSum in PPGraphHLSRefinedBudget.lean.
+ppg_hls_refined_choice_bound[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))},p:[C->real],
+  (IMPORTING ppg_hls_refined_weight[C,G,p]) O:overlap.OverlapBounds,D:(Valid)]: THEORY
+BEGIN
+  IMPORTING ppg_hls_choice_sum[C,G,O`mate,D] AS choices,
+    measure_probability@ppg_enn_product_domain[WNode,D`nodes] AS nodeDomain,
+    measure_probability@ppg_enn_products[(D`nodes)] AS nodeProducts,
+    measure_probability@ppg_enn_product_comparison[(D`nodes)] AS productOrder,
+    measure_probability@ppg_enn_unrestricted_sum[LegalChoices(O`mate,D)] AS legalSums,
+    measure_probability@ppg_enn_ofreal_algebra
+
+  upWeights: [C->ENN] = LAMBDA(i:C):ofReal(overlap.splitUp(O)(i))
+
+  downWeights: [C->ENN] = LAMBDA(i:C):ofReal(overlap.splitDown(O)(i))
+
+  u: VAR (D`nodes)
+
+  local_factor_bound: LEMMA (FORALL(i:C):0<p(i)) AND (FORALL(i:C):p(i)<=1) IMPLIES
+    ele(refinedFactor(O,D)(u),choices.localTotal(upWeights,downWeights)(u))
+
+  refined_product_domain: LEMMA refinedWeight(O)(D)=
+    nodeProducts.eprod(nodeDomain.indexFull,LAMBDA(u:(D`nodes)):refinedFactor(O,D)(u))
+
+  refinedWeight_le_choiceSum: THEOREM
+    (FORALL(i:C):0<p(i)) AND (FORALL(i:C):p(i)<=1) IMPLIES
+      ele(refinedWeight(O)(D),legalSums.eTsum(choices.familyFactor(upWeights,downWeights)))
+
+END ppg_hls_refined_choice_bound

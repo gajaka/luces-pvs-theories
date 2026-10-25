@@ -1,0 +1,22 @@
+% Reachability uses the inductive reflexive transitive closure of
+% positive kernel steps. No finite state enumeration is required.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Chapter 1, American Mathematical Society, 2017.
+ppg_update_reach[State,Input: TYPE,
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_input_update[State,Input,inputs] AS updateReachRule,
+    decision@ppg_reachability_refutation[State,bool] AS updateReachRelation
+
+  R: VAR updateReachRule.Rule
+  s,t: VAR State
+
+  positiveStep(R)(s,t): bool = 0<updateReachRule.kernel(R,s,t)
+
+  ReachesGood(R,s): bool = EXISTS(t:State):
+    R`good(t) AND updateReachRelation.Reach(positiveStep(R))(s,t)
+
+  good_reaches_good: LEMMA R`good(s) IMPLIES ReachesGood(R,s)
+
+END ppg_update_reach

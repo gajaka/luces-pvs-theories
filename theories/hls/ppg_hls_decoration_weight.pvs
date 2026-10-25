@@ -1,0 +1,28 @@
+% Each node chooses an up or a down factor. Summing the decorations is
+% the finite distributive law, including zero and infinite factors.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Proposition 3.9 and Appendix B.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSDecoratedBudget.lean.
+ppg_hls_decoration_weight[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_witness_dag[C,G],measure_probability@ppg_enn_semiring,measure_probability@ppg_enn_powerset[WNode] AS nodeDecorations,
+    measure_probability@ppg_enn_products[WNode] AS nodeProducts,
+    measure_probability@ppg_nonneg_tsum[finite_set[WNode]] AS finiteDecorations
+  up,down: VAR [C->ENN]
+  D: VAR WitnessDAG
+  R: VAR finite_set[WNode]
+
+  decorations(D): finite_set[finite_set[WNode]] = powerset(D`nodes)
+
+  decorationWeight(up,down)(D)(R): ENN =
+    emul(nodeProducts.eprod(R,LAMBDA(u:WNode):down(u`1)),
+      nodeProducts.eprod(difference(D`nodes,R),LAMBDA(u:WNode):up(u`1)))
+
+  sum_decorationWeight: THEOREM
+    finiteDecorations.esum(decorations(D),LAMBDA(R:finite_set[WNode]):decorationWeight(up,down)(D)(R))=
+      nodeProducts.eprod(D`nodes,LAMBDA(u:WNode):eadd(up(u`1),down(u`1)))
+
+END ppg_hls_decoration_weight

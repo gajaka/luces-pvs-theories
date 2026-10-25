@@ -1,0 +1,66 @@
+% A finite selection of measurable state maps remains measurable.
+% The empty selection returns the supplied state map, so the construction
+% does not require an inhabitant of the state or input carrier.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_update_measurable[State,Input,Sample: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)},
+  inputs:{U:finite_set[Input]|FORALL(a:Input):U(a)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_update[State,Input,universe,inputs],
+    measure_probability@ppg_measurable_map[Sample,State] AS selectionStateMap,
+    measure_probability@ppg_measurable_map[Sample,Input] AS selectionInputMap
+
+  selectionStateSigma: ppg_measurable_space[State].MeasurableSpace = fullset[set[State]]
+
+  selectionInputSigma: ppg_measurable_space[Input].MeasurableSpace = fullset[set[Input]]
+
+  A: VAR finite_set[Input]
+  R: VAR Rule
+  X: VAR [Sample->State]
+  D: VAR [Sample->Input]
+  K: VAR ppg_measurable_space[Sample].MeasurableSpace
+  a: VAR Input
+  omega: VAR Sample
+
+  inputEvent(D,a): set[Sample] = {omega:Sample|D(omega)=a}
+
+  selectedMap(R,X,a): [Sample->State] = LAMBDA(omega:Sample):R`update(X(omega),a)
+
+  selectUpdate(A,R,X,D): RECURSIVE [Sample->State] =
+    IF empty?(A) THEN X ELSE
+      selectionStateMap.branch(inputEvent(D,choose(A)),selectedMap(R,X,choose(A)),
+        selectUpdate(rest(A),R,X,D)) ENDIF
+    MEASURE card(A)
+
+  select_empty: LEMMA selectUpdate(emptyset[Input],R,X,D)=X
+
+  select_step: LEMMA NOT empty?(A) IMPLIES selectUpdate(A,R,X,D)=
+    selectionStateMap.branch(inputEvent(D,choose(A)),selectedMap(R,X,choose(A)),
+      selectUpdate(rest(A),R,X,D))
+
+  selected_map_measurable: LEMMA
+    selectionStateMap.measurable(K,selectionStateSigma,X) IMPLIES
+    selectionStateMap.measurable(K,selectionStateSigma,selectedMap(R,X,a))
+
+  input_event_measurable: LEMMA
+    selectionInputMap.measurable(K,selectionInputSigma,D) IMPLIES K(inputEvent(D,a))
+
+  selection_value: LEMMA A(D(omega)) IMPLIES
+    selectUpdate(A,R,X,D)(omega)=R`update(X(omega),D(omega))
+
+  selection_measurable: LEMMA
+    selectionStateMap.measurable(K,selectionStateSigma,X) AND
+    selectionInputMap.measurable(K,selectionInputSigma,D) IMPLIES
+    selectionStateMap.measurable(K,selectionStateSigma,selectUpdate(A,R,X,D))
+
+  full_selection: LEMMA selectUpdate(inputs,R,X,D)=
+    (LAMBDA(omega:Sample):R`update(X(omega),D(omega)))
+
+  update_measurable: THEOREM
+    selectionStateMap.measurable(K,selectionStateSigma,X) AND
+    selectionInputMap.measurable(K,selectionInputSigma,D) IMPLIES
+    selectionStateMap.measurable(K,selectionStateSigma,
+      LAMBDA(omega:Sample):R`update(X(omega),D(omega)))
+
+END ppg_finite_update_measurable

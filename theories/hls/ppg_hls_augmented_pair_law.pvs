@@ -1,0 +1,141 @@
+% A fixed queried auxiliary coin is independent of the four data blocks.
+% Replacing that coin by its endpoint-relative orientation preserves the
+% fair law, so the image law is the same product of five actual factors.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995:
+% image measures and products. Kun He, Qian Li and Xiaoming Sun,
+% "Moser-Tardos Algorithm: Beyond Shearer's Bound", proof of Lemma 3.4.
+% Lean counterpart: map_augmentedPairRead in PPGraphHLSAugmentedPair.lean.
+ppg_hls_augmented_pair_law[C,V,Value:TYPE,domain:[V->set[Value]],
+  default:C,universe:{U:finite_set[C]|FORALL(c:C):U(c)},
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[C,V,Value,domain])
+  spaces:ppg_mt_coordinate_laws[C,V,Value,domain].VariableSpaces,
+  laws:ppg_mt_coordinate_laws[C,V,Value,domain].VariableLaws(spaces),
+  (IMPORTING moser_tardos@ppg_mt_native_process[C,V,Value,domain,spaces,laws])
+  process:ppg_mt_native_process[C,V,Value,domain,spaces,laws].MTProcess,
+  (IMPORTING ppg_hls_table_coordinates[C,V,process`footprint])
+  u,v:ppg_hls_witness_dag[C,
+    ppg_shearer_bdd[C,V,process`footprint].dependencyGraph].WNode,
+  (IMPORTING ppg_hls_pair_keys[C,
+    ppg_shearer_bdd[C,V,process`footprint].dependencyGraph])
+  matching:ppg_hls_pair_keys[C,
+    ppg_shearer_bdd[C,V,process`footprint].dependencyGraph].DependencyMatching,
+  dag:ppg_hls_witness_dag[C,
+    ppg_shearer_bdd[C,V,process`footprint].dependencyGraph].WitnessDAG]: THEORY
+BEGIN
+  IMPORTING ppg_hls_augmented_dependence[C,V,Value,domain,default,universe,
+      spaces,laws,process,u,v] AS reads,
+    ppg_hls_augmented_pair_measurable[C,V,Value,domain,default,universe,
+      spaces,laws,process,u,v] AS measurableRead,
+    ppg_hls_pair_probability[C,V,Value,domain,spaces,laws,process,u,v] AS blocks,
+    ppg_hls_pair_block_queries[C,V,Value,domain,spaces,laws,process,u,v] AS queries,
+    ppg_hls_augmented_pair_events[C,V,Value,domain,default,universe,
+      spaces,laws,process] AS pairs,
+    ppg_hls_augmented_space[C,V,Value,domain,spaces,laws] AS aug,
+    local_lemmas@ppg_shearer_bdd[C,V,process`footprint] AS graph,
+    ppg_hls_pair_keys[C,graph.dependencyGraph] AS keys,
+    ppg_hls_clique_ranks[C,graph.dependencyGraph] AS ranks,
+    ppg_hls_relative_coins[C,default,graph.dependencyGraph] AS coins,
+    ppg_hls_fair_orientation AS fair
+
+  F: MACRO finite_set[V] = blocks.F
+
+  H: MACRO finite_set[V] = blocks.H
+
+  Z: MACRO finite_set[V] = blocks.Z
+
+  IMPORTING ppg_hls_coin_query_law[C,V,Value,(F),(H),(Z),domain,
+      blocks.universeF,blocks.universeH,blocks.universeZ,spaces,laws,
+      LAMBDA(a:(F)):a,LAMBDA(a:(H)):a,LAMBDA(a:(Z)):a,
+      keys.matchPair(matching,u`1),
+      ranks.cliqueRank(dag,keys.matchPair(matching,u`1),u),
+      LAMBDA(a:(F)):localIndex(dag,u)(a),
+      LAMBDA(a:(H)):localIndex(dag,u)(a),
+      LAMBDA(a:(H)):localIndex(dag,v)(a),
+      LAMBDA(a:(Z)):localIndex(dag,v)(a)] AS rawLaw,
+    measure_probability@ppg_probability_four_product[(F),(H),(Z),Value,
+      LAMBDA(a:(F)):domain(a),LAMBDA(a:(H)):domain(a),LAMBDA(a:(Z)):domain(a),
+      blocks.universeF,blocks.universeH,blocks.universeZ,
+      LAMBDA(a:(F)):spaces(a),LAMBDA(a:(H)):spaces(a),LAMBDA(a:(Z)):spaces(a),
+      LAMBDA(a:(F)):laws(a),LAMBDA(a:(H)):laws(a),LAMBDA(a:(Z)):laws(a)] AS four,
+    measure_probability@ppg_probability_pair[fair.OrientationCoin,blocks.FourValue,
+      fair.OrientationSigma,four.ResultSigma] AS resultLaw,
+    measure_probability@ppg_probability_pair_map[fair.OrientationCoin,blocks.FourValue,
+      fair.OrientationCoin,blocks.FourValue,fair.OrientationSigma,four.ResultSigma,
+      fair.OrientationSigma,four.ResultSigma] AS productMap,
+    measure_probability@ppg_measurable_map[blocks.FourValue,blocks.FourValue] AS identityMaps,
+    measure_probability@ppg_probability_map[blocks.FourValue,blocks.FourValue,
+      four.ResultSigma,four.ResultSigma] AS identityPush
+
+  CoinFourSigma: MACRO ppg_measurable_space[reads.CoinFourValue].MeasurableSpace =
+    resultLaw.JointSpace
+
+  IMPORTING measure_probability@ppg_measurable_map[aug.AugTable,reads.CoinFourValue] AS readMaps,
+    measure_probability@ppg_measurable_map[reads.CoinFourValue,reads.CoinFourValue] AS relativeMaps,
+    measure_probability@ppg_probability_map[aug.AugTable,reads.CoinFourValue,
+      aug.AugSigma,CoinFourSigma] AS readPush,
+    measure_probability@ppg_probability_map[reads.CoinFourValue,reads.CoinFourValue,
+      CoinFourSigma,CoinFourSigma] AS relativePush,
+    measure_probability@ppg_probability_push_compose[aug.AugTable,reads.CoinFourValue,
+      reads.CoinFourValue,aug.AugSigma,CoinFourSigma,CoinFourSigma] AS compose
+
+  identityFour(x:blocks.FourValue):blocks.FourValue = x
+
+  relativeCoin(c:fair.OrientationCoin):fair.OrientationCoin =
+    coins.relativeCoin(matching,u`1,c)
+
+  relativeRead(x:reads.CoinFourValue):reads.CoinFourValue =
+    (relativeCoin(x`1),x`2)
+
+  identity_event: LEMMA FORALL(E:set[blocks.FourValue]):
+    {x:blocks.FourValue|E(identityFour(x))}=E
+
+  identity_measurable: LEMMA identityMaps.measurable(
+    four.ResultSigma,four.ResultSigma,identityFour)
+
+  identity_preserves_law: LEMMA identityPush.pushforward(four.nestedLaw,identityFour)=
+    four.nestedLaw
+
+  relative_coin_measurable: LEMMA ppg_measurable_map[fair.OrientationCoin,
+    fair.OrientationCoin].measurable(fair.OrientationSigma,
+      fair.OrientationSigma,relativeCoin)
+
+  raw_sigma_eq: LEMMA rawLaw.CoinAndFourSigma=CoinFourSigma
+
+  % The unused source carrier in the product measurability module does not
+  % change the sigma algebra generated by the two projection cylinders.
+  pair_sigma_carrier_eq: LEMMA FORALL(
+    SA:ppg_measurable_space[fair.OrientationCoin].MeasurableSpace,
+    SB:ppg_measurable_space[blocks.FourValue].MeasurableSpace):
+    ppg_measurable_pair[aug.AugTable,fair.OrientationCoin,blocks.FourValue].pairSigma(SA,SB)=
+    ppg_measurable_pair[reads.CoinFourValue,fair.OrientationCoin,blocks.FourValue].pairSigma(SA,SB)
+
+  measurable_sigma_eq: LEMMA measurableRead.CoinFourSigma=CoinFourSigma
+
+  pair_map_source_sigma: LEMMA productMap.SourceSigma=CoinFourSigma
+
+  pair_map_target_sigma: LEMMA productMap.TargetSigma=CoinFourSigma
+
+  relative_read_is_pair_map: LEMMA relativeRead=productMap.pairMap(relativeCoin,identityFour)
+
+  relative_read_measurable: LEMMA relativeMaps.measurable(
+    CoinFourSigma,CoinFourSigma,relativeRead)
+
+  relative_read_preserves_law: LEMMA relativePush.pushforward(
+    resultLaw.productLaw(fair.fairOrientation,four.nestedLaw),relativeRead)=
+      resultLaw.productLaw(fair.fairOrientation,four.nestedLaw)
+
+  actual_read_is_relative_raw: LEMMA reads.augmentedPairRead(matching,dag)=
+    (LAMBDA(eta:aug.AugTable):relativeRead(rawLaw.coinAndFourRead(eta)))
+
+  actual_read_measurable: LEMMA readMaps.measurable(
+    aug.AugSigma,CoinFourSigma,reads.augmentedPairRead(matching,dag))
+
+  raw_data_addresses_injective: LEMMA Valid(dag) AND Edge(dag)(u,v) IMPLIES
+    rawLaw.dataAddressesInjective
+
+  map_augmentedPairRead: THEOREM Valid(dag) AND Edge(dag)(u,v) IMPLIES
+    readPush.pushforward(aug.augmentedMeasure,reads.augmentedPairRead(matching,dag))=
+      resultLaw.productLaw(fair.fairOrientation,four.nestedLaw)
+
+END ppg_hls_augmented_pair_law

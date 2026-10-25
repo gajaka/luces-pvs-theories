@@ -1,0 +1,75 @@
+% A next-read singleton is independent of every state-prefix history
+% event. Its indicator has the constant conditional version given by the
+% native product-state mass. Existence precedes the canonical choice.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+ppg_finite_table_fresh[V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[bool,V,Value,LAMBDA(v:V):domains(v)],
+    ppg_finite_table_core[V,Value,variables,domains])
+  spaces:{S:VariableSpaces|FORALL(v:V,x:(domains(v))):S(v)(singleton[(domains(v))](x))},
+  laws:VariableLaws(spaces),
+  F:ppg_finite_table_core[V,Value,variables,domains].Footprint,
+  init:{f:ppg_finite_table_core[V,Value,variables,domains].Initializer|
+    ppg_measurable_map[LogSpace,MTState].measurable(NativeTableSigma(spaces),NativeStateSigma(spaces),f) AND InitialLocal(f)},
+  n:nat]: THEORY
+BEGIN
+  State: TYPE = ppg_finite_table_core[V,Value,variables,domains].State
+
+  ResamplingLog: TYPE = ppg_finite_table_core[V,Value,variables,domains].ResamplingLog
+
+  plainDomain: MACRO [V->set[Value]] = LAMBDA(v:V):domains(v)
+
+  IMPORTING ppg_finite_table_joint[V,Value,variables,domains,spaces,laws,F,init,n] AS freshJoint,
+    ppg_finite_table_history[V,Value,variables,domains,spaces,F,init] AS freshHistory,
+    ppg_finite_table_fixed_law[V,Value,variables,domains,spaces,laws] AS freshFixed,
+    moser_tardos@ppg_mt_log_probability[bool,V,Value,plainDomain,spaces,laws],
+    measure_probability@ppg_probability_finite_view[ResamplingLog,NativeTableSigma(spaces)] AS freshView,
+    measure_probability@ppg_finite_law_view[ResamplingLog,NativeTableSigma(spaces)] AS freshLawTypes
+
+  history_below_ambient: LEMMA subset?(freshHistory.history(n),NativeTableSigma(spaces))
+
+  tableMeasure: freshLawTypes.FiniteLaw = freshView.nativeLaw(logMeasure)
+
+  IMPORTING measure_probability@ppg_independent_indicator_version[ResamplingLog,NativeTableSigma(spaces),
+      logMeasure,freshHistory.history(n)] AS freshIndicator,
+    measure_probability@ppg_conditional_versions[ResamplingLog,NativeTableSigma(spaces),tableMeasure,
+      freshHistory.history(n)] AS freshVersions,
+    measure_probability@ppg_conditional_unique[ResamplingLog,NativeTableSigma(spaces),tableMeasure,
+      freshHistory.history(n)] AS freshChoice,
+    measure_probability@ppg_finite_measure_integral[ResamplingLog,NativeTableSigma(spaces),tableMeasure] AS freshFunctions,
+    measure_integration@measure_theory[ResamplingLog,
+      ppg_nasa_sigma[ResamplingLog].asNasa(NativeTableSigma(spaces)),tableMeasure] AS freshAE
+
+  a: VAR State
+  A: VAR (freshHistory.history(n))
+
+  initial_local: LEMMA InitialLocal(init)
+
+  singleton_measurable: LEMMA NativeStateSigma(spaces)(singleton[State](a))
+
+  measure_view_eq: LEMMA freshIndicator.measureLaw=tableMeasure
+
+  prefix_map_eq: LEMMA freshHistory.prefixMap(n)=freshJoint.prefixMap
+
+  singleton_independent: LEMMA freshIndicator.independentEvent(
+    freshJoint.nextPreimage(singleton[State](a)))
+
+  inputEvent(a): freshIndicator.IndependentEvent = freshJoint.nextPreimage(singleton[State](a))
+
+  input_event_mass: LEMMA logMeasure(inputEvent(a))=freshFixed.productLaw(singleton[State](a))
+
+  sourceIndicator(a): [ResamplingLog->real] =
+    LAMBDA(omega:ResamplingLog):IF nextDraw(F,init,n,omega)=a THEN 1 ELSE 0 ENDIF
+
+  indicator_matches: LEMMA freshFunctions.indicator(inputEvent(a))=sourceIndicator(a)
+
+  input_fresh_version: LEMMA freshVersions.conditionalVersion(
+    freshFunctions.indicator(inputEvent(a)),freshFunctions.constant(freshFixed.productLaw(singleton[State](a))))
+
+  nextDraw_fresh: THEOREM freshAE.ae_eq?(
+    freshChoice.conditionalExpectation(freshIndicator.admissibleIndicator(inputEvent(a))),
+    freshFunctions.constant(freshFixed.productLaw(singleton[State](a))))
+
+END ppg_finite_table_fresh

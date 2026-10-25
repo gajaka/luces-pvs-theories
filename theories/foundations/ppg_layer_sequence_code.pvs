@@ -1,0 +1,27 @@
+% A canonical finite-set listing retains the set it lists. Coding that
+% list, then coding a list of layers, gives an injective natural code for
+% layer sequences whenever the event labels have such a code.
+% No bound on the sequence length is required.
+ppg_layer_sequence_code[C:TYPE]: THEORY
+BEGIN
+  IMPORTING measure_probability@ppg_label_history[C], ppg_list_sets[C], measure_probability@ppg_label_history[finite_set[C]]
+
+  CodeLayer: TYPE = finite_set[C]
+
+  CodeSequence: TYPE = list[CodeLayer]
+
+  code: VAR [C->nat]
+  A,B: VAR CodeLayer
+  L,M: VAR CodeSequence
+
+  setCode(code)(A): nat = wordCode[C](code,setList(A))
+
+  set_code_equal: LEMMA injective?(code) AND setCode(code)(A)=setCode(code)(B) IMPLIES A=B
+
+  set_code_injective: LEMMA injective?(code) IMPLIES injective?(setCode(code))
+
+  sequenceCode(code)(L): nat = wordCode[CodeLayer](setCode(code),L)
+
+  sequence_code_injective: THEOREM injective?(code) IMPLIES injective?(sequenceCode(code))
+
+END ppg_layer_sequence_code

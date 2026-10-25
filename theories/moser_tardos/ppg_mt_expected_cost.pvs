@@ -1,0 +1,65 @@
+% Pointwise bounded charges give an expected execution-cost bound
+% under the original product table law. This estimate does not require
+% the cost function to be measurable: monotonicity of the nonnegative
+% integral suffices. The stopped count and its mean are the existing MT
+% quantities for the fixed and slot-zero initializers.
+%
+% Edward A. Lee and Sanjit A. Seshia, Introduction to Embedded Systems,
+% second edition, MIT Press, 2017, Chapter 16.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Lean counterparts: RepairDrift.mtExpectedCost_fixed_le and
+% RepairDrift.mtExpectedCost_randomInit_le, PPGraphMoserTardosDriftCost.lean.
+ppg_mt_expected_cost[C,V,Value:TYPE,domain:[V->set[Value]],
+  (IMPORTING ppg_mt_coordinate_laws[C,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),fallback:C,
+  eventOrder:{e:list[C]|FORALL(c:C):member(c,e)}]: THEORY
+BEGIN
+  IMPORTING ppg_mt_random_process[C,V,Value,domain] AS slots,
+    ppg_mt_semantics[C,V,Value,domain] AS semantics,
+    ppg_mt_extended_count[C,V,Value,domain] AS originalCounts,
+    ppg_mt_native_spaces[C,V,Value,domain] AS nativeSpaces,
+    ppg_mt_log_probability[C,V,Value,domain,spaces,laws] AS originalLaw,
+    ppg_mt_cost_pointwise[C,V,Value,domain,fallback,eventOrder] AS charges,
+    ppg_mt_raw_active_expectation[C,V,Value,domain,spaces,laws,fallback,eventOrder] AS raw,
+    ppg_mt_time_expectation[C,V,Value,domain,spaces,laws] AS legacy,
+    ppg_mt_check_probability[C,V,Value,domain,spaces,laws] AS checks,
+    measure_probability@ppg_extended_integral[slots.LogSpace,nativeSpaces.NativeTableSigma(spaces),originalLaw.logMeasure] AS nativeIntegral,
+    measure_probability@ppg_probability_integral_scale[slots.LogSpace,nativeSpaces.NativeTableSigma(spaces),originalLaw.logMeasure] AS scalar,
+    measure_probability@ppg_enn_simple_sup
+
+  State: TYPE = semantics.MTState
+
+  ResamplingLog: TYPE = slots.LogSpace
+
+  vars: VAR [C->finite_set[V]]
+  bad: VAR [C,State->bool]
+  init: VAR [ResamplingLog->State]
+  cost: VAR [State->nonneg_real]
+  initial: VAR State
+  cap: VAR nonneg_real
+  B: VAR checks.NativeBad
+
+  mtExpectedCost(vars,bad,init,cost): ENN = nativeIntegral.lintegral(
+    LAMBDA(omega:ResamplingLog):charges.mtTotalCost(vars,bad,init,cost,omega))
+
+  expected_cost_bound: LEMMA (FORALL(s:State):cost(s)<=cap) IMPLIES
+    ele(mtExpectedCost(vars,bad,init,cost),scale(cap,nativeIntegral.lintegral(
+      LAMBDA(omega:ResamplingLog):originalCounts.TLog(vars,bad,fallback,eventOrder,init(omega),omega))))
+
+  fixed_count_integral: LEMMA nativeIntegral.lintegral(
+    LAMBDA(omega:ResamplingLog):originalCounts.TLog(vars,B,fallback,eventOrder,initial,omega))=
+      legacy.ETLog(vars,B,fallback,raw.nativeEnumeration,initial)
+
+  random_count_integral: LEMMA nativeIntegral.lintegral(
+    LAMBDA(omega:ResamplingLog):originalCounts.TLog(vars,B,fallback,eventOrder,slots.initialStateFromLog(omega),omega))=
+      legacy.randomInitETLog(vars,B,fallback,raw.nativeEnumeration)
+
+  mtExpectedCost_fixed_le: THEOREM (FORALL(s:State):cost(s)<=cap) IMPLIES
+    ele(mtExpectedCost(vars,B,LAMBDA(omega:ResamplingLog):initial,cost),
+      scale(cap,legacy.ETLog(vars,B,fallback,raw.nativeEnumeration,initial)))
+
+  mtExpectedCost_randomInit_le: THEOREM (FORALL(s:State):cost(s)<=cap) IMPLIES
+    ele(mtExpectedCost(vars,B,slots.initialStateFromLog,cost),
+      scale(cap,legacy.randomInitETLog(vars,B,fallback,raw.nativeEnumeration)))
+
+END ppg_mt_expected_cost

@@ -1,0 +1,102 @@
+% A schedule is a measurable selection together with the local rule that
+% a non-good state selects a violated event. It may inspect every table
+% entry. The count includes all active times and may be infinite.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Algorithm 1; Patrick Billingsley, Probability and
+% Measure, third edition, the product sigma algebra and measurable sums.
+% Lean counterpart: PPGraphMoserTardosPolicy.lean, namespace MTPolicy.
+
+ppg_mt_policy_schedule[C, V, Value: TYPE, domain: [V -> set[Value]],
+  universe: {U: finite_set[C] | FORALL (c: C): U(c)},
+  (IMPORTING ppg_mt_log_measurable[C, V, Value, domain])
+  coordinates: [V -> ppg_measurable_space[Value].MeasurableSpace]]: THEORY
+BEGIN
+  IMPORTING ppg_mt_policy_state[C, V, Value, domain],
+    ppg_mt_log_measurable[C, V, Value, domain], measure_probability@ppg_event_count[LogSpace],
+    measure_probability@ppg_measurable_map[LogSpace, C]
+
+  vars: VAR CertVars
+  bad: VAR [C, MTState -> bool]
+  omega: VAR LogSpace
+  seq: VAR SelectionSeq
+  t, n: VAR nat
+  v: VAR V
+
+  SelectionData: TYPE = [# select: [LogSpace -> SelectionSeq] #]
+
+  selectionMeasurable(d: SelectionData): bool = FORALL (t: nat):
+    measurable(TableSigma(coordinates), fullset[set[C]],
+      LAMBDA (omega: LogSpace): d`select(omega)(t))
+
+  Schedule(vars, bad): TYPE = {d: SelectionData |
+    selectionMeasurable(d) AND
+      FORALL (omega: LogSpace): Admissible(vars, bad, d`select(omega), omega)}
+
+  BadMeasurable(bad): bool = FORALL (c: C):
+    StateSigma(coordinates)({s: MTState | bad(c, s)})
+
+  footprintEvent(vars: CertVars, d: SelectionData, v: V, t: nat): set[LogSpace] =
+    {omega: LogSpace | vars(d`select(omega)(t))(v)}
+
+  footprint_event_preimage: LEMMA FORALL (d: SelectionData):
+    footprintEvent(vars, d, v, t) = inverseImage(
+      LAMBDA (omega: LogSpace): d`select(omega)(t), {c: C | vars(c)(v)})
+
+  measurable_footprint_event: LEMMA FORALL (sigma: Schedule(vars, bad)):
+    TableSigma(coordinates)(footprintEvent(vars, sigma, v, t))
+
+  measurable_label_fiber: LEMMA FORALL (sigma: Schedule(vars, bad), c: C):
+    TableSigma(coordinates)({omega: LogSpace | sigma`select(omega)(t) = c})
+
+  measurable_uses: THEOREM FORALL (sigma: Schedule(vars, bad)): measurable(TableSigma(coordinates), fullset[set[nat]],
+    LAMBDA (omega: LogSpace): uses(vars, sigma`select(omega), t, v))
+
+  measurable_state: THEOREM FORALL (sigma: Schedule(vars, bad)): measurable(TableSigma(coordinates), StateSigma(coordinates),
+    LAMBDA (omega: LogSpace): policyState(vars, sigma`select(omega), omega, t))
+
+  selectedBad(vars: CertVars, bad: [C, MTState -> bool], d: SelectionData, t: nat): set[LogSpace] =
+    {omega: LogSpace | bad(d`select(omega)(t),
+      policyState(vars, d`select(omega), omega, t))}
+
+  labelBad(vars: CertVars, bad: [C, MTState -> bool], d: SelectionData, t: nat, c: C): set[LogSpace] =
+    intersection({omega: LogSpace | d`select(omega)(t) = c},
+      {omega: LogSpace | bad(c, policyState(vars, d`select(omega), omega, t))})
+
+  IMPORTING measure_probability@ppg_finite_events[LogSpace, C, TableSigma(coordinates)] AS labelEvents,
+    measure_probability@ppg_finite_events[LogSpace, nat, TableSigma(coordinates)] AS timeEvents
+
+  selected_bad_complement_meet: LEMMA FORALL (d: SelectionData):
+    selectedBad(vars, bad, d, t) = complement(labelEvents.finiteMeet(universe,
+      LAMBDA (c: C): complement(labelBad(vars, bad, d, t, c))))
+
+  measurable_label_bad: LEMMA FORALL (sigma: Schedule(vars, bad), c: C): BadMeasurable(bad) IMPLIES
+    TableSigma(coordinates)(labelBad(vars, bad, sigma, t, c))
+
+  measurableSet_selected_bad: THEOREM FORALL (sigma: Schedule(vars, bad)): BadMeasurable(bad) IMPLIES
+    TableSigma(coordinates)(selectedBad(vars, bad, sigma, t))
+
+  runningEvent(vars: CertVars, bad: [C, MTState -> bool], d: SelectionData, n: nat): set[LogSpace] =
+    {omega: LogSpace | Running(vars, bad, d`select(omega), omega, n)}
+
+  running_event_meet: LEMMA FORALL (d: SelectionData):
+    runningEvent(vars, bad, d, n) = timeEvents.finiteMeet(natRange(n),
+      LAMBDA (t: nat): selectedBad(vars, bad, d, t))
+
+  measurableSet_running: THEOREM FORALL (sigma: Schedule(vars, bad)): BadMeasurable(bad) IMPLIES
+    TableSigma(coordinates)(runningEvent(vars, bad, sigma, n))
+
+  tLog(vars, bad, seq, omega): ENN =
+    eventCount(LAMBDA (t: nat):
+      {w: LogSpace | Running(vars, bad, seq, w, t + 1)}, omega)
+
+  tLog_event_count: LEMMA FORALL (d: SelectionData):
+    (LAMBDA (omega: LogSpace): tLog(vars, bad, d`select(omega), omega)) =
+      (LAMBDA (omega: LogSpace): eventCount(
+        LAMBDA (t: nat): runningEvent(vars, bad, d, t + 1), omega))
+
+  measurable_tLog: THEOREM FORALL (sigma: Schedule(vars, bad)): BadMeasurable(bad) IMPLIES
+    measurable(TableSigma(coordinates), ENNSigma,
+      LAMBDA (omega: LogSpace): tLog(vars, bad, sigma`select(omega), omega))
+
+END ppg_mt_policy_schedule

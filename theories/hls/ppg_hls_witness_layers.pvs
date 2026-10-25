@@ -1,0 +1,101 @@
+% Longest-path layers of a finite witness DAG. Edges strictly lower
+% height; equal-height nodes therefore have independent, distinct labels.
+% Every positive layer depends on a label in the preceding layer.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 1.2.1, footnote 3.
+% https://arxiv.org/abs/2111.06527
+% Nicholas J. A. Harvey and Jan Vondrak, "An Algorithmic Proof of the
+% Lovasz Local Lemma via Resampling Oracles", Section 5.3.
+% https://arxiv.org/abs/1504.02044
+% Lean counterpart: PPGraphHLSWitnessLayers.lean.
+ppg_hls_witness_layers[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_witness_dag[C,G],
+    ppg_hls_reversal[[C,nat]] AS layerPaths,
+    foundations@ppg_finite_nat_sup[[C,nat]] AS nodeSup,
+    foundations@ppg_nat_rank_well_founded[[C,nat]] AS nodeRanks,
+    local_lemmas@ppg_shearer_closed[C,G]
+  D: VAR WitnessDAG
+  Q: VAR (Valid)
+  u,v,w,r: VAR WNode
+  k: VAR nat
+  B: VAR finite_set[C]
+  a,b: VAR C
+
+  descendants(D,u): finite_set[WNode] =
+    intersection(D`nodes,LAMBDA(v:WNode):Reach(D)(u,v))
+
+  mem_descendants: LEMMA
+    descendants(D,u)(v) IFF D`nodes(v) AND Reach(D)(u,v)
+
+  descendants_edge_subset: LEMMA Edge(D)(u,v) IMPLIES
+    subset?(descendants(D,v),descendants(D,u))
+
+  descendants_strict: THEOREM Valid(D) AND Edge(D)(u,v) IMPLIES
+    strict_subset?(descendants(D,v),descendants(D,u))
+
+  descendants_card_lt: LEMMA Valid(D) AND Edge(D)(u,v) IMPLIES
+    card(descendants(D,v))<card(descendants(D,u))
+
+  outgoing_wellFounded: THEOREM Valid(D) IMPLIES
+    well_founded?(LAMBDA(v,u:WNode):Edge(D)(u,v))
+
+  children(D,u): finite_set[WNode] =
+    intersection(D`nodes,LAMBDA(v:WNode):Edge(D)(u,v))
+
+  mem_children: THEOREM children(D,u)(v) IFF D`nodes(v) AND Edge(D)(u,v)
+
+  height(Q,u): RECURSIVE nat = nodeSup.natSup(children(Q,u),LAMBDA(v:WNode):
+    IF children(Q,u)(v) THEN height(Q,v)+1 ELSE 0 ENDIF)
+    MEASURE card(descendants(Q,u))
+
+  height_eq_sup: THEOREM
+    height(Q,u)=nodeSup.natSup(children(Q,u),LAMBDA(v:WNode):height(Q,v)+1)
+
+  height_lt_of_edge: THEOREM Edge(Q)(u,v) IMPLIES height(Q,v)<height(Q,u)
+
+  height_lt_of_transGen: THEOREM positivePath(Q)(u,v) IMPLIES
+    height(Q,v)<height(Q,u)
+
+  height_succ_has_child: THEOREM height(Q,u)=k+1 IMPLIES
+    EXISTS(v:WNode):Q`nodes(v) AND Edge(Q)(u,v) AND height(Q,v)=k
+
+  height_zero_iff_no_edge: THEOREM
+    height(Q,u)=0 IFF (FORALL(v:WNode):NOT Edge(Q)(u,v))
+
+  node_zero_iff_sink: LEMMA Q`nodes(u) IMPLIES
+    (height(Q,u)=0 IFF Sink(Q)(u))
+
+  layerNodes(Q,k): finite_set[WNode] =
+    intersection(Q`nodes,LAMBDA(u:WNode):height(Q,u)=k)
+
+  layerLabels(Q,k): finite_set[C] =
+    image[WNode,C](LAMBDA(u:WNode):u`1,layerNodes(Q,k))
+
+  mem_layerNodes: THEOREM
+    layerNodes(Q,k)(u) IFF Q`nodes(u) AND height(Q,u)=k
+
+  mem_layerLabels: LEMMA layerLabels(Q,k)(a) IFF
+    EXISTS(u:WNode):layerNodes(Q,k)(u) AND u`1=a
+
+  label_in_layer: LEMMA Q`nodes(u) AND height(Q,u)=k IMPLIES layerLabels(Q,k)(u`1)
+
+  layer_label_injective: THEOREM layerNodes(Q,k)(u) AND layerNodes(Q,k)(v) AND
+    u`1=v`1 IMPLIES u=v
+
+  layer_independent: THEOREM Independent(layerLabels(Q,k))
+
+  layer_successor: THEOREM
+    (FORALL(u:WNode):Q`nodes(u) IMPLIES B(u`1)) IMPLIES
+    successors(B,layerLabels(Q,k))(layerLabels(Q,k+1))
+
+  edge_iff_height_dependent: THEOREM Q`nodes(u) AND Q`nodes(v) IMPLIES
+    (Edge(Q)(u,v) IFF height(Q,v)<height(Q,u) AND
+      (u`1=v`1 OR G(u`1,v`1)))
+
+  root_layer_zero: THEOREM Q`nodes(r) AND
+    (FORALL(u:WNode):Q`nodes(u) IMPLIES Reach(Q)(u,r)) IMPLIES
+    layerLabels(Q,0)=singleton(r`1)
+END ppg_hls_witness_layers

@@ -1,0 +1,44 @@
+% Accepted transition rows are finite atomic probability laws with the
+% prescribed rational singleton masses. Their real values use the
+% canonical inclusion of finite nonnegative masses into the reals.
+%
+% Johannes Lengler, "Drift Analysis", arXiv:1712.00964.
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995.
+% Lean counterparts: rowPMF_apply and rowPMF_toReal in PPGraphFiniteDrift.lean.
+ppg_finite_drift_row[State: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_drift[State,universe],
+    measure_probability@ppg_finite_atomic_probability[State,universe],measure_probability@ppg_finite_sigma[State,universe]
+
+  checkedWitness(M:Model): TYPE = {W:Witness|check(M,W)}
+
+  rowWeights(M:Model,W:checkedWitness(M),s:State): WeightVector =
+    LAMBDA(t:State):M`transition(s,t)
+
+  row_weights_at: LEMMA FORALL(M:Model,W:checkedWitness(M),s,t:State):
+    rowWeights(M,W,s)(t)=M`transition(s,t)
+
+  row_weights_normalized: LEMMA FORALL(M:Model,W:checkedWitness(M),s:State):
+    fsum(universe,LAMBDA(t:State):rowWeights(M,W,s)(t))=1
+
+  rowVector(M:Model,W:checkedWitness(M),s:State): NormalizedWeights = rowWeights(M,W,s)
+
+  rowPMF(M:Model,W:checkedWitness(M),s:State): Probability = atomicLaw(rowVector(M,W,s))
+
+  pointMassValue(M:Model,W:checkedWitness(M),s,t:State):nonneg_real = rowPMF(M,W,s)(singleton[State](t))
+
+  realRowValue(M:Model,W:checkedWitness(M),s,t:State):real = pointMassValue(M,W,s,t)
+
+  rowPMF_apply: THEOREM FORALL(M:Model,W:checkedWitness(M),s,t:State):
+    pointMassValue(M,W,s,t)=M`transition(s,t)
+
+  rowPMF_toReal: THEOREM FORALL(M:Model,W:checkedWitness(M),s,t:State):
+    realRowValue(M,W,s,t)=M`transition(s,t)
+
+  potentialWeights(M:Model,W:checkedWitness(M)):WeightVector = LAMBDA(t:State):W`potential(t)
+
+  potential_weights_at: LEMMA FORALL(M:Model,W:checkedWitness(M),t:State):
+    potentialWeights(M,W)(t)=W`potential(t)
+
+END ppg_finite_drift_row

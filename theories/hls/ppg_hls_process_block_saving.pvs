@@ -1,0 +1,65 @@
+% Locality puts the two bad events on their private and shared coordinates.
+% Their intersection yields the quadratic saving.
+% Patrick Billingsley, Probability and Measure, third edition.
+ppg_hls_process_block_saving[I,V,Value:TYPE,domain:[V->set[Value]],
+  universe:{U:finite_set[V]|U=fullset[V]},
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[I,V,Value,domain])
+  spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING moser_tardos@ppg_mt_native_process[I,V,Value,domain,spaces,laws])
+  P:MTProcess,i,j:I]: THEORY
+BEGIN
+
+  IMPORTING ppg_hls_process_footprint[I,V,Value,domain,spaces,laws] AS footprint,
+    moser_tardos@ppg_mt_native_spaces[bool,V,Value,domain] AS boolSpaces,
+    moser_tardos@ppg_mt_state_probability[I,V,Value,domain,universe,spaces,laws] AS originalState,
+    moser_tardos@ppg_mt_state_probability[bool,V,Value,domain,universe,spaces,laws] AS boolState,
+    moser_tardos@ppg_mt_state_carrier_congruence[I,bool,V,Value,domain,universe,spaces,laws] AS carriers
+
+  F: MACRO finite_set[V] = footprint.sourcePrivate(P,i,j)
+
+  H: MACRO finite_set[V] = footprint.sharedVariables(P,i,j)
+
+  Z: MACRO finite_set[V] = footprint.targetPrivate(P,i,j)
+
+  IMPORTING measure_probability@ppg_measurable_block[V,Value,domain,spaces] AS blocks,
+    measure_probability@ppg_probability_finite_product[V,Value,domain,spaces,laws] AS finiteBlocks,
+    ppg_hls_join_blocks[V,Value,domain,F,H,spaces,laws] AS sourceJoin,
+    ppg_hls_join_blocks[V,Value,domain,H,Z,spaces,laws] AS targetJoin,
+    ppg_hls_join_blocks_probability[V,Value,domain,universe,F,H,spaces,laws] AS sourceProbability,
+    ppg_hls_join_blocks_probability[V,Value,domain,universe,H,Z,spaces,laws] AS targetProbability,
+    ppg_hls_block_intersection_mass[V,Value,domain,universe,F,H,Z,spaces,laws] AS blockMass,
+    ppg_hls_block_intersection_saving[V,Value,domain,universe,F,H,Z,spaces,laws] AS blockSaving,
+    measure_probability@ppg_probability_finite_coin_saving[blocks.Block(F),blocks.Block(H),blocks.Block(Z),
+      blocks.blockSigma(F),blocks.blockSigma(H),blocks.blockSigma(Z),
+      finiteBlocks.finiteLaw(F),finiteBlocks.finiteLaw(H),finiteBlocks.finiteLaw(Z)] AS saving,
+    measure_probability@ppg_probability_pair[blocks.Block(F),blocks.Block(H),blocks.blockSigma(F),blocks.blockSigma(H)] AS leftReal,
+    measure_probability@ppg_probability_pair[blocks.Block(H),blocks.Block(Z),blocks.blockSigma(H),blocks.blockSigma(Z)] AS rightReal
+
+  sourceBlockBad: set[sourceJoin.AssemblyPair] = {xy:sourceJoin.AssemblyPair|P`bad(i)(sourceJoin.joinBlocks(xy))}
+
+  targetBlockBad: set[targetJoin.AssemblyPair] = {yz:targetJoin.AssemblyPair|P`bad(j)(targetJoin.joinBlocks(yz))}
+
+  hi: MACRO bool = ppg_mt_native_spaces[I,V,Value,domain].NativeStateSigma(spaces)(P`bad(i))
+
+  hj: MACRO bool = ppg_mt_native_spaces[I,V,Value,domain].NativeStateSigma(spaces)(P`bad(j))
+
+  source_depends: LEMMA hi IMPLIES sourceProbability.stateDepends(union(F,H),P`bad(i))
+
+  target_depends: LEMMA hj IMPLIES targetProbability.stateDepends(union(H,Z),P`bad(j))
+
+  source_measurable: LEMMA hi IMPLIES leftReal.JointSpace(sourceBlockBad)
+
+  target_measurable: LEMMA hj IMPLIES rightReal.JointSpace(targetBlockBad)
+
+  source_event_eq: LEMMA hi IMPLIES sourceBlockBad=blockMass.sourceBlock(P`bad(i))
+
+  target_event_eq: LEMMA hj IMPLIES targetBlockBad=blockMass.targetBlock(P`bad(j))
+
+  delta: VAR real
+
+  coin_process_block_saving: THEOREM hi AND hj AND delta>=0 AND
+    delta<=originalState.stateMeasure(intersection(P`bad(i),P`bad(j))) IMPLIES
+      saving.finiteCoinMass(sourceBlockBad,targetBlockBad)<=
+        originalState.stateMeasure(P`bad(i))*originalState.stateMeasure(P`bad(j))-delta*delta/2
+
+END ppg_hls_process_block_saving

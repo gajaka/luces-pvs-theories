@@ -1,0 +1,51 @@
+% A node reads one table entry for each variable in its footprint.
+% Predecessor counts strictly increase along every arc shared by that
+% variable. Distinct nodes therefore use disjoint coordinate blocks.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 3.1.
+% https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSTableCheck.lean. Both carriers are arbitrary;
+% only each footprint and each witness DAG has finite support.
+ppg_hls_table_coordinates[C,V:TYPE,footprint:[C->finite_set[V]]]: THEORY
+BEGIN
+  IMPORTING local_lemmas@ppg_shearer_bdd[C,V,footprint] AS coordinateGraph,
+    ppg_hls_edge_completion[C,coordinateGraph.dependencyGraph],
+    ppg_hls_witness_dag[C,coordinateGraph.dependencyGraph]
+  D: VAR WitnessDAG
+  Q: VAR (Valid)
+  u,v,w: VAR WNode
+  a: VAR V
+  p: VAR [nat,V]
+
+  dependent_of_shared_variable: THEOREM footprint(u`1)(a) AND footprint(v`1)(a)
+    IMPLIES u`1=v`1 OR coordinateGraph.dependencyGraph(u`1,v`1)
+
+  priorReaders(D,u,a): finite_set[WNode] = intersection(D`nodes,
+    LAMBDA(w:WNode):Edge(D)(w,u) AND footprint(w`1)(a))
+
+  mem_priorReaders: LEMMA priorReaders(D,u,a)(w) IFF
+    D`nodes(w) AND Edge(D)(w,u) AND footprint(w`1)(a)
+
+  priorReaders_subset_of_edge: LEMMA Edge(Q)(u,v) AND footprint(v`1)(a) IMPLIES
+    subset?(priorReaders(Q,u,a),priorReaders(Q,v,a))
+
+  priorReaders_strict_of_edge: THEOREM Edge(Q)(u,v) AND
+    footprint(u`1)(a) AND footprint(v`1)(a) IMPLIES
+    strict_subset?(priorReaders(Q,u,a),priorReaders(Q,v,a))
+
+  localIndex(D,u)(a): nat = card(priorReaders(D,u,a))
+
+  localIndex_lt_of_edge: THEOREM Edge(Q)(u,v) AND
+    footprint(u`1)(a) AND footprint(v`1)(a) IMPLIES
+    localIndex(Q,u)(a)<localIndex(Q,v)(a)
+
+  tableCoordinates(D,u): finite_set[[nat,V]] = image[V,[nat,V]](
+    LAMBDA(a:V):(localIndex(D,u)(a),a),footprint(u`1))
+
+  mem_tableCoordinates: LEMMA tableCoordinates(D,u)(p) IFF
+    footprint(u`1)(p`2) AND p`1=localIndex(D,u)(p`2)
+
+  tableCoordinates_disjoint: THEOREM Q`nodes(u) AND Q`nodes(v) AND u/=v IMPLIES
+    disjoint?(tableCoordinates(Q,u),tableCoordinates(Q,v))
+END ppg_hls_table_coordinates

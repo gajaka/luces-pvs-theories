@@ -1,0 +1,30 @@
+% An exact count of good states decides existential MT repairability
+% when both the variable universe and state enumeration are finite.
+% Zero means no good target; a positive count supplies a target for the
+% constant-table descent. The enumeration must cover the admissible states.
+%
+% Lean counterpart: PPGraphMoserTardosInfeasibility.lean.
+
+ppg_mt_finite_infeasibility[C, V, Value: TYPE, domain: [V -> set[Value]],
+  universe: {U: finite_set[V] | FORALL (v: V): U(v)},
+  events: {E: finite_set[C] | FORALL (c: C): E(c)},
+  states: {S: finite_set[[v: V -> (domain(v))]] | FORALL (z: [v: V -> (domain(v))]): S(z)}]: THEORY
+BEGIN
+  IMPORTING ppg_mt_infeasibility[C, V, Value, domain, universe, events],
+            decision@ppg_finite_count[MTState, C, states]
+  vars: VAR CertVars
+  bad: VAR [C, MTState -> bool]
+  fallback: VAR C
+  enumeration: VAR list[C]
+  s: VAR MTState
+  edges: VAR [MTState, MTState -> bool]
+
+  mt_goodCount_zero_iff_noReachableGood: THEOREM mt_wf(vars, bad) AND completeEnumeration(enumeration) IMPLIES
+    (goodCount(fullset[MTState], mtSat(bad), events) = 0 IFF
+      NoReachableGood(mtRepairGraph(vars, bad, fallback, enumeration, edges), s))
+
+  mt_goodCount_pos_supplies_repair: THEOREM mt_wf(vars, bad) AND completeEnumeration(enumeration) AND
+    goodCount(fullset[MTState], mtSat(bad), events) > 0 IMPLIES
+      EXISTS (w: MTState): mtReach(vars, bad, fallback, enumeration)(s, w) AND MTGood(bad, w)
+
+END ppg_mt_finite_infeasibility

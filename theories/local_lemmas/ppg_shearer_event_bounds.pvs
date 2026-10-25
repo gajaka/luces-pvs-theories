@@ -1,0 +1,16 @@
+% Outer probability is a nonnegative real for every event, including a
+% nonmeasurable one. A real upper bound is therefore nonnegative, and
+% clipping that bound leaves it unchanged.
+% Lean counterpart: PPGraphShearerExpectation.lean, event_prob_bounds.
+ppg_shearer_event_bounds[X,C:TYPE,
+  (IMPORTING measure_probability@ppg_measurable_space[X]) S:MeasurableSpace,
+  (IMPORTING measure_probability@ppg_probability_measure[X,S]) mu:Probability]: THEORY
+BEGIN
+  IMPORTING measure_probability@ppg_probability_outer[X,S,mu]
+  bad: VAR [C->set[X]]
+  p: VAR [C->real]
+
+  event_prob_bounds: THEOREM (FORALL(a:C):mass(bad(a))<=p(a)) IMPLIES
+    (FORALL(a:C):0<=p(a)) AND (FORALL(a:C):mass(bad(a))<=max(0,p(a)))
+
+END ppg_shearer_event_bounds

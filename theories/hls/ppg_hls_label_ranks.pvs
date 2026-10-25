@@ -1,0 +1,77 @@
+% Nodes with one label form a finite acyclic complete chain. Their
+% predecessor counts are distinct and fill the initial segment of the
+% natural numbers. These ranks provide canonical occurrence names.
+%
+% Kun He, Qian Li and Xiaoming Sun, "Moser-Tardos Algorithm: Beyond
+% Shearer's Bound", Section 1.2.1. https://arxiv.org/abs/2111.06527
+% Lean counterpart: PPGraphHLSLabelRanks.lean.
+ppg_hls_label_ranks[C:TYPE,G:{A:[C,C->bool]|(FORALL(i:C):NOT A(i,i)) AND
+  (FORALL(i,j:C):A(i,j)=A(j,i))}]: THEORY
+BEGIN
+  IMPORTING ppg_hls_canonical_encoding[C,G],ppg_hls_edge_completion[C,G],
+    foundations@ppg_finite_bijection[[C,nat],nat] AS rankImages
+  D: VAR WitnessDAG
+  Q: VAR (Valid)
+  u,v,w: VAR WNode
+  i: VAR C
+  n: VAR nat
+
+  labelNodes(D,i): finite_set[WNode] = intersection(D`nodes,LAMBDA(u:WNode):u`1=i)
+
+  labelPrior(D,u): finite_set[WNode] =
+    intersection(D`nodes,LAMBDA(w:WNode):w`1=u`1 AND Edge(D)(w,u))
+
+  labelRank(D,u): nat = card(labelPrior(D,u))
+
+  canonicalName(D,u): WNode = (u`1,labelRank(D,u))
+
+  mem_labelNodes: LEMMA labelNodes(D,i)(u) IFF D`nodes(u) AND u`1=i
+
+  mem_labelPrior: LEMMA labelPrior(D,u)(w) IFF D`nodes(w) AND w`1=u`1 AND Edge(D)(w,u)
+
+  labelPrior_subset_of_edge: LEMMA Edge(Q)(u,v) AND u`1=v`1 IMPLIES
+    subset?(labelPrior(Q,u),labelPrior(Q,v))
+
+  labelPrior_strict: THEOREM Edge(Q)(u,v) AND u`1=v`1 IMPLIES
+    strict_subset?(labelPrior(Q,u),labelPrior(Q,v))
+
+  labelRank_lt_of_edge: THEOREM Edge(Q)(u,v) AND u`1=v`1 IMPLIES
+    labelRank(Q,u)<labelRank(Q,v)
+
+  eq_of_same_labelRank: THEOREM Q`nodes(u) AND Q`nodes(v) AND
+    u`1=v`1 AND labelRank(Q,u)=labelRank(Q,v) IMPLIES u=v
+
+  canonicalName_injective: THEOREM Q`nodes(u) AND Q`nodes(v) AND
+    canonicalName(Q,u)=canonicalName(Q,v) IMPLIES u=v
+
+  labelPrior_subset_labelNodes: LEMMA subset?(labelPrior(D,u),labelNodes(D,u`1))
+
+  labelPrior_no_self: LEMMA NOT labelPrior(Q,u)(u)
+
+  labelRank_lt_card: THEOREM Q`nodes(u) IMPLIES
+    labelRank(Q,u)<card(labelNodes(Q,u`1))
+
+  rank_injective_on_label: LEMMA
+    rankImages.injOn(LAMBDA(u:WNode):labelRank(Q,u),labelNodes(Q,i))
+
+  rank_image_subset_range: LEMMA subset?(
+    image[WNode,nat](LAMBDA(u:WNode):labelRank(Q,u),labelNodes(Q,i)),
+    natRange(card(labelNodes(Q,i))))
+
+  labelRank_image_eq_range: THEOREM
+    image[WNode,nat](LAMBDA(u:WNode):labelRank(Q,u),labelNodes(Q,i))=
+      natRange(card(labelNodes(Q,i)))
+
+  exists_node_of_labelRank_lt: THEOREM n<card(labelNodes(Q,i)) IMPLIES
+    EXISTS(u:WNode):Q`nodes(u) AND u`1=i AND labelRank(Q,u)=n
+
+  labelPrior_eq_earlierLabelNodes: THEOREM Canonical(Q) AND Q`nodes(u) IMPLIES
+    labelPrior(Q,u)=earlierLabelNodes(Q,u`1,u`2)
+
+  labelRank_eq_index_of_canonical: THEOREM Canonical(Q) AND Q`nodes(u) IMPLIES
+    labelRank(Q,u)=u`2
+
+  canonicalName_eq_of_canonical: THEOREM Canonical(Q) AND Q`nodes(u) IMPLIES
+    canonicalName(Q,u)=u
+
+END ppg_hls_label_ranks

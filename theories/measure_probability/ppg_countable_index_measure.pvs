@@ -1,0 +1,88 @@
+% A finite measure of a coded countable union is bounded by the unordered
+% sum of its event masses. The index type may be empty. Code stages count
+% every event once, and continuity passes their finite bounds to the union.
+%
+% Patrick Billingsley, Probability and Measure, third edition, Wiley, 1995:
+% countable subadditivity and continuity from below. Supporting
+% mathematics for PPGraphHLSRootUnion.measure_rootUnion_le_tsum_unitCheck.
+ppg_countable_index_measure[X,I:TYPE,
+  code:{c:[I->nat]|injective?(c)},
+  (IMPORTING ppg_nasa_sigma[X]) S:MeasurableSpace,
+  (IMPORTING measure_integration@generalized_measure_def[X,S])
+  mu:finite_measure]: THEORY
+BEGIN
+  IMPORTING foundations@ppg_injective_code_stages[I,code] AS codes,
+    ppg_countable_indexed_union[X,I] AS unions,
+    measure_integration@finite_measure[X,S,mu] AS nativeMeasure,
+    ppg_enn_unrestricted_sum[I] AS sums,
+    foundations@ppg_monoid_sum[I,nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b] AS finiteSum,
+    analysis@convergence_sequences
+
+  E: VAR [I->(S)]
+
+  i: VAR I
+
+  m,n: VAR nat
+
+  b: VAR nonneg_real
+
+  x: VAR X
+
+  coded_event_measurable: LEMMA S(unions.codedEvent(E,code,n))
+
+  coded_event_at: LEMMA code(i)=n IMPLIES
+    unions.codedEvent(E,code,n)=E(i)
+
+  coded_event_no_index: LEMMA NOT(EXISTS(i:I):code(i)=n) IMPLIES
+    unions.codedEvent(E,code,n)=emptyset[X]
+
+  prefixEvent(E,n): RECURSIVE (S) =
+    IF n=0 THEN emptyset[X]
+      ELSE union(prefixEvent(E,n-1),unions.codedEvent(E,code,n-1)) ENDIF
+    MEASURE n
+
+  mass(i,E): nonneg_real = mu(E(i))
+
+  prefix_zero: LEMMA prefixEvent(E,0)=emptyset[X]
+
+  prefix_succ: LEMMA prefixEvent(E,n+1)=
+    union(prefixEvent(E,n),unions.codedEvent(E,code,n))
+
+  prefix_member: LEMMA prefixEvent(E,n)(x) IFF
+    EXISTS(i:I):code(i)<n AND E(i)(x)
+
+  prefix_monotone: LEMMA m<=n IMPLIES
+    subset?(prefixEvent(E,m),prefixEvent(E,n))
+
+  prefix_increasing: LEMMA increasing?(LAMBDA(n:nat):prefixEvent(E,n))
+
+  prefix_total: LEMMA IUnion(LAMBDA(n:nat):prefixEvent(E,n))=
+    unions.indexedUnion(E)
+
+  union_measurable: LEMMA S(unions.indexedUnion(E))
+
+  finite_pair_subadditive: LEMMA FORALL(A,B:(S)):
+    mu(union(A,B))<=mu(A)+mu(B)
+
+  prefix_mass_bound: LEMMA mu(prefixEvent(E,n))<=
+    finiteSum.sum(codes.stages(n),LAMBDA(i:I):mass(i,E))
+
+  prefix_mass_converges: LEMMA convergence(
+    LAMBDA(n:nat):mu(prefixEvent(E,n)),mu(unions.indexedUnion(E)))
+
+  u: VAR [nat->real]
+
+  z,c: VAR real
+
+  sequence_limit_upper: LEMMA convergence(u,z) AND
+    (FORALL(n:nat):u(n)<=c) IMPLIES z<=c
+
+  union_mass_from_finite_bounds: LEMMA
+    (FORALL(F:finite_set[I]):finiteSum.sum(F,LAMBDA(i:I):mass(i,E))<=b)
+    IMPLIES mu(unions.indexedUnion(E))<=b
+
+  countable_indexed_union_bound: THEOREM ele(
+    ennFinite(mu(unions.indexedUnion(E))),
+    sums.eTsum(LAMBDA(i:I):ennFinite(mu(E(i)))))
+
+END ppg_countable_index_measure

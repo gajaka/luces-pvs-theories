@@ -1,0 +1,63 @@
+% Finite footprints determine dependency. A feasible assignment supplies
+% one budget in [0,1) on each chosen certificate. The pair obstruction
+% follows by weighting the two inequalities and completing a square.
+%
+% Noga Alon and Joel H. Spencer, The Probabilistic Method, fourth edition,
+% Wiley, 2016, Lemma 5.1.1. The finite-product criterion is numerical here.
+% Lean counterpart: PPGraphProbabilistic.lean.
+ppg_generic_probabilistic[C,V:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_core@ppg_bdd[C,V]
+
+  BlockingSet: TYPE = finite_set[C]
+
+  vars: VAR CertVars
+  c,c1,c2: VAR C
+  v: VAR V
+  B,S: VAR BlockingSet
+  p,x: VAR [C->real]
+  a,p1,p2,x1,x2: VAR real
+
+  independent(vars,c1,c2): bool = empty?(intersection(vars(c1),vars(c2)))
+
+  dep_iff_not_indep: THEOREM dependent(vars,c1,c2) IFF NOT independent(vars,c1,c2)
+
+  dependent_symm: THEOREM dependent(vars,c1,c2) IMPLIES dependent(vars,c2,c1)
+
+  blocking_dep_graph(vars,B,c1,c2): bool =
+    B(c1) AND B(c2) AND c1/=c2 AND dependent(vars,c1,c2)
+
+  in_shared_support(vars,S,v): bool = FORALL(c:C):S(c) IMPLIES vars(c)(v)
+
+  shared_support_mem: THEOREM S(c) AND in_shared_support(vars,S,v) IMPLIES vars(c)(v)
+
+  LLLAssignment: TYPE = [C->real]
+
+  feasible_witness_exists: THEOREM lll_feasible(p,x,vars,B) IMPLIES
+    EXISTS(y:LLLAssignment):
+      (FORALL(c:C):B(c) IMPLIES 0<=y(c) AND y(c)<1) AND
+      (FORALL(c:C):B(c) IMPLIES lll_condition_at(p,y,vars,B,c))
+
+  pair_discriminant(p1,p2): real = (1-p1+p2)*(1-p1+p2)-4*p2
+
+  square_nonnegative: LEMMA 0<=a*a
+
+  pair_weighted_bound: LEMMA 0<=x2 AND x2<1 AND
+    p1<=x1*(1-x2) AND p2<=x2*(1-x1) IMPLIES
+      p1*x2+p2*(1-x2)<=x2*(1-x2)
+
+  feasible_pair_discriminant_nonneg: LEMMA
+    0<=x1 AND x1<1 AND 0<=x2 AND x2<1 AND
+    p1<=x1*(1-x2) AND p2<=x2*(1-x1) IMPLIES 0<=pair_discriminant(p1,p2)
+
+  negative_disc_infeasible: THEOREM 0<p1 AND 0<p2 AND p1<1 AND p2<1 AND
+    pair_discriminant(p1,p2)<0 IMPLIES
+      NOT EXISTS(x1,x2:real):0<=x1 AND x1<1 AND 0<=x2 AND x2<1 AND
+        p1<=x1*(1-x2) AND p2<=x2*(1-x1)
+
+  locally_repairable(p,vars,S): bool = EXISTS(x:LLLAssignment):lll_feasible(p,x,vars,S)
+
+  coupled_obstruction(p,vars,S): bool = NOT locally_repairable(p,vars,S)
+
+  repairable_or_coupled: THEOREM locally_repairable(p,vars,S) OR coupled_obstruction(p,vars,S)
+END ppg_generic_probabilistic

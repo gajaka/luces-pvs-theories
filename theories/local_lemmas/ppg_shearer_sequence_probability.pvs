@@ -1,0 +1,54 @@
+% A fixed representative bounds an entire sequence-occurrence class.
+% Its check probability is the product of node probabilities. Marginal
+% upper bounds and preservation of the real product give the sequence
+% weight bound, with no sum over the possible tree shapes.
+%
+% Nicholas J. A. Harvey and Jan Vondrak, "An Algorithmic Proof of the
+% Lovasz Local Lemma via Resampling Oracles", Section 5.4.
+% https://arxiv.org/abs/1504.02044
+% Lean counterpart: PPGraphShearerSequenceProbability.lean.
+ppg_shearer_sequence_probability[C,V,Value:TYPE,domain:[V->set[Value]],
+  universe:{F:finite_set[V]|F=fullset[V]},
+  (IMPORTING moser_tardos@ppg_mt_native_spaces[C,V,Value,domain]) spaces:VariableSpaces,laws:VariableLaws(spaces),
+  (IMPORTING ppg_core@ppg_bdd[C,V]) vars:CertVars]: THEORY
+BEGIN
+  IMPORTING ppg_shearer_sequence_representative[C,V,Value,domain,vars],
+    ppg_shearer_occurrence_integral[C,V,Value,domain,spaces,laws,vars],
+    moser_tardos@ppg_mt_occurrence_probability[C,V,Value,domain,universe,spaces,laws]
+
+  SeqProbabilityEnumeration: TYPE = {xs:list[C]|completeEnumeration(xs)}
+
+  bad: VAR NativeBad
+  fallback,a: VAR C
+  enumeration: VAR SeqProbabilityEnumeration
+  L: VAR LayerSeq
+  rep: VAR LogSpace
+  r: VAR nat
+  p: VAR [C->real]
+
+  sequenceEvent(bad,fallback,enumeration,a,L): (NativeTableSigma(spaces)) =
+    sequenceOccurrence(bad,fallback,enumeration,a,L)
+
+  T: VAR GTree
+
+  clippedNodeWeights(p,T)(w:Addr): nonneg_real = max(0,p(T`lab(w)))
+
+  node_weights_clip: LEMMA (FORALL(c:C):0<=p(c)) IMPLIES
+    (LAMBDA(w:Addr):clippedNodeWeights(p,T)(w))=(LAMBDA(w:Addr):p(T`lab(w)))
+
+  node_product_clip: LEMMA (FORALL(c:C):0<=p(c)) IMPLIES
+    products.sum(T`dom,clippedNodeWeights(p,T))=product(T`dom,LAMBDA(w:Addr):p(T`lab(w)))
+
+  empty_sequence_mass: LEMMA empty?(sequenceEvent(bad,fallback,enumeration,a,L)) IMPLIES
+    logMeasure(sequenceEvent(bad,fallback,enumeration,a,L))=0
+
+  fixed_sequence_rep_bound: LEMMA mt_wf(vars,bad) AND
+    (FORALL(c:C):0<=p(c) AND baseProbability(bad)(c)<=p(c)) AND
+    randomInitSequence(bad,fallback,enumeration,rep,r)=L IMPLIES
+    logMeasure(treeEvent(vars,bad,rawTree(vars,bad,fallback,enumeration,rep,r)))<=max(0,sequenceWeight(p)(L))
+
+  logMeasure_sequenceOccurrence_le_sequenceWeight: THEOREM mt_wf(vars,bad) AND
+    (FORALL(c:C):0<=p(c) AND baseProbability(bad)(c)<=p(c)) IMPLIES
+    logMeasure(sequenceEvent(bad,fallback,enumeration,a,L))<=max(0,sequenceWeight(p)(L))
+
+END ppg_shearer_sequence_probability

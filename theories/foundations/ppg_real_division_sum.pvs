@@ -1,0 +1,18 @@
+% Total real division commutes with a finite sum. The zero-denominator
+% case gives zero on both sides, as in Lean's real division.
+ppg_real_division_sum[T:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_real_sum[T],local_lemmas@ppg_shearer_scalar
+  a,b,c: VAR real
+  F: VAR finite_set[T]
+  f: VAR [T->real]
+
+  fsum_singleton: LEMMA FORALL(x:T):fsum(singleton(x),f)=f(x)
+
+  div0_as_scale: LEMMA div0(a,c)=div0(1,c)*a
+
+  div0_product: LEMMA div0(a*b,c)=a*div0(b,c)
+
+  fsum_div0: LEMMA div0(fsum(F,f),c)=fsum(F,LAMBDA(t:T):div0(f(t),c))
+
+END ppg_real_division_sum

@@ -1,0 +1,59 @@
+% A producer may supply rational survival rows, but the checker verifies
+% the initial row and every recurrence up to the declared horizon.
+% Induction then identifies the rows with the killed transition recursion.
+% The block bound uses stochasticity only after this exact comparison.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Chapter 1, American Mathematical Society, 2017.
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Section 7.1.1, Cambridge University Press, 2017.
+ppg_finite_survival_certificate[State: TYPE,
+  universe:{U:finite_set[State]|FORALL(s:State):U(s)}]: THEORY
+BEGIN
+  IMPORTING ppg_finite_survival[State,universe],foundations@ppg_nat_range,
+    foundations@ppg_finite_all[nat] AS horizons
+
+  SurvivalRows: TYPE = [nat->Vector]
+
+  M: VAR Model
+  F: VAR SurvivalRows
+  H,n,k: VAR nat
+  s: VAR State
+  f,g: VAR Vector
+  b: VAR rat
+
+  vector_extensionality: LEMMA f=g IFF (FORALL(s:State):f(s)=g(s))
+
+  SurvivalTable(M,F,H): bool =
+    (FORALL(s:State):F(0)(s)=IF M`good(s) THEN 0 ELSE 1 ENDIF) AND
+    (FORALL(k:nat):k<H IMPLIES FORALL(s:State):F(k+1)(s)=
+      IF M`good(s) THEN 0 ELSE successorValue(M,F(k),s) ENDIF)
+
+  range_all_iff: LEMMA FORALL(P:pred[nat]):
+    horizons.finiteAll(natRange(H),P) IFF (FORALL(k:nat):k<H IMPLIES P(k))
+
+  checkSurvivalTable(M,F,H): bool =
+    finiteAll(universe,LAMBDA(s:State):F(0)(s)=IF M`good(s) THEN 0 ELSE 1 ENDIF) AND
+    horizons.finiteAll(natRange(H),LAMBDA(k:nat):
+      finiteAll(universe,LAMBDA(s:State):F(k+1)(s)=
+        IF M`good(s) THEN 0 ELSE successorValue(M,F(k),s) ENDIF))
+
+  checkSurvivalTable_iff: THEOREM checkSurvivalTable(M,F,H) IFF SurvivalTable(M,F,H)
+
+  table_initial: LEMMA SurvivalTable(M,F,H) IMPLIES
+    F(0)(s)=IF M`good(s) THEN 0 ELSE 1 ENDIF
+
+  table_successor: LEMMA SurvivalTable(M,F,H) AND k<H IMPLIES
+    F(k+1)(s)=IF M`good(s) THEN 0 ELSE successorValue(M,F(k),s) ENDIF
+
+  survivalTable_exact: THEOREM FORALL(M:Model,F:SurvivalRows,H,n:nat,s:State):
+    SurvivalTable(M,F,H) AND n<=H IMPLIES F(n)(s)=survival(M,n,s)
+
+  checkedSurvivalTable_exact: THEOREM checkSurvivalTable(M,F,H) IMPLIES
+    F(H)(s)=survival(M,H,s)
+
+  checkedSurvivalTable_blocks_le: THEOREM Stochastic(M) AND checkSurvivalTable(M,F,H)
+    AND 0<=b AND (FORALL(s:State):F(H)(s)<=b) IMPLIES
+      survival(M,k*H,s)<=expt(b,k)
+
+END ppg_finite_survival_certificate

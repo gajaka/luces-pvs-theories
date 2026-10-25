@@ -1,0 +1,123 @@
+% Timeout probabilities refer to the full original MT resampling count.
+% Exact survival values give geometric block bounds; a checked closed bad
+% class instead forces an infinite expected count from a state in that class.
+%
+% David A. Levin and Yuval Peres, Markov Chains and Mixing Times,
+% second edition, Lemma 1.13, American Mathematical Society, 2017.
+% Michael Mitzenmacher and Eli Upfal, Probability and Computing,
+% second edition, Theorem 3.1 and Section 7.1.1,
+% Cambridge University Press, 2017.
+ppg_tail_mt_random[I,V,Value:TYPE,
+  variables:{U:finite_set[V]|FORALL(v:V):U(v)},
+  domains:[V->finite_set[Value]],
+  events:{U:finite_set[I]|FORALL(i:I):U(i)},
+  fallback:I,eventOrder:{e:list[I]|FORALL(i:I):member(i,e)},
+  (IMPORTING ppg_finite_resampling_core[V,Value,variables,domains],
+    ppg_resampling_selection[I,V,Value,variables,domains,events])
+  Q:{Q:Marginals|Valid(Q)},B:ppg_resampling_selection[I,V,Value,variables,domains,events].Problem]: THEORY
+BEGIN
+  IMPORTING ppg_finite_table_core[V,Value,variables,domains]
+
+  State: TYPE = ppg_finite_resampling_core[V,Value,variables,domains].State
+
+  ResamplingLog: TYPE = ppg_finite_table_core[V,Value,variables,domains].ResamplingLog
+
+  plainDomain: MACRO [V->set[Value]] = LAMBDA(v:V):domains(v)
+
+  IMPORTING ppg_resampling_table_init[V,Value,variables,domains,Q] AS initializer,
+    ppg_finite_mt_legacy[I,V,Value,variables,domains,events,fallback,eventOrder] AS first,
+    ppg_resampling_state_finite[V,Value,variables,domains] AS states,
+    ppg_resampling_table_product[V,Value,variables,domains,Q] AS tableLaws,
+    ppg_resampling_product_law[V,Value,variables,domains,Q] AS product,
+    ppg_finite_resampling_core[V,Value,variables,domains] AS core,
+    ppg_resampling_potential[V,Value,variables,domains] AS kernelProof,
+    ppg_finite_potential_reach[State,states.allStates] AS reach,
+    ppg_finite_potential_accessible[State,states.allStates] AS accessibleProof,
+    ppg_finite_potential_synthesis[State,states.allStates] AS potential,
+    ppg_finite_cramer_system[State,states.allStates] AS cramer,
+    ppg_finite_potential_system[State,states.allStates] AS equations,
+    moser_tardos@ppg_mt_table_label[bool,I,V,Value,plainDomain,product.spaces,product.coins] AS labels,
+    moser_tardos@ppg_mt_random_process[I,V,Value,plainDomain] AS oldSlots,
+    moser_tardos@ppg_mt_native_spaces[I,V,Value,plainDomain] AS oldSpaces,
+    moser_tardos@ppg_mt_log_probability[I,V,Value,plainDomain,product.spaces,product.coins] AS oldLaw,
+    moser_tardos@ppg_mt_check_probability[I,V,Value,plainDomain,product.spaces,product.coins] AS oldBad,
+    moser_tardos@ppg_mt_time_expectation[I,V,Value,plainDomain,product.spaces,product.coins] AS oldTime,
+    measure_probability@ppg_probability_integral[oldSlots.LogSpace,oldSpaces.NativeTableSigma(product.spaces),
+      oldLaw.logMeasure] AS oldIntegral,
+    ppg_finite_mt_checked_random[I,V,Value,variables,domains,events,fallback,eventOrder,Q,B] AS base
+
+  IMPORTING ppg_resampling_exact_table[V,Value,variables,domains,Q,first.firstPolicy(B),initializer.randomInit] AS tableExact,
+    ppg_finite_mt_table_expectation[I,V,Value,variables,domains,events,fallback,eventOrder,Q,B,initializer.randomInit] AS bridge
+
+  ambient: MACRO ppg_measurable_space[ResamplingLog].MeasurableSpace = tableLaws.tableAmbient
+
+  IMPORTING ppg_finite_process_hitting[State,ResamplingLog,states.allStates,ambient,
+      tableExact.tableMeasure,tableExact.history] AS hitting,
+    measure_probability@ppg_finite_measure_integral[ResamplingLog,ambient,tableExact.tableMeasure] AS functions,
+    measure_probability@ppg_finite_expectation[ResamplingLog,ambient,tableExact.tableMeasure] AS randomTailMean,
+    measure_integration@integral[ResamplingLog,ppg_nasa_sigma[ResamplingLog].asNasa(ambient),
+      tableExact.tableMeasure] AS native
+
+  IMPORTING ppg_resampling_table_tail[V,Value,variables,domains,Q,first.firstPolicy(B),initializer.randomInit] AS tableTail,
+    moser_tardos@ppg_mt_extended_count[I,V,Value,plainDomain] AS oldCount,
+    ppg_finite_survival[State,states.allStates] AS survival,
+    ppg_finite_survival_certificate[State,states.allStates] AS checkedRows,
+    ppg_finite_survival_integral[State,ResamplingLog,states.allStates,ambient,
+      tableExact.tableMeasure,tableExact.history] AS survivalMean,
+    ppg_finite_survival_probability[State,ResamplingLog,states.allStates,ambient,
+      tableExact.tableMeasure,tableExact.history] AS probability,
+    ppg_finite_potential_tail_bound[State,ResamplingLog,states.allStates,ambient,
+      tableExact.tableMeasure,tableExact.history] AS tailBound,
+    ppg_finite_closed_bad_tail[State,ResamplingLog,states.allStates,ambient,
+      tableExact.tableMeasure,tableExact.history] AS negative,
+    ppg_finite_process_realization[State,ResamplingLog,states.allStates,ambient,
+      tableExact.tableMeasure,tableExact.history] AS process,
+    ppg_finite_process_integral[State,ResamplingLog,states.allStates,ambient,
+      tableExact.tableMeasure] AS values,
+    measure_probability@ppg_enn_positive_divide
+
+  N,k,L: VAR nat
+  b: VAR nonneg_rat
+  F: VAR checkedRows.SurvivalRows
+  U: VAR probability.CheckedClass(tableExact.tableModel)
+
+  bad_measurable: LEMMA FORALL(i:I):oldSpaces.NativeStateSigma(product.spaces)({s:State|B`bad(i,s)})
+
+  nativeBad: oldBad.NativeBad = B`bad
+
+  legacyCount(omega:oldSlots.LogSpace): ENN = oldCount.TLog(
+    B`footprint,nativeBad,fallback,eventOrder,oldSlots.initialStateFromLog(omega),omega)
+
+  count_function: LEMMA legacyCount=bridge.legacyCount
+
+  timeoutSet(N): set[oldSlots.LogSpace] = {omega:oldSlots.LogSpace|
+    NOT ele(legacyCount(omega),ennFinite(N))}
+
+  timeout_set_eq: LEMMA timeoutSet(N)=tableTail.timeoutSet(N)
+
+  timeoutEvent(N): (oldSpaces.NativeTableSigma(product.spaces)) = timeoutSet(N)
+
+  timeoutProbability(N): ENN = ennFinite(oldLaw.logMeasure(timeoutEvent(N)))
+
+  timeout_probability_eq: LEMMA timeoutProbability(N)=tableTail.timeoutProbability(N)
+
+  IMPORTING ppg_resampling_initial_mean[V,Value,variables,domains,Q] AS initialLaw,
+    foundations@ppg_monoid_sum[State,rat,0,LAMBDA(a,b:rat):a+b] AS rationalSum
+
+  mass_one: LEMMA randomTailMean.mass(fullset[ResamplingLog])=1
+
+  initial_function: LEMMA tableTail.initialValue(N)=initialLaw.initialValue(
+    LAMBDA(s:State):survival.survival(tableExact.tableModel,N,s))
+
+  initial_measure: LEMMA tableExact.tableMeasure=initialLaw.tableMeasure
+
+  randomInitTLog_timeout_eq_sum: THEOREM timeoutProbability(N)=ofReal(rationalSum.sum(
+    states.allStates,LAMBDA(s:State):core.productMass(Q,s)*survival.survival(tableExact.tableModel,N,s)))
+
+  randomInitTLog_timeout_le_mean_div: THEOREM ele(timeoutProbability(N),dividePositive(
+    oldTime.randomInitETLog(B`footprint,nativeBad,fallback,eventOrder),N+1))
+
+  randomInitTLog_timeout_blocks_le: THEOREM (FORALL(s:State):survival.survival(tableExact.tableModel,L,s)<=b) IMPLIES
+    ele(timeoutProbability(k*L),ofReal(expt(b,k)))
+
+END ppg_tail_mt_random

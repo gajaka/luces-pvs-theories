@@ -1,0 +1,161 @@
+(|ppg_shearer_tree_layers|
+ (|mem_treeLayer| 0
+  (|mem_treeLayer-1| NIL 4001083140
+   (""
+    (THEN
+     (SPREAD (GRIND :IF-MATCH NIL :EXCLUDE ("is_finite"))
+      ((THEN (INST 1 "x!1") (ASSERT))
+       (THEN (INST 1 "w!1") (GRIND :EXCLUDE ("is_finite"))))))
+    NIL)
+   ((|Addr| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|GTree| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL))
+   SHOSTAK))
+ (|treeLayer_intro| 0
+  (|treeLayer_intro-1| NIL 4001083391
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "mem_treeLayer" ("T" "T!1" "d" "d!1" "a" "T!1`lab(w!1)")) (ASSERT)
+     (INST 1 "w!1") (ASSERT))
+    NIL)
+   ((|Addr| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|GTree| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL))
+   SHOSTAK))
+ (|treeLayer_zero| 0
+  (|treeLayer_zero-1| NIL 4001083140
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "mem_treeLayer" ("T" "T!1" "d" "0" "a" "x!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE ("treeLayer" "treeSlice" "is_finite"))
+     (INST 2 "null[nat]") (ASSERT))
+    NIL)
+   ((|gt_valid?| CONST-DECL "bool" |ppg_mt_tree| NIL)
+    (|snoc| CONST-DECL "Addr" |ppg_mt_tree| NIL)
+    (|Addr| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|GTree| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|SimpleDependencyGraph| TYPE-EQ-DECL NIL |ppg_shearer_bdd| NIL)
+    (|dependencyGraph| CONST-DECL "SimpleDependencyGraph" |ppg_shearer_bdd|
+     NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL))
+   SHOSTAK))
+ (|length_le_treeDepth| 0
+  (|length_le_treeDepth-1| NIL 4001083140
+   (""
+    (THEN (SKOSIMP*) (LEMMA "max_depth_pick_ge" ("S" "T!1`dom" "v" "w!1"))
+     (EXPAND "treeDepth")
+     (GRIND :EXCLUDE ("max_depth_pick" "length" "is_finite")))
+    NIL)
+   ((|max_depth_pick_ge| FORMULA-DECL NIL |ppg_mt_tree| NIL)
+    (|Addr| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|NEAddrSet| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|GTree| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL))
+   SHOSTAK))
+ (|treeLayer_eq_empty_of_depth_lt| 0
+  (|treeLayer_eq_empty_of_depth_lt-1| NIL 4001083140
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (LEMMA "mem_treeLayer" ("T" "T!1" "d" "d!1" "a" "x!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("treeLayer" "treeSlice" "treeDepth" "max_depth_pick" "length"
+       "is_finite"))
+     (LEMMA "length_le_treeDepth" ("T" "T!1" "w" "w!1")) (ASSERT))
+    NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|Addr| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|GTree| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|SimpleDependencyGraph| TYPE-EQ-DECL NIL |ppg_shearer_bdd| NIL)
+    (|dependencyGraph| CONST-DECL "SimpleDependencyGraph" |ppg_shearer_bdd|
+     NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL))
+   SHOSTAK))
+ (|treeDepth_attained| 0
+  (|treeDepth_attained-1| NIL 4001083140
+   (""
+    (THEN (SKOSIMP*) (EXPAND "gt_valid?" -1) (FLATTEN) (HIDE -2)
+     (SPREAD (CASE "nonempty?[Addr](T!1`dom)")
+      ((THEN (INST 1 "max_depth_pick(T!1`dom)")
+        (LEMMA "max_depth_pick_in" ("S" "T!1`dom")) (EXPAND "treeDepth")
+        (GROUND))
+       (THEN (REWRITE "sets_lemmas[Addr].nonempty_member" 1)
+        (INST 1 "null[nat]") (EXPAND "member") (ASSERT)))))
+    NIL NIL)
+   ((|max_depth_pick_in| FORMULA-DECL NIL |ppg_mt_tree| NIL)
+    (|snoc| CONST-DECL "Addr" |ppg_mt_tree| NIL)
+    (|Addr| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|GTree| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|max_depth_pick| CONST-DECL "Addr" |ppg_mt_tree| NIL)
+    (|NEAddrSet| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|gt_valid?| CONST-DECL "bool" |ppg_mt_tree| NIL))
+   SHOSTAK))
+ (|treeLayer_nonempty| 0
+  (|treeLayer_nonempty-1| NIL 4001083140
+   (""
+    (THEN (SKOSIMP*) (LEMMA "treeDepth_attained" ("T" "T!1")) (ASSERT)
+     (SKOLEM -1 "w!1") (FLATTEN)
+     (LEMMA "prefix_mem" ("T" "T!1" "w" "w!1" "u" "takeAddress(w!1,d!1)"))
+     (LEMMA "takeAddress_prefix" ("w" "w!1" "d" "d!1"))
+     (LEMMA "takeAddress_length" ("w" "w!1" "d" "d!1"))
+     (LEMMA "mem_treeLayer"
+      ("T" "T!1" "d" "d!1" "a" "T!1`lab(takeAddress(w!1,d!1))"))
+     (LABEL "MEM" -1) (ASSERT)
+     (SPREAD (CASE "treeLayer(T!1,d!1)(T!1`lab(takeAddress(w!1,d!1)))")
+      ((THEN
+        (GRIND :IF-MATCH ALL :EXCLUDE
+         ("treeLayer" "treeDepth" "takeAddress" "addrPrefix" "gt_valid?"
+          "is_finite")))
+       (THEN (PROP) (INST 1 "takeAddress(w!1,d!1)") (ASSERT)))))
+    NIL)
+   ((|takeAddress_prefix| FORMULA-DECL NIL |ppg_address_take| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|SimpleDependencyGraph| TYPE-EQ-DECL NIL |ppg_shearer_bdd| NIL)
+    (|dependencyGraph| CONST-DECL "SimpleDependencyGraph" |ppg_shearer_bdd|
+     NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|takeAddress_length| FORMULA-DECL NIL |ppg_address_take| NIL)
+    (|prefix_mem| FORMULA-DECL NIL |ppg_mt_descendants| NIL)
+    (|Address| TYPE-EQ-DECL NIL |ppg_address_prefix| NIL)
+    (|takeAddress| DEF-DECL "Address" |ppg_address_take| NIL)
+    (|Addr| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|GTree| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL))
+   SHOSTAK))
+ (|treeLayers_nonempty_layers| 0
+  (|treeLayers_nonempty_layers-1| NIL 4001083140
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "window_proper"
+      ("f" "LAMBDA(d:nat):treeLayer(T!1,d)" "n" "treeDepth(T!1)" "d" "0"))
+     (EXPAND "treeLayers")
+     (SPREAD (SPLIT -1)
+      ((THEN (ASSERT))
+       (THEN (SKOSIMP*) (LEMMA "treeLayer_nonempty" ("T" "T!1" "d" "k!1"))
+        (GRIND :EXCLUDE ("treeLayer" "treeDepth" "gt_valid?" "is_finite"))))))
+    NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|proper| CONST-DECL "bool" |ppg_shearer_padding| NIL)
+    (|window_proper| FORMULA-DECL NIL |ppg_shearer_windows| NIL)
+    (|Layer| TYPE-EQ-DECL NIL |ppg_shearer_sequences| NIL)
+    (|Addr| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|GTree| TYPE-EQ-DECL NIL |ppg_mt_tree| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|CertVars| TYPE-EQ-DECL NIL |ppg_bdd| NIL)
+    (|SimpleDependencyGraph| TYPE-EQ-DECL NIL |ppg_shearer_bdd| NIL)
+    (|dependencyGraph| CONST-DECL "SimpleDependencyGraph" |ppg_shearer_bdd|
+     NIL))
+   SHOSTAK)))
+

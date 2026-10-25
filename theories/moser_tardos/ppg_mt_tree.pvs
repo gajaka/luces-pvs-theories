@@ -1,0 +1,125 @@
+% Finite addresses allow the backward witness tree to grow at any vertex.
+% A new dependent event is attached below a deepest eligible vertex.
+% The root is the empty address; natural subtraction in the reverse scan
+% is truncated at zero. The label and variable types may be empty.
+%
+% Robin A. Moser and Gabor Tardos, "A constructive proof of the general
+% Lovasz Local Lemma", Section 2, Lemma 2.1.
+% https://arxiv.org/abs/0903.0544v3
+% Lean counterpart: PPGraphMoserTardosGrowing.lean.
+
+ppg_mt_tree[C, V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_core@ppg_bdd[C, V], foundations@ppg_finite_nat_bound[list[nat]],
+            foundations@ppg_real_minimum[list[nat]]
+
+  Addr: TYPE = list[nat]
+
+  v, w, v1, v2: VAR Addr
+  k, k1, k2, n, t: VAR nat
+  vars: VAR CertVars
+  a, i0: VAR C
+
+  dependent?(vars)(a, b: C): bool = dependent(vars, a, b)
+
+  neighbor_symm: LEMMA dependent?(vars)(a, i0) IMPLIES dependent?(vars)(i0, a)
+
+  snoc(v, k): Addr = append(v, cons(k, null))
+
+  snoc_inj: LEMMA
+    FORALL (v1, v2: Addr, k1, k2: nat):
+      snoc(v1, k1) = snoc(v2, k2) IMPLIES v1 = v2 AND k1 = k2
+
+  snoc_length: LEMMA length(snoc(v, k)) = length(v) + 1
+
+  reverse_snoc: LEMMA reverse(snoc(v, k)) = cons(k, reverse(v))
+
+  lastSlot(v): nat = IF null?(v) THEN 0 ELSE car(reverse(v)) ENDIF
+
+  lastSlot_snoc: LEMMA lastSlot(snoc(v, k)) = k
+
+  msub(t, n): nat = IF t <= n THEN 0 ELSE t - n ENDIF
+
+  GTree: TYPE = [# dom: finite_set[Addr], lab: [Addr -> C] #]
+
+  T: VAR GTree
+
+  gt_valid?(T): bool = T`dom(null) AND
+    (FORALL (v: Addr, k: nat): T`dom(snoc(v, k)) IMPLIES T`dom(v))
+
+  gt_singleton(i0): GTree =
+    (# dom := add(null, emptyset[Addr]), lab := LAMBDA (w: Addr): i0 #)
+
+  gt_singleton_valid: LEMMA FORALL (i0: C): gt_valid?(gt_singleton(i0))
+
+  exists_fresh_index: LEMMA
+    FORALL (T: GTree, v: Addr): EXISTS (k: nat): NOT T`dom(snoc(v, k))
+
+  fresh_index(T, v): nat = choose({k: nat | NOT T`dom(snoc(v, k))})
+
+  fresh_index_spec: LEMMA
+    FORALL (T: GTree, v: Addr): NOT T`dom(snoc(v, fresh_index(T, v)))
+
+  attach_child(T, v, a): GTree =
+    (# dom := add(snoc(v, fresh_index(T, v)), T`dom),
+       lab := LAMBDA (w: Addr):
+         IF w = snoc(v, fresh_index(T, v)) THEN a ELSE T`lab(w) ENDIF #)
+
+  attach_child_preserves_root: LEMMA
+    T`dom(null) IMPLIES attach_child(T, v, a)`dom(null)
+
+  attach_child_preserves_prefix_closed: LEMMA
+    FORALL (T: GTree, v: Addr, a: C):
+      T`dom(v) AND
+      (FORALL (w: Addr, k: nat): T`dom(snoc(w, k)) IMPLIES T`dom(w)) IMPLIES
+        FORALL (w: Addr, k: nat):
+          attach_child(T, v, a)`dom(snoc(w, k)) IMPLIES attach_child(T, v, a)`dom(w)
+
+  attach_child_preserves_valid: LEMMA
+    T`dom(v) AND gt_valid?(T) IMPLIES gt_valid?(attach_child(T, v, a))
+
+  attach_child_preserves_lab_root: LEMMA attach_child(T, v, a)`lab(null) = T`lab(null)
+
+  candidates(vars, T, a): finite_set[Addr] =
+    intersection(T`dom, {v: Addr | T`lab(v) = a OR dependent?(vars)(T`lab(v), a)})
+
+  candidates_subset_dom: LEMMA subset?(candidates(vars, T, a), T`dom)
+
+  candidates_nonempty_of_label: LEMMA
+    T`dom(v) AND T`lab(v) = a IMPLIES nonempty?(candidates(vars, T, a))
+
+  exists_max_depth_candidate: LEMMA
+    FORALL (S: finite_set[Addr]): nonempty?(S) IMPLIES
+      EXISTS (v: Addr): S(v) AND FORALL (w: Addr): S(w) IMPLIES length(w) <= length(v)
+
+  max_depth_set(S: finite_set[Addr]): set[Addr] =
+    {v: Addr | S(v) AND FORALL (w: Addr): S(w) IMPLIES length(w) <= length(v)}
+
+  NEAddrSet: TYPE = {S: finite_set[Addr] | nonempty?(S)}
+
+  max_depth_pick(S: NEAddrSet): Addr = choose(max_depth_set(S))
+
+  max_depth_pick_in: LEMMA FORALL (S: NEAddrSet): S(max_depth_pick(S))
+
+  max_depth_pick_ge: LEMMA FORALL (S: NEAddrSet, v: Addr):
+    S(v) IMPLIES length(v) <= length(max_depth_pick(S))
+
+  attach_at(vars, T, a): GTree =
+    IF nonempty?(candidates(vars, T, a))
+    THEN attach_child(T, max_depth_pick(candidates(vars, T, a)), a) ELSE T ENDIF
+
+  Clog: VAR [nat -> C]
+
+  tau_build(vars, Clog, t, n): RECURSIVE GTree =
+    IF n = 0 THEN gt_singleton(Clog(t)) ELSE
+      attach_at(vars, tau_build(vars, Clog, t, n - 1), Clog(msub(msub(t, 1), n - 1)))
+    ENDIF MEASURE n
+
+  tau_build_zero: LEMMA tau_build(vars, Clog, t, 0) = gt_singleton(Clog(t))
+
+  tau_build_step: LEMMA tau_build(vars, Clog, t, n + 1) =
+    attach_at(vars, tau_build(vars, Clog, t, n), Clog(msub(msub(t, 1), n)))
+
+  tau_C(vars, Clog, t): GTree = tau_build(vars, Clog, t, msub(t, 1))
+
+END ppg_mt_tree

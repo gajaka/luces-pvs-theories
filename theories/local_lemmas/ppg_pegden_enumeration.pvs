@@ -1,0 +1,71 @@
+% The depth-D family uses one child for each label in an independent
+% closed-neighborhood subset. Children are listed in the same canonical
+% label order as the older enumeration. Thus every new tree is an old
+% tree, and increasing the depth retains every previously listed tree.
+%
+% Wesley Pegden, "An extension of the Moser-Tardos algorithmic local
+% lemma", Theorem 1.4. https://arxiv.org/abs/1102.2853
+% Lean counterpart: the treesUpTo results in PPGraphMoserTardosPegden.lean.
+ppg_pegden_enumeration[C,V:TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_pegden_weight[C,V],foundations@ppg_finite_bind_order[finite_set[C],WTree] AS bindOrder
+  vars: VAR CertVars
+  U,S: VAR finite_set[C]
+  D,E: VAR nat
+  a,b: VAR C
+  t: VAR WTree
+  F,G: VAR [C->finite_set[WTree]]
+
+  pegdenTreesUpTo(vars,U,D,a): RECURSIVE finite_set[WTree] =
+    IF D=0 THEN singleton(roseNode(a,null))
+    ELSE enumBind.biUnion(independentSubsets(vars,U,a),LAMBDA(S:finite_set[C]):
+      rootFamily(a,S,LAMBDA(b:C):pegdenTreesUpTo(vars,U,D-1,b))) ENDIF MEASURE D
+
+  pegden_enum_zero: LEMMA pegdenTreesUpTo(vars,U,0,a)=singleton(roseNode(a,null))
+
+  pegden_enum_succ: LEMMA pegdenTreesUpTo(vars,U,D+1,a)=
+    enumBind.biUnion(independentSubsets(vars,U,a),LAMBDA(S:finite_set[C]):
+      rootFamily(a,S,LAMBDA(b:C):pegdenTreesUpTo(vars,U,D,b)))
+
+  pegden_member_succ: LEMMA pegdenTreesUpTo(vars,U,D+1,a)(t) IFF
+    EXISTS(S:finite_set[C]):independentSubsets(vars,U,a)(S) AND
+      rootFamily(a,S,LAMBDA(b:C):pegdenTreesUpTo(vars,U,D,b))(t)
+
+  pegden_enum_intro: LEMMA independentSubsets(vars,U,a)(S) AND
+    rootFamily(a,S,LAMBDA(b:C):pegdenTreesUpTo(vars,U,D,b))(t) IMPLIES
+      pegdenTreesUpTo(vars,U,D+1,a)(t)
+
+  family_property_subset: LEMMA (FORALL(b:C):subset?(F(b),G(b))) IMPLIES
+    familyProperty(S,F,LAMBDA(b:C,c:WTree):G(b)(c))
+
+  root_families_subset: LEMMA (FORALL(b:C):subset?(F(b),G(b))) IMPLIES
+    subset?(rootFamily(a,S,F),rootFamily(a,S,G))
+
+  root_indices_below: LEMMA (FORALL(b:C):subset?(F(b),G(b))) IMPLIES
+    bindOrder.familiesBelow(independentSubsets(vars,U,a),LAMBDA(S:finite_set[C]):rootFamily(a,S,F),
+      LAMBDA(S:finite_set[C]):rootFamily(a,S,G))
+
+  pegden_old_step: LEMMA (FORALL(b:C):subset?(pegdenTreesUpTo(vars,U,D,b),wtreesUpTo(vars,U,D,b))) IMPLIES
+    subset?(pegdenTreesUpTo(vars,U,D+1,a),wtreesUpTo(vars,U,D+1,a))
+
+  treesUpTo_subset: THEOREM FORALL(D:nat,vars:CertVars,U:finite_set[C]):
+    FORALL(a:C):subset?(pegdenTreesUpTo(vars,U,D,a),wtreesUpTo(vars,U,D,a))
+
+  pegden_label: LEMMA pegdenTreesUpTo(vars,U,D,a)(t) IMPLIES roseLabel(t)=a
+
+  pegden_rooted: LEMMA rooted(S,LAMBDA(b:C):pegdenTreesUpTo(vars,U,D,b))
+
+  pegden_leaf: LEMMA pegdenTreesUpTo(vars,U,D,a)(roseNode(a,null))
+
+  pegden_mono_step: LEMMA (FORALL(b:C):subset?(pegdenTreesUpTo(vars,U,D,b),pegdenTreesUpTo(vars,U,E,b))) IMPLIES
+    subset?(pegdenTreesUpTo(vars,U,D+1,a),pegdenTreesUpTo(vars,U,E+1,a))
+
+  treesUpTo_mono: THEOREM FORALL(D:nat,vars:CertVars,U:finite_set[C]):
+    FORALL(a:C):subset?(pegdenTreesUpTo(vars,U,D,a),pegdenTreesUpTo(vars,U,D+1,a))
+
+  treesUpTo_mono_le: THEOREM D<=E IMPLIES subset?(pegdenTreesUpTo(vars,U,D,a),pegdenTreesUpTo(vars,U,E,a))
+
+  treesUpTo_succ_disjoint: THEOREM enumBind.disjointFamily(independentSubsets(vars,U,a),
+    LAMBDA(S:finite_set[C]):rootFamily(a,S,LAMBDA(b:C):pegdenTreesUpTo(vars,U,D,b)))
+
+END ppg_pegden_enumeration

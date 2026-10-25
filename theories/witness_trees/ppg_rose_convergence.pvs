@@ -1,0 +1,29 @@
+% Finite-depth witness mass is bounded uniformly by the MT budget x(a).
+% The budget controls p(a) times the product of 1+x(b) over the inclusive
+% neighborhood. Induction on depth proves the bound without a probability
+% or termination premise.
+%
+% Noga Alon and Joel H. Spencer, The Probabilistic Method, 4th ed.,
+% Wiley, 2016, Section 5.7, "Moser's Fix-It Algorithm".
+% Theorem 5.7.3, equation (5.9).
+% Lean counterpart: PPGraphMoserTardosConvergence.lean.
+
+ppg_rose_convergence[C,V: TYPE]: THEORY
+BEGIN
+  IMPORTING ppg_rose_weight_sum[C,V], foundations@ppg_nonneg_order[C] AS labelOrder,
+    foundations@ppg_monoid_sum[C,nonneg_real,0,LAMBDA(a,b:nonneg_real):a+b] AS labelSums
+  vars: VAR CertVars
+  U,F: VAR finite_set[C]
+  p,x: VAR [C -> nonneg_real]
+  D: VAR nat
+  a: VAR C
+
+  budget(vars,U,p,x): bool = (FORALL(a:C):p(a)<=x(a)) AND
+    (FORALL(a:C):p(a)*indices.sum(plusNeighbors(vars,U,a),LAMBDA(b:C):1+x(b))<=x(a))
+
+  mtWeight_le: THEOREM budget(vars,U,p,x) IMPLIES mtWeight(vars,U,p,D,a)<=x(a)
+
+  sum_mtWeight_le: THEOREM budget(vars,U,p,x) IMPLIES
+    labelSums.sum(F,LAMBDA(a:C):mtWeight(vars,U,p,D,a))<=labelSums.sum(F,x)
+
+END ppg_rose_convergence
