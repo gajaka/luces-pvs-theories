@@ -1,13 +1,13 @@
 %%% rank_orientation.pvs
-%%% Rank Preservation with Orientation Reversal
+%%% Order Reversal for Finite Assignments
 %%%
-%%% Proves: a coupling with negative Spearman correlation vs identity
-%%% can have positive correlation vs reversed identity.
-%%% Rank is preserved — only orientation changes.
+%%% A strictly decreasing assignment becomes strictly increasing after
+%%% composition with reversed identity. Reversal is an involution.
 %%%
-%%% Empirical basis:
+%%% Motivating observations:
 %%%   Boot 293 (dawn): rho(T, identity) = +0.995
 %%%   Boot 298 (dusk): rho(T, identity) = -0.995, rho(T, reversed) = +0.995
+%%% The rank theorem takes strict anti-monotonicity as an explicit premise.
 %%%
 %%% Author: Dragan Stosic, 2026
 
@@ -35,25 +35,15 @@ BEGIN
     FORALL (i, j: Bin): i < j IMPLIES T(i) > T(j)
 
 %% ═══════════════════════════════════════════════════════════
-%% Empirical Axiom
-%% ═══════════════════════════════════════════════════════════
-
-  % A1: There exists an assignment that is anti-monotone vs identity
-  %     Source: Boot 298 DAY->DUSK, rho = -0.9946 vs identity
-  T_dusk: Assignment
-
-  ax_dusk_anti_monotone: AXIOM
-    anti_monotone?(T_dusk)
-
-%% ═══════════════════════════════════════════════════════════
 %% Theorem
 %% ═══════════════════════════════════════════════════════════
 
   % T1: Anti-monotone assignment is monotone with respect to reversed identity
-  %     "Rank is preserved — only orientation changes"
   thm_reversed_preserves_rank: THEOREM
-    anti_monotone?(T_dusk) IMPLIES
-    FORALL (i, j: Bin): i < j IMPLIES reversed(T_dusk(i)) < reversed(T_dusk(j))
+    FORALL (T: Assignment):
+      anti_monotone?(T) IMPLIES
+        FORALL (i, j: Bin):
+          i < j IMPLIES reversed(T(i)) < reversed(T(j))
 
   % T2: Reversed is its own inverse (involution)
   %     reversed(reversed(b)) = b for all bins

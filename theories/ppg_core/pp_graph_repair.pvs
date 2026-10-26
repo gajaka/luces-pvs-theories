@@ -92,10 +92,6 @@ BEGIN
       v /= w IMPLIES
         (repaired_invariant(v, w) = invariant_holds(w))
 
-  % Every healthy vertex is related to itself.
-  ax_rr_reflexive: AXIOM
-    FORALL (v: Vertex): invariant_holds(v) IMPLIES rr_rel(v, v)
-
 %% -----------------------------------------------------------------
 %% Route Repair
 %% -----------------------------------------------------------------
@@ -123,10 +119,13 @@ BEGIN
       repair_possible?(v) AND v /= w IMPLIES
         repaired_invariant(v, w) = invariant_holds(w)
 
-  % T3: A healthy vertex is always self-repairable (trivially)
+  % T3: Healthy self-repair requires reflexivity at the selected vertex.
+  % The pointwise implication is the h_refl premise in Lean.
   thm_healthy_self_repair: THEOREM
     FORALL (v: Vertex):
-      invariant_holds(v) IMPLIES rr_rel(v, v)
+      invariant_holds(v) AND
+      (invariant_holds(v) IMPLIES rr_rel(v, v))
+        IMPLIES rr_rel(v, v)
 
   % T4: If all vertices have at least one rr_rel neighbor with
   %     valid invariant, the graph is globally repairable

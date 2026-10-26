@@ -102,36 +102,49 @@ BEGIN
   %% Cost structure
   %% ─────────────────────────────────────────────────────────────────
 
-  % Cost function on edges (ground metric)
+  % Nonnegative edge costs. Metric laws are explicit model conditions.
   cost: [T, T -> nonneg_real]
 
-  % Cost is symmetric
-  cost_symmetric: AXIOM
-    FORALL (x, y: T): cost(x, y) = cost(y, x)
+  cost_model?(c: [T, T -> nonneg_real]): bool =
+    (FORALL (x, y: T): c(x, y) = c(y, x)) AND
+    (FORALL (x, y, z: T): c(x, z) <= c(x, y) + c(y, z)) AND
+    (FORALL (x: T): c(x, x) = 0)
 
-  % Cost satisfies triangle inequality
-  cost_triangle: AXIOM
-    FORALL (x, y, z: T): cost(x, z) <= cost(x, y) + cost(y, z)
+  cost_symmetric: LEMMA
+    cost_model?(cost) IMPLIES
+      FORALL (x, y: T): cost(x, y) = cost(y, x)
 
-  % Identity of indiscernibles (partial)
-  cost_zero: AXIOM
-    FORALL (x: T): cost(x, x) = 0
+  cost_triangle: LEMMA
+    cost_model?(cost) IMPLIES
+      FORALL (x, y, z: T): cost(x, z) <= cost(x, y) + cost(y, z)
+
+  cost_zero: LEMMA
+    cost_model?(cost) IMPLIES
+      FORALL (x: T): cost(x, x) = 0
 
   %% ─────────────────────────────────────────────────────────────────
-  %% Path cost (axiomatic)
+  %% Sum of consecutive edge costs
   %% ─────────────────────────────────────────────────────────────────
 
-  % Path cost: total cost along a path (axiomatically defined)
-  path_cost: [prewalk -> nonneg_real]
+  % The prefix ending at vertex n contains exactly n consecutive edges.
+  path_cost_prefix(pw: prewalk, n: below(length(pw))): RECURSIVE nonneg_real =
+    IF n = 0 THEN 0
+    ELSE path_cost_prefix(pw, n - 1) +
+      cost(seq(pw)(n - 1), seq(pw)(n))
+    ENDIF
+    MEASURE n
 
-  % Axiom: single vertex has zero cost
-  path_cost_unit: AXIOM
+  path_cost(pw: prewalk): nonneg_real =
+    path_cost_prefix(pw, length(pw) - 1)
+
+  path_cost_unit: LEMMA
     FORALL (pw: prewalk):
       length(pw) = 1 IMPLIES path_cost(pw) = 0
 
-  % Axiom: path cost is non-negative (from type, but stated explicitly)
-  path_cost_nonneg_ax: AXIOM
-    FORALL (pw: prewalk): path_cost(pw) >= 0
+  path_cost_two_vertices: LEMMA
+    FORALL (pw: prewalk):
+      length(pw) = 2 IMPLIES
+        path_cost(pw) = cost(seq(pw)(0), seq(pw)(1))
 
   %% ─────────────────────────────────────────────────────────────────
   %% Optimal paths and distance
@@ -159,11 +172,11 @@ BEGIN
   %% Theorems
   %% ─────────────────────────────────────────────────────────────────
 
-  % T5: Path cost is non-negative (from axiom)
+  % T5: The sum has a nonnegative return type.
   path_cost_nonneg: THEOREM
     FORALL (pw: prewalk): path_cost(pw) >= 0
 
-  % T6: Single vertex path has zero cost (from axiom)
+  % T6: A single vertex contributes no edges to the sum.
   path_cost_singleton: THEOREM
     FORALL (pw: prewalk):
       length(pw) = 1 IMPLIES path_cost(pw) = 0

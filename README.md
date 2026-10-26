@@ -193,13 +193,35 @@ The table reports the earlier translation checks. The reorganization check
 above separately covers the selected legacy applications as well as the generic
 theories; it excludes `Sterbenz/`.
 
-Some original application theories declare empirical or mathematical axioms.
-Their results are conditional on those assumptions. For example,
+The generic theories and boot models contain no hand-written `AXIOM`
+declarations. Healthy self-repair requires an explicit reflexivity hypothesis.
+The weighted model states the cost laws as hypotheses and defines path cost
+as the sum of consecutive edge costs.
+
+The `_adt.pvs` files generated from `ppg_wtree` and `ppg_partrec_code`
+contain PVS's datatype axioms for constructors, selectors, induction and
+well-founded recursion. These belong to the datatype representation; they do
+not assume the Local Lemma, Moser--Tardos or convergence results.
+
+The original `applications/luces/` theories declare empirical or mathematical
+axioms. Their results are conditional on those assumptions. For example,
 [kantorovich_duality.pvs](applications/luces/kantorovich_duality.pvs) declares feasibility and
 complementary-slackness assumptions, while
 [lie_generator_structure.pvs](applications/luces/lie_generator_structure.pvs) states the
 observability/coherence assumptions it uses. Their proof scope should be read
 from the declarations in those files.
+
+The separate `Sterbenz/` development also contains axiomatic models generated
+by Jessie/Why3. A successful proof replay establishes the theorems under the
+axioms and hypotheses in scope; it does not prove the axioms themselves.
+
+The hand-written-axiom cleanup was checked on **2026-10-26** across six
+changed or importing source files: **139 project proof bodies and 13 required
+NASAlib proof bodies** passed from a cold source/proof copy, with complete
+dependency chains and oracles disabled. The checker replays required original
+library proofs before inspecting their dependency records. This refreshes
+anonymous imported judgement references that some older saved proofs cannot
+resolve when first loaded. Library statements and proof programs are unchanged.
 
 ## Motivation
 

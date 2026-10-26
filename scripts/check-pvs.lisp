@@ -259,10 +259,16 @@
          (equal (tcc-strategy d) strategy)
          (equal input (append strategy (list nil nil))))))
 
-(defun ppg-check-required-native-originals (modules &optional native-roots)
+(defun ppg-check-required-native-originals (modules &optional native-roots refresh-native)
   ;; Recursive stock PC traversal does not add each dependency's ASSUMING TCCs.
   ;; Expand every required original as a root, retaining the Project workspace
   ;; where it was required, including that workspace's judgement fallback.
+  (when refresh-native
+    (assert (and (hash-table-p *ppg-check-native-forced*)
+                 (hash-table-p *ppg-check-native-strategy-contexts*)
+                 (hash-table-p *ppg-check-forced*)
+                 *dont-write-object-files* (not *in-checker*)
+                 (null (extra-list-oracles)))))
   (let ((originals (make-hash-table :test #'eq))
         (scopes (make-hash-table :test #'eq))
         (pending nil))
@@ -278,6 +284,20 @@
                        (push (cons d scope) pending))))))
              (walk (d scope)
                (register d scope)
+               ;; Anonymous imported judgements in old saved references may
+               ;; not resolve in a cold session. Replay the authenticated
+               ;; original before inspecting its current dependency list.
+               (when refresh-native
+                 (let* ((original (ppg-check-native-original d))
+                        (owner (gethash original originals)))
+                   (when owner
+                     (unless (or (gethash original *ppg-check-native-forced*)
+                                 (ppg-check-native-local-proved-p original))
+                       (ppg-check-force-native-original original owner))
+                     (let ((attempt (gethash original *ppg-check-native-forced*)))
+                       (when (and attempt (not (getf attempt :qed)))
+                         (error "Required external original proof failed: ~a"
+                                (ppg-check-name original)))))))
                (let* ((*dependings* nil) (*proved-dependings* nil) (*unproved-dependings* nil)
                         (*defn-dependings* nil) (*axiom-dependings* nil) (*assumption-dependings* nil)
                         (*depending-chain* nil) (*depending-cycles* nil)
@@ -286,7 +306,8 @@
                         (initial (union (union (union (refers-to d) (proof-refers-to d))
                                                        (assuming-tccs d))
                                         *possible-judgements*)))
-                   (when (member nil initial) (error "NIL root proof reference"))
+                   (when (member nil initial)
+                     (error "NIL root proof reference in ~a" (ppg-check-name d)))
                    (pc-analyze* initial)
                    (when (or (member nil *dependings*) *depending-cycles*)
                      (error "Unresolved or cyclic stock-PC closure"))
@@ -407,7 +428,7 @@
     ;; proof references; feed those roots and their retained Project scopes back
     ;; into the collector until the required originals settle.
     (multiple-value-bind (originals scopes)
-        (ppg-check-required-native-originals (ppg-check-modules))
+        (ppg-check-required-native-originals (ppg-check-modules) nil t)
       (loop for round from 1 to 64 do
         (let ((fresh nil))
           (setf (getf *ppg-check-native-counts* :required) (hash-table-count originals))
@@ -420,7 +441,7 @@
           (unless fresh (return))
           (when (= round 64) (error "Required external proof expansion did not settle"))
           (multiple-value-bind (added added-scopes)
-              (ppg-check-required-native-originals nil fresh)
+              (ppg-check-required-native-originals nil fresh t)
             (maphash
              (lambda (d owner)
                (let ((old (gethash d originals)))
