@@ -1,7 +1,7 @@
 % Monotone certification classes in a linear order are convex. Separation
-% of distinct levels makes the quotient projection injective. The statement
-% named linear_cert_le_iff_le in Lean asserts preservation of order only;
-% its name does not supply an unproved converse.
+% of distinct levels makes the quotient projection injective. The order
+% preservation lemma states only that le implies cert_le; no converse is
+% asserted without an additional separating hypothesis.
 %
 % B. A. Davey and H. A. Priestley, Introduction to Lattices and Order,
 % second edition, Cambridge University Press, 2002. Lean counterpart:
@@ -18,8 +18,6 @@ BEGIN
   d: VAR D
   t1, t2, t3: VAR Th
 
-  linear_strict_not_equiv_aux: THEOREM TRUE
-
   lt(t1, t2): bool = le(t1, t2) AND t1 /= t2
 
   linear_strict_not_equiv: THEOREM lt(t1, t2) AND fully_certified(F)(d, t2) AND
@@ -27,7 +25,7 @@ BEGIN
 
   equiv_convex: THEOREM cert_equiv(F)(t1, t3) AND le(t1, t2) AND le(t2, t3) IMPLIES cert_equiv(F)(t1, t2)
 
-  linear_cert_le_iff_le: THEOREM le(t1, t2) IMPLIES cert_le(F)(t1, t2)
+  linear_cert_le_of_le: THEOREM le(t1, t2) IMPLIES cert_le(F)(t1, t2)
 
   linear_join(t1, t2): Th = IF le(t1, t2) THEN t2 ELSE t1 ENDIF
 

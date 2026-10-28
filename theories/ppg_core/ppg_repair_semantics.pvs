@@ -1,5 +1,9 @@
 % Generic repair semantics from PPGraphRepair.lean.
 % Reachability is supplied by the model; no closure law is assumed.
+% Repair copies an already valid chosen value into one abstract storage slot.
+% The graph view evaluates the original invariant on those repaired values.
+% The predicate on State values, edges and reachability are unchanged.
+% A concrete program-state realization requires a separate refinement.
 ppg_repair_semantics[State: TYPE]: THEORY
 BEGIN
 
@@ -24,6 +28,16 @@ BEGIN
   repair_target(G)(v: {z: State | repair_possible(G, z)}): State =
     choose({w: State | repair_candidates(G, v, w)})
 
+  repair_choice(G, v): State =
+    IF repair_possible(G, v) THEN repair_target(G)(v) ELSE v ENDIF
+
+  repair_state(G, v)(w: State): State =
+    IF w = v THEN repair_choice(G, v) ELSE w ENDIF
+
+  repair_at(G, v): RepairGraph =
+    G WITH [invariant_holds :=
+      (LAMBDA (w: State): G`invariant_holds(repair_state(G, v)(w)))]
+
   route_repairable(G, x, v, y): bool =
     isolated(G, v) AND G`edges(x, v) AND G`edges(v, y) AND
     EXISTS w: repair_candidates(G, v, w) AND G`edges(x, w) AND G`edges(w, y)
@@ -38,12 +52,17 @@ BEGIN
   repair_candidates_exist: THEOREM
     repair_possible(G, v) IMPLIES EXISTS w: repair_candidates(G, v, w)
 
+  repair_restores: THEOREM
+    repair_possible(G, v) IMPLIES repair_at(G, v)`invariant_holds(v)
+
   repair_locality: THEOREM
-    v /= w AND G`invariant_holds(w) IMPLIES G`invariant_holds(w)
+    v /= w IMPLIES
+      repair_state(G, v)(w) = w AND
+      (repair_at(G, v)`invariant_holds(w) IFF G`invariant_holds(w))
 
   healthy_self_stable: THEOREM
-    G`invariant_holds(v) AND (G`invariant_holds(v) IMPLIES G`reach_rel(v, v))
-    IMPLIES G`reach_rel(v, v)
+    G`invariant_holds(v) IMPLIES
+      repair_choice(G, v) = v AND repair_at(G, v) = G
 
   route_bypass: THEOREM
     route_repairable(G, x, v, y) AND G`invariant_holds(x) AND G`invariant_holds(y)
@@ -54,10 +73,10 @@ BEGIN
       EXISTS w: repair_candidates(G, v, w)
 
   repair_no_cascade: THEOREM
-    v /= w AND G`invariant_holds(w) IMPLIES G`invariant_holds(w)
+    G`invariant_holds(w) IMPLIES repair_at(G, v)`invariant_holds(w)
 
   active_independent_of_isolated: THEOREM
-    G`edges(x, w) AND G`invariant_holds(x) AND G`invariant_holds(w)
-    IMPLIES active_edge(G, x, w)
+    v /= x AND v /= w IMPLIES
+      (active_edge(repair_at(G, v), x, w) IFF active_edge(G, x, w))
 
 END ppg_repair_semantics

@@ -303,8 +303,8 @@ BEGIN
       cert_equiv(F)(t1, t3) AND t1 <= t2 AND t2 <= t3
         IMPLIES cert_equiv(F)(t1, t2)
 
-  % In a linear order, the quotient order agrees with the original
-  linear_cert_le_iff_le: THEOREM
+  % The original order implies the certification preorder; no converse is asserted
+  linear_cert_le_of_le: THEOREM
     FORALL (F: CertFamily, t1, t2: Th): t1 <= t2 IMPLIES cert_le(F)(t1, t2)
 
   % A certificate family separates points: for any t1 < t2, some datum
@@ -319,8 +319,7 @@ BEGIN
     FORALL (F: CertFamily, t1, t2: Th):
       separating(F) AND cert_equiv(F)(t1, t2) IMPLIES t1 = t2
 
-  % Under separating, the quotient is isomorphic to Th itself — distinct
-  % representatives always land in distinct classes
+  % Under separating, the quotient projection is injective on levels.
   separating_quotient_trivial: THEOREM
     FORALL (F: CertFamily, t1, t2: Th):
       separating(F) AND quotient_mk(F)(t1) = quotient_mk(F)(t2) IMPLIES t1 = t2

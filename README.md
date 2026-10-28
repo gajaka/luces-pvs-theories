@@ -13,6 +13,15 @@ results checked in **191 of 191 modules**. Supporting PVS lemmas and
 type-correctness conditions are additional obligations and are excluded from
 those source-result counts.
 
+The 2026-10-28 theorem-scope cleanup removes the translated `THEOREM TRUE`
+placeholder and replaces four weak repair statements with before/after
+properties of an explicit local value update. A new restoration theorem keeps
+the total Lean source declaration count at 1,824. The order-preservation helper
+is now named `linear_cert_le_of_le` in both quotient developments. See the
+[theorem-scope note](docs/THEOREM_SCOPE.md) for the fixed-specification model and
+the targeted proof checks. The dated full-library results above remain the
+historical translation record.
+
 ## Directory layout
 
 The generic theories are grouped by subject. A theory keeps its original name,
