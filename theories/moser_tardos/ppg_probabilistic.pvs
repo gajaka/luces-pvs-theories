@@ -4,7 +4,11 @@
 %
 % Noga Alon and Joel H. Spencer, The Probabilistic Method, 4th ed.,
 % Wiley, 2016, Lemma 5.1.1. The measure-theoretic argument is in ppg_lll.
-% Lean counterpart: PPGraphProbabilistic.lean.
+% Lean counterpart: PPGraph/Dependency/Probabilistic.lean.
+%
+% Budget feasibility is only the numerical sufficient LLL criterion.
+% Infeasibility does not establish unsatisfiability or impossibility of repair;
+% this theory supplies neither a repair operation nor a convergence theorem.
 %
 % Author: Dragan Stosic, 2026.
 
@@ -133,19 +137,20 @@ BEGIN
             0 <= rx1 AND rx1 < 1 AND 0 <= rx2 AND rx2 < 1 AND
             rp1 <= rx1 * (1 - rx2) AND rp2 <= rx2 * (1 - rx1)
 
-  %% Section 5: Repair Classification
+  %% Section 5: Numerical Budget Classification
 
   component: VAR finite_set[C]
 
-  locally_repairable?(p, vars, component): bool =
+  lll_budget_feasible?(p, vars, component): bool =
     EXISTS (x: LLLAssignment): lll_feasible?(p, x, vars, component)
 
-  coupled_obstruction?(p, vars, component): bool =
-    NOT locally_repairable?(p, vars, component)
+  lll_budget_infeasible?(p, vars, component): bool =
+    NOT lll_budget_feasible?(p, vars, component)
 
-  repairable_or_coupled: THEOREM
+  % Classical excluded middle, not an executable feasibility test.
+  lll_budget_feasible_or_infeasible: THEOREM
     FORALL (p: [C -> real], vars: CertVars, component: finite_set[C]):
-      locally_repairable?(p, vars, component) OR
-      coupled_obstruction?(p, vars, component)
+      lll_budget_feasible?(p, vars, component) OR
+      lll_budget_infeasible?(p, vars, component)
 
 END ppg_probabilistic

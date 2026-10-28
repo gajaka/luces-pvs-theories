@@ -4,7 +4,11 @@
 %
 % Noga Alon and Joel H. Spencer, The Probabilistic Method, fourth edition,
 % Wiley, 2016, Lemma 5.1.1. The finite-product criterion is numerical here.
-% Lean counterpart: PPGraphProbabilistic.lean.
+% Lean counterpart: PPGraph/Dependency/Probabilistic.lean.
+% Budget feasibility is only the numerical sufficient LLL criterion.
+% Infeasibility does not establish unsatisfiability or impossibility of repair;
+% this theory supplies neither a repair operation nor a convergence theorem.
+%
 ppg_generic_probabilistic[C,V:TYPE]: THEORY
 BEGIN
   IMPORTING ppg_core@ppg_bdd[C,V]
@@ -55,9 +59,10 @@ BEGIN
       NOT EXISTS(x1,x2:real):0<=x1 AND x1<1 AND 0<=x2 AND x2<1 AND
         p1<=x1*(1-x2) AND p2<=x2*(1-x1)
 
-  locally_repairable(p,vars,S): bool = EXISTS(x:LLLAssignment):lll_feasible(p,x,vars,S)
+  lll_budget_feasible(p,vars,S): bool = EXISTS(x:LLLAssignment):lll_feasible(p,x,vars,S)
 
-  coupled_obstruction(p,vars,S): bool = NOT locally_repairable(p,vars,S)
+  lll_budget_infeasible(p,vars,S): bool = NOT lll_budget_feasible(p,vars,S)
 
-  repairable_or_coupled: THEOREM locally_repairable(p,vars,S) OR coupled_obstruction(p,vars,S)
+  % Classical excluded middle, not an executable feasibility test.
+  lll_budget_feasible_or_infeasible: THEOREM lll_budget_feasible(p,vars,S) OR lll_budget_infeasible(p,vars,S)
 END ppg_generic_probabilistic

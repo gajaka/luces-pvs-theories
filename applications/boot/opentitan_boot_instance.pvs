@@ -1,180 +1,111 @@
-%------------------------------------------------------------------------------
-% OpenTitan Boot Chain — Concrete Instantiation
+% A directed four-stage boot policy over explicit verification outcomes.
+% The PPG graph contains the prefix whose checks have succeeded. This
+% verifies the abstract sequencing policy, not a cryptographic implementation.
+% The legacy undirected lowrisc_boot_verification graph is not used here.
 %
-% Instantiation of lowrisc_boot_verification for the OpenTitan
-% secure boot flow: ROM --> ROM_EXT --> BL0 --> Kernel
-%
-% Concrete instantiation: the abstract pp-graph framework applied
-% directly to hardware root-of-trust verification.
-%
-% OpenTitan boot stages:
-%   ROM      - Immutable mask ROM, hardware root of trust
-%   ROM_EXT  - First mutable code, verified by ROM via signature
-%   BL0      - Owner bootloader, verified by ROM_EXT via manifest hash
-%   KERNEL   - Operating system, verified by BL0 via secure boot policy
-%
-% Each verification step is a pp-edge:
-%   - invariant_holds(verifier): verifier stage is authentic
-%   - invariant_holds(verified): verified stage passes check
-%   - rr_rel(verifier, verified): implementation refines specification
-%
-% Dependencies:
-%   - lowrisc_boot_verification[BootStage]
-%   - proof_preserving_graphs[BootStage] (via import chain)
-%   - sets_aux@rr_rel[BootStage, BootStage] (via import chain)
-%
-% Author: Dragan Stosic
-%------------------------------------------------------------------------------
+% Author: Dragan Stosic, 2026.
 
 opentitan_boot_instance: THEORY
 BEGIN
 
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Section 1: Concrete Boot Stage Type
-  %% ═══════════════════════════════════════════════════════════════════
-
-  % The four boot stages of OpenTitan
   BootStage: TYPE = {ROM, ROM_EXT, BL0, KERNEL}
 
-  IMPORTING lowrisc_boot_verification[BootStage]
+  IMPORTING ppg_core@directed_pp_graph[BootStage]
 
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Section 2: Level Assignment
-  %% ═══════════════════════════════════════════════════════════════════
+  BootChecks: TYPE = [# signature_ok: bool, hash_ok: bool, policy_ok: bool #]
 
-  % Concrete level function for OpenTitan stages
-  ot_level(s: BootStage): nat =
-    CASES s OF
-      ROM: 0,
-      ROM_EXT: 1,
-      BL0: 2,
-      KERNEL: 3
-    ENDCASES
+  checks: VAR BootChecks
+  x, y, s: VAR BootStage
+  pw: VAR Prewalk
 
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Section 3: Invariant Interpretation
-  %% ═══════════════════════════════════════════════════════════════════
+  ot_level(s): nat =
+    CASES s OF ROM: 0, ROM_EXT: 1, BL0: 2, KERNEL: 3 ENDCASES
 
-  % ROM invariant: always holds (immutable hardware)
-  % ROM_EXT invariant: ECDSA signature valid against ROM public key
-  % BL0 invariant: SHA-256 hash matches manifest signed by ROM_EXT
-  % KERNEL invariant: secure boot policy satisfied (measurements match)
-
-  % Predicate: signature verification passed
-  signature_valid: PRED[BootStage]
-
-  % Predicate: hash matches manifest
-  hash_valid: PRED[BootStage]
-
-  % Predicate: secure boot policy met
-  policy_valid: PRED[BootStage]
-
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Section 4: Concrete Invariant
-  %% ═══════════════════════════════════════════════════════════════════
-
-  % Concrete invariant: each stage has its own verification criterion
-  ot_invariant(s: BootStage): bool =
+  ot_invariant(checks, s): bool =
     CASES s OF
       ROM: TRUE,
-      ROM_EXT: signature_valid(ROM_EXT),
-      BL0: hash_valid(BL0),
-      KERNEL: policy_valid(KERNEL)
+      ROM_EXT: checks`signature_ok,
+      BL0: checks`hash_ok,
+      KERNEL: checks`policy_ok
     ENDCASES
 
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Section 5: Concrete Refinement Relation
-  %% ═══════════════════════════════════════════════════════════════════
+  % A stage is enabled only after every verification up to it has passed.
+  ot_enabled(checks, s): bool =
+    CASES s OF
+      ROM: TRUE,
+      ROM_EXT: checks`signature_ok,
+      BL0: checks`signature_ok AND checks`hash_ok,
+      KERNEL: checks`signature_ok AND checks`hash_ok AND checks`policy_ok
+    ENDCASES
 
-  % The refinement relation for boot stages:
-  % Each stage implements the specification expected by its verifier
-  % Concrete: ROM_EXT implements ROM's boot protocol spec
-  %           BL0 implements ROM_EXT's loader spec
-  %           KERNEL implements BL0's OS loading spec
-  ot_refines(x, y: BootStage): bool =
+  % This relation expresses forward stage order, not software equivalence.
+  ot_refines(x, y): bool = ot_level(x) < ot_level(y)
+
+  ot_edges(x, y): bool =
     (x = ROM AND y = ROM_EXT) OR
     (x = ROM_EXT AND y = BL0) OR
     (x = BL0 AND y = KERNEL)
 
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Section 6: Concrete Boot Graph
-  %% ═══════════════════════════════════════════════════════════════════
+  ot_graph(checks): Graph =
+    (# vertices := LAMBDA (s: BootStage): ot_enabled(checks, s),
+       edges := LAMBDA (x, y: BootStage):
+         ot_edges(x, y) AND ot_enabled(checks, x) AND ot_enabled(checks, y) #)
 
-  % The OpenTitan boot graph has exactly 3 edges:
-  %   ROM --> ROM_EXT --> BL0 --> KERNEL
-  ot_edges(x, y: BootStage): bool =
-    (x = ROM AND y = ROM_EXT) OR
-    (x = ROM_EXT AND y = BL0) OR
-    (x = BL0 AND y = KERNEL)
+  ot_full_walk: Prewalk =
+    (# length := 4,
+       seq := LAMBDA (i: below(4)):
+         IF i = 0 THEN ROM ELSIF i = 1 THEN ROM_EXT
+         ELSIF i = 2 THEN BL0 ELSE KERNEL ENDIF #)
 
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Section 7: Properties of Concrete Instance
-  %% ═══════════════════════════════════════════════════════════════════
+  ot_reachable(checks, s): bool =
+    EXISTS (pw: Prewalk): is_walk(ot_graph(checks), pw) AND
+      pw_start(pw) = ROM AND pw_end(pw) = s
 
-  % T1: Level function is strictly increasing along edges
   ot_levels_increasing: THEOREM
-    FORALL (x, y: BootStage):
-      ot_edges(x, y) IMPLIES ot_level(x) < ot_level(y)
+    ot_edges(x, y) IMPLIES ot_level(x) < ot_level(y)
 
-  % T2: Each level has exactly one stage (boot chain property)
-  ot_unique_levels: THEOREM
-    FORALL (x, y: BootStage):
-      ot_level(x) = ot_level(y) IMPLIES x = y
+  ot_unique_levels: THEOREM ot_level(x) = ot_level(y) IMPLIES x = y
 
-  % T3: ROM is the only root (level 0)
-  ot_rom_is_root: THEOREM
-    FORALL (s: BootStage):
-      ot_level(s) = 0 IMPLIES s = ROM
+  ot_rom_is_root: THEOREM ot_level(s) = 0 IMPLIES s = ROM
 
-  % T4: Every non-ROM stage has exactly one verifier
   ot_single_verifier: THEOREM
-    FORALL (y: BootStage):
-      y /= ROM IMPLIES
-        EXISTS (x: BootStage):
-          ot_edges(x, y) AND ot_level(x) + 1 = ot_level(y)
+    y /= ROM IMPLIES EXISTS (x: BootStage):
+      ot_edges(x, y) AND ot_level(x) + 1 = ot_level(y)
 
-  % T5: Refinement matches edge structure
-  ot_edges_refine: THEOREM
-    FORALL (x, y: BootStage):
-      ot_edges(x, y) IMPLIES ot_refines(x, y)
+  ot_edges_refine: THEOREM ot_edges(x, y) IMPLIES ot_refines(x, y)
 
-  % T6: No backward edges (DAG)
-  ot_no_backward: THEOREM
-    FORALL (x, y: BootStage):
-      ot_edges(x, y) IMPLIES NOT ot_edges(y, x)
+  ot_no_backward: THEOREM ot_edges(x, y) IMPLIES NOT ot_edges(y, x)
 
-  % T7: If ROM_EXT signature is invalid, BL0 and KERNEL are unreachable
-  %     (concrete instance of boot_failure_blocks)
+  ot_enabled_implies_invariant: LEMMA
+    ot_enabled(checks, s) IMPLIES ot_invariant(checks, s)
+
+  ot_graph_pp_valid: THEOREM
+    pp_valid(ot_graph(checks), ot_refines,
+      LAMBDA (s: BootStage): ot_invariant(checks, s))
+
+  ot_walk_end_enabled: LEMMA
+    is_walk(ot_graph(checks), pw) IMPLIES ot_enabled(checks, pw_end(pw))
+
+  % Failure blocks actual directed reachability, including through other stages.
   ot_signature_failure_blocks: THEOREM
-    NOT signature_valid(ROM_EXT) IMPLIES
-      NOT ot_invariant(ROM_EXT)
+    NOT checks`signature_ok IMPLIES
+      NOT ot_reachable(checks, BL0) AND NOT ot_reachable(checks, KERNEL)
 
-  % T8: If all invariants hold, the full chain is valid
   ot_full_chain_valid: THEOREM
-    signature_valid(ROM_EXT) AND hash_valid(BL0) AND policy_valid(KERNEL)
-      IMPLIES ot_invariant(ROM) AND ot_invariant(ROM_EXT) AND
-              ot_invariant(BL0) AND ot_invariant(KERNEL)
+    checks`signature_ok AND checks`hash_ok AND checks`policy_ok IMPLIES
+      pp_path(ot_graph(checks), ot_refines,
+        LAMBDA (s: BootStage): ot_invariant(checks, s), ot_full_walk)
 
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Connection to abstract theory
-  %% ═══════════════════════════════════════════════════════════════════
-  %%
-  %% The abstract lowrisc_boot_verification[BootStage] provides:
-  %%   - layered_acyclic: no cycles in the boot graph
-  %%   - boot_failure_blocks: failure halts boot
-  %%   - secure_boot_all_invariants: all reachable stages are valid
-  %%   - failed_stage_isolated: invalid stages have no edges
-  %%
-  %% These are INHERITED by this instance. The concrete theorems above
-  %% verify that our specific OpenTitan configuration satisfies the
-  %% preconditions needed to invoke the abstract guarantees.
-  %%
-  %% To complete the instantiation:
-  %%   1. Show ot_invariant = invariant_holds (interpretation)
-  %%   2. Show ot_refines implies rr_rel (interpretation)
-  %%   3. Show ot_edges defines a valid graph (TCC)
-  %%   4. Apply layered_acyclic, boot_failure_blocks, etc.
-  %%
-  %% ═══════════════════════════════════════════════════════════════════
+  ot_success_reaches_kernel: THEOREM
+    checks`signature_ok AND checks`hash_ok AND checks`policy_ok IMPLIES
+      ot_reachable(checks, KERNEL)
+
+  % Both successful and failed checks have concrete, axiom-free instances.
+  ot_success_instance: THEOREM
+    ot_reachable((# signature_ok := TRUE, hash_ok := TRUE, policy_ok := TRUE #), KERNEL)
+
+  ot_failure_instance: THEOREM
+    ot_graph((# signature_ok := FALSE, hash_ok := TRUE, policy_ok := TRUE #))`vertices(ROM) AND
+    NOT ot_reachable((# signature_ok := FALSE, hash_ok := TRUE, policy_ok := TRUE #), KERNEL)
 
 END opentitan_boot_instance

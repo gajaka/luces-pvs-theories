@@ -1,186 +1,156 @@
-%%% tangent_bundle.pvs
-%%% Wasserstein Tangent Bundle and Monge Approximation Gap
-%%%
-%%% Panaretos (2020), §2.3:
-%%%   The Wasserstein space P₂(X) admits a tangent bundle structure.
-%%%   For μ absolutely continuous and T the Brenier map μ-->ν:
-%%%     log_μ(ν) = T - Id ∈ L²(μ)        (tangent vector)
-%%%     exp_μ(v) = (Id + v)#μ             (exponential map)
-%%%     μ_t = exp_μ(t · log_μ(ν))        (geodesic = McCann interpolation)
-%%%
-%%% SCOPE: This theory formalizes the Monge/Brenier approximation layer,
-%%% not the full empirical Kantorovich coupling. The key question it
-%%% addresses is: when does the Monge exponential map suffice as a
-%%% proxy for the full Kantorovich displacement interpolation?
-%%%
-%%% Certificates backed:
-%%%   C15: Brenier differentiability (T is locally Lipschitz) — supported
-%%%   C16: Local monotonicity (T preserves order) — supported
-%%%   C17: Tangent approximation gap (DIAG) — supported as diagnostic
-%%%   C18: Barycenter separation — pending (requires barycenter theory)
-%%%
-%%% Author: Dragan Stosic, 2026
+% Finite Monge representability and interpolation diagnostics.
+%
+% A deterministic map on a finite grid cannot reach every mass vector.
+% Compatibility is defined by its actual finite pushforward.
+% Interpolation laws are explicit hypotheses, not global axioms.
+%
+% This is an endpoint and discrepancy contract, not a construction of the
+% Wasserstein tangent bundle or a proof of Brenier differentiability.
+% Background: V. M. Panaretos and Y. Zemel, An Invitation to Statistics in
+% Wasserstein Space, Springer, 2020, Sections 1.5 and 2.3.
 
-tangent_bundle: THEORY
+tangent_bundle[N: posnat]: THEORY
 BEGIN
 
-  N: posnat
-
   Index: TYPE = below(N)
-
-  % Probability measure (discrete: N-atom distribution)
   Distr: TYPE = [Index -> nonneg_real]
-
-  % W2 distance
-  W2: [Distr, Distr -> nonneg_real]
-
-  % Brenier map: optimal transport map μ --> ν
-  brenier_map: [Distr, Distr -> [Index -> Index]]
-
-  % Coupling (joint distribution)
+  Vector: TYPE = [Index -> real]
   Coupling: TYPE = [Index, Index -> nonneg_real]
+  Time: TYPE = {t: nonneg_real | t <= 1}
+  Map: TYPE = [Index -> Index]
 
-  optimal_coupling: [Distr, Distr -> Coupling]
+  prefix_sum(k: upto(N), f: [Index -> nonneg_real]): RECURSIVE nonneg_real =
+    IF k = 0 THEN 0 ELSE prefix_sum(k - 1, f) + f(k - 1) ENDIF
+    MEASURE k
 
-  % Monge fraction: how much of the coupling mass is deterministic
-  monge_fraction: [Coupling -> nonneg_real]
+  pushforward(mu: Distr, transport: Map)(j: Index): nonneg_real =
+    prefix_sum(N, LAMBDA (i: Index):
+      IF transport(i) = j THEN mu(i) ELSE 0 ENDIF)
 
-  % L1 distance between two discrete measures
-  L1_dist: [Distr, Distr -> nonneg_real]
+  Model: TYPE =
+    [# brenier: [Distr, Distr -> Map],
+       exp_map: [Distr, Vector, Time -> Distr],
+       kantorovich: [Distr, Distr, Time -> Distr],
+       coupling: [Distr, Distr -> Coupling],
+       fraction: [Coupling -> Time],
+       discrepancy: [Distr, Distr -> nonneg_real] #]
 
-%% ═══════════════════════════════════════════════════════════
-%% Tangent Space Definitions
-%% ═══════════════════════════════════════════════════════════
+  m: VAR Model
+  mu, nu, p, q: VAR Distr
+  i, j: VAR Index
+  t: VAR Time
 
-  % Log map: tangent vector from μ to ν
-  log_map(mu, nu: Distr): [Index -> real] =
-    LAMBDA (i: Index): brenier_map(mu, nu)(i) - i
+  log_map(m, mu, nu): Vector =
+    LAMBDA (i: Index): m`brenier(mu, nu)(i) - i
 
-  % Exp map (Monge): push μ along tangent vector v at parameter t
-  exp_monge: [Distr, [Index -> real], {t: real | t >= 0 AND t <= 1} -> Distr]
+  monge_compatible?(m, mu, nu): bool =
+    pushforward(mu, m`brenier(mu, nu)) = nu
 
-  % Kantorovich interpolation: uses full coupling
-  interp_kantorovich: [Distr, Distr, {t: real | t >= 0 AND t <= 1} -> Distr]
+  gap_at(m, mu, nu, t): nonneg_real =
+    m`discrepancy(m`exp_map(mu, log_map(m, mu, nu), t),
+                  m`kantorovich(mu, nu, t))
 
-  % Approximation gap: L1(exp_monge midpoint, kantorovich midpoint)
-  approx_gap(mu, nu: Distr): nonneg_real =
-    L1_dist(exp_monge(mu, log_map(mu, nu), 1/2),
-            interp_kantorovich(mu, nu, 1/2))
+  approx_gap(m, mu, nu): nonneg_real = gap_at(m, mu, nu, 1/2)
 
-%% ═══════════════════════════════════════════════════════════
-%% Axioms
-%% ═══════════════════════════════════════════════════════════
+  % Supplied functions must meet these laws. Arbitrary finite data need not
+  % admit a deterministic transport or an exact Monge roundtrip.
+  admissible_model?(m): bool =
+    (FORALL p: m`discrepancy(p, p) = 0) AND
+    (FORALL mu, nu: monge_compatible?(m, mu, nu) IMPLIES
+      m`exp_map(mu, log_map(m, mu, nu), 0) = mu AND
+      m`exp_map(mu, log_map(m, mu, nu), 1) = nu) AND
+    (FORALL mu, nu:
+      m`kantorovich(mu, nu, 0) = mu AND
+      m`kantorovich(mu, nu, 1) = nu) AND
+    (FORALL mu, nu: m`fraction(m`coupling(mu, nu)) = 1 IMPLIES
+      monge_compatible?(m, mu, nu) AND
+      (FORALL t:
+        m`exp_map(mu, log_map(m, mu, nu), t) =
+        m`kantorovich(mu, nu, t))) AND
+    (FORALL mu, nu, i, j:
+      i < j IMPLIES m`brenier(mu, nu)(i) <= m`brenier(mu, nu)(j))
 
-  % A1: L1_dist is a metric (needed for T2 and T5)
-  ax_L1_nonneg: AXIOM
-    FORALL (p, q: Distr): L1_dist(p, q) >= 0
-
-  ax_L1_identity: AXIOM
-    FORALL (p: Distr): L1_dist(p, p) = 0
-
-  ax_L1_symmetric: AXIOM
-    FORALL (p, q: Distr): L1_dist(p, q) = L1_dist(q, p)
-
-  % A2: Exp map endpoints
-  %     NOTE: This assumes Brenier map T truly pushes μ to ν.
-  %     In discrete empirical case with mass splitting, this is
-  %     the Monge APPROXIMATION, not the exact Kantorovich result.
-  ax_exp_endpoints: AXIOM
-    FORALL (mu, nu: Distr):
-      exp_monge(mu, log_map(mu, nu), 0) = mu AND
-      exp_monge(mu, log_map(mu, nu), 1) = nu
-
-  % A3: Kantorovich interpolation endpoints
-  ax_kant_endpoints: AXIOM
-    FORALL (mu, nu: Distr):
-      interp_kantorovich(mu, nu, 0) = mu AND
-      interp_kantorovich(mu, nu, 1) = nu
-
-  % A4: Kantorovich is constant-speed geodesic
-  ax_kant_constant_speed: AXIOM
-    FORALL (mu, nu: Distr, t: {t: real | t >= 0 AND t <= 1}):
-      W2(mu, interp_kantorovich(mu, nu, t)) = t * W2(mu, nu)
-
-  % A5: Pure Monge implies exp = Kantorovich
-  %     When coupling is fully deterministic (no mass splitting),
-  %     the Monge exponential map and Kantorovich interpolation coincide.
-  ax_pure_monge_equivalence: AXIOM
-    FORALL (mu, nu: Distr):
-      monge_fraction(optimal_coupling(mu, nu)) = 1
-      IMPLIES
-      FORALL (t: {t: real | t >= 0 AND t <= 1}):
-        exp_monge(mu, log_map(mu, nu), t) = interp_kantorovich(mu, nu, t)
-
-  % A6: Brenier map is non-decreasing (monotone)
-  ax_brenier_monotone: AXIOM
-    FORALL (mu, nu: Distr, i, j: Index):
-      i < j IMPLIES brenier_map(mu, nu)(i) <= brenier_map(mu, nu)(j)
-
-  % A7: Monge fraction is bounded [0,1]
-  ax_monge_bounded: AXIOM
-    FORALL (pi: Coupling):
-      monge_fraction(pi) >= 0 AND monge_fraction(pi) <= 1
-
-%% ═══════════════════════════════════════════════════════════
-%% Theorems
-%% ═══════════════════════════════════════════════════════════
-
-  % T1: Log-Exp roundtrip recovers the target
-  %     "The exponential map at t=1 reaches the destination."
-  %     Proof: direct from A2 (second conjunct).
   thm_log_exp_roundtrip: THEOREM
-    FORALL (mu, nu: Distr):
-      exp_monge(mu, log_map(mu, nu), 1) = nu
+    admissible_model?(m) AND monge_compatible?(m, mu, nu) IMPLIES
+      m`exp_map(mu, log_map(m, mu, nu), 1) = nu
 
-  % T2: Zero gap at endpoints (t=0 and t=1)
-  %     Both methods produce the same measure at boundary.
-  %     Proof: A2 + A3 + ax_L1_identity.
   thm_gap_zero_at_endpoints: THEOREM
-    FORALL (mu, nu: Distr):
-      L1_dist(exp_monge(mu, log_map(mu, nu), 0),
-              interp_kantorovich(mu, nu, 0)) = 0
-      AND
-      L1_dist(exp_monge(mu, log_map(mu, nu), 1),
-              interp_kantorovich(mu, nu, 1)) = 0
+    admissible_model?(m) AND monge_compatible?(m, mu, nu) IMPLIES
+      gap_at(m, mu, nu, 0) = 0 AND gap_at(m, mu, nu, 1) = 0
 
-  % T3: Pure Monge implies zero approximation gap at ALL t
-  %     "If coupling is deterministic, Monge exp_map IS the geodesic."
-  %     This is the key theorem for Paper 4: when can the controller
-  %     use cheap Monge lookup instead of full Kantorovich?
-  %     Proof: A5 + ax_L1_identity.
+  % Pure transport gives equality at every parameter, not merely the midpoint.
   thm_pure_monge_zero_gap: THEOREM
-    FORALL (mu, nu: Distr):
-      monge_fraction(optimal_coupling(mu, nu)) = 1
-      IMPLIES approx_gap(mu, nu) = 0
+    admissible_model?(m) AND m`fraction(m`coupling(mu, nu)) = 1 IMPLIES
+      gap_at(m, mu, nu, t) = 0
 
-  % T4: Local monotonicity of Brenier map (Panaretos Lemma 1.7.10)
-  %     "Consecutive source points map to non-decreasing targets."
-  %     Proof: direct from A6.
   thm_local_monotonicity: THEOREM
-    FORALL (mu, nu: Distr, i: Index):
-      i + 1 < N IMPLIES
-      brenier_map(mu, nu)(i) <= brenier_map(mu, nu)(i + 1)
+    admissible_model?(m) AND i + 1 < N IMPLIES
+      m`brenier(mu, nu)(i) <= m`brenier(mu, nu)(i + 1)
 
-  % T5: Approximation gap is non-negative
-  %     Proof: from ax_L1_nonneg (L1 is a metric).
-  thm_gap_nonneg: THEOREM
-    FORALL (mu, nu: Distr):
-      approx_gap(mu, nu) >= 0
+  thm_gap_nonneg: THEOREM approx_gap(m, mu, nu) >= 0
 
-  % T6: Contrapositive of T3 — nonzero gap implies non-pure Monge
-  %     "If we observe gap > 0, the coupling has mass splitting."
-  %     This is the formal backing for C17 DIAG interpretation:
-  %     measured gap > 0 certifies that monge_fraction < 1.
-  %
-  %     Proof chain:
-  %       (1) T3: monge_fraction = 1 ⟹ approx_gap = 0
-  %       (2) Contrapositive: approx_gap ≠ 0 ⟹ monge_fraction ≠ 1
-  %       (3) approx_gap > 0 ⟹ approx_gap ≠ 0  [from T5: gap ≥ 0]
-  %       (4) monge_fraction ≠ 1 ⟹ monge_fraction < 1  [from A7: mf ≤ 1]
-  %       (5) Chain (3)-->(2)-->(4): approx_gap > 0 ⟹ monge_fraction < 1  ∎
   thm_gap_certifies_splitting: THEOREM
-    FORALL (mu, nu: Distr):
-      approx_gap(mu, nu) > 0
-      IMPLIES monge_fraction(optimal_coupling(mu, nu)) < 1
+    admissible_model?(m) AND approx_gap(m, mu, nu) > 0 IMPLIES
+      m`fraction(m`coupling(mu, nu)) < 1
 
 END tangent_bundle
+
+% A fully defined one-atom model establishes that the explicit law package is
+% inhabited. Unequal mass vectors are not Monge-compatible on this grid.
+% The non-pure positive-gap example prevents an all-zero diagnostic witness.
+tangent_bundle_witness: THEORY
+BEGIN
+
+  IMPORTING tangent_bundle[1]
+
+  identity_map(mu, nu: Distr)(i: Index): Index = i
+
+  stationary_exp(mu: Distr, v: Vector, t: Time): Distr = mu
+
+  affine_interpolation(mu, nu: Distr, t: Time)(i: Index): nonneg_real =
+    (1 - t) * mu(i) + t * nu(i)
+
+  zero_coupling(mu, nu: Distr)(i, j: Index): nonneg_real = 0
+
+  nonpure_fraction(pi: Coupling): Time = 0
+
+  scalar_discrepancy(p, q: Distr): nonneg_real = abs(p(0) - q(0))
+
+  witness: Model =
+    (# brenier := identity_map,
+       exp_map := stationary_exp,
+       kantorovich := affine_interpolation,
+       coupling := zero_coupling,
+       fraction := nonpure_fraction,
+       discrepancy := scalar_discrepancy #)
+
+  zero_mass: Distr = LAMBDA (i: Index): 0
+
+  unit_mass: Distr = LAMBDA (i: Index): 1
+
+  witness_pushforward: THEOREM
+    FORALL (mu, nu: Distr): pushforward(mu, identity_map(mu, nu)) = mu
+
+  witness_admissible: THEOREM admissible_model?(witness)
+
+  witness_compatible: THEOREM monge_compatible?(witness, unit_mass, unit_mass)
+
+  witness_nonrepresentable: THEOREM
+    NOT monge_compatible?(witness, zero_mass, unit_mass)
+
+  witness_positive_gap: THEOREM
+    approx_gap(witness, zero_mass, unit_mass) = 1/2 AND
+    witness`fraction(witness`coupling(zero_mass, unit_mass)) = 0
+
+  % Regression for the removed universal endpoint assumption: the same
+  % source and finite log cannot reconstruct two unequal target masses.
+  witness_log_collision: THEOREM
+    log_map(witness, zero_mass, zero_mass) =
+      log_map(witness, zero_mass, unit_mass)
+
+  witness_roundtrip_conflict: THEOREM
+    FORALL (E: [Distr, Vector, Time -> Distr]):
+      NOT (E(zero_mass, log_map(witness, zero_mass, zero_mass), 1) = zero_mass AND
+           E(zero_mass, log_map(witness, zero_mass, unit_mass), 1) = unit_mass)
+
+END tangent_bundle_witness

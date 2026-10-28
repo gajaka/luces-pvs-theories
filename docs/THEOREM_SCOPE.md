@@ -83,3 +83,110 @@ between runs. The original quotient check needs both the installed `nasalib`
 and `lib` roots on `PVS_LIBRARY_PATH`, so the isolated runner can copy the
 required original `finite_sets` proof inputs. No installed library or runner
 was changed for these checks.
+
+## Structural and application corrections
+
+The later 2026-10-28 changes address the structural gaps separately from the
+first placeholder cleanup. The current Lean inventory is 1,842 results in 192
+modules. This does not relabel the dated full PVS translation ledger as a replay
+of every later extension.
+
+| Area | Established connection and assumptions |
+| --- | --- |
+| Certification and dependency | `ppg_certification_dependency` uses the actual finite family predicates. Full-family footprints include passing certificates; locality, a frame outside the changed component and a full component post-check imply preservation, strict blocker reduction and the `valid_repair` contract. A finite checked plan covering initial blockers certifies the original family at the fixed level. |
+| Meta refinement | `ppg_refinement_meta` identifies its induced relation with the core RR and constructs compatibility from base-relation inclusion with unchanged abstraction/concretization. The original accessors remain elementary structural laws. |
+| Selection and quotient | The generic selection graph descends the invariant and RR to equivalence classes, then proves the shared categorical morphism and quotient predicates. Noncollapse and descent are explicit hypotheses. The specification bridge retains edge-or-collapse in general and gives a categorical quotient on certified subgraphs under noncollapse. |
+| Operational MT repair | `ppg_mt_topology_bridge` connects the actual constant-log trajectory to finite directed reachability when each primitive resampling is an admitted edge. Its intermediate states need not satisfy the target, so the recovery path is not a certified PPG walk. |
+
+PVS dependency vertices merge repeated identical certificate predicates through
+`listSet`. Lean indexes individual list positions. No isomorphism is claimed
+when duplicate positions are assigned different footprints. Neither version
+infers locality from a footprint declaration or synthesizes the post-checked
+repair. The state-repair bridge derives its preservation obligation; the
+unchanged graph-extension helpers in `SelfAssessment` still follow from their
+fixed-predicate definitions.
+
+The general MT witness-budget expectation theorem uses product-table random
+initialization. A constant-log existence proof for an arbitrary start does not
+establish a probability or the same expected-work bound for that start. The
+separate fixed-start finite-potential results retain their explicit hypotheses.
+A component-preservation statement requires the chosen log to stay within that
+component. Numerical LLL budget infeasibility excludes a sufficient criterion;
+it is not semantic impossibility of repair. Both numerical presentations now use
+`lll_budget_feasible`, `lll_budget_infeasible` and
+`lll_budget_feasible_or_infeasible` (with `?` on the earlier presentation's
+boolean predicate names). The dichotomy is classical excluded middle, without
+a decision procedure. The original abstract
+`mtRepairGraph` keeps reachability independent of its supplied edges; the new
+operational graph supplies the explicit edge connection.
+
+### Application contracts
+
+- `tangent_bundle` defines the actual finite pushforward and restricts endpoint
+  reconstruction to representable pairs. Its law package is an explicit
+  hypothesis, with a fully defined one-atom witness, a positive discrepancy
+  example and a regression proving that the removed universal reconstruction
+  condition conflicts with finite log collisions. It does not prove general
+  Brenier differentiability or construct a Wasserstein tangent bundle.
+- `transport_ppg` uses snapshots with a fixed provenance epoch, measured
+  certificate fields and an actual record update. A valid candidate restores
+  its target and preserves all already certified edges, hence any fixed
+  protected family. Same-epoch RR is proved an equivalence. A concrete repair
+  witnesses a PPG edge; recursive regime paths distinguish surviving prefixes
+  from unreachable destinations after a cycle edge fails. Raw transport data
+  extraction and a Spearman implementation remain separate obligations.
+- `unbalanced_regime` replaces its twenty-five global axioms with an explicit
+  numerical observation record, weighted deviation and a checked calibration
+  predicate. Classification inequalities and nonvacuous calibrated examples
+  are derived arithmetically. The reversal/coherence implication requires an
+  explicit observation-consistency test; it is not an empirical physical law.
+- `opentitan_boot_instance` uses the shared directed graph with four concrete
+  stages and signature/hash/policy input checks. It proves graph validity, an
+  actual successful walk and loss of later-stage reachability on signature
+  failure. A new theorem in `lowrisc_boot_verification` proves that the legacy
+  undirected strict-layer predicate forces an empty edge set. That interface
+  is retained as legacy material, with its limitation documented.
+
+These revised application theories contain no hand-written `AXIOM`
+declarations. Other LUCES application theories keep their stated assumptions;
+this change does not establish an unconditional geometric, physical,
+cryptographic or firmware correctness result for them.
+
+### Checks of the clean publication candidate
+
+The corrected theories are checked with the unchanged public `scripts/check.py`
+runner, using isolated cold source/proof copies, oracles disabled, a 6,144 MiB
+heap and one worker per selected file. The candidate excludes unrelated local
+proof alternatives and private translation artifacts. Counts below include
+imported dependencies and TCCs; runs can overlap and must not be added as a count
+of distinct source theorems. All twelve selected runs passed with zero
+unfinished bodies and complete dependency chains on 2026-10-28.
+
+| Selected file | Project proof bodies | Required Native bodies |
+| --- | ---: | ---: |
+| `theories/ppg_core/ppg_refinement_meta.pvs` | 15 | 0 |
+| `theories/certification/ppg_selection_quotient_graph.pvs` | 61 | 0 |
+| `theories/certification/ppg_list_quotient_bridge.pvs` | 82 | 0 |
+| `theories/certification/ppg_certification_dependency.pvs` | 133 | 0 |
+| `theories/moser_tardos/ppg_mt_topology_bridge.pvs` | 103 | 0 |
+| `theories/moser_tardos/ppg_probabilistic.pvs` | 11 | 23 |
+| `theories/local_lemmas/ppg_generic_probabilistic.pvs` | 27 | 0 |
+| `applications/luces/tangent_bundle.pvs` | 18 | 0 |
+| `applications/luces/transport_ppg.pvs` | 42 | 0 |
+| `applications/luces/unbalanced_regime.pvs` | 15 | 0 |
+| `applications/boot/opentitan_boot_instance.pvs` | 41 | 0 |
+| `applications/boot/lowrisc_boot_verification.pvs` | 59 | 14 |
+
+For example, with the installed NASAlib and bundled `lib` directories on
+`PVS_LIBRARY_PATH`:
+
+```sh
+python3 scripts/check.py \
+  --file theories/certification/ppg_certification_dependency.pvs \
+  --jobs 1 --heap-mib 6144 --timeout 60 --wall-timeout 1200
+```
+
+The shared categorical theory is replayed through the quotient checks. Edits in
+`cert_selection.pvs` and `cert_quotient_bridge.pvs` only clarify the scope of their
+existing weaker projection predicates. These scoped checks do not replace the
+dated full-library replay record.

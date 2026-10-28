@@ -1,0 +1,109 @@
+% The dependency vertices are actual predicates from the finite CertFamily list.
+% listSet merges repeated identical predicates while preserving membership and
+% full certification. This is not an assertion that graphs with independently
+% chosen footprints for duplicate list positions are isomorphic.
+%
+% The tracked footprint includes passing certificates as well as blockers.
+% Locality concerns the same predicates evaluated at one unchanged level.
+% Every changed component is checked in full after repair; outside it, the
+% proven dependency-frame rule preserves all previously passing predicates.
+% A checked finite plan covering the original blockers establishes the original
+% family contract. Repair existence and locality remain explicit obligations.
+%
+% Lean counterpart: PPGraph.Integration.CertificationDependency.
+
+ppg_certification_dependency[V, Value, Th: TYPE, le: (partial_order?[Th])]: THEORY
+BEGIN
+
+  IMPORTING ppg_list_blocking[[V -> Value], Th, le],
+    foundations@ppg_list_sets[Certificate],
+    ppg_core@ppg_bdd_locality[Certificate, V, Value],
+    ppg_generic_self_assessment[Certificate, [V -> Value]]
+
+  Data: TYPE = [V -> Value]
+
+  F: VAR CertFamily
+  c, q: VAR Certificate
+  t: VAR Th
+  before, after, d: VAR Data
+  vars: VAR CertVars
+  repair: VAR [Certificate, Data -> Data]
+  plan: VAR list[Certificate]
+
+  tracked(F): finite_set[Certificate] = listSet(F)
+
+  % Untracked predicates are constantly false in this evaluator, so Local
+  % imposes locality only on actual family members.
+  family_sat(F, t)(c, d): bool = member(c, F) AND c(d, t)
+
+  FamilyLocal(F, vars, t): bool = Local(vars, family_sat(F, t))
+
+  failing(F, t, d): finite_set[Certificate] =
+    intersection(tracked(F), {c: Certificate | NOT c(d, t)})
+
+  ComponentChecked(F, vars, t, c, before, after): bool =
+    tracked(F)(c) AND
+    (FORALL (v: V): NOT componentFootprint(vars, tracked(F), c)(v)
+      IMPLIES before(v) = after(v)) AND
+    (FORALL (q: Certificate): compOf(vars, tracked(F), c)(q) IMPLIES q(after, t))
+
+  tracked_member: LEMMA tracked(F)(c) IFF member(c, F)
+
+  fully_certified_iff_all: THEOREM
+    fully_certified(F)(d, t) IFF
+      (FORALL (c: Certificate): tracked(F)(c) IMPLIES family_sat(F, t)(c, d))
+
+  blocking_set_eq_failing: THEOREM failing(F, t, d) = blocking_set(F, d, t)
+
+  fully_certified_iff_failing_empty: THEOREM
+    fully_certified(F)(d, t) IFF failing(F, t, d) = emptyset[Certificate]
+
+  component_repair_preserves: THEOREM
+    FamilyLocal(F, vars, t) AND ComponentChecked(F, vars, t, c, before, after)
+      IMPLIES FORALL (q: Certificate): member(q, F) AND q(before, t) IMPLIES q(after, t)
+
+  component_repair_valid_repair: THEOREM
+    FamilyLocal(F, vars, t) AND ComponentChecked(F, vars, t, c, before, repair(c, before))
+      IMPLIES valid_repair(LAMBDA (d: Data, q: Certificate): repair(q, d),
+        LAMBDA (d: Data, q: Certificate): family_sat(F, t)(q, d), before, c)
+
+  % A blocker remaining after the check lies outside the repaired component.
+  component_repair_failing_outside: LEMMA
+    ComponentChecked(F, vars, t, c, before, after) AND failing(F, t, after)(q)
+      IMPLIES NOT SameComponent(vars, tracked(F))(c, q)
+
+  component_repair_failing_subset: THEOREM
+    FamilyLocal(F, vars, t) AND ComponentChecked(F, vars, t, c, before, after)
+      IMPLIES subset?(failing(F, t, after), failing(F, t, before))
+
+  component_repair_strict_progress: THEOREM
+    FamilyLocal(F, vars, t) AND ComponentChecked(F, vars, t, c, before, after) AND
+    failing(F, t, before)(c) IMPLIES
+      strict_subset?(failing(F, t, after), failing(F, t, before))
+
+  component_repair_certifies: THEOREM
+    FamilyLocal(F, vars, t) AND ComponentChecked(F, vars, t, c, before, after) AND
+    (FORALL (q: Certificate): failing(F, t, before)(q)
+      IMPLIES SameComponent(vars, tracked(F))(c, q))
+      IMPLIES fully_certified(F)(after, t)
+
+  run(repair, before, plan): RECURSIVE Data =
+    CASES plan OF
+      null: before,
+      cons(c, rest): run(repair, repair(c, before), rest)
+    ENDCASES MEASURE length(plan)
+
+  PlanChecked(F, vars, t, repair, before, plan): RECURSIVE bool =
+    CASES plan OF
+      null: TRUE,
+      cons(c, rest): ComponentChecked(F, vars, t, c, before, repair(c, before)) AND
+        PlanChecked(F, vars, t, repair, repair(c, before), rest)
+    ENDCASES MEASURE length(plan)
+
+  checked_plan_certifies: THEOREM
+    FamilyLocal(F, vars, t) AND PlanChecked(F, vars, t, repair, before, plan) AND
+    (FORALL (q: Certificate): failing(F, t, before)(q) IMPLIES
+      EXISTS (c: Certificate): member(c, plan) AND SameComponent(vars, tracked(F))(c, q))
+      IMPLIES fully_certified(F)(run(repair, before, plan), t)
+
+END ppg_certification_dependency

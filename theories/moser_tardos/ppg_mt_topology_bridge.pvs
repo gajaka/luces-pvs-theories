@@ -1,0 +1,66 @@
+% The operational graph admits primitive resamplings of violated events.
+% Its reach relation is the existing inductive finite closure of its edges.
+% A constant-table trajectory follows those edges until its first good state;
+% intermediate states may be bad, so the path is not a certified pp-walk.
+%
+% A concrete graph must prove primitive-step compatibility. The canonical
+% resampling graph discharges it directly. A good target is explicit here;
+% ppg_mt_budget_repair separately derives such targets from its actual native
+% probability-law hypotheses. The random-initialization sum-of-budgets bound
+% is not a bound for every fixed initial state.
+%
+% Lean counterpart: the directed operational bridge in
+% PPGraph.Integration.MoserTardosRepair.
+
+ppg_mt_topology_bridge[C, V, Value: TYPE, domain: [V -> set[Value]],
+  universe: {U: finite_set[V] | FORALL (v: V): U(v)}]: THEORY
+BEGIN
+
+  IMPORTING ppg_mt_constant_log[C, V, Value, domain, universe],
+    ppg_mt_reach[C, V, Value, domain], ppg_core@ppg_reach_algebra[MTState]
+
+  vars: VAR CertVars
+  bad: VAR [C, MTState -> bool]
+  fallback, c: VAR C
+  enumeration: VAR list[C]
+  initial, s, z, fresh, w: VAR MTState
+  edges: VAR [MTState, MTState -> bool]
+  t, k: VAR nat
+
+  mtResampleEdge(vars, bad)(s, w): bool =
+    EXISTS (c: C, fresh: MTState): bad(c, s) AND w = resample(vars(c), s, fresh)
+
+  MTStepRespected(vars, bad, edges): bool =
+    FORALL (s, fresh: MTState, c: C): bad(c, s) IMPLIES edges(s, resample(vars(c), s, fresh))
+
+  mtEdgeRepairGraph(bad, edges): RepairGraph =
+    (# edges := edges, reach_rel := Reach(edges),
+       invariant_holds := LAMBDA (s: MTState): MTGood(bad, s) #)
+
+  canonical_step_respected: LEMMA MTStepRespected(vars, bad, mtResampleEdge(vars, bad))
+
+  % The disjunction stops the path argument as soon as success has occurred.
+  % It never needs to justify the total trajectory's later fallback steps.
+  constantLog_path_or_good: LEMMA
+    mt_wf(vars, bad) AND completeEnumeration(enumeration) AND MTStepRespected(vars, bad, edges)
+    IMPLIES
+      Reach(edges)(initial, randTraj(vars, bad, fallback, enumeration, initial, constantLog(z), t)) OR
+      EXISTS (k: nat): k < t AND
+        Reach(edges)(initial, randTraj(vars, bad, fallback, enumeration, initial, constantLog(z), k)) AND
+        MTGood(bad, randTraj(vars, bad, fallback, enumeration, initial, constantLog(z), k))
+
+  exists_edgeReach_good_of_good_target: THEOREM
+    mt_wf(vars, bad) AND completeEnumeration(enumeration) AND MTStepRespected(vars, bad, edges) AND
+    MTGood(bad, z) IMPLIES EXISTS (t: nat):
+      Reach(edges)(initial, randTraj(vars, bad, fallback, enumeration, initial, constantLog(z), t)) AND
+      MTGood(bad, randTraj(vars, bad, fallback, enumeration, initial, constantLog(z), t))
+
+  mtEdgeRepairGraph_globally_repairable_of_good_target: THEOREM
+    mt_wf(vars, bad) AND completeEnumeration(enumeration) AND MTStepRespected(vars, bad, edges) AND
+    MTGood(bad, z) IMPLIES globally_repairable(mtEdgeRepairGraph(bad, edges))
+
+  mtResampleRepairGraph_globally_repairable_of_good_target: THEOREM
+    mt_wf(vars, bad) AND completeEnumeration(enumeration) AND MTGood(bad, z)
+    IMPLIES globally_repairable(mtEdgeRepairGraph(bad, mtResampleEdge(vars, bad)))
+
+END ppg_mt_topology_bridge

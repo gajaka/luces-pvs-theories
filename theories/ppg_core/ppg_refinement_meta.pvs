@@ -2,9 +2,15 @@
 % pairs. Compatibility includes every pair related by the source in the
 % target relation. Compatible meta-edges therefore preserve correctness.
 %
-% Lean counterpart: PPGraphMeta.lean, theorems T1--T10.
+% The meta relation is connected to the core RR definition below.
+% Keeping the maps fixed and extending the base equivalence supplies a
+% sufficient construction of compatibility.
+%
+% Lean counterpart: PPGraph/Core/Meta.lean.
 ppg_refinement_meta[T:TYPE]: THEORY
 BEGIN
+  IMPORTING ppg_refinement[T, T]
+
   EquivRel: TYPE = {R:[T,T->bool]|
     (FORALL(x:T):R(x,x)) AND
     (FORALL(x,y:T):R(x,y) IMPLIES R(y,x)) AND
@@ -22,6 +28,10 @@ BEGIN
     (cfg`le(cfg`g_con(y),x) AND cfg`le(cfg`f_abs(x),cfg`f_abs(x))) OR
     (cfg`le(cfg`g_con(y),cfg`g_con(y)) AND cfg`le(cfg`f_abs(x),y))
 
+  rr_of_iff_rr_rel_hom: THEOREM
+    rr_of(cfg)(x, y) IFF
+      RR(cfg`le, cfg`le, cfg`f_abs, cfg`g_con)(x, y)
+
   config_valid(cfg): bool =
     (FORALL(y:T):cfg`le(cfg`g_con(y),cfg`g_con(y))) AND
     (FORALL(x:T):cfg`le(cfg`f_abs(x),cfg`f_abs(x))) AND
@@ -29,6 +39,11 @@ BEGIN
 
   configs_compatible(cfg1,cfg2): bool =
     FORALL(x,y:T):rr_of(cfg1)(x,y) IMPLIES rr_of(cfg2)(x,y)
+
+  configs_compatible_of_rel_inclusion: THEOREM
+    (FORALL (x, y: T): cfg1`le(x, y) IMPLIES cfg2`le(x, y)) AND
+    cfg1`f_abs = cfg2`f_abs AND cfg1`g_con = cfg2`g_con IMPLIES
+      configs_compatible(cfg1, cfg2)
 
   meta_pp_edge(cfg1,cfg2): bool =
     cfg1/=cfg2 AND config_valid(cfg1) AND config_valid(cfg2) AND

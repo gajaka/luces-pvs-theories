@@ -71,6 +71,13 @@ BEGIN
     morphism(f, source, target, rel_T, pred_T, rel_U, pred_U) AND
     (FORALL (x, y: T): f(x) = f(y) IMPLIES x = y)
 
+  % Explicit graph arguments also make quotient proofs reusable by adapters.
+  quotient(f: [T -> U], source: Graph_T, target: Graph_U,
+           rel_T: [T, T -> bool], pred_T: [T -> bool],
+           rel_U: [U, U -> bool], pred_U: [U -> bool]): bool =
+    morphism(f, source, target, rel_T, pred_T, rel_U, pred_U) AND
+    (FORALL (u: U): EXISTS (x: T): f(x) = u)
+
   % The original interface remains an instance with fixed graph data.
   pp_morphism?(f: [T -> U]): bool =
     morphism(f, G1, G2, rr_T, inv_T, rr_U, inv_U)
@@ -136,5 +143,9 @@ BEGIN
   embedding_agrees: LEMMA
     FORALL (f: [T -> U]): pp_embedding?(f) =
       embedding(f, G1, G2, rr_T, inv_T, rr_U, inv_U)
+
+  quotient_agrees: LEMMA
+    FORALL (f: [T -> U]): pp_quotient?(f) =
+      quotient(f, G1, G2, rr_T, inv_T, rr_U, inv_U)
 
 END categorical_pp_graphs

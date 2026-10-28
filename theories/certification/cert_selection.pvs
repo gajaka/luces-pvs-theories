@@ -16,6 +16,10 @@
 %   - finest_graph is a bespoke local record (matching
 %     directed_pp_graph.pvs's field names but not literally typed via
 %     that theory's Graph subtype).
+%   - The historical projection helpers below state ordinary edge
+%     preservation. The shared categorical morphism and quotient, with
+%     descended invariant and refinement relation, are proved separately
+%     in ppg_selection_quotient_graph.pvs.
 %   - finset_le uses REVERSED-inclusion on finite_set[MorphPair],
 %     supplied directly as the <= parameter to parametric_certification.
 %
@@ -257,12 +261,12 @@ BEGIN
         IMPLIES inv(u2)
 
   %% ═══════════════════════════════════════════════════════════════════
-  %% Section 7: Bridge to pp_quotient (PPGraphCategorical)
+  %% Section 7: Ordinary Graph Projection Helpers
   %% ═══════════════════════════════════════════════════════════════════
 
   % Edges separate classes: if there is an edge between x and y, they
   % are NOT in the same finest class. This is the condition under which
-  % the projection behaves like a pp_morphism.
+  % the projection preserves ordinary graph edges.
   edges_separate_classes(F: MorphFamily, G: Graph): bool =
     FORALL (u1, u2: U): G`edges(u1, u2) IMPLIES NOT finest_equiv(F)(u1, u2)
 
@@ -277,7 +281,8 @@ BEGIN
       edges_separate_classes(F, G) AND G`edges(u1, u2)
         IMPLIES finest_graph(F, G`edges)`edges(finest_mk(F)(u1), finest_mk(F)(u2))
 
-  % Under edges_sep
+  % Historical API name: this statement preserves ordinary graph edges.
+  % It does not include the target pp_edge of categorical_pp_graphs.morphism.
   proj_is_pp_morphism: THEOREM
     FORALL (F: MorphFamily, G: Graph, rr_rel: [U, U -> bool], inv: [U -> bool]):
       pp_valid(G, rr_rel, inv) AND edges_separate_classes(F, G) AND
@@ -287,8 +292,9 @@ BEGIN
         G`edges(u1, u2) AND pp_edge(rr_rel, inv, u1, u2)
           IMPLIES finest_graph(F, G`edges)`edges(finest_mk(F)(u1), finest_mk(F)(u2)))
 
-  % The projection gives a pp_quotient in the categorical sense:
-  % surjective, edge-structure preserving
+  % Historical API name: this proves surjectivity and ordinary edge
+  % preservation. The categorical quotient is established in
+  % ppg_selection_quotient_graph with the descended predicates.
   proj_is_pp_quotient: THEOREM
     FORALL (F: MorphFamily, G: Graph, rr_rel: [U, U -> bool], inv: [U -> bool]):
       pp_valid(G, rr_rel, inv) AND edges_separate_classes(F, G)

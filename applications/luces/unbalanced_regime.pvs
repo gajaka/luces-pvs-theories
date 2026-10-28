@@ -1,308 +1,123 @@
+% Numerical classification of measured transport observations.
+% Calibration is a check on positive weights and numerical thresholds.
+% No empirical implication is introduced as an AXIOM. Geometry, sensor
+% extraction and agreement with physical measurements require separate proofs.
+%
+% Author: Dragan Stosic, 2026.
+
 unbalanced_regime: THEORY
 BEGIN
 
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Unbalanced Optimal Transport Regime Classification
-  %% ═══════════════════════════════════════════════════════════════════
-  %%
-  %% Villani (2009), Ch.17, Theorem 17.15:
-  %%   Displacement convexity of entropy on R^n (McCann 1997).
-  %%   Deviation from convexity bound indicates non-geodesic path.
-  %%
-  %% Extends lie_generator_structure with source/sink dynamics and
-  %% a deviation functional that classifies transport paths into
-  %% balanced, transitional, and unbalanced regimes.
-  %%
-  %% Physical interpretation:
-  %%   - Balanced: stable OT, near-geodesic, low curvature (post-fix dawn)
-  %%   - Transitional: moderate deviations, partial coherence (mixed weather)
-  %%   - Unbalanced: source/sink dominated, high curvature (pre-fix, dusk)
-  %%
-  %% Connection to existing certificates:
-  %%   C8  (near-optimality) FAIL <--> unbalanced regime (excess > threshold)
-  %%   C10 (displacement concavity) FAIL <--> source-dominated (dawn)
-  %%   C20 (coherence) FAIL <--> high curvature forcing incoherence
-  %%   C22 (tangent reversal) FAIL <--> shape_direction_reversal
-  %%
-  %% Connection to existing PVS theories:
-  %%   lie_generator_structure: T10 coherence characterization
-  %%   lie_pp_connection: curvature-coherence inverse law
-  %%   entropy_along_geodesic: entropy production bounds
-  %%   velocity_asymmetry: dawn (source) vs dusk (sink)
-  %%
-  %% Empirical verification: cert_runner on Paper3 Final Dataset (8 logs)
-  %% ═══════════════════════════════════════════════════════════════════
+  Observation: TYPE =
+    [# curvature: nonneg_real, coherent: bool, reversal: bool,
+       source_strength: nonneg_real, sink_strength: nonneg_real #]
 
-  IMPORTING lie_generator_structure
+  Weights: TYPE =
+    [# alpha: posreal, beta: posreal, gamma: posreal, delta: posreal #]
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Types
-  %% ─────────────────────────────────────────────────────────────────
+  Thresholds: TYPE =
+    [# epsilon: posreal, eta: posreal, kappa_low: nonneg_real,
+       kappa_high: posreal, sigma_low: nonneg_real, sigma_high: posreal #]
 
-  p: VAR TransportPath
+  p: VAR Observation
+  w: VAR Weights
+  t: VAR Thresholds
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Geometric quantities
-  %% ─────────────────────────────────────────────────────────────────
+  % This consistency check is explicit evidence, not an empirical axiom.
+  observations_consistent?(p): bool = p`reversal IMPLIES NOT p`coherent
 
-  % Path curvature: rate of tangent field rotation in g
-  % High curvature = sharp turns in distribution space
-  curvature(p): nonneg_real
+  Dev(w, p): nonneg_real =
+    w`alpha * p`curvature +
+    w`beta * (IF p`coherent THEN 0 ELSE 1 ENDIF) +
+    w`gamma * (IF p`reversal THEN 1 ELSE 0 ENDIF) +
+    w`delta * (p`source_strength + p`sink_strength)
 
-  % Excess mass: absolute difference between created and destroyed mass
-  % Zero in classical OT; non-zero in unbalanced OT
-  excess_mass(p): nonneg_real
+  calibrated?(w, t): bool =
+    t`epsilon < t`eta AND t`kappa_low < t`kappa_high AND
+    t`sigma_low < t`sigma_high AND
+    t`epsilon <= w`alpha * t`kappa_high AND
+    t`eta < w`gamma AND t`epsilon < w`beta AND
+    w`alpha * t`kappa_low + 2 * w`delta * t`sigma_low <= t`epsilon AND
+    t`eta <= w`delta * t`sigma_high
 
-  % Entropy production along the path
-  % Low = near-geodesic, high = far from optimal
-  entropy_production(p): nonneg_real
+  balanced_regime?(w, t, p): bool = Dev(w, p) <= t`epsilon
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Source and sink predicates
-  %% ─────────────────────────────────────────────────────────────────
+  transitional_regime?(w, t, p): bool =
+    t`epsilon < Dev(w, p) AND Dev(w, p) <= t`eta
 
-  % Mass is created along the path (dawn: solar spectrum appears)
-  has_source?(p): bool
+  unbalanced_regime?(w, t, p): bool = Dev(w, p) > t`eta
 
-  % Mass is destroyed along the path (dusk: solar spectrum disappears)
-  has_sink?(p): bool
+  has_source?(p): bool = p`source_strength > 0
 
-  % Source and sink intensities
-  source_strength(p): nonneg_real
+  has_sink?(p): bool = p`sink_strength > 0
 
-  sink_strength(p): nonneg_real
+  % This is the observed source/sink imbalance; entropy is not inferred.
+  excess_mass(p): nonneg_real = abs(p`source_strength - p`sink_strength)
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Thresholds (determined empirically from 8-log dataset)
-  %% ─────────────────────────────────────────────────────────────────
+  dawn_source?(p): bool = has_source?(p) AND p`sink_strength = 0
 
-  % Curvature thresholds
-  kappa_high: posreal   % above this: not balanced (empirical ~ 500)
+  dusk_sink?(p): bool = has_sink?(p) AND p`source_strength = 0
 
-  kappa_low: posreal    % below this: balanced candidate (empirical ~ 5)
+  default_weights: Weights = (# alpha := 1, beta := 2, gamma := 3, delta := 1 #)
 
-  % Source/sink strength thresholds
-  sigma_high: posreal   % above this: forces unbalanced (strong source/sink)
+  default_thresholds: Thresholds =
+    (# epsilon := 1, eta := 2, kappa_low := 1/4,
+       kappa_high := 2, sigma_low := 1/4, sigma_high := 3 #)
 
-  sigma_low: nonneg_real % below this: negligible source/sink
+  default_calibration_valid: THEOREM calibrated?(default_weights, default_thresholds)
 
-  % Deviation thresholds for regime classification
-  epsilon: posreal      % below this: balanced
+  % Bounds on actual score contributions support the calibration theorems.
+  curvature_contribution_le: LEMMA w`alpha * p`curvature <= Dev(w, p)
 
-  eta: posreal          % above this: unbalanced
+  source_sink_contribution_le: LEMMA
+    w`delta * (p`source_strength + p`sink_strength) <= Dev(w, p)
 
-  % Excess mass threshold
-  epsilon_mass: posreal
-
-  % Entropy threshold
-  epsilon_ent: posreal
-
-  % Ordering constraints
-  ax_threshold_ordering: AXIOM kappa_low < kappa_high
-
-  ax_regime_ordering: AXIOM epsilon < eta
-
-  ax_sigma_ordering: AXIOM sigma_low < sigma_high
-
-  %% ─────────────────────────────────────────────────────────────────
-  %% Deviation functional
-  %% ─────────────────────────────────────────────────────────────────
-
-  % Weights (positive reals)
-  alpha: posreal  % curvature weight
-
-  beta: posreal   % incoherence penalty
-
-  gamma: posreal  % reversal penalty
-
-  delta: posreal  % source/sink weight
-
-  % Deviation from balanced OT: single scalar summarizing path quality
-  Dev(p): nonneg_real =
-    alpha * curvature(p)
-    + beta * (IF coherent?(p) THEN 0 ELSE 1 ENDIF)
-    + gamma * (IF shape_direction_reversal?(p) THEN 1 ELSE 0 ENDIF)
-    + delta * (source_strength(p) + sink_strength(p))
-
-  %% ─────────────────────────────────────────────────────────────────
-  %% Calibration axioms (weight-threshold relationships)
-  %% ─────────────────────────────────────────────────────────────────
-  %% These encode empirically verified relationships between the
-  %% weighting parameters and regime thresholds.
-
-  % High curvature alone exceeds balanced threshold
-  % (curvature > kappa_high means Dev(p) > epsilon regardless of other terms)
-  ax_calibration_curvature: AXIOM
-    FORALL (p: TransportPath):
-      curvature(p) > kappa_high IMPLIES Dev(p) > epsilon
-
-  % Reversal penalty alone exceeds unbalanced threshold
-  ax_calibration_reversal: AXIOM
-    FORALL (p: TransportPath):
-      shape_direction_reversal?(p) IMPLIES Dev(p) > eta
-
-  % Incoherence penalty alone exceeds balanced threshold
-  ax_calibration_incoherence: AXIOM
-    FORALL (p: TransportPath):
-      NOT coherent?(p) IMPLIES Dev(p) > epsilon
-
-  % Low curvature + coherent + low source/sink stays within balanced threshold
-  ax_calibration_balanced: AXIOM
-    FORALL (p: TransportPath):
-      coherent?(p) AND curvature(p) <= kappa_low AND
-      source_strength(p) <= sigma_low AND sink_strength(p) <= sigma_low
-        IMPLIES Dev(p) <= epsilon
-
-  % Source or sink with positive weight implies positive deviation
-  ax_calibration_source_sink: AXIOM
-    FORALL (p: TransportPath):
-      (has_source?(p) OR has_sink?(p)) IMPLIES Dev(p) > 0
-
-  %% ─────────────────────────────────────────────────────────────────
-  %% Regime classification
-  %% ─────────────────────────────────────────────────────────────────
-
-  balanced_regime?(p): bool = Dev(p) <= epsilon
-
-  transitional_regime?(p): bool = epsilon < Dev(p) AND Dev(p) <= eta
-
-  unbalanced_regime?(p): bool = Dev(p) > eta
-
-  %% ─────────────────────────────────────────────────────────────────
-  %% Source/sink axioms
-  %% ─────────────────────────────────────────────────────────────────
-
-  % Source or sink implies nonzero strength
-  ax_source_positive_strength: AXIOM
-    has_source?(p) IMPLIES source_strength(p) > 0
-
-  ax_sink_positive_strength: AXIOM
-    has_sink?(p) IMPLIES sink_strength(p) > 0
-
-  % Source or sink implies nonzero excess mass
-  ax_source_implies_excess: AXIOM
-    has_source?(p) IMPLIES excess_mass(p) > 0
-
-  ax_sink_implies_excess: AXIOM
-    has_sink?(p) IMPLIES excess_mass(p) > 0
-
-  % Nonzero excess mass implies source or sink
-  ax_excess_from_source_or_sink: AXIOM
-    excess_mass(p) > 0 IMPLIES has_source?(p) OR has_sink?(p)
-
-  % Strong source or sink forces unbalanced regime
-  ax_strong_source_unbalanced: AXIOM
-    source_strength(p) > sigma_high IMPLIES unbalanced_regime?(p)
-
-  ax_strong_sink_unbalanced: AXIOM
-    sink_strength(p) > sigma_high IMPLIES unbalanced_regime?(p)
-
-  % Shape reversal is associated with source or sink
-  ax_reversal_implies_source_or_sink: AXIOM
-    shape_direction_reversal?(p)
-      IMPLIES has_source?(p) OR has_sink?(p)
-
-  %% ─────────────────────────────────────────────────────────────────
-  %% Balanced regime properties
-  %% ─────────────────────────────────────────────────────────────────
-
-  ax_balanced_low_source_sink: AXIOM
-    balanced_regime?(p)
-      IMPLIES source_strength(p) <= sigma_low
-              AND sink_strength(p) <= sigma_low
-
-  ax_balanced_low_excess: AXIOM
-    balanced_regime?(p) IMPLIES excess_mass(p) <= epsilon_mass
-
-  ax_balanced_low_entropy: AXIOM
-    balanced_regime?(p) IMPLIES entropy_production(p) <= epsilon_ent
-
-  ax_balanced_implies_coherent: AXIOM
-    balanced_regime?(p) IMPLIES coherent?(p)
-
-  %% ─────────────────────────────────────────────────────────────────
-  %% Unbalanced regime properties
-  %% ─────────────────────────────────────────────────────────────────
-
-  ax_unbalanced_has_source_or_sink: AXIOM
-    unbalanced_regime?(p)
-      IMPLIES has_source?(p) OR has_sink?(p)
-
-  ax_unbalanced_high_excess: AXIOM
-    unbalanced_regime?(p) IMPLIES excess_mass(p) > epsilon_mass
-
-  ax_unbalanced_high_entropy: AXIOM
-    unbalanced_regime?(p) IMPLIES entropy_production(p) > epsilon_ent
-
-  %% ─────────────────────────────────────────────────────────────────
-  %% Theorems
-  %% ─────────────────────────────────────────────────────────────────
-
-  % T1: High curvature precludes balanced regime
-  %     (curvature contribution alone exceeds epsilon)
   thm_high_curvature_not_balanced: THEOREM
-    curvature(p) > kappa_high IMPLIES NOT balanced_regime?(p)
+    calibrated?(w, t) AND p`curvature > t`kappa_high
+      IMPLIES NOT balanced_regime?(w, t, p)
 
-  % T2: Shape reversal forces unbalanced regime
-  %     (reversal implies source/sink which raises Dev above eta)
   thm_reversal_forces_unbalanced: THEOREM
-    shape_direction_reversal?(p) IMPLIES unbalanced_regime?(p)
+    calibrated?(w, t) AND p`reversal IMPLIES unbalanced_regime?(w, t, p)
 
-  % T3: Unbalanced regime implies NOT coherent
-  %     (follows from reversal or high curvature forcing incoherence)
-  thm_unbalanced_not_coherent: THEOREM
-    unbalanced_regime?(p) AND shape_direction_reversal?(p)
-      IMPLIES NOT coherent?(p)
+  thm_consistent_reversal_not_coherent: THEOREM
+    observations_consistent?(p) AND p`reversal IMPLIES NOT p`coherent
 
-  % T4: Coherent + low curvature + low source/sink => balanced
   thm_coherent_low_curvature_balanced: THEOREM
-    coherent?(p)
-    AND curvature(p) <= kappa_low
-    AND source_strength(p) <= sigma_low
-    AND sink_strength(p) <= sigma_low
-      IMPLIES balanced_regime?(p)
+    calibrated?(w, t) AND observations_consistent?(p) AND p`coherent AND
+    p`curvature <= t`kappa_low AND p`source_strength <= t`sigma_low AND
+    p`sink_strength <= t`sigma_low IMPLIES balanced_regime?(w, t, p)
 
-  % T5: Source or sink raises deviation above zero
-  %     (source/sink strength > 0 with positive weight delta => Dev > 0)
   thm_source_or_sink_raises_dev: THEOREM
-    (has_source?(p) OR has_sink?(p)) IMPLIES Dev(p) > 0
+    has_source?(p) OR has_sink?(p) IMPLIES Dev(w, p) > 0
 
-  % T6: Strong source or sink forces unbalanced
   thm_strong_source_or_sink_unbalanced: THEOREM
-    source_strength(p) > sigma_high OR sink_strength(p) > sigma_high
-      IMPLIES unbalanced_regime?(p)
+    calibrated?(w, t) AND
+    (p`source_strength > t`sigma_high OR p`sink_strength > t`sigma_high)
+      IMPLIES unbalanced_regime?(w, t, p)
 
-  % T7: Balanced and unbalanced are disjoint
   thm_balanced_unbalanced_disjoint: THEOREM
-    NOT (balanced_regime?(p) AND unbalanced_regime?(p))
+    calibrated?(w, t) IMPLIES
+      NOT (balanced_regime?(w, t, p) AND unbalanced_regime?(w, t, p))
 
-  % T8: Regimes partition the deviation range
-  %     (every path is in exactly one regime)
   thm_regime_partition: THEOREM
-    balanced_regime?(p) OR transitional_regime?(p) OR unbalanced_regime?(p)
+    t`epsilon < t`eta IMPLIES balanced_regime?(w, t, p) OR
+      transitional_regime?(w, t, p) OR unbalanced_regime?(w, t, p)
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Dawn/Dusk asymmetry (connects to velocity_asymmetry.pvs)
-  %% ─────────────────────────────────────────────────────────────────
+  thm_dawn_excess_from_source: THEOREM dawn_source?(p) IMPLIES excess_mass(p) > 0
 
-  % Dawn is source-dominated (solar spectrum appearing)
-  dawn?(p): bool
+  thm_dusk_excess_from_sink: THEOREM dusk_sink?(p) IMPLIES excess_mass(p) > 0
 
-  % Dusk is sink-dominated (solar spectrum disappearing)
-  dusk?(p): bool
+  % Nonvacuous observations under the concrete valid calibration.
+  balanced_example: THEOREM
+    balanced_regime?(default_weights, default_thresholds,
+      (# curvature := 0, coherent := TRUE, reversal := FALSE,
+         source_strength := 0, sink_strength := 0 #))
 
-  ax_dawn_is_source: AXIOM
-    dawn?(p) AND unbalanced_regime?(p) IMPLIES has_source?(p)
-
-  ax_dusk_is_sink: AXIOM
-    dusk?(p) AND unbalanced_regime?(p) IMPLIES has_sink?(p)
-
-  % T9: Unbalanced dawn has excess mass from source
-  thm_dawn_excess_from_source: THEOREM
-    dawn?(p) AND unbalanced_regime?(p) IMPLIES excess_mass(p) > 0
-
-  % T10: Unbalanced dusk has excess mass from sink
-  thm_dusk_excess_from_sink: THEOREM
-    dusk?(p) AND unbalanced_regime?(p) IMPLIES excess_mass(p) > 0
+  reversal_example: THEOREM
+    observations_consistent?((# curvature := 0, coherent := FALSE, reversal := TRUE,
+      source_strength := 0, sink_strength := 0 #)) AND
+    unbalanced_regime?(default_weights, default_thresholds,
+      (# curvature := 0, coherent := FALSE, reversal := TRUE,
+         source_strength := 0, sink_strength := 0 #))
 
 END unbalanced_regime

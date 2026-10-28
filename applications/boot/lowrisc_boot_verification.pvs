@@ -1,28 +1,22 @@
 %------------------------------------------------------------------------------
-% Formal Verification of Secure Boot Chain
+% Legacy Undirected Boot-Graph Interface
 %
-% A PVS formalization of layered proof-preserving graphs applied to
-% hardware root-of-trust boot sequences (ROM --> ROM_EXT --> BL0 --> kernel).
-%
-% Key properties verified:
-%   - Boot chain is a DAG (no cycles)
-%   - Failure at level k blocks all levels > k
-%   - Every level > 0 requires verification from level below
-%   - Lock-out: edges only go forward (higher levels)
-%   - Invariant isolation: unsigned/tampered stages cannot participate
+% This historical interface uses NASAlib's undirected graph type. Its
+% strict layer-order condition therefore excludes every edge, as proved
+% below by undirected_layered_has_no_edges. It cannot represent a nontrivial
+% directed boot chain. The concrete policy in opentitan_boot_instance uses
+% directed_pp_graph instead and proves actual directed path properties.
 %
 % Mathematical foundation:
 %   - Proof-preserving graphs (Stosic, 2026)
 %   - Refinement relations rr_rel (Stosic, NASA PVS Library)
 %   - NASA PVS graph library (Butler & Sjogren, 1998)
 %
-% Application:
-%   Secure boot verification for hardware root-of-trust architectures.
-%   Each vertex represents a boot stage, each edge represents a
-%   cryptographic verification step. The pp_edge? constraint requires
-%   that both the verifier and verified stages satisfy their invariants
-%   AND are related by the refinement relation (abstraction-concretization
-%   correctness between specification and implementation).
+% Historical interpretation:
+%   Vertices were intended as boot stages and edges as verification steps.
+%   The undirected representation prevents that interpretation for nonempty
+%   strict layered paths. These results describe the legacy predicates only;
+%   no signature checker, firmware execution or hardware is verified here.
 %
 % Author: Dragan Stosic
 %------------------------------------------------------------------------------
@@ -40,15 +34,14 @@ BEGIN
   % Example: ROM=0, ROM_EXT=1, BL0=2, kernel=3
   level: [T -> nat]
 
-  % Layered graph: edges only go from lower to higher level
-  % This captures the forward-only nature of boot verification
+  % Historical strict-order predicate. With undirected edges it forces the
+  % edge set to be empty; it does not encode a forward boot execution.
   layered?(G: graph[T]): bool =
     pp_valid?(G) AND
     FORALL (x, y: T):
       edge?(G)(x, y) IMPLIES level(x) < level(y)
 
-  % Lock-out property: vertex at level k has no edges to levels below k
-  % Once you pass a boot stage, you cannot go back
+  % Algebraic no-lower-neighbor condition on the legacy graph.
   locked_below?(G: graph[T], v: T): bool =
     FORALL (w: T):
       edge?(G)(v, w) IMPLIES level(w) >= level(v)
@@ -63,21 +56,21 @@ BEGIN
   %% ═══════════════════════════════════════════════════════════════════
 
   % Boot chain: layered graph + at most one node per level
-  % This models a linear boot sequence: ROM --> ROM_EXT --> BL0 --> kernel
+  % This legacy predicate admits no nontrivial boot path.
   boot_chain?(G: graph[T]): bool =
     layered?(G) AND
     FORALL (x, y: T):
       vert(G)(x) AND vert(G)(y) AND level(x) = level(y)
         IMPLIES x = y
 
-  % Verification step: vertex x cryptographically verifies vertex y
-  % at the next level. Models: ROM verifies ROM_EXT, ROM_EXT verifies BL0, etc.
+  % Abstract adjacent-level pp-edge predicate; cryptographic checking is not
+  % implemented by this definition.
   verifies?(G: graph[T], x, y: T): bool =
     edge?(G)(x, y) AND pp_edge?(x, y) AND
     level(x) + 1 = level(y)
 
-  % Security property: every stage past ROM requires verification
-  % from the stage below (no unsigned execution)
+  % Every non-root vertex must have a preceding abstract verification edge.
+  % Together with the undirected layered condition, this excludes such vertices.
   secure_boot?(G: graph[T]): bool =
     boot_chain?(G) AND
     FORALL (v: T):
@@ -107,15 +100,18 @@ BEGIN
       layered?(G) AND pp_path?(G, pw) AND length(pw) > 1
         IMPLIES seq(pw)(0) /= seq(pw)(length(pw) - 1)
 
-  % T4: In a boot chain, failure at level k blocks all levels > k
-  %     If a boot stage fails its invariant (e.g., signature invalid),
-  %     no higher stage can be pp-connected to it.
-  %     This is the formal statement of "boot halts on failure."
+  % T4: A failed invariant excludes pp-connectivity to higher-level vertices.
+  %     This is a graph statement, not an execution-level halting theorem.
   boot_failure_blocks: THEOREM
     FORALL (G: graph[T], v: T):
       boot_chain?(G) AND NOT invariant_holds(v)
         IMPLIES FORALL (w: T):
           level(w) > level(v) IMPLIES NOT pp_connected?(G, v, w)
+
+  % Symmetry of the legacy edge relation conflicts with strict layer order.
+  undirected_layered_has_no_edges: THEOREM
+    FORALL (G: graph[T], x, y: T):
+      layered?(G) IMPLIES NOT edge?(G)(x, y)
 
   %% ═══════════════════════════════════════════════════════════════════
   %% Section 4: Verification Chain Properties
@@ -134,8 +130,7 @@ BEGIN
     FORALL (G: graph[T], x, y: T):
       verifies?(G, x, y) IMPLIES rr_rel(x, y)
 
-  % T7: In secure boot, every reachable stage satisfies its invariant
-  %     (no unsigned or tampered code can execute)
+  % T7: Connected endpoints satisfy the supplied invariant predicate.
   secure_boot_all_invariants: THEOREM
     FORALL (G: graph[T], x, y: T):
       secure_boot?(G) AND pp_connected?(G, x, y)
@@ -172,31 +167,15 @@ BEGIN
         IMPLIES layered?(G2)
 
   %% ═══════════════════════════════════════════════════════════════════
-  %% Interpretation for hardware root-of-trust
+  %% Scope of the historical model
   %% ═══════════════════════════════════════════════════════════════════
   %%
-  %% Boot stage    | Level | invariant_holds?        | Meaning
-  %% ─────────────┼───────┼─────────────────────────┼──────────────────
-  %% ROM          | 0     | Always TRUE (immutable)  | Hardware root
-  %% ROM_EXT      | 1     | Signature valid          | First mutable stage
-  %% BL0          | 2     | Hash matches manifest    | Bootloader
-  %% Kernel       | 3     | Secure boot policy OK    | OS kernel
-  %%
-  %% edge?(G)(ROM, ROM_EXT) = TRUE means ROM verifies ROM_EXT
-  %% pp_edge?(ROM, ROM_EXT) = TRUE means:
-  %%   - ROM satisfies its invariant (immutable, always true)
-  %%   - ROM_EXT satisfies its invariant (signature valid)
-  %%   - rr_rel(ROM, ROM_EXT) holds (refinement: ROM_EXT implements
-  %%     the specification that ROM expects)
-  %%
-  %% boot_failure_blocks guarantees:
-  %%   If ROM_EXT has invalid signature (NOT invariant_holds(ROM_EXT)),
-  %%   then BL0 and kernel CANNOT be pp-connected to ROM_EXT.
-  %%   The boot halts.
-  %%
-  %% secure_boot? guarantees:
-  %%   Every stage past ROM has been verified by the stage below.
-  %%   No unsigned code executes.
+  %% The original intended levels were ROM=0, ROM_EXT=1, BL0=2, kernel=3.
+  %% NASA's graph edge is symmetric, so a strict increase in both directions
+  %% is impossible. undirected_layered_has_no_edges records that limitation.
+  %% The directed policy and its nonempty success path are developed in
+  %% opentitan_boot_instance. Its supplied boolean checks still need their
+  %% own implementation and cryptographic refinement arguments.
   %%
   %% ═══════════════════════════════════════════════════════════════════
 

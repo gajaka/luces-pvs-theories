@@ -1,6 +1,8 @@
 % Projection preserves every vertex and sends an ordered specification
 % edge to a strict quotient edge or to one collapsed class. Certification
 % descends to classes and propagates along their strict quotient edges.
+% On certified subgraphs, noncollapse gives a shared categorical quotient
+% preserving the fixed datum's certification and the induced order.
 %
 % Lean counterpart: PPGraphQuotientBridge.lean. Quotients use full class sets,
 % as in B. A. Davey and H. A. Priestley, Introduction to Lattices and Order,
@@ -12,7 +14,9 @@ ppg_list_quotient_bridge[D: TYPE, Th: TYPE, le: (partial_order?[Th]),
   (IMPORTING ppg_parametric_core[D, Th, le]) F: CertFamily]: THEORY
 BEGIN
 
-  IMPORTING ppg_list_quotient[D, Th, le], ppg_core@directed_pp_graph[SpecQuotient(F)] AS quotientGraphs
+  IMPORTING ppg_list_quotient[D, Th, le],
+    ppg_core@directed_pp_graph[SpecQuotient(F)] AS quotientGraphs,
+    ppg_core@categorical_pp_graphs[Th, SpecQuotient(F)] AS quotientMorphisms
 
   d: VAR D
   t, t1, t2: VAR Th
@@ -36,5 +40,22 @@ BEGIN
 
   quotient_cert_propagates: THEOREM quotient_graph`edges(Q1, Q2) AND quotient_certified(d)(Q1) IMPLIES
     quotient_certified(d)(Q2)
+
+  certified_quotient_graph(d): quotientGraphs.Graph =
+    (# vertices := quotient_certified(d),
+       edges := (LAMBDA (Q1, Q2: SpecQuotient(F)):
+         quotient_le(F)(Q1, Q2) AND Q1 /= Q2 AND quotient_certified(d)(Q1)) #)
+
+  certified_quotient_pp_valid: THEOREM
+    quotientGraphs.pp_valid(certified_quotient_graph(d), quotient_le(F), quotient_certified(d))
+
+  certified_edges_separate_classes(d): bool =
+    FORALL (t1, t2: Th): certified_subgraph(F, d)`edges(t1, t2) IMPLIES
+      NOT cert_equiv(F)(t1, t2)
+
+  certified_proj_is_pp_quotient: THEOREM certified_edges_separate_classes(d) IMPLIES
+    quotientMorphisms.quotient(quotient_mk(F), certified_subgraph(F, d),
+      certified_quotient_graph(d), spec_rr,
+      LAMBDA (t: Th): fully_certified(F)(d, t), quotient_le(F), quotient_certified(d))
 
 END ppg_list_quotient_bridge
