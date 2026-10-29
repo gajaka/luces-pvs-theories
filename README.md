@@ -44,7 +44,7 @@ earlier hand-written axioms. Read the [LUCES model scope](docs/LUCES_MODEL_SCOPE
 for the established claims and the remaining implementation and physical
 boundaries.
 
-The latest incremental verification, completed on **2026-10-29**, covers
+The finite-read integration receipt, completed on **2026-10-29**, covers
 **28 changed `.pvs` files and 30 changed `.prf` files**: 27 semantic source
 changes, one equivalent PVS-generated ADT rendering and three additional
 proof-only repairs. Ten completed normal replay reports cover all 30
@@ -56,13 +56,28 @@ loaded source/proof hashes against the publication. The two new passes replayed
 bodies or missing scripts. These counts overlap. See the
 [incremental verification receipt](reports/PVS_INCREMENTAL_REPLAY_20261029.json).
 
-All 1,121 selected files also passed typechecking. The later whole-library
+The same record includes successful typechecking of all 1,121 selected files.
+The later whole-library
 proof replay was stopped when the requested scope changed to modified and
 affected theories; it is not reported as a new whole-library proof pass.
 The source dependency and qualified-reference checks found no additional
 unchanged consumers of the 27 semantic changes. The generated ADT change only
 expands the binder `(x,y:T)` to `(x:T,y:T)` and removes three blank lines;
 its parent datatype is unchanged.
+
+A subsequent [walk-geometry extension](docs/THEOREM_SCOPE.md#curvature-extracted-from-certified-walks)
+computes angular curvature from ordered vertex coordinates. Its certificate
+requires `pp_path`, active steps and enough samples; the Lie interface
+binds the reported curvature to that calculation. A graph extension preserves
+the same certified path, while a concrete newly admitted bent path fails its
+zero-curvature certificate. This does not certify C20 transport couplings or
+floating-point agreement with the recorded boot observations.
+
+Its completed [targeted replay](reports/PVS_WALK_GEOMETRY_20261029.json) covers
+both entry points and their dependencies: **90 Project bodies and 757 required
+Native originals**, all proved by the ordinary public checker on 2026-10-29.
+These are proof-body counts including supporting lemmas and TCCs, not an
+addition to the historical Lean translation count.
 
 ## Directory layout
 

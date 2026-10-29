@@ -1,0 +1,241 @@
+% Angular curvature is computed from the coordinates of the walk's vertices.
+% The cutoff 1/10^10 is an exact-real model of the numerical branch threshold;
+% agreement with binary64 arithmetic requires a separate error argument.
+% A certificate needs at least three samples. The raw function returns zero
+% for shorter walks, matching an empty collection of curvature contributions.
+% Certification additionally requires every observed step to exceed the cutoff.
+% This admission policy is stronger than merely accepting a raw numeric score.
+% The reference loop is in scripts/check_lie_observations.py, where the sampled
+% coordinates are the seven distributions used by the C20 replay. This theory
+% proves the real-arithmetic kernel, not the sampling code or NumPy rounding.
+%
+% Author: Dragan Stosic, 2026.
+
+pp_walk_geometry[T: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING ppg_core@directed_pp_graph[T], vectors@vectors[10] AS Euclidean,
+    trig@acos
+
+  Vector10: TYPE = Euclidean.Vector
+
+  SampleMap: TYPE = [T -> Vector10]
+
+  coordinate_map, other_map: VAR SampleMap
+  pw, other_walk: VAR Prewalk
+  i, n: VAR nat
+  a, b: VAR real
+  G, G1, G2: VAR Graph
+  RR: VAR [T, T -> bool]
+  I: VAR [T -> bool]
+  bound, claimed1, claimed2: VAR nonneg_real
+
+  step_cutoff: posreal = 1/10^10
+
+  trace_point(coordinate_map, pw, i): Vector10 =
+    IF i < pw`length THEN coordinate_map(pw`seq(i)) ELSE Euclidean.zero ENDIF
+
+  trace_delta(coordinate_map, pw, i): Vector10 =
+    trace_point(coordinate_map, pw, i+1) - trace_point(coordinate_map, pw, i)
+
+  step_length(coordinate_map, pw, i): nonneg_real =
+    Euclidean.norm(trace_delta(coordinate_map, pw, i))
+
+  unit_delta(coordinate_map, pw, i): Vector10 =
+    IF step_length(coordinate_map, pw, i) > step_cutoff
+    THEN (1/step_length(coordinate_map, pw, i)) * trace_delta(coordinate_map, pw, i)
+    ELSE Euclidean.zero ENDIF
+
+  clip_cosine(a): real_abs_le1 =
+    IF a < -1 THEN -1 ELSIF a > 1 THEN 1 ELSE a ENDIF
+
+  curvature_term(coordinate_map, pw, i): nonneg_real =
+    IF i+2 < pw`length AND step_length(coordinate_map, pw, i) > step_cutoff
+    THEN acos(clip_cosine(unit_delta(coordinate_map, pw, i) *
+           unit_delta(coordinate_map, pw, i+1))) / step_length(coordinate_map, pw, i)
+    ELSE 0 ENDIF
+
+  curvature_prefix(coordinate_map, pw, n): RECURSIVE nonneg_real =
+    IF n = 0 THEN 0 ELSE curvature_prefix(coordinate_map, pw, n-1) +
+      curvature_term(coordinate_map, pw, n-1) ENDIF
+    MEASURE n
+
+  measured_curvature(coordinate_map, pw): nonneg_real =
+    IF pw`length < 3 THEN 0
+    ELSE curvature_prefix(coordinate_map, pw, pw`length-2)/(pw`length-2) ENDIF
+
+  same_observed_trace(coordinate_map, pw, other_map, other_walk): bool =
+    pw`length = other_walk`length AND
+    FORALL (i: nat): i < pw`length IMPLIES
+      trace_point(coordinate_map, pw, i) = trace_point(other_map, other_walk, i)
+
+  curvature_binding?(coordinate_map, pw, claimed1): bool =
+    claimed1 = measured_curvature(coordinate_map, pw)
+
+  active_steps?(coordinate_map, pw): bool =
+    FORALL (i: nat): i+1 < pw`length IMPLIES
+      step_length(coordinate_map, pw, i) > step_cutoff
+
+  geometry_certificate?(G, RR, I, coordinate_map, pw, bound): bool =
+    pp_path(G, RR, I, pw) AND pw`length >= 3 AND active_steps?(coordinate_map, pw) AND
+    measured_curvature(coordinate_map, pw) <= bound
+
+  clip_cosine_fixed: LEMMA -1 <= a AND a <= 1 IMPLIES clip_cosine(a) = a
+
+  curvature_term_inactive: THEOREM
+    i+2 >= pw`length OR step_length(coordinate_map, pw, i) <= step_cutoff
+      IMPLIES curvature_term(coordinate_map, pw, i) = 0
+
+  curvature_term_local: THEOREM
+    pw`length = other_walk`length AND
+    trace_point(coordinate_map, pw, i) = trace_point(other_map, other_walk, i) AND
+    trace_point(coordinate_map, pw, i+1) = trace_point(other_map, other_walk, i+1) AND
+    trace_point(coordinate_map, pw, i+2) = trace_point(other_map, other_walk, i+2)
+      IMPLIES curvature_term(coordinate_map, pw, i) =
+        curvature_term(other_map, other_walk, i)
+
+  same_trace_points: LEMMA same_observed_trace(coordinate_map, pw, other_map, other_walk)
+    IMPLIES trace_point(coordinate_map, pw, i) = trace_point(other_map, other_walk, i)
+
+  same_trace_terms: LEMMA same_observed_trace(coordinate_map, pw, other_map, other_walk)
+    IMPLIES curvature_term(coordinate_map, pw, i) = curvature_term(other_map, other_walk, i)
+
+  same_trace_prefix: LEMMA same_observed_trace(coordinate_map, pw, other_map, other_walk)
+    IMPLIES curvature_prefix(coordinate_map, pw, n) = curvature_prefix(other_map, other_walk, n)
+
+  same_trace_curvature: THEOREM same_observed_trace(coordinate_map, pw, other_map, other_walk)
+    IMPLIES measured_curvature(coordinate_map, pw) = measured_curvature(other_map, other_walk)
+
+  curvature_binding_unique: THEOREM
+    same_observed_trace(coordinate_map, pw, other_map, other_walk) AND
+    curvature_binding?(coordinate_map, pw, claimed1) AND
+    curvature_binding?(other_map, other_walk, claimed2) IMPLIES claimed1 = claimed2
+
+  inactive_step_rejected: THEOREM
+    i+1 < pw`length AND step_length(coordinate_map, pw, i) <= step_cutoff
+      IMPLIES NOT geometry_certificate?(G, RR, I, coordinate_map, pw, bound)
+
+  certified_geometry_invariant: THEOREM
+    geometry_certificate?(G, RR, I, coordinate_map, pw, bound) AND i < pw`length
+      IMPLIES I(pw`seq(i))
+
+  certified_geometry_refinement: THEOREM
+    geometry_certificate?(G, RR, I, coordinate_map, pw, bound) AND i+1 < pw`length
+      IMPLIES RR(pw`seq(i), pw`seq(i+1))
+
+  certified_geometry_transform: THEOREM
+    pp_transform(G1, G2, RR, I) AND
+    geometry_certificate?(G1, RR, I, coordinate_map, pw, bound)
+      IMPLIES geometry_certificate?(G2, RR, I, coordinate_map, pw, bound)
+
+END pp_walk_geometry
+
+% All four spectra have unit mass and nonnegative coordinates. Graph extension
+% preserves the old certified walk, while admitting a different, bent walk.
+% The latter cannot be certified by attaching a forged zero-curvature report.
+pp_walk_geometry_example: THEORY
+BEGIN
+
+  Vertex: TYPE = below(4)
+
+  IMPORTING pp_walk_geometry[Vertex]
+
+  a, b, c, d, e, f, g, h: VAR real
+  v, w: VAR Vertex
+  bound: VAR nonneg_real
+
+  vec4(a, b, c, d): Vector10 = LAMBDA (k: below(10)):
+    IF k = 0 THEN a ELSIF k = 1 THEN b ELSIF k = 2 THEN c
+    ELSIF k = 3 THEN d ELSE 0 ENDIF
+
+  sample_coordinates: SampleMap = LAMBDA (v: Vertex):
+    IF v = 0 THEN vec4(1/2, 0, 1/2, 0)
+    ELSIF v = 1 THEN vec4(1/4, 1/4, 1/4, 1/4)
+    ELSIF v = 2 THEN vec4(0, 1/2, 1/2, 0)
+    ELSE vec4(0, 1/2, 0, 1/2) ENDIF
+
+  spectrum_invariant(v): bool =
+    (FORALL (k: below(10)): sample_coordinates(v)(k) >= 0) AND
+    sigma(0, 9, sample_coordinates(v)) = 1
+
+  vertex_rank(v): nat = IF v = 0 THEN 0 ELSIF v = 3 THEN 2 ELSE 1 ENDIF
+
+  trace_rr(v, w): bool = vertex_rank(v) < vertex_rank(w)
+
+  old_graph: Graph =
+    (# vertices := LAMBDA (v: Vertex): TRUE,
+       edges := LAMBDA (v, w: Vertex): (v = 0 AND w = 1) OR (v = 1 AND w = 3) #)
+
+  extended_graph: Graph =
+    (# vertices := LAMBDA (v: Vertex): TRUE,
+       edges := LAMBDA (v, w: Vertex): old_graph`edges(v, w) OR
+         (v = 0 AND w = 2) OR (v = 2 AND w = 3) #)
+
+  straight_walk: Prewalk =
+    (# length := 3,
+       seq := LAMBDA (i: below(3)): IF i = 0 THEN 0 ELSIF i = 1 THEN 1 ELSE 3 ENDIF #)
+
+  bent_walk: Prewalk =
+    (# length := 3,
+       seq := LAMBDA (i: below(3)): IF i = 0 THEN 0 ELSIF i = 1 THEN 2 ELSE 3 ENDIF #)
+
+  vec4_dot: LEMMA vec4(a,b,c,d) * vec4(e,f,g,h) = a*e+b*f+c*g+d*h
+
+  vec4_mass: LEMMA sigma(0,9,vec4(a,b,c,d)) = a+b+c+d
+
+  vec4_norm: LEMMA Euclidean.norm(vec4(a,b,c,d)) = sqrt(sq(a)+sq(b)+sq(c)+sq(d))
+
+  sample_coordinates_valid: THEOREM spectrum_invariant(v)
+
+  graph_extension: THEOREM pp_transform(old_graph, extended_graph, trace_rr, spectrum_invariant)
+
+  straight_path: THEOREM pp_path(old_graph, trace_rr, spectrum_invariant, straight_walk)
+
+  bent_path: THEOREM pp_path(extended_graph, trace_rr, spectrum_invariant, bent_walk)
+
+  straight_deltas: LEMMA
+    trace_delta(sample_coordinates, straight_walk, 0) = vec4(-1/4,1/4,-1/4,1/4) AND
+    trace_delta(sample_coordinates, straight_walk, 1) = vec4(-1/4,1/4,-1/4,1/4)
+
+  bent_deltas: LEMMA
+    trace_delta(sample_coordinates, bent_walk, 0) = vec4(-1/2,1/2,0,0) AND
+    trace_delta(sample_coordinates, bent_walk, 1) = vec4(0,0,-1/2,1/2)
+
+  straight_step_lengths: LEMMA
+    step_length(sample_coordinates, straight_walk, 0) = 1/2 AND
+    step_length(sample_coordinates, straight_walk, 1) = 1/2
+
+  bent_step_lengths: LEMMA
+    step_length(sample_coordinates, bent_walk, 0) = sqrt(1/2) AND
+    step_length(sample_coordinates, bent_walk, 1) = sqrt(1/2) AND sqrt(1/2) > step_cutoff
+
+  straight_active: LEMMA active_steps?(sample_coordinates, straight_walk)
+
+  bent_active: LEMMA active_steps?(sample_coordinates, bent_walk)
+
+  straight_unit_alignment: LEMMA
+    unit_delta(sample_coordinates, straight_walk, 0) *
+      unit_delta(sample_coordinates, straight_walk, 1) = 1
+
+  bent_unit_alignment: LEMMA
+    unit_delta(sample_coordinates, bent_walk, 0) *
+      unit_delta(sample_coordinates, bent_walk, 1) = 0
+
+  straight_curvature: THEOREM measured_curvature(sample_coordinates, straight_walk) = 0
+
+  bent_curvature: THEOREM
+    measured_curvature(sample_coordinates, bent_walk) = (pi/2)/sqrt(1/2) AND
+    measured_curvature(sample_coordinates, bent_walk) > 0
+
+  straight_certificate: THEOREM
+    geometry_certificate?(old_graph, trace_rr, spectrum_invariant, sample_coordinates, straight_walk, 0) AND
+    geometry_certificate?(extended_graph, trace_rr, spectrum_invariant, sample_coordinates, straight_walk, 0)
+
+  forged_zero_report_rejected: THEOREM
+    NOT curvature_binding?(sample_coordinates, bent_walk, 0) AND
+    NOT geometry_certificate?(extended_graph, trace_rr, spectrum_invariant, sample_coordinates, bent_walk, 0)
+
+  missing_edge_rejected: THEOREM
+    NOT geometry_certificate?(old_graph, trace_rr, spectrum_invariant, sample_coordinates, bent_walk, bound)
+
+END pp_walk_geometry_example

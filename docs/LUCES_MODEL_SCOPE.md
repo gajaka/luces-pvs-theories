@@ -57,11 +57,39 @@ that a reversal can coexist with C20 coherence; another example separates
 absence of reversal from sufficient global alignment. Coherence supplies no
 missing observability evidence.
 
-`lie_pp_connection` attaches an observation to a measured prewalk. Curvature
-comes from that observation and is independent of its graph context. The
-inverse-order test for the three captured C20 rows is finite evidence, not a
-law of every path. A separate boot320/347 operator-alignment counterexample
+`pp_walk_geometry` computes angular curvature from the ordered vertices of a
+prewalk and a fixed ten-coordinate observation map. It normalizes successive
+differences, clips their dot product to `[-1,1]`, applies `acos`, divides by the
+current step length and averages the interior terms. The small-step branches
+are explicit. This is an exact-real formula, not a squared-difference proxy or
+a proof of NumPy's floating-point evaluation.
+
+`lie_pp_connection` keeps old floating-point fixtures as `AttachedObservation`.
+Its separate `CurvatureBoundPrewalk` requires the reported curvature to equal
+the computed value. Certified curvature measurements additionally require an
+actual `pp_path`, at least three samples, active successive steps and the
+numerical curvature bound. A raw zero value from inactive steps is not enough
+to obtain that certificate.
+The coordinate map is fixed by the theory input. Its relation to sensor
+calibration is still an external obligation.
+
+Graph extension preserves an already certified path with the same ordered
+vertices and coordinate map. It does not certify every newly available path.
+A construction with four normalized vertices supplies two paths of three
+samples each, one straight and one with a right angle. Both respect the graph's
+vertex and RR conditions,
+but only the straight path satisfies a zero-curvature certificate.
+
+The remaining C20 fields are external observations. They depend on edge and
+endpoint transport couplings; binding curvature does not bind those couplings.
+The inverse-order test for the three captured C20 rows remains finite evidence,
+not a law of every path. A separate boot320/347 operator-alignment example
 shows why the different metrics cannot be substituted for one another.
+
+The [dedicated replay receipt](../reports/PVS_WALK_GEOMETRY_20261029.json) binds
+this extension's source and saved scripts. Its two entry points passed the
+ordinary checker with 90 Project and 757 required original Native bodies;
+these counts include supporting lemmas and TCCs.
 
 Keep these quantities distinct:
 

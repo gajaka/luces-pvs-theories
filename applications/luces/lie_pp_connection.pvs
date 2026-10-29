@@ -1,7 +1,13 @@
-% Numeric coherence and the boolean C20 predicate read the same measured field.
-% Curvature belongs to the measured path, so changing its graph context alone
-% cannot change it. This does not equate a pp-path with an observed physical
-% trajectory or turn a C21 threshold into exp(tX).
+% Bind reported curvature to the ordered samples of a certified PPG path.
+% pp_walk_geometry computes the exact-real angular formula from those samples;
+% the coordinate map is a fixed input to this theory. A bound report cannot
+% supply an independent curvature value. Certification also checks the actual
+% pp_path, its vertex invariants, at least three samples and active steps.
+%
+% AttachedObservation retains the older floating-point fixtures. Its other
+% fields, including C20 coupling alignment, remain external observations.
+% Binding curvature does not verify those fields, NumPy rounding, the sample
+% calibration or a Lie exponential representation.
 %
 % The inverse relation is a finite table check. It holds for the three captured
 % C20 observations below; it is not asserted for all possible measured paths.
@@ -9,26 +15,50 @@
 % data/luces_runner_deviation.json. It disproves inverse ordering for that
 % operator metric, which must not be identified with C20 coupling alignment.
 
-lie_pp_connection[T: TYPE+]: THEORY
+lie_pp_connection[T: TYPE+, coordinate_map: [T -> [below(10) -> real]]]: THEORY
 BEGIN
 
-  IMPORTING ppg_core@directed_pp_graph[T], lie_generator_structure
+  IMPORTING pp_walk_geometry[T], lie_generator_structure
 
-  MeasuredPrewalk: TYPE = [# walk: Prewalk, measurement: TransportPath #]
+  AttachedObservation: TYPE = [# walk: Prewalk, measurement: TransportPath #]
+
+  CurvatureBoundPrewalk: TYPE = {p: AttachedObservation |
+    curvature_binding?(coordinate_map, p`walk, p`measurement`path_curvature)}
 
   G, G1, G2: VAR Graph
-  p: VAR MeasuredPrewalk
+  RR: VAR [T, T -> bool]
+  invariant: VAR [T -> bool]
+  p: VAR AttachedObservation
+  bound_walk: VAR CurvatureBoundPrewalk
+  bound: VAR nonneg_real
   n: VAR posnat
   observations: VAR [nat -> TransportPath]
   i, j: VAR nat
 
   transport_of(p): TransportPath = p`measurement
 
-  curvature(G, p): nonneg_real = p`measurement`path_curvature
+  % Recompute the one bound field, preserving the other external observations.
+  bind_curvature(p): CurvatureBoundPrewalk =
+    (# walk := p`walk,
+       measurement := p`measurement WITH
+         [path_curvature := measured_curvature(coordinate_map, p`walk)] #)
+
+  certified_curvature_measurement?(G, RR, invariant, bound_walk, bound): bool =
+    geometry_certificate?(G, RR, invariant, coordinate_map, bound_walk`walk, bound)
+
+  certified_measurement_sound: THEOREM
+    certified_curvature_measurement?(G, RR, invariant, bound_walk, bound) IMPLIES
+      pp_path(G, RR, invariant, bound_walk`walk) AND
+      bound_walk`walk`length >= 3 AND active_steps?(coordinate_map, bound_walk`walk) AND
+      (FORALL (i: below(bound_walk`walk`length)): invariant(bound_walk`walk`seq(i))) AND
+      bound_walk`measurement`path_curvature <= bound
+
+  certified_measurement_preserved: THEOREM
+    pp_transform(G1, G2, RR, invariant) AND
+    certified_curvature_measurement?(G1, RR, invariant, bound_walk, bound) IMPLIES
+      certified_curvature_measurement?(G2, RR, invariant, bound_walk, bound)
 
   generator_coherence(p): Cosine = p`measurement`global_alignment
-
-  curvature_graph_independent: THEOREM curvature(G1, p) = curvature(G2, p)
 
   coherence_bounded: THEOREM -1 <= generator_coherence(p) AND generator_coherence(p) <= 1
 

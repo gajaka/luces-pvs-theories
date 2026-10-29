@@ -2,7 +2,9 @@
 
 The current PVS models are
 [lie_generator_structure.pvs](../applications/luces/lie_generator_structure.pvs)
-and [lie_pp_connection.pvs](../applications/luces/lie_pp_connection.pvs).
+and [lie_pp_connection.pvs](../applications/luces/lie_pp_connection.pvs), with
+computed path geometry in
+[pp_walk_geometry.pvs](../applications/luces/pp_walk_geometry.pvs).
 They evaluate measured C20/C21/C22 observations and include explicit
 counterexamples to the former universal coherence implications. They do not
 prove a Lie exponential representation or infer physical observability from
@@ -95,6 +97,69 @@ The table illustrates why C20 and C22 grades differ: boot347 has mean global
 alignment about 0.711 but minimum active shape alignment about 0.903. Neither
 a rounded table nor a matching finite classification establishes a universal
 physical implication.
+
+## Geometry computed from a PPG path
+
+The coordinate map assigns ten real coordinates to each vertex. It is a fixed
+input, shared by the original and extended graph. For consecutive samples,
+the extractor computes the exact-real expression
+
+```text
+delta_i = x_(i+1) - x_i
+r_i     = norm(delta_i)
+u_i     = delta_i / r_i if r_i > epsilon, otherwise zero
+kappa_i = acos(clip(dot(u_i, u_(i+1)), -1, 1)) / r_i
+          if r_i > epsilon, otherwise zero
+kappa   = mean of the n-2 interior terms
+epsilon = 1 / 10^10
+```
+
+The raw function is total on short traces, but a curvature certificate requires
+at least three samples and every successive step to exceed the cutoff. This
+admission condition is stronger than merely checking the raw numerical score.
+If the current step is active and the following step
+is inactive, the formula uses `acos(0)/r_i`; it does not silently discard that
+turn. The rational epsilon and exact-real operations define the mathematical
+model. Equality with NumPy's binary64 result, including its rounded threshold,
+requires a separate numerical refinement proof.
+
+`CurvatureBoundPrewalk` rules out an independent reported curvature: its value
+must equal this calculation. `certified_curvature_measurement?` also requires
+the ordered walk to be a `pp_path` satisfying the chosen vertex invariant and
+RR relation. A graph extension preserves that same certified path. Replacing
+its middle vertex can change the measured geometry.
+
+The concrete example uses four normalized samples, shown in their first four
+coordinates; the other six coordinates are zero:
+
+| Sample | Coordinates |
+| --- | --- |
+| Start | `(1/2, 0, 1/2, 0)` |
+| Straight middle | `(1/4, 1/4, 1/4, 1/4)` |
+| Bent middle | `(0, 1/2, 1/2, 0)` |
+| End | `(0, 1/2, 0, 1/2)` |
+
+```text
+Start ---- Straight middle ---- End     curvature = 0
+   \
+    +----- Bent middle ---------+       curvature > 0
+```
+
+Both paths satisfy the graph's normalization and forward-rank conditions.
+The extension keeps the old path and adds the bent alternative. A separate
+zero-curvature certificate accepts the old path and rejects the new one.
+Thus preservation of old paths and admission of new paths are distinct checks.
+
+Only curvature is bound by this construction. C20 also needs the consecutive
+coupling displacement fields and a full endpoint coupling. The historical
+three-boot fixture stores rounded observations, not a formal extraction of
+those couplings or an equality between its float curvature and this real
+formula. It remains an attached observation, not a certified geometric trace.
+
+The [targeted PVS replay](../reports/PVS_WALK_GEOMETRY_20261029.json) passed both
+entry points with 90 Project and 757 required original Native proof bodies.
+The ordinary source, proof ownership and completion gates were unchanged.
+The numerical fixture command above also passed all three existing rows.
 
 ## Author
 

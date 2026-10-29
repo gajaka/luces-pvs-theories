@@ -268,3 +268,56 @@ fix. The additional 43-file compatibility set has not been substituted into
 that frozen input copy. Any proof result using a later library input must retain
 its own input hashes and required-Native replay record. Metadata compatibility
 alone adds no theorem or proof-body credit.
+
+## Curvature extracted from certified walks
+
+The subsequent `pp_walk_geometry` development computes angular curvature from
+the ordered coordinates of a `directed_pp_graph.Prewalk`. The coordinate map
+is an explicit input. Norms, normalized differences, clipping, inverse cosine,
+small-step branches and the finite average are mathematical functions, rather
+than independently supplied scalar observations.
+
+Locality is proved for each contribution's three-vertex window. Equality of
+observed traces implies equality of the computed curvature. A geometric
+certificate checks `pp_path`, a minimum of three samples, active successive
+steps and the curvature bound. Inactive samples cannot earn a certificate from
+a totalized zero score. Its preservation under `pp_transform` uses preservation of the same
+walk in an extended graph; it does not allow changes to the coordinate map or
+certify every new path in that graph.
+
+`lie_pp_connection` has a fixed coordinate-map parameter and a
+`CurvatureBoundPrewalk` subtype equating reported and computed curvature. Its
+certification result also recovers the actual vertex invariants. The earlier
+unconstrained `MeasuredPrewalk` and its graph-independent field-projection
+theorem are replaced by this interface. Legacy float fixtures remain
+`AttachedObservation`; their other numeric fields are not silently certified.
+
+Concrete normalized samples provide both a straight and an orthogonally bent
+three-sample path. The graph extension admits both, while the zero-curvature
+certificate admits only the straight path. Missing graph edges and a forged
+zero report for the bent path are rejected. These witnesses check the actual
+graph and geometric definitions rather than assuming the desired curvature.
+
+This application extension is separate from the historical Lean translation
+ledger. It formalizes an exact-real angular estimator, not NumPy binary64
+execution, calibration correctness, POT couplings, C20 coherence or a physical
+Lie generator. The prior finite-read integration receipt remains a dated
+record for its own source hashes; it is not evidence for this later extension.
+
+The completed [walk-geometry replay](../reports/PVS_WALK_GEOMETRY_20261029.json)
+checks both changed entry points and five Project modules. All **90 Project
+bodies and 757 required original Native bodies** passed the unchanged normal
+checker, with no unfinished bodies, missing scripts, copied or derived credit,
+or Native failures. The numerical fixture recheck also passed for all three
+recorded boot logs; those observations were not promoted to exact-real traces.
+
+With the library setup described in the repository README, the entry points
+can also be replayed separately:
+
+```sh
+python3 scripts/check.py --file applications/luces/pp_walk_geometry.pvs \
+  --jobs 1 --heap-mib 6144 --timeout 180
+
+python3 scripts/check.py --file applications/luces/lie_pp_connection.pvs \
+  --jobs 1 --heap-mib 6144 --timeout 180
+```
