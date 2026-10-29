@@ -1,0 +1,171 @@
+% Quadratic optimality certificates for the existing three-bin transport model.
+% Zero padding connects its actual marginals and objective to the established
+% ten-bin Kantorovich certificate theorem; weak duality is not reproved here.
+% The old finite model uses affine mass mixing, not McCann interpolation.
+% Its default product coupling is feasible but need not minimize transport cost.
+% Reference: Villani, Optimal Transport: Old and New (2009), Chapter 5.
+
+tangent_bundle_optimality: THEORY
+BEGIN
+
+  IMPORTING tangent_bundle[3] AS grid, tangent_bundle_finite_transport AS small,
+    monge_kantorovich_equivalence AS ten, kantorovich_duality AS lp,
+    reals@sq
+
+  mu, nu: VAR grid.Distr
+  pi, q: VAR grid.Coupling
+  i, j: VAR ten.Bin
+  k: VAR grid.Index
+  cost: VAR ten.Cost
+  P: VAR ten.Plan
+  t: VAR grid.Time
+
+  pad_real(f: [grid.Index -> real])(i: ten.Bin): real =
+    IF i < 3 THEN f(i) ELSE 0 ENDIF
+
+  padded_sum_three: LEMMA FORALL (f: [grid.Index -> real]):
+    sigma[ten.Bin](0,9,pad_real(f)) = f(0)+f(1)+f(2)
+
+  probability3?(mu): bool = small.mass(mu) = 1
+
+  pad_mass(mu)(i: ten.Bin): nonneg_real = IF i < 3 THEN mu(i) ELSE 0 ENDIF
+
+  pad_plan(pi)(i,j: ten.Bin): nonneg_real =
+    IF i < 3 AND j < 3 THEN pi(i,j) ELSE 0 ENDIF
+
+  padded_normalization: THEOREM ten.probability?(pad_mass(mu)) IFF probability3?(mu)
+
+  padded_row_mass: LEMMA ten.row_mass(pad_plan(pi),i) =
+    IF i < 3 THEN small.row_mass(pi,i) ELSE 0 ENDIF
+
+  padded_column_mass: LEMMA ten.col_mass(pad_plan(pi),j) =
+    IF j < 3 THEN small.column_mass(pi,j) ELSE 0 ENDIF
+
+  padded_row_matches: LEMMA small.feasible?(pi,mu,nu)
+    IMPLIES ten.row_mass(pad_plan(pi),i) = pad_mass(mu)(i)
+
+  padded_column_matches: LEMMA small.feasible?(pi,mu,nu)
+    IMPLIES ten.col_mass(pad_plan(pi),j) = pad_mass(nu)(j)
+
+  padded_feasible: THEOREM probability3?(mu) AND probability3?(nu) AND small.feasible?(pi,mu,nu)
+    IMPLIES ten.feasible?(pad_mass(mu),pad_mass(nu),pad_plan(pi))
+
+  padded_feasibility_reflects: LEMMA ten.feasible?(pad_mass(mu),pad_mass(nu),pad_plan(pi))
+    IMPLIES small.feasible?(pi,mu,nu)
+
+  finite_row_cost(cost,pi,k): real =
+    cost(k,0)*pi(k,0)+cost(k,1)*pi(k,1)+cost(k,2)*pi(k,2)
+
+  finite_cost(cost,pi): real = finite_row_cost(cost,pi,0)+
+    finite_row_cost(cost,pi,1)+finite_row_cost(cost,pi,2)
+
+  padded_row_cost: LEMMA sigma[ten.Bin](0,9,
+    LAMBDA (j: ten.Bin): cost(i,j)*pad_plan(pi)(i,j)) =
+      IF i < 3 THEN finite_row_cost(cost,pi,i) ELSE 0 ENDIF
+
+  padded_cost_profile: LEMMA
+    (LAMBDA (i: ten.Bin): sigma[ten.Bin](0,9,
+      LAMBDA (j: ten.Bin): cost(i,j)*pad_plan(pi)(i,j))) =
+      pad_real(LAMBDA (k: grid.Index): finite_row_cost(cost,pi,k))
+
+  padded_objective: THEOREM ten.kant_cost(cost,pad_plan(pi)) = finite_cost(cost,pi)
+
+  quadratic_cost: ten.Cost = LAMBDA (i,j: ten.Bin): sq(i-j)
+
+  linear_price: lp.Price = LAMBDA (i: ten.Bin): i
+
+  quadratic_objective(pi): real = finite_cost(quadratic_cost,pi)
+
+  adjacent_forward10?(P: ten.Plan): bool = FORALL (i,j: ten.Bin):
+    P(i,j) > 0 IMPLIES j = i OR j = i+1
+
+  adjacent_forward3?(pi): bool = FORALL (i,j: grid.Index):
+    pi(i,j) > 0 IMPLIES j = i OR j = i+1
+
+  integer_quadratic_domination: LEMMA j-i <= sq(i-j)
+
+  integer_quadratic_tight: LEMMA sq(i-j) = j-i IFF j = i OR j = i+1
+
+  linear_prices_dual_feasible: THEOREM lp.dual_feasible?(quadratic_cost,linear_price,linear_price)
+
+  adjacent_support_slack: THEOREM adjacent_forward10?(P)
+    IMPLIES lp.complementary_slack?(quadratic_cost,P,linear_price,linear_price)
+
+  adjacent_feasible_optimal10: THEOREM FORALL (source,target: ten.Mass, P: ten.Plan):
+    ten.feasible?(source,target,P) AND adjacent_forward10?(P) IMPLIES
+      ten.optimal_plan?(quadratic_cost,source,target,P) AND
+      ten.kant_cost(quadratic_cost,P) = lp.value(source,target,linear_price,linear_price)
+
+  padding_preserves_adjacent_support: THEOREM adjacent_forward3?(pi)
+    IMPLIES adjacent_forward10?(pad_plan(pi))
+
+  quadratic_optimal3?(mu,nu,pi): bool = small.feasible?(pi,mu,nu) AND
+    (FORALL (q: grid.Coupling): small.feasible?(q,mu,nu)
+      IMPLIES quadratic_objective(pi) <= quadratic_objective(q))
+
+  padded_optimal_competitor_bound: LEMMA probability3?(mu) AND probability3?(nu) AND
+    ten.optimal_plan?(quadratic_cost,pad_mass(mu),pad_mass(nu),pad_plan(pi)) AND small.feasible?(q,mu,nu)
+      IMPLIES quadratic_objective(pi) <= quadratic_objective(q)
+
+  padded_optimum_transfer: THEOREM probability3?(mu) AND probability3?(nu) AND
+    ten.optimal_plan?(quadratic_cost,pad_mass(mu),pad_mass(nu),pad_plan(pi))
+      IMPLIES quadratic_optimal3?(mu,nu,pi)
+
+  adjacent_feasible_optimal3: THEOREM probability3?(mu) AND probability3?(nu) AND
+    small.feasible?(pi,mu,nu) AND adjacent_forward3?(pi) IMPLIES
+      quadratic_optimal3?(mu,nu,pi) AND quadratic_objective(pi) =
+        lp.value(pad_mass(mu),pad_mass(nu),linear_price,linear_price)
+
+  padded_linear_value: THEOREM lp.value(pad_mass(mu),pad_mass(nu),linear_price,linear_price) =
+    nu(1)+2*nu(2)-mu(1)-2*mu(2)
+
+  pure_actual_coupler: LEMMA small.finite_coupler(small.pure_mu,small.pure_nu) = small.pure_plan
+
+  pure_adjacent_certificate: THEOREM probability3?(small.pure_mu) AND probability3?(small.pure_nu) AND
+    small.feasible?(small.pure_plan,small.pure_mu,small.pure_nu) AND adjacent_forward3?(small.pure_plan)
+
+  pure_optimality_and_value: THEOREM
+    quadratic_optimal3?(small.pure_mu,small.pure_nu,small.finite_coupler(small.pure_mu,small.pure_nu)) AND
+    quadratic_objective(small.finite_coupler(small.pure_mu,small.pure_nu)) = 1 AND
+    lp.value(pad_mass(small.pure_mu),pad_mass(small.pure_nu),linear_price,linear_price) = 1
+
+  split_adjacent_certificate: THEOREM probability3?(small.split_mu) AND probability3?(small.split_nu) AND
+    small.feasible?(small.split_plan,small.split_mu,small.split_nu) AND adjacent_forward3?(small.split_plan)
+
+  split_optimality_and_value: THEOREM
+    quadratic_optimal3?(small.split_mu,small.split_nu,small.finite_coupler(small.split_mu,small.split_nu)) AND
+    quadratic_objective(small.finite_coupler(small.split_mu,small.split_nu)) = 1/2 AND
+    lp.value(pad_mass(small.split_mu),pad_mass(small.split_nu),linear_price,linear_price) = 1/2
+
+  optimality_does_not_remove_representation_obstruction: THEOREM
+    quadratic_optimal3?(small.split_mu,small.split_nu,small.finite_coupler(small.split_mu,small.split_nu)) AND
+    NOT (EXISTS (transport: grid.Map): grid.pushforward(small.split_mu,transport) = small.split_nu) AND
+    grid.gap_at(small.finite_model,small.split_mu,small.split_nu,t) = t AND
+    grid.gap_at(small.finite_model,small.pure_mu,small.pure_nu,t) = 0
+
+  stationary_mass: grid.Distr = small.pure_mu
+
+  stationary_diagonal: grid.Coupling = LAMBDA (i,j: grid.Index):
+    IF i = j THEN stationary_mass(i) ELSE 0 ENDIF
+
+  stationary_pair_not_pure: LEMMA NOT small.pure_pair?(stationary_mass,stationary_mass)
+
+  stationary_product_is_actual: LEMMA
+    small.finite_coupler(stationary_mass,stationary_mass) = small.product_plan(stationary_mass,stationary_mass)
+
+  stationary_diagonal_feasible: THEOREM small.feasible?(stationary_diagonal,stationary_mass,stationary_mass)
+
+  stationary_costs: LEMMA quadratic_objective(small.finite_coupler(stationary_mass,stationary_mass)) = 1/2 AND
+    quadratic_objective(stationary_diagonal) = 0
+
+  better_feasible_competitor: LEMMA small.feasible?(q,mu,nu) AND
+    quadratic_objective(q) < quadratic_objective(pi) IMPLIES NOT quadratic_optimal3?(mu,nu,pi)
+
+  current_coupler_not_always_optimal: THEOREM
+    probability3?(stationary_mass) AND
+    small.feasible?(small.finite_coupler(stationary_mass,stationary_mass),stationary_mass,stationary_mass) AND
+    quadratic_objective(small.finite_coupler(stationary_mass,stationary_mass)) = 1/2 AND
+    quadratic_objective(stationary_diagonal) = 0 AND
+    NOT quadratic_optimal3?(stationary_mass,stationary_mass,small.finite_coupler(stationary_mass,stationary_mass))
+
+END tangent_bundle_optimality
