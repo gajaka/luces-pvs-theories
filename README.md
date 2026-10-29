@@ -28,10 +28,41 @@ connect meta refinement to the core RR definition, and establish categorical
 quotients under explicit noncollapse and descent conditions. An operational MT
 bridge follows the supplied directed edges under a primitive-step contract.
 These are scoped extensions of the historical translation, with their own proof
-replay; the Lean inventory is now 1,842 results in 192 modules. The application
+replay. The application
 corrections replace the finite transport reconstruction assumption, derive
 regime tests from calibrated arithmetic and use a directed boot policy. See the
 [scope and verification details](docs/THEOREM_SCOPE.md#structural-and-application-corrections).
+
+The subsequent finite-read integration retains repeated certificate positions
+and derives read locality from checker syntax. Its measured LUCES instance
+searches a fixed bank of candidate coupling snapshots while preserving the
+signed GEN observation and dataset identity. The associated Lean inventory is
+now **1,876 results in 198 modules**; this is a Lean declaration count, not a new
+whole-library PVS replay count. The revised LUCES theories use explicit finite
+models, checked model laws and measured numerical inputs in place of the
+earlier hand-written axioms. Read the [LUCES model scope](docs/LUCES_MODEL_SCOPE.md)
+for the established claims and the remaining implementation and physical
+boundaries.
+
+The latest incremental verification, completed on **2026-10-29**, covers
+**28 changed `.pvs` files and 30 changed `.prf` files**: 27 semantic source
+changes, one equivalent PVS-generated ADT rendering and three additional
+proof-only repairs. Ten completed normal replay reports cover all 30
+proof-bearing source roots and their loaded Project and required Native
+dependencies. Eight existing passes were reused after checking their actual
+loaded source/proof hashes against the publication. The two new passes replayed
+**723 Project + 956 Native bodies** for the proof repairs and
+**17 Project + 761 Native bodies** for the Shannon example, with no unfinished
+bodies or missing scripts. These counts overlap. See the
+[incremental verification receipt](reports/PVS_INCREMENTAL_REPLAY_20261029.json).
+
+All 1,121 selected files also passed typechecking. The later whole-library
+proof replay was stopped when the requested scope changed to modified and
+affected theories; it is not reported as a new whole-library proof pass.
+The source dependency and qualified-reference checks found no additional
+unchanged consumers of the 27 semantic changes. The generated ADT change only
+expands the binder `(x,y:T)` to `(x:T,y:T)` and removes three blank lines;
+its parent datatype is unchanged.
 
 ## Directory layout
 
@@ -69,12 +100,42 @@ driver, version `8.1-20260706`. The libraries must be available through
 the project library directories as well when using interactive PVS or `proveit`:
 
 ```sh
-export PVS_LIBRARY_PATH="$PWD/theories:$PWD/applications:/path/to/pvslib"
+export PVS_LIBRARY_PATH="$PWD/theories:$PWD/applications:/path/to/pvs/nasalib:/path/to/pvs/lib"
 ```
+
+The bundled `lib` directory supplies required original proof inputs such as
+`finite_sets`; it is distinct from NASAlib. Before replaying the logarithm and
+entropy dependencies with PVS 8.1.2, check the versioned
+[NASAlib proof-metadata compatibility bundle](library-proof-fixes/README.md):
+
+```sh
+python3 scripts/apply_library_proof_fixes.py \
+  --nasalib-root /path/to/pvs/nasalib --check
+```
+
+If the check identifies supported original files, apply the documented changes
+with `--apply` while no PVS session uses that library, then repeat `--check`.
+Unknown source or proof versions are rejected. The bundle covers 130 exact
+decision-procedure metadata slots in 44 files, preserving verified originals
+and all theorem statements, proof programs and dependency lists. Applying it
+is setup, not proof replay.
 
 PVS loads the project startup file [theories/.pvs.lisp](theories/.pvs.lisp)
 from that library path. It uses the standard setting that prevents recursive
 binary-cache serialization across the project libraries.
+
+The recorded full-replay V2 input snapshot is pinned to the official
+[`nasa/pvslib` commit `f3bb2b36240ff3413136b2a46e431c47350fe108`](https://github.com/nasa/pvslib/commit/f3bb2b36240ff3413136b2a46e431c47350fe108),
+plus the earlier single-slot `integral_split_scaf` metadata fix. An audit of all
+2,502 tracked `.pvs` and 2,242 tracked `.prf` files found no other differences
+from that commit. A later slot-aware audit identified the other 43 files in
+the expanded compatibility bundle. Its 44-file sandbox validation establishes
+metadata, source and proof-program preservation; it does not replay their
+Native proofs. The frozen V2 inputs still contain only the earlier integral
+fix. Results for a dependency closure using further metadata fixes must be
+reported separately. These input copies do not contain the private
+proof-program repairs used in the older historical checks below. See the
+[library setup instructions](library-proof-fixes/README.md).
 
 Each `.pvs` file contains specifications and theorem statements. Its `.prf`
 companion contains saved proofs. Typechecking checks expressions and generates
@@ -196,7 +257,7 @@ additional bodies from the unchanged library sources and saved proofs. Both
 product-law projections and transport of the existing extended expected work
 are checked in that run.
 
-The HLS and directory-reorganization checks use a local NASAlib copy with
+The historical HLS and directory-reorganization checks used a local NASAlib copy with
 proof-script repairs for `series.convergent_abs`,
 `absconv_series_aux.nonneg_series_inj_conv` and `measure_space.simple_def3`.
 The directory check also uses focused proof programs for five obligations in
@@ -204,8 +265,9 @@ The directory check also uses focused proof programs for five obligations in
 `lebesgue_outer_measure_le_length`, `lebesgue_outer_measure_TCC1`,
 `outer_measurable_open_semi_infinite` and `lebesgue_measure_TCC1`, together
 with `lebesgue_def.lambda_closed_ball`. Library statements and source files
-are unchanged. These proof programs remain in the checked local library copy
-and are not published in this repository. The runner records the hashes of the
+were unchanged. Those historical proof-program repairs are separate from the
+published [metadata compatibility fix](library-proof-fixes/README.md); that fix
+does not install the older repairs. The runner records the hashes of the
 external sources and proofs it actually copies in `inputs.json`; a check of
 another library copy uses that copy's proof programs.
 
@@ -213,8 +275,8 @@ The table reports the earlier translation checks. The reorganization check
 above separately covers the selected legacy applications as well as the generic
 theories; it excludes `Sterbenz/`.
 
-The generic theories and boot models contain no hand-written `AXIOM`
-declarations. Healthy self-repair requires an explicit reflexivity hypothesis.
+The generic theories, boot models and current `applications/luces/` sources
+contain no hand-written `AXIOM` declarations. Healthy self-repair requires an explicit reflexivity hypothesis.
 The weighted model states the cost laws as hypotheses and defines path cost
 as the sum of consecutive edge costs.
 
@@ -223,13 +285,16 @@ contain PVS's datatype axioms for constructors, selectors, induction and
 well-founded recursion. These belong to the datatype representation; they do
 not assume the Local Lemma, Moser--Tardos or convergence results.
 
-Some legacy `applications/luces/` theories declare empirical or mathematical
-axioms. Their results are conditional on those assumptions. For example,
-[kantorovich_duality.pvs](applications/luces/kantorovich_duality.pvs) declares feasibility and
-complementary-slackness assumptions, while
-[lie_generator_structure.pvs](applications/luces/lie_generator_structure.pvs) states the
-observability/coherence assumptions it uses. Their proof scope should be read
-from the declarations in those files.
+Removing the earlier LUCES axioms involved changing the models and their claims.
+For example, finite Kantorovich results check normalized marginal feasibility,
+dual feasibility and complementary slackness; they do not assume that arbitrary
+empirical prices satisfy those checks. The Lie-generator models evaluate the
+same numeric fields as their boolean screens and include counterexamples to
+the former universal implications. Other theories explicitly require metric,
+geodesic, chart or experiment laws. A theorem under a checked law package is
+conditional on that package; absence of `AXIOM` declarations does not establish
+an end-to-end theorem about a physical controller. See
+[LUCES model scope](docs/LUCES_MODEL_SCOPE.md).
 
 The revised `tangent_bundle`, `transport_ppg` and `unbalanced_regime` files
 contain no hand-written axioms. Their contracts use explicit function laws,

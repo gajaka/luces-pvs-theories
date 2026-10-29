@@ -1,0 +1,126 @@
+% Dependency vertices are positions in the original certificate list.
+% Equal predicates at different positions remain different vertices, with
+% independent footprint entries, repair functions and occurrences in a plan.
+% The guard makes the evaluator false outside the finite valid index set.
+%
+% This is the position-preserving counterpart of
+% PPGraph.Integration.CertificationDependency. The predicate-keyed theory
+% ppg_certification_dependency remains a separate, coarser representation.
+% Locality and the component repair contract are obligations on the actual
+% indexed predicates; these theorems do not infer reads or synthesize repairs.
+
+ppg_indexed_certification_dependency[V, Value, Th: TYPE,
+  le: (partial_order?[Th])]: THEORY
+BEGIN
+
+  IMPORTING ppg_list_blocking[[V -> Value], Th, le],
+    finite_sets@finite_sets_nat, foundations@ppg_list_sets[nat],
+    ppg_core@ppg_bdd_locality[nat, V, Value],
+    ppg_generic_self_assessment[nat, [V -> Value]]
+
+  Data: TYPE = [V -> Value]
+
+  F: VAR CertFamily
+  C: VAR Certificate
+  c, q: VAR nat
+  t: VAR Th
+  before, after, d: VAR Data
+  vars: VAR CertVars
+  repair: VAR [nat, Data -> Data]
+  plan: VAR list[nat]
+
+  tracked(F): finite_set[nat] = {q: nat | q < length(F)}
+
+  indexed_holds(F, t)(q, d): bool =
+    IF q < length(F) THEN nth(F, q)(d, t) ELSE FALSE ENDIF
+
+  FamilyLocal(F, vars, t): bool = Local(vars, indexed_holds(F, t))
+
+  failing(F, t, d): finite_set[nat] =
+    intersection(tracked(F), {q: nat | NOT indexed_holds(F, t)(q, d)})
+
+  ComponentChecked(F, vars, t, c, before, after): bool =
+    tracked(F)(c) AND
+    (FORALL (v: V): NOT componentFootprint(vars, tracked(F), c)(v)
+      IMPLIES before(v) = after(v)) AND
+    (FORALL (q: nat): compOf(vars, tracked(F), c)(q)
+      IMPLIES indexed_holds(F, t)(q, after))
+
+  tracked_index: LEMMA tracked(F)(q) IFF q < length(F)
+
+  tracked_cardinality: LEMMA card(tracked(F)) = length(F)
+
+  indexed_holds_tracked: LEMMA indexed_holds(F, t)(q, d) IMPLIES tracked(F)(q)
+
+  indexed_holds_at_valid_index: LEMMA
+    FORALL (i: below(length(F))): indexed_holds(F, t)(i, d) IFF nth(F, i)(d, t)
+
+  fully_certified_iff_all: THEOREM
+    fully_certified(F)(d, t) IFF
+      (FORALL (q: nat): tracked(F)(q) IMPLIES indexed_holds(F, t)(q, d))
+
+  % The image forgets multiplicity only at the predicate-valued API boundary.
+  % The failing index set and every dependency/repair operation retain it.
+  blocking_set_eq_image_failing: THEOREM
+    blocking_set(F, d, t) =
+      {C: Certificate | EXISTS (i: below(length(F))):
+        failing(F, t, d)(i) AND nth(F, i) = C}
+
+  fully_certified_iff_failing_empty: THEOREM
+    fully_certified(F)(d, t) IFF failing(F, t, d) = emptyset[nat]
+
+  duplicate_positions_distinct: LEMMA monotone_cert(C) IMPLIES
+    tracked(cons(C, cons(C, null)))(0) AND
+    tracked(cons(C, cons(C, null)))(1) AND 0 /= 1 AND
+    (indexed_holds(cons(C, cons(C, null)), t)(0, d) IFF
+      indexed_holds(cons(C, cons(C, null)), t)(1, d))
+
+  component_repair_preserves: THEOREM
+    FamilyLocal(F, vars, t) AND ComponentChecked(F, vars, t, c, before, after)
+      IMPLIES FORALL (q: nat): tracked(F)(q) AND indexed_holds(F, t)(q, before)
+        IMPLIES indexed_holds(F, t)(q, after)
+
+  component_repair_valid_repair: THEOREM
+    FamilyLocal(F, vars, t) AND ComponentChecked(F, vars, t, c, before, repair(c, before))
+      IMPLIES valid_repair(LAMBDA (d: Data, q: nat): repair(q, d),
+        LAMBDA (d: Data, q: nat): indexed_holds(F, t)(q, d), before, c)
+
+  component_repair_failing_outside: LEMMA
+    ComponentChecked(F, vars, t, c, before, after) AND failing(F, t, after)(q)
+      IMPLIES NOT SameComponent(vars, tracked(F))(c, q)
+
+  component_repair_failing_subset: THEOREM
+    FamilyLocal(F, vars, t) AND ComponentChecked(F, vars, t, c, before, after)
+      IMPLIES subset?(failing(F, t, after), failing(F, t, before))
+
+  component_repair_strict_progress: THEOREM
+    FamilyLocal(F, vars, t) AND ComponentChecked(F, vars, t, c, before, after) AND
+    failing(F, t, before)(c) IMPLIES
+      strict_subset?(failing(F, t, after), failing(F, t, before))
+
+  component_repair_certifies: THEOREM
+    FamilyLocal(F, vars, t) AND ComponentChecked(F, vars, t, c, before, after) AND
+    (FORALL (q: nat): failing(F, t, before)(q)
+      IMPLIES SameComponent(vars, tracked(F))(c, q))
+      IMPLIES fully_certified(F)(after, t)
+
+  run(repair, before, plan): RECURSIVE Data =
+    CASES plan OF
+      null: before,
+      cons(c, rest): run(repair, repair(c, before), rest)
+    ENDCASES MEASURE length(plan)
+
+  PlanChecked(F, vars, t, repair, before, plan): RECURSIVE bool =
+    CASES plan OF
+      null: TRUE,
+      cons(c, rest): ComponentChecked(F, vars, t, c, before, repair(c, before)) AND
+        PlanChecked(F, vars, t, repair, repair(c, before), rest)
+    ENDCASES MEASURE length(plan)
+
+  checked_plan_certifies: THEOREM
+    FamilyLocal(F, vars, t) AND PlanChecked(F, vars, t, repair, before, plan) AND
+    (FORALL (q: nat): failing(F, t, before)(q) IMPLIES
+      EXISTS (c: nat): member(c, plan) AND SameComponent(vars, tracked(F))(c, q))
+      IMPLIES fully_certified(F)(run(repair, before, plan), t)
+
+END ppg_indexed_certification_dependency

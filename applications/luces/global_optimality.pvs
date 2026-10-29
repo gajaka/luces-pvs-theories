@@ -1,201 +1,86 @@
-global_optimality: THEORY
+% Additive cost accounting for two segments of the same oriented path.
+%
+% Independent costs assigned to unrelated state pairs cannot justify a
+% claim about one physical trajectory. Here the full cost is the sum of
+% its two segment costs. Each segment has a nonnegative extra cost above
+% its geodesic distance. Zero full excess therefore excludes positive
+% segment excess. A small positive global ratio can coexist with a larger
+% local ratio when that segment is short; the concrete example gives23%
+% locally and4.6% globally. This is not an empirical assertion about a log.
+% These are additive path-length costs, not an identification with a raw
+% squared-cost Kantorovich objective.
+
+ global_optimality[D: TYPE+]: THEORY
 BEGIN
 
-  IMPORTING reals@real_props
+  IMPORTING wasserstein_metric[D]
 
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Geodesic Segmentation and Global Optimality
-  %% ═══════════════════════════════════════════════════════════════════
-  %%
-  %% Villani (2009), Ch.7, Theorem 7.21:
-  %%   Displacement interpolation defines geodesics in P_2(X).
-  %%   Segmentation into sub-arcs preserves geodesic additivity.
-  %%
-  %% Formal protection against misinterpretation of local excess.
-  %%
-  %% DAWN and DUSK are NOT independent targets.
-  %% They are interpolation points on full geodesics:
-  %%   - DAWN = t ≈ 0.27 on NIGHT --> DAY geodesic
-  %%   - DUSK = t ≈ 0.73 on DAY --> NIGHT geodesic
-  %%
-  %% Local segment excess (C8 FAIL on DAY-->DUSK) does NOT contradict
-  %% global near-optimality of the full DAY-->NIGHT trajectory.
-  %%
-  %% Connection to certificates:
-  %%   C8  (near-optimality): local excess per segment
-  %%   C12 (geodesic additivity): arc/chord ratio
-  %%   displacement_interpolation.pvs: McCann interpolation
-  %%   unbalanced_regime.pvs: regime explains local excess
-  %%
-  %% Empirical: boot298 dusk full path 0% excess, DAY-->DUSK segment 23%
-  %% ═══════════════════════════════════════════════════════════════════
+  Run: TYPE = [# model: GeodesicModel, start, finish: D, split: UnitInterval,
+    extra_first, extra_second: nonneg_real #]
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Types
-  %% ─────────────────────────────────────────────────────────────────
+  R: VAR Run
 
-  % Abstract state (point on the manifold)
-  State: TYPE+
+  mid(R): D = interp(R`model)(R`start, R`finish, R`split)
 
-  % Transport cost (Wasserstein-2 distance)
-  W2: [State, State -> nonneg_real]
+  first_distance(R): nonneg_real = distance(R`model)(R`start, mid(R))
 
-  % Interpolation parameter
-  t: VAR {x: real | x >= 0 AND x <= 1}
+  second_distance(R): nonneg_real = distance(R`model)(mid(R), R`finish)
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Metric axioms
-  %% ─────────────────────────────────────────────────────────────────
+  full_distance(R): nonneg_real = distance(R`model)(R`start, R`finish)
 
-  s, s1, s2, s3: VAR State
+  first_cost(R): nonneg_real = first_distance(R) + R`extra_first
 
-  ax_metric_zero: AXIOM
-    FORALL s: W2(s, s) = 0
+  second_cost(R): nonneg_real = second_distance(R) + R`extra_second
 
-  ax_metric_positive: AXIOM
-    FORALL s1, s2: s1 /= s2 IMPLIES W2(s1, s2) > 0
+  physical_cost(R): nonneg_real = first_cost(R) + second_cost(R)
 
-  ax_metric_symmetric: AXIOM
-    FORALL s1, s2: W2(s1, s2) = W2(s2, s1)
+  full_gap(R): real = physical_cost(R) - full_distance(R)
 
-  ax_metric_triangle: AXIOM
-    FORALL s1, s2, s3: W2(s1, s3) <= W2(s1, s2) + W2(s2, s3)
+  % Ratios are totalized by zero at zero reference distance. The weighted
+  % ratio identity below requires strictly positive segment distances.
+  first_ratio(R): nonneg_real = IF first_distance(R) > 0
+    THEN R`extra_first / first_distance(R) ELSE 0 ENDIF
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Geodesic interpolation
-  %% ─────────────────────────────────────────────────────────────────
+  second_ratio(R): nonneg_real = IF second_distance(R) > 0
+    THEN R`extra_second / second_distance(R) ELSE 0 ENDIF
 
-  % Geodesic interpolant: point at parameter t on geodesic from s1 to s2
-  interp: [State, State, {x: real | x >= 0 AND x <= 1} -> State]
+  full_ratio(R): nonneg_real = IF full_distance(R) > 0
+    THEN (R`extra_first + R`extra_second) / full_distance(R) ELSE 0 ENDIF
 
-  % A5: Endpoints of interpolation
-  ax_interp_start: AXIOM
-    FORALL s1, s2: interp(s1, s2, 0) = s1
+  cost_gap_identity: THEOREM geodesic_laws?(R`model) IMPLIES
+    full_gap(R) = R`extra_first + R`extra_second
 
-  ax_interp_end: AXIOM
-    FORALL s1, s2: interp(s1, s2, 1) = s2
+  costs_geodesic_lower_bound: THEOREM geodesic_laws?(R`model) IMPLIES
+    physical_cost(R) >= full_distance(R)
 
-  % A6: Geodesic property — distance splits linearly along geodesic
-  ax_geodesic_split: AXIOM
-    FORALL s1, s2, (t: {x: real | x >= 0 AND x <= 1}):
-      W2(s1, interp(s1, s2, t)) + W2(interp(s1, s2, t), s2)
-        = W2(s1, s2)
+  individual_extra_bounds: THEOREM geodesic_laws?(R`model) IMPLIES
+    R`extra_first <= full_gap(R) AND R`extra_second <= full_gap(R)
 
-  % A7: Interpolation distance is proportional to t
-  ax_interp_distance: AXIOM
-    FORALL s1, s2, (t: {x: real | x >= 0 AND x <= 1}):
-      W2(s1, interp(s1, s2, t)) = t * W2(s1, s2)
+  zero_full_gap_no_segment_extras: THEOREM
+    geodesic_laws?(R`model) AND full_gap(R) = 0 IMPLIES R`extra_first = 0 AND R`extra_second = 0
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Regime states (concrete instances)
-  %% ─────────────────────────────────────────────────────────────────
-
-  NIGHT: State
-
-  DAWN: State
-
-  DAY: State
-
-  DUSK: State
-
-  % Regimes are distinct
-  ax_distinct_night_day: AXIOM NIGHT /= DAY
-
-  ax_distinct_night_dawn: AXIOM NIGHT /= DAWN
-
-  ax_distinct_day_dusk: AXIOM DAY /= DUSK
-
-  % DAWN is an interpolation point on NIGHT --> DAY geodesic
-  t_dawn: {x: real | x >= 0 AND x <= 1}
-
-  ax_dawn_interp: AXIOM
-    DAWN = interp(NIGHT, DAY, t_dawn)
-
-  % DUSK is an interpolation point on DAY --> NIGHT geodesic
-  t_dusk: {x: real | x >= 0 AND x <= 1}
-
-  ax_dusk_interp: AXIOM
-    DUSK = interp(DAY, NIGHT, t_dusk)
-
-  %% ─────────────────────────────────────────────────────────────────
-  %% Physical (observed) costs vs optimal costs
-  %% ─────────────────────────────────────────────────────────────────
-
-  % Physical cost of a segment (may exceed optimal due to path curvature)
-  phys_cost: [State, State -> nonneg_real]
-
-  % A8: Physical cost is at least optimal (can't beat geodesic)
-  ax_phys_geq_optimal: AXIOM
-    FORALL s1, s2: phys_cost(s1, s2) >= W2(s1, s2)
-
-  % Helper: physical excess is nonneg
-  phys_excess_nn(s1, s2: State): nonneg_real = phys_cost(s1, s2) - W2(s1, s2)
-
-  % Excess ratio: how much physical exceeds optimal
-  excess(s1, s2: State): nonneg_real =
-    IF W2(s1, s2) > 0 THEN phys_excess_nn(s1, s2) / W2(s1, s2)
-    ELSE 0
-    ENDIF
-
-  % A9: Full path (NIGHT-->DAY) is near-optimal (empirical: <5% excess)
-  epsilon_global: nonneg_real
-
-  ax_global_near_optimal: AXIOM
-    excess(NIGHT, DAY) <= epsilon_global
-
-  % A10: Local segment (DAY-->DUSK) has significant excess (empirical: ~23%)
-  ax_local_has_excess: AXIOM
-    excess(DAY, DUSK) > epsilon_global
-
-  %% ─────────────────────────────────────────────────────────────────
-  %% Theorems
-  %% ─────────────────────────────────────────────────────────────────
-
-  % T1: Coexistence — local excess and global near-optimality can coexist
-  %     (prevents misinterpretation of C8 FAIL as global failure)
-  thm_coexistence: THEOREM
-    excess(DAY, DUSK) > epsilon_global AND
-    excess(NIGHT, DAY) <= epsilon_global
-
-  % T2: DAWN splits the NIGHT-->DAY geodesic exactly
-  %     (no excess on the full path means DAWN is ON the geodesic)
-  thm_dawn_on_geodesic: THEOREM
-    W2(NIGHT, DAWN) + W2(DAWN, DAY) = W2(NIGHT, DAY)
-
-  % T3: DUSK splits the DAY-->NIGHT geodesic exactly
-  thm_dusk_on_geodesic: THEOREM
-    W2(DAY, DUSK) + W2(DUSK, NIGHT) = W2(DAY, NIGHT)
-
-  % T4: Segment distance is bounded by full path distance
-  thm_segment_bounded: THEOREM
-    W2(DAY, DUSK) <= W2(DAY, NIGHT)
-
-  % T5: DAWN distance from NIGHT is proportional to t_dawn
-  thm_dawn_proportional: THEOREM
-    W2(NIGHT, DAWN) = t_dawn * W2(NIGHT, DAY)
-
-  % T6: DUSK distance from DAY is proportional to t_dusk
-  thm_dusk_proportional: THEOREM
-    W2(DAY, DUSK) = t_dusk * W2(DAY, NIGHT)
-
-  % T7: Optimal segment distance is bounded by physical full path cost
-  %     W2(DAY, DUSK) <= phys_cost(DAY, NIGHT)
-  %     (segment geodesic distance cannot exceed full path physical cost)
-  thm_excess_triangle_bound: THEOREM
-    W2(DAY, DUSK) <= phys_cost(DAY, NIGHT)
-
-  % T8: Global near-optimality implies segments are not arbitrarily bad
-  %     (the sum of segment costs is bounded by near-optimal full cost)
-  thm_segment_sum_bounded: THEOREM
-    W2(NIGHT, DAWN) + W2(DAWN, DAY) <= phys_cost(NIGHT, DAY)
-
-  % T9: Interpolation points are metrically between endpoints
-  thm_interp_between: THEOREM
-    W2(NIGHT, DAWN) <= W2(NIGHT, DAY)
-
-  % T10: Geodesic additivity gap characterizes non-geodesic deviation
-  %      If physical path is NOT geodesic, gap > 0
-  thm_additivity_gap: THEOREM
-    phys_cost(DAY, DUSK) + phys_cost(DUSK, NIGHT) >= W2(DAY, NIGHT)
+  weighted_ratio_identity: THEOREM geodesic_laws?(R`model) AND
+    R`split > 0 AND R`split < 1 AND full_distance(R) > 0 IMPLIES
+    full_ratio(R) = R`split*first_ratio(R) + (1-R`split)*second_ratio(R)
 
 END global_optimality
+
+
+global_optimality_example: THEORY
+BEGIN
+
+  IMPORTING global_optimality[real], wasserstein_real_model
+
+  example_run: Run = (# model := real_model, start := 0, finish := 10, split := 1/5,
+    extra_first := 23/50, extra_second := 0 #)
+
+  example_valid: THEOREM geodesic_laws?(example_run`model)
+
+  exact_segment_costs: THEOREM first_distance(example_run) = 2 AND
+    second_distance(example_run) = 8 AND physical_cost(example_run) = 523/50
+
+  exact_excess_ratios: THEOREM first_ratio(example_run) = 23/100 AND full_ratio(example_run) = 23/500
+
+  thm_coexistence: THEOREM first_ratio(example_run) > 1/20 AND full_ratio(example_run) <= 1/20
+
+END global_optimality_example

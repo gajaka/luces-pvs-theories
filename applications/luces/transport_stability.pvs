@@ -1,171 +1,62 @@
-%%% transport_stability.pvs
-%%% Transport Map Stability: Does T Persist Across Independent Dawn Events?
-%%%
-%%% Empirical basis:
-%%%   Boot 291: 867 NIGHT x 205 DAWN (May 2026)
-%%%   Boot 293: 564 NIGHT x 228 DAWN (June 13, 2026)
-%%%   22 dawn cycles from 5 independent boots (May 5 - June 13, 2026)
-%%%
-%%% Key empirical results:
-%%%   Spearman rho(T_291, T_293) = 0.9985
-%%%   Mean rho across 22 dawn cycles = 0.876
-%%%   All optimal plans are vertex solutions (~0.6% sparsity)
-%%%   Near-Monge structure (70-94%) survives across all tested boots
-%%%
-%%% Theoretical reference:
-%%%   Villani (2009), Chapter 5:
-%%%   - Theorem 5.20: Stability of optimal plans
-%%%   - Corollary 5.21: Compactness of the set of optimal plans
-%%%   - Corollary 5.23: Stability of transport maps
-%%%
-%%% Structure:
-%%%   6 empirical axioms -> 5 theorems
-%%%   Axioms encode observed properties across two boots.
-%%%   Theorems derive stability, learnability, and controller feasibility.
-%%%
-%%% Author: Dragan Stosic, 2026
+% Exact finite rank stability, with no empirical Spearman axioms.
+% Inputs are permutations of twenty distinct ranks; this formula does not
+% implement tie correction for arbitrary raw transport-map outputs.
+% Identity and a single adjacent swap are different maps with rho=664/665.
+% Reversal has rho=-1, showing that persistence is not a universal property.
+% These are constructed examples, not inferred measurements of boot291/293
+% and not a theorem about a controller's physical learnability.
 
 transport_stability: THEORY
 BEGIN
 
-%% ═══════════════════════════════════════════════════════════
-%% Types
-%% ═══════════════════════════════════════════════════════════
+  RankCount: posnat = 20
+  Bin: TYPE = below(RankCount)
+  IMPORTING reals@sigma_below[RankCount], reals@sq
 
-  NumBoots: posnat = 2
+  RankMap: TYPE = {T: [Bin -> Bin] | injective?(T)}
+  T, U: VAR RankMap
+  tolerance, threshold: VAR real
 
-  BootIndex: TYPE = below(NumBoots)  % {0 = boot291, 1 = boot293}
+  squared_rank_distance(T,U): nonneg_real =
+    sigma[Bin](0,RankCount-1,LAMBDA (i: Bin): sq(T(i)-U(i)))
 
-  NumBins: posnat = 20
+  spearman_rho(T,U): real = 1 - 6*squared_rank_distance(T,U)/(RankCount*(RankCount*RankCount-1))
 
-  Bin: TYPE = below(NumBins)
+  rho_reflexive: THEOREM spearman_rho(T,T) = 1
 
-  % Transport map: assigns each source bin to a target bin
-  TransportMap: TYPE = [Bin -> Bin]
+  rho_symmetric: THEOREM spearman_rho(T,U) = spearman_rho(U,T)
 
-  % Spearman rank correlation
-  spearman_rho: [TransportMap, TransportMap -> real]
+  rho_upper_bound: THEOREM spearman_rho(T,U) <= 1
 
-  % Standard properties of Spearman rho (correlation coefficient)
-  ax_rho_reflexive: AXIOM
-    FORALL (T1: TransportMap): spearman_rho(T1, T1) > 99/100
+  identity_map: RankMap = LAMBDA (i: Bin): i
 
-  ax_rho_symmetric: AXIOM
-    FORALL (T1, T2: TransportMap): spearman_rho(T1, T2) = spearman_rho(T2, T1)
+  adjacent_swap: RankMap = LAMBDA (i: Bin): IF i = 0 THEN 1 ELSIF i = 1 THEN 0 ELSE i ENDIF
 
-  % Structural properties
-  Plan: TYPE = [nat, nat -> nonneg_real]
+  reverse_map: RankMap = LAMBDA (i: Bin): RankCount-1-i
 
-  nnz: [Plan -> nat]
+  adjacent_swap_distance: LEMMA squared_rank_distance(identity_map,adjacent_swap) = 2
 
-  monge_fraction: [Plan -> nonneg_real]
+  adjacent_swap_rho: THEOREM spearman_rho(identity_map,adjacent_swap) = 664/665
 
-%% ═══════════════════════════════════════════════════════════
-%% Given objects (from empirical computation)
-%% ═══════════════════════════════════════════════════════════
+  reverse_rho: THEOREM spearman_rho(identity_map,reverse_map) = -1
 
-  % Optimal transport map per boot (20-quantile assignment)
-  T: [BootIndex -> TransportMap]
+  BootIndex: TYPE = below(2)
 
-  % Optimal plan per boot (full Kantorovich)
-  optimal_plan: [BootIndex -> Plan]
+  example_maps(k: BootIndex): RankMap = IF k = 0 THEN identity_map ELSE adjacent_swap ENDIF
 
-  % Vertex bound per boot
-  vertex_bound: [BootIndex -> nat]
+  map_persistent?(threshold): bool =
+    FORALL (k1,k2: BootIndex): spearman_rho(example_maps(k1),example_maps(k2)) > threshold
 
-%% ═══════════════════════════════════════════════════════════
-%% Empirical Axioms
-%% ═══════════════════════════════════════════════════════════
+  reference_agreement?(T,tolerance): bool =
+    FORALL (k: BootIndex): spearman_rho(example_maps(k),T) > 1-tolerance
 
-  % A1: Maps are highly correlated (rho = 0.9985)
-  ax_map_correlation: AXIOM
-    spearman_rho(T(0), T(1)) > 99/100
+  finite_example_persistent: THEOREM map_persistent?(99/100)
 
-  % A2: Both maps are near-identity (rank-preserving in spectral space)
-  ax_map_near_identity: AXIOM
-    FORALL (k: BootIndex):
-      spearman_rho(T(k), LAMBDA (b: Bin): b) > 99/100
+  finite_example_reference: THEOREM reference_agreement?(identity_map,1/100)
 
-  % A3: Both plans are vertex solutions
-  ax_both_vertex: AXIOM
-    FORALL (k: BootIndex):
-      nnz(optimal_plan(k)) <= vertex_bound(k)
+  finite_stability_certificate: THEOREM map_persistent?(99/100) AND
+    reference_agreement?(identity_map,1/100) AND example_maps(0)(0) /= example_maps(1)(0)
 
-  % A4: Both plans are near-Monge
-  ax_both_near_monge: AXIOM
-    FORALL (k: BootIndex):
-      monge_fraction(optimal_plan(k)) > 69/100
-
-  % A5: W2 costs are finite and bounded
-  W2: [BootIndex -> nonneg_real]
-
-  W2_max: nonneg_real = 2000
-
-  ax_bounded_cost: AXIOM
-    FORALL (k: BootIndex): W2(k) < W2_max
-
-  % A6: Combined structural axiom (convenience, follows from A3+A4)
-  ax_sparsity_invariant: AXIOM
-    FORALL (k: BootIndex):
-      nnz(optimal_plan(k)) <= vertex_bound(k)
-      AND monge_fraction(optimal_plan(k)) > 69/100
-
-%% ═══════════════════════════════════════════════════════════
-%% Derived Definitions
-%% ═══════════════════════════════════════════════════════════
-
-  % Map persistence: rho between any two boots exceeds threshold
-  map_persistent?(threshold: real): bool =
-    FORALL (k1, k2: BootIndex):
-      spearman_rho(T(k1), T(k2)) > threshold
-
-  % Structure preserved: vertex + near-Monge for all boots
-  structure_preserved?: bool =
-    FORALL (k: BootIndex):
-      nnz(optimal_plan(k)) <= vertex_bound(k)
-      AND monge_fraction(optimal_plan(k)) > 69/100
-
-  % Learnable: map is stable enough for a controller to use
-  learnable?(T_ref: TransportMap, tolerance: real): bool =
-    FORALL (k: BootIndex):
-      spearman_rho(T(k), T_ref) > 1 - tolerance
-
-%% ═══════════════════════════════════════════════════════════
-%% Theorems
-%% ═══════════════════════════════════════════════════════════
-
-  % T1: Transport map persistence (direct from A1)
-  thm_map_persistence: THEOREM
-    map_persistent?(99/100)
-
-  % T2: Structure preservation across boots (from A3 + A4)
-  thm_structure_preserved: THEOREM
-    structure_preserved?
-
-  % T3: Bounded variation — maps do not diverge (from A5 + A1)
-  thm_bounded_variation: THEOREM
-    FORALL (k1, k2: BootIndex):
-      W2(k1) < W2_max AND W2(k2) < W2_max
-      AND spearman_rho(T(k1), T(k2)) > 99/100
-
-  % T4: Learnability — identity map is a valid reference (from A2)
-  %     For the observed spectral NIGHT->DAWN coarse transport maps,
-  %     a controller initialized with identity T_ref(b)=b matches all
-  %     observed maps with rho > 0.99. The first embedded OT controller
-  %     does not need a full Kantorovich plan; it can start from a
-  %     rank-preserving lookup and update only deviations from identity.
-  %     NOTE: This holds for spectral-space maps. Control-space maps
-  %     do NOT preserve rank (see transport_structure.pvs).
-  thm_learnability: THEOREM
-    learnable?(LAMBDA (b: Bin): b, 1/100)
-
-  % T5: Combined stability certificate
-  %     Transport organization is: persistent, structurally preserved,
-  %     bounded in cost, and learnable from a fixed reference.
-  thm_stability_certificate: THEOREM
-    map_persistent?(99/100)
-    AND structure_preserved?
-    AND (FORALL (k: BootIndex): W2(k) < W2_max)
-    AND learnable?(LAMBDA (b: Bin): b, 1/100)
+  persistence_is_not_universal: THEOREM spearman_rho(identity_map,reverse_map) < 99/100
 
 END transport_stability

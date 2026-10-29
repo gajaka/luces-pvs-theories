@@ -1,22 +1,12 @@
-%%% monge_kantorovich_equivalence.pvs
-%%% Monge-Kantorovich Relationship for Discrete Spectral Transport
-%%%
-%%% Villani (2009), Ch.10, Theorem 10.41:
-%%%   For absolutely continuous μ, Kantorovich = Monge (same value).
-%%%
-%%% IMPORTANT: In the DISCRETE case, full support does NOT guarantee
-%%% a pure Monge map. Discrete OT can split mass even with full support.
-%%%
-%%% Provable properties:
-%%%   - A Monge map induces a valid plan (T1)
-%%%   - Kantorovich relaxation is at least as good as any map (T2)
-%%%   - Empirically, LUCES plans are near-Monge (monge_fraction > 0.69)
-%%%   - A pure Monge plan has at most N non-zeros (T3)
-%%%
-%%% This theory does NOT claim full equivalence for discrete case.
-%%% It formalizes the structural relationship between maps and plans.
-%%%
-%%% Author: Dragan Stosic, 2026
+% Finite transport over ten spectral bins.
+%
+% A feasible plan has normalized source and target marginals. Optimization
+% ranges over this feasible set, never over arbitrary nonnegative matrices.
+% A map is compared with plans only when its push-forward is the target.
+% Discrete maps need not exist for an arbitrary pair of distributions.
+%
+% Villani, Optimal Transport: Old and New (2009), Chapters 1 and 10.
+% The continuous Monge existence theorem is not asserted for this model.
 
 monge_kantorovich_equivalence: THEORY
 BEGIN
@@ -27,97 +17,127 @@ BEGIN
 
   IMPORTING reals@sigma_below[N]
 
-  % Source and target distributions
-  Source_dist: TYPE = [Bin -> posreal]   % positive everywhere (full support)
+  Mass: TYPE = [Bin -> nonneg_real]
 
-  Target_dist: TYPE = [Bin -> posreal]
-
-  % Transport plan (Kantorovich)
   Plan: TYPE = [Bin, Bin -> nonneg_real]
 
-  % Transport map (Monge)
   TransportMap: TYPE = [Bin -> Bin]
 
-  % Plan induced by a map: P[i,j] = μ(i) if j=T(i), else 0
-  induced_plan(mu: Source_dist, T: TransportMap): Plan =
-    LAMBDA (i: Bin, j: Bin): IF j = T(i) THEN mu(i) ELSE 0 ENDIF
+  Cost: TYPE = [Bin, Bin -> nonneg_real]
 
-  % Cost function
-  c: [Bin, Bin -> nonneg_real]
+  mu, nu: VAR Mass
+  P, Q: VAR Plan
+  T: VAR TransportMap
+  cost: VAR Cost
+  i, j, k: VAR Bin
+  value: VAR nonneg_real
 
-  % Monge cost: Σᵢ c(i, T(i)) · μ(i)
-  monge_cost(mu: Source_dist, T: TransportMap): real =
-    sigma[Bin](0, N-1, LAMBDA (i: Bin): c(i, T(i)) * mu(i))
+  probability?(mu): bool = sigma[Bin](0, N-1, mu) = 1
 
-  % Kantorovich cost: Σᵢ Σⱼ c(i,j) · P[i,j]
-  kant_cost(P: Plan): real =
+  full_support?(mu): bool = FORALL (i: Bin): mu(i) > 0
+
+  row_mass(P, i): real = sigma[Bin](0, N-1, LAMBDA (j: Bin): P(i, j))
+
+  col_mass(P, j): real = sigma[Bin](0, N-1, LAMBDA (i: Bin): P(i, j))
+
+  feasible?(mu, nu, P): bool =
+    probability?(mu) AND probability?(nu) AND
+    (FORALL (i: Bin): row_mass(P, i) = mu(i)) AND
+    (FORALL (j: Bin): col_mass(P, j) = nu(j))
+
+  induced_plan(mu, T): Plan =
+    LAMBDA (i, j: Bin): IF j = T(i) THEN mu(i) ELSE 0 ENDIF
+
+  compatible_map?(mu, nu, T): bool =
+    probability?(mu) AND probability?(nu) AND
+    (FORALL (j: Bin): col_mass(induced_plan(mu, T), j) = nu(j))
+
+  monge_cost(cost, mu, T): real =
+    sigma[Bin](0, N-1, LAMBDA (i: Bin): cost(i, T(i)) * mu(i))
+
+  kant_cost(cost, P): real =
     sigma[Bin](0, N-1, LAMBDA (i: Bin):
-      sigma[Bin](0, N-1, LAMBDA (j: Bin): c(i, j) * P(i, j)))
+      sigma[Bin](0, N-1, LAMBDA (j: Bin): cost(i, j) * P(i, j)))
 
-  % A plan is Monge-type if all mass in each row goes to one target
-  is_monge_plan?(P: Plan): bool =
-    FORALL (i: Bin): EXISTS (j: Bin):
-      P(i, j) > 0 AND
-      FORALL (k: Bin): k /= j IMPLIES P(i, k) = 0
+  optimal_plan?(cost, mu, nu, P): bool =
+    feasible?(mu, nu, P) AND
+    (FORALL (Q: Plan): feasible?(mu, nu, Q) IMPLIES kant_cost(cost, P) <= kant_cost(cost, Q))
 
-  % Vertex: nnz ≤ 2N-1 (Birkhoff extreme point for N×N)
-  nnz(P: Plan): nat
+  optimal_map?(cost, mu, nu, T): bool =
+    compatible_map?(mu, nu, T) AND
+    (FORALL (U: TransportMap): compatible_map?(mu, nu, U)
+      IMPLIES monge_cost(cost, mu, T) <= monge_cost(cost, mu, U))
 
-  is_vertex?(P: Plan): bool = nnz(P) <= 2 * N - 1
+  row_nnz(P, i): nat =
+    sigma[Bin](0, N-1, LAMBDA (j: Bin): IF P(i, j) > 0 THEN 1 ELSE 0 ENDIF)
 
-  % Optimal plan and map
-  P_opt: Plan
+  nnz(P): nat = sigma[Bin](0, N-1, LAMBDA (i: Bin): row_nnz(P, i))
 
-  T_opt: TransportMap
+  % This is a sparsity bound, not a definition of an extreme point.
+  has_vertex_sparsity_bound?(P): bool = nnz(P) <= 2 * N - 1
 
-  mu: Source_dist
+  sigma_singleton: LEMMA
+    sigma[Bin](0, N-1, LAMBDA (j: Bin): IF j = k THEN value ELSE 0 ENDIF) = value
 
-%% ═══════════════════════════════════════════════════════════
-%% Structural Axioms
-%% ═══════════════════════════════════════════════════════════
+  induced_row_mass: LEMMA row_mass(induced_plan(mu, T), i) = mu(i)
 
-  % A1: Source has full support (all bins positive)
-  %     This is the discrete analog of "μ absolutely continuous"
-  ax_full_support: AXIOM
-    FORALL (i: Bin): mu(i) > 0
+  induced_row_cost: LEMMA
+    sigma[Bin](0, N-1, LAMBDA (j: Bin): cost(i, j) * induced_plan(mu, T)(i, j)) =
+      cost(i, T(i)) * mu(i)
 
-  % A2: Optimal Kantorovich plan exists and achieves minimum cost
-  ax_kantorovich_optimal: AXIOM
-    FORALL (P: Plan): kant_cost(P_opt) <= kant_cost(P)
+  identity_col_mass: LEMMA
+    col_mass(induced_plan(mu, LAMBDA (i: Bin): i), j) = mu(j)
 
-  % A3: Monge map achieves Monge minimum
-  ax_monge_optimal: AXIOM
-    FORALL (T: TransportMap): monge_cost(mu, T_opt) <= monge_cost(mu, T)
-
-  % A4: Kantorovich cost ≤ Monge cost (relaxation is always at least as good)
-  %     NOT claiming equality — discrete case may have strict inequality
-  ax_relaxation: AXIOM
-    kant_cost(P_opt) <= monge_cost(mu, T_opt)
-
-  % A5: Induced plan from a map has exactly N non-zeros
-  %     (one per row, since mu(i) > 0 for all i by A1)
-  ax_induced_nnz: AXIOM
-    FORALL (T: TransportMap): nnz(induced_plan(mu, T)) = N
-
-%% ═══════════════════════════════════════════════════════════
-%% Theorems
-%% ═══════════════════════════════════════════════════════════
-
-  % T1: Induced plan has same cost as the map
-  %     "A map IS a plan — just a deterministic one"
   thm_induced_cost: THEOREM
-    kant_cost(induced_plan(mu, T_opt)) = monge_cost(mu, T_opt)
+    kant_cost(cost, induced_plan(mu, T)) = monge_cost(cost, mu, T)
 
-  % T2: Optimal plan is at least as good as any induced plan
-  %     "Kantorovich relaxation never does worse than Monge"
+  thm_induced_feasible: THEOREM
+    compatible_map?(mu, nu, T) IMPLIES feasible?(mu, nu, induced_plan(mu, T))
+
   thm_relaxation_tighter: THEOREM
-    FORALL (T: TransportMap):
-      kant_cost(P_opt) <= kant_cost(induced_plan(mu, T))
+    optimal_plan?(cost, mu, nu, P) AND compatible_map?(mu, nu, T)
+      IMPLIES kant_cost(cost, P) <= kant_cost(cost, induced_plan(mu, T))
 
-  % T3: A Monge plan is a vertex (at most N non-zeros < 2N-1)
-  %     "Deterministic plans are extreme points of transport polytope"
-  thm_monge_is_vertex: THEOREM
-    FORALL (T: TransportMap):
-      is_vertex?(induced_plan(mu, T))
+  thm_relaxation_value: THEOREM
+    optimal_plan?(cost, mu, nu, P) AND compatible_map?(mu, nu, T)
+      IMPLIES kant_cost(cost, P) <= monge_cost(cost, mu, T)
+
+  induced_row_nnz: LEMMA
+    row_nnz(induced_plan(mu, T), i) = IF mu(i) > 0 THEN 1 ELSE 0 ENDIF
+
+  induced_nnz_bound: THEOREM nnz(induced_plan(mu, T)) <= N
+
+  induced_nnz_full_support: THEOREM
+    full_support?(mu) IMPLIES nnz(induced_plan(mu, T)) = N
+
+  thm_induced_sparsity: THEOREM has_vertex_sparsity_bound?(induced_plan(mu, T))
+
+  kant_cost_nonneg: LEMMA kant_cost(cost, P) >= 0
+
+  zero_plan: Plan = LAMBDA (i, j: Bin): 0
+
+  zero_plan_not_feasible: THEOREM NOT feasible?(mu, nu, zero_plan)
+
+  % A nonzero feasible optimal instance: the uniform distribution is
+  % transported to itself by the identity map, with zero diagonal cost.
+  uniform: Mass = LAMBDA (i: Bin): 1 / N
+
+  identity_map: TransportMap = LAMBDA (i: Bin): i
+
+  diagonal_cost: Cost = LAMBDA (i, j: Bin): IF i = j THEN 0 ELSE 1 ENDIF
+
+  diagonal_plan: Plan = induced_plan(uniform, identity_map)
+
+  uniform_probability: LEMMA probability?(uniform)
+
+  identity_compatible: LEMMA compatible_map?(uniform, uniform, identity_map)
+
+  diagonal_plan_feasible: THEOREM feasible?(uniform, uniform, diagonal_plan)
+
+  diagonal_plan_zero_cost: LEMMA kant_cost(diagonal_cost, diagonal_plan) = 0
+
+  diagonal_plan_optimal: THEOREM optimal_plan?(diagonal_cost, uniform, uniform, diagonal_plan)
+
+  diagonal_plan_nonzero: THEOREM diagonal_plan(0, 0) = 1 / N AND diagonal_plan(0, 0) > 0
 
 END monge_kantorovich_equivalence

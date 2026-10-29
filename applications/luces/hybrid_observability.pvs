@@ -1,58 +1,28 @@
-%%% hybrid_observability.pvs
-%%% Formalizes Empirical Intermediate Conditioning Under Mixed Excitation
-%%%
-%%% Purpose: document the empirical ordering of Fisher conditioning
-%%% across three observability regimes. NOT a derivation from a Fisher model.
-%%%
-%%% Important mathematical note:
-%%%   Fisher matrices mix linearly: F_hybrid = alpha*F_lamp + (1-alpha)*F_sun
-%%%   But kappa(F_hybrid) does NOT necessarily lie between kappa(F_lamp)
-%%%   and kappa(F_sun) without additional structural assumptions.
-%%%   The fact that it DOES in LUCES data is empirically significant.
-%%%
-%%% Empirical basis:
-%%%   DAY (passive, lamp OFF):  kappa = 28.7
-%%%   DUSK (hybrid, 71% lamp):  kappa = 6.5
-%%%   NIGHT (excited, lamp ON): kappa = 2.8
-%%%
-%%% Summary:
-%%%   "DUSK is not merely a solar regime; it is a hybrid observability
-%%%   regime in which artificial excitation partially regularizes the
-%%%   otherwise anisotropic passive Fisher geometry."
-%%%
-%%% Author: Dragan Stosic, 2026
+% Arithmetic checks on the conditioning values recorded in the original
+% LUCES case study: passive28.7, hybrid6.5 and excited2.8.
+% These entered values are data, not a theorem about every mixed Fisher
+% matrix. Their provenance and the numerical estimation are not proved here.
 
 hybrid_observability: THEORY
 BEGIN
 
-  % Conditioning values (posreal: strictly positive)
-  kappa_passive: posreal   % DAY, lamp OFF (empirical: 28.7)
+  kappa_passive: posreal = 287/10
 
-  kappa_hybrid: posreal    % DUSK, mixed (empirical: 6.5)
+  kappa_hybrid: posreal = 65/10
 
-  kappa_excited: posreal   % NIGHT, lamp ON (empirical: 2.8)
+  kappa_excited: posreal = 28/10
 
-%% ═══════════════════════════════════════════════════════════
-%% Empirical Axiom
-%% ═══════════════════════════════════════════════════════════
+  thm_excitation_improves: THEOREM kappa_excited < kappa_passive
 
-  % A1: Empirical ordering of conditioning numbers
-  %     Source: boot298, kappa_vs_excitation.py
-  %     Note: this ordering is NOT guaranteed by linear Fisher mixing;
-  %     it is an empirical property of the LUCES system.
-  ax_conditioning_order: AXIOM
-    kappa_excited < kappa_hybrid AND kappa_hybrid < kappa_passive
-
-%% ═══════════════════════════════════════════════════════════
-%% Theorems (derived from ordering)
-%% ═══════════════════════════════════════════════════════════
-
-  % T1: Excitation improves conditioning (direct from ordering)
-  thm_excitation_improves: THEOREM
-    kappa_excited < kappa_passive
-
-  % T2: Hybrid is intermediate (restatement, for explicit documentation)
   thm_hybrid_intermediate: THEOREM
     kappa_excited < kappa_hybrid AND kappa_hybrid < kappa_passive
+
+  diagonal_condition(a, b: posreal): real = max(a, b) / min(a, b)
+
+  % Mixing diag(1,100) with diag(100,1) equally gives (101/2)I.
+  % Its condition number1 lies below both endpoint condition numbers100.
+  mixing_need_not_be_intermediate: THEOREM
+    diagonal_condition(1, 100) = 100 AND diagonal_condition(100, 1) = 100 AND
+    diagonal_condition(101/2, 101/2) = 1
 
 END hybrid_observability

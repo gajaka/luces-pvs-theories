@@ -1,230 +1,146 @@
-fisher_atlas: THEORY
+% An abstract chart and metric interface with an implemented finite selector.
+%
+% Amari and Nagaoka, Methods of Information Geometry (2000), Chapter 2,
+% motivate the statistical application. This theory does not construct a
+% Fisher-Rao metric, smooth manifold, geodesic distance or equivalent topology.
+% Its model laws state exactly the chart, metric and separation assumptions
+% used below. The second theory constructs a five-state model satisfying all
+% laws, including a point with four equally near centroids.
+
+fisher_atlas[State: TYPE+]: THEORY
 BEGIN
 
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Fisher Atlas: Manifold Structure for Spectral State Space
-  %% ═══════════════════════════════════════════════════════════════════
-  %%
-  %% Amari & Nagaoka (2000), "Methods of Information Geometry", Ch.2:
-  %%   A statistical model forms a manifold with Fisher metric.
-  %%   Coordinate charts cover the parameter space.
-  %%
-  %% Formalizes the atlas structure from Paper 1:
-  %%   "Empirical Information Geometry on an Embedded Adaptive Lighting System"
-  %%
-  %% The space of spectral distributions forms a statistical manifold M.
-  %% Each regime (NIGHT, DAWN, DAY, DUSK) is a coordinate chart.
-  %% Transition maps between overlapping charts are smooth.
-  %% The Fisher metric makes M a Riemannian manifold.
-  %%
-  %% Connection to existing PVS theories:
-  %%   fisher_voronoi: Voronoi partition induced by Fisher metric
-  %%   fisher_boundary: boundary deformation under non-Euclidean metric
-  %%   wasserstein_metric: W2 distance on same state space
-  %%   transport_structure: OT maps between states
-  %%   lie_generator_structure: tangent field on transition paths
-  %%
-  %% Connection to Paper 1 (DOI: 10.5281/zenodo.20094759):
-  %%   - Section 3: Fisher information matrix estimation
-  %%   - Section 4: Manifold structure and atlas construction
-  %%   - Section 5: Geodesic deviation from Euclidean
-  %%
-  %% Empirical verification: 13 boot logs, Fisher eigenvalue ratios
-  %% ═══════════════════════════════════════════════════════════════════
-
-  %% ─────────────────────────────────────────────────────────────────
-  %% Types
-  %% ─────────────────────────────────────────────────────────────────
-
-  % Spectral state: a point on the statistical manifold
-  State: TYPE+
-
-  % Number of spectral channels (AS7341: 10)
   N: posnat = 10
 
-  % Local coordinate representation (N-dimensional real vector)
   Coordinate: TYPE = [below(N) -> real]
 
-  % Number of regimes (charts in the atlas)
   K: posnat = 4
 
   Regime: TYPE = below(K)
 
-  % 0 = NIGHT, 1 = DAWN, 2 = DAY, 3 = DUSK
+  AtlasModel: TYPE = [#
+    chart: [Regime -> [State -> Coordinate]],
+    chart_domain: [Regime -> [State -> bool]],
+    chart_inv: [Regime -> [Coordinate -> State]],
+    d_F: [State, State -> nonneg_real],
+    centroid: [Regime -> State],
+    d_W2: [State, State -> nonneg_real]
+  #]
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Chart structure
-  %% ─────────────────────────────────────────────────────────────────
-
-  % A chart maps states in a regime to local coordinates
-  chart: [Regime -> [State -> Coordinate]]
-
-  % Chart domain: which states belong to a given chart
-  chart_domain: [Regime -> [State -> bool]]
-
-  % Inverse chart: coordinates back to states
-  chart_inv: [Regime -> [Coordinate -> State]]
-
-  %% ─────────────────────────────────────────────────────────────────
-  %% Atlas axioms
-  %% ─────────────────────────────────────────────────────────────────
-
+  A: VAR AtlasModel
   s, s1, s2: VAR State
   r, r1, r2: VAR Regime
   c: VAR Coordinate
 
-  % A1: Charts cover the manifold (every state is in at least one chart)
-  ax_covering: AXIOM
-    FORALL s: EXISTS r: chart_domain(r)(s)
+  atlas_laws?(A): bool =
+    (FORALL (s: State): EXISTS (r: Regime): chart_domain(A)(r)(s)) AND
+    (FORALL (r: Regime, s: State): chart_domain(A)(r)(s)
+      IMPLIES chart_inv(A)(r)(chart(A)(r)(s)) = s) AND
+    (FORALL (r: Regime, c: Coordinate): chart_domain(A)(r)(chart_inv(A)(r)(c))) AND
+    (FORALL (s: State): d_F(A)(s, s) = 0) AND
+    (FORALL (s1, s2: State): s1 /= s2 IMPLIES d_F(A)(s1, s2) > 0) AND
+    (FORALL (s1, s2: State): d_F(A)(s1, s2) = d_F(A)(s2, s1)) AND
+    (FORALL (s1, s2, s3: State): d_F(A)(s1, s3) <= d_F(A)(s1, s2) + d_F(A)(s2, s3)) AND
+    (FORALL (r: Regime): chart_domain(A)(r)(centroid(A)(r))) AND
+    (FORALL (r1, r2: Regime): r1 /= r2 IMPLIES centroid(A)(r1) /= centroid(A)(r2)) AND
+    (FORALL (s1, s2: State): d_F(A)(s1, s2) > 0 IFF d_W2(A)(s1, s2) > 0)
 
-  % A2: Chart and inverse are consistent on the domain
-  ax_chart_inverse: AXIOM
-    FORALL r, s:
-      chart_domain(r)(s) IMPLIES chart_inv(r)(chart(r)(s)) = s
+  transition_map(A, r1, r2)(c): Coordinate = chart(A)(r2)(chart_inv(A)(r1)(c))
 
-  % A3: Inverse maps into the domain
-  ax_inv_in_domain: AXIOM
-    FORALL r, c:
-      chart_domain(r)(chart_inv(r)(c))
+  overlap?(A, r1, r2, s): bool = chart_domain(A)(r1)(s) AND chart_domain(A)(r2)(s)
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Transition maps
-  %% ─────────────────────────────────────────────────────────────────
+  % Lower indices win equal-distance comparisons, so tied minima are allowed.
+  choose_nearer(distance: [Regime -> nonneg_real], a, b: Regime): Regime =
+    IF distance(a) <= distance(b) THEN a ELSE b ENDIF
 
-  % Transition map from chart r1 to chart r2
-  % Defined on the overlap: states in both domains
-  transition_map(r1, r2: Regime)(c: Coordinate): Coordinate =
-    chart(r2)(chart_inv(r1)(c))
+  min4(distance: [Regime -> nonneg_real]): Regime =
+    choose_nearer(distance, choose_nearer(distance, 0, 1), choose_nearer(distance, 2, 3))
 
-  % Overlap: states belonging to both charts
-  overlap?(r1, r2: Regime, s: State): bool =
-    chart_domain(r1)(s) AND chart_domain(r2)(s)
+  nearest_regime(A, s): Regime = min4(LAMBDA (r: Regime): d_F(A)(s, centroid(A)(r)))
 
-  % A4: Transition maps are consistent (round-trip)
-  ax_transition_consistent: AXIOM
-    FORALL r1, r2, s:
-      overlap?(r1, r2, s) IMPLIES
-        transition_map(r2, r1)(transition_map(r1, r2)(chart(r1)(s)))
-          = chart(r1)(s)
+  regime_cases: LEMMA r = 0 OR r = 1 OR r = 2 OR r = 3
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Fisher metric (Riemannian structure)
-  %% ─────────────────────────────────────────────────────────────────
+  min4_correct: THEOREM
+    FORALL (distance: [Regime -> nonneg_real], r: Regime): distance(min4(distance)) <= distance(r)
 
-  % Fisher information matrix at a state (N x N, symmetric positive definite)
-  fisher_metric: [State -> [below(N), below(N) -> nonneg_real]]
+  min4_tie_break: THEOREM
+    FORALL (distance: [Regime -> nonneg_real], r: Regime):
+      distance(min4(distance)) = distance(r) IMPLIES min4(distance) <= r
 
-  % Fisher distance between two states (geodesic distance on M)
-  d_F: [State, State -> nonneg_real]
+  min4_tie_example: THEOREM
+    min4(LAMBDA (r: Regime): IF r = 0 OR r = 1 THEN 1 ELSE 2 ENDIF) = 0
 
-  % A5: Fisher distance is a metric
-  ax_metric_zero: AXIOM
-    FORALL s: d_F(s, s) = 0
+  nearest_correct: LEMMA nearest_regime(A, s) = r IMPLIES
+    FORALL (r2: Regime): d_F(A)(s, centroid(A)(r)) <= d_F(A)(s, centroid(A)(r2))
 
-  ax_metric_positive: AXIOM
-    FORALL s1, s2: s1 /= s2 IMPLIES d_F(s1, s2) > 0
+  transition_consistent: LEMMA atlas_laws?(A) AND overlap?(A, r1, r2, s) IMPLIES
+    transition_map(A, r2, r1)(transition_map(A, r1, r2)(chart(A)(r1)(s))) = chart(A)(r1)(s)
 
-  ax_metric_symmetric: AXIOM
-    FORALL s1, s2: d_F(s1, s2) = d_F(s2, s1)
+  thm_atlas_covers: THEOREM atlas_laws?(A) IMPLIES
+    FORALL (s: State): EXISTS (r: Regime): chart_domain(A)(r)(s)
 
-  ax_metric_triangle: AXIOM
-    FORALL (s1, s2, s3: State):
-      d_F(s1, s3) <= d_F(s1, s2) + d_F(s2, s3)
+  thm_transition_invertible: THEOREM atlas_laws?(A) AND overlap?(A, r1, r2, s) IMPLIES
+    chart_inv(A)(r2)(transition_map(A, r1, r2)(chart(A)(r1)(s))) = s
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Regime centroids and assignment
-  %% ─────────────────────────────────────────────────────────────────
+  thm_centroids_separated: THEOREM atlas_laws?(A) AND r1 /= r2 IMPLIES
+    d_F(A)(centroid(A)(r1), centroid(A)(r2)) > 0
 
-  % Centroid of each regime (Fréchet mean under Fisher metric)
-  centroid: [Regime -> State]
+  thm_regime_assignment_total: THEOREM EXISTS (r: Regime): nearest_regime(A, s) = r
 
-  % Nearest-centroid assignment
-  nearest_regime(s: State): Regime
+  thm_domain_nearest_centroid: THEOREM chart_domain(A)(r)(s) AND nearest_regime(A, s) = r
+    IMPLIES FORALL (r2: Regime): d_F(A)(s, centroid(A)(r)) <= d_F(A)(s, centroid(A)(r2))
 
-  % A6: Centroids are in their own chart domains
-  ax_centroid_in_domain: AXIOM
-    FORALL r: chart_domain(r)(centroid(r))
+  thm_chart_roundtrip: THEOREM atlas_laws?(A) AND chart_domain(A)(r)(s)
+    IMPLIES chart_inv(A)(r)(chart(A)(r)(s)) = s
 
-  % A7: Centroids are distinct
-  ax_centroids_distinct: AXIOM
-    FORALL r1, r2: r1 /= r2 IMPLIES centroid(r1) /= centroid(r2)
+  thm_overlap_symmetric: THEOREM overlap?(A, r1, r2, s) IMPLIES overlap?(A, r2, r1, s)
 
-  % A8: Nearest regime is well-defined (centroid is closest)
-  ax_nearest_correct: AXIOM
-    FORALL s, r:
-      nearest_regime(s) = r IFF
-        FORALL (r2: Regime): d_F(s, centroid(r)) <= d_F(s, centroid(r2))
+  thm_fisher_implies_wasserstein_sep: THEOREM atlas_laws?(A) AND d_F(A)(s1, s2) > 0
+    IMPLIES d_W2(A)(s1, s2) > 0
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Connection to Wasserstein distance
-  %% ─────────────────────────────────────────────────────────────────
+  thm_centroids_wasserstein_separated: THEOREM atlas_laws?(A) AND r1 /= r2
+    IMPLIES d_W2(A)(centroid(A)(r1), centroid(A)(r2)) > 0
 
-  % Wasserstein-2 distance between states
-  d_W2: [State, State -> nonneg_real]
-
-  % A9: Fisher and Wasserstein are topologically equivalent
-  %     (same convergence, possibly different rates)
-  ax_fisher_wasserstein_compatible: AXIOM
-    FORALL s1, s2:
-      d_F(s1, s2) > 0 IFF d_W2(s1, s2) > 0
-
-  %% ─────────────────────────────────────────────────────────────────
-  %% Theorems
-  %% ─────────────────────────────────────────────────────────────────
-
-  % T1: Every state belongs to at least one chart
-  thm_atlas_covers: THEOREM
-    FORALL s: EXISTS r: chart_domain(r)(s)
-
-  % T2: Transition maps are invertible on overlaps
-  thm_transition_invertible: THEOREM
-    FORALL r1, r2, s:
-      overlap?(r1, r2, s) IMPLIES
-        chart_inv(r2)(transition_map(r1, r2)(chart(r1)(s))) = s
-
-  % T3: Centroids are metrically separated
-  thm_centroids_separated: THEOREM
-    FORALL r1, r2:
-      r1 /= r2 IMPLIES d_F(centroid(r1), centroid(r2)) > 0
-
-  % T4: Nearest-regime assignment partitions the manifold
-  thm_regime_assignment_total: THEOREM
-    FORALL s: EXISTS r: nearest_regime(s) = r
-
-  % T5: States in a chart domain are closer to their centroid
-  %     than to any other centroid
-  thm_domain_nearest_centroid: THEOREM
-    FORALL r, s:
-      chart_domain(r)(s) AND nearest_regime(s) = r
-        IMPLIES FORALL (r2: Regime):
-          d_F(s, centroid(r)) <= d_F(s, centroid(r2))
-
-  % T6: Chart round-trip preserves state identity
-  thm_chart_roundtrip: THEOREM
-    FORALL r, s:
-      chart_domain(r)(s) IMPLIES chart_inv(r)(chart(r)(s)) = s
-
-  % T7: Overlap is symmetric
-  thm_overlap_symmetric: THEOREM
-    FORALL r1, r2, s:
-      overlap?(r1, r2, s) IMPLIES overlap?(r2, r1, s)
-
-  % T8: Fisher separation implies Wasserstein separation
-  thm_fisher_implies_wasserstein_sep: THEOREM
-    FORALL s1, s2:
-      d_F(s1, s2) > 0 IMPLIES d_W2(s1, s2) > 0
-
-  % T9: Distinct centroids are Wasserstein-separated
-  thm_centroids_wasserstein_separated: THEOREM
-    FORALL r1, r2:
-      r1 /= r2 IMPLIES d_W2(centroid(r1), centroid(r2)) > 0
-
-  % T10: Atlas structure connects to transport:
-  %      regime change (different nearest centroids) implies
-  %      positive transport distance
   thm_regime_change_positive_distance: THEOREM
-    FORALL s1, s2:
-      nearest_regime(s1) /= nearest_regime(s2)
-        IMPLIES d_W2(s1, s2) > 0
+    atlas_laws?(A) AND nearest_regime(A, s1) /= nearest_regime(A, s2) IMPLIES d_W2(A)(s1, s2) > 0
 
 END fisher_atlas
+
+
+% A concrete nonempty model of the entire interface, with genuine ties.
+fisher_atlas_finite: THEORY
+BEGIN
+
+  FiniteState: TYPE = below(5)
+
+  IMPORTING fisher_atlas[FiniteState]
+
+  finite_chart: [Regime -> [FiniteState -> Coordinate]] =
+    LAMBDA (r: Regime): LAMBDA (s: FiniteState):
+      LAMBDA (j: below(N)): IF j = 0 THEN s ELSE 0 ENDIF
+
+  finite_inverse: [Regime -> [Coordinate -> FiniteState]] =
+    LAMBDA (r: Regime): LAMBDA (c: Coordinate):
+      IF c(0) < 1/2 THEN 0 ELSIF c(0) < 3/2 THEN 1 ELSIF c(0) < 5/2 THEN 2
+      ELSIF c(0) < 7/2 THEN 3 ELSE 4 ENDIF
+
+  finite_distance: [FiniteState, FiniteState -> nonneg_real] =
+    LAMBDA (s1, s2: FiniteState): IF s1 = s2 THEN 0 ELSE 1 ENDIF
+
+  finite_atlas: AtlasModel =
+    (# chart := finite_chart,
+       chart_domain := LAMBDA (r: Regime): LAMBDA (s: FiniteState): TRUE,
+       chart_inv := finite_inverse,
+       d_F := finite_distance,
+       centroid := LAMBDA (r: Regime): r,
+       d_W2 := finite_distance #)
+
+  finite_state_cases: LEMMA FORALL (s: FiniteState): s = 0 OR s = 1 OR s = 2 OR s = 3 OR s = 4
+
+  finite_atlas_laws: THEOREM atlas_laws?(finite_atlas)
+
+  finite_tie_distances: THEOREM FORALL (r: Regime): d_F(finite_atlas)(4, centroid(finite_atlas)(r)) = 1
+
+  finite_tie_selected: THEOREM nearest_regime(finite_atlas, 4) = 0
+
+END fisher_atlas_finite

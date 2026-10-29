@@ -1,157 +1,67 @@
-%%% transport_structure.pvs
-%%% Transport Structure Invariance: What Survives Metric Change?
-%%%
-%%% Empirical basis:
-%%%   Boot 291: 867 NIGHT × 205 DAWN, 4 ground metrics tested
-%%%
-%%% Design: Axioms state properties for INDIVIDUAL metrics.
-%%%   Theorems DERIVE universality (transport_invariant) or its negation.
-%%%   The proof work is in showing that individual facts compose into
-%%%   universal statements — or demonstrating that they don't.
-%%%
-%%% Author: Dragan Stosic, 2026
+% A finite cost-family example built from actual normalized couplings.
+% The first two costs favor the identity assignment; the other two favor
+% reversal. Every displayed plan is feasible, nonzero, optimal and exactly
+% deterministic. Only the first pair preserves order on the source grid.
+% This is an explicit mathematical witness, not a claim about four empirical
+% ground metrics or a proof that every optimal coupling is an extreme point.
+%
+% The sparsity predicate is the calculated nnz bound, not extremality.
+% Near-Monge uses the actual mass carried by the displayed assignment.
+% Villani, Optimal Transport: Old and New (2009), Chapters 1 and 5.
 
 transport_structure: THEORY
 BEGIN
 
-%% ═══════════════════════════════════════════════════════════
-%% Types
-%% ═══════════════════════════════════════════════════════════
+  IMPORTING monge_kantorovich_equivalence
 
-  N: posnat = 867
+  CostIndex: TYPE = below(4)
+  k: VAR CostIndex
+  P: VAR Plan
+  T: VAR TransportMap
+  i, j: VAR Bin
 
-  M: posnat = 205
+  identity_cost_class?(k): bool = k < 2
 
-  Source: TYPE = below(N)
+  reverse_map: TransportMap = LAMBDA (i: Bin): N-1-i
 
-  Target: TYPE = below(M)
+  witness_map(k): TransportMap = IF identity_cost_class?(k) THEN identity_map ELSE reverse_map ENDIF
 
-  Plan: TYPE = [Source, Target -> nonneg_real]
+  witness_plan(k): Plan = induced_plan(uniform, witness_map(k))
 
-  % Four tested ground metrics:
-  % 0 = Euclidean spectral, 1 = variance-weighted,
-  % 2 = Fisher control, 3 = Euclidean control
-  MetricIndex: TYPE = below(4)
+  witness_cost(k): Cost = LAMBDA (i,j: Bin):
+    IF j = witness_map(k)(i) THEN 0 ELSIF k = 1 OR k = 3 THEN 2 ELSE 1 ENDIF
 
-  spectral_metric?(k: MetricIndex): bool = (k = 0 OR k = 1)
+  mass_on_map(P, T): real = sigma[Bin](0,N-1,LAMBDA (i: Bin): P(i,T(i)))
 
-  control_metric?(k: MetricIndex): bool = (k = 2 OR k = 3)
+  near_monge(P, T): bool = mass_on_map(P,T) > 93/100
 
-%% ═══════════════════════════════════════════════════════════
-%% Plan properties
-%% ═══════════════════════════════════════════════════════════
+  rank_preserving(T): bool = FORALL (i,j: Bin): i <= j IMPLIES T(i) <= T(j)
 
-  nnz(p: Plan): nat
+  reverse_compatible: LEMMA compatible_map?(uniform,uniform,reverse_map)
 
-  monge_fraction(p: Plan): nonneg_real
+  witness_plan_feasible: THEOREM feasible?(uniform,uniform,witness_plan(k))
 
-  rank_correlation(p: Plan): real
+  witness_plan_zero_cost: LEMMA kant_cost(witness_cost(k),witness_plan(k)) = 0
 
-  vertex_bound: nat = N + M - 1
+  witness_plan_optimal: THEOREM optimal_plan?(witness_cost(k),uniform,uniform,witness_plan(k))
 
-  is_vertex(p: Plan): bool = nnz(p) = vertex_bound
+  mass_on_induced_uniform_map: LEMMA mass_on_map(induced_plan(uniform,T),T) = 1
 
-  near_monge(p: Plan): bool = monge_fraction(p) > 93/100
+  witness_plan_sparsity: THEOREM has_vertex_sparsity_bound?(witness_plan(k))
 
-  rank_preserving(p: Plan): bool = rank_correlation(p) > 9/10
+  identity_rank_preserving: LEMMA rank_preserving(identity_map)
 
-%% ═══════════════════════════════════════════════════════════
-%% The optimal plan for each metric
-%% ═══════════════════════════════════════════════════════════
+  reverse_not_rank_preserving: LEMMA NOT rank_preserving(reverse_map)
 
-  optimal_plan: [MetricIndex -> Plan]
+  witness_rank_classification: THEOREM rank_preserving(witness_map(k)) IFF identity_cost_class?(k)
 
-%% ═══════════════════════════════════════════════════════════
-%% Central definition: transport invariance
-%% ═══════════════════════════════════════════════════════════
+  finite_cost_family_certificate: THEOREM feasible?(uniform,uniform,witness_plan(k)) AND
+    optimal_plan?(witness_cost(k),uniform,uniform,witness_plan(k)) AND
+    has_vertex_sparsity_bound?(witness_plan(k)) AND near_monge(witness_plan(k),witness_map(k)) AND
+    (rank_preserving(witness_map(k)) IFF identity_cost_class?(k))
 
-  transport_invariant(P: [Plan -> bool]): bool =
-    FORALL (k: MetricIndex): P(optimal_plan(k))
-
-%% ═══════════════════════════════════════════════════════════
-%% EMPIRICAL AXIOMS (per-metric, not universal)
-%% ═══════════════════════════════════════════════════════════
-
-  % Sparsity: stated per metric individually
-  ax_vertex_eucl_spec: AXIOM is_vertex(optimal_plan(0))
-
-  ax_vertex_var_weight: AXIOM is_vertex(optimal_plan(1))
-
-  ax_vertex_fisher_ctrl: AXIOM is_vertex(optimal_plan(2))
-
-  ax_vertex_eucl_ctrl: AXIOM is_vertex(optimal_plan(3))
-
-  % Near-Monge: stated per metric individually
-  ax_monge_eucl_spec: AXIOM near_monge(optimal_plan(0))
-
-  ax_monge_var_weight: AXIOM near_monge(optimal_plan(1))
-
-  ax_monge_fisher_ctrl: AXIOM near_monge(optimal_plan(2))
-
-  ax_monge_eucl_ctrl: AXIOM near_monge(optimal_plan(3))
-
-  % Rank: holds for spectral, fails for control
-  ax_rank_eucl_spec: AXIOM rank_preserving(optimal_plan(0))
-
-  ax_rank_var_weight: AXIOM rank_preserving(optimal_plan(1))
-
-  ax_rank_fisher_ctrl_fails: AXIOM NOT rank_preserving(optimal_plan(2))
-
-  ax_rank_eucl_ctrl_fails: AXIOM NOT rank_preserving(optimal_plan(3))
-
-%% ═══════════════════════════════════════════════════════════
-%% THEOREMS (require combining individual axioms)
-%% ═══════════════════════════════════════════════════════════
-
-  % T1: Vertex sparsity is transport-invariant
-  % Proof: case split on k ∈ {0,1,2,3}, apply corresponding axiom
-  thm_vertex_invariant: THEOREM
-    transport_invariant(is_vertex)
-
-  % T2: Near-Monge is transport-invariant
-  % Proof: case split on k ∈ {0,1,2,3}, apply corresponding axiom
-  thm_monge_invariant: THEOREM
-    transport_invariant(near_monge)
-
-  % T3: Rank-preservation is NOT transport-invariant
-  % Proof: exhibit k=2 (or k=3) as witness where it fails
-  thm_rank_not_invariant: THEOREM
-    NOT transport_invariant(rank_preserving)
-
-  % T4: Rank-preservation is spectral-metric-specific
-  % It holds on all spectral metrics but fails on all control metrics
-  thm_rank_spectral_only: THEOREM
-    (FORALL (k: MetricIndex): spectral_metric?(k) IMPLIES
-       rank_preserving(optimal_plan(k)))
-    AND
-    (FORALL (k: MetricIndex): control_metric?(k) IMPLIES
-       NOT rank_preserving(optimal_plan(k)))
-
-  % T5: The separation theorem
-  % Structural invariants (vertex + Monge) are strictly more general
-  % than rank-preservation: they hold WHERE rank holds AND where it fails
-  thm_separation: THEOREM
-    transport_invariant(is_vertex) AND
-    transport_invariant(near_monge) AND
-    NOT transport_invariant(rank_preserving)
-
-  % T6: Structural invariants hold even where rank collapses
-  % On control metrics: vertex + Monge persist despite rank failure
-  thm_structure_without_rank: THEOREM
-    FORALL (k: MetricIndex):
-      control_metric?(k) IMPLIES
-        (is_vertex(optimal_plan(k)) AND
-         near_monge(optimal_plan(k)) AND
-         NOT rank_preserving(optimal_plan(k)))
-
-  % T7: On spectral metrics, ALL three properties hold simultaneously
-  % This complements T6: spectral metrics have full structure,
-  % control metrics have partial structure (vertex + Monge only).
-  thm_spectral_full_structure: THEOREM
-    FORALL (k: MetricIndex):
-      spectral_metric?(k) IMPLIES
-        (is_vertex(optimal_plan(k)) AND
-         near_monge(optimal_plan(k)) AND
-         rank_preserving(optimal_plan(k)))
+  structure_without_rank: THEOREM has_vertex_sparsity_bound?(witness_plan(2)) AND
+    near_monge(witness_plan(2),witness_map(2)) AND NOT rank_preserving(witness_map(2)) AND
+    witness_plan(2)(0,witness_map(2)(0)) > 0
 
 END transport_structure

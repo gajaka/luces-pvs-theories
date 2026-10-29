@@ -1,114 +1,92 @@
-%%% wasserstein_metric.pvs
-%%% Wasserstein-2 Metric Structure
-%%%
-%%% Villani (2009), Ch.6, Theorem 6.18:
-%%%   W₂ is a metric on the space of probability measures with finite
-%%%   second moment, giving the space of spectral distributions
-%%%   a proper geometric structure.
-%%%
-%%% Consequences for LUCES certificates:
-%%%   - Triangle inequality --> C8 (near-optimality bound)
-%%%   - Symmetry --> time-reversal analysis (velocity_asymmetry)
-%%%   - Non-degeneracy --> distinct regimes are metrically separated
-%%%
-%%% Villani (2009), Ch.17, Theorem 17.15 (Displacement convexity):
-%%%   Entropy is convex along McCann geodesics in W₂ space.
-%%%   Consequence: the geodesic is "efficient" — no entropy explosion.
-%%%
-%%% Author: Dragan Stosic, 2026
+% Metric geodesics and a convex energy: an explicit model interface.
+%
+% Villani, Optimal Transport: Old and New (2009), Chapters 6,7 and17,
+% motivate the intended Wasserstein application. The contract below does
+% not construct probability measures or prove that a supplied distance is
+% W2. The real-line instance implements every operation and proves every
+% law, with squared energy. It is not a Shannon-entropy model.
 
-wasserstein_metric: THEORY
+wasserstein_metric[D: TYPE+]: THEORY
 BEGIN
 
-  % Abstract probability measures (represented by index)
-  Distr: TYPE+
+  UnitInterval: TYPE = {t: real | 0 <= t AND t <= 1}
 
-  % W2 distance function
-  W2: [Distr, Distr -> nonneg_real]
+  GeodesicModel: TYPE = [#
+    distance: [D, D -> nonneg_real],
+    interp: [D, D, UnitInterval -> D],
+    energy: [D -> real]
+  #]
 
-  % Entropy functional along geodesic
-  H: [Distr -> real]
+  M: VAR GeodesicModel
+  p, q, r: VAR D
+  s, t: VAR UnitInterval
 
-  % McCann interpolation: μ_t between μ₀ and μ₁
-  mccann: [Distr, Distr, {t: real | t >= 0 AND t <= 1} -> Distr]
+  metric_laws?(M): bool =
+    (FORALL (p, q: D): distance(M)(p,q) = 0 IFF p = q) AND
+    (FORALL (p, q: D): distance(M)(p,q) = distance(M)(q,p)) AND
+    (FORALL (p, q, r: D): distance(M)(p,r) <= distance(M)(p,q) + distance(M)(q,r))
 
-%% ═══════════════════════════════════════════════════════════
-%% Metric Axioms (structural — define W₂ as a metric)
-%% ═══════════════════════════════════════════════════════════
+  geodesic_laws?(M): bool = metric_laws?(M) AND
+    (FORALL (p, q: D): interp(M)(p,q,0) = p AND interp(M)(p,q,1) = q) AND
+    (FORALL (p, q: D, s, t: UnitInterval):
+      distance(M)(interp(M)(p,q,s), interp(M)(p,q,t)) = abs(t-s)*distance(M)(p,q)) AND
+    (FORALL (p, q: D, t: UnitInterval):
+      energy(M)(interp(M)(p,q,t)) <= (1-t)*energy(M)(p) + t*energy(M)(q))
 
-  % A1: Non-negativity
-  ax_nonneg: AXIOM
-    FORALL (mu, nu: Distr): W2(mu, nu) >= 0
+  endpoint_distances: THEOREM geodesic_laws?(M) IMPLIES
+    distance(M)(p,interp(M)(p,q,t)) = t*distance(M)(p,q) AND
+    distance(M)(interp(M)(p,q,t),q) = (1-t)*distance(M)(p,q)
 
-  % A2: Identity of indiscernibles
-  ax_identity: AXIOM
-    FORALL (mu, nu: Distr): W2(mu, nu) = 0 IFF mu = nu
+  thm_subpath_bound: THEOREM metric_laws?(M) IMPLIES
+    distance(M)(p,q) <= distance(M)(p,r) + distance(M)(r,q)
 
-  % A3: Symmetry
-  ax_symmetry: AXIOM
-    FORALL (mu, nu: Distr): W2(mu, nu) = W2(nu, mu)
+  thm_geodesic_additive: THEOREM geodesic_laws?(M) IMPLIES
+    distance(M)(p,q) = distance(M)(p,interp(M)(p,q,t)) + distance(M)(interp(M)(p,q,t),q)
 
-  % A4: Triangle inequality
-  ax_triangle: AXIOM
-    FORALL (mu, nu, rho: Distr):
-      W2(mu, rho) <= W2(mu, nu) + W2(nu, rho)
+  thm_midpoint_equidistant: THEOREM geodesic_laws?(M) IMPLIES
+    distance(M)(p,interp(M)(p,q,1/2)) = distance(M)(p,q)/2
 
-%% ═══════════════════════════════════════════════════════════
-%% Geodesic Axioms (McCann interpolation structure)
-%% ═══════════════════════════════════════════════════════════
+  thm_energy_bounded_on_geodesic: THEOREM geodesic_laws?(M) IMPLIES
+    energy(M)(interp(M)(p,q,t)) <= (1-t)*energy(M)(p) + t*energy(M)(q)
 
-  % A5: McCann interpolation endpoints
-  ax_mccann_endpoints: AXIOM
-    FORALL (mu, nu: Distr):
-      mccann(mu, nu, 0) = mu AND mccann(mu, nu, 1) = nu
-
-  % A6: Full constant-speed geodesic (Villani Ch.7, Theorem 7.21)
-  %     W₂(μ_s, μ_t) = |t-s| · W₂(μ₀, μ₁) for all s,t ∈ [0,1]
-  ax_constant_speed: AXIOM
-    FORALL (mu, nu: Distr,
-            s: {t: real | t >= 0 AND t <= 1},
-            t: {t: real | t >= 0 AND t <= 1}):
-      W2(mccann(mu, nu, s), mccann(mu, nu, t)) = abs(t - s) * W2(mu, nu)
-
-  % A7: Displacement convexity of entropy (Villani Ch.17, Theorem 17.15)
-  %     H(μ_t) ≤ (1-t)·H(μ₀) + t·H(μ₁)
-  ax_displacement_convexity: AXIOM
-    FORALL (mu, nu: Distr, t: {t: real | t >= 0 AND t <= 1}):
-      H(mccann(mu, nu, t)) <= (1 - t) * H(mu) + t * H(nu)
-
-%% ═══════════════════════════════════════════════════════════
-%% Theorems
-%% ═══════════════════════════════════════════════════════════
-
-  % T1: Subpath cost is bounded by total path cost (triangle consequence)
-  %     "Any intermediate point cannot make the path shorter"
-  %     This is the structural basis for C8 (near-optimality)
-  thm_subpath_bound: THEOREM
-    FORALL (mu, nu, rho: Distr):
-      W2(mu, nu) <= W2(mu, rho) + W2(rho, nu)
-
-  % T2: Geodesic is the shortest path (by constant-speed property)
-  %     W₂(μ₀, μ₁) = W₂(μ₀, μ_t) + W₂(μ_t, μ₁) for all t ∈ [0,1]
-  thm_geodesic_additive: THEOREM
-    FORALL (mu, nu: Distr, t: {t: real | t >= 0 AND t <= 1}):
-      W2(mu, nu) = W2(mu, mccann(mu, nu, t)) + W2(mccann(mu, nu, t), nu)
-
-  % T3: Geodesic midpoint minimizes maximum distance to endpoints
-  %     W₂(μ₀, μ_{1/2}) = W₂(μ_{1/2}, μ₁) = ½ W₂(μ₀, μ₁)
-  thm_midpoint_equidistant: THEOREM
-    FORALL (mu, nu: Distr):
-      W2(mu, mccann(mu, nu, 1/2)) = W2(mu, nu) / 2
-
-  % T4: Displacement convexity prevents entropy explosion along geodesic
-  %     "Nature's path through spectral space does not create disorder"
-  thm_entropy_bounded_on_geodesic: THEOREM
-    FORALL (mu, nu: Distr, t: {t: real | t >= 0 AND t <= 1}):
-      H(mccann(mu, nu, t)) <= (1 - t) * H(mu) + t * H(nu)
-
-  % T5: Non-degeneracy — distinct measures are separated
-  %     "Different lighting regimes occupy different points in W₂ space"
-  thm_separation: THEOREM
-    FORALL (mu, nu: Distr):
-      mu /= nu IMPLIES W2(mu, nu) > 0
+  thm_separation: THEOREM metric_laws?(M) AND p /= q IMPLIES distance(M)(p,q) > 0
 
 END wasserstein_metric
+
+
+wasserstein_real_model: THEORY
+BEGIN
+
+  IMPORTING wasserstein_metric[real], reals@sq
+
+  x, y: VAR real
+  s, t: VAR UnitInterval
+
+  real_distance: [real, real -> nonneg_real] = LAMBDA (x,y: real): abs(x-y)
+
+  real_interp: [real, real, UnitInterval -> real] = LAMBDA (x,y: real, t: UnitInterval): (1-t)*x+t*y
+
+  real_model: GeodesicModel =
+    (# distance := real_distance, interp := real_interp, energy := LAMBDA (x: real): sq(x) #)
+
+  affine_energy_gap: LEMMA
+    (1-t)*sq(x)+t*sq(y)-sq((1-t)*x+t*y) = t*(1-t)*sq(x-y)
+
+  affine_energy_convex: THEOREM sq((1-t)*x+t*y) <= (1-t)*sq(x)+t*sq(y)
+
+  real_metric_laws: THEOREM metric_laws?(real_model)
+
+  real_endpoints: LEMMA FORALL (x,y: real):
+    interp(real_model)(x,y,0) = x AND interp(real_model)(x,y,1) = y
+
+  real_constant_speed: LEMMA FORALL (x,y: real, s,t: UnitInterval):
+    distance(real_model)(interp(real_model)(x,y,s),interp(real_model)(x,y,t)) =
+      abs(t-s)*distance(real_model)(x,y)
+
+  real_geodesic_laws: THEOREM geodesic_laws?(real_model)
+
+  nondegenerate_example: THEOREM
+    distance(real_model)(0,2) = 2 AND interp(real_model)(0,2,1/2) = 1 AND
+    energy(real_model)(1) < (energy(real_model)(0)+energy(real_model)(2))/2
+
+END wasserstein_real_model

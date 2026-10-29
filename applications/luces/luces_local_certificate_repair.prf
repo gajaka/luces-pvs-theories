@@ -1,0 +1,58 @@
+(|luces_local_certificate_repair|
+ (|eval_check_local| 0
+  (|eval_check_local-1| NIL 0 ("" (SPREAD (INDUCT "clauses") ((THEN (SKOSIMP*) (GRIND)) (THEN (SKOSIMP*) (LABEL "ih" -1) (LABEL "agreement" -2) (INST "ih" "after!1" "before!1")
+ (SPREAD (CASE "FORALL (v: Feature): reads_check(cons2_var!1)(v) IMPLIES before!1(v) = after!1(v)")
+ ((THEN (ASSERT) (INST "agreement" "cons1_var!1`field") (EXPAND "reads_check" "agreement") (EXPAND "eval_check" 1) (GRIND :IF-MATCH NIL :EXCLUDE ("eval_check" "reads_check" "is_finite")))
+  (THEN (HIDE 2) (SKOSIMP*) (INST "agreement" "v!1") (EXPAND "reads_check" "agreement") (GRIND :IF-MATCH NIL :EXCLUDE ("eval_check" "reads_check" "is_finite")))))) (GRIND))) NIL NIL) NIL NIL))
+ (|indexed_holds_is_check| 0
+  (|indexed_holds_is_check-1| NIL 0 ("" (THEN (SKOSIMP*) (LEMMA "map_length" ("f" "check_certificate" "l" "expressions!1")) (LEMMA "map_nth_rw" ("f" "check_certificate" "l" "expressions!1")) (GRIND :IF-MATCH ALL :EXCLUDE ("eval_check" "map" "is_finite"))) NIL NIL) NIL NIL))
+ (|generated_family_local| 0
+  (|generated_family_local-1| NIL 0 ("" (THEN (SKOSIMP*) (LEMMA "eval_check_local") (LEMMA "indexed_holds_is_check") (GRIND :IF-MATCH ALL :EXCLUDE ("eval_check" "reads_check" "map" "from_checks" "is_finite"))) NIL NIL) NIL NIL))
+ (|all_pass_is_certified| 0
+  (|all_pass_is_certified-1| NIL 0 ("" (SPREAD (INDUCT "expressions") ((THEN (SKOSIMP*) (GRIND)) (THEN (SKOSIMP*) (INST -1 "d!1") (LABEL "ih" -1) (EXPAND "from_checks" "ih") (EXPAND "fully_certified" "ih")
+ (EXPAND "all_pass" 1) (EXPAND "from_checks" 1) (EXPAND "map" 1) (EXPAND "fully_certified" 1)
+ (LEMMA "all_cons" ("x" "check_certificate(cons1_var!1)" "xs" "map(check_certificate)(cons2_var!1)" "P" "LAMBDA (C: Certificate): C(d!1,Only)"))
+ (BETA) (GRIND :IF-MATCH NIL :EXCLUDE ("all_pass" "eval_check" "map" "is_finite"))) (GRIND))) NIL NIL) NIL NIL))
+ (|search_sound| 0
+  (|search_sound-1| NIL 0 ("" (THEN (INDUCT "bank") (SKOSIMP*) (GRIND :IF-MATCH ALL :EXCLUDE ("eligible" "all_pass" "from_checks" "eval_check" "frame" "is_finite"))) NIL NIL) NIL NIL))
+ (|search_member| 0
+  (|search_member-1| NIL 0 ("" (THEN (INDUCT "bank") (SKOSIMP*) (GRIND :IF-MATCH ALL :EXCLUDE ("eligible" "all_pass" "from_checks" "eval_check" "frame" "is_finite"))) NIL NIL) NIL NIL))
+ (|search_complete_for_bank| 0
+  (|search_complete_for_bank-1| NIL 0 ("" (THEN (INDUCT "bank") (SKOSIMP*) (GRIND :IF-MATCH ALL :EXCLUDE ("eligible" "all_pass" "from_checks" "eval_check" "frame" "is_finite"))) NIL NIL) NIL NIL))
+ (|search_component_checked| 0
+  (|search_component_checked-1| NIL 0 ("" (THEN (SKOSIMP*) (LEMMA "search_sound" ("expressions" "expressions!1" "allowed" "check_footprints(expressions!1)(q!1)" "before" "before!1" "bank" "bank!1")) (ASSERT) (EXPAND "eligible") (FLATTEN) (LABEL "frame_input" -1) (EXPAND "frame" "frame_input")
+ (LEMMA "all_pass_is_certified" ("expressions" "expressions!1" "d" "search(expressions!1,check_footprints(expressions!1)(q!1),before!1,bank!1)`value")) (ASSERT) (LABEL "cert_all" -1) (REWRITE "fully_certified_iff_all" "cert_all")
+ (LEMMA "map_length" ("f" "check_certificate" "l" "expressions!1")) (SPREAD (CASE "tracked(from_checks(expressions!1))(q!1)") ((THEN (LEMMA "vars_subset_own_footprint" ("vars" "check_footprints(expressions!1)" "B" "tracked(from_checks(expressions!1))" "c" "q!1")) (ASSERT) (LABEL "reads_subset" -1) (EXPAND "subset?" "reads_subset") (EXPAND "member" "reads_subset")
+ (LEMMA "compOf_subset" ("vars" "check_footprints(expressions!1)" "B" "tracked(from_checks(expressions!1))" "c" "q!1")) (LABEL "comp_subset" -1) (EXPAND "subset?" "comp_subset") (EXPAND "member" "comp_subset")
+ (EXPAND "ComponentChecked") (EXPAND "search_repair")
+ (SPREAD (SPLIT) ((THEN (SKOSIMP*) (INST "reads_subset" "v!1") (INST "frame_input" "v!1") (ASSERT)) (THEN (SKOSIMP*) (INST "comp_subset" "q!2") (INST "cert_all" "q!2") (ASSERT))))) (THEN (EXPAND "tracked") (EXPAND "from_checks") (ASSERT)) (GRIND :IF-MATCH NIL :EXCLUDE ("ComponentChecked" "is_finite"))))) NIL NIL) NIL NIL))
+ (|search_valid_repair| 0
+  (|search_valid_repair-1| NIL 0 ("" (THEN (SKOSIMP*)
+ (LEMMA "generated_family_local" ("expressions" "expressions!1"))
+ (LEMMA "search_component_checked" ("expressions" "expressions!1" "q" "q1!1" "before" "before!1" "bank" "bank!1")) (ASSERT)
+ (LEMMA "component_repair_valid_repair" ("F" "from_checks(expressions!1)" "vars" "check_footprints(expressions!1)" "t" "Only" "c" "q1!1" "before" "before!1" "repair" "search_repair(expressions!1,bank!1)")) (ASSERT)) NIL NIL) NIL NIL))
+ (|eight_positions| 0
+  (|eight_positions-1| NIL 0 ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL NIL) NIL NIL))
+ (|repeated_monge_positions| 0
+  (|repeated_monge_positions-1| NIL 0 ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL NIL) NIL NIL))
+ (|composite_reads| 0
+  (|composite_reads-1| NIL 0 ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL NIL) NIL NIL))
+ (|protected_outside_reads| 0
+  (|protected_outside_reads-1| NIL 0 ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL NIL) NIL NIL))
+ (|actual_bank_selects_optimal| 0
+  (|actual_bank_selects_optimal-1| NIL 0 ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL NIL) NIL NIL))
+ (|actual_before_fails| 0
+  (|actual_before_fails-1| NIL 0 ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL NIL) NIL NIL))
+ (|actual_after_certified| 0
+  (|actual_after_certified-1| NIL 0 ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL NIL) NIL NIL))
+ (|actual_valid_repair| 0
+  (|actual_valid_repair-1| NIL 0 ("" (THEN (LEMMA "search_valid_repair" ("expressions" "certificate_expressions" "q1" "4" "before" "actual_0" "bank" "actual_bank")) (LEMMA "actual_bank_selects_optimal") (LEMMA "map_length" ("f" "check_certificate" "l" "certificate_expressions")) (LEMMA "eight_positions") (EXPAND "actual_search") (GRIND :IF-MATCH NIL :EXCLUDE ("search" "valid_repair" "check_footprints" "actual_bank" "certificate_expressions" "map" "eval_check" "is_finite"))) NIL NIL) NIL NIL))
+ (|actual_protected_observations| 0
+  (|actual_protected_observations-1| NIL 0 ("" (GRIND :IF-MATCH ALL :EXCLUDE ("is_finite")) NIL NIL) NIL NIL))
+ (|IMP_ppg_indexed_certification_dependency_TCC1| 0 (|IMP_ppg_indexed_certification_dependency_TCC1-1| NIL 0 ("" (GRIND) NIL NIL) NIL NIL))
+ (|eval_check_TCC1| 0 (|eval_check_TCC1-1| NIL 0 ("" (GRIND) NIL NIL) NIL NIL))
+ (|reads_check_TCC1| 0 (|reads_check_TCC1-1| NIL 0 ("" (GRIND) NIL NIL) NIL NIL))
+ (|from_checks_TCC1| 0 (|from_checks_TCC1-1| NIL 0 ("" (GRIND) NIL NIL) NIL NIL))
+ (|all_pass_TCC1| 0 (|all_pass_TCC1-1| NIL 0 ("" (GRIND) NIL NIL) NIL NIL))
+ (|search_TCC1| 0 (|search_TCC1-1| NIL 0 ("" (GRIND) NIL NIL) NIL NIL))
+)

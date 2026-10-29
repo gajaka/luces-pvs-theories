@@ -1,25 +1,7 @@
-%%% velocity_asymmetry.pvs
-%%% Directional Velocity Structure in Spectral Transport
-%%%
-%%% Proves:
-%%%   T1: Dusk deceleration means first window is strictly maximal
-%%%   T2: Time-reversal of decelerating profile is strictly increasing
-%%%   T3: Dawn is not the time-reverse of dusk (from empirical axiom)
-%%%
-%%% Empirical basis:
-%%%   Boot 298 (dusk): v = [15862, 3722, 1038] W2/h --> deceleration (15x ratio)
-%%%   Boot 293 (dawn, cloudy): v = [553, 737, 732] W2/h --> approximately constant
-%%%   Boot 301 (dawn, clear): v = [573, 1071, 2290] W2/h --> weakly accelerating
-%%%
-%%%   time_reverse(dusk) would require: [1038, 3722, 15862] W2/h
-%%%   Actual dawn amplitude is 5-30x smaller --> dawn ≠ reverse(dusk)
-%%%
-%%% Central formal claim:
-%%%   Dusk deceleration implies its time-reversal must accelerate (T2).
-%%%   Physical dawn does NOT match this reversal (A2 + T3).
-%%%   Therefore: spectral transport is time-irreversible.
-%%%
-%%% Author: Dragan Stosic, 2026
+% Three-window velocity profiles and their reversal.
+% The literal values below were recorded in the original case-study comments.
+% PVS checks their ordering and inequality, not measurement provenance.
+% Different selected profiles do not establish physical time-irreversibility.
 
 velocity_asymmetry: THEORY
 BEGIN
@@ -44,28 +26,20 @@ BEGIN
   time_reverse(v: Velocity): Velocity =
     LAMBDA (w: Window): v(2 - w)
 
-%% ═══════════════════════════════════════════════════════════
-%% Empirical Axioms
-%% ═══════════════════════════════════════════════════════════
+  v_dusk: Velocity = LAMBDA (w: Window):
+    IF w = 0 THEN 15862 ELSIF w = 1 THEN 3722 ELSE 1038 ENDIF
 
-  v_dusk: Velocity
+  v_dawn_cloudy: Velocity = LAMBDA (w: Window):
+    IF w = 0 THEN 553 ELSIF w = 1 THEN 737 ELSE 732 ENDIF
 
-  % A1: Dusk velocity is decelerating
-  %     Source: boot298, v = [15862, 3722, 1038] W2/h
-  ax_dusk_decelerating: AXIOM
-    decelerating?(v_dusk)
+  v_dawn_clear: Velocity = LAMBDA (w: Window):
+    IF w = 0 THEN 573 ELSIF w = 1 THEN 1071 ELSE 2290 ENDIF
 
-  % A2: Dawn velocity does NOT equal the time-reverse of dusk
-  %     Source: boot293 ratio dawn/rev = [0.53, 0.20, 0.05]
-  %             boot301 ratio dawn/rev = [0.55, 0.29, 0.14]
-  %     Physical: dawn amplitude is 5-30x smaller than reverse(dusk) requires
-  %
-  %     NOTE: This is an empirical observation, not axiomatized.
-  %     Paper statement: "Theorem T2 implies that the mirror image of a
-  %     decelerating dusk trajectory must be accelerating. However, the
-  %     observed dawn trajectories do not match the time-reversed dusk
-  %     profile quantitatively, indicating empirical time-asymmetry
-  %     beyond simple reversal."
+  dusk_decelerating: THEOREM decelerating?(v_dusk)
+
+  dawn_cloudy_not_reversed_dusk: THEOREM v_dawn_cloudy /= time_reverse(v_dusk)
+
+  dawn_clear_not_reversed_dusk: THEOREM v_dawn_clear /= time_reverse(v_dusk)
 
 %% ═══════════════════════════════════════════════════════════
 %% Theorems
@@ -74,7 +48,6 @@ BEGIN
   % T1: Deceleration explicitly ordered
   %     "First window carries the most transport activity"
   thm_dusk_front_loaded: THEOREM
-    decelerating?(v_dusk) IMPLIES
     v_dusk(0) > v_dusk(1) AND v_dusk(1) > v_dusk(2)
 
   % T2: Time-reversal preserves monotonicity (with orientation flip)

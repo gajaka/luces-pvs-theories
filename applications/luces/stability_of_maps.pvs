@@ -1,91 +1,80 @@
-%%% stability_of_maps.pvs
-%%% Stability of Optimal Transport Maps Under Perturbation
-%%%
-%%% Villani (2009), Ch.5, Theorem 5.20:
-%%%   If μₙ --> μ and νₙ --> ν weakly, and cost is continuous,
-%%%   then optimal plans πₙ converge to the optimal plan π for (μ,ν).
-%%%
-%%% Discrete analog (LUCES):
-%%%   If day-to-day spectral distributions are close (W₂ small),
-%%%   then their optimal transport maps are close (Spearman ρ high).
-%%%   "Small perturbation in data --> small change in transport structure."
-%%%
-%%% This is the structural basis for C2 (stability) and C7 (persistence).
-%%%
-%%% Author: Dragan Stosic, 2026
+% Stability of a finite map selector under a checked objective-gap certificate.
+%
+% Villani (2009), Theorem5.20, concerns analytic stability of optimal plans;
+% it does not supply the former universal discrete map-distance bound.
+% Here a concrete finite argmin algorithm is used. A positive gap and a
+% pointwise objective perturbation smaller than half that gap preserve the
+% selected candidate, and hence its complete map. Relating changes in
+% measured distributions to this objective bound remains a separate task.
 
 stability_of_maps: THEORY
 BEGIN
 
-  Distr: TYPE+
+  IMPORTING structures@max_array_def[10, real, >=]
 
-  W2: [Distr, Distr -> nonneg_real]
+  Candidate: TYPE = below(10)
 
-  % Transport map type
-  N: posnat = 10
-
-  Bin: TYPE = below(N)
+  Bin: TYPE = below(10)
 
   TransportMap: TYPE = [Bin -> Bin]
 
-  % Optimal map for a pair of measures
-  optimal_map: [Distr, Distr -> TransportMap]
+  Bank: TYPE = [Candidate -> TransportMap]
 
-  % Map distance (Spearman-like: 1 - |ρ|, so 0 = identical, 1 = unrelated)
-  map_distance: [TransportMap, TransportMap -> nonneg_real]
+  Objective: TYPE = [Candidate -> real]
 
-%% ═══════════════════════════════════════════════════════════
-%% Structural Axioms
-%% ═══════════════════════════════════════════════════════════
+  f, g, h: VAR Objective
+  winner, c: VAR Candidate
+  gap: VAR posreal
+  eps, eps1, eps2: VAR nonneg_real
+  bank: VAR Bank
 
-  % A1: Map distance is bounded [0, 1]
-  ax_map_dist_bounded: AXIOM
-    FORALL (T1, T2: TransportMap): map_distance(T1, T2) <= 1
+  % Reversing the comparison in imax_rec gives a constructive minimum.
+  argmin(f): Candidate = imax_rec(f,0,9)
 
-  % A2: Identical inputs give identical maps
-  ax_map_identity: AXIOM
-    FORALL (mu, nu: Distr):
-      map_distance(optimal_map(mu, nu), optimal_map(mu, nu)) = 0
+  selected_map(bank,f): TransportMap = bank(argmin(f))
 
-  % A3: Stability — close measures give close maps (Villani 5.20, discrete)
-  %     If source measures are close AND target measures are close,
-  %     then the maps are close.
-  %     δ = perturbation tolerance, Lipschitz-like bound
-  delta: posreal  % stability radius
+  minimizes?(f,winner): bool = FORALL (c: Candidate): f(winner) <= f(c)
 
-  ax_stability: AXIOM
-    FORALL (mu1, mu2, nu1, nu2: Distr):
-      W2(mu1, mu2) < delta AND W2(nu1, nu2) < delta
-      IMPLIES map_distance(optimal_map(mu1, nu1), optimal_map(mu2, nu2)) < delta
+  gap_certified?(f,winner,gap): bool = FORALL (c: Candidate): c /= winner
+    IMPLIES f(winner)+gap <= f(c)
 
-  % A4: Map distance satisfies triangle inequality
-  ax_map_triangle: AXIOM
-    FORALL (T1, T2, T3: TransportMap):
-      map_distance(T1, T3) <= map_distance(T1, T2) + map_distance(T2, T3)
+  perturbation_bounded?(f,g,eps): bool = FORALL (c: Candidate): abs(g(c)-f(c)) <= eps
 
-%% ═══════════════════════════════════════════════════════════
-%% Theorems
-%% ═══════════════════════════════════════════════════════════
+  argmin_optimal: THEOREM minimizes?(f,argmin(f))
 
-  % T1: Same-day stability — if measures don't change, map doesn't change
-  %     "Within a single log, transport map is constant if spectrum is stable"
-  thm_self_stability: THEOREM
-    FORALL (mu, nu: Distr):
-      map_distance(optimal_map(mu, nu), optimal_map(mu, nu)) = 0
+  gap_survives_perturbation: THEOREM gap_certified?(f,winner,gap) AND
+    perturbation_bounded?(f,g,eps) IMPLIES
+      FORALL (c: Candidate): c /= winner IMPLIES g(winner)+gap-2*eps <= g(c)
 
-  % T2: Cross-day persistence — similar days give similar maps
-  %     "Boot 291 and Boot 293 have similar maps because their spectra are similar"
-  thm_persistence: THEOREM
-    FORALL (mu1, mu2, nu1, nu2: Distr):
-      W2(mu1, mu2) < delta AND W2(nu1, nu2) < delta
-      IMPLIES map_distance(optimal_map(mu1, nu1), optimal_map(mu2, nu2)) < delta
+  stable_argmin: THEOREM gap_certified?(f,winner,gap) AND perturbation_bounded?(f,g,eps) AND
+    2*eps < gap IMPLIES argmin(g) = winner
 
-  % T3: Stability is transitive (via triangle inequality on map distance)
-  %     "If map A≈B and B≈C, then A≈C within 2δ"
-  thm_transitive_stability: THEOREM
-    FORALL (mu1, mu2, mu3, nu1, nu2, nu3: Distr):
-      W2(mu1, mu2) < delta AND W2(nu1, nu2) < delta AND
-      W2(mu2, mu3) < delta AND W2(nu2, nu3) < delta
-      IMPLIES map_distance(optimal_map(mu1, nu1), optimal_map(mu3, nu3)) < 2 * delta
+  stable_selected_map: THEOREM gap_certified?(f,winner,gap) AND perturbation_bounded?(f,g,eps) AND
+    2*eps < gap IMPLIES selected_map(bank,f) = selected_map(bank,g)
+
+  perturbation_triangle: THEOREM perturbation_bounded?(f,g,eps1) AND
+    perturbation_bounded?(g,h,eps2) IMPLIES perturbation_bounded?(f,h,eps1+eps2)
+
+  two_step_argmin_stable: THEOREM gap_certified?(f,winner,gap) AND
+    perturbation_bounded?(f,g,eps1) AND perturbation_bounded?(g,h,eps2) AND 2*(eps1+eps2) < gap
+      IMPLIES argmin(h) = winner
+
+  before_objective: Objective = LAMBDA (c: Candidate): IF c = 0 THEN 0 ELSE 2 ENDIF
+
+  close_objective: Objective = LAMBDA (c: Candidate): IF c = 0 THEN 1/4 ELSE 7/4 ENDIF
+
+  changed_objective: Objective = LAMBDA (c: Candidate): IF c = 0 THEN 5/4 ELSE 3/4 ENDIF
+
+  candidate_bank: Bank = LAMBDA (c: Candidate): LAMBDA (b: Bin): c
+
+  example_gap: THEOREM gap_certified?(before_objective,0,2)
+
+  example_close: THEOREM perturbation_bounded?(before_objective,close_objective,1/4)
+
+  example_stable_map: THEOREM selected_map(candidate_bank,before_objective) =
+    selected_map(candidate_bank,close_objective)
+
+  example_large_change: THEOREM argmin(before_objective) = 0 AND argmin(changed_objective) = 1 AND
+    selected_map(candidate_bank,before_objective) /= selected_map(candidate_bank,changed_objective)
 
 END stability_of_maps

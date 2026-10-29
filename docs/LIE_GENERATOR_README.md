@@ -1,30 +1,79 @@
-# Lie Group Transport — Generator Analysis
+# Lie-generator numerical screens
 
-**PVS Formalization**: [lie_generator_structure.pvs](../applications/luces/lie_generator_structure.pvs)
-**Method**: Full Kantorovich coupling --> continuous displacement field
-**Reference**: Hall (2015), *Lie Groups, Lie Algebras, and Representations*, GTM 222
+The current PVS models are
+[lie_generator_structure.pvs](../applications/luces/lie_generator_structure.pvs)
+and [lie_pp_connection.pvs](../applications/luces/lie_pp_connection.pvs).
+They evaluate measured C20/C21/C22 observations and include explicit
+counterexamples to the former universal coherence implications. They do not
+prove a Lie exponential representation or infer physical observability from
+coherence. See [LUCES model scope](LUCES_MODEL_SCOPE.md).
 
-## Generator Definition
+## Displacement observation
 
-For each source bin i, the Lie generator is the expected displacement under the full coupling:
+The producer `paper3/scripts/lie_group_transport_v2.py` in `master-controler`
+forms a displacement field from a Kantorovich coupling:
 
+```text
+v(i) = sum_j P(i,j) * (j-i) / sum_j P(i,j)
 ```
-v(i) = E[j - i | source = i] = sum_j P(i,j) * (j - i) / sum_j P(i,j)
+
+Its comparisons of segment fields, the full field and active shape directions
+are different observables. They are also distinct from the runner's C_GEN
+signed-flow comparison and DEV's flattened `T-I` alignment.
+
+| Screen | Actual numeric condition |
+| --- | --- |
+| C20 | Global mean alignment > 0.7; STRONG when > 0.85. |
+| C21 | Pair mean alignment > 0.85 and speed ratio < 5. This is a screen, not an `exp(tX)` theorem. |
+| C22 | Minimum active shape-direction cosine >= 0 passes; > 0.85 is STRONG in the producer. Negative values mark reversal. |
+
+The strict boundaries matter: a global alignment of exactly 0.7 does not pass
+C20. The formal predicates read the same numeric fields as these comparisons.
+
+## Bound, recomputed observations
+
+The versioned [fixture](../applications/luces/data/lie_observations.json) records
+exact binary-float ratios and hashes for boot320, boot334 and boot347. The
+[recheck script](../scripts/check_lie_observations.py) reruns the actual producer,
+checks the CSV/source hashes and compares those values with the PVS literals.
+From this repository, using Python with NumPy, pandas, SciPy and POT:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/check_lie_observations.py \
+  --source-root ../master-controler
 ```
 
-where P is the optimal Kantorovich coupling (POT network simplex).
+For these three rows, C20 is respectively STRONG, FAIL and PASS. Boot320 and
+boot347 pass C22; boot334 reverses. All three fail C21. The C20 producer does
+not measure C14 observability, so its formal observations explicitly retain
+`unmeasured` evidence.
 
-## Certificates
+The fixture also records an additional curvature computed from the same seven
+windows as C20. That curvature is not the differently binned DEV curvature.
+The PVS inverse-order check applies only to the finite captured C20 table.
+A separate bound DEV example has both higher curvature and higher operator
+alignment, disproving any universal inverse law for that different metric.
 
-| Certificate | Definition | Threshold |
-|---|---|---|
-| C20 | Generator Coherence: cos(v_segment, v_full) | > 0.7 PASS, > 0.85 STRONG |
-| C21 | Exponential Structure: constant direction + bounded speed | cos_pair > 0.85 AND speed < 5.0x |
-| C22 | Shape-Direction Consistency: min cosine in active zone | > 0 PASS, > 0.85 STRONG |
+## Mathematical counterexamples and limits
 
-## Results (Paper 3 Final Dataset + extended logs)
+Two unit directions `(119,120)/169` and `(119,-120)/169` each align with `(1,0)`
+by more than 0.7, while their mutual cosine is negative. Thus reversal alone
+cannot force failure of the C20 global-alignment predicate. A second observation
+has no reversal but insufficient global alignment. A coherent observation can
+also lack measured observability evidence. The older proposed equivalence
+`coherent IFF observed AND NOT reversal` is therefore not a current theorem.
 
-### Summary Table
+Hall, *Lie Groups, Lie Algebras, and Representations* (2015), gives mathematical
+background on one-parameter subgroups. It does not justify turning the numeric
+C21 thresholds into that theorem; no such formal bridge is supplied here.
+
+## Historical extended table
+
+The following rounded table is retained from the earlier report. Only the
+three rows named above have been rerun by the versioned binding in this
+revision. The other entries and their historical labels are not a fresh
+replay or a universal theorem. A rounded speed of 5.0 can still exceed the
+strict C21 cutoff, as it does for boot320.
 
 | Boot | Type | Cloud | cos_pair | cos_full | speed | Dir | C20 | C21 | C22 |
 |---|---|---|---|---|---|---|---|---|---|
@@ -42,44 +91,10 @@ where P is the optimal Kantorovich coupling (POT network simplex).
 | Boot298 | dusk | CLOUDY | -0.117 | 0.188 | 17.0x | ROT | FAIL | FAIL | FAIL |
 | Boot322 | dusk | CLOUDY | -0.153 | -0.066 | 64.2x | ROT | FAIL | FAIL | FAIL |
 
-### Key Findings
-
-1. **Dawn vs Dusk asymmetry**: All dusk logs FAIL C20/C21/C22. Dusk generator reverses direction mid-transition (front-loaded deceleration).
-
-2. **Cloud cover matters for coherence**: Cloudy 97-100% dawn (Boot320, Boot347) achieves STRONG coherence. Clear sky dawn (Boot301, Boot305) FAILS — rapid initial transport exhausts most mass in segment 1.
-
-3. **Boot320 is the best case**: cos_pair=0.940, cos_full=0.918, C20=STRONG, C22=STRONG. Near-exponential transport under uniform cloud cover.
-
-4. **No log achieves C21 (Exponential)**: Speed ratio always exceeds 5.0x. Even Boot320 (speed=5.0x) is borderline. True exp(tX) with constant speed is not observed — dawn always decelerates.
-
-5. **T10 validation**: PVS theorem T10 (coherent IFF observed AND NOT reversal) holds on all 13 logs with zero violations. C20 PASS/FAIL perfectly predicts C22 PASS/FAIL.
-
-6. **C20 vs C22 can differ in grade**: Boot347 has C20=PASS but C22=STRONG. C20 measures the mean alignment with the global generator (cos_full=0.711, above 0.7 but below 0.85). C22 measures the minimum cosine in the active zone (min_cos=0.903, above 0.85). The tangent field never reverses and has high local stability, but its average alignment with the full NIGHT-->DAY generator is only 0.711. The two certificates measure different aspects of coherence: C20 captures global direction alignment, C22 captures local tangent consistency.
-
-### PVS Formalization
-
-- [`lie_generator_structure.pvs`](../applications/luces/lie_generator_structure.pvs) — 10 theorems: hierarchy exponential --> strongly_coherent --> coherent
-- [`lie_pp_connection.pvs`](../applications/luces/lie_pp_connection.pvs) — 6 theorems: PPG + Lie connection
-
-### Hall (2015) References
-
-| PVS Axiom/Theorem | Hall Reference |
-|---|---|
-| exponential?(p) | Theorem 2.14: one-parameter subgroup <--> exp(tX) |
-| coherent?(p) | Corollary 3.46: g = tangent space at identity |
-| ax_reversal_breaks_coherence | Theorem 2.14 contrapositive: reversal --> not exp |
-| ax_exponential_requires_smooth_no_reversal | Definition 3.18 + Theorem 2.14: constant X |
-
-### Physical Interpretation
-
-The Lie generator v(i) describes the infinitesimal spectral flow:
-- Positive v(i): energy at channel i moves to higher channels (red-shift)
-- Negative v(i): energy at channel i moves to lower channels (blue-shift)
-- Constant v across time: exponential flow exp(tX) on diffeomorphism group
-- Reversing v: non-exponential, requires time-varying generator X(t)
-
-Dawn: predominantly negative v (blue-shift as sun rises, energy moves from NIR to visible).
-Dusk: initial negative v that reverses mid-transition (front-loaded, then rebounds).
+The table illustrates why C20 and C22 grades differ: boot347 has mean global
+alignment about 0.711 but minimum active shape alignment about 0.903. Neither
+a rounded table nor a matching finite classification establishes a universal
+physical implication.
 
 ## Author
 

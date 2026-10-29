@@ -1,14 +1,32 @@
 # Parametric Certification Theories
 
+The design discussion and boot tables below include historical case-study
+material. For current application contracts, measured bindings and limits, read
+[LUCES model scope](LUCES_MODEL_SCOPE.md) and the
+[theorem-scope record](THEOREM_SCOPE.md). The boot comparisons are observations
+from separate runs, not a formal refinement proof of a firmware intervention.
+
 ## Proof-Preserving Graphs
 
 A proof-preserving graph is a graph where every edge satisfies a refinement relation AND both endpoints maintain their local invariants. The graph may evolve (add vertices, add edges) but can never violate these constraints.
 
-Consequences: if a vertex is connected to the certified core, it holds its invariant. If it does not hold its invariant, it is isolated, and no edge from the good part reaches it. Paths persist once established. Evolution is monotone. Deterministic traversal (computing the next vertex without the Axiom of Choice) follows from uniqueness along pp-valid edges. Repair reconnects isolated vertices via relational choice on finite candidate sets.
+In a pp-valid graph, any endpoint of an admitted edge satisfies its invariant.
+A failing vertex is isolated in that graph. Paths persist under the separately
+defined monotone graph extensions with a fixed invariant; arbitrary state
+changes need a preservation proof. Uniqueness gives deterministic traversal in
+the corresponding relational model. These graph properties do not supply an
+implementation that detects failures or repairs a physical system.
 
 Built on NASA PVS Library: graphs@graphs (Butler and Sjogren, 1998) and sets_aux@rr_rel (Stosic, refinement relations).
 
-The core theory extends in two directions. First, pp_graphs_extended adds time, weight, and fault tolerance. Temporal PP-graphs index the graph by discrete time: invariant sets grow monotonically, paths persist once established, and eventually the system reaches a fixpoint. Weighted PP-graphs connect to optimal transport by assigning costs to edges, with cyclical monotonicity preventing crossing. Byzantine fault tolerance follows from pp-validity: any vertex that violates its invariant is automatically isolated from the honest core, and connected vertices are always honest. Second, categorical_pp_graphs lifts refinement from the element level (rr_rel on vertices) to the graph level. A PP-morphism preserves vertices and pp-edge structure. An embedding is an injective morphism. A quotient is a surjective morphism. A concrete graph refines an abstract graph via a quotient morphism, and simulation (abstraction-concretization round-trip) implies refinement. This is the structural backbone that lets the certification framework project the specification graph onto its quotient via a surjective pp-morphism (cert_quotient_bridge).
+The extended models state the time, cost and fault assumptions they use.
+Isolation relative to a chosen invariant is not a Byzantine-consensus theorem.
+The categorical interface defines morphisms, injective embeddings and
+surjective quotients. A specification projection generally sends an edge to an
+edge **or a collapsed vertex**. The actual categorical quotient results require
+the stated noncollapse and descent conditions; see
+`ppg_selection_quotient_graph` and `ppg_list_quotient_bridge`. The legacy
+`cert_quotient_bridge` keeps its weaker projection predicate.
 
 ## The Certification Problem
 
@@ -26,7 +44,10 @@ Monotonicity makes the certified levels an upper set. When a least certified lev
 
 The specification space is a graph: vertices are specification levels, edges connect comparable levels. The certified subgraph (only levels where certification holds) is pp-valid. Every edge satisfies the pp-edge predicate, with certification as the vertex invariant and refinement as the edge relation.
 
-One line from master refinement: certified at the source implies certified at the target. So the entire PPG machinery applies to the specification space. Connected vertices are all certified. Uncertified levels are isolated. Evolution is monotone. Paths persist. No additional axioms needed. It falls out of the master theorem.
+Master refinement gives certification at the weaker target level. The resulting
+certified specification graph is pp-valid. Path persistence additionally uses
+the chosen fixed-predicate graph extension; state repair uses its own target and
+preservation obligations.
 
 ## Blocking as Diagnosis
 
@@ -42,7 +63,11 @@ Two specifications that certify exactly the same data are certification-equivale
 
 ## Run the Example
 
-27 certificates on an embedded spectral sensing system (4-node ESP32 mesh, AS7341 sensor, 10 channels). Five levels: S > A > B > C > D. The engine finds canonical level C for most logs (structure sound, Monge concentration too weak for B). boot334 fails at all levels because generator coherence is negative (spectral flow reverses mid-transition). C_CS (structural) passes everywhere. C_GEN (dynamical) fails only on boot334. Independent axes, no threshold tuning.
+The historical report compares five certification levels, S > A > B > C > D,
+on embedded spectral logs. Its recorded classifications and counts describe
+that run. The current numerical runner and its versioned observability screens
+are documented separately in its
+[README](https://github.com/gajaka/master-controler/blob/main/cert_runner/README.md).
 
 Full results: [CERT_RUNNER_RESULTS.md](CERT_RUNNER_RESULTS.md)
 
@@ -53,15 +78,13 @@ refinement --> monotone certification --> canonical level --> blocking set
   --> dependency decomposition --> LLL feasibility --> relaxation/repair --> quotient
 ```
 
-The blocking set is not atomic: it decomposes into dependency components
-by shared variable support. Each component is either locally repairable
-(the General LLL condition is satisfiable) or a coupled obstruction (a
-negative pairwise discriminant proves no assignment exists). This is what
-decides whether repair can succeed on a component, formalized in
-`ppg_probabilistic.pvs` and `ppg_lll.pvs`. When a component is repairable,
-the Moser-Tardos procedure (`ppg_mt*.pvs`) is the constructive side: it
-resamples the coupled variables until the component is satisfied, with the
-witness-tree machinery and an algebraic convergence bound.
+The full tracked family supplies a dependency graph through shared variable
+support; passing certificates must remain in that graph because a repair can
+invalidate them. A satisfied Local Lemma budget is a sufficient existence
+criterion. An infeasible numerical budget, including a negative pairwise
+discriminant, rules out that sufficient criterion; it does not prove that no
+good assignment or repair exists. Moser–Tardos convergence uses the stated
+event probabilities, dependency conditions and resampling law.
 
 The repair path is three steps:
 
@@ -69,13 +92,10 @@ The repair path is three steps:
 decomposition --> decision --> construction
 ```
 
-Decomposition splits the blocking set into dependency components
-(`ppg_probabilistic.pvs`). Decision is the existence question, answered by the
-General Lovász Local Lemma (`ppg_lll.pvs`): a good state exists, or the
-component is a coupled obstruction. Construction is the constructive
-algorithm, Moser-Tardos (`ppg_mt*.pvs`): when a good state exists, resampling
-reaches it. So the two halves of the Local Lemma are both machine-checked:
-existence (LLL) and the constructive algorithm (Moser-Tardos).
+Decomposition organizes dependencies, a numerical LLL check can certify a
+sufficient budget, and a valid resampling construction gives its own
+termination or expected-work conclusion. Existence of some good state alone
+does not establish convergence of an arbitrary repair operator.
 
 ## Files
 
@@ -107,9 +127,15 @@ This table records the earlier certification and Moser–Tardos entry points. Th
 
 ## Self-Assessment Theory
 
-A proof-preserving graph does not promise that failures will not occur. It promises something stronger: a failure cannot remain structurally connected to the certified graph. The violating vertex is automatically isolated, no edge reaches it in either direction, and no evolution of the graph can silently reclassify it as certified without restoring its invariant.
+A pp-valid graph excludes edges incident to a vertex failing the selected
+invariant. This is a property of the mathematical graph at the evaluated
+state. An implementation must still evaluate certificates and maintain that
+graph. A fixed-predicate graph extension cannot change the invariant's meaning;
+a repair changes data and needs separate restoration and preservation proofs.
 
-This gives a formal notion of self-assessment without anthropomorphism. The graph carries its own admissibility conditions. It can detect when a component no longer belongs to the certified core, isolate that component without invalidating the rest, and admit it again after repair.
+This supplies formal admissibility and repair conditions. An implementation
+must evaluate the conditions, update its graph and justify its repair operation;
+the graph definition does not perform those actions by itself.
 
 Three evolution modes are formally distinct:
 
@@ -119,7 +145,10 @@ Relaxation:   theta --> theta', State fixed (weaken the contract)
 Repair:       s --> s', Spec fixed (restore the system to the bar)
 ```
 
-Relaxation changes what is demanded. Repair changes what the system does. The type system enforces this separation: repair is a function on states (S --> V --> S) with no access to the specification as a mutable object.
+Relaxation changes what is demanded. Repair changes the represented data. The
+formal repair model fixes the specification as a parameter and uses a function
+on states (`S --> V --> S`). This does not by itself enforce a fixed policy in
+an external program.
 
 A repair operator is valid (proof-preserving) if it satisfies two proof obligations: target restoration (the broken vertex becomes certified) and core preservation (no previously certified vertex loses its status). Monotone recovery is then a derived theorem, not a definitional truth.
 
@@ -153,11 +182,19 @@ canonical_frontier_advances --> t_c_new ≤ t ≤ t_c_old
 
 Key theorem (complete_repair_cycle): given a broken target and a valid repair operator, the repaired datum is certified at t, all previously certified levels are preserved, blocking set is empty, and new canonical is at most t.
 
-Planned cleanup: make valid_cert_repair definitionally equal to valid_repair applied to certSpec F (type-level identity, not just semantic equivalence).
+The later dependency bridge derives the state-repair preservation contract
+from locality, a write frame and checked component postconditions. The concrete
+finite-read instance derives locality from syntax and checks the full family
+before selecting a candidate.
 
-## Empirical Verification (complete_repair_cycle on real data)
+## Historical boot comparison
 
-Repair operator: firmware tau recalibration. Specification: fixed (S/A/B/C/D thresholds unchanged).
+The following recorded comparison used unchanged S/A/B/C/D thresholds and was
+interpreted as a tau-recalibration case study. The quoted `FORMAL VERIFICATION`
+and `ALL PROPERTIES VERIFIED` labels report comparisons of the extracted
+certification sets. They do not prove that a firmware transformation caused
+the change between the separate boot experiments or formally verify that code.
+The actual generic theorem is conditional on its valid-repair premises.
 
 ```
 PRE-FIX (state BEFORE repair)

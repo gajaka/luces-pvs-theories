@@ -1,106 +1,111 @@
-%%% dual_observability.pvs
-%%% Dual Chart Observability in the Transition Overlap Zone
-%%%
-%%% Origin: Paper 2 (CPHS 2026), Theorem T12 (Atlas Continuity).
-%%% Promoted to S-class: confirmed on 4/4 independent boots (199/199 samples).
-%%%
-%%% Physical meaning:
-%%%   During the dawn/dusk transition, there exists an overlap zone where
-%%%   BOTH the intensity chart (lux > 0) and the spectral chart (Fisher
-%%%   geometry bounded) are simultaneously observable.
-%%%
-%%% Consequence:
-%%%   - No observability gap during regime handoff
-%%%   - Controller never loses both signals simultaneously
-%%%   - Fisher geometry remains well-conditioned at boundaries
-%%%   - Connects Paper 2 (observability) to Paper 3 (transport geometry)
-%%%
-%%% Structural content:
-%%%   The overlap zone exists because spectral diversity (chi range > 0)
-%%%   persists even at low elevation where intensity is marginal.
-%%%   This is a property of the SYSTEM (lamp + sensor + solar geometry),
-%%%   not of a specific boot.
-%%%
-%%% Empirical evidence:
-%%%   boot293: 50/50 dual active, chi_range=0.403
-%%%   boot301: 49/49 dual active, chi_range=0.691
-%%%   boot303: 50/50 dual active, chi_range=0.708
-%%%   boot305: 50/50 dual active, chi_range=0.482
-%%%
-%%% Author: Dragan Stosic, 2026
+% Finite measured dual-chart diagnostics for the runner's overlap-v1 check.
+% An elevation window alone establishes neither positive lux nor a spectral
+% signal or bounded geometry. These are separate, measured numeric fields.
+% Bounds below support the actual boot320/347 rows and explicit countermodels.
+%
+% This numerical observation model does not prove controlled-excitation
+% observability or the physical assumptions of Paper 2's atlas theorem.
+% The CSV/exporter binding is finite evidence, not a verified CSV parser.
+%
+% Author: Dragan Stosic, 2026.
 
 dual_observability: THEORY
 BEGIN
 
-  % Abstract state space
-  State: TYPE+
+  State: TYPE = [# elevation: real, lux: nonneg_real,
+    spectral_sum: nonneg_real, geo_kappa: nonneg_real #]
 
-  % Elevation parameter (continuous)
-  elevation: [State -> real]
+  Bounds: TYPE = [# elevation_min: real, elevation_max: real,
+    lux_min: nonneg_real, spectral_min: nonneg_real, kappa_max: nonneg_real #]
 
-  % Observability predicates
-  intensity_observable?(s: State): bool
+  s: VAR State
+  b: VAR Bounds
 
-  spectral_observable?(s: State): bool
+  elevation(s): real = s`elevation
 
-  % Fisher conditioning
-  kappa: [State -> nonneg_real]
+  kappa(s): nonneg_real = s`geo_kappa
 
-  kappa_bounded?(s: State): bool = kappa(s) < 100
+  intensity_observable?(s): bool = s`lux > 0
 
-  % Overlap zone predicate: elevation between -4° and -2°
-  in_overlap?(s: State): bool =
-    elevation(s) > -4 AND elevation(s) < -2
+  spectral_observable?(s): bool = s`spectral_sum > 10
 
-  % Dual observability: both charts active
-  dual_observable?(s: State): bool =
-    intensity_observable?(s) AND spectral_observable?(s)
+  kappa_bounded?(s): bool = s`geo_kappa < 100
 
-%% ═══════════════════════════════════════════════════════════
-%% Structural Axioms
-%% ═══════════════════════════════════════════════════════════
+  in_overlap?(s): bool = -4 < s`elevation AND s`elevation < -2
 
-  % A1: In the overlap zone, spectral chart is always observable
-  %     (spectral diversity persists at low elevation due to lamp excitation)
-  ax_spectral_in_overlap: AXIOM
-    FORALL (s: State): in_overlap?(s) IMPLIES spectral_observable?(s)
+  dual_observable?(s): bool = intensity_observable?(s) AND spectral_observable?(s)
 
-  % A2: In the overlap zone, intensity chart is observable
-  %     (lux > 0 because either lamp or early solar contributes)
-  ax_intensity_in_overlap: AXIOM
-    FORALL (s: State): in_overlap?(s) IMPLIES intensity_observable?(s)
+  checked_row?(s): bool = in_overlap?(s) AND dual_observable?(s) AND kappa_bounded?(s)
 
-  % A3: Spectral observability implies Fisher boundedness
-  %     (if spectral chart is active, Fisher geometry is not degenerate)
-  ax_spectral_implies_fisher: AXIOM
-    FORALL (s: State): spectral_observable?(s) IMPLIES kappa_bounded?(s)
+  valid_bounds?(b): bool = -4 < b`elevation_min AND
+    b`elevation_min <= b`elevation_max AND b`elevation_max < -2 AND
+    0 < b`lux_min AND 10 < b`spectral_min AND b`kappa_max < 100
 
-%% ═══════════════════════════════════════════════════════════
-%% Theorems
-%% ═══════════════════════════════════════════════════════════
+  within_bounds?(s, b): bool = b`elevation_min <= s`elevation AND
+    s`elevation <= b`elevation_max AND b`lux_min <= s`lux AND
+    b`spectral_min <= s`spectral_sum AND s`geo_kappa <= b`kappa_max
 
-  % T1: Dual observability holds in entire overlap zone
-  %     Proof: A1 gives spectral, A2 gives intensity --> dual by definition
-  thm_dual_in_overlap: THEOREM
-    FORALL (s: State): in_overlap?(s) IMPLIES dual_observable?(s)
+  bounds_establish_checked_row: THEOREM
+    valid_bounds?(b) AND within_bounds?(s, b) IMPLIES checked_row?(s)
 
-  % T2: No observability gap during transition
-  %     Proof: T1 gives dual --> at least one chart active (both, in fact)
-  thm_no_gap: THEOREM
-    FORALL (s: State):
-      in_overlap?(s) IMPLIES NOT (NOT intensity_observable?(s) AND NOT spectral_observable?(s))
+  thm_dual_in_overlap: THEOREM valid_bounds?(b) AND within_bounds?(s, b)
+    IMPLIES in_overlap?(s) AND dual_observable?(s)
 
-  % T3: Fisher bounded throughout overlap
-  %     Proof: A1 (overlap --> spectral) + A3 (spectral --> Fisher bounded)
-  thm_fisher_stable_in_overlap: THEOREM
-    FORALL (s: State): in_overlap?(s) IMPLIES kappa_bounded?(s)
+  thm_no_gap: THEOREM valid_bounds?(b) AND within_bounds?(s, b) IMPLIES
+    NOT (NOT intensity_observable?(s) AND NOT spectral_observable?(s))
 
-  % T4: Dual observability implies full system health
-  %     Proof: dual_observable unfolds to intensity ∧ spectral;
-  %     A3 gives spectral --> kappa_bounded
-  thm_dual_implies_full_health: THEOREM
-    FORALL (s: State):
-      dual_observable?(s) IMPLIES
-      (intensity_observable?(s) AND spectral_observable?(s) AND kappa_bounded?(s))
+  thm_fisher_stable_in_overlap: THEOREM valid_bounds?(b) AND within_bounds?(s, b)
+    IMPLIES in_overlap?(s) AND kappa_bounded?(s)
+
+  thm_bounded_row_health: THEOREM valid_bounds?(b) AND within_bounds?(s, b) IMPLIES
+    intensity_observable?(s) AND spectral_observable?(s) AND kappa_bounded?(s)
+
+  % This record is inside the elevation window but has no measured intensity.
+  window_without_intensity: State =
+    (# elevation := -3, lux := 0, spectral_sum := 20, geo_kappa := 2 #)
+
+  window_alone_does_not_imply_dual: THEOREM in_overlap?(window_without_intensity) AND
+    spectral_observable?(window_without_intensity) AND
+    NOT intensity_observable?(window_without_intensity) AND
+    NOT dual_observable?(window_without_intensity)
+
+  % A spectral signal, even together with positive lux, does not bound kappa.
+  bright_bad_geometry: State =
+    (# elevation := -3, lux := 5, spectral_sum := 20, geo_kappa := 100 #)
+
+  spectral_signal_does_not_bound_geometry: THEOREM in_overlap?(bright_bad_geometry) AND
+    dual_observable?(bright_bad_geometry) AND NOT kappa_bounded?(bright_bad_geometry) AND
+    NOT checked_row?(bright_bad_geometry)
+
+% BEGIN GENERATED OBSERVATION DATA
+  % CSV SHA-256: 23ce5e3c2ac8bd932c1452ebdf4d73ad8dbb6129e211972c884d6c406ad9dc83
+  boot320_bounds: Bounds = (# elevation_min := -399/100, elevation_max := -29/10, lux_min := 4, spectral_min := 260, kappa_max := 3/2 #)
+
+  % Actual CSV row index 815; all 27 overlap rows satisfy the enclosure.
+  boot320_observed_row: State = (# elevation := -4447304632028365/1125899906842624, lux := 2296835809958953/562949953421312, spectral_sum := 288, geo_kappa := 5404319552844595/4503599627370496 #)
+
+  % CSV SHA-256: 3ef6638d83059b273a174e04cb4523557c9064e4a44bc741a05a50a4a8ae14ab
+  boot347_bounds: Bounds = (# elevation_min := -399/100, elevation_max := -201/100, lux_min := 1, spectral_min := 260, kappa_max := 6 #)
+
+  % Actual CSV row index 448; all 48 overlap rows satisfy the enclosure.
+  boot347_observed_row: State = (# elevation := -8962163258467287/2251799813685248, lux := 2296835809958953/281474976710656, spectral_sum := 431, geo_kappa := 2 #)
+
+% END GENERATED OBSERVATION DATA
+
+  boot320_bounds_valid: THEOREM valid_bounds?(boot320_bounds)
+
+  boot347_bounds_valid: THEOREM valid_bounds?(boot347_bounds)
+
+  boot320_actual_row_checked: THEOREM within_bounds?(boot320_observed_row, boot320_bounds) AND
+    checked_row?(boot320_observed_row)
+
+  boot347_actual_row_checked: THEOREM within_bounds?(boot347_observed_row, boot347_bounds) AND
+    checked_row?(boot347_observed_row)
+
+  boot320_enclosed_rows_checked: THEOREM
+    within_bounds?(s, boot320_bounds) IMPLIES checked_row?(s)
+
+  boot347_enclosed_rows_checked: THEOREM
+    within_bounds?(s, boot347_bounds) IMPLIES checked_row?(s)
 
 END dual_observability

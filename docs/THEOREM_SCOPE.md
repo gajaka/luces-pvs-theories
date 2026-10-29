@@ -87,7 +87,7 @@ was changed for these checks.
 ## Structural and application corrections
 
 The later 2026-10-28 changes address the structural gaps separately from the
-first placeholder cleanup. The current Lean inventory is 1,842 results in 192
+first placeholder cleanup. That stage recorded 1,842 Lean results in 192
 modules. This does not relabel the dated full PVS translation ledger as a replay
 of every later extension.
 
@@ -98,11 +98,16 @@ of every later extension.
 | Selection and quotient | The generic selection graph descends the invariant and RR to equivalence classes, then proves the shared categorical morphism and quotient predicates. Noncollapse and descent are explicit hypotheses. The specification bridge retains edge-or-collapse in general and gives a categorical quotient on certified subgraphs under noncollapse. |
 | Operational MT repair | `ppg_mt_topology_bridge` connects the actual constant-log trajectory to finite directed reachability when each primitive resampling is an admitted edge. Its intermediate states need not satisfy the target, so the recovery path is not a certified PPG walk. |
 
-PVS dependency vertices merge repeated identical certificate predicates through
-`listSet`. Lean indexes individual list positions. No isomorphism is claimed
-when duplicate positions are assigned different footprints. Neither version
-infers locality from a footprint declaration or synthesizes the post-checked
-repair. The state-repair bridge derives its preservation obligation; the
+The earlier `ppg_certification_dependency` uses predicate-valued vertices and
+merges repeated identical predicates through `listSet`. The later
+`ppg_indexed_certification_dependency` uses bounded list positions, matching
+Lean's indexed family, and retains separate footprints and plan entries for
+repeated predicates. It proves the exact image relation between failing
+positions and the older blocking set; it does not claim the two graphs are
+isomorphic. The generic indexed bridge still requires predicate locality and
+checked repair premises. The concrete finite-read LUCES instance derives
+locality from its checker syntax and obtains the component post-check from its
+search result; see the next section. The state-repair bridge derives its preservation obligation; the
 unchanged graph-extension helpers in `SelfAssessment` still follow from their
 fixed-predicate definitions.
 
@@ -148,9 +153,11 @@ operational graph supplies the explicit edge connection.
   is retained as legacy material, with its limitation documented.
 
 These revised application theories contain no hand-written `AXIOM`
-declarations. Other LUCES application theories keep their stated assumptions;
-this change does not establish an unconditional geometric, physical,
-cryptographic or firmware correctness result for them.
+declarations. The later finite-model revisions described in
+[LUCES model scope](LUCES_MODEL_SCOPE.md) also replace the remaining LUCES axioms.
+Explicit model laws, checked observations and implementation boundaries still
+matter; no unconditional geometric, physical, cryptographic or firmware
+correctness result follows from an axiom count.
 
 ### Checks of the clean publication candidate
 
@@ -190,3 +197,74 @@ The shared categorical theory is replayed through the quotient checks. Edits in
 `cert_selection.pvs` and `cert_quotient_bridge.pvs` only clarify the scope of their
 existing weaker projection predicates. These scoped checks do not replace the
 dated full-library replay record.
+
+## Finite reads, repeated positions and measured repair
+
+The next integration adds the position-keyed dependency bridge and the concrete
+`applications/luces/luces_local_certificate_repair.pvs` instance. Its atoms read
+one field; a conjunction's read set is the structural union. An induction on
+that syntax proves locality. The eight-position family includes the conjunction
+of the four local-plan comparisons, a repeated Monge comparison, signed GEN
+and the exact dataset key. Repetition is retained at separate positions.
+
+Search checks every tracked certificate and the fixed write frame before
+returning a candidate. Its soundness and finite-bank completeness theorems
+derive the indexed component-repair and `valid_repair` obligations from that
+result. The measured bank contains five actual coupling mixtures. Its selected
+snapshot restores the entire family and leaves GEN and dataset identity
+unchanged. This is finite selection over supplied candidates, not a guarantee
+that an arbitrary bank has a repair or that the selected snapshot has been
+applied to hardware.
+
+The PVS source/proof closure of the indexed bridge passed **139 project and
+3 required Native bodies** across 13 modules. The concrete repair closure
+passed **163 project and 3 required Native bodies** across 14 modules. These
+2026-10-28 runs used the public checker and completed with no unfinished bodies;
+the closures overlap. The Python exporter separately recomputes the measured
+matrices, comparisons and hashes. It is not a verified parser or solver.
+
+The Lean companion additionally parses the included ASCII JSON byte lists with
+a pure finite parser and proves the source-to-contract and source-to-row
+bindings in the kernel. Its build and axiom audit are recorded by the Lean
+repository. This stronger Lean input binding does not change the PVS exporter's
+proof boundary or verify NumPy, POT, firmware or sensor physics.
+
+The latest Lean inventory is **1,876 explicit source results in 198 modules**.
+This describes the companion Lean library, not a replacement for the historical
+PVS translation ledger or a claim that every later PVS extension was replayed
+in one whole-library run.
+
+## Completed incremental verification
+
+The [incremental receipt](../reports/PVS_INCREMENTAL_REPLAY_20261029.json),
+completed on **2026-10-29**, binds each changed source and proof file to the
+publication. Its 28 changed sources comprise 27 semantic changes and one
+equivalent generated ADT rendering. Its 30 changed proof files also include
+the three proof-only repairs `density_history_version`, `point_native_mean`
+and `native_integral_sequence_eq`. Their unchanged statements now replay in
+the ordinary public closure: **723 Project bodies and 956 required Native
+originals**, with zero unfinished bodies, missing scripts, derived or mapped
+credit, or Native failures. The separate Shannon closure passed **17 Project
+bodies and 761 required Native originals**. Eight source-matched earlier
+normal passes supply the remaining changed-source coverage. The report
+preserves per-run counts and source identities; overlapping dependency bodies
+are not summed as distinct theorems. All 30 required proof-bearing roots are
+covered. This is incremental verification, not a replacement for the dated
+historical full-library replay.
+
+## External proof-file metadata
+
+The published [NASAlib compatibility bundle](../library-proof-fixes/README.md)
+replaces 130 quoted decision-procedure metadata values in 44 pinned proof files.
+It checks exact byte offsets and proof-record identities, unchanged adjacent
+`.pvs` hashes and fingerprints of all proof programs. A 44-file external
+sandbox test verifies the original backups, all expected after-hashes and an
+idempotent second application. An ordinary Lisp reader checks the resulting
+metadata fields are symbols; no PVS prover is loaded by that reader check.
+
+This validation is distinct from proof replay. The recorded full V2 input copy
+uses the pinned upstream library with only the earlier single integral-metadata
+fix. The additional 43-file compatibility set has not been substituted into
+that frozen input copy. Any proof result using a later library input must retain
+its own input hashes and required-Native replay record. Metadata compatibility
+alone adds no theorem or proof-body credit.

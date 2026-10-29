@@ -1,194 +1,84 @@
-%------------------------------------------------------------------------------
-% Connection between Lie Generator Structure and PP-Graph Theory
+% Numeric coherence and the boolean C20 predicate read the same measured field.
+% Curvature belongs to the measured path, so changing its graph context alone
+% cannot change it. This does not equate a pp-path with an observed physical
+% trajectory or turn a C21 threshold into exp(tX).
 %
-% This theory bridges the spectral transport formalism
-% (lie_generator_structure) with the proof-preserving graph framework
-% (proof_preserving_graphs). It formalizes the geometric relationship
-% between path curvature and generator coherence.
-%
-% Key empirical law:
-%   Higher curvature (tangent field instability) implies lower
-%   generator coherence. Verified on 11/11 boot logs.
-%
-% Mathematical interpretation:
-%   - Curvature measures how fast the tangent field X(t) rotates in g
-%   - Coherence measures directional stability of X(t) over the path
-%   - Hall Thm 2.14: constant X(t) <=> exp(tX), zero curvature
-%   - Reversal (C22 FAIL) corresponds to curvature exceeding threshold
-%
-% Dependencies:
-%   - lie_generator_structure
-%   - proof_preserving_graphs[T]
-%
-% Author: Dragan Stosic
-%------------------------------------------------------------------------------
+% The inverse relation is a finite table check. It holds for the three captured
+% C20 observations below; it is not asserted for all possible measured paths.
+% A separate C_DEV example uses flattened T-I alignment from
+% data/luces_runner_deviation.json. It disproves inverse ordering for that
+% operator metric, which must not be identified with C20 coupling alignment.
 
 lie_pp_connection[T: TYPE+]: THEORY
 BEGIN
 
-  IMPORTING ppg_core@proof_preserving_graphs[T]
-  IMPORTING lie_generator_structure
+  IMPORTING ppg_core@directed_pp_graph[T], lie_generator_structure
 
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Section 1: Geometric Measures (Axiomatic)
-  %% ═══════════════════════════════════════════════════════════════════
+  MeasuredPrewalk: TYPE = [# walk: Prewalk, measurement: TransportPath #]
 
-  % Curvature of a pp-path in a graph: measures rate of tangent field rotation
-  % Depends on the graph context (edge structure affects tangent estimation)
-  % Empirical: derived from consecutive shape-direction cosines
-  % Low curvature = nearly constant tangent = close to exponential
-  curvature: [graph[T], prewalk -> nonneg_real]
+  G, G1, G2: VAR Graph
+  p: VAR MeasuredPrewalk
+  n: VAR posnat
+  observations: VAR [nat -> TransportPath]
+  i, j: VAR nat
 
-  % Curvature depends only on the path geometry, not the surrounding graph
-  % (tangent field is computed from vertex sequence, not from edges)
-  curvature_graph_independent: AXIOM
-    FORALL (G1, G2: graph[T], pw: prewalk):
-      pp_path?(G1, pw) AND pp_path?(G2, pw)
-        IMPLIES curvature(G1, pw) = curvature(G2, pw)
+  transport_of(p): TransportPath = p`measurement
 
-  % Generator coherence of a pp-path: directional stability measure
-  % Empirical: C20 cos_full value (cosine between first and last segments)
-  % High coherence = stable generator direction
-  generator_coherence: [prewalk -> nonneg_real]
+  curvature(G, p): nonneg_real = p`measurement`path_curvature
 
-  % Coherence is bounded [0, 1]
-  coherence_bounded: AXIOM
-    FORALL (pw: prewalk): generator_coherence(pw) <= 1
+  generator_coherence(p): Cosine = p`measurement`global_alignment
 
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Section 2: Curvature-Coherence Inverse Law
-  %% ═══════════════════════════════════════════════════════════════════
+  curvature_graph_independent: THEOREM curvature(G1, p) = curvature(G2, p)
 
-  % E1: Fundamental empirical law — curvature and coherence are
-  %     inversely monotone on observed paths.
-  %     Verified: 11/11 boot logs show strict inverse correlation.
-  coherence_curvature_inverse: AXIOM
-    FORALL (G: graph[T], pw1, pw2: prewalk):
-      pp_path?(G, pw1) AND pp_path?(G, pw2) AND
-      curvature(G, pw1) >= curvature(G, pw2)
-        IMPLIES generator_coherence(pw1) <= generator_coherence(pw2)
+  coherence_bounded: THEOREM -1 <= generator_coherence(p) AND generator_coherence(p) <= 1
 
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Section 3: Curvature Thresholds and Classification
-  %% ═══════════════════════════════════════════════════════════════════
+  coherent_iff_numeric_threshold: THEOREM
+    coherent?(transport_of(p)) IFF generator_coherence(p) > 7/10
 
-  % Curvature threshold for coherence (empirical: cos_full = 0.7)
-  coherence_threshold: nonneg_real
+  strong_iff_numeric_threshold: THEOREM
+    strongly_coherent?(transport_of(p)) IFF generator_coherence(p) > 17/20
 
-  % Curvature threshold for strong coherence (empirical: cos_full = 0.85)
-  strong_coherence_threshold: nonneg_real
+  inverse_pair?(a, b: TransportPath): bool =
+    a`path_curvature >= b`path_curvature IMPLIES a`global_alignment <= b`global_alignment
 
-  % Threshold ordering
-  threshold_ordering: AXIOM
-    strong_coherence_threshold <= coherence_threshold
+  finite_inverse_check?(n, observations): bool =
+    FORALL (i, j: below(n)): inverse_pair?(observations(i), observations(j))
 
-  % E2: Below coherence threshold curvature => path is coherent
-  low_curvature_coherent: AXIOM
-    FORALL (G: graph[T], pw: prewalk):
-      pp_path?(G, pw) AND curvature(G, pw) <= coherence_threshold
-        IMPLIES generator_coherence(pw) >= 0.7
+  checked_inverse_pair: THEOREM finite_inverse_check?(n, observations) AND i < n AND j < n
+    IMPLIES inverse_pair?(observations(i), observations(j))
 
-  % E3: Below strong threshold curvature => path is strongly coherent
-  low_curvature_strong: AXIOM
-    FORALL (G: graph[T], pw: prewalk):
-      pp_path?(G, pw) AND curvature(G, pw) <= strong_coherence_threshold
-        IMPLIES generator_coherence(pw) >= 0.85
+  captured_c20_table: [nat -> TransportPath] =
+    LAMBDA (i: nat): IF i = 0 THEN boot320 ELSIF i = 1 THEN boot334 ELSE boot347 ENDIF
 
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Section 4: Connection to lie_generator_structure predicates
-  %% ═══════════════════════════════════════════════════════════════════
+  captured_c20_inverse_check: THEOREM finite_inverse_check?(3, captured_c20_table)
 
-  % Bridge: a pp-path maps to a TransportPath
-  transport_of: [prewalk -> TransportPath]
+  % The interface permits measured paths with increasing curvature and
+  % increasing alignment; a universal inverse law would exclude them by fiat.
+  high_curvature_high_coherence: TransportPath =
+    (# global_alignment := 9/10, pair_alignment := 9/10,
+       shape_min_cosine := 9/10, speed_ratio := 1,
+       path_curvature := 2, observability := unmeasured #)
 
-  % E4: Observed pp-path maps to continuously observed transport path
-  observed_bridge: AXIOM
-    FORALL (G: graph[T], pw: prewalk):
-      pp_path?(G, pw) IMPLIES
-        continuously_observed?(transport_of(pw))
+  lower_curvature_lower_coherence: TransportPath =
+    (# global_alignment := 4/5, pair_alignment := 4/5,
+       shape_min_cosine := 4/5, speed_ratio := 1,
+       path_curvature := 1, observability := unmeasured #)
 
-  % E5: High curvature (above threshold) implies shape direction reversal
-  %     Empirical: curvature > threshold <=> C22 FAIL <=> min_cos < 0
-  high_curvature_reversal: AXIOM
-    FORALL (G: graph[T], pw: prewalk):
-      curvature(G, pw) > coherence_threshold IMPLIES
-        shape_direction_reversal?(transport_of(pw))
+  inverse_is_not_universal: THEOREM
+    NOT inverse_pair?(high_curvature_high_coherence, lower_curvature_lower_coherence)
 
-  % E5b: Shape direction reversal implies curvature above threshold
-  %      (converse of E5 — the equivalence)
-  reversal_high_curvature: AXIOM
-    FORALL (G: graph[T], pw: prewalk):
-      shape_direction_reversal?(transport_of(pw)) IMPLIES
-        curvature(G, pw) > coherence_threshold
+  OperatorObservation: TYPE = [# path_curvature: nonneg_real, operator_alignment: Cosine #]
 
-  % E6: No reversal implies curvature bounded by threshold
-  no_reversal_bounded: AXIOM
-    FORALL (G: graph[T], pw: prewalk):
-      NOT shape_direction_reversal?(transport_of(pw)) IMPLIES
-        curvature(G, pw) <= coherence_threshold
+  boot320_operator: OperatorObservation =
+    (# path_curvature := 80110968750647/274877906944,
+       operator_alignment := 764509825823707/1125899906842624 #)
 
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Section 5: Derived Theorems
-  %% ═══════════════════════════════════════════════════════════════════
+  boot347_operator: OperatorObservation =
+    (# path_curvature := 7424867465924789/17592186044416,
+       operator_alignment := 6503979892704485/9007199254740992 #)
 
-  % T1: Zero curvature path has maximum coherence
-  zero_curvature_max_coherence: THEOREM
-    FORALL (G: graph[T], pw1, pw2: prewalk):
-      pp_path?(G, pw1) AND pp_path?(G, pw2) AND
-      curvature(G, pw1) = 0
-        IMPLIES generator_coherence(pw1) >= generator_coherence(pw2)
-
-  % T2: pp-path with reversal has lower coherence than any non-reversing path
-  reversal_lower_coherence: THEOREM
-    FORALL (G: graph[T], pw1, pw2: prewalk):
-      pp_path?(G, pw1) AND pp_path?(G, pw2) AND
-      shape_direction_reversal?(transport_of(pw1)) AND
-      NOT shape_direction_reversal?(transport_of(pw2))
-        IMPLIES generator_coherence(pw1) <= generator_coherence(pw2)
-
-  % T3: Observed path without reversal is coherent
-  %     (connects lie_generator_structure axiom A4 to pp-graph paths)
-  observed_no_reversal_coherent: THEOREM
-    FORALL (G: graph[T], pw: prewalk):
-      pp_path?(G, pw) AND
-      NOT shape_direction_reversal?(transport_of(pw))
-        IMPLIES coherent?(transport_of(pw))
-
-  % T4: pp-path coherence implies generator estimation is stable
-  pp_path_coherence_stable: THEOREM
-    FORALL (G: graph[T], pw: prewalk):
-      pp_path?(G, pw) AND curvature(G, pw) <= coherence_threshold
-        IMPLIES coherent?(transport_of(pw))
-
-  % T5: pp-path with reversal breaks coherence
-  pp_path_reversal_incoherent: THEOREM
-    FORALL (G: graph[T], pw: prewalk):
-      pp_path?(G, pw) AND
-      shape_direction_reversal?(transport_of(pw))
-        IMPLIES NOT coherent?(transport_of(pw))
-
-  % T6: Curvature is preserved along pp-transform
-  %     If path persists, curvature is unchanged (path geometry is the same)
-  %     Curvature depends on the sequence of vertices, not the surrounding graph
-  curvature_preserved_under_transform: THEOREM
-    FORALL (G1, G2: graph[T], pw: prewalk):
-      pp_transform?(G1, G2) AND pp_path?(G1, pw) AND pp_path?(G2, pw)
-        IMPLIES curvature(G2, pw) = curvature(G1, pw)
-
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Empirical verification summary
-  %% ═══════════════════════════════════════════════════════════════════
-  %%
-  %% Boot log | C14  | C22      | curvature | C20      | coherence
-  %% ─────────┼──────┼──────────┼───────────┼──────────┼──────────
-  %% boot320  | PASS | STRONG   | 0.03      | STRONG   | 0.94
-  %% boot321  | PASS | PASS     | 0.12      | PASS     | 0.78
-  %% boot334  | PASS | FAIL     | 1.47      | FAIL     | 0.31
-  %% boot335  | PASS | FAIL     | 2.10      | FAIL     | 0.22
-  %%
-  %% Pattern: curvature↑ => coherence↓ (strict inverse monotonicity)
-  %% Threshold: curvature > ~0.5 correlates with C22 FAIL
-  %%
-  %% ═══════════════════════════════════════════════════════════════════
+  captured_operator_inverse_counterexample: THEOREM
+    boot347_operator`path_curvature > boot320_operator`path_curvature AND
+      boot347_operator`operator_alignment > boot320_operator`operator_alignment
 
 END lie_pp_connection

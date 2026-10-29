@@ -1,5 +1,14 @@
 # Certificate Runner — Paper 3 Final Dataset
 
+This is a historical output record, retained without replacing its numeric
+results. It is not a replay of the current runner. In particular, the missing
+historical OBS/DATL/MRG implementation was replaced by the explicitly versioned
+`proxy-v1` and `overlap-v1` checks; their definitions and new boot320/347 results
+are documented in the
+[current runner README](https://github.com/gajaka/master-controler/blob/main/cert_runner/README.md).
+Historical certificate names do not establish the broader physical or
+geometric claims discussed in [LUCES model scope](LUCES_MODEL_SCOPE.md).
+
 26 certificates evaluated on 8 independent experiments (5 dawn, 3 dusk).
 PPG certificates (PPG, RES, DET, CCI, ATL, GEN) achieve S-class on 7/8 logs.
 GEN (Generator Coherence) detects boot334 directional reversal (cos = -0.74).

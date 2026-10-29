@@ -19,9 +19,28 @@ BEGIN
     [# epsilon: posreal, eta: posreal, kappa_low: nonneg_real,
        kappa_high: posreal, sigma_low: nonneg_real, sigma_high: posreal #]
 
+  % A numerical score input has no implicit interpretation as physical mass.
+  % The measured runner uses a normalization residual for mass_term. The
+  % separate source/sink model below uses their sum instead.
+  ScoreInput: TYPE =
+    [# curvature: nonneg_real, aligned: bool,
+       negative_alignment: bool, mass_term: nonneg_real #]
+
   p: VAR Observation
   w: VAR Weights
   t: VAR Thresholds
+  o: VAR ScoreInput
+
+  score(w, o): nonneg_real =
+    w`alpha * o`curvature +
+    w`beta * (IF o`aligned THEN 0 ELSE 1 ENDIF) +
+    w`gamma * (IF o`negative_alignment THEN 1 ELSE 0 ENDIF) +
+    w`delta * o`mass_term
+
+  source_sink_score_input(p): ScoreInput =
+    (# curvature := p`curvature, aligned := p`coherent,
+       negative_alignment := p`reversal,
+       mass_term := p`source_strength + p`sink_strength #)
 
   % This consistency check is explicit evidence, not an empirical axiom.
   observations_consistent?(p): bool = p`reversal IMPLIES NOT p`coherent
@@ -31,6 +50,8 @@ BEGIN
     w`beta * (IF p`coherent THEN 0 ELSE 1 ENDIF) +
     w`gamma * (IF p`reversal THEN 1 ELSE 0 ENDIF) +
     w`delta * (p`source_strength + p`sink_strength)
+
+  Dev_is_score: THEOREM Dev(w, p) = score(w, source_sink_score_input(p))
 
   calibrated?(w, t): bool =
     t`epsilon < t`eta AND t`kappa_low < t`kappa_high AND
@@ -58,13 +79,15 @@ BEGIN
 
   dusk_sink?(p): bool = has_sink?(p) AND p`source_strength = 0
 
-  default_weights: Weights = (# alpha := 1, beta := 2, gamma := 3, delta := 1 #)
+  % A satisfiable calibration witness, not the empirical LUCES runner values.
+  % luces_runner_deviation uses the actual 0.01/1/2/5 weights and 1/3 cutoffs.
+  example_weights: Weights = (# alpha := 1, beta := 2, gamma := 3, delta := 1 #)
 
-  default_thresholds: Thresholds =
+  example_thresholds: Thresholds =
     (# epsilon := 1, eta := 2, kappa_low := 1/4,
        kappa_high := 2, sigma_low := 1/4, sigma_high := 3 #)
 
-  default_calibration_valid: THEOREM calibrated?(default_weights, default_thresholds)
+  example_calibration_valid: THEOREM calibrated?(example_weights, example_thresholds)
 
   % Bounds on actual score contributions support the calibration theorems.
   curvature_contribution_le: LEMMA w`alpha * p`curvature <= Dev(w, p)
@@ -109,14 +132,14 @@ BEGIN
 
   % Nonvacuous observations under the concrete valid calibration.
   balanced_example: THEOREM
-    balanced_regime?(default_weights, default_thresholds,
+    balanced_regime?(example_weights, example_thresholds,
       (# curvature := 0, coherent := TRUE, reversal := FALSE,
          source_strength := 0, sink_strength := 0 #))
 
   reversal_example: THEOREM
     observations_consistent?((# curvature := 0, coherent := FALSE, reversal := TRUE,
       source_strength := 0, sink_strength := 0 #)) AND
-    unbalanced_regime?(default_weights, default_thresholds,
+    unbalanced_regime?(example_weights, example_thresholds,
       (# curvature := 0, coherent := FALSE, reversal := TRUE,
          source_strength := 0, sink_strength := 0 #))
 

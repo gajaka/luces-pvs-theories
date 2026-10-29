@@ -1,121 +1,97 @@
-%%% displacement_concavity.pvs
-%%% Displacement Concavity Under Hybrid Excitation
-%%%
-%%% Villani (2009), Ch.17, Theorem 17.15 (McCann 1997):
-%%%   Shannon entropy is displacement convex along W₂ geodesics on Rⁿ.
-%%%
-%%% LUCES finding:
-%%%   Physical dawn path is NOT a W₂ geodesic when lamp is active.
-%%%   The measured entropy exceeds the linear interpolation bound,
-%%%   indicating the path deviates from the geodesic into higher-entropy
-%%%   mixed states. This is NOT a violation of Villani — it shows the
-%%%   physical path is non-geodesic.
-%%%
-%%% Theorem T3:
-%%%   Entropy excess > 0 is a DETECTOR for non-geodesic (hybrid) paths.
-%%%   This connects OT geometry to observability (Paper 2).
-%%%
-%%% Author: Dragan Stosic, 2026
+% Finite Shannon entropy and source provenance are different observables.
+%
+% Shannon entropy is -sum p log p, with 0 log 0 = 0. The displacement-convex
+% functional in McCann (1997), A Convexity Principle for Interacting Gases,
+% and Villani (2009), Chapter 17, has the opposite sign, +integral rho log rho.
+% No Wasserstein geodesic is defined here and no geodesic detector is claimed.
+%
+% The concrete two-channel example below has positive Shannon excess while
+% every observation has zero lamp contribution. It refutes the former
+% universal pure-path bound and the resulting hybrid-source detector.
 
-displacement_concavity: THEORY
+ displacement_concavity: THEORY
 BEGIN
 
-  % Spectral state: distribution over N channels
   N: posnat = 10
 
   Channel: TYPE = below(N)
 
-  % A spectral measure is a probability distribution over channels
+  IMPORTING reals@sigma_below[N], lnexp@ln_exp
+
   Spectrum: TYPE = [Channel -> nonneg_real]
 
-  % Entropy: H(μ) = -Σ μ(k) log μ(k)
-  H(mu: Spectrum): real
+  UnitInterval: TYPE = {t: real | 0 <= t AND t <= 1}
 
-  % Lamp contribution fraction: α ∈ [0,1], 0 = pure solar, 1 = pure lamp
-  alpha: [Spectrum -> nonneg_real]
+  Observation: TYPE = [# spectrum: Spectrum, lamp_fraction: UnitInterval #]
 
-%% ═══════════════════════════════════════════════════════════
-%% Definitions (explicit, not abstract)
-%% ═══════════════════════════════════════════════════════════
+  mu, mu0, mu1: VAR Spectrum
+  a, b: VAR Observation
+  t: VAR UnitInterval
+  k: VAR Channel
 
-  % Pure solar: lamp contribution is zero
-  is_pure?(mu: Spectrum): bool = alpha(mu) = 0
+  probability?(mu): bool = sigma[Channel](0, N-1, mu) = 1
 
-  % Hybrid: lamp contributes non-trivially
-  is_hybrid?(mu: Spectrum): bool = alpha(mu) > 0
+  xlogx(x: nonneg_real): real = IF x = 0 THEN 0 ELSE x * ln(x) ENDIF
 
-  % Linear interpolation of spectra (NOT McCann, just pointwise)
-  linear_interp(mu0: Spectrum, mu1: Spectrum,
-                t: {t: real | t >= 0 AND t <= 1}): Spectrum =
-    LAMBDA (k: Channel): (1 - t) * mu0(k) + t * mu1(k)
+  H(mu): real = -sigma[Channel](0, N-1, LAMBDA (k: Channel): xlogx(mu(k)))
 
-  % Physical path: what is actually measured during transition
-  % (may differ from geodesic due to lamp contamination)
-  physical_path: [Spectrum, Spectrum, {t: real | t >= 0 AND t <= 1} -> Spectrum]
+  linear_interp(mu0, mu1, t): Spectrum =
+    LAMBDA (k: Channel): (1-t) * mu0(k) + t * mu1(k)
 
-  % Linear entropy bound
-  H_bound(mu0: Spectrum, mu1: Spectrum,
-           t: {t: real | t >= 0 AND t <= 1}): real =
-    (1 - t) * H(mu0) + t * H(mu1)
+  is_pure?(a): bool = a`lamp_fraction = 0
 
-  % Entropy excess of physical path over linear bound
-  excess(mu0: Spectrum, mu1: Spectrum,
-         t: {t: real | t >= 0 AND t <= 1}): real =
-    H(physical_path(mu0, mu1, t)) - H_bound(mu0, mu1, t)
+  is_hybrid?(a): bool = a`lamp_fraction > 0
 
-%% ═══════════════════════════════════════════════════════════
-%% Structural Axioms
-%% ═══════════════════════════════════════════════════════════
+  valid?(a): bool = probability?(a`spectrum)
 
-  % A1: Shannon entropy is concave under mixing (Cover & Thomas, Thm 2.7.3)
-  %     H(αX + (1-α)Y) ≥ αH(X) + (1-α)H(Y) for distributions X, Y
-  %     BACKGROUND: not used directly by T1-T3, but motivates why mixing
-  %     increases entropy. Included for theoretical completeness.
-  ax_entropy_concavity_of_mixing: AXIOM
-    FORALL (mu0, mu1: Spectrum, t: {t: real | t >= 0 AND t <= 1}):
-      H(linear_interp(mu0, mu1, t)) >= H_bound(mu0, mu1, t)
+  unit_mix_bounds: LEMMA
+    FORALL (a, b, t: UnitInterval):
+      0 <= (1-t)*a+t*b AND (1-t)*a+t*b <= 1
 
-  % A2: When lamp is active, physical path deviates toward mixture
-  %     (physical spectrum = α·lamp + (1-α)·solar, where α > 0)
-  ax_lamp_creates_hybrid: AXIOM
-    FORALL (mu0, mu1: Spectrum, t: {t: real | t >= 0 AND t <= 1}):
-      is_hybrid?(physical_path(mu0, mu1, t))
-      IMPLIES H(physical_path(mu0, mu1, t)) >= H_bound(mu0, mu1, t)
+  mix(a, b, t): Observation =
+    (# spectrum := linear_interp(a`spectrum, b`spectrum, t),
+       lamp_fraction := (1-t) * a`lamp_fraction + t * b`lamp_fraction #)
 
-  % A3: When lamp is OFF (dusk), physical path stays pure
-  %     (no artificial source contamination)
-  ax_no_lamp_stays_pure: AXIOM
-    FORALL (mu0, mu1: Spectrum, t: {t: real | t >= 0 AND t <= 1}):
-      is_pure?(physical_path(mu0, mu1, t)) AND is_pure?(mu0) AND is_pure?(mu1)
-      IMPLIES H(physical_path(mu0, mu1, t)) <= H_bound(mu0, mu1, t)
+  H_bound(mu0, mu1, t): real = (1-t) * H(mu0) + t * H(mu1)
 
-%% ═══════════════════════════════════════════════════════════
-%% Theorems
-%% ═══════════════════════════════════════════════════════════
+  excess(a, b, t): real = H(mix(a, b, t)`spectrum) - H_bound(a`spectrum, b`spectrum, t)
 
-  % T1: Hybrid path --> non-negative entropy excess
-  %     "Lamp during dawn pushes entropy above the geodesic bound"
-  thm_hybrid_excess_nonneg: THEOREM
-    FORALL (mu0, mu1: Spectrum, t: {t: real | t >= 0 AND t <= 1}):
-      is_hybrid?(physical_path(mu0, mu1, t))
-      IMPLIES excess(mu0, mu1, t) >= 0
+  point_mass(k): Spectrum = LAMBDA (j: Channel): IF j = k THEN 1 ELSE 0 ENDIF
 
-  % T2: Pure path --> non-positive entropy excess (Villani direction)
-  %     "Without lamp, physical transition satisfies displacement convexity"
-  thm_pure_excess_nonpos: THEOREM
-    FORALL (mu0, mu1: Spectrum, t: {t: real | t >= 0 AND t <= 1}):
-      is_pure?(physical_path(mu0, mu1, t)) AND is_pure?(mu0) AND is_pure?(mu1)
-      IMPLIES excess(mu0, mu1, t) <= 0
+  solar_a: Observation = (# spectrum := point_mass(0), lamp_fraction := 0 #)
 
-  % T3: Positive excess certifies hybrid path (detector theorem)
-  %     Proof: A3 states: pure endpoints ∧ pure path --> excess ≤ 0.
-  %     Contrapositive: pure endpoints ∧ excess > 0 --> path NOT pure.
-  %     Since alpha ≥ 0, NOT pure (alpha ≠ 0) implies hybrid (alpha > 0).
-  %     "Under pure-endpoint assumptions, positive entropy excess certifies
-  %      that the measured path is not pure and is therefore hybrid."
-  thm_excess_detects_hybrid: THEOREM
-    FORALL (mu0, mu1: Spectrum, t: {t: real | t >= 0 AND t <= 1}):
-      is_pure?(mu0) AND is_pure?(mu1) AND excess(mu0, mu1, t) > 0
-      IMPLIES is_hybrid?(physical_path(mu0, mu1, t))
+  solar_b: Observation = (# spectrum := point_mass(1), lamp_fraction := 0 #)
+
+  % Source metadata is explicit. It cannot be recovered from entropy alone.
+  relabelled_a: Observation = (# spectrum := point_mass(0), lamp_fraction := 1/2 #)
+
+  point_mass_probability: LEMMA probability?(point_mass(k))
+
+  point_mass_entropy: LEMMA H(point_mass(k)) = 0
+
+  pure_mix_stays_pure: THEOREM is_pure?(a) AND is_pure?(b) IMPLIES is_pure?(mix(a, b, t))
+
+  linear_interp_endpoints: THEOREM linear_interp(mu0, mu1, 0) = mu0 AND linear_interp(mu0, mu1, 1) = mu1
+
+  binary_midpoint_probability: LEMMA probability?(mix(solar_a, solar_b, 1/2)`spectrum)
+
+  binary_midpoint_entropy: THEOREM H(mix(solar_a, solar_b, 1/2)`spectrum) = ln(2)
+
+  binary_midpoint_excess: THEOREM excess(solar_a, solar_b, 1/2) = ln(2)
+
+  positive_excess_pure_counterexample: THEOREM
+    valid?(solar_a) AND valid?(solar_b) AND valid?(mix(solar_a, solar_b, 1/2)) AND
+    is_pure?(solar_a) AND is_pure?(solar_b) AND is_pure?(mix(solar_a, solar_b, 1/2)) AND
+    excess(solar_a, solar_b, 1/2) > 0
+
+  positive_excess_not_hybrid_certificate: THEOREM
+    NOT (FORALL (a, b: Observation, t: UnitInterval):
+      valid?(a) AND valid?(b) AND is_pure?(a) AND is_pure?(b) AND excess(a, b, t) > 0
+        IMPLIES is_hybrid?(mix(a, b, t)))
+
+  entropy_does_not_determine_source: THEOREM
+    valid?(solar_a) AND valid?(relabelled_a) AND
+    H(solar_a`spectrum) = H(relabelled_a`spectrum) AND
+    is_pure?(solar_a) AND is_hybrid?(relabelled_a)
 
 END displacement_concavity

@@ -148,40 +148,13 @@
    SHOSTAK))
  (|point_native_mean| 0
   (|point_native_mean-1| NIL 4001143782
-   ("" (SKOSIMP*)
-    (("" (LEMMA "full_sigma")
-      ((""
-        (LEMMA "expectation_scale"
-         ("c" "f!1(t!1)" "f" "indicator(singleton[T](t!1))"))
-        (("1" (LEMMA "expectation_indicator" ("A" "singleton[T](t!1)"))
-          (("1" (LEMMA "atomic_singleton" ("w0" "weights" "x" "t!1"))
-            (("1" (EXPAND "pointNative")
-              (("1"
-                (GRIND :EXCLUDE ("integral" "indicator" "atomicLaw" "fsum"))
-                NIL NIL))
-              NIL))
-            NIL))
-          NIL)
-         ("2" (PROPAX) NIL NIL)
-         ("3" (LEMMA "expectation_indicator" ("A" "singleton[T](t!1)"))
-          (("1" (LEMMA "atomic_singleton" ("w0" "weights" "x" "t!1"))
-            (("1" (EXPAND "pointNative")
-              (("1"
-                (GRIND :EXCLUDE ("integral" "indicator" "atomicLaw" "fsum"))
-                NIL NIL))
-              NIL))
-            NIL)
-           ("2" (LEMMA "atomic_singleton" ("w0" "weights" "x" "t!1"))
-            (("2" (EXPAND "pointNative")
-              (("2"
-                (GRIND :EXCLUDE ("integral" "indicator" "atomicLaw" "fsum"))
-                NIL NIL))
-              NIL))
-            NIL))
-          NIL))
-        NIL))
-      NIL))
-    NIL)
+   ("" (THEN (SKOSIMP*) (LEMMA "full_sigma")
+ (EXPAND "pointNative")
+ (LEMMA "expectation_scale"
+  ("c" "f!1(t!1)" "f" "indicator(singleton[T](t!1))"))
+ (LEMMA "expectation_indicator" ("A" "singleton[T](t!1)"))
+ (LEMMA "atomic_singleton" ("w0" "weights" "x" "t!1"))
+ (ASSERT) (EXPAND "fullset") (ASSERT)) NIL)
    ((|nonempty_singleton_finite| APPLICATION-JUDGEMENT
      "non_empty_finite_set[T]" |ppg_finite_atomic_integral| NIL)
     (|expectation_scale| FORMULA-DECL NIL |ppg_probability_integral| NIL)

@@ -1,0 +1,99 @@
+% The numerical DEV score used by cert_runner, with its recorded parameters.
+% ScoreInput fields denote extracted operator alignment and a residual between
+% normalized distributions. They do not assert physical source/sink strengths.
+% Signed spectral-flow reversal is the separate Python C_GEN observation.
+%
+% data/luces_runner_deviation.json binds the two measured CSVs, producer source
+% hashes, exact binary-float input ratios and checked rational enclosures.
+% The exporter checks the residual between the returned Python float score and
+% this real-arithmetic expression. The theorems below are conditional on those
+% enclosures. Python, POT, CSV parsing and sensor physics are not verified here.
+%
+% Author: Dragan Stosic, 2026.
+
+luces_runner_deviation: THEORY
+BEGIN
+
+  IMPORTING unbalanced_regime
+
+  o: VAR ScoreInput
+  t: VAR Thresholds
+  computed: VAR real
+
+  runner_weights: Weights =
+    (# alpha := 1/100, beta := 1, gamma := 2, delta := 5 #)
+
+  runner_epsilon: posreal = 1
+
+  runner_eta: posreal = 3
+
+  runner_balanced?(o): bool = score(runner_weights, o) <= runner_epsilon
+
+  runner_transitional?(o): bool =
+    runner_epsilon < score(runner_weights, o) AND
+    score(runner_weights, o) <= runner_eta
+
+  runner_unbalanced?(o): bool = score(runner_weights, o) > runner_eta
+
+  runner_score_formula: THEOREM
+    score(runner_weights, o) = o`curvature/100 +
+      (IF o`aligned THEN 0 ELSE 1 ENDIF) +
+      (IF o`negative_alignment THEN 2 ELSE 0 ENDIF) + 5*o`mass_term
+
+  runner_regime_partition: THEOREM
+    runner_balanced?(o) OR runner_transitional?(o) OR runner_unbalanced?(o)
+
+  % The empirical parameters do not satisfy the stronger sufficient calibration.
+  runner_not_generic_calibration: THEOREM
+    t`epsilon = runner_epsilon AND t`eta = runner_eta
+      IMPLIES NOT calibrated?(runner_weights, t)
+
+  % A numerical boundary regression: the flag alone does not force score > 3.
+  negative_flag_boundary: ScoreInput =
+    (# curvature := 0, aligned := FALSE, negative_alignment := TRUE, mass_term := 0 #)
+
+  runner_negative_flag_can_be_transitional: THEOREM
+    score(runner_weights, negative_flag_boundary) = 3 AND
+    runner_transitional?(negative_flag_boundary) AND
+    NOT runner_unbalanced?(negative_flag_boundary)
+
+  % A large shape-curvature score does not imply a nonzero mass observation.
+  runner_unbalanced_with_zero_mass_term: THEOREM
+    runner_unbalanced?((# curvature := 400, aligned := TRUE,
+      negative_alignment := FALSE, mass_term := 0 #))
+
+  % Measured input enclosures; the exporter checks membership from the actual
+  % CSVs. No source_strength or sink_strength is fabricated for either log.
+  boot320_features?(o): bool =
+    29144/100 <= o`curvature AND o`curvature <= 29145/100 AND
+    NOT o`aligned AND NOT o`negative_alignment AND o`mass_term <= 1/10^12
+
+  boot347_features?(o): bool =
+    42205/100 <= o`curvature AND o`curvature <= 42206/100 AND
+    o`aligned AND NOT o`negative_alignment AND o`mass_term <= 1/10^12
+
+  boot320_score_enclosed: THEOREM
+    boot320_features?(o) IMPLIES
+      39144/10000 <= score(runner_weights, o) AND
+      score(runner_weights, o) <= 39145/10000 + 5/10^12
+
+  boot347_score_enclosed: THEOREM
+    boot347_features?(o) IMPLIES
+      42205/10000 <= score(runner_weights, o) AND
+      score(runner_weights, o) <= 42206/10000 + 5/10^12
+
+  boot320_unbalanced: THEOREM boot320_features?(o) IMPLIES runner_unbalanced?(o)
+
+  boot347_unbalanced: THEOREM boot347_features?(o) IMPLIES runner_unbalanced?(o)
+
+  % The exporter checks this absolute error bound using exact rational values
+  % of the observed input and output floats, including the binary 0.01 weight.
+  boot320_computed_label_robust: THEOREM
+    boot320_features?(o) AND abs(computed - score(runner_weights, o)) <= 1/10^9
+      IMPLIES computed > runner_eta
+
+  boot347_computed_label_robust: THEOREM
+    boot347_features?(o) AND abs(computed - score(runner_weights, o)) <= 1/10^9
+      IMPLIES computed > runner_eta
+
+END luces_runner_deviation

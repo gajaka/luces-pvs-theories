@@ -1,204 +1,94 @@
-%%% kantorovich_duality.pvs
-%%% Kantorovich Duality: Optimality Certificate for Spectral Transport
-%%%
-%%% Empirical basis:
-%%%   Boot 291: 867 NIGHT samples, 205 DAWN samples, 10 AS7341 channels
-%%%   Solved via POT (network simplex) and scipy LP (HiGHS)
-%%%   Primal cost = Dual value = 3,444,391.52 (gap = 0)
-%%%
-%%% Structure:
-%%%   3 empirical axioms + 3 algebraic axioms -> 2 lemmas -> 3 theorems
-%%%   Following Villani "Optimal Transport: Old and New" (2009),
-%%%   Chapter 5 (Cyclical monotonicity and Kantorovich duality),
-%%%   Remark 5.13: discrete complementary slackness ⟹ strong duality.
-%%%   Weak duality + CS tightness on support(π) ⟹ zero gap certificate.
-%%%
-%%% Author: Dragan Stosic, 2026
+% Finite Kantorovich certificates over the same ten-bin feasible set as the
+% Monge comparison. Feasibility includes BOTH normalized marginals. Prices
+% are checked pointwise, and complementary slackness is checked on support.
+% Algebraic sum identities are proved, rather than postulated as axioms.
+% The diagonal uniform plan supplies a nonzero feasible certificate.
+%
+% This is a finite certificate theorem, not an unverified claim that a
+% particular 867-by-205 empirical LP already satisfies exact real constraints.
+% Villani, Optimal Transport: Old and New (2009), Chapter 5.
 
 kantorovich_duality: THEORY
 BEGIN
 
-%% ═══════════════════════════════════════════════════════════
-%% Types (finite, concrete)
-%% ═══════════════════════════════════════════════════════════
+  IMPORTING monge_kantorovich_equivalence
 
-  N: posnat = 867          % NIGHT samples
+  Price: TYPE = [Bin -> real]
 
-  M: posnat = 205          % DAWN samples
+  cost: VAR Cost
+  mu, nu: VAR Mass
+  P, Q: VAR Plan
+  psi, phi, ps, ph: VAR Price
+  i, j: VAR Bin
 
-  Source: TYPE = below(N)  % {0, 1, ..., 866}
+  value(mu, nu, psi, phi): real =
+    sigma[Bin](0, N-1, LAMBDA (j: Bin): phi(j) * nu(j)) -
+    sigma[Bin](0, N-1, LAMBDA (i: Bin): psi(i) * mu(i))
 
-  Target: TYPE = below(M)  % {0, 1, ..., 204}
+  integrated_price(P, psi, phi): real =
+    sigma[Bin](0, N-1, LAMBDA (i: Bin):
+      sigma[Bin](0, N-1, LAMBDA (j: Bin): P(i, j) * (phi(j) - psi(i))))
 
-%% ═══════════════════════════════════════════════════════════
-%% Summation (from NASA PVS Library)
-%% ═══════════════════════════════════════════════════════════
+  dual_feasible?(cost, psi, phi): bool =
+    FORALL (i, j: Bin): phi(j) - psi(i) <= cost(i, j)
 
-  IMPORTING reals@sigma_below[N]
-  IMPORTING reals@sigma_below[M]
-  IMPORTING reals@sigma_below_sub[N, M]
-  IMPORTING reals@sigma_below_sub[M, N]
-  IMPORTING reals@sigma_swap[below(N)]
+  complementary_slack?(cost, P, psi, phi): bool =
+    FORALL (i, j: Bin): P(i, j) > 0 IMPLIES phi(j) - psi(i) = cost(i, j)
 
-%% ═══════════════════════════════════════════════════════════
-%% Given objects (from empirical computation)
-%% ═══════════════════════════════════════════════════════════
+  price_decomposition: LEMMA integrated_price(P, psi, phi) =
+    sigma[Bin](0, N-1, LAMBDA (j: Bin): phi(j) * col_mass(P, j)) -
+    sigma[Bin](0, N-1, LAMBDA (i: Bin): psi(i) * row_mass(P, i))
 
-  % Cost function: c(x,y) = ||x - y||² (squared Euclidean in ℝ¹⁰)
-  c: [Source, Target -> nonneg_real]
+  weighted_marginal_sums: LEMMA feasible?(mu, nu, P) IMPLIES
+    sigma[Bin](0, N-1, LAMBDA (i: Bin): psi(i) * row_mass(P,i)) =
+      sigma[Bin](0, N-1, LAMBDA (i: Bin): psi(i) * mu(i)) AND
+    sigma[Bin](0, N-1, LAMBDA (j: Bin): phi(j) * col_mass(P,j)) =
+      sigma[Bin](0, N-1, LAMBDA (j: Bin): phi(j) * nu(j))
 
-  % Transport plan (coupling)
-  pi: [Source, Target -> nonneg_real]
+  value_as_double_sum: LEMMA feasible?(mu, nu, P)
+    IMPLIES value(mu, nu, psi, phi) = integrated_price(P, psi, phi)
 
-  % Kantorovich dual potentials (prices)
-  psi: [Source -> real]
+  pointwise_dual_bound: LEMMA dual_feasible?(cost, psi, phi)
+    IMPLIES P(i, j) * (phi(j) - psi(i)) <= cost(i, j) * P(i, j)
 
-  phi: [Target -> real]
+  row_dual_bound: LEMMA dual_feasible?(cost, psi, phi) IMPLIES
+    sigma[Bin](0, N-1, LAMBDA (j: Bin): P(i, j) * (phi(j) - psi(i))) <=
+    sigma[Bin](0, N-1, LAMBDA (j: Bin): cost(i, j) * P(i, j))
 
-  % Marginal measures (empirical, uniform: μᵢ = 1/N, νⱼ = 1/M)
-  mu: [Source -> posreal]
+  integrated_dual_bound: LEMMA dual_feasible?(cost, psi, phi)
+    IMPLIES integrated_price(P, psi, phi) <= kant_cost(cost, P)
 
-  nu: [Target -> posreal]
+  lem_weak_duality: THEOREM feasible?(mu, nu, P) AND dual_feasible?(cost, psi, phi)
+    IMPLIES value(mu, nu, psi, phi) <= kant_cost(cost, P)
 
-%% ═══════════════════════════════════════════════════════════
-%% Concrete definitions (summation-based)
-%% ═══════════════════════════════════════════════════════════
+  pointwise_tight_weighted: LEMMA complementary_slack?(cost, P, psi, phi)
+    IMPLIES P(i, j) * (phi(j) - psi(i)) = cost(i, j) * P(i, j)
 
-  % Primal cost: total transport cost under plan π
-  cost(p: [Source, Target -> nonneg_real]): real =
-    sigma[below(N)](0, N-1, LAMBDA (i: Source):
-      sigma[below(M)](0, M-1, LAMBDA (j: Target): c(i, j) * p(i, j)))
+  row_tight: LEMMA complementary_slack?(cost, P, psi, phi) IMPLIES
+    sigma[Bin](0, N-1, LAMBDA (j: Bin): P(i, j) * (phi(j) - psi(i))) =
+    sigma[Bin](0, N-1, LAMBDA (j: Bin): cost(i, j) * P(i, j))
 
-  % Dual value: total price under potentials (ψ, φ)
-  value(ps: [Source -> real], ph: [Target -> real]): real =
-    sigma[below(M)](0, M-1, LAMBDA (j: Target): ph(j) * nu(j)) -
-    sigma[below(N)](0, N-1, LAMBDA (i: Source): ps(i) * mu(i))
+  lem_sum_tight: LEMMA complementary_slack?(cost, P, psi, phi)
+    IMPLIES integrated_price(P, psi, phi) = kant_cost(cost, P)
 
-  % Row marginal: Σⱼ π(i,j)
-  row_marginal(p: [Source, Target -> nonneg_real], i: Source): real =
-    sigma[below(M)](0, M-1, LAMBDA (j: Target): p(i, j))
+  thm_certificate_gap_zero: THEOREM feasible?(mu, nu, P) AND
+    complementary_slack?(cost, P, psi, phi)
+    IMPLIES kant_cost(cost, P) = value(mu, nu, psi, phi)
 
-  % Column marginal: Σᵢ π(i,j)
-  col_marginal(p: [Source, Target -> nonneg_real], j: Target): real =
-    sigma[below(N)](0, N-1, LAMBDA (i: Source): p(i, j))
+  thm_primal_optimal: THEOREM feasible?(mu, nu, P) AND
+    dual_feasible?(cost, psi, phi) AND complementary_slack?(cost, P, psi, phi)
+    IMPLIES optimal_plan?(cost, mu, nu, P)
 
-%% ═══════════════════════════════════════════════════════════
-%% Feasibility predicates
-%% ═══════════════════════════════════════════════════════════
+  thm_dual_optimal: THEOREM feasible?(mu, nu, P) AND
+    dual_feasible?(cost, psi, phi) AND complementary_slack?(cost, P, psi, phi) AND
+    dual_feasible?(cost, ps, ph) IMPLIES value(mu, nu, ps, ph) <= value(mu, nu, psi, phi)
 
-  primal_feasible(p: [Source, Target -> nonneg_real]): bool =
-    (FORALL (i: Source): row_marginal(p, i) = mu(i)) AND
-    (FORALL (j: Target): col_marginal(p, j) = nu(j)) AND
-    (FORALL (i: Source, j: Target): p(i, j) >= 0)
+  zero_price: Price = LAMBDA (i: Bin): 0
 
-  dual_feasible(ps: [Source -> real], ph: [Target -> real]): bool =
-    FORALL (i: Source, j: Target): ph(j) - ps(i) <= c(i, j)
-
-%% ═══════════════════════════════════════════════════════════
-%% EMPIRICAL AXIOMS
-%% ═══════════════════════════════════════════════════════════
-
-  % AXIOM 1: π is primal feasible (valid coupling with correct marginals)
-  % Evidence: POT network simplex, marginals verified numerically
-  ax_primal_feasible: AXIOM
-    primal_feasible(pi)
-
-  % AXIOM 2: (ψ, φ) is dual feasible (no arbitrage)
-  % Evidence: All 177,735 constraints φ(j)-ψ(i) ≤ c(i,j) verified
-  ax_dual_feasible: AXIOM
-    dual_feasible(psi, phi)
-
-  % AXIOM 3: Complementary slackness (tightness on support of π)
-  % Evidence: Slack = 0 on all 1,071 active pairs
-  ax_complementary_slackness: AXIOM
-    FORALL (i: Source, j: Target):
-      pi(i, j) > 0 IMPLIES phi(j) - psi(i) = c(i, j)
-
-%% ═══════════════════════════════════════════════════════════
-%% LEMMAS (proof chain)
-%% ═══════════════════════════════════════════════════════════
-
-  % L1: Pointwise tightness weighted by π
-  % For every (i,j): π(i,j) * [c(i,j) - (φ(j) - ψ(i))] = 0
-  % Proof: if π(i,j) > 0, then A3 gives c = φ-ψ, so difference = 0
-  %        if π(i,j) = 0, then product = 0 regardless
-  lem_pointwise_tight_weighted: LEMMA
-    FORALL (i: Source, j: Target):
-      pi(i, j) * (c(i, j) - (phi(j) - psi(i))) = 0
-
-  % L2: Sum of weighted tightness = total cost equals total price-weighted sum
-  % Σᵢ Σⱼ π(i,j) * c(i,j) = Σᵢ Σⱼ π(i,j) * (φ(j) - ψ(i))
-  lem_sum_tight: LEMMA
-    cost(pi) =
-      sigma[below(N)](0, N-1, LAMBDA (i: Source):
-        sigma[below(M)](0, M-1, LAMBDA (j: Target):
-          pi(i, j) * (phi(j) - psi(i))))
-
-  % LEMMA (Fubini for finite sums): swapping order of summation
-  % Proved via sigma_swap[below(N)] + sigma_below_sub bridge (M < N)
-  lem_sum_swap: LEMMA
-    FORALL (F: [Source, Target -> real]):
-      sigma[below(N)](0, N-1, LAMBDA (i: Source):
-        sigma[below(M)](0, M-1, LAMBDA (j: Target): F(i,j)))
-      = sigma[below(M)](0, M-1, LAMBDA (j: Target):
-          sigma[below(N)](0, N-1, LAMBDA (i: Source): F(i,j)))
-
-  % AXIOM (Value as double sum — Villani Remark 5.13):
-  % For any primal feasible p, the dual value equals the integrated
-  % price difference:  value(ψ,φ) = Σᵢ Σⱼ (φ(j)-ψ(i))·p(i,j)
-  % This is the discrete analogue of ∫∫(φ(y)-ψ(x))dπ(x,y) = ∫φdν - ∫ψdμ
-  ax_value_as_double_sum: AXIOM
-    FORALL (p: [Source, Target -> nonneg_real],
-            ps: [Source -> real], ph: [Target -> real]):
-      primal_feasible(p) IMPLIES
-        value(ps, ph) = sigma[below(N)](0, N-1, LAMBDA (i: Source):
-          sigma[below(M)](0, M-1, LAMBDA (j: Target):
-            (ph(j) - ps(i)) * p(i, j)))
-
-  % AXIOM (Marginal decomposition):
-  % Σᵢ Σⱼ π(i,j) * (φ(j) - ψ(i))
-  %   = Σⱼ φ(j) * ν(j) - Σᵢ ψ(i) * μ(i)
-  %   = value(ψ, φ)
-  % Evidence: algebraic identity (sum swap + marginal substitution),
-  %   numerically verified: primal cost = dual value = 3,444,391.52
-
-ax_marginal_decomposition: AXIOM
-    primal_feasible(pi) IMPLIES
-      sigma[below(N)](0, N-1, LAMBDA (i: Source):
-        sigma[below(M)](0, M-1, LAMBDA (j: Target):
-          pi(i, j) * (phi(j) - psi(i))))
-      = value(psi, phi)
-
-  % L4: Weak duality (general, for ANY feasible pair)
-  % For any primal feasible p and dual feasible (ψ', φ'):
-  %   value(ψ', φ') ≤ cost(p)
-  lem_weak_duality: LEMMA
-    FORALL (p: [Source, Target -> nonneg_real],
-            ps: [Source -> real], ph: [Target -> real]):
-      primal_feasible(p) AND dual_feasible(ps, ph) IMPLIES
-        value(ps, ph) <= cost(p)
-
-%% ═══════════════════════════════════════════════════════════
-%% THEOREMS
-%% ═══════════════════════════════════════════════════════════
-
-  % T1: Empirical optimality certificate — zero duality gap
-  % Proof: lem_sum_tight + ax_marginal_decomposition + ax_primal_feasible
-  thm_certificate_gap_zero: THEOREM
-    cost(pi) = value(psi, phi)
-
-  % T2: Primal optimality — π achieves minimum cost
-  % Proof: T1 + weak duality applied to any other p
-  %   cost(pi) = value(ψ,φ) ≤ cost(p)  for any feasible p
-  thm_primal_optimal: THEOREM
-    FORALL (p: [Source, Target -> nonneg_real]):
-      primal_feasible(p) IMPLIES cost(pi) <= cost(p)
-
-  % T3: Dual optimality — (ψ,φ) achieves maximum value
-  % Proof: T1 + weak duality applied to any other (ψ',φ')
-  %   value(ψ',φ') ≤ cost(π) = value(ψ,φ)  for any dual feasible (ψ',φ')
-  thm_dual_optimal: THEOREM
-    FORALL (ps: [Source -> real], ph: [Target -> real]):
-      dual_feasible(ps, ph) IMPLIES value(ps, ph) <= value(psi, phi)
+  diagonal_certificate: THEOREM feasible?(uniform, uniform, diagonal_plan) AND
+    dual_feasible?(diagonal_cost, zero_price, zero_price) AND
+    complementary_slack?(diagonal_cost, diagonal_plan, zero_price, zero_price) AND
+    kant_cost(diagonal_cost, diagonal_plan) = value(uniform, uniform, zero_price, zero_price) AND
+    diagonal_plan(0, 0) > 0
 
 END kantorovich_duality

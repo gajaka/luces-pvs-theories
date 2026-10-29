@@ -1,0 +1,177 @@
+% Finite-read certificates for the actual LUCES local-plan checker fragment.
+% Atoms read one field; conjunction reads are their structural union. Locality
+% follows from this syntax rather than from an assumed predicate footprint.
+% The family retains eight positions, including the repeated Monge predicate.
+%
+% The generated literal data comes from the measured boot320 coupling bank.
+% The generator checks CSV, producer and contract hashes and exact float ratios;
+% it is not a formally verified JSON parser, POT solver or sensor model.
+% Search returns only a fully checked snapshot with the fixed write frame.
+%
+% Author: Dragan Stosic, 2026.
+
+luces_local_certificate_repair: THEORY
+BEGIN
+
+  Feature: TYPE = {Rows, Monge, Violations, Nonzeros, Generator, Dataset}
+
+  Unit: TYPE = {Only}
+
+  IMPORTING certification@ppg_indexed_certification_dependency[
+    Feature, real, Unit, LAMBDA (x, y: Unit): TRUE]
+
+  IMPORTING foundations@ppg_list_sets[Certificate]
+
+  Comparison: TYPE = {GT, LE, EQ}
+
+  Atom: TYPE = [# comparison: Comparison, field: Feature, bound: real #]
+
+  Check: TYPE = list[Atom]
+
+  a: VAR Atom
+  clauses: VAR Check
+  expressions: VAR list[Check]
+  before, after, d: VAR Data
+  allowed: VAR set[Feature]
+  bank: VAR list[Data]
+  q: VAR nat
+  v: VAR Feature
+
+  atom_holds(a, d): bool =
+    CASES a`comparison OF GT: d(a`field) > a`bound,
+      LE: d(a`field) <= a`bound, EQ: d(a`field) = a`bound ENDCASES
+
+  eval_check(clauses, d): RECURSIVE bool =
+    CASES clauses OF null: TRUE,
+      cons(a, rest): atom_holds(a, d) AND eval_check(rest, d)
+    ENDCASES MEASURE length(clauses)
+
+  reads_check(clauses): RECURSIVE finite_set[Feature] =
+    CASES clauses OF null: emptyset[Feature],
+      cons(a, rest): add(a`field, reads_check(rest))
+    ENDCASES MEASURE length(clauses)
+
+  check_certificate(clauses): Certificate =
+    LAMBDA (d: Data, t: Unit): eval_check(clauses, d)
+
+  from_checks(expressions): CertFamily = map(check_certificate)(expressions)
+
+  check_footprints(expressions): CertVars = LAMBDA (q: nat):
+    IF q < length(expressions) THEN reads_check(nth(expressions, q))
+    ELSE emptyset[Feature] ENDIF
+
+  check_holds(expressions)(q, d): bool =
+    IF q < length(expressions) THEN eval_check(nth(expressions, q), d) ELSE FALSE ENDIF
+
+  all_pass(expressions, d): RECURSIVE bool =
+    CASES expressions OF null: TRUE,
+      cons(clauses, rest): eval_check(clauses, d) AND all_pass(rest, d)
+    ENDCASES MEASURE length(expressions)
+
+  frame(allowed, before, after): bool =
+    FORALL (v: Feature): NOT allowed(v) IMPLIES before(v) = after(v)
+
+  eligible(expressions, allowed, before, after): bool =
+    frame(allowed, before, after) AND all_pass(expressions, after)
+
+  SearchResult: TYPE = [# found: bool, value: Data #]
+
+  search(expressions, allowed, before, bank): RECURSIVE SearchResult =
+    CASES bank OF null: (# found := FALSE, value := before #),
+      cons(after, rest):
+        IF eligible(expressions, allowed, before, after)
+        THEN (# found := TRUE, value := after #)
+        ELSE search(expressions, allowed, before, rest) ENDIF
+    ENDCASES MEASURE length(bank)
+
+  search_repair(expressions, bank)(q, d): Data =
+    search(expressions, check_footprints(expressions)(q), d, bank)`value
+
+  eval_check_local: THEOREM
+    (FORALL (v: Feature): reads_check(clauses)(v) IMPLIES before(v) = after(v))
+      IMPLIES (eval_check(clauses, before) IFF eval_check(clauses, after))
+
+  indexed_holds_is_check: THEOREM
+    indexed_holds(from_checks(expressions), Only)(q, d) IFF check_holds(expressions)(q, d)
+
+  generated_family_local: THEOREM
+    FamilyLocal(from_checks(expressions), check_footprints(expressions), Only)
+
+  all_pass_is_certified: THEOREM
+    all_pass(expressions, d) IFF fully_certified(from_checks(expressions))(d, Only)
+
+  search_sound: THEOREM search(expressions, allowed, before, bank)`found IMPLIES
+    eligible(expressions, allowed, before, search(expressions, allowed, before, bank)`value)
+
+  search_member: THEOREM search(expressions, allowed, before, bank)`found IMPLIES
+    member(search(expressions, allowed, before, bank)`value, bank)
+
+  search_complete_for_bank: THEOREM
+    (EXISTS (after: Data): member(after, bank) AND eligible(expressions, allowed, before, after))
+      IMPLIES search(expressions, allowed, before, bank)`found
+
+  search_component_checked: THEOREM q < length(expressions) AND
+    search(expressions, check_footprints(expressions)(q), before, bank)`found
+      IMPLIES ComponentChecked(from_checks(expressions), check_footprints(expressions),
+        Only, q, before, search_repair(expressions, bank)(q, before))
+
+  search_valid_repair: THEOREM q < length(expressions) AND
+    search(expressions, check_footprints(expressions)(q), before, bank)`found
+      IMPLIES valid_repair(
+        LAMBDA (d: Data, q: nat): search_repair(expressions, bank)(q, d),
+        LAMBDA (d: Data, q: nat): indexed_holds(from_checks(expressions), Only)(q, d),
+        before, q)
+
+% BEGIN GENERATED RUNNER DATA
+  % Actual CSV SHA-256: 23ce5e3c2ac8bd932c1452ebdf4d73ad8dbb6129e211972c884d6c406ad9dc83
+  certificate_expressions: list[Check] = cons(cons((# comparison := GT, field := Rows, bound := 0 #), null[Atom]), cons(cons((# comparison := GT, field := Monge, bound := 1553741871442821/2251799813685248 #), null[Atom]), cons(cons((# comparison := EQ, field := Violations, bound := 0 #), null[Atom]), cons(cons((# comparison := LE, field := Nonzeros, bound := 19 #), null[Atom]), cons(cons((# comparison := GT, field := Rows, bound := 0 #), cons((# comparison := GT, field := Monge, bound := 1553741871442821/2251799813685248 #), cons((# comparison := EQ, field := Violations, bound := 0 #), cons((# comparison := LE, field := Nonzeros, bound := 19 #), null[Atom])))), cons(cons((# comparison := GT, field := Monge, bound := 1553741871442821/2251799813685248 #), null[Atom]), cons(cons((# comparison := GT, field := Generator, bound := 0 #), null[Atom]), cons(cons((# comparison := EQ, field := Dataset, bound := 16195570582017765220045517138071761630861209324918121144685176673996212132995 #), null[Atom]), null[Check]))))))))
+
+  actual_0: Data = LAMBDA (v: Feature):
+    CASES v OF Rows: 10, Monge: 2798643958305135/9007199254740992, Violations: 2025, Nonzeros: 100, Generator: 2249120515983823/2251799813685248, Dataset: 16195570582017765220045517138071761630861209324918121144685176673996212132995 ENDCASES
+
+  actual_1: Data = LAMBDA (v: Feature):
+    CASES v OF Rows: 10, Monge: 2898641477494115/9007199254740992, Violations: 2025, Nonzeros: 100, Generator: 2249120515983823/2251799813685248, Dataset: 16195570582017765220045517138071761630861209324918121144685176673996212132995 ENDCASES
+
+  actual_2: Data = LAMBDA (v: Feature):
+    CASES v OF Rows: 10, Monge: 2448281514757065/4503599627370496, Violations: 2025, Nonzeros: 100, Generator: 2249120515983823/2251799813685248, Dataset: 16195570582017765220045517138071761630861209324918121144685176673996212132995 ENDCASES
+
+  actual_3: Data = LAMBDA (v: Feature):
+    CASES v OF Rows: 10, Monge: 3447242290767073/4503599627370496, Violations: 2025, Nonzeros: 100, Generator: 2249120515983823/2251799813685248, Dataset: 16195570582017765220045517138071761630861209324918121144685176673996212132995 ENDCASES
+
+  actual_4: Data = LAMBDA (v: Feature):
+    CASES v OF Rows: 10, Monge: 8892406133554163/9007199254740992, Violations: 0, Nonzeros: 19, Generator: 2249120515983823/2251799813685248, Dataset: 16195570582017765220045517138071761630861209324918121144685176673996212132995 ENDCASES
+
+  actual_bank: list[Data] = cons(actual_0, cons(actual_1, cons(actual_2, cons(actual_3, cons(actual_4, null[Data])))))
+% END GENERATED RUNNER DATA
+
+  actual_search: SearchResult =
+    search(certificate_expressions, check_footprints(certificate_expressions)(4), actual_0, actual_bank)
+
+  eight_positions: THEOREM length(from_checks(certificate_expressions)) = 8
+
+  repeated_monge_positions: THEOREM 1 /= 5 AND
+    (indexed_holds(from_checks(certificate_expressions), Only)(1, d) IFF
+     indexed_holds(from_checks(certificate_expressions), Only)(5, d))
+
+  composite_reads: THEOREM check_footprints(certificate_expressions)(4)(v) IFF
+    v = Rows OR v = Monge OR v = Violations OR v = Nonzeros
+
+  protected_outside_reads: THEOREM
+    NOT check_footprints(certificate_expressions)(4)(Generator) AND
+    NOT check_footprints(certificate_expressions)(4)(Dataset)
+
+  actual_bank_selects_optimal: THEOREM actual_search`found AND actual_search`value = actual_4
+
+  actual_before_fails: THEOREM NOT check_holds(certificate_expressions)(4, actual_0)
+
+  actual_after_certified: THEOREM fully_certified(from_checks(certificate_expressions))(actual_4, Only)
+
+  actual_valid_repair: THEOREM valid_repair(
+    LAMBDA (d: Data, q: nat): search_repair(certificate_expressions, actual_bank)(q, d),
+    LAMBDA (d: Data, q: nat): indexed_holds(from_checks(certificate_expressions), Only)(q, d),
+    actual_0, 4)
+
+  actual_protected_observations: THEOREM actual_search`value(Generator) = actual_0(Generator) AND
+    actual_search`value(Dataset) = actual_0(Dataset)
+
+END luces_local_certificate_repair

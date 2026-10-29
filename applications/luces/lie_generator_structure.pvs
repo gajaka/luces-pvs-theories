@@ -1,231 +1,116 @@
+% C20/C21/C22 are numerical screens from paper3/scripts/lie_group_transport_v2.py.
+% C20 uses mean cosine of coupling displacement fields against the full field:
+% PASS iff > 0.7; STRONG iff > 0.85. C21 uses pairwise mean cosine > 0.85
+% and speed ratio < 5. C22 uses the minimum active shape-direction cosine.
+% These are distinct metrics; C_GEN's signed-flow threshold is not C20.
+%
+% A passed C21 screen does not prove a Lie exponential representation.
+% Hall, Lie Groups, Lie Algebras, and Representations (2015), discusses the
+% mathematical one-parameter subgroup theorem; it is not formalized here.
+% C14 is not measured by this script, so captured rows retain unmeasured
+% observability evidence. No numeric coherence value supplies that evidence.
+%
+% data/lie_observations.json and scripts/check_lie_observations.py bind the
+% finite floating-point replay to the exact rational observation values below.
+% This validates the extraction on the recorded files, not all Python/C code.
+
 lie_generator_structure: THEORY
 BEGIN
 
-  %% ═══════════════════════════════════════════════════════════════════
-  %% Lie Generator Structure for Spectral Transport
-  %% ═══════════════════════════════════════════════════════════════════
-  %%
-  %% S-class structural theory: axioms describe PROPERTIES (classes of
-  %% behavior), not specific measurements from individual experiments.
-  %%
-  %% Mathematical foundation:
-  %%   Hall, "Lie Groups, Lie Algebras, and Representations" (2015)
-  %%   - Definition 3.18: Lie algebra g = {X : exp(tX) in G for all t}
-  %%   - Theorem 2.14: one-parameter subgroup <=> exp(tX) for unique X
-  %%   - Corollary 3.46: g is the tangent space at the identity
-  %%
-  %% Central idea:
-  %%   The transport trajectory has a time-varying tangent X(t) in g.
-  %%   C22 measures the directional stability of this tangent field.
-  %%   Constant X(t) = X corresponds to exp(tX) (Hall Thm 2.14).
-  %%   Reversing X(t) means the trajectory is far from exponential.
-  %%
-  %% Empirical verification: lie_group_transport_v2.py (11 boot logs)
-  %% ═══════════════════════════════════════════════════════════════════
+  Cosine: TYPE = {x: real | -1 <= x AND x <= 1}
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Types
-  %% ─────────────────────────────────────────────────────────────────
+  ObservabilityEvidence: TYPE = {unmeasured, c14_pass, c14_fail}
 
-  TransportPath: TYPE+
+  MeasuredPathObservation: TYPE =
+    [# global_alignment: Cosine, pair_alignment: Cosine,
+       shape_min_cosine: Cosine, speed_ratio: nonneg_real,
+       path_curvature: nonneg_real, observability: ObservabilityEvidence #]
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Primitive predicates
-  %% ─────────────────────────────────────────────────────────────────
-
-  % The path is continuously observed: excitation provides sufficient
-  % information for reliable state estimation throughout the transition.
-  % Empirical test: C14 PASS (dual observability in overlap zone).
-  continuously_observed?(p: TransportPath): bool
-
-  % The inferred tangent field reverses direction during the active
-  % transition zone. Measured on normalized spectral shape: consecutive
-  % shape-direction vectors have negative cosine.
-  % Hall Corollary 3.46: tangent X(t) lives in g.
-  % Reversal means X(t) changes sign mid-path.
-  % Empirical test: C22 FAIL (min_cos < 0 in active segments).
-  shape_direction_reversal?(p: TransportPath): bool
-
-  % The path has bounded speed variation (kinematically smooth).
-  % Not just bounded speed — bounded VARIATION of speed.
-  % Empirical test: speed_ratio < threshold in Lie script.
-  kinematically_smooth?(p: TransportPath): bool
-
-  % A path has a coherent generator: all local segments share
-  % approximately the same direction.
-  % Empirical test: C20 PASS (cos_full > 0.7).
-  coherent?(p: TransportPath): bool
-
-  % Strong coherence: generator direction is highly stable.
-  % Empirical test: C20 STRONG (cos_full > 0.85).
-  strongly_coherent?(p: TransportPath): bool
-
-  % The path is exponential: admits representation as exp(tX)
-  % for fixed X. Hall Theorem 2.14.
-  % Empirical test: C21 PASS (cos_pair > 0.85 AND speed < 5.0x).
-  exponential?(p: TransportPath): bool
-
-  %% ─────────────────────────────────────────────────────────────────
-  %% Variable
-  %% ─────────────────────────────────────────────────────────────────
+  TransportPath: TYPE = MeasuredPathObservation
 
   p: VAR TransportPath
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Structural Axioms (S-class)
-  %% ─────────────────────────────────────────────────────────────────
+  continuously_observed?(p): bool = p`observability = c14_pass
 
-  % A1: Hierarchy: exponential => strongly_coherent => coherent.
-  ax_exponential_implies_strong: AXIOM
-    exponential?(p) IMPLIES strongly_coherent?(p)
+  shape_direction_reversal?(p): bool = p`shape_min_cosine < 0
 
-  ax_strong_implies_coherent: AXIOM
-    strongly_coherent?(p) IMPLIES coherent?(p)
+  kinematically_smooth?(p): bool = p`speed_ratio < 5
 
-  % A2: Coherence requires continuous observability.
-  %     Without excitation, generator cannot be reliably estimated.
-  ax_coherence_requires_observability: AXIOM
-    coherent?(p) IMPLIES continuously_observed?(p)
+  coherent?(p): bool = p`global_alignment > 7/10
 
-  % A3: Shape-direction reversal breaks coherence.
-  %     Hall Corollary 3.46 + Theorem 2.14:
-  %     Tangent field in g that reverses direction means X(t) is not
-  %     directionally stable, so generator estimation is incoherent.
-  ax_reversal_breaks_coherence: AXIOM
-    shape_direction_reversal?(p) IMPLIES NOT coherent?(p)
+  strongly_coherent?(p): bool = p`global_alignment > 17/20
 
-  % A4: Observability + no reversal => coherence.
-  %     If the path is observed AND the tangent field does not reverse,
-  %     coherent estimation is achievable.
-  ax_observed_no_reversal_gives_coherence: AXIOM
-    continuously_observed?(p) AND NOT shape_direction_reversal?(p)
-      IMPLIES coherent?(p)
+  c21_screen?(p): bool = p`pair_alignment > 17/20 AND p`speed_ratio < 5
 
-  % A5: Exponential requires no reversal and kinematic smoothness.
-  %     Hall Theorem 2.14: exp(tX) has constant tangent (no reversal)
-  %     and uniform speed (kinematically smooth).
-  ax_exponential_requires_smooth_no_reversal: AXIOM
-    exponential?(p) IMPLIES
-      NOT shape_direction_reversal?(p) AND kinematically_smooth?(p)
+  c22_pass?(p): bool = p`shape_min_cosine >= 0
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Theorems
-  %% ─────────────────────────────────────────────────────────────────
+  strong_implies_coherent: THEOREM strongly_coherent?(p) IMPLIES coherent?(p)
 
-  % T1: Removing observability destroys coherence.
-  %     Contrapositive of A2.
-  thm_no_observability_no_coherence: THEOREM
-    NOT continuously_observed?(p) IMPLIES NOT coherent?(p)
+  c21_requires_speed_screen: THEOREM c21_screen?(p) IMPLIES kinematically_smooth?(p)
 
-  % T2: Shape-direction reversal destroys coherence.
-  %     Direct from A3.
-  thm_reversal_no_coherencepr: THEOREM
-    shape_direction_reversal?(p) IMPLIES NOT coherent?(p)
+  c22_pass_iff_no_reversal: THEOREM c22_pass?(p) IFF NOT shape_direction_reversal?(p)
 
-  % T3: Observability + no reversal is sufficient for coherence.
-  %     Direct from A4.
-  thm_sufficient_for_coherence: THEOREM
-    continuously_observed?(p) AND NOT shape_direction_reversal?(p)
-      IMPLIES coherent?(p)
+  c20_boundary_is_not_pass: THEOREM p`global_alignment = 7/10 IMPLIES NOT coherent?(p)
 
-  % T4: Exponential implies coherent (and observed and no reversal).
-  %     A1 + A1b: exponential => strong => coherent.
-  %     A2: coherent => observed.
-  %     A5: exponential => no reversal.
-  thm_exponential_implies_coherent_observed: THEOREM
-    exponential?(p) IMPLIES
-      coherent?(p) AND continuously_observed?(p)
-        AND NOT shape_direction_reversal?(p)
+  % Two unit directions (119, +/-120)/169 both align with (1,0) by >0.7,
+  % while their mutual cosine is negative. This is a realizable directional
+  % counterexample to inferring a global-alignment failure from reversal alone.
+  rational_direction_witness: LEMMA
+    (119/169)^2 + (120/169)^2 = 1 AND
+    (119/169)^2 - (120/169)^2 = -239/28561 AND 119/169 > 7/10
 
-  % T5: Reversal makes exponential impossible.
-  %     Contrapositive of A5.
-  thm_reversal_no_exponential: THEOREM
-    shape_direction_reversal?(p) IMPLIES NOT exponential?(p)
+  reversal_coherence_witness: TransportPath =
+    (# global_alignment := 119/169, pair_alignment := -239/28561,
+       shape_min_cosine := -239/28561, speed_ratio := 1,
+       path_curvature := 1, observability := c14_pass #)
 
-  % T6: Without observability, exponential is impossible.
-  %     Chain: NOT observed => NOT coherent (T1)
-  %            => NOT strong (A1b contrapositive)
-  %            => NOT exponential (A1 contrapositive).
-  thm_no_observability_no_exponential: THEOREM
-    NOT continuously_observed?(p) IMPLIES NOT exponential?(p)
+  reversal_can_be_coherent: THEOREM
+    shape_direction_reversal?(reversal_coherence_witness) AND coherent?(reversal_coherence_witness)
 
-  % T7: Shape-direction reversal byesreaks strong coherence.
-  %     A3: reversal => NOT coherent.
-  %     Contrapositive A1b: NOT coherent => NOT strongly_coherent.
-  thm_reversal_no_strong_coherence: THEOREM
-    shape_direction_reversal?(p) IMPLIES NOT strongly_coherent?(p)
+  observed_noncoherent_witness: TransportPath =
+    (# global_alignment := 0, pair_alignment := 0,
+       shape_min_cosine := 1/2, speed_ratio := 1,
+       path_curvature := 1, observability := c14_pass #)
 
-  % T8: Without observability, no strong coherence.
-  %     T1: NOT observed => NOT coherent.
-  %     Contrapositive A1b: NOT coherent => NOT strongly_coherent.
-  thm_no_observability_no_strong_coherence: THEOREM
-    NOT continuously_observed?(p) IMPLIES NOT strongly_coherent?(p)
+  observed_no_reversal_is_not_sufficient: THEOREM
+    continuously_observed?(observed_noncoherent_witness) AND
+    NOT shape_direction_reversal?(observed_noncoherent_witness) AND
+    NOT coherent?(observed_noncoherent_witness)
 
-  % T9: Exponential requires observability, smoothness, and no reversal.
-  %     Combines A5 (no reversal + smooth) with T4 chain (observed).
-  thm_exponential_full_requirements: THEOREM
-    exponential?(p) IMPLIES
-      continuously_observed?(p) AND kinematically_smooth?(p)
-        AND NOT shape_direction_reversal?(p)
+  % boot320_merged_dawn.csv, SHA256 23ce5e3c2ac8bd932c1452ebdf4d73ad8dbb6129e211972c884d6c406ad9dc83.
+  boot320: TransportPath =
+    (# global_alignment := 8267935708351987/9007199254740992,
+       pair_alignment := 4233711247314265/4503599627370496,
+       shape_min_cosine := 4412105695696701/4503599627370496,
+       speed_ratio := 5640839059168775/1125899906842624,
+       path_curvature := 965274198876551/140737488355328,
+       observability := unmeasured #)
 
-  % T10: Coherence characterization (equivalence).
-  %      Forward: A4 (observed + no reversal => coherent).
-  %      Backward: A2 (coherent => observed) + A3 contrapositive
-  %               (coherent => NOT reversal).
-  %      Formalizes: C14 PASS + C22 NO-REVERSAL <=> C20 PASS.
-  thm_coherence_iff: THEOREM
-    continuously_observed?(p) AND NOT shape_direction_reversal?(p)
-      IFF coherent?(p)
+  % boot334_dawn.csv, SHA256 4e58ea61256f5ef131e2c61a4001e6238eb513d9877fb0486d6fb52a38d3b3ca.
+  boot334: TransportPath =
+    (# global_alignment := 4518619484292101/9007199254740992,
+       pair_alignment := 6999036323056715/36028797018963968,
+       shape_min_cosine := -6754005230439663/9007199254740992,
+       speed_ratio := 8518198750150271/1125899906842624,
+       path_curvature := 4905491170745759/140737488355328,
+       observability := unmeasured #)
 
-  %% ─────────────────────────────────────────────────────────────────
-  %% Empirical interpretation
-  %% ─────────────────────────────────────────────────────────────────
-  %%
-  %% Predicate                  | Certificate | Empirical test
-  %% ──────────────────────────┼─────────────┼───────────────────────
-  %% continuously_observed      | C14 PASS    | spec>10 AND κ<100
-  %% shape_direction_reversal   | C22 FAIL    | min_cos(shape_dirs)<0
-  %% kinematically_smooth       | (Lie)       | speed_ratio < 5.0x
-  %% coherent                   | C20 PASS    | cos_full > 0.7
-  %% strongly_coherent          | C20 STRONG  | cos_full > 0.85
-  %% exponential                | C21 PASS    | cos_pair>0.85 & spd<5
-  %%
-  %% NOTE: C19 (cloud stationarity) is an empirical/modulating
-  %% certificate, NOT a formal PVS condition. Boot334 showed that
-  %% cloud stationarity alone does not guarantee coherence.
-  %% The actual distinguishing observable is C22 (shape tangent).
-  %%
-  %% Key finding (boot320 vs boot334):
-  %%   Both: C14 PASS, C19 PASS, cloud ~95%, POST-FIX firmware
-  %%   Boot320: C22 STRONG (no reversal) --> C20 STRONG
-  %%   Boot334: C22 FAIL (reversal in segment 3) --> C20 FAIL
-  %%   => Cloud stationarity is not sufficient; tangent stability is.
-  %%
-  %% C22 interpretation (Hall-informed):
-  %%   C22 quantifies the temporal stability of the inferred
-  %%   Lie-algebra tangent field along the transport trajectory.
-  %%   Constant tangent fields correspond to trajectories close to
-  %%   exponential flows (Hall Thm 2.14). Tangent reversals indicate
-  %%   the need for a time-varying generator X(t).
-  %%
-  %% Verified: 12/12 logs show exact C22<-->C20 PASS/FAIL agreement.
-  %% Whether C22 is the mechanism or an equivalent observable
-  %% remains open (both may project the same underlying geometry).
-  %%
-  %% ─────────────────────────────────────────────────────────────────
-  %% Connection to Paper 3
-  %% ─────────────────────────────────────────────────────────────────
-  %%
-  %% Paper 3 core: OT structure exists and persists (C1-C13).
-  %% F-01: Continuous excitation enables observability (C14).
-  %% C22: Shape tangent stability distinguishes coherent from
-  %%      incoherent generator estimation.
-  %%
-  %% Together: transport geometry is observable (F-01) and its
-  %% local tangent field can be characterized (C22), providing
-  %% the geometric foundation for a future controller that tracks
-  %% the tangent field rather than a precomputed global map.
-  %%
-  %% ═══════════════════════════════════════════════════════════════════
+  % boot347_dawn.csv, SHA256 3ef6638d83059b273a174e04cb4523557c9064e4a44bc741a05a50a4a8ae14ab.
+  boot347: TransportPath =
+    (# global_alignment := 6408342148523869/9007199254740992,
+       pair_alignment := 4109727489367045/9007199254740992,
+       shape_min_cosine := 8131291427195087/9007199254740992,
+       speed_ratio := 7090288686913043/1125899906842624,
+       path_curvature := 2682668942632627/140737488355328,
+       observability := unmeasured #)
+
+  measured_boot_classifications: THEOREM
+    strongly_coherent?(boot320) AND NOT c21_screen?(boot320) AND c22_pass?(boot320) AND
+    NOT coherent?(boot334) AND shape_direction_reversal?(boot334) AND
+    coherent?(boot347) AND NOT strongly_coherent?(boot347) AND c22_pass?(boot347)
+
+  coherence_does_not_supply_observability_evidence: THEOREM
+    coherent?(boot320) AND NOT continuously_observed?(boot320) AND
+      boot320`observability = unmeasured
 
 END lie_generator_structure
