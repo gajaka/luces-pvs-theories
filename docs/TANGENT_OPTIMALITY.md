@@ -121,8 +121,9 @@ that these are the only input pairs on which the unchanged coupler is optimal.
 The development supplies certificate transfer and certified examples. It
 does not implement an optimal-transport solver or establish continuous
 Brenier geometry, C20 extraction, numerical solver correctness, binary64
-error bounds or agreement with Python/C execution. Lean counterparts remain
-a separate task.
+error bounds or agreement with Python/C execution. This module is maintained
+in PVS; a Lean port is outside the current scope, as recorded in the
+[repository and prover boundaries](THEOREM_SCOPE.md#repository-and-prover-boundaries).
 
 Reference: Cédric Villani, *Optimal Transport: Old and New*, Springer, 2009,
 Chapter 5. The continuous theory is background, not a claimed consequence

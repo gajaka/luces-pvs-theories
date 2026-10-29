@@ -5,6 +5,19 @@ laws, definition accessors and helper lemmas alongside the main arguments.
 The historical whole-library checks in the README are dated separately from
 later changes to individual theories.
 
+## Repository and prover boundaries
+
+The public Lean-to-PVS correspondence concerns the dated `ppg-lean` inventory.
+The later `pp_walk_*`, `unit_spherical_angle`,
+`tangent_bundle_finite_transport` and `tangent_bundle_optimality` developments
+are maintained in PVS; a Lean port is outside the current scope.
+
+[`tangent_bundle_optimality`](TANGENT_OPTIMALITY.md) certifies every normalized
+feasible plan supported on `j-i` equal to zero or one, and applies that result
+to two named plans. That module does not establish optimum attainment for
+arbitrary marginals or the correctness of a general transport solver; results
+from the separate Lean development are not claimed as PVS results.
+
 ## Changes on 2026-10-28
 
 - Removed `linear_strict_not_equiv_aux: THEOREM TRUE` from

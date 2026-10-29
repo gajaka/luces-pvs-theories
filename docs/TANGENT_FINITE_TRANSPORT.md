@@ -32,6 +32,12 @@ The theory calls this quantity `concentration_fraction`. Its range `[0,1]`
 comes from the actual row maxima and total mass. A maximum is attained at a
 computed index; the greatest index wins ties, including entirely zero rows.
 
+The `mongeMass` statistic in the separate Lean development is the unnormalized
+sum of row maxima. With a matching plan representation, the values agree for
+unit total mass; positive nonunit mass requires dividing that sum by the total
+mass. This compares definitions without claiming a proved Lean/PVS
+correspondence or identical argmax tie rules.
+
 `unit_fraction_extracts_compatible_map` states that feasibility and fraction
 one imply
 
