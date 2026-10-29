@@ -185,7 +185,8 @@ For two such traces with the same positive first step norm, greater endpoint
 coherence is equivalent to strictly smaller curvature, since `acos` is
 strictly decreasing on `[-1,1]`. Equal lengths for the second steps are not
 required. This order equivalence is a mathematical corollary of the checked
-identity, not a separately saved PVS theorem.
+identity and is now saved as `three_sample_strict_inverse` in
+[`pp_walk_coherence_order`](../applications/luces/pp_walk_coherence_order.pvs).
 
 A longer trace can turn and later recover its initial direction. The concrete
 counterexample uses five normalized samples, with the other six coordinates zero:
@@ -218,7 +219,23 @@ that ordering. Equal step lengths alone do not restore it: orthogonal
 equal-length increments in the orders `u,u,v` and `u,v,u` give coherence
 `0` versus `1` and curvature `pi/(4*h)` versus `pi/(2*h)`. This equal-step
 variant is an exact calculation, not the replayed PVS example. See the
-[precise conditions and longer-trace candidate](THEOREM_SCOPE.md#fixed-scale-three-sample-corollary).
+[precise conditions and longer-trace theorem](THEOREM_SCOPE.md#fixed-scale-three-sample-corollary).
+
+For longer traces, `shortest_arc_curvature_identity` proves
+`mean_curvature = acos(endpoint_coherence)/((N-2)*h)` when all actual steps have
+the same active norm `h` and their unit directions progress monotonically along
+one shortest great-circle arc with total turn at most `pi`.
+`shortest_arc_strict_inverse` gives strict inverse ordering at fixed `N,h`.
+The proof derives the adjacent angles from the actual vector dot products and
+telescopes their curvature contributions. A nonstraight normalized four-sample
+PPG path instantiates the hypotheses with directions `u,u,v`, endpoint cosine
+zero and positive curvature `pi/(4*h)`. These conditions remain distinct from
+C20's coupling construction and from any floating-point execution claim.
+
+The [order-theorem replay](../reports/PVS_WALK_COHERENCE_ORDER_20261029.json)
+passed 149 Project bodies and 911 required original Native bodies with no
+unfinished obligations. This includes all 33 new bodies and the additional
+inverse-trigonometric proof dependencies. Existing formal files were unchanged.
 
 The three captured C20 rows are three datasets, each replayed with seven
 distributions, not three-sample traces. These endpoint-metric results do not

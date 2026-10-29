@@ -1,0 +1,185 @@
+% Equal step lengths give an inverse curvature/coherence relation when the
+% observed unit directions follow one shortest circular arc without reversal.
+% The angle increments are derived from the actual vector dot products; they
+% are not assumed as curvature facts. All arithmetic is over exact reals.
+%
+% Author: Dragan Stosic, 2026.
+
+pp_walk_coherence_order[T: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING pp_walk_coherence[T], trig@trig_inverses
+
+  AngleTrace: TYPE = [nat -> real]
+
+  coordinate_map: VAR SampleMap
+  pw, other_walk: VAR Prewalk
+  theta, other_theta: VAR AngleTrace
+  e1, e2, f1, f2: VAR Vector10
+  a, b: VAR real
+  c1, c2: VAR real_abs_le1
+  h: VAR posreal
+  i, j, n: VAR nat
+
+  orthonormal_frame?(e1, e2): bool =
+    e1 * e1 = 1 AND e2 * e2 = 1 AND e1 * e2 = 0
+
+  circle_direction(e1, e2, a): Vector10 = cos(a)*e1 + sin(a)*e2
+
+  equal_active_steps?(coordinate_map, pw, h): bool =
+    h > step_cutoff AND
+    FORALL (i: nat): i+1 < pw`length IMPLIES step_length(coordinate_map, pw, i) = h
+
+  shortest_arc_trace?(coordinate_map, pw, h, e1, e2, theta): bool =
+    pw`length >= 3 AND orthonormal_frame?(e1, e2) AND
+    equal_active_steps?(coordinate_map, pw, h) AND
+    (FORALL (i: nat): i+1 < pw`length IMPLIES
+      unit_delta(coordinate_map, pw, i) = circle_direction(e1, e2, theta(i))) AND
+    (FORALL (i, j: nat): i <= j AND j+1 < pw`length IMPLIES theta(i) <= theta(j)) AND
+    theta(pw`length-2) - theta(0) <= pi
+
+  circle_dot: LEMMA orthonormal_frame?(e1, e2) IMPLIES
+    circle_direction(e1, e2, a) * circle_direction(e1, e2, b) = cos(b-a)
+
+  circle_angle: LEMMA
+    orthonormal_frame?(e1, e2) AND 0 <= b-a AND b-a <= pi IMPLIES
+      acos(clip_cosine(circle_direction(e1, e2, a) * circle_direction(e1, e2, b))) = b-a
+
+  equal_steps_active: LEMMA equal_active_steps?(coordinate_map, pw, h)
+    IMPLIES active_steps?(coordinate_map, pw)
+
+  shortest_arc_active: THEOREM shortest_arc_trace?(coordinate_map, pw, h, e1, e2, theta)
+    IMPLIES pw`length >= 3 AND active_steps?(coordinate_map, pw)
+
+  shortest_arc_angle_bounds: LEMMA
+    shortest_arc_trace?(coordinate_map, pw, h, e1, e2, theta) AND
+    i <= j AND j+1 < pw`length IMPLIES 0 <= theta(j)-theta(i) AND theta(j)-theta(i) <= pi
+
+  shortest_arc_unit_angle: LEMMA
+    shortest_arc_trace?(coordinate_map, pw, h, e1, e2, theta) AND
+    i <= j AND j+1 < pw`length IMPLIES
+      acos(clip_cosine(unit_delta(coordinate_map, pw, i) *
+        unit_delta(coordinate_map, pw, j))) = theta(j)-theta(i)
+
+  shortest_arc_curvature_term: LEMMA
+    shortest_arc_trace?(coordinate_map, pw, h, e1, e2, theta) AND
+    i+2 < pw`length IMPLIES
+      curvature_term(coordinate_map, pw, i) = (theta(i+1)-theta(i))/h
+
+  shortest_arc_prefix: LEMMA
+    shortest_arc_trace?(coordinate_map, pw, h, e1, e2, theta) AND n <= pw`length-2 IMPLIES
+      curvature_prefix(coordinate_map, pw, n) = (theta(n)-theta(0))/h
+
+  shortest_arc_endpoint_angle: LEMMA
+    shortest_arc_trace?(coordinate_map, pw, h, e1, e2, theta) IMPLIES
+      acos(endpoint_coherence(coordinate_map, pw)) = theta(pw`length-2)-theta(0)
+
+  shortest_arc_curvature_identity: THEOREM
+    shortest_arc_trace?(coordinate_map, pw, h, e1, e2, theta) IMPLIES
+      measured_curvature(coordinate_map, pw) =
+        acos(endpoint_coherence(coordinate_map, pw))/((pw`length-2)*h)
+
+  acos_strict_order: LEMMA c1 < c2 IFF acos(c1) > acos(c2)
+
+  shortest_arc_strict_inverse: THEOREM
+    shortest_arc_trace?(coordinate_map, pw, h, e1, e2, theta) AND
+    shortest_arc_trace?(coordinate_map, other_walk, h, f1, f2, other_theta) AND
+    pw`length = other_walk`length IMPLIES
+      (endpoint_coherence(coordinate_map, pw) < endpoint_coherence(coordinate_map, other_walk)
+        IFF measured_curvature(coordinate_map, pw) > measured_curvature(coordinate_map, other_walk))
+
+  three_sample_strict_inverse: THEOREM
+    pw`length = 3 AND other_walk`length = 3 AND
+    active_steps?(coordinate_map, pw) AND active_steps?(coordinate_map, other_walk) AND
+    step_length(coordinate_map, pw, 0) = h AND step_length(coordinate_map, other_walk, 0) = h
+      IMPLIES
+      (endpoint_coherence(coordinate_map, pw) < endpoint_coherence(coordinate_map, other_walk)
+        IFF measured_curvature(coordinate_map, pw) > measured_curvature(coordinate_map, other_walk))
+
+END pp_walk_coherence_order
+
+% A genuine four-sample PPG path realizes a nonzero turn on the permitted arc.
+% Each vertex is a nonnegative unit-mass spectrum. The graph is constructed;
+% this witness makes no claim about a naturally occurring physical transition.
+pp_walk_coherence_order_example: THEORY
+BEGIN
+
+  Vertex: TYPE = below(4)
+
+  IMPORTING pp_walk_coherence_order[Vertex]
+
+  a, b, c, d, e, f, g, h0: VAR real
+  v, w: VAR Vertex
+  i: VAR nat
+
+  vec4(a, b, c, d): Vector10 = LAMBDA (k: below(10)):
+    IF k = 0 THEN a ELSIF k = 1 THEN b ELSIF k = 2 THEN c
+    ELSIF k = 3 THEN d ELSE 0 ENDIF
+
+  sample_coordinates: SampleMap = LAMBDA (v: Vertex):
+    IF v = 0 THEN vec4(1/2, 0, 1/2, 0)
+    ELSIF v = 1 THEN vec4(1/4, 1/4, 1/2, 0)
+    ELSIF v = 2 THEN vec4(0, 1/2, 1/2, 0)
+    ELSE vec4(0, 1/2, 1/4, 1/4) ENDIF
+
+  spectrum_invariant(v): bool =
+    (FORALL (k: below(10)): sample_coordinates(v)(k) >= 0) AND
+    sigma(0, 9, sample_coordinates(v)) = 1
+
+  common_rr(v, w): bool = TRUE
+
+  sample_graph: Graph =
+    (# vertices := LAMBDA (v: Vertex): TRUE,
+       edges := LAMBDA (v, w: Vertex): w = v+1 #)
+
+  sample_walk: Prewalk = (# length := 4, seq := LAMBDA (i: below(4)): i #)
+
+  delta_u: Vector10 = vec4(-1/4, 1/4, 0, 0)
+
+  delta_v: Vector10 = vec4(0, 0, -1/4, 1/4)
+
+  sample_h: posreal = sqrt(1/8)
+
+  frame_u: Vector10 = (1/sample_h)*delta_u
+
+  frame_v: Vector10 = (1/sample_h)*delta_v
+
+  sample_angles: AngleTrace = LAMBDA (i: nat): IF i < 2 THEN 0 ELSE pi/2 ENDIF
+
+  vec4_dot: LEMMA vec4(a,b,c,d) * vec4(e,f,g,h0) = a*e+b*f+c*g+d*h0
+
+  vec4_mass: LEMMA sigma(0,9,vec4(a,b,c,d)) = a+b+c+d
+
+  vec4_norm: LEMMA Euclidean.norm(vec4(a,b,c,d)) = sqrt(sq(a)+sq(b)+sq(c)+sq(d))
+
+  spectra_valid: THEOREM spectrum_invariant(v)
+
+  sample_path: THEOREM pp_path(sample_graph, common_rr, spectrum_invariant, sample_walk)
+
+  sample_deltas: LEMMA i < 3 IMPLIES
+    trace_delta(sample_coordinates, sample_walk, i) = IF i < 2 THEN delta_u ELSE delta_v ENDIF
+
+  sample_lengths: LEMMA i < 3 IMPLIES step_length(sample_coordinates, sample_walk, i) = sample_h
+
+  sample_h_active: LEMMA sample_h > step_cutoff
+
+  sample_units: LEMMA i < 3 IMPLIES
+    unit_delta(sample_coordinates, sample_walk, i) = IF i < 2 THEN frame_u ELSE frame_v ENDIF
+
+  sample_frame_orthonormal: LEMMA orthonormal_frame?(frame_u, frame_v)
+
+  sample_circle_axes: LEMMA
+    circle_direction(frame_u, frame_v, 0) = frame_u AND
+    circle_direction(frame_u, frame_v, pi/2) = frame_v
+
+  sample_shortest_arc: THEOREM
+    shortest_arc_trace?(sample_coordinates, sample_walk, sample_h, frame_u, frame_v, sample_angles)
+
+  nonzero_four_sample_example: THEOREM
+    pp_path(sample_graph, common_rr, spectrum_invariant, sample_walk) AND
+    sample_walk`length = 4 AND
+    endpoint_coherence(sample_coordinates, sample_walk) = 0 AND
+    measured_curvature(sample_coordinates, sample_walk) = pi/(4*sample_h) AND
+    measured_curvature(sample_coordinates, sample_walk) > 0
+
+END pp_walk_coherence_order_example

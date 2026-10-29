@@ -92,6 +92,21 @@ the three-sample identity does not explain its observed C20 relationship.
 These new geometric modules currently have no Lean counterparts.
 See the [coherence scope](docs/THEOREM_SCOPE.md#endpoint-direction-coherence-and-the-curvature-relation).
 
+The separate [`pp_walk_coherence_order`](applications/luces/pp_walk_coherence_order.pvs)
+module proves the longer-trace identity `kappa = acos(C)/((N-2)*h)` under
+explicit geometric conditions: equal active step lengths and unit directions
+progressing monotonically along one shortest great-circle arc of total angle
+at most `pi`. It proves strict inverse ordering at fixed `N,h`, saves the
+three-sample corollary, and supplies a nonstraight normalized four-sample
+PPG witness. The geometric conditions are hypotheses on the actual trace;
+they do not establish C20 coupling semantics or sensor calibration.
+
+Its completed [targeted replay](reports/PVS_WALK_COHERENCE_ORDER_20261029.json)
+passed **149 Project bodies and 911 required original Native bodies** across
+seven Project modules, including 33 new bodies (26 explicit claims and seven
+TCCs). There were no unfinished obligations or Native failures. All previously
+existing project sources and proof files remained unchanged.
+
 The [endpoint-coherence replay](reports/PVS_WALK_COHERENCE_20261029.json)
 passed all three entry points and their loaded dependencies on 2026-10-29:
 **138 Project bodies and 761 required original Native bodies**, with no

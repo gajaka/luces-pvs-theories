@@ -70,7 +70,8 @@ steps. This is a different observable from C20 coupling alignment. For three
 active samples, the curvature equals `acos(endpoint_coherence)/first_step_norm`.
 At a common positive first step norm this implies strict inverse ordering.
 That corollary does not require equal second step norms. It is a mathematical
-consequence of the checked identity, not another saved PVS declaration.
+consequence of the checked identity, saved as `three_sample_strict_inverse`
+in `pp_walk_coherence_order`.
 
 `lie_pp_connection` accepts a report only when both its curvature and endpoint
 alignment equal those computations. `BoundWalkReport` encodes this equality;
@@ -94,8 +95,18 @@ of the interior directions matters.
 This does not exclude inverse ordering for particular longer traces. Even
 equal step lengths are insufficient for a universal law; the
 [scope discussion](THEOREM_SCOPE.md#equal-step-lengths-do-not-suffice) gives an
-exact equal-step countercalculation and a stronger, not yet formalized,
-sufficient condition for longer traces.
+exact equal-step countercalculation. The separate `pp_walk_coherence_order`
+module proves a sufficient condition for longer traces: equal active step
+lengths and actual unit directions moving monotonically along one shortest
+great-circle arc of total angle at most `pi`. It derives
+`kappa = acos(C)/((N-2)*h)` and strict inverse ordering at fixed `N,h`.
+A normalized four-sample PPG path with nonzero curvature satisfies these
+hypotheses. The formalized example covers the `u,u,v` path; the comparison
+against `u,v,u` in the equal-step countercalculation is not yet a PVS result.
+The [order-theorem replay](../reports/PVS_WALK_COHERENCE_ORDER_20261029.json)
+passed 149 Project and 911 required original Native proof bodies across the
+new entry point's dependency closure. All pre-existing formal files are
+unchanged; this does not broaden the physical or floating-point scope.
 
 `lie_captured_observations` retains the older C20 values as raw `TransportPath`
 observations, with no unverified walk field. They depend on edge and endpoint

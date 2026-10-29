@@ -365,8 +365,9 @@ C(p) < C(q)  iff  kappa(p) > kappa(q)
 
 The last equivalence follows from strict decrease of `acos` on `[-1,1]` and
 division by positive `h`. NASAlib states that analytic fact as
-`trig@acos.acos_strict_decreasing`. This is a mathematical corollary of the
-checked identity, not an additional saved project theorem or replay count.
+`trig@acos.acos_strict_decreasing`. The corollary is now saved as
+`three_sample_strict_inverse` in
+[`pp_walk_coherence_order`](../applications/luces/pp_walk_coherence_order.pvs).
 Equal second step norms are not needed. Without the common first norm, the
 denominators can change the ordering.
 
@@ -396,25 +397,44 @@ definitions, not a saved PVS example; the replayed example above is unchanged.
 
 ### A sufficient condition for longer traces
 
-A stronger geometric restriction gives a positive candidate beyond three
-samples. For `N >= 3` samples, require every step to have the same active norm
+A stronger geometric restriction gives a positive theorem beyond three
+samples. In `pp_walk_coherence_order`, `shortest_arc_trace?` requires `N >= 3`
+samples and every actual step to have the same active norm
 `h`, and the unit directions to have the form
 `q_j = cos(theta_j)*e1 + sin(theta_j)*e2` for one orthonormal pair `e1,e2`.
 Require nondecreasing `theta_j` and total turn
 `0 <= theta_(N-2) - theta_0 <= pi`. Thus the directions progress along one
 shortest great-circle arc without reversing.
 
-The consecutive angles then telescope to that total turn, which also equals
-`acos(C)`. Consequently the proposed relation is
+`circle_dot` derives the cosine of the angular difference from the frame's
+inner products. `circle_angle` uses the principal interval `[0,pi]` to recover
+the actual angle. `shortest_arc_prefix` then proves by induction that the
+consecutive contributions telescope. The endpoint angle is computed from the
+same actual unit directions. `shortest_arc_curvature_identity` concludes
 
 ```text
 kappa = acos(C) / ((N-2)*h)
 ```
 
-This yields strict inverse ordering when both `N` and `h` are fixed. The
-derivation is mathematical; these extra geometric hypotheses and this
-longer-trace result have not been formalized in PVS. Equal step lengths alone
-do not supply the telescoping condition.
+`shortest_arc_strict_inverse` proves strict inverse ordering for two such
+traces when both `N` and `h` are fixed. The two traces may have different
+orthonormal frames and angle sequences. Equal step lengths alone do not
+supply the telescoping condition. The hypotheses constrain actual vectors
+and step lengths; they do not assume a curvature identity or an inverse law.
+
+The concrete `nonzero_four_sample_example` supplies a normalized PPG path with
+increments `u,u,v`, where `u = (-1/4,1/4,0,0)` and
+`v = (0,0,-1/4,1/4)`. Starting at `(1/2,0,1/2,0)` gives four nonnegative
+mass-one spectra, with the remaining six coordinates zero. All steps have norm
+`h = sqrt(1/8)`, the direction angles are `0,0,pi/2`, and the calculated metrics
+are `C = 0` and `kappa = pi/(4*h) > 0`. The path satisfies the displayed arc
+hypotheses and the explicit graph's `pp_path` conditions. This is a
+nonstraight witness, not a calibration or physical-RR result.
+
+The equal-step countercalculation in the preceding section is still not a
+saved PVS counterexample: the new example formalizes its `u,u,v` path, not the
+comparison with the reversing `u,v,u` path. The earlier unequal-step
+counterexample remains fully checked in `pp_walk_coherence`.
 
 ### Captured C20 data and Lean coverage
 
@@ -425,12 +445,23 @@ identity therefore neither explains their C20 ordering nor identifies it as
 coincidence. C20 is a different metric, and the cause of the captured ordering
 remains unestablished.
 
-At Lean main `0d702bb`, `ppg-lean` has no counterparts of `pp_walk_geometry` or
-`pp_walk_coherence`. Its rational LUCES snapshot and certificate-repair modules
+At Lean main `0d702bb`, `ppg-lean` has no counterparts of `pp_walk_geometry`,
+`pp_walk_coherence` or `pp_walk_coherence_order`. Its rational LUCES snapshot and
+certificate-repair modules
 do not define these geometric metrics. The geometry extension is a PVS
 development, outside the historical Lean-to-PVS correspondence inventory.
 
-The completed [coherence replay](../reports/PVS_WALK_COHERENCE_20261029.json)
+The completed [order-theorem replay](../reports/PVS_WALK_COHERENCE_ORDER_20261029.json)
+selected the new entry point and checked all seven loaded Project modules:
+**149 saved Project bodies and 911 required original Native bodies** passed
+the unchanged ordinary checker. The new pair contributes 26 explicit claims
+and seven TCCs. All incomplete, missing-script, derived, copied and Native
+failure counters were zero. `trig@trig_inverses` supplies the additional
+`acos_cos` dependency, whose required original proof chain was replayed too.
+All 2,251 pre-existing tracked formal working files remained byte-identical;
+the earlier geometry, coherence and C20 fixtures were not modified.
+
+The earlier completed [coherence replay](../reports/PVS_WALK_COHERENCE_20261029.json)
 checks the new coherence kernel and example, the computed-report interface and
 the separated legacy theory. All **138 Project bodies and 761 required
 original Native bodies** passed the unchanged ordinary public checker across
@@ -449,5 +480,8 @@ python3 scripts/check.py --file applications/luces/lie_pp_connection.pvs \
   --jobs 1 --heap-mib 6144 --timeout 180
 
 python3 scripts/check.py --file applications/luces/lie_captured_observations.pvs \
+  --jobs 1 --heap-mib 6144 --timeout 180
+
+python3 scripts/check.py --file applications/luces/pp_walk_coherence_order.pvs \
   --jobs 1 --heap-mib 6144 --timeout 180
 ```
