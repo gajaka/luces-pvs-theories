@@ -108,6 +108,14 @@ passed 149 Project and 911 required original Native proof bodies across the
 new entry point's dependency closure. All pre-existing formal files are
 unchanged; this does not broaden the physical or floating-point scope.
 
+The [captured-data applicability analysis](../reports/LUCES_WALK_ARC_APPLICABILITY_20261029.json)
+finds that none of boot320, boot334 and boot347 instantiates this sufficient
+class. Their same seven producer distributions have unequal step lengths and
+exact represented delta rank six. These are exact rational obstructions for
+the frozen binary64 point embedding, alongside separate numerical diagnostics;
+they are not a physical calibration or execution-refinement proof. No PVS
+files were changed for this analysis.
+
 `lie_captured_observations` retains the older C20 values as raw `TransportPath`
 observations, with no unverified walk field. They depend on edge and endpoint
 transport couplings. The inverse-order test over three captured rows remains

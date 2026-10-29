@@ -436,6 +436,28 @@ saved PVS counterexample: the new example formalizes its `u,u,v` path, not the
 comparison with the reversing `u,v,u` path. The earlier unequal-step
 counterexample remains fully checked in `pp_walk_coherence`.
 
+### Applicability to the captured runner inputs
+
+The separate [recorded applicability analysis](../reports/LUCES_WALK_ARC_APPLICABILITY_20261029.json)
+checks the same seven producer distributions for boot320, boot334 and boot347.
+All three fail two necessary conditions: exact rational embeddings of their
+saved binary64 point coordinates give unequal squared step norms and delta
+rank six. The longest/shortest step ratios are about 5.97, 4.47 and 7.25.
+Thus the sufficient class of `shortest_arc_curvature_identity` is not
+instantiated by any of those three represented traces.
+
+Numerical uncentered unit-direction SVD diagnostics agree that the configured
+plane criterion fails. The angular stage is consequently `NOT_APPLICABLE`;
+projecting a nonplanar trace and checking its projected angles would not check
+the actual PVS hypothesis. The script retains exact finite-data witnesses,
+source and CSV hashes, extraction details, configured tolerances and separate
+floating-point diagnostics. See [reproduction and interpretation](LIE_GENERATOR_README.md#applicability-to-the-captured-seven-sample-walks).
+
+This is a finite represented-data investigation, not a PVS theorem or a
+Python/binary64 refinement proof. Existing formal sources and saved proofs
+were unchanged; their previous replay remains applicable. The result does
+not classify other runner datasets or identify endpoint coherence with C20.
+
 ### Captured C20 data and Lean coverage
 
 The three captured C20 rows are three datasets, not three-point walks. The

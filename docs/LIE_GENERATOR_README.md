@@ -248,6 +248,62 @@ Native proof bodies. The public source-ownership and completion gates were
 unchanged. The three-row numerical fixture command also passed with unchanged
 measurements and updated source routing.
 
+## Applicability to the captured seven-sample walks
+
+The [applicability script](../scripts/check_walk_arc_applicability.py) reconstructs
+the same seven distributions for each captured dataset and checks the necessary
+conditions of `shortest_arc_trace?`. The
+[recorded result](../reports/LUCES_WALK_ARC_APPLICABILITY_20261029.json) rejects
+all three represented traces: their six step lengths are unequal and their
+delta matrices have exact rank six, exceeding the permitted two-dimensional
+direction space.
+
+| Dataset | Longest / shortest step | Exact delta rank | Relative rank-two unit-plane residual |
+| --- | --- | --- | --- |
+| boot320 | 5.967616 | 6 | 0.061446 |
+| boot334 | 4.465405 | 6 | 0.131018 |
+| boot347 | 7.246779 | 6 | 0.117737 |
+
+The last column is `norm(Q-Q_rank2)/norm(Q)` in the Frobenius norm, where the
+rows of `Q` are the six unit directions. It is not a fraction of unexplained
+energy. The numerical plane check uses the maximum row projection residual,
+with default tolerance `1e-8`; the length-spread tolerance is `1e-6` and the
+angular tolerance is `1e-6` radians. Configured tolerances are recorded and
+were not fitted to these data. Planarity is tested without centering. Since
+the plane condition fails, a monotone angle on a common plane is reported as
+`NOT_APPLICABLE`, rather than inferred from projected data.
+
+The exact checks embed each saved binary64 point coordinate as a rational
+number, then subtract the points and compute squared norms and rank. The
+report includes unequal-norm witnesses and nonzero three-by-three minors.
+These reject the exact real model of those represented points. The numerical
+diagnostics and rational calculation are not a proof of Python/binary64
+refinement or of the physical sensor model; a tolerance-compatible result
+would not certify a PVS hypothesis.
+
+The producer and CSV hashes are checked before extraction. Means, clipping,
+normalization and row order follow the producer. Boot347's 249 transition rows
+give five windows of 49 rows, leaving original rows 717--720 unused. Each DAY
+group includes original row zero, whose elevation is 45 degrees. These source
+choices are recorded without cleaning, sorting or resampling the data.
+
+Using Python with the same NumPy, pandas, SciPy and POT dependencies:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 python3 scripts/check_walk_arc_applicability.py \
+  --source-root ../master-controler \
+  --output reports/LUCES_WALK_ARC_APPLICABILITY_20261029.json
+
+PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 python3 -m unittest discover \
+  -s tests -p test_walk_arc_applicability.py
+```
+
+A successful command means the analysis completed with bound inputs; it does
+not mean a trace met the theorem's conditions. The positive theorem therefore
+has no established application to these three seven-sample traces. It remains
+a conditional result; no conclusion about other datasets or C20 couplings
+follows from this finite check.
+
 ## Author
 
 Dragan Stosic, 2026

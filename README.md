@@ -107,6 +107,14 @@ seven Project modules, including 33 new bodies (26 explicit claims and seven
 TCCs). There were no unfinished obligations or Native failures. All previously
 existing project sources and proof files remained unchanged.
 
+A separate [captured-data applicability check](docs/LIE_GENERATOR_README.md#applicability-to-the-captured-seven-sample-walks)
+finds **zero of the three recorded seven-sample traces** in this sufficient
+class. Boot320, boot334 and boot347 have unequal step lengths and exact
+represented delta rank six. The
+[report](reports/LUCES_WALK_ARC_APPLICABILITY_20261029.json) records bound inputs,
+finite-data witnesses and separate numerical diagnostics. This does not
+instantiate the positive theorem for those data or classify other datasets.
+
 The [endpoint-coherence replay](reports/PVS_WALK_COHERENCE_20261029.json)
 passed all three entry points and their loaded dependencies on 2026-10-29:
 **138 Project bodies and 761 required original Native bodies**, with no
