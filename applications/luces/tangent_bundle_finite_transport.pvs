@@ -1,0 +1,225 @@
+% Three-bin mass transport with actual marginals and a computed row concentration.
+% The full model below supplies feasible couplings for every balanced mass pair.
+% Its interpolation is affine mixing of mass vectors on a fixed grid; it is not
+% McCann displacement interpolation or a construction of a Wasserstein tangent.
+% Background: Panaretos and Zemel, An Invitation to Statistics in Wasserstein
+% Space (2020), Sections 1.5 and 2.3; Villani, Optimal Transport (2009), Chapter 5.
+
+tangent_bundle_finite_transport: THEORY
+BEGIN
+
+  IMPORTING tangent_bundle[3]
+
+  mu, nu: VAR Distr
+  pi: VAR Coupling
+  i, j: VAR Index
+  t: VAR Time
+
+  index_cases: LEMMA i = 0 OR i = 1 OR i = 2
+
+  mass(mu): nonneg_real = mu(0) + mu(1) + mu(2)
+
+  row_mass(pi, i): nonneg_real = pi(i,0) + pi(i,1) + pi(i,2)
+
+  column_mass(pi, j): nonneg_real = pi(0,j) + pi(1,j) + pi(2,j)
+
+  plan_mass(pi): nonneg_real = row_mass(pi,0) + row_mass(pi,1) + row_mass(pi,2)
+
+  feasible?(pi, mu, nu): bool =
+    (FORALL (i: Index): row_mass(pi,i) = mu(i)) AND
+    (FORALL (j: Index): column_mass(pi,j) = nu(j))
+
+  balanced?(mu,nu): bool = mass(mu) = mass(nu)
+
+  feasible_row: LEMMA feasible?(pi,mu,nu) IMPLIES row_mass(pi,i) = mu(i)
+
+  feasible_column: LEMMA feasible?(pi,mu,nu) IMPLIES column_mass(pi,j) = nu(j)
+
+  % The greatest maximizing index wins ties, including a completely zero row.
+  greatest_maximum(a,b,c: nonneg_real): Index =
+    IF a > b AND a > c THEN 0 ELSIF b > c THEN 1 ELSE 2 ENDIF
+
+  greatest_maximum_value(a,b,c: nonneg_real): nonneg_real =
+    IF greatest_maximum(a,b,c) = 0 THEN a
+    ELSIF greatest_maximum(a,b,c) = 1 THEN b ELSE c ENDIF
+
+  row_argmax(pi)(i: Index): Index = greatest_maximum(pi(i,0),pi(i,1),pi(i,2))
+
+  row_max(pi,i): nonneg_real = pi(i,row_argmax(pi)(i))
+
+  maximum_mass(pi): nonneg_real = row_max(pi,0) + row_max(pi,1) + row_max(pi,2)
+
+  row_max_bounds: LEMMA pi(i,j) <= row_max(pi,i) AND row_max(pi,i) <= row_mass(pi,i)
+
+  maximum_mass_bound: LEMMA maximum_mass(pi) <= plan_mass(pi)
+
+  concentration_fraction(pi): Time =
+    IF plan_mass(pi) = 0 THEN 0 ELSE maximum_mass(pi) / plan_mass(pi) ENDIF
+
+  zero_fraction: THEOREM plan_mass(pi) = 0 IMPLIES concentration_fraction(pi) = 0
+
+  unit_fraction_positive: LEMMA concentration_fraction(pi) = 1 IMPLIES plan_mass(pi) > 0
+
+  unit_fraction_row_concentration: THEOREM concentration_fraction(pi) = 1
+    IMPLIES row_mass(pi,i) = row_max(pi,i)
+
+  positive_fraction_iff_concentrated: THEOREM plan_mass(pi) > 0 IMPLIES
+    (concentration_fraction(pi) = 1 IFF
+      (FORALL (i: Index): row_mass(pi,i) = row_max(pi,i)))
+
+  concentrated_row: LEMMA row_mass(pi,i) = row_max(pi,i) IMPLIES
+    pi(i,j) = IF row_argmax(pi)(i) = j THEN row_mass(pi,i) ELSE 0 ENDIF
+
+  pushforward_three: LEMMA FORALL (transport: Map):
+    pushforward(mu,transport)(j) =
+      (IF transport(0) = j THEN mu(0) ELSE 0 ENDIF) +
+      (IF transport(1) = j THEN mu(1) ELSE 0 ENDIF) +
+      (IF transport(2) = j THEN mu(2) ELSE 0 ENDIF)
+
+  unit_fraction_extracts_compatible_map: THEOREM
+    feasible?(pi,mu,nu) AND concentration_fraction(pi) = 1
+      IMPLIES pushforward(mu,row_argmax(pi)) = nu
+
+  unit_fraction_admits_map: THEOREM
+    feasible?(pi,mu,nu) AND concentration_fraction(pi) = 1
+      IMPLIES EXISTS (transport: Map): pushforward(mu,transport) = nu
+
+  zero_mass_components: LEMMA mass(mu) = 0 IMPLIES mu(i) = 0
+
+  pure_mu: Distr = LAMBDA (i: Index): IF i = 2 THEN 0 ELSE 1/2 ENDIF
+
+  pure_nu: Distr = LAMBDA (i: Index): IF i = 0 THEN 0 ELSE 1/2 ENDIF
+
+  pure_map: Map = LAMBDA (i: Index): IF i = 0 THEN 1 ELSE 2 ENDIF
+
+  pure_plan: Coupling = LAMBDA (i,j: Index):
+    IF (i = 0 AND j = 1) OR (i = 1 AND j = 2) THEN 1/2 ELSE 0 ENDIF
+
+  pure_pair?(mu,nu): bool = mu = pure_mu AND nu = pure_nu
+
+  product_plan(mu,nu)(i,j: Index): nonneg_real =
+    IF mass(mu) > 0 THEN mu(i)*nu(j)/mass(mu) ELSE 0 ENDIF
+
+  zero_plan: Coupling = LAMBDA (i,j: Index): 0
+
+  finite_coupler(mu,nu): Coupling =
+    IF pure_pair?(mu,nu) THEN pure_plan
+    ELSIF balanced?(mu,nu) THEN product_plan(mu,nu) ELSE zero_plan ENDIF
+
+  pure_plan_feasible: THEOREM feasible?(pure_plan,pure_mu,pure_nu)
+
+  product_row_sum: LEMMA balanced?(mu,nu)
+    IMPLIES row_mass(product_plan(mu,nu),i) = mu(i)
+
+  product_column_sum: LEMMA balanced?(mu,nu)
+    IMPLIES column_mass(product_plan(mu,nu),j) = nu(j)
+
+  product_plan_feasible: THEOREM balanced?(mu,nu)
+    IMPLIES feasible?(product_plan(mu,nu),mu,nu)
+
+  coupler_balanced_coverage: THEOREM balanced?(mu,nu)
+    IMPLIES feasible?(finite_coupler(mu,nu),mu,nu)
+
+  target_argmax(nu): Index = greatest_maximum(nu(0),nu(1),nu(2))
+
+  target_argmax_bound: LEMMA nu(j) <= nu(target_argmax(nu))
+
+  dominated_row_maximum: LEMMA
+    (FORALL (j: Index): pi(i,j) <= pi(i,row_argmax(pi)(i)))
+
+  dominating_entry_maximum: LEMMA
+    (FORALL (k: Index): pi(i,k) <= pi(i,j)) IMPLIES pi(i,j) = row_max(pi,i)
+
+  selected_map(mu,nu): Map = IF pure_pair?(mu,nu) THEN pure_map
+    ELSE LAMBDA (i: Index): target_argmax(nu) ENDIF
+
+  product_entry_bound: LEMMA mass(mu) > 0 IMPLIES
+    product_plan(mu,nu)(i,j) <= product_plan(mu,nu)(i,target_argmax(nu))
+
+  product_row_maximizer: LEMMA mass(mu) > 0 IMPLIES
+    product_plan(mu,nu)(i,target_argmax(nu)) = row_max(product_plan(mu,nu),i)
+
+  pure_plan_maximizer: LEMMA pure_plan(i,pure_map(i)) = row_max(pure_plan,i)
+
+  selected_map_is_row_maximizer: THEOREM
+    concentration_fraction(finite_coupler(mu,nu)) = 1 IMPLIES
+      finite_coupler(mu,nu)(i,selected_map(mu,nu)(i)) = row_max(finite_coupler(mu,nu),i)
+
+  unit_fraction_coupler_feasible: LEMMA
+    concentration_fraction(finite_coupler(mu,nu)) = 1
+      IMPLIES feasible?(finite_coupler(mu,nu),mu,nu)
+
+  concentrated_row_any_maximizer: LEMMA FORALL (k: Index):
+    row_mass(pi,i) = row_max(pi,i) AND pi(i,j) = row_max(pi,i)
+      IMPLIES pi(i,k) = IF j = k THEN row_mass(pi,i) ELSE 0 ENDIF
+
+  unit_fraction_any_maximizer_compatible: THEOREM
+    FORALL (transport: Map): feasible?(pi,mu,nu) AND concentration_fraction(pi) = 1 AND
+      (FORALL (i: Index): pi(i,transport(i)) = row_max(pi,i))
+        IMPLIES pushforward(mu,transport) = nu
+
+  selected_unit_fraction_compatible: THEOREM
+    concentration_fraction(finite_coupler(mu,nu)) = 1
+      IMPLIES pushforward(mu,selected_map(mu,nu)) = nu
+
+  selected_map_monotone: THEOREM i < j IMPLIES selected_map(mu,nu)(i) <= selected_map(mu,nu)(j)
+
+  affine_mix(mu,nu,t)(i: Index): nonneg_real = (1-t)*mu(i) + t*nu(i)
+
+  recover_map(v: Vector)(i: Index): Index =
+    IF i+v(i) = 0 THEN 0 ELSIF i+v(i) = 1 THEN 1 ELSE 2 ENDIF
+
+  recover_finite_log: LEMMA FORALL (transport: Map):
+    recover_map(LAMBDA (i: Index): transport(i)-i) = transport
+
+  finite_exp(mu: Distr,v: Vector,t: Time): Distr = affine_mix(mu,pushforward(mu,recover_map(v)),t)
+
+  l1_discrepancy(p,q: Distr): nonneg_real = abs(p(0)-q(0))+abs(p(1)-q(1))+abs(p(2)-q(2))
+
+  finite_model: Model =
+    (# brenier := selected_map,
+       exp_map := finite_exp,
+       kantorovich := affine_mix,
+       coupling := finite_coupler,
+       fraction := concentration_fraction,
+       discrepancy := l1_discrepancy #)
+
+  affine_endpoints: LEMMA affine_mix(mu,nu,0) = mu AND affine_mix(mu,nu,1) = nu
+
+  finite_log_recovery: LEMMA recover_map(log_map(finite_model,mu,nu)) = selected_map(mu,nu)
+
+  finite_exp_log: LEMMA finite_exp(mu,log_map(finite_model,mu,nu),t) =
+    affine_mix(mu,pushforward(mu,selected_map(mu,nu)),t)
+
+  finite_model_admissible: THEOREM admissible_model?(finite_model)
+
+  pure_transport_certificate: THEOREM
+    feasible?(finite_coupler(pure_mu,pure_nu),pure_mu,pure_nu) AND
+    concentration_fraction(finite_coupler(pure_mu,pure_nu)) = 1 AND
+    selected_map(pure_mu,pure_nu)(0) = 1 AND selected_map(pure_mu,pure_nu)(1) = 2 AND
+    selected_map(pure_mu,pure_nu)(2) = 2 AND monge_compatible?(finite_model,pure_mu,pure_nu)
+
+  pure_zero_gap_all_times: THEOREM gap_at(finite_model,pure_mu,pure_nu,t) = 0
+
+  split_mu: Distr = LAMBDA (i: Index): IF i = 0 THEN 1 ELSE 0 ENDIF
+
+  split_nu: Distr = LAMBDA (i: Index): IF i = 2 THEN 0 ELSE 1/2 ENDIF
+
+  split_pair_not_pure: LEMMA NOT pure_pair?(split_mu,split_nu)
+
+  split_plan: Coupling = LAMBDA (i,j: Index): IF i = 0 AND j /= 2 THEN 1/2 ELSE 0 ENDIF
+
+  split_actual_plan: THEOREM finite_coupler(split_mu,split_nu) = split_plan
+
+  split_transport_certificate: THEOREM feasible?(split_plan,split_mu,split_nu) AND
+    concentration_fraction(split_plan) = 1/2 AND split_plan(0,0) = 1/2 AND split_plan(0,1) = 1/2
+
+  split_no_deterministic_map: THEOREM
+    NOT EXISTS (transport: Map): pushforward(split_mu,transport) = split_nu
+
+  split_gap_at_every_time: THEOREM gap_at(finite_model,split_mu,split_nu,t) = t
+
+  split_positive_midpoint_gap: THEOREM approx_gap(finite_model,split_mu,split_nu) = 1/2 AND
+    concentration_fraction(finite_coupler(split_mu,split_nu)) = 1/2
+
+END tangent_bundle_finite_transport
