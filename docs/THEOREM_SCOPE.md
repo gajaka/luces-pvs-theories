@@ -332,9 +332,12 @@ endpoint alignment. `BoundWalkReport` requires equality with both computations;
 `accept_report?` checks that equality for an untrusted report and applies the
 combined PPG, activity, curvature and alignment conditions.
 
-For three active samples, mean curvature equals the inverse cosine of endpoint
-coherence divided by the first step norm. This relation does not establish a
-universal inverse ordering across arbitrary traces. A computed counterexample
+For three active samples, `three_sample_curvature_identity` proves that mean
+curvature equals the inverse cosine of endpoint coherence divided by the first
+step norm. At a fixed positive first step norm, this gives strict inverse
+ordering. The precise corollary and its assumptions are stated below. This
+relation does not establish a universal inverse ordering across arbitrary
+traces. A computed counterexample
 uses two paths of four normalized samples, equal endpoints, equal arc length
 and the same increment multiset. Their endpoint coherences are zero and one,
 while the latter has strictly larger curvature. The comparison uses calculated
@@ -346,6 +349,86 @@ walk field. Neither the endpoint definition nor its counterexample is a claim
 about C20 coupling-generator alignment. Coordinate calibration, binary64
 agreement and the remaining application and Lean/PVS coverage gaps are
 separate obligations.
+
+### Fixed-scale three-sample corollary
+
+Let `p` and `q` each have exactly three samples and active steps under the same
+fixed coordinate map. Suppose their first step norms are equal to a common
+`h > step_cutoff`. Write `C` for endpoint coherence and `kappa` for measured
+curvature. The checked identity gives
+
+```text
+kappa(p) = acos(C(p)) / h
+kappa(q) = acos(C(q)) / h
+C(p) < C(q)  iff  kappa(p) > kappa(q)
+```
+
+The last equivalence follows from strict decrease of `acos` on `[-1,1]` and
+division by positive `h`. NASAlib states that analytic fact as
+`trig@acos.acos_strict_decreasing`. This is a mathematical corollary of the
+checked identity, not an additional saved project theorem or replay count.
+Equal second step norms are not needed. Without the common first norm, the
+denominators can change the ordering.
+
+Three samples are a sufficient condition here, not a necessary condition for
+every individual comparison. The four-sample counterexample refutes a
+universal extension; it does not say every longer trace violates inverse
+ordering.
+
+### Equal step lengths do not suffice
+
+There is also an equal-step variant of the counterexample. Take orthogonal
+increments `u = (-1/4,1/4,0,0)` and `v = (0,0,-1/4,1/4)`, each of norm
+`h = sqrt(1/8) > step_cutoff`. Start at `S = (1/2,0,1/2,0)`. The two paths are
+`S, S+u, S+2u, S+2u+v` and `S, S+u, S+u+v, S+2u+v`. Every coordinate is
+nonnegative and each vector sums to one; pad the other six coordinates with
+zero.
+
+| Increments | Consecutive turning angles | Endpoint coherence | Mean curvature |
+| --- | --- | --- | --- |
+| `u,u,v` | `0, pi/2` | `0` | `pi/(4*h)` |
+| `u,v,u` | `pi/2, pi/2` | `1` | `pi/(2*h)` |
+
+The sample count, endpoints, first step, increment multiset and arc length
+`3*h` agree, and all steps have the same length. Both coherence and curvature
+still increase. This variant is an exact calculation from the current
+definitions, not a saved PVS example; the replayed example above is unchanged.
+
+### A sufficient condition for longer traces
+
+A stronger geometric restriction gives a positive candidate beyond three
+samples. For `N >= 3` samples, require every step to have the same active norm
+`h`, and the unit directions to have the form
+`q_j = cos(theta_j)*e1 + sin(theta_j)*e2` for one orthonormal pair `e1,e2`.
+Require nondecreasing `theta_j` and total turn
+`0 <= theta_(N-2) - theta_0 <= pi`. Thus the directions progress along one
+shortest great-circle arc without reversing.
+
+The consecutive angles then telescope to that total turn, which also equals
+`acos(C)`. Consequently the proposed relation is
+
+```text
+kappa = acos(C) / ((N-2)*h)
+```
+
+This yields strict inverse ordering when both `N` and `h` are fixed. The
+derivation is mathematical; these extra geometric hypotheses and this
+longer-trace result have not been formalized in PVS. Equal step lengths alone
+do not supply the telescoping condition.
+
+### Captured C20 data and Lean coverage
+
+The three captured C20 rows are three datasets, not three-point walks. The
+curvature replay in `scripts/check_lie_observations.py` uses seven distributions
+per dataset: night, five transition bins and day. The endpoint-coherence
+identity therefore neither explains their C20 ordering nor identifies it as
+coincidence. C20 is a different metric, and the cause of the captured ordering
+remains unestablished.
+
+At Lean main `0d702bb`, `ppg-lean` has no counterparts of `pp_walk_geometry` or
+`pp_walk_coherence`. Its rational LUCES snapshot and certificate-repair modules
+do not define these geometric metrics. The geometry extension is a PVS
+development, outside the historical Lean-to-PVS correspondence inventory.
 
 The completed [coherence replay](../reports/PVS_WALK_COHERENCE_20261029.json)
 checks the new coherence kernel and example, the computed-report interface and

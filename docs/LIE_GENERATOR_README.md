@@ -181,6 +181,12 @@ For a three-sample active trace, the definitions give the exact relation
 mean_curvature = acos(endpoint_coherence) / first_step_norm
 ```
 
+For two such traces with the same positive first step norm, greater endpoint
+coherence is equivalent to strictly smaller curvature, since `acos` is
+strictly decreasing on `[-1,1]`. Equal lengths for the second steps are not
+required. This order equivalence is a mathematical corollary of the checked
+identity, not a separately saved PVS theorem.
+
 A longer trace can turn and later recover its initial direction. The concrete
 counterexample uses five normalized samples, with the other six coordinates zero:
 
@@ -206,6 +212,18 @@ even with these other quantities fixed. The common graph uses explicit edges
 and the universal RR relation for a shared context, rather than an invented
 ranking assumption. These are constructed mathematical witnesses, not boot-log
 measurements or a derived physical transition relation.
+
+This refutes universal inverse ordering; some longer traces can still obey
+that ordering. Equal step lengths alone do not restore it: orthogonal
+equal-length increments in the orders `u,u,v` and `u,v,u` give coherence
+`0` versus `1` and curvature `pi/(4*h)` versus `pi/(2*h)`. This equal-step
+variant is an exact calculation, not the replayed PVS example. See the
+[precise conditions and longer-trace candidate](THEOREM_SCOPE.md#fixed-scale-three-sample-corollary).
+
+The three captured C20 rows are three datasets, each replayed with seven
+distributions, not three-sample traces. These endpoint-metric results do not
+explain the captured C20 ordering or show that it is coincidental. The new
+walk geometry and coherence modules currently have no Lean counterparts.
 
 The [completed coherence replay](../reports/PVS_WALK_COHERENCE_20261029.json)
 passed all three entry points, with 138 Project and 761 required original

@@ -85,6 +85,11 @@ PPG and numerical certificate conditions. A three-sample curvature identity
 and a computed four-sample counterexample describe the relation between these
 two quantities. Endpoint-direction coherence is distinct from C20; captured
 C20 data and its finite checks now have their own legacy observation theory.
+For three active samples with a common first step norm, the identity implies
+strict inverse ordering. Neither a larger sample count nor equal step lengths
+alone guarantees that ordering. Each captured C20 row uses seven distributions;
+the three-sample identity does not explain its observed C20 relationship.
+These new geometric modules currently have no Lean counterparts.
 See the [coherence scope](docs/THEOREM_SCOPE.md#endpoint-direction-coherence-and-the-curvature-relation).
 
 The [endpoint-coherence replay](reports/PVS_WALK_COHERENCE_20261029.json)

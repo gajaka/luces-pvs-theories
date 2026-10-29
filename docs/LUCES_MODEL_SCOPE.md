@@ -68,6 +68,9 @@ a proof of NumPy's floating-point evaluation.
 and coordinate map: the clipped dot product of its first and last normalized
 steps. This is a different observable from C20 coupling alignment. For three
 active samples, the curvature equals `acos(endpoint_coherence)/first_step_norm`.
+At a common positive first step norm this implies strict inverse ordering.
+That corollary does not require equal second step norms. It is a mathematical
+consequence of the checked identity, not another saved PVS declaration.
 
 `lie_pp_connection` accepts a report only when both its curvature and endpoint
 alignment equal those computations. `BoundWalkReport` encodes this equality;
@@ -88,6 +91,11 @@ curvature. Two normalized paths with four samples, equal endpoints, equal arc
 length and the same increment multiset give curvature `pi/sqrt(2)` with endpoint
 alignment zero versus curvature `3*pi/(2*sqrt(2))` with alignment one. The order
 of the interior directions matters.
+This does not exclude inverse ordering for particular longer traces. Even
+equal step lengths are insufficient for a universal law; the
+[scope discussion](THEOREM_SCOPE.md#equal-step-lengths-do-not-suffice) gives an
+exact equal-step countercalculation and a stronger, not yet formalized,
+sufficient condition for longer traces.
 
 `lie_captured_observations` retains the older C20 values as raw `TransportPath`
 observations, with no unverified walk field. They depend on edge and endpoint
@@ -95,6 +103,10 @@ transport couplings. The inverse-order test over three captured rows remains
 finite evidence; the computed endpoint counterexample does not establish a
 claim about C20. A separate boot320/347 operator-alignment example shows why
 those metrics also cannot be substituted for one another.
+Each of the three captured rows is a dataset replayed with seven distributions.
+The three-sample endpoint identity does not explain that C20 ordering or
+establish coincidence. The new PVS walk-geometry and coherence modules have no
+Lean counterparts at Lean main `0d702bb`.
 
 The [current coherence receipt](../reports/PVS_WALK_COHERENCE_20261029.json)
 records a completed ordinary replay of all three affected entry points and
