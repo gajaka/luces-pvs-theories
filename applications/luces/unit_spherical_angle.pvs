@@ -1,0 +1,53 @@
+% The principal angular distance on the ten-dimensional unit sphere.
+% Cauchy--Schwarz bounds the residuals orthogonal to the middle vector;
+% monotonicity of cosine then gives the spherical triangle inequality.
+%
+% Author: Dragan Stosic, 2026.
+
+unit_spherical_angle: THEORY
+BEGIN
+
+  IMPORTING vectors@vectors[10] AS Euclidean, trig@trig_inverses, trig@trig_ineq
+
+  Vec10: TYPE = Euclidean.Vector
+
+  u, v, w: VAR Vec10
+  a: VAR real
+
+  sphere_unit?(u): bool = norm[10](u) = 1
+
+  spherical_clip(a): real_abs_le1 =
+    IF a < -1 THEN -1 ELSIF a > 1 THEN 1 ELSE a ENDIF
+
+  vector_angle(u, v): nnreal_le_pi = acos(spherical_clip(*[10](u, v)))
+
+  middle_residual(u, v): Vec10 = -[10](u, *[10](*[10](u, v), v))
+
+  spherical_clip_fixed: LEMMA -1 <= a AND a <= 1 IMPLIES spherical_clip(a) = a
+
+  unit_squared_norm: LEMMA sphere_unit?(u) IMPLIES sqv[10](u) = 1 AND *[10](u, u) = 1
+
+  unit_dot_bounds: LEMMA sphere_unit?(u) AND sphere_unit?(v) IMPLIES -1 <= *[10](u, v) AND *[10](u, v) <= 1
+
+  unit_angle_cosine: LEMMA sphere_unit?(u) AND sphere_unit?(v) IMPLIES cos(vector_angle(u, v)) = *[10](u, v)
+
+  residual_squared_norm: LEMMA sphere_unit?(u) AND sphere_unit?(v) IMPLIES
+    sq(norm[10](middle_residual(u, v))) = 1 - sq(*[10](u, v))
+
+  residual_norm_sine: LEMMA sphere_unit?(u) AND sphere_unit?(v) IMPLIES
+    norm[10](middle_residual(u, v)) = sin(vector_angle(u, v))
+
+  residual_dot: LEMMA sphere_unit?(v) IMPLIES
+    *[10](middle_residual(u, v), middle_residual(w, v)) = *[10](u, w) - (*[10](u, v)) * (*[10](v, w))
+
+  angle_symmetric: LEMMA vector_angle(u, v) = vector_angle(v, u)
+
+  unit_angle_self: LEMMA sphere_unit?(u) IMPLIES vector_angle(u, u) = 0
+
+  unit_dot_sum_lower: LEMMA sphere_unit?(u) AND sphere_unit?(v) AND sphere_unit?(w) IMPLIES
+    cos(vector_angle(u, v) + vector_angle(v, w)) <= *[10](u, w)
+
+  spherical_triangle: THEOREM sphere_unit?(u) AND sphere_unit?(v) AND sphere_unit?(w) IMPLIES
+    vector_angle(u, w) <= vector_angle(u, v) + vector_angle(v, w)
+
+END unit_spherical_angle

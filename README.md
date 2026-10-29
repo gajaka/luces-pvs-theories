@@ -115,6 +115,23 @@ represented delta rank six. The
 finite-data witnesses and separate numerical diagnostics. This does not
 instantiate the positive theorem for those data or classify other datasets.
 
+The general [curvature lower bound](docs/THEOREM_SCOPE.md#universal-curvature-lower-bound-for-active-walks)
+requires only a walk with `N >= 3` samples and all steps active:
+`kappa >= acos(C)/((N-2)*Lmax)`, where `Lmax` covers the first `N-2` step
+norms and excludes the final observed step. Its spherical triangle inequality
+is derived from Cauchy--Schwarz. Equal lengths and planarity are not required.
+The [separate binary64 check](reports/LUCES_CURVATURE_BOUND_CHECK_20261029.json)
+matches the stored metrics and records lower bounds 1.583846, 1.646142 and
+6.220662 for the three captured traces. Numerical checks remain distinct from
+the exact-real theorem and from a proof of the runner implementation.
+
+The completed [bound-theorem replay](reports/PVS_WALK_CURVATURE_BOUND_20261029.json)
+passed **152 saved Project bodies and 925 required original Native bodies**
+across eight Project modules, with no unfinished obligations or failures.
+The new kernel and bound contribute 27 explicit claims and nine TCCs; all
+2,253 previously existing formal working files remained unchanged. Nine
+targeted numerical tests and the three captured-trace calculations also passed.
+
 The [endpoint-coherence replay](reports/PVS_WALK_COHERENCE_20261029.json)
 passed all three entry points and their loaded dependencies on 2026-10-29:
 **138 Project bodies and 761 required original Native bodies**, with no

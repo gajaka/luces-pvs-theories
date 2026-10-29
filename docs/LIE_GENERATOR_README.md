@@ -273,6 +273,13 @@ were not fitted to these data. Planarity is tested without centering. Since
 the plane condition fails, a monotone angle on a common plane is reported as
 `NOT_APPLICABLE`, rather than inferred from projected data.
 
+Exact rank six does not establish an absence of approximate planar structure.
+The first two SVD components retain about 99.6224%, 98.2834% and 98.6138% of
+the unit-direction matrix's squared Frobenius norm for boot320, boot334 and
+boot347, respectively. Thus an approximation by a plane captures much of that
+energy, even though the exact planar hypothesis and the configured numerical
+plane criterion both fail. These are distinct conclusions.
+
 The exact checks embed each saved binary64 point coordinate as a rational
 number, then subtract the points and compute squared norms and rank. The
 report includes unequal-norm witnesses and nonzero three-by-three minors.
@@ -288,21 +295,76 @@ group includes original row zero, whose elevation is 45 degrees. These source
 choices are recorded without cleaning, sorting or resampling the data.
 
 Using Python with the same NumPy, pandas, SciPy and POT dependencies:
+save reruns separately from the published trace artifact, whose checksum is
+used by the bound checker below.
 
 ```sh
 PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 python3 scripts/check_walk_arc_applicability.py \
   --source-root ../master-controler \
-  --output reports/LUCES_WALK_ARC_APPLICABILITY_20261029.json
+  --output /tmp/luces-walk-arc-applicability.json
 
 PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 python3 -m unittest discover \
   -s tests -p test_walk_arc_applicability.py
 ```
 
 A successful command means the analysis completed with bound inputs; it does
-not mean a trace met the theorem's conditions. The positive theorem therefore
-has no established application to these three seven-sample traces. It remains
-a conditional result; no conclusion about other datasets or C20 couplings
-follows from this finite check.
+not mean a trace met the theorem's conditions. The exact shortest-arc identity
+therefore has no established application to these three seven-sample traces.
+No conclusion about other datasets or C20 couplings follows from this finite
+check.
+
+## A lower bound without equal steps or planarity
+
+For every active walk with `N >= 3` samples in the ten-coordinate model,
+`universal_curvature_lower_bound` in
+[`pp_walk_curvature_bound`](../applications/luces/pp_walk_curvature_bound.pvs)
+proves
+
+```text
+mean_curvature >= acos(endpoint_coherence) / ((N-2)*Lmax)
+Lmax = max(step_norm_0, ..., step_norm_(N-3))
+```
+
+Only the first `N-2` step norms enter the maximum. The final step is needed
+for the endpoint direction and must be active, but is not a curvature
+denominator. The proof derives a spherical triangle inequality from
+Cauchy--Schwarz, bounds the endpoint angle by the sum of local angles, then
+uses each denominator's upper bound. It requires no planar or equal-step
+hypothesis. See the [precise scope and sharp example](THEOREM_SCOPE.md#universal-curvature-lower-bound-for-active-walks).
+
+The [completed PVS replay](../reports/PVS_WALK_CURVATURE_BOUND_20261029.json)
+passed all 152 saved Project and 925 required original Native bodies in the
+selected entry point's dependency closure. This includes 27 new explicit
+claims and nine TCCs. All completion and ownership gates were unchanged;
+there were no unfinished obligations, missing scripts or Native failures.
+
+The [numerical checker](../scripts/check_walk_curvature_bound.py) verifies the
+frozen trace report and its input hashes, reconstructs the binary64 points,
+and compares the recomputed coherence and curvature with the recorded values.
+Its [result](../reports/LUCES_CURVATURE_BOUND_CHECK_20261029.json) is:
+
+| Dataset | Curvature | Lower bound | Maximum denominator step norm |
+| --- | --- | --- | --- |
+| boot320 | 6.858686 | 1.583846 | 0.077062191 |
+| boot334 | 34.855611 | 1.646142 | 0.115114463 |
+| boot347 | 19.061509 | 6.220662 | 0.083256938 |
+
+The maximum occurs at step zero for each captured trace. All three satisfy
+the numerical inequality. This check supplies no rigorous floating-point
+error enclosure or execution refinement: the analytic PVS theorem and the
+binary64 calculation are recorded separately. Endpoint coherence remains
+distinct from C20 coupling alignment. Large curvature can coexist with high
+endpoint coherence, and comparisons between different traces retain the
+sample-count and step-scale factors.
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 python3 scripts/check_walk_curvature_bound.py \
+  --source-root ../master-controler \
+  --output /tmp/luces-curvature-bound-check.json
+
+PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 python3 -m unittest discover \
+  -s tests -p test_walk_curvature_bound.py
+```
 
 ## Author
 

@@ -468,7 +468,8 @@ coincidence. C20 is a different metric, and the cause of the captured ordering
 remains unestablished.
 
 At Lean main `0d702bb`, `ppg-lean` has no counterparts of `pp_walk_geometry`,
-`pp_walk_coherence` or `pp_walk_coherence_order`. Its rational LUCES snapshot and
+`pp_walk_coherence`, `pp_walk_coherence_order`, `unit_spherical_angle` or
+`pp_walk_curvature_bound`. Its rational LUCES snapshot and
 certificate-repair modules
 do not define these geometric metrics. The geometry extension is a PVS
 development, outside the historical Lean-to-PVS correspondence inventory.
@@ -505,5 +506,85 @@ python3 scripts/check.py --file applications/luces/lie_captured_observations.pvs
   --jobs 1 --heap-mib 6144 --timeout 180
 
 python3 scripts/check.py --file applications/luces/pp_walk_coherence_order.pvs \
+  --jobs 1 --heap-mib 6144 --timeout 180
+```
+
+## Universal curvature lower bound for active walks
+
+[`pp_walk_curvature_bound`](../applications/luces/pp_walk_curvature_bound.pvs)
+proves a one-sided relation for every walk with `N >= 3` samples and active
+steps in the existing ten-coordinate model. Let `m = N-2` and let `l_i` be
+the norm of step `i`, starting at zero. Define
+
+```text
+Lmax = max(l_0, ..., l_(N-3))
+kappa >= acos(C) / ((N-2) * Lmax)
+```
+
+Here `C` is the computed endpoint-direction coherence and `kappa` is the
+existing measured mean curvature. The last observed step, at index `N-2`,
+is excluded from `Lmax`: it supplies the final direction but is not a local
+curvature denominator. All observed steps must exceed `step_cutoff`; this
+also makes every normalized direction a unit vector and ensures `Lmax > 0`.
+There is no equal-length, planar, monotone-turning or graph/RR hypothesis.
+
+[`unit_spherical_angle`](../applications/luces/unit_spherical_angle.pvs)
+derives the needed unit-sphere triangle inequality. For unit vectors `u,v,w`,
+the residuals `u-(u dot v)*v` and `w-(w dot v)*v` have norms equal to the sines
+of the adjacent angles. Cauchy--Schwarz bounds their inner product, giving
+`cos(angle(u,v)+angle(v,w)) <= u dot w`. Cosine monotonicity gives the angle
+inequality when the sum is at most `pi`; the principal angle's upper bound
+handles the other case. The vector operations are explicitly instantiated at
+dimension ten. The triangle inequality is proved, not supplied as a premise.
+
+`endpoint_angle_le_turn_sum` applies it by induction along the actual unit
+directions. `weighted_prefix_lower_bound` compares each nonnegative local
+angle divided by `Lmax` with the same angle divided by its own step norm.
+With `theta_i` denoting those local angles, the resulting chain is
+
+```text
+acos(C) <= sum(theta_i) <= Lmax * sum(theta_i/l_i) = (N-2)*Lmax*kappa
+```
+
+`universal_curvature_lower_bound` uses the computed finite maximum.
+`universal_curvature_bound_with_upper` also permits any positive supplied
+upper bound on the same denominator steps. Neither result assumes the
+desired curvature inequality. Different walks can still have different
+sample counts and length scales; no inverse ordering between arbitrary
+walks follows.
+
+The saved `tight_unequal_step_example` reuses the original normalized
+`u,u,v` PPG path. Its first two step norms are `h = sqrt(1/8)`, while its final
+step has norm `2*h`. It has `C=0` and
+`kappa = pi/(4*h) = pi/sqrt(2)`, exactly the computed lower bound. Thus the
+bound can be tight for unequal steps and the maximum excludes the last step
+as specified. The earlier returning-direction examples retain positive
+curvature with endpoint coherence one.
+
+The separate [numerical check](../reports/LUCES_CURVATURE_BOUND_CHECK_20261029.json)
+recomputes the saved seven-point traces, verifies their source/data bindings
+and compares both curvature and endpoint coherence with the existing trace
+report before evaluating the bound. It records lower bounds about 1.583846,
+1.646142 and 6.220662 for boot320, boot334 and boot347, below the corresponding
+curvatures 6.858686, 34.855611 and 19.061509. These are binary64 calculations,
+not outward-rounded bounds for the exact transcendental expressions or a
+Python/PVS refinement proof. The PVS theorem concerns exact real arithmetic;
+C20 coupling coherence, calibration and physical RR remain separate.
+
+The [completed bound-theorem replay](../reports/PVS_WALK_CURVATURE_BOUND_20261029.json)
+selected `pp_walk_curvature_bound.pvs` and checked its eight loaded Project
+modules: **152 saved Project bodies and 925 required original Native bodies**
+all passed. The new kernel and bound comprise 27 explicit claims and nine
+TCCs. All missing, incomplete, copied, derived and Native-failure counters
+were zero, with unchanged public ownership, oracle and completion gates.
+Actual input and runtime source/proof hashes matched the canonical files.
+All 2,253 prior formal working files were preserved byte-for-byte. The
+numerical tool's nine semantic tests and actual three-trace command passed
+separately; those calculations are not PVS proof credit.
+
+With the README's pinned library setup, the new loaded closure can be replayed:
+
+```sh
+python3 scripts/check.py --file applications/luces/pp_walk_curvature_bound.pvs \
   --jobs 1 --heap-mib 6144 --timeout 180
 ```

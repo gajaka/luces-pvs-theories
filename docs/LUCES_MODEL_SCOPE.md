@@ -116,6 +116,22 @@ the frozen binary64 point embedding, alongside separate numerical diagnostics;
 they are not a physical calibration or execution-refinement proof. No PVS
 files were changed for this analysis.
 
+The subsequent `unit_spherical_angle` and `pp_walk_curvature_bound` development
+proves the more general one-sided relation
+`kappa >= acos(C)/((N-2)*Lmax)` for all `N >= 3` active walks in the same
+ten-coordinate model. `Lmax` is the maximum of the first `N-2` step norms,
+excluding the final observed step. A derived spherical triangle inequality
+and a weighted sum argument replace the planar and equal-step restrictions.
+An actual unequal-step PPG path attains the bound. This does not impose an
+inverse order across arbitrary traces or change the meaning of C20.
+The [separate numerical check](../reports/LUCES_CURVATURE_BOUND_CHECK_20261029.json)
+matches all stored coherence and curvature values before calculating the
+three lower bounds. It is not a rigorous numerical-error or refinement proof.
+The [bound-theorem replay](../reports/PVS_WALK_CURVATURE_BOUND_20261029.json)
+passed 152 saved Project bodies and 925 required original Native bodies across
+eight modules, including all 36 new bodies. No previously existing formal
+files were changed, and no whole-library replay was performed.
+
 `lie_captured_observations` retains the older C20 values as raw `TransportPath`
 observations, with no unverified walk field. They depend on edge and endpoint
 transport couplings. The inverse-order test over three captured rows remains
