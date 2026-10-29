@@ -132,6 +132,21 @@ The new kernel and bound contribute 27 explicit claims and nine TCCs; all
 2,253 previously existing formal working files remained unchanged. Nine
 targeted numerical tests and the three captured-trace calculations also passed.
 
+The [certificate-to-coherence corollaries](docs/THEOREM_SCOPE.md#coherence-derived-from-a-curvature-certificate)
+derive `C >= cos(min(pi,(N-2)*Lmax*B))` from a valid geometry certificate.
+A strict requested floor below that guarantee makes its additional threshold
+obligation redundant. The direct sufficient guard is
+`B < acos(f)/((N-2)*Lmax)` for `f` in `[-1,1]`. Boundary examples show why
+equality is insufficient. The [numeric illustration](reports/LUCES_CERTIFICATE_COHERENCE_BUDGET_20261029.json)
+gives weak guarantees for the captured traces; report-value binding and
+execution refinement remain separate obligations.
+
+The [ordinary corollary replay](reports/PVS_CERTIFICATE_COHERENCE_20261029.json)
+passed **168 Project bodies and 925 required original Native bodies** across
+ten loaded modules. The new module contributes 13 explicit claims and three
+TCCs; all 2,257 previously existing formal working files remained unchanged.
+This was an incremental dependency check, not a whole-library replay.
+
 The [endpoint-coherence replay](reports/PVS_WALK_COHERENCE_20261029.json)
 passed all three entry points and their loaded dependencies on 2026-10-29:
 **138 Project bodies and 761 required original Native bodies**, with no

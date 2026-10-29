@@ -132,6 +132,23 @@ passed 152 saved Project bodies and 925 required original Native bodies across
 eight modules, including all 36 new bodies. No previously existing formal
 files were changed, and no whole-library replay was performed.
 
+`pp_walk_certificate_coherence` derives a conditional coherence floor from
+the geometry certificate itself. With `A=(N-2)*Lmax*B`, it proves
+`C >= cos(min(pi,A))`; the unclipped `cos(A)` bound requires `A <= pi`.
+If the requested strict floor lies below this guarantee, the combined and
+geometry certificates are equivalent. For `f` in `[-1,1]`, `B < acos(f)/((N-2)*Lmax)`
+is a direct sufficient guard. Equality cannot generally establish `C > f`.
+Interior and zero-budget examples prove the strict-boundary distinction.
+This discharges the computed threshold, while report-value binding remains
+required. The [floating-point budget illustration](../reports/LUCES_CERTIFICATE_COHERENCE_BUDGET_20261029.json)
+is separate from the formal corollary and is not a geometry certificate.
+
+The [ordinary corollary replay](../reports/PVS_CERTIFICATE_COHERENCE_20261029.json)
+passed 168 saved Project bodies and 925 required original Native bodies across
+ten modules, including all 16 new bodies (13 explicit claims and three TCCs).
+All previously existing formal files and report-binding interfaces remained
+unchanged; this was a targeted check of the new module and its dependencies.
+
 `lie_captured_observations` retains the older C20 values as raw `TransportPath`
 observations, with no unverified walk field. They depend on edge and endpoint
 transport couplings. The inverse-order test over three captured rows remains

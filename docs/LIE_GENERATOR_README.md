@@ -366,6 +366,85 @@ PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 python3 -m unittest discover \
   -s tests -p test_walk_curvature_bound.py
 ```
 
+## When a curvature certificate supplies the coherence threshold
+
+[`pp_walk_certificate_coherence`](../applications/luces/pp_walk_certificate_coherence.pvs)
+derives a coherence guarantee from a valid `geometry_certificate?` with
+curvature upper bound `B`. Let `S=(N-2)*Lmax` and `A=S*B`. The certificate
+implies `acos(C) <= A`, hence
+
+```text
+C >= cos(A)              when A <= pi
+C >= cos(min(pi,A))      for every certified budget
+```
+
+The clipped form yields only `C >= -1` once `A >= pi`. The scale is positive
+under a valid geometry certificate; a raw zero budget alone supplies no
+certification. For the strict `C > coherence_floor` component, a sufficient
+guard is `coherence_floor < cos(min(pi,A))`. Under this guard the combined
+certificate is equivalent to the geometry certificate. The guard is not a
+necessary test of actual coherence.
+
+For a target `f` in `[-1,1]`, the direct sufficient condition is
+`B < acos(f)/S`. The inequality must be strict. The formal interior witness
+has geometry certification, `A=pi/2` and `C=0`, but fails a combined floor of
+zero. A straight prefix has `A=0`, `C=1` and fails the strict floor one.
+The [scope description](THEOREM_SCOPE.md#coherence-derived-from-a-curvature-certificate)
+gives the individual theorem names and hypotheses.
+
+The [recorded budget illustration](../reports/LUCES_CERTIFICATE_COHERENCE_BUDGET_20261029.json)
+uses the observed **floating-point** curvature as a hypothetical tight `B`:
+
+| Dataset | Candidate B | Angle budget A | Safe cosine floor |
+| --- | --- | --- | --- |
+| boot320 | 6.858686 | 2.642727 | -0.878126 |
+| boot334 | 34.855611 | 20.061925 | -1 |
+| boot347 | 19.061509 | 7.935015 | -1 |
+
+This is a numerical illustration, not an exact-real upper-bound certificate
+or a rigorous error enclosure. Larger upper bounds give no stronger guarantee.
+For the same recorded step scales, write `B_star = acos(f)/S`; the proved
+condition is `B < B_star`. The following thresholds are rounded numerical
+illustrations, not conservative executable guards. Use the full expression
+with an appropriate numerical-error argument for an implementation.
+
+| Dataset | Approximate B_star for f = 0.7 | Approximate B_star for f = 0.85 |
+| --- | --- | --- |
+| boot320 | 2.064304 | 1.439905 |
+| boot334 | 1.381927 | 0.963929 |
+| boot347 | 1.910709 | 1.332768 |
+
+The recorded curvatures exceed all these thresholds. Boot320 nevertheless
+has measured endpoint coherence about `0.819491`, above `0.7`: a failed budget
+guard does not imply failed actual coherence. Reproduce the displayed numeric
+budgets from the frozen preceding report with standard-library Python:
+
+```sh
+python3 - <<'PY'
+import json
+import math
+from pathlib import Path
+
+report = json.loads(Path("reports/LUCES_CURVATURE_BOUND_CHECK_20261029.json").read_text())
+for row in report["rows"]:
+    a = row["analysis"]
+    scale = a["curvature_term_count"] * a["maximum_denominator_step_norm"]
+    budget = scale * a["mean_curvature"]
+    print(row["name"], budget, math.cos(min(math.pi, budget)),
+          math.acos(0.7) / scale, math.acos(0.85) / scale)
+PY
+```
+
+The corollary establishes a threshold for the computed endpoint coherence.
+It does not validate an untrusted reported alignment value or establish the
+semantics of a numerical implementation. Report binding, C20 coupling
+alignment and physical calibration retain their separate contracts.
+
+The [ordinary proof receipt](../reports/PVS_CERTIFICATE_COHERENCE_20261029.json)
+records 168 saved Project bodies, including all 16 new bodies, and 925 required
+original Native bodies replayed successfully across ten loaded modules. The
+numerical illustration is recorded separately and receives no formal proof credit.
+
 ## Author
 
 Dragan Stosic, 2026

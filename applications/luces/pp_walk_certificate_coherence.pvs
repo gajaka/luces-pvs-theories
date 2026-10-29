@@ -1,0 +1,108 @@
+% A curvature certificate bounds the endpoint angle by its scale times bound.
+% Cosine converts this to a coherence floor only on its principal interval;
+% clipping the angle budget at pi gives the global, possibly trivial, floor.
+% A strict alignment test needs a strict margin below the derived floor.
+%
+% Author: Dragan Stosic, 2026.
+
+pp_walk_certificate_coherence[T: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING pp_walk_curvature_bound[T]
+
+  coordinate_map: VAR SampleMap
+  pw: VAR Prewalk
+  G: VAR Graph
+  RR: VAR [T, T -> bool]
+  I: VAR [T -> bool]
+  bound: VAR nonneg_real
+  coherence_floor: VAR real
+  target_floor: VAR real_abs_le1
+  c: VAR real_abs_le1
+  angle_cap: VAR nnreal_le_pi
+
+  curvature_scale(coordinate_map, pw): nonneg_real =
+    IF pw`length >= 3 THEN (pw`length-2)*curvature_lmax(coordinate_map, pw) ELSE 0 ENDIF
+
+  curvature_budget(coordinate_map, pw, bound): nonneg_real =
+    curvature_scale(coordinate_map, pw)*bound
+
+  safe_coherence_floor(coordinate_map, pw, bound): real_abs_le1 =
+    cos(min(pi, curvature_budget(coordinate_map, pw, bound)))
+
+  certified_scale_positive: LEMMA
+    geometry_certificate?(G, RR, I, coordinate_map, pw, bound) IMPLIES
+      curvature_scale(coordinate_map, pw) > 0
+
+  certified_angle_budget: THEOREM
+    geometry_certificate?(G, RR, I, coordinate_map, pw, bound) IMPLIES
+      acos(endpoint_coherence(coordinate_map, pw)) <= curvature_budget(coordinate_map, pw, bound)
+
+  angle_cap_cosine_lower: LEMMA acos(c) <= angle_cap IMPLIES cos(angle_cap) <= c
+
+  certified_coherence_small_budget: THEOREM
+    geometry_certificate?(G, RR, I, coordinate_map, pw, bound) AND
+    curvature_budget(coordinate_map, pw, bound) <= pi IMPLIES
+      cos(curvature_budget(coordinate_map, pw, bound)) <= endpoint_coherence(coordinate_map, pw)
+
+  certified_coherence_global: THEOREM
+    geometry_certificate?(G, RR, I, coordinate_map, pw, bound) IMPLIES
+      safe_coherence_floor(coordinate_map, pw, bound) <= endpoint_coherence(coordinate_map, pw)
+
+  combined_from_curvature_budget: THEOREM
+    geometry_certificate?(G, RR, I, coordinate_map, pw, bound) AND
+    curvature_budget(coordinate_map, pw, bound) <= pi AND
+    coherence_floor < cos(curvature_budget(coordinate_map, pw, bound)) IMPLIES
+      combined_certificate?(G, RR, I, coordinate_map, pw, bound, coherence_floor)
+
+  combined_from_safe_floor: THEOREM
+    geometry_certificate?(G, RR, I, coordinate_map, pw, bound) AND
+    coherence_floor < safe_coherence_floor(coordinate_map, pw, bound) IMPLIES
+      combined_certificate?(G, RR, I, coordinate_map, pw, bound, coherence_floor)
+
+  combined_equiv_geometry_under_safe_floor: THEOREM
+    coherence_floor < safe_coherence_floor(coordinate_map, pw, bound) IMPLIES
+      (combined_certificate?(G, RR, I, coordinate_map, pw, bound, coherence_floor) IFF
+       geometry_certificate?(G, RR, I, coordinate_map, pw, bound))
+
+  certificate_budget_window: THEOREM
+    geometry_certificate?(G, RR, I, coordinate_map, pw, bound) IMPLIES
+      (curvature_budget(coordinate_map, pw, bound) <= pi IFF
+       bound <= pi/curvature_scale(coordinate_map, pw))
+
+  combined_from_strict_budget_threshold: THEOREM
+    geometry_certificate?(G, RR, I, coordinate_map, pw, bound) AND
+    bound < acos(target_floor)/curvature_scale(coordinate_map, pw) IMPLIES
+      combined_certificate?(G, RR, I, coordinate_map, pw, bound, target_floor)
+
+END pp_walk_certificate_coherence
+
+% Equality at an interior floor is already insufficient: the unequal-step
+% four-sample path has budget pi/2 and coherence zero. The straight prefix
+% supplies the zero-budget endpoint case as well.
+pp_walk_certificate_coherence_example: THEORY
+BEGIN
+
+  IMPORTING pp_walk_certificate_coherence[below(5)], pp_walk_curvature_bound_example
+
+  coherence_floor: VAR real
+
+  interior_geometry_budget: THEOREM
+    geometry_certificate?(common_graph, common_rr, spectrum_invariant,
+      sample_coordinates, low_walk, pi/sqrt(2)) AND
+    curvature_budget(sample_coordinates, low_walk, pi/sqrt(2)) = pi/2 AND
+    endpoint_coherence(sample_coordinates, low_walk) = 0
+
+  interior_combined_iff: THEOREM
+    combined_certificate?(common_graph, common_rr, spectrum_invariant,
+      sample_coordinates, low_walk, pi/sqrt(2), coherence_floor) IFF coherence_floor < 0
+
+  zero_budget_boundary_counterexample: THEOREM
+    geometry_certificate?(common_graph, common_rr, spectrum_invariant,
+      sample_coordinates, prefix_walk, 0) AND
+    curvature_budget(sample_coordinates, prefix_walk, 0) = 0 AND
+    endpoint_coherence(sample_coordinates, prefix_walk) = 1 AND
+    NOT combined_certificate?(common_graph, common_rr, spectrum_invariant,
+      sample_coordinates, prefix_walk, 0, 1)
+
+END pp_walk_certificate_coherence_example

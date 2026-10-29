@@ -1,0 +1,218 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-29T13:27:30.640418+00:00",
+  "input_report": "reports/LUCES_CURVATURE_BOUND_CHECK_20261029.json",
+  "input_report_sha256": "6ab3fde2c0b9cdd80e22b02533e1334cb3b427914e0144d0b3d8be1442b6d02f",
+  "scope": "Independent numerical audit of the guarded coherence budget and strict floor boundaries on three captured traces. No PVS run, exact-real data instantiation, binary64 error enclosure, physical calibration or C20 statement.",
+  "mathematical_boundaries": {
+    "always": "A=(N-2)*Lmax*B>=0 and a valid geometry certificate imply acos(C)<=A.",
+    "principal_guard": "If A<=pi, C>=cos(A). If A>pi, this cosine floor is not justified by the budget.",
+    "strict_floor": "floor<cos(A), together with A<=pi, implies C>floor. Equality floor=cos(A) only yields non-strict C>=floor.",
+    "A_zero": "At A=0, C=1. Floor1 fails the strict combined certificate; every floor<1 is guaranteed.",
+    "A_pi_over_two": "At A=pi/2 the budget guarantees only C>=0. A<pi/2 is sufficient for a strict-positive-C guarantee from the budget alone; larger A does not imply that the actual C is nonpositive.",
+    "A_pi": "At A=pi the floor is -1, the trivial range lower bound. No strict guarantee for floor>=-1 follows.",
+    "A_greater_pi": "No nontrivial cosine floor follows. Example: a three-sample trace with endpoint angle pi, C=-1 and bound chosen so A=3*pi/2 contradicts C>=cos(A)=0.",
+    "global_clamped_floor": "Always C>=cos(min(pi,A)): acos(C)<=A and acos(C)<=pi imply acos(C)<=min(pi,A). At A>=pi this is only the range bound C>=-1.",
+    "interior_equal_floor_counterexample": "The existing normalized four-sample low_walk has step norms h,h,2h, Lmax=h, C=0 and kappa=B=pi/(4h). Its budget A=2*h*B=pi/2 has floor cos(A)=0; geometry certification holds but the strict combined condition C>0 fails. Thus equality of the floor is insufficient at an interior threshold, not only at C=1."
+  },
+  "rows": [
+    {
+      "name": "boot320",
+      "sample_count": 7,
+      "curvature_term_count": 5,
+      "maximum_denominator_step_norm_binary64": 0.07706219077877063,
+      "maximum_denominator_step_index": 0,
+      "observed_curvature_binary64": 6.858685700283836,
+      "observed_endpoint_C_binary64": 0.8194914724350897,
+      "observed_endpoint_angle_binary64": 0.6102732129712208,
+      "candidate_bound_B_binary64": 6.858685700283836,
+      "candidate_bound_scope": "Observed FLOAT curvature is used as a hypothetical tight upper bound for this diagnostic only. It is not an exact-real geometry_certificate or a rigorous enclosure of real curvature. Any certified larger B yields a budget at least this large.",
+      "budget_A_binary64": 2.642726729634495,
+      "budget_over_pi_binary64": 0.8412060445248175,
+      "principal_interval_guard_A_le_pi": true,
+      "guarded_cosine_floor_binary64": -0.8781257024504757,
+      "unguarded_cosine_not_a_valid_floor": null,
+      "floor_thresholds": [
+        {
+          "floor_rational": {
+            "numerator": 7,
+            "denominator": 10
+          },
+          "floor_binary64": 0.7,
+          "endpoint_angle_threshold_binary64": 0.7953988301841436,
+          "curvature_upper_bound_strict_threshold_binary64": 2.064303706256072,
+          "strict_requirement": "The exact sufficient guard is B < acos(floor)/S. The displayed binary64 number approximates that expression and is not a conservative operational threshold; implementation use needs an error argument. Equality in the exact guard yields only C>=floor.",
+          "observed_curvature_strictly_below_threshold": false,
+          "observed_curvature_over_threshold": 3.322517747508724,
+          "actual_recorded_endpoint_C_strictly_above_floor": true,
+          "actual_recorded_endpoint_C_minus_floor": 0.11949147243508973,
+          "guarded_budget_sufficient_for_strict_floor": false
+        },
+        {
+          "floor_rational": {
+            "numerator": 17,
+            "denominator": 20
+          },
+          "floor_binary64": 0.85,
+          "endpoint_angle_threshold_binary64": 0.5548110329800715,
+          "curvature_upper_bound_strict_threshold_binary64": 1.4399046468139414,
+          "strict_requirement": "The exact sufficient guard is B < acos(floor)/S. The displayed binary64 number approximates that expression and is not a conservative operational threshold; implementation use needs an error argument. Equality in the exact guard yields only C>=floor.",
+          "observed_curvature_strictly_below_threshold": false,
+          "observed_curvature_over_threshold": 4.763291593967671,
+          "actual_recorded_endpoint_C_strictly_above_floor": false,
+          "actual_recorded_endpoint_C_minus_floor": -0.030508527564910293,
+          "guarded_budget_sufficient_for_strict_floor": false
+        }
+      ],
+      "lower_bound_looseness_decomposition": {
+        "endpoint_angle": 0.6102732129712208,
+        "sum_local_turn_angles": 1.365779713773489,
+        "angular_detour_factor": 2.2379807678661727,
+        "denominator_weight_factor": 1.9349582535041112,
+        "product": 4.33039935796612,
+        "budget_over_endpoint_angle": 4.330399357966119,
+        "identity": "kappa / (gamma/(m*Lmax)) = (sum(theta_i)/gamma) * (Lmax*sum(theta_i/l_i)/sum(theta_i)).",
+        "scope": "Algebraic decomposition of the numerical lower-bound slack; neither factor estimates curvature or explains C20."
+      },
+      "clamped_budget_angle_binary64": 2.642726729634495,
+      "global_clamped_cosine_floor_binary64": -0.8781257024504757,
+      "clamped_floor_scope": "Numerical evaluation of the conditional exact-real corollary using observed FLOAT curvature as hypothetical B. For A>=pi the bound is only -1.",
+      "budget_guarantees_strict_positive_C": false,
+      "curvature_upper_bound_strict_threshold_for_positive_C_binary64": 4.076697822682781
+    },
+    {
+      "name": "boot334",
+      "sample_count": 7,
+      "curvature_term_count": 5,
+      "maximum_denominator_step_norm_binary64": 0.1151144625990574,
+      "maximum_denominator_step_index": 0,
+      "observed_curvature_binary64": 34.85561116708708,
+      "observed_endpoint_C_binary64": 0.5837362590959938,
+      "observed_endpoint_angle_binary64": 0.947473581231014,
+      "candidate_bound_B_binary64": 34.85561116708708,
+      "candidate_bound_scope": "Observed FLOAT curvature is used as a hypothetical tight upper bound for this diagnostic only. It is not an exact-real geometry_certificate or a rigorous enclosure of real curvature. Any certified larger B yields a budget at least this large.",
+      "budget_A_binary64": 20.06192474030467,
+      "budget_over_pi_binary64": 6.385908980714153,
+      "principal_interval_guard_A_le_pi": false,
+      "guarded_cosine_floor_binary64": null,
+      "unguarded_cosine_not_a_valid_floor": 0.35080210810105733,
+      "floor_thresholds": [
+        {
+          "floor_rational": {
+            "numerator": 7,
+            "denominator": 10
+          },
+          "floor_binary64": 0.7,
+          "endpoint_angle_threshold_binary64": 0.7953988301841436,
+          "curvature_upper_bound_strict_threshold_binary64": 1.3819268443349475,
+          "strict_requirement": "The exact sufficient guard is B < acos(floor)/S. The displayed binary64 number approximates that expression and is not a conservative operational threshold; implementation use needs an error argument. Equality in the exact guard yields only C>=floor.",
+          "observed_curvature_strictly_below_threshold": false,
+          "observed_curvature_over_threshold": 25.222472021564464,
+          "actual_recorded_endpoint_C_strictly_above_floor": false,
+          "actual_recorded_endpoint_C_minus_floor": -0.11626374090400615,
+          "guarded_budget_sufficient_for_strict_floor": false
+        },
+        {
+          "floor_rational": {
+            "numerator": 17,
+            "denominator": 20
+          },
+          "floor_binary64": 0.85,
+          "endpoint_angle_threshold_binary64": 0.5548110329800715,
+          "curvature_upper_bound_strict_threshold_binary64": 0.9639293281722092,
+          "strict_requirement": "The exact sufficient guard is B < acos(floor)/S. The displayed binary64 number approximates that expression and is not a conservative operational threshold; implementation use needs an error argument. Equality in the exact guard yields only C>=floor.",
+          "observed_curvature_strictly_below_threshold": false,
+          "observed_curvature_over_threshold": 36.15992391597822,
+          "actual_recorded_endpoint_C_strictly_above_floor": false,
+          "actual_recorded_endpoint_C_minus_floor": -0.2662637409040062,
+          "guarded_budget_sufficient_for_strict_floor": false
+        }
+      ],
+      "lower_bound_looseness_decomposition": {
+        "endpoint_angle": 0.947473581231014,
+        "sum_local_turn_angles": 5.957247431321939,
+        "angular_detour_factor": 6.287507693440833,
+        "denominator_weight_factor": 3.367650071881074,
+        "product": 21.174125735768826,
+        "budget_over_endpoint_angle": 21.174125735768826,
+        "identity": "kappa / (gamma/(m*Lmax)) = (sum(theta_i)/gamma) * (Lmax*sum(theta_i/l_i)/sum(theta_i)).",
+        "scope": "Algebraic decomposition of the numerical lower-bound slack; neither factor estimates curvature or explains C20."
+      },
+      "clamped_budget_angle_binary64": 3.141592653589793,
+      "global_clamped_cosine_floor_binary64": -1.0,
+      "clamped_floor_scope": "Numerical evaluation of the conditional exact-real corollary using observed FLOAT curvature as hypothetical B. For A>=pi the bound is only -1.",
+      "budget_guarantees_strict_positive_C": false,
+      "curvature_upper_bound_strict_threshold_for_positive_C_binary64": 2.729103348666041
+    },
+    {
+      "name": "boot347",
+      "sample_count": 7,
+      "curvature_term_count": 5,
+      "maximum_denominator_step_norm_binary64": 0.08325693841432201,
+      "maximum_denominator_step_index": 0,
+      "observed_curvature_binary64": 19.06150929636842,
+      "observed_endpoint_C_binary64": -0.8514637517907067,
+      "observed_endpoint_angle_binary64": 2.5895665448977563,
+      "candidate_bound_B_binary64": 19.06150929636842,
+      "candidate_bound_scope": "Observed FLOAT curvature is used as a hypothetical tight upper bound for this diagnostic only. It is not an exact-real geometry_certificate or a rigorous enclosure of real curvature. Any certified larger B yields a budget at least this large.",
+      "budget_A_binary64": 7.93501452785886,
+      "budget_over_pi_binary64": 2.5257935712294795,
+      "principal_interval_guard_A_le_pi": false,
+      "guarded_cosine_floor_binary64": null,
+      "unguarded_cosine_not_a_valid_floor": -0.08094424154319435,
+      "floor_thresholds": [
+        {
+          "floor_rational": {
+            "numerator": 7,
+            "denominator": 10
+          },
+          "floor_binary64": 0.7,
+          "endpoint_angle_threshold_binary64": 0.7953988301841436,
+          "curvature_upper_bound_strict_threshold_binary64": 1.9107088137829427,
+          "strict_requirement": "The exact sufficient guard is B < acos(floor)/S. The displayed binary64 number approximates that expression and is not a conservative operational threshold; implementation use needs an error argument. Equality in the exact guard yields only C>=floor.",
+          "observed_curvature_strictly_below_threshold": false,
+          "observed_curvature_over_threshold": 9.976145584752516,
+          "actual_recorded_endpoint_C_strictly_above_floor": false,
+          "actual_recorded_endpoint_C_minus_floor": -1.5514637517907066,
+          "guarded_budget_sufficient_for_strict_floor": false
+        },
+        {
+          "floor_rational": {
+            "numerator": 17,
+            "denominator": 20
+          },
+          "floor_binary64": 0.85,
+          "endpoint_angle_threshold_binary64": 0.5548110329800715,
+          "curvature_upper_bound_strict_threshold_binary64": 1.3327682798497713,
+          "strict_requirement": "The exact sufficient guard is B < acos(floor)/S. The displayed binary64 number approximates that expression and is not a conservative operational threshold; implementation use needs an error argument. Equality in the exact guard yields only C>=floor.",
+          "observed_curvature_strictly_below_threshold": false,
+          "observed_curvature_over_threshold": 14.302193100301743,
+          "actual_recorded_endpoint_C_strictly_above_floor": false,
+          "actual_recorded_endpoint_C_minus_floor": -1.7014637517907065,
+          "guarded_budget_sufficient_for_strict_floor": false
+        }
+      ],
+      "lower_bound_looseness_decomposition": {
+        "endpoint_angle": 2.5895665448977563,
+        "sum_local_turn_angles": 3.578368342774474,
+        "angular_detour_factor": 1.3818406597138666,
+        "denominator_weight_factor": 2.217495173151034,
+        "product": 3.0642249929793395,
+        "budget_over_endpoint_angle": 3.06422499297934,
+        "identity": "kappa / (gamma/(m*Lmax)) = (sum(theta_i)/gamma) * (Lmax*sum(theta_i/l_i)/sum(theta_i)).",
+        "scope": "Algebraic decomposition of the numerical lower-bound slack; neither factor estimates curvature or explains C20."
+      },
+      "clamped_budget_angle_binary64": 3.141592653589793,
+      "global_clamped_cosine_floor_binary64": -1.0,
+      "clamped_floor_scope": "Numerical evaluation of the conditional exact-real corollary using observed FLOAT curvature as hypothetical B. For A>=pi the bound is only -1.",
+      "budget_guarantees_strict_positive_C": false,
+      "curvature_upper_bound_strict_threshold_for_positive_C_binary64": 3.7733703802028957
+    }
+  ],
+  "environment": {
+    "python": "3.9.6",
+    "arithmetic": "Python binary64 math functions; floor rationals7/10 and17/20 converted to binary64 for evaluation."
+  },
+  "generation_scope": "Read-only numerical generation from the frozen bound report. Observed floating-point curvature is a hypothetical certificate upper bound for this diagnostic, not a formal geometry certificate; no canonical sources or prover sessions were changed.",
+  "numeric_threshold_scope": "The exact sufficient guard is B < acos(f)/S. Every displayed binary64 threshold is an approximation to that expression, not a conservative executable or operational guard; an implementation needs an appropriate numerical-error argument. Rounded documentation values are illustrations only."
+}

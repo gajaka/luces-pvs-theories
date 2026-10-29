@@ -467,11 +467,12 @@ identity therefore neither explains their C20 ordering nor identifies it as
 coincidence. C20 is a different metric, and the cause of the captured ordering
 remains unestablished.
 
-At Lean main `0d702bb`, `ppg-lean` has no counterparts of `pp_walk_geometry`,
-`pp_walk_coherence`, `pp_walk_coherence_order`, `unit_spherical_angle` or
-`pp_walk_curvature_bound`. Its rational LUCES snapshot and
-certificate-repair modules
-do not define these geometric metrics. The geometry extension is a PVS
+At Lean main `0d702bb`, `ppg-lean` has no project counterparts of
+`pp_walk_geometry`, `pp_walk_coherence`, `pp_walk_coherence_order`,
+`unit_spherical_angle`, `pp_walk_curvature_bound` or
+`pp_walk_certificate_coherence`. Its rational LUCES snapshot and
+certificate-repair modules do not define these geometric metrics. The geometry
+extension is a PVS
 development, outside the historical Lean-to-PVS correspondence inventory.
 
 The completed [order-theorem replay](../reports/PVS_WALK_COHERENCE_ORDER_20261029.json)
@@ -586,5 +587,85 @@ With the README's pinned library setup, the new loaded closure can be replayed:
 
 ```sh
 python3 scripts/check.py --file applications/luces/pp_walk_curvature_bound.pvs \
+  --jobs 1 --heap-mib 6144 --timeout 180
+```
+
+## Coherence derived from a curvature certificate
+
+[`pp_walk_certificate_coherence`](../applications/luces/pp_walk_certificate_coherence.pvs)
+uses an existing `geometry_certificate?`, including its actual path, sample
+count, active steps and curvature upper bound `B`. Write
+
+```text
+S = (N-2)*curvature_lmax > 0
+A = S*B
+```
+
+`certified_angle_budget` combines `kappa <= B` with the universal lower bound
+to prove `acos(C) <= A`. `certified_coherence_small_budget` gives
+`C >= cos(A)` when `A <= pi`. The total function `safe_coherence_floor` clips
+the angle budget at `pi`, and `certified_coherence_global` proves
+
+```text
+C >= cos(min(pi,A))
+```
+
+for every valid geometry certificate. For `A >= pi` this yields only the range
+bound `C >= -1`; using the uncut cosine outside the principal interval is
+invalid. The function alone certifies nothing: a short or inactive raw walk
+can have a zero budget by definition but cannot pass the geometry certificate.
+
+The combined certificate requires the strict test `C > coherence_floor`.
+`combined_from_safe_floor` discharges this obligation when
+`coherence_floor < safe_coherence_floor`. Under this sufficient
+guard, `combined_equiv_geometry_under_safe_floor` proves that combined
+certification is equivalent to geometry certification. Failure of the guard
+does not establish failure of coherence: the actual `C` may exceed the
+coarse guarantee. No unconditional redundancy or necessity criterion is claimed.
+
+For `f` in `[-1,1]`, `combined_from_strict_budget_threshold` states the useful
+direct criterion
+
+```text
+geometry_certificate? AND B < acos(f)/S  IMPLIES  combined_certificate?(..., B, f)
+```
+
+This strict threshold automatically puts the angle budget below `pi`.
+`certificate_budget_window` also gives `A <= pi IFF B <= pi/S` under the
+geometry certificate. Equality at the coherence threshold yields only a
+non-strict lower bound and cannot generally imply the strict combined test.
+
+The saved interior example has a valid geometry certificate, `A=pi/2` and
+`C=0`. Its combined certificate holds exactly when `coherence_floor < 0`;
+choosing zero fails despite equality with the derived lower bound. A straight
+prefix gives the second boundary case: `B=0`, `A=0`, `C=1`, and the strict
+floor-one certificate still fails. Both examples are actual PPG paths from
+the existing normalized construction.
+
+These corollaries discharge a threshold on the computed endpoint coherence.
+Equality of an untrusted reported field with that computed value remains a
+separate obligation in `report_matches_walk?`. The existing report interface
+and acceptance checks were not changed. Python/C execution, binary64 error
+bounds, calibration and C20 coupling alignment are outside the corollary.
+
+The [numerical budget illustration](../reports/LUCES_CERTIFICATE_COHERENCE_BUDGET_20261029.json)
+uses recorded floating-point curvature as a hypothetical tight upper bound,
+not as an exact-real geometry certificate. It gives safe cosine floors about
+`-0.878126`, `-1` and `-1` for boot320, boot334 and boot347. None of these
+budgets guarantees endpoint coherence above `0.7` or `0.85`, even though the
+recorded boot320 coherence exceeds `0.7`. The report also separates the
+angular-detour and denominator-weight factors in the earlier lower-bound gap.
+
+The [ordinary corollary replay](../reports/PVS_CERTIFICATE_COHERENCE_20261029.json)
+passed 168 saved Project bodies and 925 required original Native bodies across
+ten loaded modules. This includes all 13 explicit new claims and three new
+TCCs; no existing formal statement or proof file was changed. The checker,
+ownership and completion gates were unchanged, and all failure and missing-script
+counters were zero. This checks only the new module and its loaded closure.
+
+With the README's pinned library setup, replay that closure with:
+
+```sh
+python3 scripts/check.py --file applications/luces/pp_walk_certificate_coherence.pvs \
   --jobs 1 --heap-mib 6144 --timeout 180
 ```
