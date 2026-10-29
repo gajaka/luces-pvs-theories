@@ -2,9 +2,13 @@
 
 The current PVS models are
 [lie_generator_structure.pvs](../applications/luces/lie_generator_structure.pvs)
-and [lie_pp_connection.pvs](../applications/luces/lie_pp_connection.pvs), with
+and the legacy data checks in
+[lie_captured_observations.pvs](../applications/luces/lie_captured_observations.pvs).
+The computed path interface is
+[lie_pp_connection.pvs](../applications/luces/lie_pp_connection.pvs), with
 computed path geometry in
-[pp_walk_geometry.pvs](../applications/luces/pp_walk_geometry.pvs).
+[pp_walk_geometry.pvs](../applications/luces/pp_walk_geometry.pvs) and
+[pp_walk_coherence.pvs](../applications/luces/pp_walk_coherence.pvs).
 They evaluate measured C20/C21/C22 observations and include explicit
 counterexamples to the former universal coherence implications. They do not
 prove a Lie exponential representation or infer physical observability from
@@ -123,10 +127,11 @@ turn. The rational epsilon and exact-real operations define the mathematical
 model. Equality with NumPy's binary64 result, including its rounded threshold,
 requires a separate numerical refinement proof.
 
-`CurvatureBoundPrewalk` rules out an independent reported curvature: its value
-must equal this calculation. `certified_curvature_measurement?` also requires
+`BoundWalkReport` rules out independent reported curvature or endpoint
+alignment: both must equal the calculations for its walk. `accept_report?` requires
 the ordered walk to be a `pp_path` satisfying the chosen vertex invariant and
-RR relation. A graph extension preserves that same certified path. Replacing
+RR relation, the curvature bound and the alignment floor. A graph extension
+preserves that same certified path. Replacing
 its middle vertex can change the measured geometry.
 
 The concrete example uses four normalized samples, shown in their first four
@@ -150,16 +155,63 @@ The extension keeps the old path and adds the bent alternative. A separate
 zero-curvature certificate accepts the old path and rejects the new one.
 Thus preservation of old paths and admission of new paths are distinct checks.
 
-Only curvature is bound by this construction. C20 also needs the consecutive
+The endpoint-direction comparison below is bound by the same construction.
+C20 also needs the consecutive
 coupling displacement fields and a full endpoint coupling. The historical
 three-boot fixture stores rounded observations, not a formal extraction of
 those couplings or an equality between its float curvature and this real
 formula. It remains an attached observation, not a certified geometric trace.
 
-The [targeted PVS replay](../reports/PVS_WALK_GEOMETRY_20261029.json) passed both
-entry points with 90 Project and 757 required original Native proof bodies.
+The earlier [geometry replay](../reports/PVS_WALK_GEOMETRY_20261029.json) passed
+the curvature-only revision with 90 Project and 757 required Native proof bodies.
 The ordinary source, proof ownership and completion gates were unchanged.
-The numerical fixture command above also passed all three existing rows.
+Its source hashes describe that dated revision.
+
+## Coherence computed from the same walk
+
+Endpoint-direction coherence is the clipped cosine between the first and last
+normalized steps. Its inputs are the same ordered vertices and fixed coordinate
+map used by the curvature calculation. There is no freely supplied alignment
+field in an accepted report. This definition does not identify endpoint
+alignment with C20's average coupling-generator alignment.
+
+For a three-sample active trace, the definitions give the exact relation
+
+```text
+mean_curvature = acos(endpoint_coherence) / first_step_norm
+```
+
+A longer trace can turn and later recover its initial direction. The concrete
+counterexample uses five normalized samples, with the other six coordinates zero:
+
+| Vertex | Coordinates |
+| --- | --- |
+| S | `(1/2, 0, 1/2, 0)` |
+| A | `(1/4, 1/4, 1/2, 0)` |
+| B | `(0, 1/2, 1/2, 0)` |
+| C | `(1/4, 1/4, 0, 1/2)` |
+| E | `(0, 1/2, 0, 1/2)` |
+
+```text
+S --> A --> B --> E     curvature = pi/sqrt(2),       endpoint cosine = 0
+       \
+        +-> C --> E     curvature = 3*pi/(2*sqrt(2)), endpoint cosine = 1
+```
+
+Both paths have four samples, the same endpoints, the same first step and arc
+length `sqrt(2)`. Their increment multiset is the same: two copies of
+`u = (-1/4,1/4,0,0)` and one `v = (0,0,-1/2,1/2)`. The order is `u,u,v` versus
+`u,v,u`. Thus more mean curvature can coexist with more endpoint coherence,
+even with these other quantities fixed. The common graph uses explicit edges
+and the universal RR relation for a shared context, rather than an invented
+ranking assumption. These are constructed mathematical witnesses, not boot-log
+measurements or a derived physical transition relation.
+
+The [completed coherence replay](../reports/PVS_WALK_COHERENCE_20261029.json)
+passed all three entry points, with 138 Project and 761 required original
+Native proof bodies. The public source-ownership and completion gates were
+unchanged. The three-row numerical fixture command also passed with unchanged
+measurements and updated source routing.
 
 ## Author
 

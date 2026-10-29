@@ -94,7 +94,7 @@ def main() -> None:
             require(result[f"{field}_status"] == row[field], f"Classification differs: {row['name']}.{field}")
     # The operator counterexample is bound to its separate C_DEV fixture.
     operator_data = json.loads((repository / "applications/luces/data/luces_runner_deviation.json").read_text())
-    operator_pvs = (repository / "applications/luces/lie_pp_connection.pvs").read_text()
+    operator_pvs = (repository / fixture["operator_formal_source"]).read_text()
     for row in operator_data["inputs"]:
         name = Path(row["path"]).name.split("_")[0]
         match = re.search(rf"\b{name}_operator: OperatorObservation =\s*\(#(.*?)#\)", operator_pvs, re.S)

@@ -64,14 +64,17 @@ current step length and averages the interior terms. The small-step branches
 are explicit. This is an exact-real formula, not a squared-difference proxy or
 a proof of NumPy's floating-point evaluation.
 
-`lie_pp_connection` keeps old floating-point fixtures as `AttachedObservation`.
-Its separate `CurvatureBoundPrewalk` requires the reported curvature to equal
-the computed value. Certified curvature measurements additionally require an
-actual `pp_path`, at least three samples, active successive steps and the
-numerical curvature bound. A raw zero value from inactive steps is not enough
-to obtain that certificate.
-The coordinate map is fixed by the theory input. Its relation to sensor
-calibration is still an external obligation.
+`pp_walk_coherence` computes endpoint-direction coherence from the same walk
+and coordinate map: the clipped dot product of its first and last normalized
+steps. This is a different observable from C20 coupling alignment. For three
+active samples, the curvature equals `acos(endpoint_coherence)/first_step_norm`.
+
+`lie_pp_connection` accepts a report only when both its curvature and endpoint
+alignment equal those computations. `BoundWalkReport` encodes this equality;
+`accept_report?` additionally checks `pp_path`, at least three samples, active
+steps, the curvature bound and the endpoint-alignment floor. A raw zero from
+inactive steps is insufficient. The coordinate map remains a fixed theory
+input; its relation to sensor calibration is still an external obligation.
 
 Graph extension preserves an already certified path with the same ordered
 vertices and coordinate map. It does not certify every newly available path.
@@ -80,14 +83,27 @@ samples each, one straight and one with a right angle. Both respect the graph's
 vertex and RR conditions,
 but only the straight path satisfies a zero-curvature certificate.
 
-The remaining C20 fields are external observations. They depend on edge and
-endpoint transport couplings; binding curvature does not bind those couplings.
-The inverse-order test for the three captured C20 rows remains finite evidence,
-not a law of every path. A separate boot320/347 operator-alignment example
-shows why the different metrics cannot be substituted for one another.
+The computed coherence does not obey a universal inverse ordering with mean
+curvature. Two normalized paths with four samples, equal endpoints, equal arc
+length and the same increment multiset give curvature `pi/sqrt(2)` with endpoint
+alignment zero versus curvature `3*pi/(2*sqrt(2))` with alignment one. The order
+of the interior directions matters.
 
-The [dedicated replay receipt](../reports/PVS_WALK_GEOMETRY_20261029.json) binds
-this extension's source and saved scripts. Its two entry points passed the
+`lie_captured_observations` retains the older C20 values as raw `TransportPath`
+observations, with no unverified walk field. They depend on edge and endpoint
+transport couplings. The inverse-order test over three captured rows remains
+finite evidence; the computed endpoint counterexample does not establish a
+claim about C20. A separate boot320/347 operator-alignment example shows why
+those metrics also cannot be substituted for one another.
+
+The [current coherence receipt](../reports/PVS_WALK_COHERENCE_20261029.json)
+records a completed ordinary replay of all three affected entry points and
+their dependencies: 138 Project and 761 required original Native proof bodies,
+with no unfinished obligations. All three raw C20 fixture rows also passed the
+numerical recheck after their source was relocated.
+
+The earlier [geometry replay receipt](../reports/PVS_WALK_GEOMETRY_20261029.json)
+binds the curvature-only revision's sources and scripts. Its entry points passed the
 ordinary checker with 90 Project and 757 required original Native bodies;
 these counts include supporting lemmas and TCCs.
 

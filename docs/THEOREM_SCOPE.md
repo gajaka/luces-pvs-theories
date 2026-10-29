@@ -285,11 +285,11 @@ a totalized zero score. Its preservation under `pp_transform` uses preservation 
 walk in an extended graph; it does not allow changes to the coordinate map or
 certify every new path in that graph.
 
-`lie_pp_connection` has a fixed coordinate-map parameter and a
+At commit `a5d33fc`, `lie_pp_connection` has a fixed coordinate-map parameter and a
 `CurvatureBoundPrewalk` subtype equating reported and computed curvature. Its
 certification result also recovers the actual vertex invariants. The earlier
 unconstrained `MeasuredPrewalk` and its graph-independent field-projection
-theorem are replaced by this interface. Legacy float fixtures remain
+theorem are replaced by this interface. In that revision, legacy float fixtures remain
 `AttachedObservation`; their other numeric fields are not silently certified.
 
 Concrete normalized samples provide both a straight and an orthogonally bent
@@ -319,5 +319,52 @@ python3 scripts/check.py --file applications/luces/pp_walk_geometry.pvs \
   --jobs 1 --heap-mib 6144 --timeout 180
 
 python3 scripts/check.py --file applications/luces/lie_pp_connection.pvs \
+  --jobs 1 --heap-mib 6144 --timeout 180
+```
+
+## Endpoint-direction coherence and the curvature relation
+
+The subsequent `pp_walk_coherence` extension defines endpoint coherence from
+the same ordered coordinates as curvature. It is the clipped dot product of
+the first and last normalized steps, with an explicit short-trace branch.
+`lie_pp_connection` now uses `WalkMeasurements` with computed curvature and
+endpoint alignment. `BoundWalkReport` requires equality with both computations;
+`accept_report?` checks that equality for an untrusted report and applies the
+combined PPG, activity, curvature and alignment conditions.
+
+For three active samples, mean curvature equals the inverse cosine of endpoint
+coherence divided by the first step norm. This relation does not establish a
+universal inverse ordering across arbitrary traces. A computed counterexample
+uses two paths of four normalized samples, equal endpoints, equal arc length
+and the same increment multiset. Their endpoint coherences are zero and one,
+while the latter has strictly larger curvature. The comparison uses calculated
+fields, not arbitrary attached values.
+
+The seven historical C20 observation results now live in the nonparametric
+`lie_captured_observations` theory. Its raw `TransportPath` has no unverified
+walk field. Neither the endpoint definition nor its counterexample is a claim
+about C20 coupling-generator alignment. Coordinate calibration, binary64
+agreement and the remaining application and Lean/PVS coverage gaps are
+separate obligations.
+
+The completed [coherence replay](../reports/PVS_WALK_COHERENCE_20261029.json)
+checks the new coherence kernel and example, the computed-report interface and
+the separated legacy theory. All **138 Project bodies and 761 required
+original Native bodies** passed the unchanged ordinary public checker across
+eight Project modules. There were no unfinished obligations, missing scripts,
+copied or derived credits, Native failures or debugger entries. The original
+geometry source/proof pair remained byte-identical to commit `a5d33fc`.
+
+The current entry points can be replayed separately with the README's library
+setup:
+
+```sh
+python3 scripts/check.py --file applications/luces/pp_walk_coherence.pvs \
+  --jobs 1 --heap-mib 6144 --timeout 180
+
+python3 scripts/check.py --file applications/luces/lie_pp_connection.pvs \
+  --jobs 1 --heap-mib 6144 --timeout 180
+
+python3 scripts/check.py --file applications/luces/lie_captured_observations.pvs \
   --jobs 1 --heap-mib 6144 --timeout 180
 ```

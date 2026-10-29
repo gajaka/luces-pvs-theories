@@ -1,114 +1,72 @@
-% Bind reported curvature to the ordered samples of a certified PPG path.
-% pp_walk_geometry computes the exact-real angular formula from those samples;
-% the coordinate map is a fixed input to this theory. A bound report cannot
-% supply an independent curvature value. Certification also checks the actual
-% pp_path, its vertex invariants, at least three samples and active steps.
+% Curvature and endpoint-direction coherence computed from one ordered walk.
+% The coordinate map is fixed for the theory instance. Reports are accepted
+% only when BOTH fields equal the computations and the actual PPG path passes
+% the geometric and alignment bounds. No independent C20 field is used here.
 %
-% AttachedObservation retains the older floating-point fixtures. Its other
-% fields, including C20 coupling alignment, remain external observations.
-% Binding curvature does not verify those fields, NumPy rounding, the sample
-% calibration or a Lie exponential representation.
+% Endpoint-direction coherence is not C20 coupling alignment. Captured C20
+% observations and their finite checks are in lie_captured_observations.pvs.
+% Sensor calibration, binary64 evaluation and a physical Lie representation
+% remain separate obligations.
 %
-% The inverse relation is a finite table check. It holds for the three captured
-% C20 observations below; it is not asserted for all possible measured paths.
-% A separate C_DEV example uses flattened T-I alignment from
-% data/luces_runner_deviation.json. It disproves inverse ordering for that
-% operator metric, which must not be identified with C20 coupling alignment.
+% Author: Dragan Stosic, 2026.
 
 lie_pp_connection[T: TYPE+, coordinate_map: [T -> [below(10) -> real]]]: THEORY
 BEGIN
 
-  IMPORTING pp_walk_geometry[T], lie_generator_structure
+  IMPORTING pp_walk_coherence[T]
 
-  AttachedObservation: TYPE = [# walk: Prewalk, measurement: TransportPath #]
+  WalkMeasurements: TYPE =
+    [# curvature: nonneg_real, endpoint_alignment: real_abs_le1 #]
 
-  CurvatureBoundPrewalk: TYPE = {p: AttachedObservation |
-    curvature_binding?(coordinate_map, p`walk, p`measurement`path_curvature)}
+  UntrustedWalkReport: TYPE = [# walk: Prewalk, reported: WalkMeasurements #]
 
   G, G1, G2: VAR Graph
   RR: VAR [T, T -> bool]
   invariant: VAR [T -> bool]
-  p: VAR AttachedObservation
-  bound_walk: VAR CurvatureBoundPrewalk
+  pw: VAR Prewalk
+  p: VAR UntrustedWalkReport
   bound: VAR nonneg_real
-  n: VAR posnat
-  observations: VAR [nat -> TransportPath]
-  i, j: VAR nat
+  coherence_floor: VAR real
 
-  transport_of(p): TransportPath = p`measurement
+  measurements_of(pw): WalkMeasurements =
+    (# curvature := measured_curvature(coordinate_map, pw),
+       endpoint_alignment := endpoint_coherence(coordinate_map, pw) #)
 
-  % Recompute the one bound field, preserving the other external observations.
-  bind_curvature(p): CurvatureBoundPrewalk =
-    (# walk := p`walk,
-       measurement := p`measurement WITH
-         [path_curvature := measured_curvature(coordinate_map, p`walk)] #)
+  report_matches_walk?(p): bool = p`reported = measurements_of(p`walk)
 
-  certified_curvature_measurement?(G, RR, invariant, bound_walk, bound): bool =
-    geometry_certificate?(G, RR, invariant, coordinate_map, bound_walk`walk, bound)
+  BoundWalkReport: TYPE = {p: UntrustedWalkReport | report_matches_walk?(p)}
 
-  certified_measurement_sound: THEOREM
-    certified_curvature_measurement?(G, RR, invariant, bound_walk, bound) IMPLIES
-      pp_path(G, RR, invariant, bound_walk`walk) AND
-      bound_walk`walk`length >= 3 AND active_steps?(coordinate_map, bound_walk`walk) AND
-      (FORALL (i: below(bound_walk`walk`length)): invariant(bound_walk`walk`seq(i))) AND
-      bound_walk`measurement`path_curvature <= bound
+  observe_walk(pw): BoundWalkReport =
+    (# walk := pw, reported := measurements_of(pw) #)
 
-  certified_measurement_preserved: THEOREM
+  accept_report?(G, RR, invariant, p, bound, coherence_floor): bool =
+    report_matches_walk?(p) AND
+    combined_certificate?(G, RR, invariant, coordinate_map, p`walk, bound, coherence_floor)
+
+  accepted_report_sound: THEOREM
+    accept_report?(G, RR, invariant, p, bound, coherence_floor) IMPLIES
+      pp_path(G, RR, invariant, p`walk) AND p`walk`length >= 3 AND
+      active_steps?(coordinate_map, p`walk) AND
+      (FORALL (i: below(p`walk`length)): invariant(p`walk`seq(i))) AND
+      p`reported`curvature = measured_curvature(coordinate_map, p`walk) AND
+      p`reported`endpoint_alignment = endpoint_coherence(coordinate_map, p`walk) AND
+      p`reported`curvature <= bound AND p`reported`endpoint_alignment > coherence_floor
+
+  computed_report_accepted: THEOREM
+    combined_certificate?(G, RR, invariant, coordinate_map, pw, bound, coherence_floor)
+      IMPLIES accept_report?(G, RR, invariant, observe_walk(pw), bound, coherence_floor)
+
+  accepted_report_preserved: THEOREM
     pp_transform(G1, G2, RR, invariant) AND
-    certified_curvature_measurement?(G1, RR, invariant, bound_walk, bound) IMPLIES
-      certified_curvature_measurement?(G2, RR, invariant, bound_walk, bound)
+    accept_report?(G1, RR, invariant, p, bound, coherence_floor)
+      IMPLIES accept_report?(G2, RR, invariant, p, bound, coherence_floor)
 
-  generator_coherence(p): Cosine = p`measurement`global_alignment
+  forged_curvature_rejected: THEOREM
+    p`reported`curvature /= measured_curvature(coordinate_map, p`walk)
+      IMPLIES NOT accept_report?(G, RR, invariant, p, bound, coherence_floor)
 
-  coherence_bounded: THEOREM -1 <= generator_coherence(p) AND generator_coherence(p) <= 1
-
-  coherent_iff_numeric_threshold: THEOREM
-    coherent?(transport_of(p)) IFF generator_coherence(p) > 7/10
-
-  strong_iff_numeric_threshold: THEOREM
-    strongly_coherent?(transport_of(p)) IFF generator_coherence(p) > 17/20
-
-  inverse_pair?(a, b: TransportPath): bool =
-    a`path_curvature >= b`path_curvature IMPLIES a`global_alignment <= b`global_alignment
-
-  finite_inverse_check?(n, observations): bool =
-    FORALL (i, j: below(n)): inverse_pair?(observations(i), observations(j))
-
-  checked_inverse_pair: THEOREM finite_inverse_check?(n, observations) AND i < n AND j < n
-    IMPLIES inverse_pair?(observations(i), observations(j))
-
-  captured_c20_table: [nat -> TransportPath] =
-    LAMBDA (i: nat): IF i = 0 THEN boot320 ELSIF i = 1 THEN boot334 ELSE boot347 ENDIF
-
-  captured_c20_inverse_check: THEOREM finite_inverse_check?(3, captured_c20_table)
-
-  % The interface permits measured paths with increasing curvature and
-  % increasing alignment; a universal inverse law would exclude them by fiat.
-  high_curvature_high_coherence: TransportPath =
-    (# global_alignment := 9/10, pair_alignment := 9/10,
-       shape_min_cosine := 9/10, speed_ratio := 1,
-       path_curvature := 2, observability := unmeasured #)
-
-  lower_curvature_lower_coherence: TransportPath =
-    (# global_alignment := 4/5, pair_alignment := 4/5,
-       shape_min_cosine := 4/5, speed_ratio := 1,
-       path_curvature := 1, observability := unmeasured #)
-
-  inverse_is_not_universal: THEOREM
-    NOT inverse_pair?(high_curvature_high_coherence, lower_curvature_lower_coherence)
-
-  OperatorObservation: TYPE = [# path_curvature: nonneg_real, operator_alignment: Cosine #]
-
-  boot320_operator: OperatorObservation =
-    (# path_curvature := 80110968750647/274877906944,
-       operator_alignment := 764509825823707/1125899906842624 #)
-
-  boot347_operator: OperatorObservation =
-    (# path_curvature := 7424867465924789/17592186044416,
-       operator_alignment := 6503979892704485/9007199254740992 #)
-
-  captured_operator_inverse_counterexample: THEOREM
-    boot347_operator`path_curvature > boot320_operator`path_curvature AND
-      boot347_operator`operator_alignment > boot320_operator`operator_alignment
+  forged_coherence_rejected: THEOREM
+    p`reported`endpoint_alignment /= endpoint_coherence(coordinate_map, p`walk)
+      IMPLIES NOT accept_report?(G, RR, invariant, p, bound, coherence_floor)
 
 END lie_pp_connection

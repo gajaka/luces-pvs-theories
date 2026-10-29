@@ -73,11 +73,25 @@ the same certified path, while a concrete newly admitted bent path fails its
 zero-curvature certificate. This does not certify C20 transport couplings or
 floating-point agreement with the recorded boot observations.
 
-Its completed [targeted replay](reports/PVS_WALK_GEOMETRY_20261029.json) covers
+That revision's completed [targeted replay](reports/PVS_WALK_GEOMETRY_20261029.json) covers
 both entry points and their dependencies: **90 Project bodies and 757 required
 Native originals**, all proved by the ordinary public checker on 2026-10-29.
 These are proof-body counts including supporting lemmas and TCCs, not an
 addition to the historical Lean translation count.
+
+A later endpoint-coherence extension computes both reported fields from the
+same ordered walk. The report checker verifies that equality as well as the
+PPG and numerical certificate conditions. A three-sample curvature identity
+and a computed four-sample counterexample describe the relation between these
+two quantities. Endpoint-direction coherence is distinct from C20; captured
+C20 data and its finite checks now have their own legacy observation theory.
+See the [coherence scope](docs/THEOREM_SCOPE.md#endpoint-direction-coherence-and-the-curvature-relation).
+
+The [endpoint-coherence replay](reports/PVS_WALK_COHERENCE_20261029.json)
+passed all three entry points and their loaded dependencies on 2026-10-29:
+**138 Project bodies and 761 required original Native bodies**, with no
+unfinished obligations or Native failures. Supporting lemmas and TCCs are
+included; these counts are not a new Lean translation inventory.
 
 ## Directory layout
 

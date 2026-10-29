@@ -1,0 +1,250 @@
+% Curvature and endpoint direction use the same ordered vertex coordinates.
+% Endpoint coherence compares the first and last unit steps; it is not the
+% C20 average alignment of coupling displacement fields. The cutoff, clipping
+% and real-arithmetic boundary are those of pp_walk_geometry.
+%
+% Author: Dragan Stosic, 2026.
+
+pp_walk_coherence[T: TYPE+]: THEORY
+BEGIN
+
+  IMPORTING pp_walk_geometry[T]
+
+  coordinate_map, other_map: VAR SampleMap
+  pw, other_walk: VAR Prewalk
+  i, n: VAR nat
+  claimed1, claimed2: VAR real_abs_le1
+  G1, G2: VAR Graph
+  RR: VAR [T, T -> bool]
+  I: VAR [T -> bool]
+  bound: VAR nonneg_real
+  coherence_floor: VAR real
+
+  endpoint_coherence(coordinate_map, pw): real_abs_le1 =
+    IF pw`length >= 2 THEN
+      clip_cosine(unit_delta(coordinate_map, pw, 0) *
+        unit_delta(coordinate_map, pw, pw`length-2))
+    ELSE 0 ENDIF
+
+  walk_coherent?(coordinate_map, pw): bool =
+    endpoint_coherence(coordinate_map, pw) > 7/10
+
+  walk_strongly_coherent?(coordinate_map, pw): bool =
+    endpoint_coherence(coordinate_map, pw) > 17/20
+
+  coherence_binding?(coordinate_map, pw, claimed1): bool =
+    claimed1 = endpoint_coherence(coordinate_map, pw)
+
+  combined_certificate?(G1, RR, I, coordinate_map, pw, bound, coherence_floor): bool =
+    geometry_certificate?(G1, RR, I, coordinate_map, pw, bound) AND
+    endpoint_coherence(coordinate_map, pw) > coherence_floor
+
+  arc_prefix(coordinate_map, pw, n): RECURSIVE nonneg_real =
+    IF n = 0 THEN 0 ELSE arc_prefix(coordinate_map, pw, n-1) +
+      step_length(coordinate_map, pw, n-1) ENDIF
+    MEASURE n
+
+  arc_length(coordinate_map, pw): nonneg_real =
+    arc_prefix(coordinate_map, pw, pw`length-1)
+
+  endpoint_coherence_bounds: THEOREM
+    -1 <= endpoint_coherence(coordinate_map, pw) AND
+    endpoint_coherence(coordinate_map, pw) <= 1
+
+  strong_implies_coherent: THEOREM
+    walk_strongly_coherent?(coordinate_map, pw) IMPLIES walk_coherent?(coordinate_map, pw)
+
+  unit_delta_local: LEMMA
+    trace_point(coordinate_map, pw, i) = trace_point(other_map, other_walk, i) AND
+    trace_point(coordinate_map, pw, i+1) = trace_point(other_map, other_walk, i+1)
+      IMPLIES unit_delta(coordinate_map, pw, i) = unit_delta(other_map, other_walk, i)
+
+  same_trace_units: LEMMA same_observed_trace(coordinate_map, pw, other_map, other_walk)
+    IMPLIES unit_delta(coordinate_map, pw, i) = unit_delta(other_map, other_walk, i)
+
+  same_trace_coherence: THEOREM same_observed_trace(coordinate_map, pw, other_map, other_walk)
+    IMPLIES endpoint_coherence(coordinate_map, pw) = endpoint_coherence(other_map, other_walk)
+
+  coherence_binding_unique: THEOREM
+    same_observed_trace(coordinate_map, pw, other_map, other_walk) AND
+    coherence_binding?(coordinate_map, pw, claimed1) AND
+    coherence_binding?(other_map, other_walk, claimed2) IMPLIES claimed1 = claimed2
+
+  combined_certificate_transform: THEOREM
+    pp_transform(G1, G2, RR, I) AND
+    combined_certificate?(G1, RR, I, coordinate_map, pw, bound, coherence_floor)
+      IMPLIES combined_certificate?(G2, RR, I, coordinate_map, pw, bound, coherence_floor)
+
+  three_sample_curvature_identity: THEOREM
+    pw`length = 3 AND active_steps?(coordinate_map, pw) IMPLIES
+      measured_curvature(coordinate_map, pw) =
+        acos(endpoint_coherence(coordinate_map, pw))/step_length(coordinate_map, pw, 0)
+
+  computed_inverse_pair?(coordinate_map, pw, other_walk): bool =
+    measured_curvature(coordinate_map, pw) >= measured_curvature(coordinate_map, other_walk)
+      IMPLIES endpoint_coherence(coordinate_map, pw) <= endpoint_coherence(coordinate_map, other_walk)
+
+END pp_walk_coherence
+
+% The two four-sample walks share their endpoints, first step and step-length
+% multiset. Reordering the same increments increases both mean curvature and
+% endpoint coherence, disproving a universal inverse ordering.
+pp_walk_coherence_example: THEORY
+BEGIN
+
+  Vertex: TYPE = below(5)
+
+  IMPORTING pp_walk_coherence[Vertex]
+
+  a, b, c, d, e, f, g, h: VAR real
+  v, w: VAR Vertex
+
+  vec4(a, b, c, d): Vector10 = LAMBDA (k: below(10)):
+    IF k = 0 THEN a ELSIF k = 1 THEN b ELSIF k = 2 THEN c
+    ELSIF k = 3 THEN d ELSE 0 ENDIF
+
+  sample_coordinates: SampleMap = LAMBDA (v: Vertex):
+    IF v = 0 THEN vec4(1/2, 0, 1/2, 0)
+    ELSIF v = 1 THEN vec4(1/4, 1/4, 1/2, 0)
+    ELSIF v = 2 THEN vec4(0, 1/2, 1/2, 0)
+    ELSIF v = 3 THEN vec4(1/4, 1/4, 0, 1/2)
+    ELSE vec4(0, 1/2, 0, 1/2) ENDIF
+
+  spectrum_invariant(v): bool =
+    (FORALL (k: below(10)): sample_coordinates(v)(k) >= 0) AND
+    sigma(0, 9, sample_coordinates(v)) = 1
+
+  common_rr(v, w): bool = TRUE
+
+  common_graph: Graph =
+    (# vertices := LAMBDA (v: Vertex): TRUE,
+       edges := LAMBDA (v, w: Vertex):
+         (v = 0 AND w = 1) OR (v = 1 AND w = 2) OR (v = 2 AND w = 4) OR
+         (v = 1 AND w = 3) OR (v = 3 AND w = 4) #)
+
+  low_walk: Prewalk =
+    (# length := 4, seq := LAMBDA (i: below(4)):
+       IF i = 0 THEN 0 ELSIF i = 1 THEN 1 ELSIF i = 2 THEN 2 ELSE 4 ENDIF #)
+
+  high_walk: Prewalk =
+    (# length := 4, seq := LAMBDA (i: below(4)):
+       IF i = 0 THEN 0 ELSIF i = 1 THEN 1 ELSIF i = 2 THEN 3 ELSE 4 ENDIF #)
+
+  prefix_walk: Prewalk =
+    (# length := 3, seq := LAMBDA (i: below(3)): i #)
+
+  small_delta: Vector10 = vec4(-1/4, 1/4, 0, 0)
+
+  large_delta: Vector10 = vec4(0, 0, -1/2, 1/2)
+
+  small_length: posreal = sqrt(1/8)
+
+  large_length: posreal = sqrt(1/2)
+
+  vec4_dot: LEMMA vec4(a,b,c,d) * vec4(e,f,g,h) = a*e+b*f+c*g+d*h
+
+  vec4_mass: LEMMA sigma(0,9,vec4(a,b,c,d)) = a+b+c+d
+
+  vec4_norm: LEMMA Euclidean.norm(vec4(a,b,c,d)) = sqrt(sq(a)+sq(b)+sq(c)+sq(d))
+
+  sample_coordinates_valid: THEOREM spectrum_invariant(v)
+
+  common_graph_valid: THEOREM pp_valid(common_graph, common_rr, spectrum_invariant)
+
+  both_paths: THEOREM
+    pp_path(common_graph, common_rr, spectrum_invariant, low_walk) AND
+    pp_path(common_graph, common_rr, spectrum_invariant, high_walk)
+
+  same_count_endpoints: THEOREM
+    low_walk`length = high_walk`length AND low_walk`length = 4 AND
+    pw_start(low_walk) = pw_start(high_walk) AND pw_end(low_walk) = pw_end(high_walk)
+
+  low_deltas: LEMMA
+    trace_delta(sample_coordinates, low_walk, 0) = small_delta AND
+    trace_delta(sample_coordinates, low_walk, 1) = small_delta AND
+    trace_delta(sample_coordinates, low_walk, 2) = large_delta
+
+  high_deltas: LEMMA
+    trace_delta(sample_coordinates, high_walk, 0) = small_delta AND
+    trace_delta(sample_coordinates, high_walk, 1) = large_delta AND
+    trace_delta(sample_coordinates, high_walk, 2) = small_delta
+
+  length_relations: LEMMA
+    large_length = 2*small_length AND sqrt(2) = 4*small_length AND small_length > step_cutoff
+
+  low_step_lengths: LEMMA
+    step_length(sample_coordinates, low_walk, 0) = small_length AND
+    step_length(sample_coordinates, low_walk, 1) = small_length AND
+    step_length(sample_coordinates, low_walk, 2) = large_length
+
+  high_step_lengths: LEMMA
+    step_length(sample_coordinates, high_walk, 0) = small_length AND
+    step_length(sample_coordinates, high_walk, 1) = large_length AND
+    step_length(sample_coordinates, high_walk, 2) = small_length
+
+  both_active: THEOREM
+    active_steps?(sample_coordinates, low_walk) AND active_steps?(sample_coordinates, high_walk)
+
+  shared_arclength: THEOREM
+    arc_length(sample_coordinates, low_walk) = sqrt(2) AND
+    arc_length(sample_coordinates, high_walk) = sqrt(2)
+
+  normalized_step_products: LEMMA
+    ((1/small_length)*small_delta) * ((1/small_length)*small_delta) = 1 AND
+    ((1/small_length)*small_delta) * ((1/large_length)*large_delta) = 0 AND
+    ((1/large_length)*large_delta) * ((1/small_length)*small_delta) = 0
+
+  low_unit_products: LEMMA
+    unit_delta(sample_coordinates, low_walk, 0) * unit_delta(sample_coordinates, low_walk, 1) = 1 AND
+    unit_delta(sample_coordinates, low_walk, 1) * unit_delta(sample_coordinates, low_walk, 2) = 0 AND
+    unit_delta(sample_coordinates, low_walk, 0) * unit_delta(sample_coordinates, low_walk, 2) = 0
+
+  high_unit_products: LEMMA
+    unit_delta(sample_coordinates, high_walk, 0) * unit_delta(sample_coordinates, high_walk, 1) = 0 AND
+    unit_delta(sample_coordinates, high_walk, 1) * unit_delta(sample_coordinates, high_walk, 2) = 0 AND
+    unit_delta(sample_coordinates, high_walk, 0) * unit_delta(sample_coordinates, high_walk, 2) = 1
+
+  low_metrics: THEOREM
+    measured_curvature(sample_coordinates, low_walk) = pi/sqrt(2) AND
+    endpoint_coherence(sample_coordinates, low_walk) = 0
+
+  high_metrics: THEOREM
+    measured_curvature(sample_coordinates, high_walk) = 3*pi/(2*sqrt(2)) AND
+    endpoint_coherence(sample_coordinates, high_walk) = 1
+
+  computed_inverse_counterexample: THEOREM
+    measured_curvature(sample_coordinates, high_walk) > measured_curvature(sample_coordinates, low_walk) AND
+    endpoint_coherence(sample_coordinates, high_walk) > endpoint_coherence(sample_coordinates, low_walk) AND
+    NOT computed_inverse_pair?(sample_coordinates, high_walk, low_walk)
+
+  coherence_does_not_imply_zero_curvature: THEOREM
+    walk_strongly_coherent?(sample_coordinates, high_walk) AND
+    measured_curvature(sample_coordinates, high_walk) > 0
+
+  forged_coherence_rejected: THEOREM NOT coherence_binding?(sample_coordinates, low_walk, 1)
+
+  combined_certificate_example: THEOREM
+    combined_certificate?(common_graph, common_rr, spectrum_invariant,
+      sample_coordinates, high_walk, 3*pi/(2*sqrt(2)), 1/2) AND
+    NOT combined_certificate?(common_graph, common_rr, spectrum_invariant,
+      sample_coordinates, low_walk, 3*pi/(2*sqrt(2)), 1/2)
+
+  prefix_deltas: LEMMA
+    trace_delta(sample_coordinates, prefix_walk, 0) = small_delta AND
+    trace_delta(sample_coordinates, prefix_walk, 1) = small_delta
+
+  prefix_step_lengths: LEMMA
+    step_length(sample_coordinates, prefix_walk, 0) = small_length AND
+    step_length(sample_coordinates, prefix_walk, 1) = small_length
+
+  prefix_unit_product: LEMMA
+    unit_delta(sample_coordinates, prefix_walk, 0) *
+    unit_delta(sample_coordinates, prefix_walk, 1) = 1
+
+  three_sample_example: THEOREM
+    pp_path(common_graph, common_rr, spectrum_invariant, prefix_walk) AND
+    active_steps?(sample_coordinates, prefix_walk) AND
+    endpoint_coherence(sample_coordinates, prefix_walk) = 1 AND
+    measured_curvature(sample_coordinates, prefix_walk) = 0
+
+END pp_walk_coherence_example
