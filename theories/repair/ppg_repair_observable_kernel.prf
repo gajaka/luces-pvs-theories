@@ -1,0 +1,580 @@
+(|ppg_repair_observable_kernel|
+ (|targetSum_TCC1| 0
+  (|targetSum_TCC1-1| NIL 4002335887 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|rat_plus_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|commutative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|associative?| CONST-DECL "bool" |operator_defs| NIL)
+    (|identity?| CONST-DECL "bool" |operator_defs| NIL))
+   NIL
+   (|targetSum| SUBTYPE "LAMBDA (x, y: rat): x + y"
+    "{op: [rat, rat -> rat] | booleans.AND(operator_defs[rat].identity?(ppg_repair_observable_kernel.op)(0), booleans.AND(operator_defs[rat].associative?(ppg_repair_observable_kernel.op), operator_defs[rat].commutative?(ppg_repair_observable_kernel.op)))}"
+    (16 49 16 71))))
+ (|indicator_in_projection| 0
+  (|indicator_in_projection-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (EXPAND "projectionAlgebra") (SKOSIMP*)
+     (EXPAND "indicator") (GRIND))
+    NIL NIL)
+   ((|indicator| CONST-DECL "Observable" |ppg_repair_observable_kernel| NIL)
+    (|projectionAlgebra| CONST-DECL "Algebra"
+     |ppg_repair_observable_projection| NIL))
+   SHOSTAK))
+ (|indicator_weight| 0
+  (|indicator_weight-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :DEFS ("indicator")))
+    NIL NIL)
+   ((|rat_times_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_repair_observable_kernel| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| |finite_models|)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|Observable| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|indicator| CONST-DECL "Observable" |ppg_repair_observable_kernel| NIL)
+    (IF CONST-DECL
+        "[boolean, T, T -> T]"
+        |if_def|
+        NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL))
+   SHOSTAK))
+ (|expectation_indicator| 0
+  (|expectation_indicator-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "indicator_weight" ("M" "M!1" "q" "q!1" "a" "a!1" "s" "s!1"))
+     (EXPAND "expectation") (EXPAND "successorValue") (EXPAND "fiberMass")
+     (ASSERT))
+    NIL NIL)
+   ((|expectation| CONST-DECL "rat" |ppg_repair_observable_kernel| NIL)
+    (|fiberMass| CONST-DECL "rat" |ppg_finite_lumping| |finite_models|)
+    (|rat_times_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|successorValue| CONST-DECL "rat" |ppg_finite_potential_system|
+     |finite_models|)
+    (|indicator_weight| FORMULA-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_repair_observable_kernel| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| |finite_models|)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL))
+   SHOSTAK))
+ (|expectation_projection| 0
+  (|expectation_projection-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "abstractUniverse")
+     (LEMMA "weighted_projection_sum"
+      ("S" "universe" "I" "abstractUniverse" "p" "q!1" "w"
+       "LAMBDA(t:State):M!1`transition(s1!1,t)" "f" "g!1"))
+     (EXPAND "expectation") (EXPAND "successorValue")
+     (AUTO-REWRITE "ppg_rational_sum[State].real_sum_eq"
+                   "ppg_rational_sum[Abstract].real_sum_eq" "fiber_mass_real")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("sum" "fsum" "card" "is_finite" "successorValue" "survival" "Stochastic"
+       "reducedModel" "expectation" "fiberMass" "fiberWeight"
+       "representative")))
+    NIL NIL)
+   ((|weighted_projection_sum| FORMULA-DECL NIL
+     |ppg_finite_weighted_projection| |foundations|)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_repair_observable_kernel| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| |finite_models|)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|successorValue| CONST-DECL "rat" |ppg_finite_potential_system|
+     |finite_models|)
+    (|rat_times_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|real_times_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|real_sum_eq| FORMULA-DECL NIL |ppg_rational_sum| |foundations|)
+    (|fiber_mass_real| FORMULA-DECL NIL |ppg_finite_lumping| |finite_models|)
+    (|expectation| CONST-DECL "rat" |ppg_repair_observable_kernel| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_repair_observable_kernel| NIL))
+   SHOSTAK))
+ (|kernelClosed_fiberLocal| 0
+  (|kernelClosed_fiberLocal-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (EXPAND "FiberLocal") (SKOSIMP*)
+     (USE "indicator_in_projection" ("q" "q!1" "a" "a!1"))
+     (EXPAND "KernelClosed" -1) (INST -1 "indicator(q!1,a!1)")
+     (EXPAND "projectionAlgebra")
+     (USE "expectation_indicator" ("M" "M!1" "q" "q!1" "a" "a!1" "s" "s!1"))
+     (USE "expectation_indicator" ("M" "M!1" "q" "q!1" "a" "a!1" "s" "t!1"))
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("sum" "fsum" "card" "is_finite" "successorValue" "survival" "Stochastic"
+       "reducedModel" "expectation" "fiberMass" "fiberWeight"
+       "representative")))
+    NIL NIL)
+   ((|projectionAlgebra| CONST-DECL "Algebra"
+     |ppg_repair_observable_projection| NIL)
+    (|expectation| CONST-DECL "rat" |ppg_repair_observable_kernel| NIL)
+    (|Observable| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|indicator| CONST-DECL "Observable" |ppg_repair_observable_kernel| NIL)
+    (|KernelClosed| CONST-DECL "bool" |ppg_repair_observable_kernel| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| |finite_models|)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_repair_observable_kernel| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|expectation_indicator| FORMULA-DECL NIL |ppg_repair_observable_kernel|
+     NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|indicator_in_projection| FORMULA-DECL NIL |ppg_repair_observable_kernel|
+     NIL)
+    (|FiberLocal| CONST-DECL "bool" |ppg_repair_observable_kernel| NIL))
+   SHOSTAK))
+ (|representative_TCC1| 0
+  (|representative_TCC1-1| NIL 0 ("" (GRIND :IF-MATCH ALL) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|surjective?| CONST-DECL "bool" |functions| NIL)
+    (|Surjection| TYPE-EQ-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|member| CONST-DECL "bool" |sets| NIL)
+    (|empty?| CONST-DECL "bool" |sets| NIL)
+    (|nonempty?| CONST-DECL "bool" |sets| NIL))
+   SHOSTAK
+   (|representative| SUBTYPE "{s: State | p(s) = a}"
+    "(sets[ppg_repair_observable_kernel.State].nonempty?)" (64 39 64 60))))
+ (|representative_spec| 0
+  (|representative_spec-1| NIL 0
+   ("" (GRIND :DEFS ("representative") :IF-MATCH ALL) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|surjective?| CONST-DECL "bool" |functions| NIL)
+    (|Surjection| TYPE-EQ-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|representative| CONST-DECL "State" |ppg_repair_observable_kernel| NIL))
+   SHOSTAK))
+ (|representative_factor| 0
+  (|representative_factor-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (USE "representative_spec")
+     (GRIND :DEFS ("projectionAlgebra") :IF-MATCH ALL :EXCLUDE
+      ("representative")))
+    NIL NIL)
+   ((|representative_spec| FORMULA-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|projectionAlgebra| CONST-DECL "Algebra"
+     |ppg_repair_observable_projection| NIL)
+    (|Observable| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|surjective?| CONST-DECL "bool" |functions| NIL)
+    (|Surjection| TYPE-EQ-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|representative| CONST-DECL "State" |ppg_repair_observable_kernel| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL))
+   SHOSTAK))
+ (|fiber_row_eq| 0
+  (|fiber_row_eq-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :DEFS ("FiberLocal") :IF-MATCH ALL :EXCLUDE
+      ("sum" "fsum" "card" "is_finite" "successorValue" "survival" "Stochastic"
+       "reducedModel" "expectation" "fiberMass" "fiberWeight"
+       "representative")))
+    NIL NIL)
+   ((|FiberLocal| CONST-DECL "bool" |ppg_repair_observable_kernel| NIL)
+    (|rat_times_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_repair_observable_kernel| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| |finite_models|)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_repair_observable_kernel| NIL)
+    (|fiberMass| CONST-DECL "rat" |ppg_finite_lumping| |finite_models|)
+    (|surjective?| CONST-DECL "bool" |functions| NIL)
+    (|Surjection| TYPE-EQ-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL))
+   SHOSTAK))
+ (|expectation_factor| 0
+  (|expectation_factor-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (USE "representative_factor" ("p" "p!1" "f" "f!1"))
+     (USE "expectation_projection"
+          ("M" "M!1" "q" "p!1" "g"
+           "LAMBDA(a:Abstract):f!1(representative(p!1)(a))" "s1" "s!1"))
+     (USE "expectation_projection"
+          ("M" "M!1" "q" "p!1" "g"
+           "LAMBDA(a:Abstract):f!1(representative(p!1)(a))" "s1" "t!1"))
+     (USE "fiber_row_eq"
+          ("M" "M!1" "p" "p!1" "g"
+           "LAMBDA(a:Abstract):f!1(representative(p!1)(a))" "s" "s!1" "t"
+           "t!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("sum" "fsum" "card" "is_finite" "successorValue" "survival" "Stochastic"
+       "reducedModel" "expectation" "fiberMass" "fiberWeight"
+       "representative")))
+    NIL NIL)
+   ((|expectation_projection| FORMULA-DECL NIL |ppg_repair_observable_kernel|
+     NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_repair_observable_kernel| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| |finite_models|)
+    (|representative| CONST-DECL "State" |ppg_repair_observable_kernel| NIL)
+    (|fiber_row_eq| FORMULA-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|FiberLocal| CONST-DECL "bool" |ppg_repair_observable_kernel| NIL)
+    (|projectionAlgebra| CONST-DECL "Algebra"
+     |ppg_repair_observable_projection| NIL)
+    (|rat_times_rat_is_rat| APPLICATION-JUDGEMENT "rat" |rationals| NIL)
+    (|Surjection| TYPE-EQ-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|surjective?| CONST-DECL "bool" |functions| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|Observable| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|representative_factor| FORMULA-DECL NIL |ppg_repair_observable_kernel|
+     NIL))
+   SHOSTAK))
+ (|fiberLocal_kernelClosed| 0
+  (|fiberLocal_kernelClosed-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (EXPAND "KernelClosed") (SKOSIMP*)
+     (EXPAND "projectionAlgebra" 1) (SKOSIMP*) (USE "expectation_factor")
+     (GRIND :IF-MATCH ALL :EXCLUDE
+      ("sum" "fsum" "card" "is_finite" "successorValue" "survival" "Stochastic"
+       "reducedModel" "expectation" "fiberMass" "fiberWeight"
+       "representative")))
+    NIL NIL)
+   ((|expectation_factor| FORMULA-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|Observable| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| |finite_models|)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_repair_observable_kernel| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|surjective?| CONST-DECL "bool" |functions| NIL)
+    (|Surjection| TYPE-EQ-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|projectionAlgebra| CONST-DECL "Algebra"
+     |ppg_repair_observable_projection| NIL)
+    (|KernelClosed| CONST-DECL "bool" |ppg_repair_observable_kernel| NIL))
+   SHOSTAK))
+ (|kernelClosed_iff_fiberLocal| 0
+  (|kernelClosed_iff_fiberLocal-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (USE "kernelClosed_fiberLocal")
+     (USE "fiberLocal_kernelClosed")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("sum" "fsum" "card" "is_finite" "successorValue" "survival" "Stochastic"
+       "reducedModel" "expectation" "fiberMass" "fiberWeight"
+       "representative")))
+    NIL NIL)
+   ((|fiberLocal_kernelClosed| FORMULA-DECL NIL |ppg_repair_observable_kernel|
+     NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_repair_observable_kernel| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| |finite_models|)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|surjective?| CONST-DECL "bool" |functions| NIL)
+    (|Surjection| TYPE-EQ-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|kernelClosed_fiberLocal| FORMULA-DECL NIL |ppg_repair_observable_kernel|
+     NIL))
+   SHOSTAK))
+ (|reduced_compatible| 0
+  (|reduced_compatible-1| NIL 0
+   ("" (SKOSIMP*)
+    (("" (EXPAND "lumping.Compatible")
+      (("" (EXPAND "reducedModel")
+        (("" (SPLIT)
+          (("1" (SKOSIMP*)
+            (("1" (USE "representative_spec" ("p" "p!1" "a" "p!1(s!1)"))
+              (("1"
+                (GRIND :DEFS ("GoodLocal" "FiberLocal") :IF-MATCH ALL :EXCLUDE
+                 ("sum" "fsum" "card" "is_finite" "successorValue" "survival"
+                  "Stochastic" "reducedModel" "expectation" "fiberMass"
+                  "fiberWeight" "representative"))
+                NIL NIL))
+              NIL))
+            NIL)
+           ("2" (SKOSIMP*)
+            (("2" (USE "representative_spec" ("p" "p!1" "a" "p!1(s!1)"))
+              (("2"
+                (GRIND :DEFS ("GoodLocal" "FiberLocal") :IF-MATCH ALL :EXCLUDE
+                 ("sum" "fsum" "card" "is_finite" "successorValue" "survival"
+                  "Stochastic" "reducedModel" "expectation" "fiberMass"
+                  "fiberWeight" "representative"))
+                NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|reducedModel| CONST-DECL "reduced.Model" |ppg_repair_observable_kernel|
+     NIL)
+    (|representative| CONST-DECL "State" |ppg_repair_observable_kernel| NIL)
+    (|GoodLocal| CONST-DECL "bool" |ppg_repair_observable_kernel| NIL)
+    (|FiberLocal| CONST-DECL "bool" |ppg_repair_observable_kernel| NIL)
+    (|Surjection| TYPE-EQ-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|surjective?| CONST-DECL "bool" |functions| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|representative_spec| FORMULA-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|Compatible| CONST-DECL "bool" |ppg_finite_lumping| |finite_models|))
+   SHOSTAK))
+ (|compatible_local| 0
+  (|compatible_local-1| NIL 0
+   (""
+    (GRIND :DEFS ("Compatible" "FiberLocal" "GoodLocal") :IF-MATCH ALL :EXCLUDE
+     ("sum" "fsum" "card" "is_finite" "successorValue" "survival" "Stochastic"
+      "reducedModel" "expectation" "fiberMass" "fiberWeight" "representative"))
+    NIL NIL)
+   ((|GoodLocal| CONST-DECL "bool" |ppg_repair_observable_kernel| NIL)
+    (|FiberLocal| CONST-DECL "bool" |ppg_repair_observable_kernel| NIL)
+    (|Compatible| CONST-DECL "bool" |ppg_finite_lumping| |finite_models|)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_repair_observable_kernel| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_repair_observable_kernel| NIL))
+   SHOSTAK))
+ (|reduced_compatible_iff| 0
+  (|reduced_compatible_iff-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (USE "compatible_local" ("M" "M!1" "N" "reducedModel(M!1,p!1)" "q" "p!1"))
+     (USE "reduced_compatible") (USE "kernelClosed_iff_fiberLocal")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("sum" "fsum" "card" "is_finite" "successorValue" "survival" "Stochastic"
+       "reducedModel" "expectation" "fiberMass" "fiberWeight"
+       "representative")))
+    NIL NIL)
+   ((|reduced_compatible| FORMULA-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|kernelClosed_iff_fiberLocal| FORMULA-DECL NIL
+     |ppg_repair_observable_kernel| NIL)
+    (|reducedModel| CONST-DECL "reduced.Model" |ppg_repair_observable_kernel|
+     NIL)
+    (|Surjection| TYPE-EQ-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|surjective?| CONST-DECL "bool" |functions| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_repair_observable_kernel| NIL)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| |finite_models|)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_repair_observable_kernel| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|compatible_local| FORMULA-DECL NIL |ppg_repair_observable_kernel| NIL))
+   SHOSTAK))
+ (|reduced_stochastic| 0
+  (|reduced_stochastic-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (USE "reduced_compatible_iff")
+     (USE "stochastic_projected"
+          ("M" "M!1" "N" "reducedModel(M!1,p!1)" "p" "p!1"))
+     (TYPEPRED "p!1")
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("sum" "fsum" "card" "is_finite" "successorValue" "survival" "Stochastic"
+       "reducedModel" "expectation" "fiberMass" "fiberWeight"
+       "representative")))
+    NIL NIL)
+   ((|stochastic_projected| FORMULA-DECL NIL |ppg_finite_lumping|
+     |finite_models|)
+    (|reducedModel| CONST-DECL "reduced.Model" |ppg_repair_observable_kernel|
+     NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_repair_observable_kernel| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_repair_observable_kernel| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| |finite_models|)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|surjective?| CONST-DECL "bool" |functions| NIL)
+    (|Surjection| TYPE-EQ-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|reduced_compatible_iff| FORMULA-DECL NIL |ppg_repair_observable_kernel|
+     NIL))
+   SHOSTAK))
+ (|reduced_survival| 0
+  (|reduced_survival-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (USE "reduced_compatible_iff")
+     (USE "survival_projection"
+          ("M" "M!1" "N" "reducedModel(M!1,p!1)" "p" "p!1" "n" "n!1" "s"
+           "s!1"))
+     (GRIND :IF-MATCH NIL :EXCLUDE
+      ("sum" "fsum" "card" "is_finite" "successorValue" "survival" "Stochastic"
+       "reducedModel" "expectation" "fiberMass" "fiberWeight"
+       "representative")))
+    NIL NIL)
+   ((|survival_projection| FORMULA-DECL NIL |ppg_finite_lumping|
+     |finite_models|)
+    (|reducedModel| CONST-DECL "reduced.Model" |ppg_repair_observable_kernel|
+     NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|abstractUniverse| FORMAL-CONST-DECL
+     "{U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}"
+     |ppg_repair_observable_kernel| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|universe| FORMAL-CONST-DECL
+     "{U: finite_set[State] | FORALL (s: State): U(s)}"
+     |ppg_repair_observable_kernel| NIL)
+    (|Model| TYPE-EQ-DECL NIL |ppg_finite_drift| |finite_models|)
+    (|Abstract| FORMAL-TYPE-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|surjective?| CONST-DECL "bool" |functions| NIL)
+    (|Surjection| TYPE-EQ-DECL NIL |ppg_repair_observable_kernel| NIL)
+    (|reduced_compatible_iff| FORMULA-DECL NIL |ppg_repair_observable_kernel|
+     NIL))
+   SHOSTAK)))

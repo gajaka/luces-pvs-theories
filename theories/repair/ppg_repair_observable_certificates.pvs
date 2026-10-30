@@ -1,0 +1,57 @@
+% Boolean certificates embed as zero/one rational observables. Fixedness
+% prevents semantic invalidation; stability retains the information needed
+% to compare decisions after a common admitted operation sequence.
+% These are different guarantees: a stable observable may change its value.
+%
+% Author: Dragan Stosic, 2026.
+
+ppg_repair_observable_certificates[State, C: TYPE]: THEORY
+BEGIN
+
+  IMPORTING ppg_repair_observable_algebra[State],
+    ppg_repair_semantic_hazards[State, C]
+
+  sat: VAR [C, State -> bool]
+  c: VAR C
+  core: VAR finite_set[C]
+  allowed: VAR [State -> bool]
+  B: VAR Algebra
+  run: VAR Operation
+  ops: VAR set[Operation]
+  word: VAR list[Operation]
+  s, t: VAR State
+
+  indicator(sat, c): Observable =
+    LAMBDA (s: State): IF sat(c, s) THEN 1 ELSE 0 ENDIF
+
+  ProtectedIndicators(B, sat, core): bool =
+    FORALL (c: C): core(c) IMPLIES B(indicator(sat, c))
+
+  indicator_truth: LEMMA indicator(sat, c)(s) = 1 IFF sat(c, s)
+
+  observable_certificate_agreement: THEOREM
+    B(indicator(sat, c)) AND ObsEq(B, s, t)
+      IMPLIES (sat(c, s) IFF sat(c, t))
+
+  fixed_certificate_agreement: THEOREM
+    B(indicator(sat, c)) AND Fixed(run, B)
+      IMPLIES (sat(c, run(s)) IFF sat(c, s))
+
+  fixed_prevents_invalidation: THEOREM
+    B(indicator(sat, c)) AND Fixed(run, B)
+      IMPLIES NOT Invalidates(sat, run, c, s)
+
+  fixed_semantic_scope_empty: THEOREM
+    ProtectedIndicators(B, sat, core) AND Fixed(run, B)
+      IMPLIES scope(allowed, sat, core, run) = emptyset[C]
+
+  stable_word_certificate_agreement: THEOREM
+    Stable(ops, B) AND wordAllowed(ops, word) AND ObsEq(B, s, t)
+      AND B(indicator(sat, c))
+      IMPLIES (sat(c, runWord(word, s)) IFF sat(c, runWord(word, t)))
+
+  protected_view_agreement: THEOREM
+    ProtectedIndicators(B, sat, core) AND ObsEq(B, s, t)
+      IMPLIES (FORALL (c: C): core(c) IMPLIES (sat(c, s) IFF sat(c, t)))
+
+END ppg_repair_observable_certificates

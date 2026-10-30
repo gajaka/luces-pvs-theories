@@ -1,0 +1,52 @@
+% Quotient states are complete observational equivalence classes.
+% Representatives are used only to define functions on those classes;
+% stability and observable membership prove independence of the choice.
+
+ppg_repair_observable_quotient[State: TYPE]: THEORY
+BEGIN
+
+  IMPORTING ppg_repair_observable_algebra[State]
+
+  B: VAR Algebra
+  ops: VAR set[Operation]
+  run: VAR Operation
+  f: VAR Observable
+  s, t: VAR State
+
+  observableClass(B, s): set[State] = {t: State | ObsEq(B, s, t)}
+
+  ObservableQuotient(B: Algebra): TYPE =
+    {Q: set[State] | EXISTS (s: State): Q = observableClass(B, s)}
+
+  class_contains_generator: LEMMA observableClass(B, s)(s)
+
+  class_eq_of_equiv: LEMMA ObsEq(B, s, t) IMPLIES observableClass(B, s) = observableClass(B, t)
+
+  class_eq_implies_equiv: LEMMA observableClass(B, s) = observableClass(B, t) IMPLIES ObsEq(B, s, t)
+
+  quotient_mk(B, s): ObservableQuotient(B) = observableClass(B, s)
+
+  quotient_mk_eq_iff: LEMMA quotient_mk(B, s) = quotient_mk(B, t) IFF ObsEq(B, s, t)
+
+  quotient_class_nonempty: LEMMA FORALL (Q: ObservableQuotient(B)): nonempty?(Q)
+
+  representative(B)(Q: ObservableQuotient(B)): State = choose(Q)
+
+  representative_member: LEMMA FORALL (Q: ObservableQuotient(B)): Q(representative(B)(Q))
+
+  representative_mk_equiv: LEMMA ObsEq(B, representative(B)(quotient_mk(B, s)), s)
+
+  quotientStep(B, run)(Q: ObservableQuotient(B)): ObservableQuotient(B) =
+    quotient_mk(B, run(representative(B)(Q)))
+
+  quotientStep_mk: THEOREM Stable(ops, B) AND ops(run) IMPLIES
+    quotientStep(B, run)(quotient_mk(B, s)) = quotient_mk(B, run(s))
+
+  quotientObservable(B, f)(Q: ObservableQuotient(B)): rat = f(representative(B)(Q))
+
+  quotientObservable_mk: THEOREM B(f) IMPLIES quotientObservable(B, f)(quotient_mk(B, s)) = f(s)
+
+  quotient_projection_surjective: THEOREM FORALL (Q: ObservableQuotient(B)):
+    EXISTS (s: State): quotient_mk(B, s) = Q
+
+END ppg_repair_observable_quotient

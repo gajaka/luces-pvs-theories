@@ -1,0 +1,202 @@
+% Read/write repair hazards and checked atomic model-state commits.
+% Footprints require a real frame and read-locality proof. Overlap reports
+% possible interference, not an actual failure of a particular certificate.
+% Lean counterpart: PPGraph.Repair.Hazards, Dragan Stosic, 2026.
+% Architectural terminology follows the University of Edinburgh HASE DLX
+% scoreboard model; this theory is not a processor interleaving model.
+
+ppg_repair_hazards[C, V, Value: TYPE]: THEORY
+BEGIN
+
+  IMPORTING foundations@ppg_finite_all[C]
+
+  Snapshot: TYPE = [V -> Value]
+
+  CertVars: TYPE = [C -> finite_set[V]]
+
+  RawAction: TYPE = [# reads: finite_set[V], writes: finite_set[V],
+    run: [Snapshot -> Snapshot] #]
+
+  writes, w1, w2: VAR finite_set[V]
+  before, after, s, t: VAR Snapshot
+  raw: VAR RawAction
+
+  Framed(writes, before, after): bool =
+    FORALL (v: V): NOT writes(v) IMPLIES after(v) = before(v)
+
+  ActionOK(raw): bool =
+    (FORALL (s: Snapshot): Framed(raw`writes, s, raw`run(s))) AND
+    (FORALL (s,t: Snapshot):
+      (FORALL (v: V): raw`reads(v) IMPLIES s(v) = t(v)) IMPLIES
+      (FORALL (v: V): raw`writes(v) IMPLIES raw`run(s)(v) = raw`run(t)(v)))
+
+  Action: TYPE = (ActionOK)
+
+  a, b: VAR Action
+  v: VAR V
+  vars: VAR CertVars
+  target, core: VAR finite_set[C]
+  c: VAR C
+  sat: VAR [C, Snapshot -> bool]
+  plan, restPlan: VAR list[Action]
+
+  rawHazard(a,b): bool = EXISTS (v: V): a`writes(v) AND b`reads(v)
+
+  warHazard(a,b): bool = rawHazard(b,a)
+
+  wawHazard(a,b): bool = EXISTS (v: V): a`writes(v) AND b`writes(v)
+
+  canSwap(a,b): bool =
+    disjoint?(a`writes,b`reads) AND disjoint?(b`writes,a`reads) AND
+    disjoint?(a`writes,b`writes)
+
+  Local(vars,sat): bool = FORALL (c: C, s,t: Snapshot):
+    (FORALL (v: V): vars(c)(v) IMPLIES s(v)=t(v))
+      IMPLIES (sat(c,s) IFF sat(c,t))
+
+  affected(vars,core,writes): finite_set[C] =
+    intersection(core, {c: C | EXISTS (v: V): writes(v) AND vars(c)(v)})
+
+  runPlan(plan,s): RECURSIVE Snapshot =
+    CASES plan OF null: s,
+      cons(a,restPlan): runPlan(restPlan,a`run(s))
+    ENDCASES MEASURE length(plan)
+
+  planWrites(plan): RECURSIVE finite_set[V] =
+    CASES plan OF null: emptyset[V],
+      cons(a,restPlan): union(a`writes,planWrites(restPlan))
+    ENDCASES MEASURE length(plan)
+
+  FullContract(sat,target,core,before,after): bool =
+    (FORALL (c: C): target(c) IMPLIES sat(c,after)) AND
+    (FORALL (c: C): core(c) AND sat(c,before) IMPLIES sat(c,after))
+
+  ScopedContract(vars,sat,target,core,writes,before,after): bool =
+    (FORALL (c: C): target(c) IMPLIES sat(c,after)) AND
+    (FORALL (c: C): affected(vars,core,writes)(c) AND sat(c,before)
+      IMPLIES sat(c,after))
+
+  checkCommit(sat,vars,target,core,writes,before,after): bool =
+    finiteAll(target,LAMBDA(c:C):sat(c,after)) AND
+    finiteAll(affected(vars,core,writes),LAMBDA(c:C):sat(c,before) IMPLIES sat(c,after))
+
+  checkedStep(sat,vars,target,core,a,before): Snapshot =
+    IF checkCommit(sat,vars,target,core,a`writes,before,a`run(before))
+      THEN a`run(before) ELSE before ENDIF
+
+  action_frame: LEMMA Framed(a`writes,s,a`run(s))
+
+  action_read_local: LEMMA
+    (FORALL(v:V):a`reads(v) IMPLIES s(v)=t(v)) IMPLIES
+    (FORALL(v:V):a`writes(v) IMPLIES a`run(s)(v)=a`run(t)(v))
+
+  rawHazard_eq_false_iff: THEOREM
+    (NOT rawHazard(a,b)) IFF disjoint?(a`writes,b`reads)
+
+  warHazard_eq_false_iff: THEOREM
+    (NOT warHazard(a,b)) IFF disjoint?(b`writes,a`reads)
+
+  wawHazard_eq_false_iff: THEOREM
+    (NOT wawHazard(a,b)) IFF disjoint?(a`writes,b`writes)
+
+  canSwap_eq_true_iff: THEOREM canSwap(a,b) IFF
+    disjoint?(a`writes,b`reads) AND disjoint?(b`writes,a`reads) AND
+    disjoint?(a`writes,b`writes)
+
+  canSwap_iff_no_hazards: THEOREM canSwap(a,b) IFF
+    NOT rawHazard(a,b) AND NOT warHazard(a,b) AND NOT wawHazard(a,b)
+
+  action_preserves_disjoint_reads: LEMMA disjoint?(b`writes,a`reads) IMPLIES
+    (FORALL(v:V):a`reads(v) IMPLIES b`run(s)(v)=s(v))
+
+  independent_read_local: LEMMA disjoint?(b`writes,a`reads) AND a`writes(v)
+    IMPLIES a`run(b`run(s))(v)=a`run(s)(v)
+
+  canSwap_commute: THEOREM canSwap(a,b) IMPLIES
+    a`run(b`run(s)) = b`run(a`run(s))
+
+  mem_affected_iff: THEOREM affected(vars,core,writes)(c) IFF
+    core(c) AND EXISTS(v:V):writes(v) AND vars(c)(v)
+
+  affected_subset: THEOREM subset?(affected(vars,core,writes),core)
+
+  affected_mono_writes: THEOREM subset?(w1,w2) IMPLIES
+    subset?(affected(vars,core,w1),affected(vars,core,w2))
+
+  affected_union: THEOREM affected(vars,core,union(w1,w2)) =
+    union(affected(vars,core,w1),affected(vars,core,w2))
+
+  preserved_of_disjoint: THEOREM Local(vars,sat) AND
+    Framed(writes,before,after) AND disjoint?(writes,vars(c))
+      IMPLIES (sat(c,after) IFF sat(c,before))
+
+  preserved_outside_affected: THEOREM Local(vars,sat) AND
+    Framed(writes,before,after) AND core(c) AND NOT affected(vars,core,writes)(c)
+      IMPLIES (sat(c,after) IFF sat(c,before))
+
+  runPlan_frame: THEOREM Framed(planWrites(plan),s,runPlan(plan,s))
+
+  runPlan_swap_adjacent: THEOREM canSwap(a,b) IMPLIES
+    runPlan(cons(a,cons(b,restPlan)),s) = runPlan(cons(b,cons(a,restPlan)),s)
+
+  runPlan_preserved_outside_affected: THEOREM Local(vars,sat) AND core(c) AND
+    NOT affected(vars,core,planWrites(plan))(c)
+      IMPLIES (sat(c,runPlan(plan,s)) IFF sat(c,s))
+
+  scopedContract_iff_fullContract: THEOREM Local(vars,sat) AND
+    Framed(writes,before,after) IMPLIES
+    (ScopedContract(vars,sat,target,core,writes,before,after) IFF
+      FullContract(sat,target,core,before,after))
+
+  checkCommit_iff_scopedContract: THEOREM
+    checkCommit(sat,vars,target,core,writes,before,after) IFF
+      ScopedContract(vars,sat,target,core,writes,before,after)
+
+  checkCommit_iff_fullContract: THEOREM Local(vars,sat) AND
+    Framed(writes,before,after) IMPLIES
+    (checkCommit(sat,vars,target,core,writes,before,after) IFF
+      FullContract(sat,target,core,before,after))
+
+  checkCommit_sound: THEOREM Local(vars,sat) AND
+    checkCommit(sat,vars,target,core,a`writes,before,a`run(before)) IMPLIES
+      FullContract(sat,target,core,before,a`run(before))
+
+  checkCommit_plan_sound: THEOREM Local(vars,sat) AND
+    checkCommit(sat,vars,target,core,planWrites(plan),before,runPlan(plan,before))
+      IMPLIES FullContract(sat,target,core,before,runPlan(plan,before))
+
+  checkedStep_preserves: THEOREM Local(vars,sat) AND core(c) AND sat(c,before)
+    IMPLIES sat(c,checkedStep(sat,vars,target,core,a,before))
+
+  checkedStep_target_of_accepted: THEOREM Local(vars,sat) AND target(c) AND
+    checkCommit(sat,vars,target,core,a`writes,before,a`run(before))
+      IMPLIES sat(c,checkedStep(sat,vars,target,core,a,before))
+
+END ppg_repair_hazards
+
+% The footprint scope is tight over all local Boolean interpretations.
+% This is not an assertion that every overlap damages the actual predicate.
+ppg_repair_footprint_tightness[C,V: TYPE]: THEORY
+BEGIN
+
+  IMPORTING ppg_repair_hazards[C,V,bool] AS B
+
+  vars: VAR B.CertVars
+  core: VAR finite_set[C]
+  writes: VAR finite_set[V]
+  c: VAR C
+
+  overlap_has_local_boolean_witness: LEMMA B.affected(vars,core,writes)(c) IMPLIES
+    EXISTS(sat:[C,B.Snapshot -> bool], before,after:B.Snapshot):
+      B.Local(vars,sat) AND B.Framed(writes,before,after) AND sat(c,before) AND NOT sat(c,after)
+
+  possible_invalidation_requires_overlap: LEMMA
+    core(c) AND (EXISTS(sat:[C,B.Snapshot -> bool], before,after:B.Snapshot):
+      B.Local(vars,sat) AND B.Framed(writes,before,after) AND sat(c,before) AND NOT sat(c,after))
+      IMPLIES B.affected(vars,core,writes)(c)
+
+  affected_iff_possible_invalidation: THEOREM B.affected(vars,core,writes)(c) IFF
+    core(c) AND (EXISTS(sat:[C,B.Snapshot -> bool], before,after:B.Snapshot):
+      B.Local(vars,sat) AND B.Framed(writes,before,after) AND sat(c,before) AND NOT sat(c,after))
+
+END ppg_repair_footprint_tightness

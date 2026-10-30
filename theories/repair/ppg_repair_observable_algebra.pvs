@@ -1,0 +1,165 @@
+% Rational observable subalgebras for deterministic repair.
+% A subalgebra contains every scalar constant and is closed under pointwise
+% addition and multiplication. Stable and Fixed are separate obligations.
+% The least stable hull is an intersection, not a finite synthesis algorithm.
+% This is the rational specialization of PPGraph.Repair.ObservableAlgebra.
+
+ppg_repair_observable_algebra[State: TYPE]: THEORY
+BEGIN
+
+  Observable: TYPE = [State -> rat]
+
+  Algebra: TYPE = set[Observable]
+
+  Operation: TYPE = [State -> State]
+
+  B, D, G, H: VAR Algebra
+  ops: VAR set[Operation]
+  f, g: VAR Observable
+  run, other: VAR Operation
+  s, t, u: VAR State
+  k: VAR rat
+  word: VAR list[Operation]
+
+  constant(k): Observable = LAMBDA (s: State): k
+
+  pointAdd(f, g): Observable = LAMBDA (s: State): f(s) + g(s)
+
+  pointMul(f, g): Observable = LAMBDA (s: State): f(s) * g(s)
+
+  pullback(run, f): Observable = LAMBDA (s: State): f(run(s))
+
+  Subalgebra?(B): bool =
+    (FORALL (k: rat): B(constant(k))) AND
+    (FORALL (f, g: Observable): B(f) AND B(g) IMPLIES B(pointAdd(f, g))) AND
+    (FORALL (f, g: Observable): B(f) AND B(g) IMPLIES B(pointMul(f, g)))
+
+  Stable(ops, B): bool =
+    FORALL (run: Operation), (f: Observable): ops(run) AND B(f) IMPLIES B(pullback(run, f))
+
+  Fixed(run, B): bool = FORALL (f: Observable): B(f) IMPLIES pullback(run, f) = f
+
+  fixedAlgebra(run): Algebra = {f: Observable | pullback(run, f) = f}
+
+  equalizerAlgebra(s, t): Algebra = {f: Observable | f(s) = f(t)}
+
+  preimageAlgebra(run, B): Algebra = {f: Observable | B(pullback(run, f))}
+
+  adjoin(G): Algebra = {f: Observable | FORALL (B: Algebra):
+    Subalgebra?(B) AND subset?(G, B) IMPLIES B(f)}
+
+  stableHull(ops, G): Algebra = {f: Observable | FORALL (B: Algebra):
+    Subalgebra?(B) AND subset?(G, B) AND Stable(ops, B) IMPLIES B(f)}
+
+  ObsEq(B, s, t): bool = FORALL (f: Observable): B(f) IMPLIES f(s) = f(t)
+
+  runWord(word, s): RECURSIVE State = CASES word OF
+    null: s,
+    cons(run, rest): runWord(rest, run(s))
+    ENDCASES MEASURE length(word)
+
+  wordAllowed(ops, word): RECURSIVE bool = CASES word OF
+    null: TRUE,
+    cons(run, rest): ops(run) AND wordAllowed(ops, rest)
+    ENDCASES MEASURE length(word)
+
+  wordPullback(word, f): Observable = LAMBDA (s: State): f(runWord(word, s))
+
+  orbitGenerators(ops, G): Algebra = {f: Observable |
+    EXISTS (word: list[Operation]), (g: Observable): wordAllowed(ops, word) AND G(g) AND
+      f = wordPullback(word, g)}
+
+  pullback_apply: THEOREM pullback(run, f)(s) = f(run(s))
+
+  pullback_comp: THEOREM pullback(LAMBDA (s: State): other(run(s)), f) =
+    pullback(run, pullback(other, f))
+
+  pullback_constant: LEMMA pullback(run, constant(k)) = constant(k)
+
+  pullback_add: LEMMA pullback(run, pointAdd(f, g)) =
+    pointAdd(pullback(run, f), pullback(run, g))
+
+  pullback_mul: LEMMA pullback(run, pointMul(f, g)) =
+    pointMul(pullback(run, f), pullback(run, g))
+
+  full_subalgebra: LEMMA Subalgebra?(fullset[Observable])
+
+  fixed_subalgebra: LEMMA Subalgebra?(fixedAlgebra(run))
+
+  equalizer_subalgebra: LEMMA Subalgebra?(equalizerAlgebra(s, t))
+
+  preimage_subalgebra: LEMMA Subalgebra?(B) IMPLIES Subalgebra?(preimageAlgebra(run, B))
+
+  mem_fixedAlgebra: THEOREM fixedAlgebra(run)(f) IFF pullback(run, f) = f
+
+  adjoin_contains: LEMMA subset?(G, adjoin(G))
+
+  adjoin_subalgebra: LEMMA Subalgebra?(adjoin(G))
+
+  adjoin_le: LEMMA Subalgebra?(B) AND subset?(G, B) IMPLIES subset?(adjoin(G), B)
+
+  fixed_adjoin_iff: THEOREM Fixed(run, adjoin(G)) IFF
+    (FORALL (f: Observable): G(f) IMPLIES pullback(run, f) = f)
+
+  stable_adjoin_iff: THEOREM Stable(ops, adjoin(G)) IFF
+    (FORALL (run: Operation), (f: Observable): ops(run) AND G(f)
+      IMPLIES adjoin(G)(pullback(run, f)))
+
+  hull_subalgebra: LEMMA Subalgebra?(stableHull(ops, G))
+
+  subset_stableHull: THEOREM subset?(G, stableHull(ops, G))
+
+  stable_stableHull: THEOREM Stable(ops, stableHull(ops, G))
+
+  stableHull_le: THEOREM Subalgebra?(B) AND subset?(G, B) AND Stable(ops, B)
+    IMPLIES subset?(stableHull(ops, G), B)
+
+  stableHull_mono: THEOREM subset?(G, H) IMPLIES
+    subset?(stableHull(ops, G), stableHull(ops, H))
+
+  stableHull_idempotent: THEOREM stableHull(ops, stableHull(ops, G)) = stableHull(ops, G)
+
+  obsEq_reflexive: LEMMA ObsEq(B, s, s)
+
+  obsEq_symmetric: LEMMA ObsEq(B, s, t) IMPLIES ObsEq(B, t, s)
+
+  obsEq_transitive: LEMMA ObsEq(B, s, t) AND ObsEq(B, t, u) IMPLIES ObsEq(B, s, u)
+
+  obsEq_adjoin_iff: THEOREM ObsEq(adjoin(G), s, t) IFF
+    (FORALL (f: Observable): G(f) IMPLIES f(s) = f(t))
+
+  obsEq_after: THEOREM Stable(ops, B) AND ops(run) AND ObsEq(B, s, t)
+    IMPLIES ObsEq(B, run(s), run(t))
+
+  observable_test_congr: THEOREM FORALL (test: [rat -> bool]):
+    B(f) AND ObsEq(B, s, t) IMPLIES (test(f(s)) IFF test(f(t)))
+
+  wordPullback_nil: LEMMA wordPullback(null[Operation], f) = f
+
+  wordPullback_cons: LEMMA wordPullback(cons(run, word), f) = pullback(run, wordPullback(word, f))
+
+  stable_runWord: THEOREM Stable(ops, B) AND wordAllowed(ops, word) AND B(f)
+    IMPLIES B(wordPullback(word, f))
+
+  obsEq_runWord: THEOREM Stable(ops, B) AND wordAllowed(ops, word) AND ObsEq(B, s, t)
+    IMPLIES ObsEq(B, runWord(word, s), runWord(word, t))
+
+  subset_orbitGenerators: THEOREM subset?(G, orbitGenerators(ops, G))
+
+  future_generator_member: LEMMA wordAllowed(ops, word) AND G(f)
+    IMPLIES orbitGenerators(ops, G)(wordPullback(word, f))
+
+  orbit_step_closed: LEMMA ops(run) AND orbitGenerators(ops, G)(f)
+    IMPLIES orbitGenerators(ops, G)(pullback(run, f))
+
+  orbit_adjoin_stable: THEOREM Stable(ops, adjoin(orbitGenerators(ops, G)))
+
+  orbit_in_hull: LEMMA subset?(orbitGenerators(ops, G), stableHull(ops, G))
+
+  stableHull_eq_adjoin_orbit: THEOREM stableHull(ops, G) = adjoin(orbitGenerators(ops, G))
+
+  obsEq_stableHull_iff_future: THEOREM ObsEq(stableHull(ops, G), s, t) IFF
+    (FORALL (word: list[Operation]), (f: Observable): wordAllowed(ops, word) AND G(f)
+      IMPLIES f(runWord(word, s)) = f(runWord(word, t)))
+
+END ppg_repair_observable_algebra

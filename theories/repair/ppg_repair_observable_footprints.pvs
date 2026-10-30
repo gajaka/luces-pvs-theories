@@ -1,0 +1,58 @@
+% Observation footprints for actions with proved write frames and read locality.
+% Disjoint writes fix every local observable. A backward read envelope gives
+% stability when retained observations contain the reads needed by each action.
+% Lean counterpart: PPGraph.Repair.ObservableAlgebra, footprint section.
+
+ppg_repair_observable_footprints[V, Value: TYPE]: THEORY
+BEGIN
+
+  IMPORTING ppg_repair_hazards[bool, V, Value]
+
+  IMPORTING ppg_repair_observable_algebra[Snapshot]
+
+  vars, more: VAR finite_set[V]
+  f: VAR Observable
+  a, b: VAR Action
+  actions: VAR set[Action]
+  s, t: VAR Snapshot
+  v: VAR V
+
+  Reads(vars, f): bool = FORALL (s, t: Snapshot):
+    (FORALL (v: V): vars(v) IMPLIES s(v) = t(v)) IMPLIES f(s) = f(t)
+
+  localAlgebra(vars): Algebra = {f: Observable | Reads(vars, f)}
+
+  readEnvelope(a, vars): finite_set[V] = union(difference(vars, a`writes), a`reads)
+
+  actionRuns(actions): set[Operation] =
+    {run: Operation | EXISTS (a: Action): actions(a) AND run = a`run}
+
+  local_subalgebra: LEMMA Subalgebra?(localAlgebra(vars))
+
+  reads_mono: THEOREM subset?(vars, more) AND Reads(vars, f) IMPLIES Reads(more, f)
+
+  pullback_fixed_of_disjoint: THEOREM
+    Reads(vars, f) AND disjoint?(a`writes, vars) IMPLIES pullback(a`run, f) = f
+
+  disjoint_fixes_localAlgebra: THEOREM
+    disjoint?(a`writes, vars) IMPLIES Fixed(a`run, localAlgebra(vars))
+
+  envelope_agreement: LEMMA
+    (FORALL (v: V): readEnvelope(a, vars)(v) IMPLIES s(v) = t(v))
+      AND vars(v) IMPLIES a`run(s)(v) = a`run(t)(v)
+
+  reads_agreement: LEMMA Reads(vars, f) AND
+    (FORALL (v: V): vars(v) IMPLIES s(v) = t(v)) IMPLIES f(s) = f(t)
+
+  pullback_reads: THEOREM
+    Reads(vars, f) IMPLIES Reads(readEnvelope(a, vars), pullback(a`run, f))
+
+  reads_subset_stable_localAlgebra: THEOREM
+    (FORALL (a: Action): actions(a) IMPLIES
+      disjoint?(a`writes, vars) OR subset?(a`reads, vars))
+    IMPLIES Stable(actionRuns(actions), localAlgebra(vars))
+
+  hazard_free_pullbacks_commute: THEOREM canSwap(a, b) IMPLIES
+    pullback(a`run, pullback(b`run, f)) = pullback(b`run, pullback(a`run, f))
+
+END ppg_repair_observable_footprints

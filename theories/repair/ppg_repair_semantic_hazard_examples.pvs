@@ -1,0 +1,158 @@
+% Integer and Boolean boundaries of exact semantic hazard checking.
+% Partial sampling can miss a genuine invalidation; structural overlap can
+% remain even when an atomic composite preserves every certificate.
+% Lean counterpart: PPGraph.Repair.SemanticHazardExamples, Dragan Stosic, 2026.
+
+ppg_repair_semantic_hazard_examples: THEORY
+BEGIN
+
+  Unit: TYPE = {Only}
+
+  IntCert: TYPE = below(2)
+
+  BitCert: TYPE = below(4)
+
+  IMPORTING ppg_repair_hazards[IntCert,Unit,int] AS ih,
+    ppg_repair_semantic_hazards[[Unit -> int],IntCert] AS isem,
+    ppg_repair_hazards[BitCert,Unit,bool] AS bh,
+    ppg_repair_semantic_hazards[[Unit -> bool],BitCert] AS bsem
+
+  ic: VAR IntCert
+  bc: VAR BitCert
+  si: VAR ih.Snapshot
+  sb: VAR bh.Snapshot
+
+  intVars: ih.CertVars = LAMBDA(c:IntCert):singleton(Only)
+
+  intSat(ic,si): bool = IF ic=0 THEN 0<=si(Only) ELSE si(Only)=0 ENDIF
+
+  increment: ih.Action = (# reads:=singleton(Only),writes:=singleton(Only),
+    run:=LAMBDA(si:ih.Snapshot):(LAMBDA(u:Unit):si(Only)+1) #)
+
+  decrement: ih.Action = (# reads:=singleton(Only),writes:=singleton(Only),
+    run:=LAMBDA(si:ih.Snapshot):(LAMBDA(u:Unit):si(Only)-1) #)
+
+  unrestrictedInt: set[ih.Snapshot] = fullset[ih.Snapshot]
+
+  intCore: finite_set[IntCert] = add(0,singleton(1))
+
+  intSat_local: THEOREM ih.Local(intVars,intSat)
+
+  increment_structural_scope: THEOREM
+    ih.affected(intVars,intCore,increment`writes)=intCore
+
+  increment_preserves_nonnegative: THEOREM
+    isem.PreservesOn(unrestrictedInt,intSat,increment`run,0)
+
+  increment_nonnegative_alarm_removed: THEOREM
+    NOT isem.scope(unrestrictedInt,intSat,intCore,increment`run)(0)
+
+  increment_zero_has_counterexample: THEOREM
+    unrestrictedInt(LAMBDA(u:Unit):0) AND
+    isem.Invalidates(intSat,increment`run,1,LAMBDA(u:Unit):0)
+
+  increment_zero_alarm_retained: THEOREM
+    isem.scope(unrestrictedInt,intSat,intCore,increment`run)(1)
+
+  increment_semantic_scope_exact: THEOREM
+    isem.scope(unrestrictedInt,intSat,intCore,increment`run)=singleton(1)
+
+  increment_refined_scope_exact: THEOREM
+    difference(ih.affected(intVars,intCore,increment`writes),singleton(0))=
+      isem.scope(unrestrictedInt,intSat,intCore,increment`run)
+
+  increment_refined_commit_iff_fullContract: THEOREM
+    isem.checkScope(intSat,emptyset[IntCert],singleton(1),si,increment`run(si)) IFF
+      ih.FullContract(intSat,emptyset[IntCert],intCore,si,increment`run(si))
+
+  decrement_nonnegative_alarm_retained: THEOREM
+    isem.scope(unrestrictedInt,intSat,intCore,decrement`run)(0)
+
+  cancelling_plan_is_identity: THEOREM
+    ih.runPlan(cons(increment,cons(decrement,null[ih.Action])),si)=si
+
+  cancelling_plan_has_empty_semantic_scope: THEOREM
+    isem.scope(unrestrictedInt,intSat,intCore,
+      LAMBDA(si:ih.Snapshot):ih.runPlan(cons(increment,cons(decrement,null[ih.Action])),si))=
+        emptyset[IntCert]
+
+  cancelling_plan_still_has_structural_overlap: THEOREM
+    ih.affected(intVars,intCore,
+      ih.planWrites(cons(increment,cons(decrement,null[ih.Action]))))=intCore
+
+  bitFalse: bh.Snapshot = LAMBDA(u:Unit):FALSE
+
+  bitTrue: bh.Snapshot = LAMBDA(u:Unit):TRUE
+
+  unrestrictedBit: set[bh.Snapshot] = fullset[bh.Snapshot]
+
+  bitDomain: list[bh.Snapshot] = cons(bitFalse,cons(bitTrue,null[bh.Snapshot]))
+
+  bitVars: bh.CertVars = LAMBDA(c:BitCert):singleton(Only)
+
+  bitCore: finite_set[BitCert] = add(0,add(1,add(2,singleton(3))))
+
+  bitSat(bc,sb): bool = IF bc=0 THEN sb(Only)
+    ELSIF bc=1 THEN NOT sb(Only) ELSIF bc=2 THEN TRUE ELSE FALSE ENDIF
+
+  setTrue: bh.Action = (# reads:=emptyset[Unit],writes:=singleton(Only),
+    run:=LAMBDA(sb:bh.Snapshot):bitTrue #)
+
+  bit_state_eq_false: LEMMA NOT sb(Only) IMPLIES sb=bitFalse
+
+  bit_state_eq_true: LEMMA sb(Only) IMPLIES sb=bitTrue
+
+  bit_domain_complete: THEOREM bsem.CompleteDomain(unrestrictedBit,bitDomain)
+
+  bitSat_local: THEOREM bh.Local(bitVars,bitSat)
+
+  bit_structural_scope_all: THEOREM
+    bh.affected(bitVars,bitCore,setTrue`writes)=bitCore
+
+  bit_exact_scope_singleton: THEOREM
+    bsem.exactScope(unrestrictedBit,bitSat,setTrue`run,bitDomain,bitCore)=singleton(1)
+
+  bit_counterexample_found: THEOREM
+    bsem.findInvalidation(unrestrictedBit,bitSat,setTrue`run,bitDomain,1)=
+      cons(bitFalse,null[bh.Snapshot])
+
+  bit_preserved_classified: THEOREM
+    NOT bsem.classify(unrestrictedBit,bitSat,setTrue`run,bitDomain,0)`isHazard
+
+  bit_invalidated_classified: THEOREM
+    bsem.classify(unrestrictedBit,bitSat,setTrue`run,bitDomain,1)`isHazard
+
+  partial_sample_misses_hazard: THEOREM
+    bsem.finiteScope(unrestrictedBit,bitSat,setTrue`run,cons(bitTrue,null[bh.Snapshot]),bitCore)=
+      emptyset[BitCert] AND
+    bsem.exactScope(unrestrictedBit,bitSat,setTrue`run,bitDomain,bitCore)=singleton(1)
+
+  partial_sample_does_not_cover: THEOREM
+    NOT bsem.CompleteDomain(unrestrictedBit,cons(bitTrue,null[bh.Snapshot]))
+
+  hazard_can_be_harmless_at_current_state: THEOREM
+    bsem.exactScope(unrestrictedBit,bitSat,setTrue`run,bitDomain,bitCore)(1) AND
+      NOT bsem.Invalidates(bitSat,setTrue`run,1,bitTrue)
+
+  exact_commit_rejects_real_damage: THEOREM
+    NOT bsem.checkExactCommit(unrestrictedBit,bitSat,bitDomain,singleton(0),singleton(1),
+      setTrue`run,bitFalse) AND
+    bsem.checkedExactStep(unrestrictedBit,bitSat,bitDomain,singleton(0),singleton(1),
+      setTrue`run,bitFalse)=bitFalse
+
+  exact_commit_accepts_safe_core: THEOREM
+    bsem.exactScope(unrestrictedBit,bitSat,setTrue`run,bitDomain,add(0,singleton(2)))=
+      emptyset[BitCert] AND
+    bsem.checkExactCommit(unrestrictedBit,bitSat,bitDomain,singleton(0),add(0,singleton(2)),
+      setTrue`run,bitFalse)
+
+  exact_commit_still_checks_targets: THEOREM
+    bsem.exactScope(unrestrictedBit,bitSat,setTrue`run,bitDomain,add(0,singleton(2)))=
+      emptyset[BitCert] AND
+    NOT bsem.checkExactCommit(unrestrictedBit,bitSat,bitDomain,singleton(1),add(0,singleton(2)),
+      setTrue`run,bitFalse)
+
+  accepted_commit_has_full_contract: THEOREM
+    bh.FullContract(bitSat,singleton(0),add(0,singleton(2)),bitFalse,setTrue`run(bitFalse))
+
+END ppg_repair_semantic_hazard_examples

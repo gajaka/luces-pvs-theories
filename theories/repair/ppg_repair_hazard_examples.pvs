@@ -1,0 +1,79 @@
+% Two-coordinate natural-valued examples for the repair hazard interface.
+% These are exact mathematical models, not measured controller data.
+% Lean counterpart: PPGraph.Repair.HazardExamples, Dragan Stosic, 2026.
+
+ppg_repair_hazard_examples: THEORY
+BEGIN
+
+  Coordinate: TYPE = below(2)
+
+  IMPORTING ppg_repair_hazards[Coordinate,Coordinate,nat] AS H
+
+  v,src,dst,c: VAR Coordinate
+  n: VAR nat
+  s: VAR H.Snapshot
+
+  setAt(v,n): H.Action = (# reads:=emptyset[Coordinate],writes:=singleton(v),
+    run:=LAMBDA(s:H.Snapshot):s WITH [(v):=n] #)
+
+  copy(src,dst): H.Action = (# reads:=singleton(src),writes:=singleton(dst),
+    run:=LAMBDA(s:H.Snapshot):s WITH [(dst):=s(src)] #)
+
+  idle: H.Action = (# reads:=emptyset[Coordinate],writes:=emptyset[Coordinate],
+    run:=LAMBDA(s:H.Snapshot):s #)
+
+  zero: H.Snapshot = LAMBDA(v:Coordinate):0
+
+  ones: H.Snapshot = LAMBDA(v:Coordinate):1
+
+  before: H.Snapshot = zero WITH [(1):=1]
+
+  damaging: H.Action = (# reads:=emptyset[Coordinate],writes:=add(0,singleton(1)),
+    run:=LAMBDA(s:H.Snapshot):(LAMBDA(v:Coordinate):IF v=0 THEN 1 ELSE 0 ENDIF) #)
+
+  vars: H.CertVars = LAMBDA(c:Coordinate):singleton(c)
+
+  sat(c,s): bool = s(c)=1
+
+  sat_local: THEOREM H.Local(vars,sat)
+
+  independent_writes_canSwap: THEOREM H.canSwap(setAt(0,1),setAt(1,2))
+
+  independent_writes_commute: THEOREM
+    setAt(0,1)`run(setAt(1,2)`run(s))=setAt(1,2)`run(setAt(0,1)`run(s))
+
+  raw_is_detected: THEOREM H.rawHazard(setAt(0,1),copy(0,1))
+
+  raw_changes_result: THEOREM copy(0,1)`run(setAt(0,1)`run(zero))(1)=1 AND
+    setAt(0,1)`run(copy(0,1)`run(zero))(1)=0
+
+  war_is_detected: THEOREM H.warHazard(copy(0,1),setAt(0,1))
+
+  waw_is_detected: THEOREM H.wawHazard(setAt(0,1),setAt(0,2))
+
+  scoped_repair_is_accepted: THEOREM
+    H.affected(vars,singleton(1),setAt(0,1)`writes)=emptyset[Coordinate] AND
+    H.checkCommit(sat,vars,singleton(0),singleton(1),setAt(0,1)`writes,
+      before,setAt(0,1)`run(before))
+
+  scoped_repair_has_full_contract: THEOREM
+    H.FullContract(sat,singleton(0),singleton(1),before,setAt(0,1)`run(before))
+
+  target_only_would_accept_damage: THEOREM
+    H.checkCommit(sat,vars,singleton(0),emptyset[Coordinate],damaging`writes,
+      before,damaging`run(before)) AND sat(1,before) AND NOT sat(1,damaging`run(before))
+
+  protected_damage_is_rejected: THEOREM
+    NOT H.checkCommit(sat,vars,singleton(0),singleton(1),damaging`writes,
+      before,damaging`run(before)) AND
+    H.checkedStep(sat,vars,singleton(0),singleton(1),damaging,before)=before
+
+  overlap_need_not_violate: THEOREM
+    H.affected(vars,singleton(1),setAt(1,1)`writes)=singleton(1) AND
+    H.checkCommit(sat,vars,emptyset[Coordinate],singleton(1),setAt(1,1)`writes,
+      ones,setAt(1,1)`run(ones))
+
+  no_hazards_need_not_repair: THEOREM H.canSwap(idle,idle) AND
+    NOT H.checkCommit(sat,vars,singleton(0),singleton(1),idle`writes,before,idle`run(before))
+
+END ppg_repair_hazard_examples

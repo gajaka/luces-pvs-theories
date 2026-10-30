@@ -682,3 +682,66 @@ With the README's pinned library setup, replay that closure with:
 python3 scripts/check.py --file applications/luces/pp_walk_certificate_coherence.pvs \
   --jobs 1 --heap-mib 6144 --timeout 180
 ```
+
+## Repair hazards and observable subalgebras
+
+The theories under [`theories/repair/`](../theories/repair/) add structural
+read/write hazards, semantic invalidation, checked state changes and rational
+observable subalgebras. Their reference is the public Lean repair development
+at revision `60151677e58704ce856c05a572904d681fd959f6`. The detailed
+[contract and correspondence note](REPAIR_HAZARDS_OBSERVABLES.md) distinguishes
+the PVS specializations from the broader Lean interfaces.
+
+The action subtype requires both the write frame and read locality. Under
+predicate locality, footprint-disjoint changes preserve certificate truth.
+Scoped commits check the target and every potentially affected previously true
+core obligation. Semantic scope instead contains certificates with an actual
+invalidation witness in the specified allowed domain. Its finite classifier
+needs `CompleteDomain` to conclude domain-wide absence of invalidation. The PVS
+`HazardResult` is an ordinary record with separately proved contracts; it is
+not Lean's proof-carrying result datatype.
+
+The observation layer constructs rational function subalgebras, observational
+equivalence classes and well-defined updates of their quotient. Stable
+subalgebras stay closed under admitted repair pullbacks; their values may
+change. Fixedness leaves the values unchanged. Equal retained observations
+remain equal after a common admitted operation sequence, and decision tests
+must separately factor through those observations. The least stable hull is
+defined by intersection and characterized by finite future observations; its
+existence does not imply a computable small summary.
+
+Zero/one certificate indicators connect this algebra to semantic hazards.
+Fixedness of an algebra containing the protected indicators prevents their
+invalidation. Stability alone supplies equal decisions for observationally
+equivalent initial states under a common future sequence, rather than constant
+certificate truth throughout an execution.
+
+For finite rational kernels, closure of the full projection algebra is
+equivalent to equal aggregate transition masses on summary fibers, with
+surjectivity for the constructed reduced model. The good-state predicate has
+an independent factorization obligation. Together these conditions establish
+the existing finite-lumping interface and transfer its stochasticity and
+survival results under their stated premises. The examples distinguish this
+full closure from checking expectation on algebra generators alone.
+
+This PVS development specializes rational scalars and same-state endomorphism
+pullbacks. Lean's scalar-polymorphic algebra and cross-state pullback interface
+are more general. The 34 source results in `ObservableSchemes` remain Lean-only;
+no PVS affine-scheme or structure-sheaf foundation is claimed. The historical
+1,824-result translation ledger above is unchanged by this extension.
+
+The [normal targeted replay completed on 2026-10-30](../reports/PVS_REPAIR_OBSERVABLES_20261030.json)
+passed 450 Project bodies across 34 loaded modules for 11 repair source files.
+The new theories contain 223 explicit claims and 19 TCCs, totaling 242 new
+bodies; 208 bodies are unchanged Project dependencies. The source comparison
+accounts for 144 specialized Lean counterparts and 79 additional PVS supporting
+claims. No Native proof bodies were required. All unfinished, missing-script
+and derived-only counters were zero, with proof oracles disabled and no new
+source `AXIOM` declarations. This is the new repair closure, rather than a
+whole-library proof replay or a replacement of the historical source inventory.
+
+Replay the repair group with the repository's pinned library setup:
+
+```sh
+python3 scripts/check.py --group repair --jobs 1 --heap-mib 6144 --timeout 60
+```

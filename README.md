@@ -36,8 +36,8 @@ regime tests from calibrated arithmetic and use a directed boot policy. See the
 The subsequent finite-read integration retains repeated certificate positions
 and derives read locality from checker syntax. Its measured LUCES instance
 searches a fixed bank of candidate coupling snapshots while preserving the
-signed GEN observation and dataset identity. The associated Lean inventory is
-now **1,876 results in 198 modules**; this is a Lean declaration count, not a new
+signed GEN observation and dataset identity. That update's Lean inventory was
+**1,876 results in 198 modules**; this is a Lean declaration count, not a new
 whole-library PVS replay count. The revised LUCES theories use explicit finite
 models, checked model laws and measured numerical inputs in place of the
 earlier hand-written axioms. Read the [LUCES model scope](docs/LUCES_MODEL_SCOPE.md)
@@ -153,6 +153,52 @@ passed all three entry points and their loaded dependencies on 2026-10-29:
 unfinished obligations or Native failures. Supporting lemmas and TCCs are
 included; these counts are not a new Lean translation inventory.
 
+## Repair hazards and observable subalgebras
+
+The [repair theories](theories/repair/) distinguish possible read/write
+interference from semantic invalidation of a certificate. Actions carry write
+frame and read-locality conditions. Under certificate locality, scoped checks
+establish the same restoration-and-preservation contract as checking the full
+tracked core. Semantic scope uses actual invalidation witnesses over an allowed
+domain; finite classification is exact only with a complete enumeration of that
+domain. A sample without coverage cannot rule out a hazard.
+
+Rational observable subalgebras retain information needed for observations and
+subsequent operations. `Stable` permits observable values to change while
+retaining sufficient information for their updates; `Fixed` leaves each
+observable unchanged. The development constructs observational quotients and
+least stable hulls. Boolean certificate indicators connect fixed observables to
+absence of semantic invalidation. For finite stochastic models, `KernelClosed`
+and a separately factored good-state predicate connect projection algebras to
+the existing exact lumping theory. The stable-hull construction is mathematical;
+it does not provide a general algorithm for finding a small summary.
+
+These are rational PVS counterparts to the public Lean repair development at
+revision [`6015167`](https://github.com/gajaka/ppg-lean/tree/60151677e58704ce856c05a572904d681fd959f6/PPGraph/Repair).
+The Lean library at that revision has 2,054 results in 206 modules. Those numbers
+are a Lean inventory, not a revised PVS translation total. The PVS function
+algebra specializes rational scalars and same-state operations; Lean's more
+general scalar and cross-state pullback interfaces remain broader. The affine
+schemes in Lean's `ObservableSchemes` module remain Lean-only.
+See [the contracts and scope](docs/REPAIR_HAZARDS_OBSERVABLES.md).
+
+The [normal replay completed on 2026-10-30](reports/PVS_REPAIR_OBSERVABLES_20261030.json)
+passed 450 Project proof bodies across 34 loaded modules for the 11 repair
+source files. The new theories contribute 242 bodies: 223 explicit claims and
+19 TCCs; another 208 bodies belong to unchanged Project dependencies. No Native
+proof bodies were required, all incompleteness and missing-script counters were
+zero, and proof oracles were disabled. Source correspondence covers 144 Lean
+claims with the specializations above; the other 79 explicit PVS claims support
+those counterparts and their certificate bridge. The 34 Lean affine-scheme
+results remain outside this port. These are targeted proof counts, separate
+from the historical 1,824-result translation ledger.
+
+With the pinned PVS library setup below, replay the repair group with:
+
+```sh
+python3 scripts/check.py --group repair --jobs 1 --heap-mib 6144 --timeout 60
+```
+
 ## Directory layout
 
 The generic theories are grouped by subject. A theory keeps its original name,
@@ -163,6 +209,7 @@ name the corresponding PVS library explicitly.
 |-----------|----------|
 | [theories/foundations/](theories/foundations/) | Finite sets, lists, sums, products, order, encodings and rational linear algebra. |
 | [theories/ppg_core/](theories/ppg_core/) | Proof-preserving graphs, morphisms, dependency components, refinement and repair relations. |
+| [theories/repair/](theories/repair/) | Structural and semantic hazards, checked commits, rational observable subalgebras, quotients and finite stochastic reduction. |
 | [theories/certification/](theories/certification/) | Certificate families, ordered levels, quotients, selection, blocking and self-assessment. |
 | [theories/measure_probability/](theories/measure_probability/) | Measurable spaces, extended nonnegative values, probability laws, products, integrals and conditional expectations. |
 | [theories/witness_trees/](theories/witness_trees/) | Ordered witness trees, addresses, canonical encodings and weights. |

@@ -1,0 +1,46 @@
+% The full algebra of functions of a summary, not only its polynomial algebra.
+% The fiber-constant description is proved equivalent to the pullback range.
+% Rational scalars supply the separating zero/one observable.
+
+ppg_repair_observable_projection[State, Abstract: TYPE]: THEORY
+BEGIN
+
+  IMPORTING ppg_repair_observable_algebra[State]
+
+  q: VAR [State -> Abstract]
+  f, g: VAR Observable
+  B: VAR Algebra
+  s, t: VAR State
+  a: VAR Abstract
+  ops: VAR set[Operation]
+  run: VAR Operation
+  reduced: VAR [Operation -> [Abstract -> Abstract]]
+
+  projectionAlgebra(q): Algebra = {f: Observable |
+    FORALL (s, t: State): q(s) = q(t) IMPLIES f(s) = f(t)}
+
+  factor(q, f)(a): rat =
+    IF nonempty?({s: State | q(s) = a})
+    THEN f(choose({s: State | q(s) = a})) ELSE 0 ENDIF
+
+  projection_subalgebra: THEOREM Subalgebra?(projectionAlgebra(q))
+
+  projection_member: LEMMA projectionAlgebra(q)(f) AND q(s) = q(t) IMPLIES f(s) = f(t)
+
+  factor_at_image: LEMMA projectionAlgebra(q)(f) IMPLIES factor(q, f)(q(s)) = f(s)
+
+  mem_projectionAlgebra: THEOREM projectionAlgebra(q)(f) IFF
+    EXISTS (g: [Abstract -> rat]): f = (LAMBDA (s: State): g(q(s)))
+
+  obsEq_of_projection_eq: THEOREM q(s) = q(t) IMPLIES ObsEq(projectionAlgebra(q), s, t)
+
+  projection_indicator: LEMMA projectionAlgebra(q)
+    (LAMBDA (s: State): IF q(s) = a THEN 1 ELSE 0 ENDIF)
+
+  obsEq_projectionAlgebra_iff: THEOREM ObsEq(projectionAlgebra(q), s, t) IFF q(s) = q(t)
+
+  projection_stable_of_factor: THEOREM
+    (FORALL (run: Operation), (s: State): ops(run) IMPLIES q(run(s)) = reduced(run)(q(s)))
+    IMPLIES Stable(ops, projectionAlgebra(q))
+
+END ppg_repair_observable_projection

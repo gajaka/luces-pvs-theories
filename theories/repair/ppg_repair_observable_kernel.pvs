@@ -1,0 +1,107 @@
+% Exact rational observable reduction for finite transition systems.
+% Kernel closure concerns every retained observable, not only a set of
+% algebra generators. The good-state predicate is a separate obligation.
+% References: Levin and Peres, Markov Chains and Mixing Times (2017),
+% Section 2.3.1; Lean PPGraph.Repair.ObservableKernel.
+
+ppg_repair_observable_kernel[State, Abstract: TYPE,
+  universe: {U: finite_set[State] | FORALL (s: State): U(s)},
+  abstractUniverse: {U: finite_set[Abstract] | FORALL (a: Abstract): U(a)}]: THEORY
+BEGIN
+
+  IMPORTING finite_models@ppg_finite_lumping[
+    State, Abstract, universe, abstractUniverse],
+    finite_models@ppg_finite_lumping[State, Abstract, universe, abstractUniverse] AS lumping,
+    ppg_repair_observable_projection[State, Abstract],
+    foundations@ppg_monoid_sum[Abstract, rat, 0, LAMBDA (x,y: rat): x+y] AS targetSum
+
+  M: VAR concrete.Model
+  N: VAR reduced.Model
+  q: VAR [State -> Abstract]
+  f: VAR Observable
+  g: VAR [Abstract -> rat]
+  B: VAR Algebra
+  s, t: VAR State
+  a: VAR Abstract
+  n: VAR nat
+
+  expectation(M, f)(s): rat = concreteSystem.successorValue(M, f, s)
+
+  KernelClosed(M, B): bool =
+    FORALL (f: Observable): B(f) IMPLIES B(expectation(M, f))
+
+  FiberLocal(M, q): bool = FORALL (s, t: State):
+    q(s) = q(t) IMPLIES FORALL (a: Abstract):
+      lumping.fiberMass(M, q, s, a) = lumping.fiberMass(M, q, t, a)
+
+  GoodLocal(M, q): bool = FORALL (s, t: State):
+    q(s) = q(t) IMPLIES M`good(s) = M`good(t)
+
+  indicator(q, a): Observable =
+    LAMBDA (s: State): IF q(s) = a THEN 1 ELSE 0 ENDIF
+
+  indicator_in_projection: LEMMA projectionAlgebra(q)(indicator(q, a))
+
+  indicator_weight: LEMMA
+    (LAMBDA (t: State): M`transition(s,t) * indicator(q,a)(t)) =
+    (LAMBDA (t: State): IF a=q(t) THEN M`transition(s,t) ELSE 0 ENDIF)
+
+  expectation_indicator: LEMMA expectation(M, indicator(q, a))(s) =
+    lumping.fiberMass(M, q, s, a)
+
+  expectation_projection: THEOREM
+    expectation(M, LAMBDA (s: State): g(q(s)))(s) =
+      targetSum.sum(abstractUniverse,
+        LAMBDA (a: Abstract): lumping.fiberMass(M, q, s, a) * g(a))
+
+  kernelClosed_fiberLocal: THEOREM
+    KernelClosed(M, projectionAlgebra(q)) IMPLIES FiberLocal(M, q)
+
+  Surjection: TYPE = {q: [State -> Abstract] | surjective?[State, Abstract](q)}
+
+  p: VAR Surjection
+
+  representative(p)(a): State = choose({s: State | p(s) = a})
+
+  representative_spec: THEOREM p(representative(p)(a)) = a
+
+  reducedModel(M, p): reduced.Model =
+    (# transition := LAMBDA (a, b: Abstract): lumping.fiberMass(M, p, representative(p)(a), b),
+       good := LAMBDA (a: Abstract): M`good(representative(p)(a)) #)
+
+  representative_factor: LEMMA projectionAlgebra(p)(f) IMPLIES
+    f = (LAMBDA (s: State): f(representative(p)(p(s))))
+
+  fiber_row_eq: LEMMA FiberLocal(M, p) IMPLIES
+    (LAMBDA (a: Abstract): lumping.fiberMass(M, p, s, a) * g(a)) =
+    (LAMBDA (a: Abstract): lumping.fiberMass(M, p, t, a) * g(a))
+    WHEN p(s) = p(t)
+
+  expectation_factor: LEMMA FiberLocal(M, p) AND projectionAlgebra(p)(f)
+    IMPLIES expectation(M, f)(s) = expectation(M, f)(t) WHEN p(s) = p(t)
+
+  fiberLocal_kernelClosed: THEOREM FiberLocal(M, p)
+    IMPLIES KernelClosed(M, projectionAlgebra(p))
+
+  kernelClosed_iff_fiberLocal: THEOREM
+    KernelClosed(M, projectionAlgebra(p)) IFF FiberLocal(M, p)
+
+  reduced_compatible: THEOREM FiberLocal(M, p) AND GoodLocal(M, p)
+    IMPLIES lumping.Compatible(M, reducedModel(M, p), p)
+
+  compatible_local: THEOREM lumping.Compatible(M, N, q)
+    IMPLIES FiberLocal(M, q) AND GoodLocal(M, q)
+
+  reduced_compatible_iff: THEOREM lumping.Compatible(M, reducedModel(M, p), p)
+    IFF KernelClosed(M, projectionAlgebra(p)) AND GoodLocal(M, p)
+
+  reduced_stochastic: THEOREM KernelClosed(M, projectionAlgebra(p)) AND
+    GoodLocal(M, p) AND concreteOrder.Stochastic(M)
+    IMPLIES reducedOrder.Stochastic(reducedModel(M, p))
+
+  reduced_survival: THEOREM KernelClosed(M, projectionAlgebra(p)) AND
+    GoodLocal(M, p) IMPLIES
+    concreteSurvival.survival(M, n, s) =
+      reducedSurvival.survival(reducedModel(M, p), n, p(s))
+
+END ppg_repair_observable_kernel

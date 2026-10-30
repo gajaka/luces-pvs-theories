@@ -1,0 +1,142 @@
+% Exact examples distinguishing stable observation from fixed observation,
+% and full probabilistic closure from closure tested only on generators.
+% No measured trajectory or floating-point computation is used here.
+% Lean counterpart: PPGraph.Repair.ObservableExamples.
+
+ppg_repair_observable_pair_examples: THEORY
+BEGIN
+
+  PairState: TYPE = [rat, rat]
+
+  IMPORTING ppg_repair_observable_projection[PairState, rat]
+
+  s: VAR PairState
+
+  first(s): rat = s`1
+
+  firstAlgebra: Algebra = projectionAlgebra(first)
+
+  increment(s): PairState = (s`1 + 1, s`2)
+
+  swap(s): PairState = (s`2, s`1)
+
+  first_in_algebra: LEMMA firstAlgebra(first)
+
+  increment_first_changes: LEMMA pullback(increment, first)((0,0)) /= first((0,0))
+
+  swap_first_not_in_algebra: LEMMA NOT firstAlgebra(pullback(swap, first))
+
+  increment_stable: THEOREM Stable(singleton(increment), firstAlgebra)
+
+  fixed_first_value: LEMMA Fixed(increment, firstAlgebra) IMPLIES
+    pullback(increment, first)((0,0)) = first((0,0))
+
+  increment_not_fixed: THEOREM NOT Fixed(increment, firstAlgebra)
+
+  swap_not_stable: THEOREM NOT Stable(singleton(swap), firstAlgebra)
+
+END ppg_repair_observable_pair_examples
+
+ppg_repair_observable_examples: THEORY
+BEGIN
+
+  Small: TYPE = {S0, S1, S2, S3}
+
+  Summary: TYPE = {A0, A1, A2}
+
+  states: finite_set[Small] = add(S0, add(S1, add(S2, singleton(S3))))
+
+  summaries: finite_set[Summary] = add(A0, add(A1, singleton(A2)))
+
+  IMPORTING ppg_repair_observable_kernel[Small, Summary, states, summaries]
+
+  s: VAR Small
+  a: VAR Summary
+  f: VAR Observable
+  g: VAR [Summary -> rat]
+  B: VAR Algebra
+
+  visible(s): Summary = IF s = S2 THEN A1 ELSIF s = S3 THEN A2 ELSE A0 ENDIF
+
+  visibleSignal(a): rat = IF a = A1 THEN -1 ELSIF a = A2 THEN 1 ELSE 0 ENDIF
+
+  signal(s): rat = visibleSignal(visible(s))
+
+  demoModel: concrete.Model =
+    (# transition := LAMBDA (s,t: Small):
+         IF s = S1 THEN (IF t = S2 OR t = S3 THEN 1/2 ELSE 0 ENDIF)
+         ELSE (IF t = S0 THEN 1 ELSE 0 ENDIF) ENDIF,
+       good := LAMBDA (s: Small): FALSE #)
+
+  small_exhaustive: LEMMA s = S0 OR s = S1 OR s = S2 OR s = S3
+
+  summary_exhaustive: LEMMA a = A0 OR a = A1 OR a = A2
+
+  four_sum: LEMMA sourceSum.sum(states, f) = f(S0) + f(S1) + f(S2) + f(S3)
+
+  demo_expectation: LEMMA expectation(demoModel, f)(s) =
+    IF s = S1 THEN (f(S2) + f(S3))/2 ELSE f(S0) ENDIF
+
+  visible_preimage(a): Small = CASES a OF A0: S0, A1: S2, A2: S3 ENDCASES
+
+  visible_preimage_exact: LEMMA visible(visible_preimage(a)) = a
+
+  visible_surjective: THEOREM surjective?[Small, Summary](visible)
+
+  demo_stochastic: THEOREM concreteOrder.Stochastic(demoModel)
+
+  signal_in_projection: THEOREM projectionAlgebra(visible)(signal)
+
+  signal_interpolation: THEOREM
+    (LAMBDA (s: Small): g(visible(s))) =
+    (LAMBDA (s: Small): g(A0) + ((g(A2)-g(A1))/2)*signal(s) +
+      ((g(A2)+g(A1))/2-g(A0))*signal(s)*signal(s))
+
+  h: VAR Observable
+  k: VAR rat
+
+  closed_constant: LEMMA Subalgebra?(B) IMPLIES B(constant(k))
+
+  closed_add: LEMMA Subalgebra?(B) AND B(f) AND B(h) IMPLIES B(pointAdd(f,h))
+
+  closed_mul: LEMMA Subalgebra?(B) AND B(f) AND B(h) IMPLIES B(pointMul(f,h))
+
+  polynomial(g): Observable = pointAdd(
+    pointAdd(constant(g(A0)), pointMul(constant((g(A2)-g(A1))/2), signal)),
+    pointMul(pointMul(constant((g(A2)+g(A1))/2-g(A0)), signal), signal))
+
+  polynomial_value: LEMMA polynomial(g) =
+    (LAMBDA (s: Small): g(A0) + ((g(A2)-g(A1))/2)*signal(s) +
+      ((g(A2)+g(A1))/2-g(A0))*signal(s)*signal(s))
+
+  polynomial_closed: LEMMA Subalgebra?(B) AND B(signal) IMPLIES B(polynomial(g))
+
+  generated_contains_polynomial: LEMMA Subalgebra?(B) AND B(signal) IMPLIES
+    B(LAMBDA (s: Small): g(A0) + ((g(A2)-g(A1))/2)*signal(s) +
+      ((g(A2)+g(A1))/2-g(A0))*signal(s)*signal(s))
+
+  projection_in_generated: LEMMA projectionAlgebra(visible)(f)
+    IMPLIES adjoin(singleton(signal))(f)
+
+  signal_generates_projection: THEOREM
+    projectionAlgebra(visible) = adjoin(singleton(signal))
+
+  mean_zero: THEOREM expectation(demoModel, signal)(s) = 0
+
+  generator_image_in_projection: THEOREM
+    projectionAlgebra(visible)(expectation(demoModel, signal))
+
+  square_in_projection: THEOREM projectionAlgebra(visible)(pointMul(signal, signal))
+
+  square_after_distinguishes: THEOREM
+    expectation(demoModel, pointMul(signal, signal))(S0) /=
+      expectation(demoModel, pointMul(signal, signal))(S1)
+
+  demo_not_kernelClosed: THEOREM NOT KernelClosed(demoModel, projectionAlgebra(visible))
+
+  mean_check_insufficient: THEOREM
+    projectionAlgebra(visible) = adjoin(singleton(signal)) AND
+    projectionAlgebra(visible)(expectation(demoModel, signal)) AND
+    NOT KernelClosed(demoModel, projectionAlgebra(visible))
+
+END ppg_repair_observable_examples

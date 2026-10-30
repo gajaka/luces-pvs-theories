@@ -1,0 +1,207 @@
+% Exact semantic invalidation over a fixed admissible domain.
+% Finite search is exact only when its enumeration covers that domain.
+% The returned list represents an optional counterexample: empty or singleton.
+% Lean counterpart: PPGraph.Repair.SemanticHazards, Dragan Stosic, 2026.
+
+ppg_repair_semantic_hazards[State,C: TYPE]: THEORY
+BEGIN
+
+  IMPORTING foundations@ppg_finite_all[C]
+
+  sat: VAR [C,State -> bool]
+  allowed, small: VAR set[State]
+  run, first, second: VAR [State -> State]
+  c: VAR C
+  s, before, after: VAR State
+  core, target, recheck, candidate, safe: VAR finite_set[C]
+  states: VAR list[State]
+
+  Invalidates(sat,run,c,s): bool = sat(c,s) AND NOT sat(c,run(s))
+
+  PreservesOn(allowed,sat,run,c): bool = FORALL(s:State):
+    allowed(s) AND sat(c,s) IMPLIES sat(c,run(s))
+
+  scope(allowed,sat,core,run): finite_set[C] =
+    intersection(core,{c:C | EXISTS(s:State):allowed(s) AND Invalidates(sat,run,c,s)})
+
+  findInvalidation(allowed,sat,run,states,c): RECURSIVE list[State] =
+    CASES states OF null: null[State],
+      cons(s,rest):
+        IF allowed(s) AND Invalidates(sat,run,c,s) THEN cons(s,null[State])
+        ELSE findInvalidation(allowed,sat,run,rest,c) ENDIF
+    ENDCASES MEASURE length(states)
+
+  finiteScope(allowed,sat,run,states,core): finite_set[C] =
+    intersection(core,{c:C | NOT null?(findInvalidation(allowed,sat,run,states,c))})
+
+  CompleteDomain(allowed,states): bool =
+    FORALL(s:State):allowed(s) IMPLIES member(s,states)
+
+  exactScope(allowed,sat,run,states,core): finite_set[C] =
+    finiteScope(allowed,sat,run,states,core)
+
+  HazardResult: TYPE = [# isHazard: bool, counterexamples: list[State] #]
+
+  classify(allowed,sat,run,states,c): HazardResult =
+    LET found = findInvalidation(allowed,sat,run,states,c) IN
+      (# isHazard:=NOT null?(found),counterexamples:=found #)
+
+  FullContract(sat,target,core,before,after): bool =
+    (FORALL(c:C):target(c) IMPLIES sat(c,after)) AND
+    (FORALL(c:C):core(c) AND sat(c,before) IMPLIES sat(c,after))
+
+  checkScope(sat,target,recheck,before,after): bool =
+    finiteAll(target,LAMBDA(c:C):sat(c,after)) AND
+    finiteAll(recheck,LAMBDA(c:C):sat(c,before) IMPLIES sat(c,after))
+
+  checkExactCommit(allowed,sat,states,target,core,run,before): bool =
+    checkScope(sat,target,exactScope(allowed,sat,run,states,core),before,run(before))
+
+  checkedExactStep(allowed,sat,states,target,core,run,before): State =
+    IF checkExactCommit(allowed,sat,states,target,core,run,before)
+      THEN run(before) ELSE before ENDIF
+
+  mem_scope_iff: THEOREM scope(allowed,sat,core,run)(c) IFF
+    core(c) AND EXISTS(s:State):allowed(s) AND sat(c,s) AND NOT sat(c,run(s))
+
+  scope_subset_core: THEOREM subset?(scope(allowed,sat,core,run),core)
+
+  mem_scope_iff_not_preserves: THEOREM scope(allowed,sat,core,run)(c) IFF
+    core(c) AND NOT PreservesOn(allowed,sat,run,c)
+
+  scope_no_false_positives: THEOREM scope(allowed,sat,core,run)(c) IMPLIES
+    EXISTS(s:State):allowed(s) AND Invalidates(sat,run,c,s)
+
+  scope_no_false_negatives: THEOREM core(c) AND allowed(s) AND sat(c,s) AND
+    NOT sat(c,run(s)) IMPLIES scope(allowed,sat,core,run)(c)
+
+  not_mem_scope_iff_preserves: THEOREM core(c) IMPLIES
+    ((NOT scope(allowed,sat,core,run)(c)) IFF PreservesOn(allowed,sat,run,c))
+
+  preserved_outside_scope: THEOREM core(c) AND NOT scope(allowed,sat,core,run)(c)
+    IMPLIES PreservesOn(allowed,sat,run,c)
+
+  not_mem_scope_of_preserves: THEOREM PreservesOn(allowed,sat,run,c)
+    IMPLIES NOT scope(allowed,sat,core,run)(c)
+
+  scope_minimal: THEOREM
+    (FORALL(c:C):core(c) AND NOT recheck(c) IMPLIES PreservesOn(allowed,sat,run,c))
+      IMPLIES subset?(scope(allowed,sat,core,run),recheck)
+
+  scope_mono_domain: THEOREM subset?(small,allowed) IMPLIES
+    subset?(scope(small,sat,core,run),scope(allowed,sat,core,run))
+
+  scope_eq_empty_of_preserves: THEOREM
+    (FORALL(c:C):core(c) IMPLIES PreservesOn(allowed,sat,run,c))
+      IMPLIES scope(allowed,sat,core,run)=emptyset[C]
+
+  scope_identity: THEOREM
+    scope(allowed,sat,core,LAMBDA(s:State):s)=emptyset[C]
+
+  scope_comp_subset_union: THEOREM
+    (FORALL(s:State):allowed(s) IMPLIES allowed(first(s))) IMPLIES
+    subset?(scope(allowed,sat,core,LAMBDA(s:State):second(first(s))),
+      union(scope(allowed,sat,core,first),scope(allowed,sat,core,second)))
+
+  scope_subset_after_safe_removal: THEOREM
+    subset?(scope(allowed,sat,core,run),candidate) AND
+    (FORALL(c:C):safe(c) IMPLIES PreservesOn(allowed,sat,run,c)) IMPLIES
+      subset?(scope(allowed,sat,core,run),difference(candidate,safe))
+
+  singleton_injective: LEMMA FORALL(t:State):
+    cons(s,null[State])=cons(t,null[State]) IMPLIES s=t
+
+  findInvalidation_sound: THEOREM
+    findInvalidation(allowed,sat,run,states,c)=cons(s,null[State])
+      IMPLIES allowed(s) AND Invalidates(sat,run,c,s)
+
+  findInvalidation_mem: THEOREM
+    findInvalidation(allowed,sat,run,states,c)=cons(s,null[State])
+      IMPLIES member(s,states)
+
+  forall_cons_head: LEMMA FORALL (test: [State -> bool]), (h: State), (tail: list[State]):
+    (FORALL (s: State): member(s, cons(h, tail)) IMPLIES test(s)) IMPLIES test(h)
+
+  forall_cons_tail: LEMMA FORALL (test: [State -> bool]), (h: State), (tail: list[State]):
+    (FORALL (s: State): member(s, cons(h, tail)) IMPLIES test(s)) IMPLIES
+      (FORALL (s: State): member(s, tail) IMPLIES test(s))
+
+  forall_cons_intro: LEMMA FORALL (test: [State -> bool]), (h: State), (tail: list[State]):
+    test(h) AND (FORALL (s: State): member(s, tail) IMPLIES test(s)) IMPLIES
+      (FORALL (s: State): member(s, cons(h, tail)) IMPLIES test(s))
+
+  forall_members_cons: LEMMA FORALL (test: [State -> bool]), (h: State), (tail: list[State]):
+    (FORALL (s: State): member(s, cons(h, tail)) IMPLIES test(s)) IFF
+      (test(h) AND (FORALL (s: State): member(s, tail) IMPLIES test(s)))
+
+  findInvalidation_none_iff: THEOREM
+    null?(findInvalidation(allowed,sat,run,states,c)) IFF
+      (FORALL(s:State):member(s,states) IMPLIES
+        NOT (allowed(s) AND Invalidates(sat,run,c,s)))
+
+  findInvalidation_isSome_iff: THEOREM
+    (NOT null?(findInvalidation(allowed,sat,run,states,c))) IFF
+      EXISTS(s:State):member(s,states) AND allowed(s) AND Invalidates(sat,run,c,s)
+
+  mem_finiteScope_iff: THEOREM finiteScope(allowed,sat,run,states,core)(c) IFF
+    core(c) AND EXISTS(s:State):member(s,states) AND allowed(s) AND Invalidates(sat,run,c,s)
+
+  exactScope_eq_scope: THEOREM CompleteDomain(allowed,states) IMPLIES
+    exactScope(allowed,sat,run,states,core)=scope(allowed,sat,core,run)
+
+  classify_isHazard_iff: THEOREM CompleteDomain(allowed,states) IMPLIES
+    (classify(allowed,sat,run,states,c)`isHazard IFF
+      EXISTS(s:State):allowed(s) AND Invalidates(sat,run,c,s))
+
+  classify_preservation: THEOREM CompleteDomain(allowed,states) AND
+    NOT classify(allowed,sat,run,states,c)`isHazard
+      IMPLIES PreservesOn(allowed,sat,run,c)
+
+  checkScope_iff: THEOREM checkScope(sat,target,recheck,before,after) IFF
+    (FORALL(c:C):target(c) IMPLIES sat(c,after)) AND
+    (FORALL(c:C):recheck(c) AND sat(c,before) IMPLIES sat(c,after))
+
+  checkScope_iff_fullContract: THEOREM
+    subset?(recheck,core) AND subset?(scope(allowed,sat,core,run),recheck) AND
+    allowed(before) IMPLIES
+    (checkScope(sat,target,recheck,before,run(before)) IFF
+      FullContract(sat,target,core,before,run(before)))
+
+  checkExactCommit_iff_fullContract: THEOREM
+    CompleteDomain(allowed,states) AND allowed(before) IMPLIES
+    (checkExactCommit(allowed,sat,states,target,core,run,before) IFF
+      FullContract(sat,target,core,before,run(before)))
+
+  checkedExactStep_preserves: THEOREM CompleteDomain(allowed,states) AND
+    allowed(before) AND core(c) AND sat(c,before) IMPLIES
+      sat(c,checkedExactStep(allowed,sat,states,target,core,run,before))
+
+  checkedExactStep_target_of_accepted: THEOREM CompleteDomain(allowed,states) AND
+    allowed(before) AND target(c) AND
+    checkExactCommit(allowed,sat,states,target,core,run,before) IMPLIES
+      sat(c,checkedExactStep(allowed,sat,states,target,core,run,before))
+
+END ppg_repair_semantic_hazards
+
+ppg_repair_semantic_footprints[C,V,Value: TYPE]: THEORY
+BEGIN
+
+  IMPORTING ppg_repair_hazards[C,V,Value] AS footprint,
+    ppg_repair_semantic_hazards[[V -> Value],C] AS semantic
+
+  vars: VAR footprint.CertVars
+  sat: VAR [C,footprint.Snapshot -> bool]
+  allowed: VAR set[footprint.Snapshot]
+  core,target: VAR finite_set[C]
+  a: VAR footprint.Action
+  s,t: VAR footprint.Snapshot
+
+  scope_subset_affected: THEOREM footprint.Local(vars,sat) IMPLIES
+    subset?(semantic.scope(allowed,sat,core,a`run),
+      footprint.affected(vars,core,a`writes))
+
+  full_contract_agrees: THEOREM
+    footprint.FullContract(sat,target,core,s,t) IFF
+      semantic.FullContract(sat,target,core,s,t)
+
+END ppg_repair_semantic_footprints

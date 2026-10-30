@@ -1,0 +1,190 @@
+(|ppg_repair_observable_certificates|
+ (|indicator_truth| 0
+  (|indicator_truth-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (GRIND :IF-MATCH ALL :EXCLUDE ("Subalgebra?" "stableHull" "adjoin")))
+    NIL NIL)
+   ((|indicator| CONST-DECL "Observable" |ppg_repair_observable_certificates|
+     NIL))
+   SHOSTAK))
+ (|observable_certificate_agreement| 0
+  (|observable_certificate_agreement-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (GRIND :IF-MATCH ALL :EXCLUDE ("Subalgebra?" "stableHull" "adjoin")))
+    NIL NIL)
+   ((|ObsEq| CONST-DECL "bool" |ppg_repair_observable_algebra| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_certificates| NIL)
+    (|indicator| CONST-DECL "Observable" |ppg_repair_observable_certificates|
+     NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_repair_observable_certificates| NIL)
+    (|Observable| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL))
+   SHOSTAK))
+ (|fixed_certificate_agreement| 0
+  (|fixed_certificate_agreement-1| NIL 0
+   ("" (SKOSIMP*)
+    (("" (EXPAND "Fixed" -2)
+      (("" (INST -2 "indicator(sat!1,c!1)")
+        (("" (ASSERT)
+          ((""
+            (CASE
+                "pullback(run!1,indicator(sat!1,c!1))(s!1)=indicator(sat!1,c!1)(s!1)")
+            (("1" (ASSERT)
+              (("1" (GRIND :DEFS ("indicator" "pullback") :IF-MATCH NIL) NIL
+                NIL))
+              NIL)
+             ("2" (ASSERT) NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_certificates| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Observable| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_repair_observable_certificates| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|indicator| CONST-DECL "Observable" |ppg_repair_observable_certificates|
+     NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|Operation| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|pullback| CONST-DECL "Observable" |ppg_repair_observable_algebra| NIL)
+    (|Fixed| CONST-DECL "bool" |ppg_repair_observable_algebra| NIL))
+   SHOSTAK))
+ (|fixed_prevents_invalidation| 0
+  (|fixed_prevents_invalidation-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "fixed_certificate_agreement"
+      ("B" "B!1" "sat" "sat!1" "c" "c!1" "run" "run!1" "s" "s!1"))
+     (GRIND :DEFS ("Invalidates") :IF-MATCH NIL :EXCLUDE
+      ("Fixed" "indicator" "pullback")))
+    NIL NIL)
+   ((|Invalidates| CONST-DECL "bool" |ppg_repair_semantic_hazards| NIL)
+    (|fixed_certificate_agreement| FORMULA-DECL NIL
+     |ppg_repair_observable_certificates| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_certificates| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Observable| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Algebra| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_repair_observable_certificates| NIL)
+    (|Operation| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL))
+   SHOSTAK))
+ (|fixed_semantic_scope_empty| 0
+  (|fixed_semantic_scope_empty-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "fixed_prevents_invalidation")
+     (APPLY-EXTENSIONALITY :HIDE? T)
+     (GRIND :DEFS ("scope" "ProtectedIndicators") :IF-MATCH ALL :EXCLUDE
+      ("Fixed" "indicator" "pullback" "Invalidates" "Subalgebra?")))
+    NIL NIL)
+   ((|finite_emptyset| NAME-JUDGEMENT "finite_set" |finite_sets| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_certificates| NIL)
+    (|is_finite| CONST-DECL "bool" |finite_sets| NIL)
+    (|finite_set| TYPE-EQ-DECL NIL |finite_sets| NIL)
+    (|scope| CONST-DECL "finite_set[C]" |ppg_repair_semantic_hazards| NIL)
+    (|Operation| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|emptyset| CONST-DECL "set" |sets| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_repair_observable_certificates| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|member| CONST-DECL "bool" |sets| NIL)
+    (|intersection| CONST-DECL "set" |sets| NIL)
+    (|ProtectedIndicators| CONST-DECL "bool"
+     |ppg_repair_observable_certificates| NIL)
+    (|finite_intersection2| APPLICATION-JUDGEMENT "finite_set" |finite_sets|
+     NIL)
+    (|Algebra| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|Observable| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|fixed_prevents_invalidation| FORMULA-DECL NIL
+     |ppg_repair_observable_certificates| NIL))
+   SHOSTAK))
+ (|stable_word_certificate_agreement| 0
+  (|stable_word_certificate_agreement-1| NIL 0
+   (""
+    (THEN (SKOSIMP*)
+     (LEMMA "obsEq_runWord"
+      ("ops" "ops!1" "B" "B!1" "word" "word!1" "s" "s!1" "t" "t!1"))
+     (ASSERT)
+     (LEMMA "observable_certificate_agreement"
+      ("B" "B!1" "sat" "sat!1" "c" "c!1" "s" "runWord(word!1,s!1)" "t"
+       "runWord(word!1,t!1)"))
+     (ASSERT))
+    NIL NIL)
+   ((|runWord| DEF-DECL "State" |ppg_repair_observable_algebra| NIL)
+    (C FORMAL-TYPE-DECL NIL |ppg_repair_observable_certificates| NIL)
+    (|observable_certificate_agreement| FORMULA-DECL NIL
+     |ppg_repair_observable_certificates| NIL)
+    (|obsEq_runWord| FORMULA-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Observable| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|Algebra| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|Operation| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|set| TYPE-EQ-DECL NIL |sets| NIL) (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_certificates| NIL))
+   SHOSTAK))
+ (|protected_view_agreement| 0
+  (|protected_view_agreement-1| NIL 0
+   (""
+    (THEN (SKOSIMP*) (LEMMA "observable_certificate_agreement")
+     (GRIND :DEFS ("ProtectedIndicators") :IF-MATCH ALL :EXCLUDE
+      ("ObsEq" "indicator")))
+    NIL NIL)
+   ((C FORMAL-TYPE-DECL NIL |ppg_repair_observable_certificates| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rat| NONEMPTY-TYPE-EQ-DECL NIL |rationals| NIL)
+    (|Observable| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|Algebra| TYPE-EQ-DECL NIL |ppg_repair_observable_algebra| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|State| FORMAL-TYPE-DECL NIL |ppg_repair_observable_certificates| NIL)
+    (|ProtectedIndicators| CONST-DECL "bool"
+     |ppg_repair_observable_certificates| NIL)
+    (|observable_certificate_agreement| FORMULA-DECL NIL
+     |ppg_repair_observable_certificates| NIL))
+   SHOSTAK)))
