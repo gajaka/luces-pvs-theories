@@ -7,151 +7,98 @@ The application theories describe transport, observability and secure-boot
 models; the generic theory keeps the data, specifications and repair actions
 abstract.
 
-As of **2026-10-24**, the translation has independently replayed
-counterparts for **1,824 of 1,824 Lean source theorems and lemmas**, with all recorded
-results checked in **191 of 191 modules**. Supporting PVS lemmas and
-type-correctness conditions are additional obligations and are excluded from
-those source-result counts.
+## Inventory and proof scope
 
-The 2026-10-28 theorem-scope cleanup removes the translated `THEOREM TRUE`
-placeholder and replaces four weak repair statements with before/after
-properties of an explicit local value update. A new restoration theorem keeps
-the total Lean source declaration count at 1,824. The order-preservation helper
-is now named `linear_cert_le_of_le` in both quotient developments. See the
-[theorem-scope note](docs/THEOREM_SCOPE.md) for the fixed-specification model and
-the targeted proof checks. The dated full-library results above remain the
-historical translation record.
+The main development contains **9,764 explicit PVS theorems and lemmas** in
+**1,141 tracked `.pvs` files**. This is the scope selected by
+`scripts/check.py --all`:
 
-Further structural corrections on **2026-10-28** add a bridge from actual
-certificate families to dependency components and the state-repair contract,
-connect meta refinement to the core RR definition, and establish categorical
-quotients under explicit noncollapse and descent conditions. An operational MT
-bridge follows the supplied directed edges under a primitive-step contract.
-These are scoped extensions of the historical translation, with their own proof
-replay. The application
-corrections replace the finite transport reconstruction assumption, derive
-regime tests from calibrated arithmetic and use a directed boot policy. See the
-[scope and verification details](docs/THEOREM_SCOPE.md#structural-and-application-corrections).
+| Source scope | Tracked `.pvs` files | Explicit `THEOREM` and `LEMMA` declarations |
+| --- | ---: | ---: |
+| Generic theories (`theories/`) | 1,102 | 9,239 |
+| Application models (`applications/`) | 39 | 525 |
+| **Main development** | **1,141** | **9,764** |
+| Separate Sterbenz development (`Sterbenz/`) | 5 | 163 |
 
-The subsequent finite-read integration retains repeated certificate positions
-and derives read locality from checker syntax. Its measured LUCES instance
-searches a fixed bank of candidate coupling snapshots while preserving the
-signed GEN observation and dataset identity. That update's Lean inventory was
-**1,876 results in 198 modules**; this is a Lean declaration count, not a new
-whole-library PVS replay count. The revised LUCES theories use explicit finite
-models, checked model laws and measured numerical inputs in place of the
-earlier hand-written axioms. Read the [LUCES model scope](docs/LUCES_MODEL_SCOPE.md)
-for the established claims and the remaining implementation and physical
-boundaries.
+These are source-declaration counts, including explicitly stated supporting
+lemmas. Automatically generated type-correctness conditions (TCCs), datatype
+axioms and external library obligations are excluded. Two of the main source
+files are generated datatype renderings; neither adds an explicit theorem or
+lemma. A declaration count is not a fresh proof-replay result.
 
-The finite-read integration receipt, completed on **2026-10-29**, covers
-**28 changed `.pvs` files and 30 changed `.prf` files**: 27 semantic source
-changes, one equivalent PVS-generated ADT rendering and three additional
-proof-only repairs. Ten completed normal replay reports cover all 30
-proof-bearing source roots and their loaded Project and required Native
-dependencies. Eight existing passes were reused after checking their actual
-loaded source/proof hashes against the publication. The two new passes replayed
-**723 Project + 956 Native bodies** for the proof repairs and
-**17 Project + 761 Native bodies** for the Shannon example, with no unfinished
-bodies or missing scripts. These counts overlap. See the
-[incremental verification receipt](reports/PVS_INCREMENTAL_REPLAY_20261029.json).
+The recorded Lean-to-PVS translation covers a fixed source inventory of
+**1,824 Lean theorems and lemmas in 191 Lean modules**. That correspondence is
+separate from the larger PVS inventory above: PVS adds supporting results,
+application claims and later extensions. Intermediate Lean snapshot counts are
+not PVS totals. See the [theorem-scope note](docs/THEOREM_SCOPE.md) for the
+correspondence and the [verification records](#verification-records) for proof
+coverage. Later dependency-aware checks do not establish a new whole-library
+proof pass.
 
-The same record includes successful typechecking of all 1,121 selected files.
-The later whole-library
-proof replay was stopped when the requested scope changed to modified and
-affected theories; it is not reported as a new whole-library proof pass.
-The source dependency and qualified-reference checks found no additional
-unchanged consumers of the 27 semantic changes. The generated ADT change only
-expands the binder `(x,y:T)` to `(x:T,y:T)` and removes three blank lines;
-its parent datatype is unchanged.
+To reproduce the main source count without starting PVS:
 
-A subsequent [walk-geometry extension](docs/THEOREM_SCOPE.md#curvature-extracted-from-certified-walks)
-computes angular curvature from ordered vertex coordinates. Its certificate
-requires `pp_path`, active steps and enough samples; the Lie interface
-binds the reported curvature to that calculation. A graph extension preserves
-the same certified path, while a concrete newly admitted bent path fails its
-zero-curvature certificate. This does not certify C20 transport couplings or
-floating-point agreement with the recorded boot observations.
+```sh
+python3 - <<'PYCOUNT'
+import re
+import subprocess
+from pathlib import Path
 
-That revision's completed [targeted replay](reports/PVS_WALK_GEOMETRY_20261029.json) covers
-both entry points and their dependencies: **90 Project bodies and 757 required
-Native originals**, all proved by the ordinary public checker on 2026-10-29.
-These are proof-body counts including supporting lemmas and TCCs, not an
-addition to the historical Lean translation count.
+paths = subprocess.check_output(
+    ["git", "ls-files", "-z", "--", "theories/", "applications/"]
+).decode().split("\0")
+files = [Path(name) for name in paths if name.endswith(".pvs")]
+claims = 0
+for path in files:
+    source = "\n".join(line.split("%", 1)[0] for line in path.read_text().splitlines())
+    claims += len(re.findall(r":\s*(?:THEOREM|LEMMA)\b", source, re.IGNORECASE))
+print(f"{len(files):,} source files; {claims:,} explicit theorems and lemmas")
+PYCOUNT
+```
 
-A later endpoint-coherence extension computes both reported fields from the
-same ordered walk. The report checker verifies that equality as well as the
-PPG and numerical certificate conditions. A three-sample curvature identity
-and a computed four-sample counterexample describe the relation between these
-two quantities. Endpoint-direction coherence is distinct from C20; captured
-C20 data and its finite checks now have their own legacy observation theory.
-For three active samples with a common first step norm, the identity implies
-strict inverse ordering. Neither a larger sample count nor equal step lengths
-alone guarantees that ordering. Each captured C20 row uses seven distributions;
-the three-sample identity does not explain its observed C20 relationship.
-These new geometric modules currently have no Lean counterparts.
-See the [coherence scope](docs/THEOREM_SCOPE.md#endpoint-direction-coherence-and-the-curvature-relation).
+## Application and repair scope
 
-The separate [`pp_walk_coherence_order`](applications/luces/pp_walk_coherence_order.pvs)
-module proves the longer-trace identity `kappa = acos(C)/((N-2)*h)` under
-explicit geometric conditions: equal active step lengths and unit directions
-progressing monotonically along one shortest great-circle arc of total angle
-at most `pi`. It proves strict inverse ordering at fixed `N,h`, saves the
-three-sample corollary, and supplies a nonstraight normalized four-sample
-PPG witness. The geometric conditions are hypotheses on the actual trace;
-they do not establish C20 coupling semantics or sensor calibration.
+Repairs update data while keeping the chosen specification fixed. Certificate
+families connect to dependency components, meta refinement connects to the core
+RR relation, and categorical quotients require explicit noncollapse and descent
+conditions. The operational MT bridge follows directed edges under a
+primitive-step contract. See the
+[structural and application contracts](docs/THEOREM_SCOPE.md#structural-and-application-corrections).
 
-Its completed [targeted replay](reports/PVS_WALK_COHERENCE_ORDER_20261029.json)
-passed **149 Project bodies and 911 required original Native bodies** across
-seven Project modules, including 33 new bodies (26 explicit claims and seven
-TCCs). There were no unfinished obligations or Native failures. All previously
-existing project sources and proof files remained unchanged.
+The finite-read checker derives locality from its syntax and retains repeated
+certificate positions. Its measured LUCES instance searches a fixed bank of
+candidate coupling snapshots while preserving the signed GEN observation and
+dataset identity. The application theories use explicit finite models, checked
+model laws and measured inputs; their implementation and physical boundaries
+are described in [LUCES model scope](docs/LUCES_MODEL_SCOPE.md).
 
-A separate [captured-data applicability check](docs/LIE_GENERATOR_README.md#applicability-to-the-captured-seven-sample-walks)
-finds **zero of the three recorded seven-sample traces** in this sufficient
-class. Boot320, boot334 and boot347 have unequal step lengths and exact
-represented delta rank six. The
-[report](reports/LUCES_WALK_ARC_APPLICABILITY_20261029.json) records bound inputs,
-finite-data witnesses and separate numerical diagnostics. This does not
-instantiate the positive theorem for those data or classify other datasets.
+The [walk-geometry development](docs/THEOREM_SCOPE.md#curvature-extracted-from-certified-walks)
+computes curvature from ordered vertex coordinates. A geometry certificate
+requires a certified PPG path, active steps and enough samples. Endpoint-direction
+coherence is computed from the same walk and is distinct from C20 transport
+coherence. The [coherence analysis](docs/THEOREM_SCOPE.md#endpoint-direction-coherence-and-the-curvature-relation)
+gives a three-sample identity and a longer-walk counterexample. A separate
+[sufficient geometric class](applications/luces/pp_walk_coherence_order.pvs)
+recovers inverse ordering under equal step lengths and monotone directions
+along one shortest great-circle arc. None of the three captured seven-sample
+traces belongs to that class; see the
+[captured-data applicability check](docs/LIE_GENERATOR_README.md#applicability-to-the-captured-seven-sample-walks).
 
-The general [curvature lower bound](docs/THEOREM_SCOPE.md#universal-curvature-lower-bound-for-active-walks)
-requires only a walk with `N >= 3` samples and all steps active:
-`kappa >= acos(C)/((N-2)*Lmax)`, where `Lmax` covers the first `N-2` step
-norms and excludes the final observed step. Its spherical triangle inequality
-is derived from Cauchy--Schwarz. Equal lengths and planarity are not required.
-The [separate binary64 check](reports/LUCES_CURVATURE_BOUND_CHECK_20261029.json)
-matches the stored metrics and records lower bounds 1.583846, 1.646142 and
-6.220662 for the three captured traces. Numerical checks remain distinct from
-the exact-real theorem and from a proof of the runner implementation.
+The [universal curvature bound](docs/THEOREM_SCOPE.md#universal-curvature-lower-bound-for-active-walks)
+requires active steps and at least three samples, without equal-length or
+planarity assumptions. Its
+[certificate-to-coherence corollaries](docs/THEOREM_SCOPE.md#coherence-derived-from-a-curvature-certificate)
+derive a coherence floor from a curvature certificate, with explicit strict
+threshold conditions. The resulting guarantees are weak on the captured data.
+Exact-real theorems, numerical checks and correctness of the running checker
+remain separate claims.
 
-The completed [bound-theorem replay](reports/PVS_WALK_CURVATURE_BOUND_20261029.json)
-passed **152 saved Project bodies and 925 required original Native bodies**
-across eight Project modules, with no unfinished obligations or failures.
-The new kernel and bound contribute 27 explicit claims and nine TCCs; all
-2,253 previously existing formal working files remained unchanged. Nine
-targeted numerical tests and the three captured-trace calculations also passed.
-
-The [certificate-to-coherence corollaries](docs/THEOREM_SCOPE.md#coherence-derived-from-a-curvature-certificate)
-derive `C >= cos(min(pi,(N-2)*Lmax*B))` from a valid geometry certificate.
-A strict requested floor below that guarantee makes its additional threshold
-obligation redundant. The direct sufficient guard is
-`B < acos(f)/((N-2)*Lmax)` for `f` in `[-1,1]`. Boundary examples show why
-equality is insufficient. The [numeric illustration](reports/LUCES_CERTIFICATE_COHERENCE_BUDGET_20261029.json)
-gives weak guarantees for the captured traces; report-value binding and
-execution refinement remain separate obligations.
-
-The [ordinary corollary replay](reports/PVS_CERTIFICATE_COHERENCE_20261029.json)
-passed **168 Project bodies and 925 required original Native bodies** across
-ten loaded modules. The new module contributes 13 explicit claims and three
-TCCs; all 2,257 previously existing formal working files remained unchanged.
-This was an incremental dependency check, not a whole-library replay.
-
-The [endpoint-coherence replay](reports/PVS_WALK_COHERENCE_20261029.json)
-passed all three entry points and their loaded dependencies on 2026-10-29:
-**138 Project bodies and 761 required original Native bodies**, with no
-unfinished obligations or Native failures. Supporting lemmas and TCCs are
-included; these counts are not a new Lean translation inventory.
+The [finite transport model](docs/TANGENT_FINITE_TRANSPORT.md) distinguishes
+representability by a deterministic map from feasibility of a coupling. The
+[optimality extension](docs/TANGENT_OPTIMALITY.md) certifies normalized feasible
+plans supported on adjacent integer bins under quadratic cost, including two
+concrete plans. It does not establish a general optimal transport solver.
+These PVS application extensions have their own scope and do not claim Lean
+counterparts for every module.
 
 ## Repair hazards and observable subalgebras
 
@@ -173,25 +120,15 @@ and a separately factored good-state predicate connect projection algebras to
 the existing exact lumping theory. The stable-hull construction is mathematical;
 it does not provide a general algorithm for finding a small summary.
 
-These are rational PVS counterparts to the public Lean repair development at
-revision [`6015167`](https://github.com/gajaka/ppg-lean/tree/60151677e58704ce856c05a572904d681fd959f6/PPGraph/Repair).
-The Lean library at that revision has 2,054 results in 206 modules. Those numbers
-are a Lean inventory, not a revised PVS translation total. The PVS function
-algebra specializes rational scalars and same-state operations; Lean's more
-general scalar and cross-state pullback interfaces remain broader. The affine
-schemes in Lean's `ObservableSchemes` module remain Lean-only.
-See [the contracts and scope](docs/REPAIR_HAZARDS_OBSERVABLES.md).
-
-The [normal replay completed on 2026-10-30](reports/PVS_REPAIR_OBSERVABLES_20261030.json)
-passed 450 Project proof bodies across 34 loaded modules for the 11 repair
-source files. The new theories contribute 242 bodies: 223 explicit claims and
-19 TCCs; another 208 bodies belong to unchanged Project dependencies. No Native
-proof bodies were required, all incompleteness and missing-script counters were
-zero, and proof oracles were disabled. Source correspondence covers 144 Lean
-claims with the specializations above; the other 79 explicit PVS claims support
-those counterparts and their certificate bridge. The 34 Lean affine-scheme
-results remain outside this port. These are targeted proof counts, separate
-from the historical 1,824-result translation ledger.
+These are rational PVS counterparts to the
+[public Lean repair development](https://github.com/gajaka/ppg-lean/tree/main/PPGraph/Repair).
+The PVS function algebra specializes rational scalars and same-state operations;
+Lean's more general scalar and cross-state pullback interfaces remain broader.
+The affine schemes in Lean's `ObservableSchemes` module remain Lean-only.
+See [the contracts and source correspondence](docs/REPAIR_HAZARDS_OBSERVABLES.md)
+and the [repair replay receipt](reports/PVS_REPAIR_OBSERVABLES_20261030.json).
+These are scoped extensions of the recorded translation, with their own proof
+checks; they do not revise the original source-result ledger.
 
 With the pinned PVS library setup below, replay the repair group with:
 
@@ -209,7 +146,7 @@ name the corresponding PVS library explicitly.
 |-----------|----------|
 | [theories/foundations/](theories/foundations/) | Finite sets, lists, sums, products, order, encodings and rational linear algebra. |
 | [theories/ppg_core/](theories/ppg_core/) | Proof-preserving graphs, morphisms, dependency components, refinement and repair relations. |
-| [theories/repair/](theories/repair/) | Structural and semantic hazards, checked commits, rational observable subalgebras, quotients and finite stochastic reduction. |
+| [theories/repair/](theories/repair/) | Structural and semantic hazards, checked state updates, rational observable subalgebras, quotients and finite stochastic reduction. |
 | [theories/certification/](theories/certification/) | Certificate families, ordered levels, quotients, selection, blocking and self-assessment. |
 | [theories/measure_probability/](theories/measure_probability/) | Measurable spaces, extended nonnegative values, probability laws, products, integrals and conditional expectations. |
 | [theories/witness_trees/](theories/witness_trees/) | Ordered witness trees, addresses, canonical encodings and weights. |
@@ -230,7 +167,7 @@ in [docs/](docs/), and verification commands in [scripts/](scripts/).
 
 The recorded translation checks use **PVS 8.1.2**,
 [NASA's PVS libraries](https://github.com/nasa/pvslib) and the `proveit` batch
-driver, version `8.1-20260706`. The libraries must be available through
+driver. The libraries must be available through
 `PVS_LIBRARY_PATH`; its entries are directories containing libraries such as
 `measure_integration`, `sets_aux` and `graphs`. From the repository root, include
 the project library directories as well when using interactive PVS or `proveit`:
@@ -260,18 +197,14 @@ PVS loads the project startup file [theories/.pvs.lisp](theories/.pvs.lisp)
 from that library path. It uses the standard setting that prevents recursive
 binary-cache serialization across the project libraries.
 
-The recorded full-replay V2 input snapshot is pinned to the official
-[`nasa/pvslib` commit `f3bb2b36240ff3413136b2a46e431c47350fe108`](https://github.com/nasa/pvslib/commit/f3bb2b36240ff3413136b2a46e431c47350fe108),
-plus the earlier single-slot `integral_split_scaf` metadata fix. An audit of all
-2,502 tracked `.pvs` and 2,242 tracked `.prf` files found no other differences
-from that commit. A later slot-aware audit identified the other 43 files in
-the expanded compatibility bundle. Its 44-file sandbox validation establishes
-metadata, source and proof-program preservation; it does not replay their
-Native proofs. The frozen V2 inputs still contain only the earlier integral
-fix. Results for a dependency closure using further metadata fixes must be
-reported separately. These input copies do not contain the private
-proof-program repairs used in the older historical checks below. See the
-[library setup instructions](library-proof-fixes/README.md).
+The recorded full-replay input snapshot uses the official NASAlib source
+identity and the single-slot `integral_split_scaf` metadata fix documented in
+the [pinned library setup](library-proof-fixes/README.md). Its frozen inputs do
+not include the remaining fixes in the expanded compatibility bundle. The
+bundle's sandbox validation checks preservation of metadata, statements and
+proof programs; it does not replay their Native proofs. Results using further
+fixes must therefore be reported separately. The pinned snapshot also excludes
+the private proof-program repairs described below.
 
 Each `.pvs` file contains specifications and theorem statements. Its `.prf`
 companion contains saved proofs. Typechecking checks expressions and generates
@@ -334,82 +267,57 @@ proveit --no-scripts --no-purge --disable-oracles --force --log \
 
 The single-theorem command does not replay its imported proof bodies.
 
-The directory reorganization was verified on **2026-10-25**. All **1,116 selected
-source files typecheck**, and **12,853 distinct proof bodies reached QED**:
-**11,159 project bodies and 1,694 Native library bodies**, including TCCs.
-The proofs ran in one PVS process with a 24,000 MiB Lisp heap. A full project
-pass was followed by targeted replay of 37 repaired proof programs across
-29 `.prf` files and additional rounds of required original Native bodies.
-Final checks passed for ordinary proof status, mapped originals, proof chains
-and dependency closure, with oracles disabled. Part of the final dependency
-audit used a separately tested hash-based traversal; proof programs and stored
-results were unchanged. The public runner was checked separately on isolated
-fixtures. The separate `Sterbenz/` development is outside
-this run.
+## Verification records
 
-Historical translation checks on 2026-10-18 through 2026-10-24 include:
+A completed whole-development replay recorded **12,853 distinct proof bodies**:
+11,159 Project bodies and 1,694 Native library bodies, including TCCs. It
+covered the generic theories and application sources present in that snapshot;
+`Sterbenz/` was excluded. These are replay-obligation counts, not the current
+source inventory in [Inventory and proof scope](#inventory-and-proof-scope).
 
-| Check | Result |
-|-------|--------|
-| General active-count integral and positive-drift budget | 318/318 project obligations complete across 32 theories, including all 87 new obligations. |
-| Full resampling, complete dependency graphs and drift-region support | 2,216/2,216 project obligations complete, including 172 new obligations. |
-| Native measure and integration support | 1,109 library proof bodies freshly forced over three disjoint rounds, with ordinary complete proof chains. The certificate includes general monotone convergence and the weighted-measure support. |
-| Augmented HLS sample space and expectation transport | 960/960 project obligations complete, including all 177 new obligations and five source results; 1,204 Native obligations freshly replayed in the same cold PVS process, including 453 additional original-library bodies. |
-| General conditional expectation | 600/600 project obligations complete across 52 theories, including all 52 new obligations. |
-| General drift, Moser–Tardos certificates and execution cost | 2,241/2,241 project obligations complete across 230 theories, including all 69 new obligations and 14 source results. |
-| Generic repair, growing lists and meta refinement | 80/80 project obligations complete across 10 theories, including 13 new obligations and 30 source results. |
-| Acyclic relation reversal | 24/24 project obligations complete across 1 theory, including 24 new obligations and 9 source results. |
-| Witness DAGs and ancestor prefixes | 61/61 project obligations complete across 2 theories, including 37 new obligations and 15 source results. |
-| Longest-path heights and independent layers | 183/183 project obligations complete across 14 theories, including 33 new obligations and 14 source results. |
-| Pointwise complementary slackness | 5/5 new obligations complete, covering 5 source results. |
-| Certification equivalence and selection | 42/42 project obligations complete, including 7 new obligations and 4 source results. |
-| Stable-sequence encodings and products | 429/429 project obligations complete across 42 theories, including 32 new obligations and 14 source results. |
-| General self-assessment | 47/47 project obligations complete across 3 theories, including 12 new obligations and 12 source results. |
-| Canonical witness-DAG reconstruction | 437/437 project obligations complete across 38 theories, including 24 new obligations and 9 source results. |
-| Countable labels and finite witness DAGs | 108/108 project obligations complete across 8 theories, including 8 new supporting obligations; no additional source-theorem credit. |
-| Finite-list certificates, lattice instances and blocking | 63/63 project obligations complete across 7 theories, including 37 new obligations and 31 source results. |
-| Certification as self-assessment | 75/75 project obligations complete across 7 theories, including 9 new obligations and 8 source results. |
-| Specification quotients and graph projection | 88/88 project obligations complete across 8 theories, including 45 new obligations and 31 source results. |
-| Canonical proper witness-DAG weight budget | 564/564 project obligations complete across 57 proof-bearing theories from 58 source files, including 14 new obligations and 7 source results. |
-| Representative selection and finite-list lenses | 75/75 project obligations complete across 6 theories, including 37 new obligations and 23 source results. |
-| General numerical feasibility and dependent-domain resampling | 36/36 project obligations complete across 5 theories, including 12 new obligations and 9 source results. |
-| Ordered witness DAGs and reversal | 105/105 project obligations complete across 6 theories, including 29 new obligations and 7 source results. |
-| General Local Lemma | 407/407 project obligations complete across 39 theories, including 48 new obligations and 30 source results; 412 Native library obligations freshly replayed in the same cold PVS process. |
-| Constructed topological node order | 191/191 project obligations complete across 15 theories, including 8 new obligations and 7 source results. |
-| Computability limit for infinite repair models | 935/935 project obligations complete across 50 proof-bearing theories, including 144 new obligations and all 14 source results. The run includes 66 TCCs and uses no Native library proof bodies. |
-| General double-sampling and Moser–Tardos intersection | 897/897 project obligations complete across 77 theories, including all 13 source results; 683 Native library obligations freshly replayed in the same cold PVS process. Measurable double, joint and forward events, product-measure identities and intersection bounds. |
-| Final HLS probability, expectation and repair translation | **5,489/5,489 saved proof bodies complete (1,228 Native and 4,261 project)**. Proofs ran in one PVS process with a 24,000 MiB heap. The initial group replayed 4,656 bodies (1,228 Native and 3,428 project); later groups checked further supporting dependencies, each with its own records from before its proofs. The current comparison covers 593 theory headers. These checks include 869 new obligations across 74 theories and the remaining 97 source results. **Current proof chains, dependency closure, source declarations and physical origins checked**. |
+That replay used one PVS process with a 24,000 MiB heap. A full Project pass was
+followed by targeted replay of repaired proof programs and required original
+Native bodies. Ordinary proof status, mapped originals, proof chains and
+dependency closure passed with oracles disabled. Part of the dependency audit
+used a separately tested hash-based traversal; proof programs and stored results
+were unchanged. The public runner was checked separately on isolated fixtures.
 
-These recorded runs precede the directory reorganization. They checked saved
-proofs in isolated workspaces, with project declarations and saved proof programs
-matching the versions committed at the time. The separately checked native
-library sources and proofs were hashed before and after reuse. A completed run
-requires `proved - complete`, including the relevant TCCs and dependencies.
-The Local Lemma run starts from a source-only private library copy and freshly
-checks 412 selected Native obligations. The larger 1,109-obligation support
-certificate is recorded separately.
-The augmented-space run replays 751 of those original library bodies and 453
-additional bodies from the unchanged library sources and saved proofs. Both
-product-law projections and transport of the existing extended expected work
-are checked in that run.
+Subsequent edits and extensions were checked incrementally. The table links
+completed receipts rather than adding their overlapping dependency counts into
+an apparent theorem total:
 
-The historical HLS and directory-reorganization checks used a local NASAlib copy with
-proof-script repairs for `series.convergent_abs`,
-`absconv_series_aux.nonneg_series_inj_conv` and `measure_space.simple_def3`.
-The directory check also uses focused proof programs for five obligations in
-`real_lebesgue_scaf`: `lebesgue_outer_measure_singleton`,
-`lebesgue_outer_measure_le_length`, `lebesgue_outer_measure_TCC1`,
-`outer_measurable_open_semi_infinite` and `lebesgue_measure_TCC1`, together
-with `lebesgue_def.lambda_closed_ball`. Library statements and source files
-were unchanged. Those historical proof-program repairs are separate from the
-published [metadata compatibility fix](library-proof-fixes/README.md); that fix
-does not install the older repairs. The runner records the hashes of the
-external sources and proofs it actually copies in `inputs.json`; a check of
-another library copy uses that copy's proof programs.
+| Checked scope | Evidence |
+| --- | --- |
+| Finite-read integration and application corrections | [Incremental replay](reports/PVS_INCREMENTAL_REPLAY_20261029.json) and [model scope](docs/LUCES_MODEL_SCOPE.md). |
+| Curvature extracted from certified walks | [Geometry replay](reports/PVS_WALK_GEOMETRY_20261029.json). |
+| Endpoint-direction coherence and counterexamples | [Coherence replay](reports/PVS_WALK_COHERENCE_20261029.json). |
+| Longer-walk sufficient conditions | [Coherence-order replay](reports/PVS_WALK_COHERENCE_ORDER_20261029.json). |
+| Universal curvature lower bound | [Curvature-bound replay](reports/PVS_WALK_CURVATURE_BOUND_20261029.json). |
+| Coherence from a curvature certificate | [Certificate-corollary replay](reports/PVS_CERTIFICATE_COHERENCE_20261029.json). |
+| Finite transport feasibility and representation | [Finite-transport replay](reports/PVS_TANGENT_FINITE_TRANSPORT_20261029.json). |
+| Adjacent-support transport optimality | [Optimality replay](reports/PVS_TANGENT_OPTIMALITY_20261029.json). |
+| Semantic hazards and observable algebras | [Repair replay](reports/PVS_REPAIR_OBSERVABLES_20261030.json) and [correspondence scope](docs/REPAIR_HAZARDS_OBSERVABLES.md). |
 
-The table reports the earlier translation checks. The reorganization check
-above separately covers the selected legacy applications as well as the generic
-theories; it excludes `Sterbenz/`.
+The [captured-trace applicability check](reports/LUCES_WALK_ARC_APPLICABILITY_20261029.json),
+[numerical curvature-bound check](reports/LUCES_CURVATURE_BOUND_CHECK_20261029.json)
+and [coherence-budget illustration](reports/LUCES_CERTIFICATE_COHERENCE_BUDGET_20261029.json)
+provide separate finite-data and numerical evidence; they are not proof replays.
+
+The incremental record also includes a broader successful typecheck. A later
+whole-library proof run was stopped when the requested scope changed to modified
+and affected theories; it is not a completed whole-library replay. Counts of
+selected source files, explicit declarations, Project proof bodies and Native
+proof bodies describe different units and are not interchangeable.
+
+The whole-development replay used a local NASAlib copy with proof-script repairs
+for `series.convergent_abs`, `absconv_series_aux.nonneg_series_inj_conv` and
+`measure_space.simple_def3`, focused proofs for five obligations in
+`real_lebesgue_scaf`, and `lebesgue_def.lambda_closed_ball`. Library statements
+and source files were unchanged. Those proof-program repairs are separate from
+the published [metadata compatibility bundle](library-proof-fixes/README.md);
+that bundle does not install them. The runner records the hashes of the external
+sources and proofs it actually copies in `inputs.json`. Checking another library
+copy uses that copy's proof programs.
 
 The generic theories, boot models and current `applications/luces/` sources
 contain no hand-written `AXIOM` declarations. Healthy self-repair requires an explicit reflexivity hypothesis.
@@ -445,7 +353,7 @@ The separate `Sterbenz/` development also contains axiomatic models generated
 by Jessie/Why3. A successful proof replay establishes the theorems under the
 axioms and hypotheses in scope; it does not prove the axioms themselves.
 
-The hand-written-axiom cleanup was checked on **2026-10-26** across six
+The hand-written-axiom cleanup was checked across six
 changed or importing source files: **139 project proof bodies and 13 required
 NASAlib proof bodies** passed from a cold source/proof copy, with complete
 dependency chains and oracles disabled. The checker replays required original
@@ -928,8 +836,8 @@ The LUCES experimental background is described in:
 
 ## Future work
 
-The recorded Lean-to-PVS translation covers the full 191-module inventory and
-all 1,824 source theorems and lemmas. The final HLS layer includes coin and
+The recorded Lean-to-PVS translation covers the source inventory described
+[in the scope summary](#inventory-and-proof-scope). Its HLS layer includes coin and
 footprint constructions, intersection-sensitive probability, refined DAG
 weights, policy and randomized expectations, and repair/decision bridges.
 Supporting PVS lemmas and TCCs are counted separately. The theorem statements
